@@ -1,0 +1,24 @@
+- create:
+    - ~/.config/qtile
+    - ~/.config/dunst
+    - ~/.config/rofi
+
+- link:
+    ~/.config/qtile/:
+      path: tiling/qtile/**
+      glob: true
+
+    ~/.config/picom.conf: tiling/picom.conf
+    ~/.xprofile: tiling/.xprofile
+    ~/.config/dunst/dunstrc: tiling/dunstrc
+    ~/.config/rofi/config.rasi: tiling/rofi.rasi
+    /etc/lightdm/lightdm.conf: tiling/lightdm/lightdm.conf
+    /etc/lightdm/lightdm-webkit2-greeter.conf: tiling/lightdm/lightdm-webkit2-greeter.conf
+
+- yay:
+    - lightdm
+    - web-greeter
+    - lightdm-webkit-theme-aether
+    - rofi
+    - picom
+    - dunst

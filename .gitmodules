@@ -1,0 +1,9 @@
+[submodule "meta/dotbot"]
+	path = meta/dotbot
+	url = https://github.com/anishathalye/dotbot
+[submodule "meta/dotbot-apt"]
+	path = meta/dotbot-apt
+	url = https://github.com/bryant1410/dotbot-apt.git
+[submodule "meta/dotbot-yay"]
+	path = meta/dotbot-yay
+	url = https://github.com/oxson/dotbot-yay

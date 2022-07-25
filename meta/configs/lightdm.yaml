@@ -1,0 +1,6 @@
+- create:
+    - /etc/lightdm/
+
+- shell:
+    - sudo cp tiling/lightdm/lightdm-gtk-greeter.conf /etc/lightdm/lightdm-webkit2-greeter.conf
+    - sudo cp tiling/lightdm/lightdm.conf /etc/lightdm/lightdm.conf

@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+The MIT License (MIT)
+
+Copyright (c) 2016-present Dracula Theme
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+-->
+
+<style-scheme id="dracula" name="Dracula" version="1.0">
+	<author>Ricardo Madriz</author>
+	<_description>A dark theme for Gedit</_description>
+
+	<!-- Dracula colors -->
+	<color name="background" value="#282a36"/>
+	<color name="current-line" value="#44475a"/>
+	<color name="selection" value="#bd93f9"/>
+	<color name="foreground" value="#f8f8f2"/>
+	<color name="comment" value="#6272a4"/>
+	<color name="cyan" value="#8be9fd"/>
+	<color name="green" value="#50fa7b"/>
+	<color name="orange" value="#ffb86c"/>
+	<color name="pink" value="#ff79c6"/>
+	<color name="purple" value="#bd93f9"/>
+	<color name="red" value="#ff5555"/>
+	<color name="yellow" value="#f1fa8c"/>
+
+	<!-- Helper colors -->
+	<color name="white" value="#ffffff"/>
+	<color name="bone-white" value="#f8f8f0"/>
+	<color name="weird-gray" value="#909194"/>
+
+	<style name="text" foreground="bone-white" background="background"/>
+	<style name="selection" background="selection"/>
+	<style name="cursor" foreground="white" background="white"/>
+	<style name="current-line" foreground="current-line" background="current-line"/>
+	<style name="line-numbers" foreground="weird-gray" background="background"/>
+	<style name="bracket-match" foreground="bone-white" background="background" underline="true"/>
+	<style name="search-match" foreground="selection" background="yellow"/>
+        <style name="background-pattern" background="#2f313e"/>
+
+
+	<style name="def:function" foreground="green"/>
+	<style name="def:identifier" foreground="pink"/>
+	<style name="def:keyword" foreground="pink"/>
+	<style name="def:number" foreground="purple" />
+	<style name="def:boolean" foreground="purple"/>
+	<style name="def:string" foreground="yellow"/>
+	<style name="def:special-char" foreground="pink"/>
+	<style name="def:builtin" foreground="cyan"/>
+	<style name="def:type" foreground="green"/>
+	<style name="def:preprocessor" foreground="green"/>
+	<style name="def:comment" foreground="comment"/>
+
+	<!-- Python-specific stuff -->
+	<style name="python:module-handler" foreground="pink"/>
+	<style name="python:function-name" foreground="green"/>
+	<style name="python:decorator" foreground="green"/>
+	<style name="python:class-name" foreground="white"/>
+	<style name="python:special-variable" foreground="cyan"/>
+	<style name="python:builtin-constant" foreground="purple"/>
+
+
+	<style name="def:specials" foreground="#f8f8f2"/>
+	<style name="def:statement" foreground="pink"/>
+
+	<style background="#468410" bold="true" foreground="#f8f8f2" name="diff:added-line"/>
+	<style foreground="#8b080b" name="diff:removed-line"/>
+	<style background="#243a5f" foreground="#f8f8f2" name="diff:changed-line"/>
+
+        <!-- Markup -->
+        <style name="def:emphasis"                italic="true"/>
+        <style name="def:strong-emphasis"         foreground="purple" bold="true"/>
+        <style name="def:inline-code"             foreground="cyan"/>
+        <style name="def:insertion"               underline="single"/>
+        <style name="def:deletion"                foreground="red" strikethrough="true"/>
+        <style name="def:link-text"               foreground="orange"/>
+        <style name="def:link-symbol"             foreground="orange" bold="true"/>
+        <style name="def:link-destination"        foreground="pink" italic="true" underline="single"/>
+        <style name="def:heading"                 foreground="green" bold="true"/>
+        <style name="def:thematic-break"          foreground="green" bold="true"/>
+        <style name="def:preformatted-section"    foreground="cyan"/>
+        <style name="def:list-marker"             foreground="purple" bold="true"/>
+
+</style-scheme>

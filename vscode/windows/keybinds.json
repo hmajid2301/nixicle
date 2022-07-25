@@ -1,0 +1,46 @@
+[
+  {
+    "key": "ctrl+shift+k",
+    "command": "git.push"
+  },
+  {
+    "key": "ctrl+shift+right",
+    "command": "workbench.action.terminal.focusNext"
+  },
+  {
+    "key": "ctrl+shift+left",
+    "command": "workbench.action.terminal.focusPrevious"
+  },
+  {
+    "key": "ctrl+shift+t",
+    "command": "workbench.action.terminal.new"
+  },
+  {
+    "key": "ctrl+w",
+    "command": "workbench.action.closeActiveEditor"
+  },
+  {
+    "key": "ctrl+\\",
+    "command": "workbench.action.toggleEditorWidths",
+    "when": "editorFocus"
+  },
+  {
+    "key": "ctrl+\\",
+    "command": "workbench.action.toggleMaximizedPanel",
+    "when": "terminalFocus"
+  },
+  {
+    "key": "ctrl+shift+g",
+    "command": "workbench.scm.focus"
+  },
+  {
+    "key": "ctrl+oem_8",
+    "command": "macros.showTerminal",
+    "when": "!terminalFocus"
+  },
+  {
+    "key": "ctrl+oem_8",
+    "command": "macros.hideTerminal",
+    "when": "terminalFocus"
+  }
+]

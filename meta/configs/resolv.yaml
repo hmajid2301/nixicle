@@ -1,0 +1,7 @@
+- link:
+    /etc/resolv/:
+      path: resolv/**
+      glob: true
+
+- shell:
+    - chattr +i /etc/resolv.conf

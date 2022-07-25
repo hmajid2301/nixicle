@@ -1,0 +1,5 @@
+- create:
+    - ~/.config/alacritty
+
+- link:
+    ~/.config/alacritty/alacritty.yml: alacritty/alacritty.yml

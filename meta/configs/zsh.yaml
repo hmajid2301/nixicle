@@ -1,0 +1,16 @@
+- create:
+    - ~/.zsh
+    - .zsh
+
+- link:
+    ~/.zshrc: zsh/.zshrc
+# - shell:
+#     - command: curl -fsSL https://starship.rs/install.sh | sh -s -- --yes
+#       stdout: true
+#       stderr: true
+#     - git clone https://github.com/zsh-users/zsh-completions.git .zsh/zsh-completions
+#     - git clone https://github.com/olets/zsh-abbr.git ./.zsh/zsh-abbr
+#     - git clone git@github.com:unixorn/fzf-zsh-plugin.git ~/.zsh/fzf-zsh-pluging
+#     - git clone https://github.com/zsh-users/zsh-autosuggestions ~/.zsh/zsh-autosuggestions
+#     - git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ~/.zsh/zsh-syntax-highlighting
+#     - git clone https://github.com/zsh-users/zsh-history-substring-search.git ~/.zsh/zsh-history-substring-search

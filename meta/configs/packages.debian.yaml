@@ -1,0 +1,6 @@
+- apt:
+    - fish
+    - jq
+    - fzf
+    - vim
+    - make

@@ -1,0 +1,28 @@
+- yay:
+    - zoxide
+    - bat
+    - fd
+    - ripgrep
+    - exa
+    - httpie
+    - hyperfine
+    - dust
+    - tealdeer
+    - sd
+    - diff-so-fancy
+    - ctop
+    - broot
+    - procs
+    - neofetch
+    - btop
+    - fish
+    - jq
+    - fzf
+    - vim
+    - make
+    - flameshot
+    - entr
+    - ttf-fira-code
+
+- shell:
+    - tldr --update
