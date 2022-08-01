@@ -26,13 +26,3 @@ gnome-dump: ## Dump gnome settings
 
 gnome-load: ## Load gnome settings
 	./gnome/restore.sh
-
-
-fisher-dump: SHELL:=/usr/bin/fish
-fisher-dump: ## Dump fisher plugins
-	fisher list > ./fish/fisher/fishfile
-
-
-fisher-load: SHELL:=/usr/bin/fish
-fisher-load: ## Load fisher plugins
-	cat ./fish/fisher/fishfile | xargs -L 1  -I {} fish -c "fisher install {}"
