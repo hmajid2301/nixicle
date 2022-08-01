@@ -1,4 +1,3 @@
-fish.debian.v3-sudo
-packages-sudo
-fish
+packages.debian-sudo
+zsh
 ssh

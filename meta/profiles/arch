@@ -1,10 +1,9 @@
 zsh
 alacritty
-qtile
+# qtile
 tmux
-fish
 packages.arch-sudo
 poetry
 ssh
 git
-shell-sudo
+shell

@@ -28,11 +28,11 @@
   ],
   "copyFormatting": "none",
   "copyOnSelect": false,
-  "defaultProfile": "{f184b75f-6c82-5ea5-9b3e-3203d66c5f82}",
+  "defaultProfile": "{4b012d06-939d-4d03-947e-8cde5b43ee41}",
   "multiLinePasteWarning": false,
   "profiles": {
     "defaults": {
-      "colorScheme": "Dracula"
+      "colorScheme": "Monokai"
     },
     "list": [
       {
@@ -54,28 +54,22 @@
         "source": "Windows.Terminal.Azure"
       },
       {
-        "guid": "{5a069d55-87bd-57cf-8a07-2726b203d3e5}",
-        "hidden": false,
-        "name": "Ubuntu 20.04.4 LTS",
-        "source": "CanonicalGroupLimited.Ubuntu20.04LTS_79rhkp1fndgsc"
-      },
-      {
-        "guid": "{f184b75f-6c82-5ea5-9b3e-3203d66c5f82}",
-        "hidden": false,
-        "name": "Ubuntu20.04LTS",
+        "guid": "{2c4de342-38b7-51cf-b940-2309a097f518}",
+        "hidden": true,
+        "name": "Ubuntu",
         "source": "Windows.Terminal.Wsl"
       },
       {
-        "guid": "{1bdae7ec-8ca6-5caa-8453-8b6fe78b2748}",
+        "commandline": "C:\\Windows\\system32\\wsl.exe -d Arch",
+        "font": {
+          "face": "Fira Code",
+          "size": 12
+        },
+        "guid": "{4b012d06-939d-4d03-947e-8cde5b43ee41}",
         "hidden": false,
-        "name": "rancher-desktop-data",
-        "source": "Windows.Terminal.Wsl"
-      },
-      {
-        "guid": "{1cd79813-5972-56cb-badb-ba5ee12693c5}",
-        "hidden": false,
-        "name": "rancher-desktop",
-        "source": "Windows.Terminal.Wsl"
+        "icon": "C:\\Users\\Haseeb Majid\\Pictures\\arch.png",
+        "name": "Arch",
+        "startingDirectory": "~"
       }
     ]
   },
@@ -125,6 +119,27 @@
       "selectionBackground": "#FFFFFF",
       "white": "#CCCCCC",
       "yellow": "#C19C00"
+    },
+    {
+      "background": "#272822",
+      "black": "#3E3D32",
+      "blue": "#66D9EF",
+      "brightBlack": "#272822",
+      "brightBlue": "#66D9EF",
+      "brightCyan": "#66D9EF",
+      "brightGreen": "#A6E22E",
+      "brightPurple": "#AE81FF",
+      "brightRed": "#F92672",
+      "brightWhite": "#F8F8F2",
+      "brightYellow": "#FD971F",
+      "cyan": "#66D9EF",
+      "foreground": "#F8F8F2",
+      "green": "#A6E22E",
+      "name": "Monokai",
+      "purple": "#AE81FF",
+      "red": "#F92672",
+      "white": "#F8F8F2",
+      "yellow": "#FFE792"
     },
     {
       "background": "#282A36",
@@ -304,6 +319,52 @@
       "foreground": "#FFFFFF",
       "green": "#26A269",
       "name": "Ubuntu-20.04-ColorScheme",
+      "purple": "#881798",
+      "red": "#C21A23",
+      "selectionBackground": "#FFFFFF",
+      "white": "#CCCCCC",
+      "yellow": "#A2734C"
+    },
+    {
+      "background": "#300A24",
+      "black": "#171421",
+      "blue": "#0037DA",
+      "brightBlack": "#767676",
+      "brightBlue": "#08458F",
+      "brightCyan": "#2C9FB3",
+      "brightGreen": "#26A269",
+      "brightPurple": "#A347BA",
+      "brightRed": "#C01C28",
+      "brightWhite": "#F2F2F2",
+      "brightYellow": "#A2734C",
+      "cursorColor": "#FFFFFF",
+      "cyan": "#3A96DD",
+      "foreground": "#FFFFFF",
+      "green": "#26A269",
+      "name": "Ubuntu-22.04-ColorScheme",
+      "purple": "#881798",
+      "red": "#C21A23",
+      "selectionBackground": "#FFFFFF",
+      "white": "#CCCCCC",
+      "yellow": "#A2734C"
+    },
+    {
+      "background": "#300A24",
+      "black": "#171421",
+      "blue": "#0037DA",
+      "brightBlack": "#767676",
+      "brightBlue": "#08458F",
+      "brightCyan": "#2C9FB3",
+      "brightGreen": "#26A269",
+      "brightPurple": "#A347BA",
+      "brightRed": "#C01C28",
+      "brightWhite": "#F2F2F2",
+      "brightYellow": "#A2734C",
+      "cursorColor": "#FFFFFF",
+      "cyan": "#3A96DD",
+      "foreground": "#FFFFFF",
+      "green": "#26A269",
+      "name": "Ubuntu-ColorScheme",
       "purple": "#881798",
       "red": "#C21A23",
       "selectionBackground": "#FFFFFF",

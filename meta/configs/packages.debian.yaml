@@ -1,5 +1,5 @@
 - apt:
-    - fish
+    - zsh
     - jq
     - fzf
     - vim

@@ -1,2 +1,2 @@
 - shell:
-    - chsh -s $(which fish)
+    - chsh -s $(which zsh)
