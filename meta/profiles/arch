@@ -1,6 +1,7 @@
+redshift
 zsh
 alacritty
-# qtile
+qtile
 tmux
 packages.arch-sudo
 poetry
