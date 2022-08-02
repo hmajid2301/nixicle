@@ -1,8 +1,10 @@
 # Created by newuser for 5.9
 
 HISTFILE=~/.histfile
-HISTSIZE=100000
-SAVEHIST=1000
+HISTSIZE=1000000000
+SAVEHIST=1000000000
+setopt HIST_FIND_NO_DUPS
+setopt INC_APPEND_HISTORY
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=242"
 
 eval "$(starship init zsh)"
@@ -41,3 +43,11 @@ if [ $(ps ax | grep "[s]sh-agent" | wc -l) -eq 0 ] ; then
     fi
 fi
 
+# WSL Setup
+
+export DISPLAY=:0
+# The next line updates PATH for the Google Cloud SDK.
+if [ -f '/home/haseeb/google-cloud-sdk/path.zsh.inc' ]; then . '/home/haseeb/google-cloud-sdk/path.zsh.inc'; fi
+
+# The next line enables shell command completion for gcloud.
+if [ -f '/home/haseeb/google-cloud-sdk/completion.zsh.inc' ]; then . '/home/haseeb/google-cloud-sdk/completion.zsh.inc'; fi

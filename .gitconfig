@@ -1,5 +1,5 @@
 [user]
-	email = hello@haseebmajid.dev
+	email = haseeb@joinzoe.com
 	name = Haseeb Majid
 [core]
         editor = vim
@@ -23,3 +23,5 @@
         whitespace = red reverse
 [pull]
 	ff = only
+[push]
+	default = current
