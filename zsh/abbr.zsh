@@ -1,114 +1,134 @@
-abbr g=git
-abbr ga='git add'
-abbr gaa='git add --all'
-abbr gapa='git add --patch'
-abbr gap='git apply'
-abbr gb='git branch -vv'
-abbr gba='git branch -a -v'
-abbr gban='git branch -a -v --no-merged'
-abbr gbd='git branch -d'
-abbr gbD='git branch -D'
-abbr gbl        git blame -b -w
-abbr gbs        git bisect
-abbr gbsb       git bisect bad
-abbr gbsg       git bisect good
-abbr gbsr       git bisect reset
-abbr gbss       git bisect start
-abbr gc         git commit -v
-abbr gc!        git commit -v --amend
-abbr gcn!       git commit -v --no-edit --amend
-abbr gca        git commit -v -a
-abbr gca!       git commit -v -a --amend
-abbr gcan!      git commit -v -a --no-edit --amend
-abbr gcv        git commit -v --no-verify
-abbr gcav       git commit -a -v --no-verify
-abbr gcav!      git commit -a -v --no-verify --amend
-abbr gcm        git commit -m
-abbr gcam       git commit -a -m
-abbr gscam      git commit -S -a -m
-abbr gcfx       git commit --fixup
-abbr gcf        git config --list
-abbr gcl='git clone'
-abbr gclean     git clean -di
-abbr gclean!    git clean -dfx
-abbr gclean!!   "git reset --hard; and git clean -dfx"
-abbr gcount     git shortlog -sn
-abbr gcp        git cherry-pick
-abbr gcpa       git cherry-pick --abort
-abbr gcpc       git cherry-pick --continue
-abbr gd         git diff
-abbr gdca       git diff --cached
-abbr gds        git diff --stat
-abbr gdsc       git diff --stat --cached
-abbr gdw        git diff --word-diff
-abbr gdwc       git diff --word-diff --cached
-abbr gignore    git update-index --assume-unchanged
-abbr gf         git fetch
-abbr gfa        git fetch --all --prune
-abbr gfm        "git fetch origin master --prune; and git merge FETCH_HEAD"
-abbr gfo        git fetch origin
-abbr gl         git pull
-abbr gll        git pull origin
-abbr glr        git pull --rebase
-abbr glg        git log --stat --max-count=10
-abbr glgg       git log --graph --max-count=10
-abbr glgga      git log --graph --decorate --all
-abbr glo        git log --oneline --decorate --color
-abbr glog       git log --oneline --decorate --color --graph
-abbr glom       git log --oneline --decorate --color master..
-abbr glod       git log --oneline --decorate --color develop..
-abbr gloo       "git log --pretty=format:'%C(yellow)%h %Cred%ad %Cblue%an%Cgreen%d %Creset%s' --date=short"
-abbr gm         git merge
-abbr gmt        git mergetool --no-prompt
-abbr gp='git push'
-abbr gp!        git push --force-with-lease
-abbr gpo        git push origin
-abbr gpo!       git push --force-with-lease origin
-abbr gpv        git push --no-verify
-abbr gpv!       git push --no-verify --force-with-lease
-abbr ggp!       ggp --force-with-lease
-abbr gpu        ggp --set-upstream
-abbr gr         git remote -vv
-abbr gra        git remote add
-abbr grb        git rebase
-abbr grba       git rebase --abort
-abbr grbc       git rebase --continue
-abbr grbi       git rebase --interactive
-abbr grbm       git rebase master
-abbr grbmi      git rebase master --interactive
-abbr grbmia     git rebase master --interactive --autosquash
-abbr grbd       git rebase develop
-abbr grbdi      git rebase master --interactive
-abbr grbdia     git rebase master --interactive --autosquash
-abbr grbs       git rebase --skip
-abbr grev       git revert
-abbr grh        git reset
-abbr grhh       git reset --hard
-abbr grm        git rm
-abbr grmc       git rm --cached
-abbr grmv       git remote rename
-abbr grrm       git remote remove
-abbr grs        git restore
-abbr grset      git remote set-url
-abbr grss       git restore --source
-abbr grup       git remote update
-abbr grv        git remote -v
-abbr gsh        git show
-abbr gsd        git svn dcommit
-abbr gsr        git svn rebase
-abbr gss        git status -s
-abbr gst        git status
-abbr gsta       git stash
-abbr gstd       git stash drop
-abbr gstp       git stash pop
-abbr gsts       git stash show --text
-abbr gsu        git submodule update
-abbr gsur       git submodule update --recursive
-abbr gsuri      git submodule update --recursive --init
-abbr gts        git tag -s
-abbr gtv        git tag | sort -V
-abbr gsw        git switch
-abbr gswc       git switch --create
-abbr gunignore  git update-index --no-assume-unchanged
-abbr gup        git pull --rebase
-abbr gwch       git whatchanged -p --abbrev-commit --pretty=medium
+abbr -U  g=git\
+abbr -U  ga='git add'\
+abbr -U  gaa='git add --all'\
+abbr -U  gap='git apply'\
+abbr -U  gapa='git add --patch'\
+abbr -U  gb='git branch -vv'\
+abbr -U  gbD='git branch -D'\
+abbr -U  gba='git branch -a -v'\
+abbr -U  gban='git branch -a -v --no-merged'\
+abbr -U  gbd='git branch -d'\
+abbr -U  gbl='git blame -b -w'\
+abbr -U  gbs='git bisect'\
+abbr -U  gbsb='git bisect bad'\
+abbr -U  gbsg='git bisect good'\
+abbr -U  gbsr='git bisect reset'\
+abbr -U  gbss='git bisect start'\
+abbr -U  gc='git commit -v'\
+abbr -U  gc!='git commit -v --amend'\
+abbr -U  gca='git commit -v -a'\
+abbr -U  gca!='git commit -v -a --amend'\
+abbr -U  gcam='git commit -a -m'\
+abbr -U  gcan!='git commit -v -a --no-edit --amend'\
+abbr -U  gcav='git commit -a -v --no-verify'\
+abbr -U  gcav!='git commit -a -v --no-verify --amend'\
+abbr -U  gcb='git checkout -b'\
+abbr -U  gcf='git config --list'\
+abbr -U  gcfx='git commit --fixup'\
+abbr -U  gcl='git clone'\
+abbr -U  gclean='git clean -di'\
+abbr -U  gclean!='git clean -dfx'\
+abbr -U  gcleanabbr import-fish abbrv='git reset --hard; and git clean -dfx'\
+abbr -U  gcm='git commit -m'\
+abbr -U  gcn!='git commit -v --no-edit --amend'\
+abbr -U  gco='git checkout'\
+abbr -U  gcod='git checkout develop'\
+abbr -U  gcom='git checkout master'\
+abbr -U  gcount='git shortlog -sn'\
+abbr -U  gcp='git cherry-pick'\
+abbr -U  gcpa='git cherry-pick --abort'\
+abbr -U  gcpc='git cherry-pick --continue'\
+abbr -U  gcv='git commit -v --no-verify'\
+abbr -U  gd='git diff'\
+abbr -U  gdca='git diff --cached'\
+abbr -U  gds='git diff --stat'\
+abbr -U  gdsc='git diff --stat --cached'\
+abbr -U  gdw='git diff --word-diff'\
+abbr -U  gdwc='git diff --word-diff --cached'\
+abbr -U  gf='git fetch'\
+abbr -U  gfa='git fetch --all --prune'\
+abbr -U  gfb='git flow bugfix'\
+abbr -U  gfbs='git flow bugfix start'\
+abbr -U  gfbt='git flow bugfix track'\
+abbr -U  gff='git flow feature'\
+abbr -U  gffs='git flow feature start'\
+abbr -U  gfft='git flow feature track'\
+abbr -U  gfh='git flow hotfix'\
+abbr -U  gfhs='git flow hotfix start'\
+abbr -U  gfht='git flow hotfix track'\
+abbr -U  gfm='git fetch origin master --prune; and git merge FETCH_HEAD'\
+abbr -U  gfo='git fetch origin'\
+abbr -U  gfp='git flow publish'\
+abbr -U  gfr='git flow release'\
+abbr -U  gfrs='git flow release start'\
+abbr -U  gfrt='git flow release track'\
+abbr -U  gfs='git flow support'\
+abbr -U  gfss='git flow support start'\
+abbr -U  gfst='git flow support track'\
+abbr -U  ggp!='ggp --force-with-lease'\
+abbr -U  gignore='git update-index --assume-unchanged'\
+abbr -U  gl='git pull'\
+abbr -U  glg='git log --stat --max-count=10'\
+abbr -U  glgg='git log --graph --max-count=10'\
+abbr -U  glgga='git log --graph --decorate --all'\
+abbr -U  gll='git pull origin'\
+abbr -U  glo='git log --oneline --decorate --color'\
+abbr -U  glod='git log --oneline --decorate --color develop..'\
+abbr -U  glog='git log --oneline --decorate --color --graph'\
+abbr -U  glom='git log --oneline --decorate --color master..'\
+abbr -U  gloo=git\ log\ --pretty=format:\'\%C\(yellow\)\%h\ \%Cred\%ad\ \%Cblue\%an\%Cgreen\%d\ \%Creset\%s\'\ --date=short\
+abbr -U  glr='git pull --rebase'\
+abbr -U  gm='git merge'\
+abbr -U  gmt='git mergetool --no-prompt'\
+abbr -U  gp='git push'\
+abbr -U  gp!='git push --force-with-lease'\
+abbr -U  gpo='git push origin'\
+abbr -U  gpo!='git push --force-with-lease origin'\
+abbr -U  gpu='ggp --set-upstream'\
+abbr -U  gpv='git push --no-verify'\
+abbr -U  gpv!='git push --no-verify --force-with-lease'\
+abbr -U  gr='git remote -vv'\
+abbr -U  gra='git remote add'\
+abbr -U  grb='git rebase'\
+abbr -U  grba='git rebase --abort'\
+abbr -U  grbc='git rebase --continue'\
+abbr -U  grbd='git rebase develop'\
+abbr -U  grbdi='git rebase master --interactive'\
+abbr -U  grbdia='git rebase master --interactive --autosquash'\
+abbr -U  grbi='git rebase --interactive'\
+abbr -U  grbm='git rebase master'\
+abbr -U  grbmi='git rebase master --interactive'\
+abbr -U  grbmia='git rebase master --interactive --autosquash'\
+abbr -U  grbs='git rebase --skip'\
+abbr -U  grev='git revert'\
+abbr -U  grh='git reset'\
+abbr -U  grhh='git reset --hard'\
+abbr -U  grm='git rm'\
+abbr -U  grmc='git rm --cached'\
+abbr -U  grmv='git remote rename'\
+abbr -U  grrm='git remote remove'\
+abbr -U  grs='git restore'\
+abbr -U  grset='git remote set-url'\
+abbr -U  grss='git restore --source'\
+abbr -U  grup='git remote update'\
+abbr -U  grv='git remote -v'\
+abbr -U  gscam='git commit -S -a -m'\
+abbr -U  gsd='git svn dcommit'\
+abbr -U  gsh='git show'\
+abbr -U  gsr='git svn rebase'\
+abbr -U  gss='git status -s'\
+abbr -U  gst='git status'\
+abbr -U  gsta='git stash'\
+abbr -U  gstd='git stash drop'\
+abbr -U  gstp='git stash pop'\
+abbr -U  gsts='git stash show --text'\
+abbr -U  gsu='git submodule update'\
+abbr -U  gsur='git submodule update --recursive'\
+abbr -U  gsuri='git submodule update --recursive --init'\
+abbr -U  gsw='git switch'\
+abbr -U  gswc='git switch --create'\
+abbr -U  gts='git tag -s'\
+abbr -U  gtv='git tag'\
+abbr -U  gunignore='git update-index --no-assume-unchanged'\
+abbr -U  gup='git pull --rebase'\
+abbr -U  gwch='git whatchanged -p --abbrev-commit --pretty=medium'\
