@@ -1,5 +1,6 @@
 - create:
     - ~/.config/qtile
+    - ~/.config/qtile/icons
     - ~/.config/dunst
     - ~/.config/rofi
 
@@ -12,14 +13,12 @@
     ~/.xprofile: tiling/.xprofile
     ~/.config/dunst/dunstrc: tiling/dunstrc
     ~/.config/rofi/config.rasi: tiling/rofi.rasi
-    # TODO: how to copy lightdm ? 
     # /etc/lightdm/lightdm.conf: tiling/lightdm/lightdm.conf
     # /etc/lightdm/lightdm-webkit2-greeter.conf: tiling/lightdm/lightdm-webkit2-greeter.conf
-
-- yay:
-    - lightdm
-    - web-greeter
-    - lightdm-webkit-theme-aether
-    - rofi
-    - picom
-    - dunst
+# - yay:
+#     - lightdm
+#     - web-greeter
+#     - lightdm-webkit-theme-aether
+#     - rofi
+#     - picom
+#     - dunst

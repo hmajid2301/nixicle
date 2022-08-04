@@ -1,3 +1,3 @@
 #!/bin/bash
-/usr/bin/setxkbmap gb
-autorandr default
+/usr/bin/setxkbmap gb &
+/etc/lightdm/monitor.sh &

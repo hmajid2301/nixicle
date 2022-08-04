@@ -7,7 +7,7 @@
 # NOTE: Paths must be accessible to the lightdm system user account (so they cannot be anywhere in /home)
 #
 branding:
-    background_images_dir: /usr/share/backgrounds
+    background_images_dir: /usr/share/lightdm-webkit/themes/lightdm-webkit-theme-aether/src/img/wallpapers/
     logo_image: /usr/share/web-greeter/themes/default/img/antergos-logo-user.png
     user_image: /usr/share/web-greeter/themes/default/img/antergos.png
 
