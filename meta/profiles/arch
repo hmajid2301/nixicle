@@ -1,6 +1,7 @@
-redshift
-zsh
+vscode
 qtile
+misc
+zsh
 alacritty
 tmux
 packages.arch-sudo

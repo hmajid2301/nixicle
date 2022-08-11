@@ -26,3 +26,6 @@ selection:
 
 mouse_bindings:
   - { mouse: Right, action: Paste }
+
+env:
+  TERM: xterm-256color

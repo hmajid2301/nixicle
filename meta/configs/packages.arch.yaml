@@ -23,6 +23,9 @@
     - entr
     - ttf-fira-code
     - zsh
+    - flameshot
+    - solaar
+    - psensor
 
 - shell:
     - tldr --update

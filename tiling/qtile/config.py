@@ -26,12 +26,30 @@
 
 import os
 
-from libqtile import bar, layout, qtile, widget
+from libqtile import bar, layout, qtile
 from libqtile.config import Click, Drag, DropDown, Group, Key, Match, ScratchPad, Screen
 from libqtile.lazy import lazy
+from qtile_extras import widget
+from qtile_extras.widget.decorations import RectDecoration
 
 mod = "mod4"
 terminal = "alacritty"
+
+colors = [
+    ["#1E1E2E", "#1E1E2E"],  # 0 black
+    ["#D9E0EE", "#D9E0EE"],  # 1 light grey
+    ["#45475a", "#45475a"],  # 2 grey
+    ["#F28FAD", "#F28FAD"],  # 3 pink
+    ["#ABE9B3", "#ABE9B3"],  # 4 green
+    ["#FAE3B0", "#FAE3B0"],  # 5 orange
+    ["#96CDFB", "#96CDFB"],  # 6 light blue
+    ["#988BA2", "#988BA2"],  # 7 browny grey
+    ["#DDB6F2", "#DDB6F2"],  # 8 purply pink
+    ["#F5C2E7", "#F5C2E7"],  # 9 light pink
+    ["#262626", "#262626"],  # 10 background
+    ["#FFFFD4", "#FFFFD4"],  # 11 foreground
+    ["#302D41", "#302D41"],  # 12 black 3
+]
 
 
 keys = [
@@ -78,7 +96,13 @@ keys = [
     Key([], "XF86AudioMute", lazy.spawn(os.path.expanduser("~/.config/qtile/volume.sh mute"))),
     Key([], "XF86AudioLowerVolume", lazy.spawn(os.path.expanduser("~/.config/qtile/volume.sh down"))),
     Key([], "XF86AudioRaiseVolume", lazy.spawn(os.path.expanduser("~/.config/qtile/volume.sh up"))),
+    Key([], "XF86AudioNext", lazy.spawn("playerctl next")),
+    Key([], "XF86AudioPrev", lazy.spawn("playerctl previous")),
+    Key([], "XF86AudioPlay", lazy.spawn("playerctl play-pause")),
+    Key([], "XF86AudioStop", lazy.spawn("playerctl play-pause")),
     # Other
+    Key([], "Print", lazy.spawn("flameshot gui")),
+    Key([mod], "Escape", lazy.spawn(os.path.expanduser("~/.config/rofi/powermenu/powermenu.sh"))),
 ]
 
 
@@ -111,20 +135,15 @@ keys = [
 
 workspaces = [
     {
-        "name": "",
+        "name": "",
         "key": "1",
         "lay": "bsp",
     },
     {"name": "", "key": "2", "matches": [Match(wm_class="firefox")], "lay": "bsp"},
     {
-        "name": "",
+        "name": "",
         "key": "3",
-        "lay": "columns",
-    },
-    {
-        "name": "",
-        "key": "4",
-        "lay": "bsp",
+        "lay": "max",
     },
 ]
 
@@ -147,7 +166,7 @@ groups = [
 
 for workspace in workspaces:
     matches = workspace["matches"] if "matches" in workspace else None
-    groups.append(Group(workspace["name"], matches=matches, layout=workspace["lay"]))
+    groups.append(Group(workspace["name"], matches=matches, layout=workspace["lay"]))  # type:ignore
     keys.append(
         Key(
             [mod],
@@ -195,10 +214,19 @@ keys.extend(
     ]
 )
 
+layout_theme = {
+    "border_width": 2,
+    "margin": 4,
+    "border_focus": colors[8],
+    "border_normal": colors[12],
+    "grow_amount": 1,
+}
+
 layouts = [
-    layout.MonadTall(border_width=4, margin=8),
-    layout.Max(),
-    layout.Columns(border_focus_stack=["#d76f5f", "#8f3d3d"], border_width=4, margin=8),
+    layout.Bsp(**layout_theme),  # type: ignore
+    layout.MonadTall(**layout_theme),  # type: ignore
+    layout.Max(),  # type: ignore
+    layout.Columns(**layout_theme),  # type: ignore
     # Try more layouts by unleashing below layouts.
     # layout.Stack(num_stacks=2),
     # layout.Bsp(),
@@ -212,26 +240,8 @@ layouts = [
 ]
 
 
-colors = [
-    ["#2e2e2e", "#2e2e2e"],  # 0 background
-    ["#d8dee9", "#d8dee9"],  # 1 foreground
-    ["#3b4252", "#3b4252"],  # 2 background lighter
-    ["#bf616a", "#bf616a"],  # 3 red
-    ["#b4d273", "#b4d273"],  # 4 green
-    ["#e5b567", "#e5b567"],  # 5 yellow
-    ["#6c99bb", "#6c99bb"],  # 6 blue
-    ["#b05279", "#b05279"],  # 7 magenta
-    ["#88c0d0", "#88c0d0"],  # 8 cyan
-    ["#d6d6d6", "#d6d6d6"],  # 9 white
-    ["#4c566a", "#4c566a"],  # 10 grey
-    ["#e87d3e", "#e87d3e"],  # 11 orange
-    ["#8fbcbb", "#8fbcbb"],  # 12 super cyan
-    ["#9e86c8", "#9e86c8"],  # 13 super blue
-    ["#242831", "#242831"],  # 14 super dark background
-]
-
 widget_defaults = dict(
-    font="FiraCode Nerd Font",
+    font="Mono Lisa Bold",
     fontsize=18,
     padding=3,
     background=colors[0],
@@ -239,25 +249,66 @@ widget_defaults = dict(
 extension_defaults = widget_defaults.copy()
 
 
+def text_decoration(color, padding_x=None, padding_y=4):
+    return [
+        RectDecoration(
+            colour=color,
+            radius=4,
+            filled=True,
+            padding_x=padding_x,
+            padding_y=padding_y,
+        )
+    ]
+
+
+def icon_decoration():
+    return [
+        RectDecoration(
+            colour=colors[12],
+            radius=4,
+            filled=True,
+            padding_y=4,
+            padding_x=0,
+        )
+    ]
+
+
+def parse_window_name(text):
+    """Simplifies the names of a few windows, to be displayed in the bar"""
+    target_names = [
+        "Mozilla Firefox",
+        "Visual Studio Code",
+        "Discord",
+    ]
+    return next(filter(lambda name: name in text, target_names), text)
+
+
 widget_list = [
+    widget.TextBox(
+        text="",
+        foreground=colors[0],
+        background=colors[9],
+        mouse_callbacks={"Button1": lambda: qtile.cmd_spawn("rofi -show drun")},
+        filename="~/.config/qtile/icons/arch.png",
+        fontsize=30,
+        padding=15,
+        decorations=text_decoration(colors[9]),
+    ),
     widget.Sep(linewidth=0, padding=6, foreground=colors[2], background=colors[0]),
     widget.GroupBox(
-        font="Ubuntu Bold",
         fontsize=30,
         margin_y=3,
         margin_x=5,
         padding_y=5,
         padding_x=5,
         borderwidth=3,
-        active=colors[2],
+        active=colors[8],
         inactive=colors[7],
         rounded=True,
-        highlight_color=colors[1],
+        highlight_color=colors[2],
         highlight_method="line",
-        this_current_screen_border=colors[6],
-        this_screen_border=colors[4],
-        other_current_screen_border=colors[6],
-        other_screen_border=colors[4],
+        this_current_screen_border=colors[8],
+        this_screen_border=colors[8],
         background=colors[0],
     ),
     widget.Sep(
@@ -273,177 +324,123 @@ widget_list = [
     widget.Spacer(),
     widget.TextBox(
         text="",
+        foreground=colors[0],
         fontsize=24,
-        font="Font Awesome 6 Free Solid",
+        padding=8,
+        decorations=text_decoration(colors[1]),
     ),
     widget.WindowName(
-        foreground=colors[12],
+        for_current_screen=True,
+        fmt="{}",
         empty_group_string="Desktop",
-        max_chars=130,
+        max_chars=120,
+        width=bar.CALCULATED,
+        foreground=colors[1],
+        padding=15,
+        decorations=icon_decoration(),
+        parse_text=parse_window_name,
     ),
     widget.Spacer(),
     widget.Systray(icon_size=24, padding=7),
     widget.Sep(
-        padding=6,
         linewidth=0,
+        padding=20,
     ),
-    widget.TextBox(
-        text="",
-        foreground=colors[14],
-        background=colors[0],
-        fontsize=28,
-        padding=0,
-    ),
-    widget.TextBox(
-        text=" ",
-        font="Font Awesome 6 Free Solid",
-        foreground=colors[7],
-        background=colors[14],
-    ),
-    widget.Net(
-        interface="enp7s0",
-        format="{down} ↓↑ {up}",
-        foreground=colors[7],
-        background=colors[14],
-        prefix="k",
+    widget.CheckUpdates(
+        distro="Arch_yay",
+        foreground=colors[0],
+        background=colors[2],
+        display_format=" Updates: {updates}",
+        mouse_callbacks={"Button1": lambda: qtile.cmd_spawn(f"{terminal} -e yay")},
         padding=5,
     ),
-    widget.TextBox(
-        text="",
-        foreground=colors[14],
-        background=colors[0],
-        fontsize=28,
-        padding=0,
-    ),
     widget.Sep(
-        padding=4,
         linewidth=0,
+        padding=20,
     ),
     widget.TextBox(
-        text="",
-        foreground=colors[14],
-        background=colors[0],
-        fontsize=28,
-        padding=0,
+        text="",
+        foreground=colors[0],
+        fontsize=24,
+        padding=8,
+        decorations=text_decoration(colors[8]),
     ),
     widget.ThermalSensor(
         tag_sensor="Tctl",
         threshold=90,
-        fmt=" {}",
-        padding=5,
+        fmt="{}",
+        padding=15,
+        foreground_alert=colors[3],
         foreground=colors[8],
-        background=colors[14],
-    ),
-    widget.TextBox(
-        text="",
-        foreground=colors[14],
-        background=colors[0],
-        fontsize=28,
-        padding=0,
+        decorations=icon_decoration(),
+        mouse_callbacks={"Button2": lambda: qtile.cmd_spawn("psensor")},
     ),
     widget.Sep(
-        padding=4,
-        linewidth=0,
-    ),
-    widget.CheckUpdates(
-        distro="Arch",
-        display_format=" Updates: {updates}",
-        mouse_callbacks={"Button1": lambda: qtile.cmd_spawn(f"{terminal} -e yay -S")},
-        padding=5,
-    ),
-    widget.Sep(
-        padding=4,
-        linewidth=0,
+        width=10,
+        foreground=colors[12],
     ),
     widget.TextBox(
-        text="",
-        foreground=colors[14],
-        background=colors[0],
-        fontsize=28,
-        padding=0,
+        text="墳",
+        foreground=colors[10],
+        fontsize=20,
+        padding=8,
+        decorations=text_decoration(colors[6]),
     ),
     widget.Volume(
-        fmt="墳 {}%",
+        foreground=colors[6],
+        limit_max_volume="True",
+        fmt="{}",
+        padding=8,
+        decorations=icon_decoration(),
         mouse_callbacks={"Button2": lambda: qtile.cmd_spawn("pavucontrol")},
-        foreground=colors[11],
-        background=colors[14],
-    ),
-    widget.TextBox(
-        text="",
-        foreground=colors[14],
-        background=colors[0],
-        fontsize=28,
-        padding=0,
     ),
     widget.Sep(
-        padding=4,
-        linewidth=0,
+        width=30,
+        foreground=colors[12],
     ),
     widget.TextBox(
-        text="",
-        foreground=colors[14],
-        background=colors[0],
-        fontsize=28,
-        padding=0,
-    ),
-    widget.TextBox(
-        text=" ",
-        font="Font Awesome 6 Free Solid",
-        foreground=colors[5],  # fontsize=38
-        background=colors[14],
+        text="",
+        foreground=colors[0],
+        decorations=text_decoration(colors[4]),
+        fontsize=20,
+        padding=8,
     ),
     widget.Clock(
         format="%a, %b %d",
-        background=colors[14],
-        foreground=colors[5],
-    ),
-    widget.TextBox(
-        text="",
-        foreground=colors[14],
-        background=colors[0],
-        fontsize=28,
-        padding=0,
+        foreground=colors[4],
+        decorations=icon_decoration(),
+        padding=8,
     ),
     widget.Sep(
-        linewidth=0,
-        foreground=colors[2],
-        padding=10,
-        size_percent=50,
+        width=20,
+        foreground=colors[12],
     ),
     widget.TextBox(
-        text="",
-        foreground=colors[14],
-        background=colors[0],
-        fontsize=28,
-        padding=0,
-    ),
-    widget.TextBox(
-        text=" ",
-        font="Font Awesome 6 Free Solid",
-        foreground=colors[4],  # fontsize=38
-        background=colors[14],
+        text="",
+        foreground=colors[0],
+        decorations=text_decoration(colors[3]),
+        fontsize=20,
+        padding=8,
     ),
     widget.Clock(
-        format="%I:%M %p",
-        foreground=colors[4],
-        background=colors[14],
+        format="%H:%M:%S",
+        foreground=colors[3],
+        padding=15,
+        decorations=icon_decoration(),
+    ),
+    widget.Sep(
+        width=30,
+        foreground=colors[12],
     ),
     widget.TextBox(
-        text="",
-        foreground=colors[14],
-        background=colors[0],
-        fontsize=28,
-        padding=0,
-    ),
-    widget.TextBox(
-        text="⏻",
-        foreground=colors[13],
-        font="Font Awesome 6 Free Solid",
-        fontsize=34,
+        text="",
+        foreground=colors[0],
+        fontsize=18,
         padding=20,
         mouse_callbacks={
-            "Button1": lazy.spawn("rofi -show p -modi p:rofi-power-menu"),
+            "Button1": lazy.spawn(os.path.expanduser("~/.config/rofi/powermenu/powermenu.sh")),
         },
+        decorations=text_decoration(colors[9]),
     ),
     widget.KeyboardLayout(configured_keyboards=["gb"], fmt=""),
 ]
@@ -453,9 +450,8 @@ screens = [
         top=bar.Bar(
             widgets=widget_list,
             size=40,
-            background="#2e2e2e",
-            border_width=[0, 0, 3, 0],
-            border_color="#3b4252",
+            background="#1A1826",
+            border_width=[0, 0, 0, 0],
         ),
     ),
 ]
@@ -472,10 +468,10 @@ dgroups_app_rules = []  # type: list
 follow_mouse_focus = True
 bring_front_click = False
 cursor_warp = False
-floating_layout = layout.Floating(
+floating_layout = layout.Floating(  # type: ignore
     float_rules=[
         # Run the utility of `xprop` to see the wm class and name of an X client.
-        *layout.Floating.default_float_rules,
+        *layout.Floating.default_float_rules,  # type: ignore
         Match(wm_class="confirmreset"),  # gitk
         Match(wm_class="makebranch"),  # gitk
         Match(wm_class="maketag"),  # gitk

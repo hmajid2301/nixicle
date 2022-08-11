@@ -17,12 +17,4 @@ vscode-extension-load: ## Install extensions from vscode/extensions.txt
 
 
 vscode-extension-dump: ## Save all current extensions to vscode/extensions.txt
-	code --list-extensions > ./vscode/extensions.txt
-
-
-gnome-dump: ## Dump gnome settings
-	./gnome/dump.sh
-
-
-gnome-load: ## Load gnome settings
-	./gnome/restore.sh
+	code --list-extensions > vscode/extensions.txt

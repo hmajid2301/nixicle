@@ -1,6 +1,5 @@
 - create:
     - ~/.config/qtile
-    - ~/.config/qtile/icons
     - ~/.config/dunst
     - ~/.config/rofi
 
@@ -8,17 +7,30 @@
     ~/.config/qtile/:
       path: tiling/qtile/**
       glob: true
+      create: true
 
     ~/.config/picom.conf: tiling/picom.conf
     ~/.xprofile: tiling/.xprofile
     ~/.config/dunst/dunstrc: tiling/dunstrc
-    ~/.config/rofi/config.rasi: tiling/rofi.rasi
+    ~/.config/rofi/:
+      path: tiling/rofi/**
+      glob: true
+      create: true
+      force: true
     # /etc/lightdm/lightdm.conf: tiling/lightdm/lightdm.conf
     # /etc/lightdm/lightdm-webkit2-greeter.conf: tiling/lightdm/lightdm-webkit2-greeter.conf
 # - yay:
+#      - qtile
+#      - qtile-extras-git
 #     - lightdm
 #     - web-greeter
 #     - lightdm-webkit-theme-aether
 #     - rofi
 #     - picom
 #     - dunst
+
+# - shell:
+#     - git clone --depth=1 https://github.com/adi1090x/rofi.git
+#     - cd rofi
+#     - chmod +x setup.sh
+#     - ./setup.sh

@@ -43,11 +43,18 @@ if [ $(ps ax | grep "[s]sh-agent" | wc -l) -eq 0 ] ; then
     fi
 fi
 
+source /usr/share/nvm/init-nvm.sh
+
+export FZF_DEFAULT_OPTS=" \
+--color=bg+:#414559,bg:#303446,spinner:#f2d5cf,hl:#e78284 \
+--color=fg:#c6d0f5,header:#e78284,info:#ca9ee6,pointer:#f2d5cf \
+--color=marker:#f2d5cf,fg+:#c6d0f5,prompt:#ca9ee6,hl+:#e78284"
+
 # WSL Setup
 
-export DISPLAY=:0
-# The next line updates PATH for the Google Cloud SDK.
-if [ -f '/home/haseeb/google-cloud-sdk/path.zsh.inc' ]; then . '/home/haseeb/google-cloud-sdk/path.zsh.inc'; fi
+# export DISPLAY=:0
+# # The next line updates PATH for the Google Cloud SDK.
+# if [ -f '/home/haseeb/google-cloud-sdk/path.zsh.inc' ]; then . '/home/haseeb/google-cloud-sdk/path.zsh.inc'; fi
 
-# The next line enables shell command completion for gcloud.
-if [ -f '/home/haseeb/google-cloud-sdk/completion.zsh.inc' ]; then . '/home/haseeb/google-cloud-sdk/completion.zsh.inc'; fi
+# # The next line enables shell command completion for gcloud.
+# if [ -f '/home/haseeb/google-cloud-sdk/completion.zsh.inc' ]; then . '/home/haseeb/google-cloud-sdk/completion.zsh.inc'; fi

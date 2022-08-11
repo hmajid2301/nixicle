@@ -1,0 +1,6 @@
+- link:
+    ~/.config/redshift/redshift.conf: redshift/redshift.conf
+    ~/.config/cava/config: cava/config
+    ~/.config/btop/themes/catpuccin_frappe.theme: btop/catppucin_frappe.theme
+    ~/.config/bat/themes/frappe.tmTheme: bat/frappe.tmTheme
+    ~/.config/bat/config: bat/config

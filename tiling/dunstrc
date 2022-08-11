@@ -33,7 +33,8 @@
     # Draw a line between multiple notifications
     separator_height = 6
 
-    separator_color = "#272f57"
+    frame_color = "#8CAAEE"
+    separator_color= frame
 
     # Set notification padding
     padding = 16
@@ -161,32 +162,22 @@
     mouse_middle_click = do_action, close_current
     mouse_right_click = close_all
 
-
 [experimental]
     per_monitor_dpi = false
 
+
 [urgency_low]
-    background = "#141929fe"
-    highlight = "#6fa6e7"
-    frame_color = "#272f57"
-    foreground = "#dae1f2"
-    timeout = 8
+background = "#303446"
+foreground = "#C6D0F5"
 
 [urgency_normal]
-    background = "#141929fe"
-    highlight = "#5ca1ff"
-
-    frame_color = "#272f57"
-    foreground = "#dae1f2"
-    timeout = 8
+background = "#303446"
+foreground = "#C6D0F5"
 
 [urgency_critical]
-    background = "#5ca1ffff"
-    highlight = "#fe6c5a"
-    foreground = "#1c2138"
-    frame_color = "#52426e"
-    timeout = 0
-    icon = battery-ac-adapter
+background = "#303446"
+foreground = "#C6D0F5"
+frame_color = "#EF9F76"
 
 [backlight]
     appname = "Backlight"

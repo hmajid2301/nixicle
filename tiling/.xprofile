@@ -2,5 +2,7 @@ nitrogen --restore
 picom -f &
 udiskie &
 redshift &
-
-
+rofi-polkit-agent &
+autorandr default &
+flameshot &
+solaar &

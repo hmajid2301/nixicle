@@ -5,12 +5,13 @@
   "editor.cursorSurroundingLines": 5,
   "editor.formatOnSave": true,
   "editor.wordWrap": "off",
-  "editor.fontFamily": "'Fira Code', 'Droid Sans Mono', 'monospace', monospace",
+  "editor.fontFamily": "'MonoLisa', 'Droid Sans Mono', 'monospace', 'Noto Color Emoji'",
+  // "editor.fontFamily": "'Fira Code', 'Droid Sans Mono', 'monospace', 'Noto Color Emoji'",
+  "editor.fontLigatures": true,
   "editor.bracketPairColorization.enabled": true,
   "editor.acceptSuggestionOnEnter": "smart",
-  "editor.fontLigatures": true,
   "editor.insertSpaces": false,
-  "editor.fontSize": 15,
+  "editor.fontSize": 16,
   "editor.suggestSelection": "first",
   "editor.tabSize": 4,
   "editor.cursorStyle": "line",
@@ -19,99 +20,6 @@
   "editor.formatOnPaste": true,
   "explorer.confirmDelete": false,
   "explorer.confirmDragAndDrop": false,
-  "javascript.updateImportsOnFileMove.enabled": "always",
-  "[html]": {
-    "editor.tabSize": 2,
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "[css]": {
-    "editor.tabSize": 2,
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "[toml]": {
-    "editor.tabSize": 2
-  },
-  "[markdown]": {
-    "editor.formatOnSave": false
-  },
-  "[makefile]": {
-    "editor.tabSize": 4,
-    "editor.insertSpaces": false,
-    "editor.detectIndentation": false
-  },
-  "[json]": {
-    "editor.tabSize": 2,
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "[jsonc]": {
-    "editor.tabSize": 2,
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "[typescript]": {
-    "editor.tabSize": 2,
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
-    "editor.codeActionsOnSave": {
-      "source.organizeImports": true,
-      "source.fixAll": true
-    }
-  },
-  "[svelte]": {
-    "editor.tabSize": 2,
-    "editor.defaultFormatter": "svelte.svelte-vscode"
-  },
-  "[typescriptreact]": {
-    "editor.tabSize": 2,
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "[javascriptreact]": {
-    "editor.tabSize": 2,
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "[javascript]": {
-    "editor.tabSize": 2,
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "[jinja-html]": {
-    "editor.tabSize": 2,
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "[yaml]": {
-    "editor.tabSize": 2,
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "typescript.updateImportsOnFileMove.enabled": "always",
-  "[python]": {
-    "editor.tabSize": 4,
-    "editor.codeActionsOnSave": {
-      "source.organizeImports": true
-    }
-  },
-  "[terraform]": {
-    "editor.defaultFormatter": "hashicorp.terraform",
-    "editor.formatOnSave": false,
-    "editor.codeActionsOnSave": {
-      "source.formatAll.terraform": true
-    }
-  },
-  "[terraform-vars]": {
-    "editor.defaultFormatter": "hashicorp.terraform",
-    "editor.formatOnSave": false,
-    "editor.codeActionsOnSave": {
-      "source.formatAll.terraform": true
-    }
-  },
-  "remote.containers.defaultExtensions": [
-    "eamodio.gitlens",
-    "oderwat.indent-rainbow",
-    "esbenp.prettier-vscode",
-    "redhat.vscode-yaml",
-    "coenraads.bracket-pair-colorizer"
-  ],
-  "remote.extensionKind": {
-    "2gua.rainbow-brackets": ["workspace"],
-    "aaron-bond.better-comments": ["workspace"],
-    "coenraads.bracket-pair-colorizer": ["workspace"]
-  },
   "eslint.codeActionsOnSave.mode": "all",
   "eslint.validate": [
     "javascript",
@@ -119,10 +27,8 @@
     "typescript",
     "typescriptreact"
   ],
-  "auto-close-tag.disableOnLanguage": ["typescript"],
   "files.autoSave": "afterDelay",
   "files.autoSaveDelay": 5000,
-  "files.trimFinalNewlines": true,
   "files.exclude": {
     "**/.git": true,
     "**/.svn": true,
@@ -146,9 +52,12 @@
   "git.autofetch": true,
   "git.enableSmartCommit": true,
   "git.confirmSync": false,
+  "git.mergeEditor": true,
   "gitlens.hovers.currentLine.over": "line",
   "gitlens.hovers.enabled": false,
-  "gitlens.keymap": "alternate",
+  "gitlens.currentLine.enabled": false,
+  "gitlens.codeLens.enabled": false,
+  "python.analysis.autoSearchPaths": false,
   "python.linting.enabled": true,
   "python.linting.flake8Enabled": true,
   "python.linting.lintOnSave": true,
@@ -156,37 +65,22 @@
   "python.analysis.indexing": true,
   "python.formatting.blackArgs": ["--line-length", "120"],
   "python.autoComplete.extraPaths": ["./src"],
+  "python.defaultInterpreterPath": "${workspaceFolder}/.venv/bin/python",
   "python.envFile": "${workspaceFolder}/.env",
   "python.analysis.typeCheckingMode": "basic",
-  "terminal.integrated.fontFamily": "'Fira Code', 'PowerlineSymbols'",
-  "terminal.integrated.fontSize": 15,
-  "terminal.integrated.tabs.enabled": false,
   "python.terminal.activateEnvInCurrentTerminal": true,
   "python.terminal.activateEnvironment": true,
-  "window.restoreWindows": "all",
-  "window.titleBarStyle": "custom",
-  "workbench.iconTheme": "material-icon-theme",
-  "workbench.colorTheme": "Dracula",
-  "workbench.startupEditor": "welcomePage",
+  "python.languageServer": "Pylance",
+  "python.analysis.extraPaths": ["./src"],
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": true
   },
-  "python.languageServer": "Pylance",
-  "files.associations": {
-    "*.tsx": "typescriptreact"
-  },
-  "python.analysis.extraPaths": ["./src"],
-  "python.analysis.completeFunctionParens": true,
-  "files.eol": "\n",
-  "workbench.editorAssociations": {
-    "*.ipynb": "jupyter-notebook"
-  },
-  "redhat.telemetry.enabled": false,
-  "notebook.cellToolbarLocation": {
-    "default": "right",
-    "jupyter-notebook": "left"
-  },
   "svelte.enable-ts-plugin": true,
+  "typescript.updateImportsOnFileMove.enabled": "always",
+  "terminal.integrated.fontSize": 16,
+  "terminal.integrated.tabs.enabled": false,
+  "terminal.integrated.enableMultiLinePasteWarning": false,
+  "terminal.integrated.shellIntegration.decorationsEnabled": "never",
   "vim.insertModeKeyBindings": [
     {
       "before": ["j", "j"],
@@ -208,6 +102,25 @@
   "vim.hlsearch": true,
   "vim.leader": "<Space>",
   "vim.smartRelativeLine": true,
+  "vscode-pets.theme": "forest",
+  "workbench.productIconTheme": "material-product-icons",
+  "window.restoreWindows": "all",
+  "window.titleBarStyle": "custom",
+  "workbench.iconTheme": "Monokai Pro Icons",
+  "workbench.colorTheme": "Catppuccin",
+  "workbench.startupEditor": "welcomePage",
+  "remote.containers.defaultExtensions": [
+    "eamodio.gitlens",
+    "oderwat.indent-rainbow",
+    "esbenp.prettier-vscode",
+    "redhat.vscode-yaml",
+    "coenraads.bracket-pair-colorizer"
+  ],
+  "remote.extensionKind": {
+    "2gua.rainbow-brackets": ["workspace"],
+    "aaron-bond.better-comments": ["workspace"],
+    "coenraads.bracket-pair-colorizer": ["workspace"]
+  },
   "macros": {
     "showTerminal": [
       "workbench.action.terminal.toggleTerminal",
@@ -215,9 +128,48 @@
     ],
     "hideTerminal": ["workbench.action.terminal.toggleTerminal"]
   },
-  "gitlens.codeLens.enabled": false,
-  "gitlens.currentLine.enabled": false,
-  "terminal.integrated.enableMultiLinePasteWarning": false,
-  "python.analysis.autoSearchPaths": false,
-  "window.zoomLevel": -1
+  "[toml]": {
+    "editor.tabSize": 2
+  },
+  "[markdown]": {
+    "editor.formatOnSave": false
+  },
+  "[makefile]": {
+    "editor.tabSize": 4,
+    "editor.insertSpaces": false
+  },
+  "[typescript]": {
+    "editor.tabSize": 2,
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": true,
+      "source.fixAll": true
+    }
+  },
+  "[svelte]": {
+    "editor.tabSize": 2,
+    "editor.defaultFormatter": "svelte.svelte-vscode"
+  },
+  "[yaml]": {
+    "editor.tabSize": 2,
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[python]": {
+    "editor.tabSize": 4,
+    "editor.insertSpaces": true,
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": true,
+      "source.fixAll": true
+    }
+  },
+  "[terraform]": {
+    "editor.defaultFormatter": "hashicorp.terraform",
+    "editor.formatOnSave": false,
+    "editor.codeActionsOnSave": {
+      "source.formatAll.terraform": true
+    }
+  },
+    "colorize.languages": [
+    "python",
+  ]
 }
