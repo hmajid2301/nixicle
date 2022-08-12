@@ -9,7 +9,7 @@ ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=242"
 
 eval "$(starship init zsh)"
 
-fpath=(~/.zsh/zsh-completions/src $fpath)
+fpath=(~/.zsh/zsh-completions/src ~/.zsh/completion $fpath)
 
 source ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
 source ~/.zsh/fzf-zsh-plugin/fzf-zsh-plugin.plugin.zsh
@@ -52,9 +52,29 @@ export FZF_DEFAULT_OPTS=" \
 
 # WSL Setup
 
-# export DISPLAY=:0
-# # The next line updates PATH for the Google Cloud SDK.
-# if [ -f '/home/haseeb/google-cloud-sdk/path.zsh.inc' ]; then . '/home/haseeb/google-cloud-sdk/path.zsh.inc'; fi
+export DISPLAY=:0
+# The next line updates PATH for the Google Cloud SDK.
+if [ -f '/home/haseeb/google-cloud-sdk/path.zsh.inc' ]; then . '/home/haseeb/google-cloud-sdk/path.zsh.inc'; fi
 
-# # The next line enables shell command completion for gcloud.
-# if [ -f '/home/haseeb/google-cloud-sdk/completion.zsh.inc' ]; then . '/home/haseeb/google-cloud-sdk/completion.zsh.inc'; fi
+# The next line enables shell command completion for gcloud.
+if [ -f '/home/haseeb/google-cloud-sdk/completion.zsh.inc' ]; then . '/home/haseeb/google-cloud-sdk/completion.zsh.inc'; fi
+
+#compdef gt
+###-begin-gt-completions-###
+#
+# yargs command completion script
+#
+# Installation: gt completion >> ~/.zshrc
+#    or gt completion >> ~/.zprofile on OSX.
+#
+_gt_yargs_completions()
+{
+  local reply
+  local si=$IFS
+  IFS=$'
+' reply=($(COMP_CWORD="$((CURRENT-1))" COMP_LINE="$BUFFER" COMP_POINT="$CURSOR" gt --get-yargs-completions "${words[@]}"))
+  IFS=$si
+  _describe 'values' reply
+}
+compdef _gt_yargs_completions gt
+###-end-gt-completions-###
