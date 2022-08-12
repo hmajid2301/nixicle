@@ -90,8 +90,7 @@ keys = [
     Key([mod], "w", lazy.window.kill(), desc="Kill focused window"),
     Key([mod, "control"], "r", lazy.reload_config(), desc="Reload the config"),
     Key([mod, "control"], "q", lazy.shutdown(), desc="Shutdown Qtile"),
-    Key([mod], "r", lazy.spawn("rofi -show drun")),
-    # Key([mod], "r", lazy.spawncmd(), desc="Spawn a command using a prompt widget"),
+    Key([mod], "r", lazy.spawn("rofi -show drun"), desc="Launch selected application"),
     # Sound
     Key([], "XF86AudioMute", lazy.spawn(os.path.expanduser("~/.config/qtile/volume.sh mute"))),
     Key([], "XF86AudioLowerVolume", lazy.spawn(os.path.expanduser("~/.config/qtile/volume.sh down"))),
@@ -101,8 +100,14 @@ keys = [
     Key([], "XF86AudioPlay", lazy.spawn("playerctl play-pause")),
     Key([], "XF86AudioStop", lazy.spawn("playerctl play-pause")),
     # Other
-    Key([], "Print", lazy.spawn("flameshot gui")),
-    Key([mod], "Escape", lazy.spawn(os.path.expanduser("~/.config/rofi/powermenu/powermenu.sh"))),
+    Key([], "Print", lazy.spawn("flameshot gui"), desc="Take screenshot"),
+    Key([mod], "Escape", lazy.spawn("dm-tool switch-to-greeter"), desc="Look screen by opening LightDM"),
+    Key(
+        ["mod1", "control"],
+        "Delete",
+        lazy.spawn(os.path.expanduser("~/.config/rofi/powermenu/powermenu.sh")),
+        desc="Show power menu",
+    ),
 ]
 
 
@@ -160,6 +165,12 @@ groups = [
                 opacity=1,
                 warp_pointer=False,
             ),
+        ],
+    ),
+    ScratchPad(
+        "scratchpad",
+        [
+            DropDown("khal", terminal + " -t ikhal -e ikhal", x=0.6785, width=0.32, height=0.997, opacity=1),
         ],
     ),
 ]
@@ -410,6 +421,7 @@ widget_list = [
         foreground=colors[4],
         decorations=icon_decoration(),
         padding=8,
+        mouse_callbacks={"Button1": lazy.group["scratchpad"].dropdown_toggle("khal")},
     ),
     widget.Sep(
         width=20,
