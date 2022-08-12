@@ -4,10 +4,10 @@
 
 - link:
     ~/.zshrc: zsh/.zshrc
-    ~/.zsh:
-      path: zsh/.zsh/**
+    ~/.zsh/completions:
+      path: zsh/completions
       glob: true
-      force: true
+      create: true
 # - shell:
 # - command: curl -fsSL https://starship.rs/install.sh | sh -s -- --yes
 #   stdout: true

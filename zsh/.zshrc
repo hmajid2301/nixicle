@@ -9,7 +9,7 @@ ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=242"
 
 eval "$(starship init zsh)"
 
-fpath=(~/.zsh/zsh-completions/src ~/.zsh/completion $fpath)
+fpath=(~/.zsh/zsh-completions/src ~/.zsh/completions $fpath)
 
 source ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
 source ~/.zsh/fzf-zsh-plugin/fzf-zsh-plugin.plugin.zsh
@@ -50,15 +50,6 @@ export FZF_DEFAULT_OPTS=" \
 --color=fg:#c6d0f5,header:#e78284,info:#ca9ee6,pointer:#f2d5cf \
 --color=marker:#f2d5cf,fg+:#c6d0f5,prompt:#ca9ee6,hl+:#e78284"
 
-# WSL Setup
-
-export DISPLAY=:0
-# The next line updates PATH for the Google Cloud SDK.
-if [ -f '/home/haseeb/google-cloud-sdk/path.zsh.inc' ]; then . '/home/haseeb/google-cloud-sdk/path.zsh.inc'; fi
-
-# The next line enables shell command completion for gcloud.
-if [ -f '/home/haseeb/google-cloud-sdk/completion.zsh.inc' ]; then . '/home/haseeb/google-cloud-sdk/completion.zsh.inc'; fi
-
 #compdef gt
 ###-begin-gt-completions-###
 #
@@ -78,3 +69,17 @@ _gt_yargs_completions()
 }
 compdef _gt_yargs_completions gt
 ###-end-gt-completions-###
+
+
+alias docker-kill "docker kill $(docker ps -q)"
+alias docker-rm "docker rm $(docker ps -a -q)"
+alias docker-rmi "docker rmi $(docker images -q)"
+
+# WSL Setup
+
+export DISPLAY=:0
+# The next line updates PATH for the Google Cloud SDK.
+if [ -f '/home/haseeb/google-cloud-sdk/path.zsh.inc' ]; then . '/home/haseeb/google-cloud-sdk/path.zsh.inc'; fi
+
+# The next line enables shell command completion for gcloud.
+if [ -f '/home/haseeb/google-cloud-sdk/completion.zsh.inc' ]; then . '/home/haseeb/google-cloud-sdk/completion.zsh.inc'; fi
