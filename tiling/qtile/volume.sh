@@ -1,97 +1,93 @@
 #!/bin/bash
 
-# You can call this script like this:
-# $./volume.sh up
-# $./volume.sh down
-# $./volume.sh mute
-# $./volume.sh mtoggle
+ctl=/usr/bin/pulseaudio-ctl
+lockfile=~/.config/volume-lockfile
+iconDir="$HOME/.icons/"
 
-device='default'    #audio device
-interval='5'        #Percentage by which to update the volume
-timeout='1'         #Notification timeout in seconds
-bar_char="■"        #Character to use for the volume bar
-padding="    "      #Space to pad out the bar at the left of the notification
+while [ -f "$lockfile" ]; do
+    sleep 0.1;
+done
+touch "$lockfile"
 
-# The dunstify timeout is in milliseconds, so multiply our seconds setting by 1000
-notify_timeout=$((timeout*1000))
 
-#Icon settings
-#Base for all icons, or you can specify the full path to each
-icon_base="/usr/share/icons/Adwaita/32x32/status"
-# Icon for when volume is changed
-icon_audio_vol="$icon_base/audio-volume-high-symbolic.symbolic.png"
-# Icon for when volume is muted
-icon_audio_muted="$icon_base/audio-volume-muted-symbolic.symbolic.png"
-# Icon when mic is on
-icon_capture_on="$icon_base/microphone-sensitivity-high-symbolic.symbolic.png"
-# Icon when mic is off
-icon_capture_off="$icon_base/microphone-disabled-symbolic.symbolic.png"
-# Icon for when the mic status is unknown
-icon_capture_unk="$icon_base/microphone-hardware-disabled-symbolic.symbolic.png"
+getIcon() {
+    status=$("$ctl" full-status)
+    vol=$(echo "$status" | cut -d ' ' -f1)
+    mute=$(echo "$status" | cut -d ' ' -f2)
 
-function get_volume {
-    amixer get Master | grep '%' | head -n 1 | cut -d '[' -f 2 | cut -d '%' -f 1
-}
-
-function is_mute {
-    amixer get Master | grep '%' | grep -oE '[^ ]+$' | grep off > /dev/null
-}
-
-function send_notification {
-    volume=$(get_volume)
-    bar=$(seq -s "$bar_char" $((((volume / 5)+1))) | sed 's/[0-9]//g')
-    # Send the notification
-    dunstify -i "$icon_audio_vol" -t $notify_timeout -r 2593 -u normal "$padding$bar"
-
-}
-
-function get_mic_toggle {
-    # Send the notification for the current micrphone status
-    # Get the mic status
-    micstatus=$(amixer get Capture|grep '%' | grep -oE '[^ ]+$')
-    # The capture will probably have more than one channel, so we need to get the number of channels
-    channels=$(wc -l <<< "$micstatus")
-    # Now we are going to count the number that are "on"
-    num_on=$(grep -o 'on' <<< "$micstatus"|wc -l)
-    # And count the number that are "off"
-    num_off=$(grep -o 'off' <<< "$micstatus"|wc -l)
-    # If the number of on match the number of channels, weknow the mic is on
-    if [ "$channels" -eq "$num_on" ];then
-        dunstify -t $notify_timeout -i "$icon_capture_on" -r 2593 -u normal "${padding}On"
-    # If the number of off match the number of channels, we know the mic is off
-    elif [ "$channels" -eq "$num_off" ];then
-        dunstify -t $notify_timeout -i "$icon_capture_off" -r 2593 -u normal "${padding}Off"
-    # If the number of on and off don't match the number of channels, we don't really know the status
+    if [ "$mute" == "yes" ]; then
+        echo "$iconDir/volume-muted.svg"
     else
-        dunstify -t $notify_timeout -i "$icon_capture_unk" -r 2593 -u normal "${padding}Unknown"
+        if [ "$vol" -eq 0 ]; then
+            echo "$iconDir/volume-muted.svg"
+        elif [ "$vol" -lt 33 ]; then
+            echo "$iconDir/volume-low.svg"
+        elif [ "$vol" -lt 66 ]; then
+            echo "$iconDir/volume-medium.svg"
+        else
+            echo "$iconDir/volume-high.svg"
+        fi
     fi
 }
 
-case $1 in
-    up)
-        # Set the volume on (if it was muted)
-        amixer -D "$device" set Master on > /dev/null
-        # Up the volume (+ $interval%)
-        amixer -D "$device" sset Master $interval%+ > /dev/null
-        send_notification
-	;;
-    down)
-        amixer -D "$device" set Master on > /dev/null
-        amixer -D "$device" sset Master $interval%- > /dev/null
-        send_notification
-	;;
-    mute)
-    	# Toggle mute
-        amixer -D "$device" set Master 1+ toggle > /dev/null
-        if is_mute ; then
-            dunstify -t $notify_timeout -i "$icon_audio_muted" -r 2593 -u normal "Mute"
-        else
-            send_notification
+
+
+val="5"
+orig=$("$ctl" current | tr -d '%')
+subinc=5
+
+
+# stackoverflow magic 
+# https://askubuntu.com/questions/1266769/find-device-description-of-default-sink-from-pulseaudio
+currDevice=$(pacmd list-sinks | grep -Pzo "\* index(.*\n)*" | sed \$d | grep -e "device.description" | head -n 1 | cut -f2 -d\")
+
+
+if [ "$1" == "mute" ]; then
+    opt="mute"
+    "$ctl" "$opt"
+else
+    if [ "$1" == "inc" ]; then
+        opt="up"
+        if [ "$2" != '' ]; then val="$2"; fi
+
+    elif [ "$1" == "dec" ]; then
+        opt="down"
+        if [ "$2" != '' ]; then val="$2"; fi
+
+    fi
+    
+    "$ctl" "$opt" "$val" &
+    
+    # Fake the animated volume
+    for i in $(seq "$val"); do
+        operation="+"
+        inverse="-"
+        if [ "$1" == "dec" ]; then
+            operation="-"
+            inverse="+"
         fi
-	;;
-    mtoggle)
-    	# Toggle microphone mute
-        amixer set Capture toggle > /dev/null
-        get_mic_toggle
-	;;
-esac
+
+        current=$(( ($orig "$operation" $i) "$inverse" 1 ))
+        if [ "$current" -lt 0 ]; then
+            current=0
+            rm "$lockfile"
+            exit 1
+        fi
+        
+        dunstify -i "$(getIcon)" -u normal -h string:x-dunst-stack-tag:volume -a "$currDevice" "Volume at ${current}%" -h "int:value:${current}"
+    done
+
+fi
+
+current=$("$ctl" current | tr -d '%')
+mute=$("$ctl" full-status | cut -d ' ' -f2)
+ntext="Volume at $current%"
+
+if [ "$mute" == "yes" ]; then
+    ntext="Volume muted"
+fi
+
+dunstify -i "$(getIcon)" -u normal -h string:x-dunst-stack-tag:volume -a "$currDevice" "$ntext" -h "int:value:${current}"
+
+
+rm "$lockfile"
