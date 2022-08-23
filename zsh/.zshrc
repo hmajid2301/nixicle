@@ -38,12 +38,7 @@ eval "$(pyenv init -)"
 source /usr/share/nvm/init-nvm.sh
 
 # Auto-add ssh keys to your ssh agent
-if [ $(ps ax | grep "[s]sh-agent" | wc -l) -eq 0 ] ; then
-    eval $(ssh-agent -s) > /dev/null
-    if [ "$(ssh-add -l)" = "The agent has no identities." ] ; then
-        ssh-add ~/.ssh/id_ed25519 > /dev/null 2>&1
-    fi
-fi
+[ -z "$SSH_AUTH_SOCK" ] && eval "$(ssh-agent -s)"
 
 # FZF colours
 export FZF_DEFAULT_OPTS=" \
@@ -65,10 +60,10 @@ compdef _gt_yargs_completions gt
 
 
 # Aliases
-alias docker-kill "docker kill $(docker ps -q)"
-alias docker-rm "docker rm $(docker ps -a -q)"
-alias docker-rmi "docker rmi $(docker images -q)"
-alias clip "xclip -sel clip"
+alias docker-kill="docker kill $(docker ps -q)"
+alias docker-rm="docker rm $(docker ps -a -q)"
+alias docker-rmi="docker rmi $(docker images -q)"
+alias clip="xclip -sel clip"
 
 # WSL Setup
 export DISPLAY=:0

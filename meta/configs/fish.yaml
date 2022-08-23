@@ -1,0 +1,15 @@
+- create:
+    - ~/.config/fish
+    - ~/.config/fish/functions
+    - ~/.config/fish/completions
+    - ~/.config/fish/conf.d
+
+- link:
+    ~/.config/fish:
+      path: fish/config/**
+      glob: true
+
+- shell:
+    - command: curl -fsSL https://starship.rs/install.sh | sh -s -- --yes
+      stdout: true
+      stderr: true
