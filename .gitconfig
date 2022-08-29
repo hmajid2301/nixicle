@@ -1,5 +1,5 @@
 [user]
-	email = haseeb@joinzoe.com
+	email = hello@haseebmajid.dev
 	name = Haseeb Majid
 [core]
         editor = vim
@@ -25,3 +25,5 @@
 	ff = only
 [push]
 	default = current
+[init]
+	defaultBranch = main

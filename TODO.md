@@ -2,8 +2,12 @@
 
 Things I want to do:
 
-- Nautilius defaults
+- Move to fish shell again
+- xprofile -> autostart.sh
+- vscode LL
+  - https://www.youtube.com/watch?v=g4dXZ0RQWdw
 - Fan control
+- off-site backups
 - setup ufw rules
 - Create new gpg keys
 - Picom styling

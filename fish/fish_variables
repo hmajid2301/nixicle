@@ -211,3 +211,5 @@ SETUVAR fish_pager_color_prefix:F8F8F2
 SETUVAR fish_pager_color_progress:F8F8F2
 SETUVAR fish_pager_color_selected_background:\x2d\x2dbackground\x3dbrblack
 SETUVAR fish_user_paths:/home/haseeb/\x2epyenv/bin\x1e/home/haseeb/\x2efzf/bin
+SETUVAR nvm_data:/home/haseeb/\x2elocal/share/nvm
+SETUVAR nvm_mirror:https\x3a//nodejs\x2eorg/dist

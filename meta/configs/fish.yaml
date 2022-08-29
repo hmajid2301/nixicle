@@ -6,8 +6,9 @@
 
 - link:
     ~/.config/fish:
-      path: fish/config/**
+      path: fish/**
       glob: true
+      force: true
 
 - shell:
     - command: curl -fsSL https://starship.rs/install.sh | sh -s -- --yes

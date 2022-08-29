@@ -1,6 +1,8 @@
 {
   "breadcrumbs.enabled": true,
   "breadcrumbs.filePath": "on",
+  "debug.console.fontFamily": "'MonoLisa', 'Droid Sans Mono', 'monospace', 'Noto Color Emoji'",
+  "debug.console.fontSize": 16,
   "editor.autoIndent": "full",
   "editor.cursorSurroundingLines": 5,
   "editor.formatOnSave": true,
@@ -81,6 +83,8 @@
   "terminal.integrated.tabs.enabled": false,
   "terminal.integrated.enableMultiLinePasteWarning": false,
   "terminal.integrated.shellIntegration.decorationsEnabled": "never",
+  "terminal.integrated.copyOnSelection": true,
+  "terminal.integrated.rightClickBehavior": "copyPaste",
   "vim.insertModeKeyBindings": [
     {
       "before": ["j", "j"],
@@ -107,7 +111,7 @@
   "window.restoreWindows": "all",
   "window.titleBarStyle": "custom",
   "workbench.iconTheme": "Monokai Pro Icons",
-  "workbench.colorTheme": "Catppuccin",
+  "workbench.colorTheme": "Monokai Pro",
   "workbench.startupEditor": "welcomePage",
   "remote.containers.defaultExtensions": [
     "eamodio.gitlens",
@@ -158,6 +162,7 @@
     "editor.tabSize": 4,
     "editor.insertSpaces": true,
     "editor.codeActionsOnSave": {
+      "source.organizeImports": true,
       "source.fixAll": true
     }
   },
@@ -168,7 +173,8 @@
       "source.formatAll.terraform": true
     }
   },
-    "colorize.languages": [
-    "python",
-  ]
+  "colorize.languages": [
+    "python"
+  ],
+  "javascript.updateImportsOnFileMove.enabled": "always"
 }
