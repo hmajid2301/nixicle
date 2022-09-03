@@ -173,8 +173,16 @@
       "source.formatAll.terraform": true
     }
   },
-  "colorize.languages": [
-    "python"
-  ],
-  "javascript.updateImportsOnFileMove.enabled": "always"
+  "colorize.languages": ["python"],
+  "javascript.updateImportsOnFileMove.enabled": "always",
+  "indentRainbow.colors": [
+    "rgba(240, 128, 128,0.15)",
+    "rgba(244, 151, 142,0.15)",
+    "rgba(248, 173, 157, 0.15)",
+    "rgba(251, 196, 171,0.15)",
+    "rgba(255, 218, 185,0.15)",
+    "rgba(255, 218, 185,0.1)",
+    "rgba(255, 218, 185,0.05)",
+    "rgba(255, 218, 185,0.025)"
+  ]
 }
