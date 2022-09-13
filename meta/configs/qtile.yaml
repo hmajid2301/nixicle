@@ -10,7 +10,6 @@
       create: true
 
     ~/.config/picom.conf: tiling/picom.conf
-    ~/.xprofile: tiling/.xprofile
     ~/.config/dunst/dunstrc: tiling/dunstrc
     ~/.config/rofi/:
       path: tiling/rofi/**

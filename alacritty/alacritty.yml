@@ -2,7 +2,7 @@ import:
   - ~/dotfiles/alacritty/theme.yml
 
 shell:
-  program: /usr/bin/zsh
+  program: /usr/bin/fish
 font:
   normal:
     family: Fira Code

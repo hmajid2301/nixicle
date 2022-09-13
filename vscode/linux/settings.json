@@ -20,6 +20,7 @@
   "editor.lineNumbers": "on",
   "editor.wordSeparators": "/\\()\"':,.;<>~!@#$%^&*|+=[]{}`?-",
   "editor.formatOnPaste": true,
+  "editor.semanticHighlighting.enabled": true,
   "explorer.confirmDelete": false,
   "explorer.confirmDragAndDrop": false,
   "eslint.codeActionsOnSave.mode": "all",
@@ -51,6 +52,11 @@
     "**/node_modules/*/**": true,
     "**/.history": true
   },
+  "go.inlayHints.parameterNames": true,
+  "go.inlayHints.compositeLiteralFields": true,
+  "gopls": {
+    "ui.semanticTokens": true
+  },
   "git.autofetch": true,
   "git.enableSmartCommit": true,
   "git.confirmSync": false,
@@ -78,6 +84,7 @@
     "source.fixAll.eslint": true
   },
   "svelte.enable-ts-plugin": true,
+  "scm.diffDecorationsGutterWidth": 5,
   "typescript.updateImportsOnFileMove.enabled": "always",
   "terminal.integrated.fontSize": 16,
   "terminal.integrated.tabs.enabled": false,
@@ -111,7 +118,7 @@
   "window.restoreWindows": "all",
   "window.titleBarStyle": "custom",
   "workbench.iconTheme": "Monokai Pro Icons",
-  "workbench.colorTheme": "Monokai Pro",
+  "workbench.colorTheme": "Dracula",
   "workbench.startupEditor": "welcomePage",
   "remote.containers.defaultExtensions": [
     "eamodio.gitlens",
@@ -144,19 +151,20 @@
   },
   "[typescript]": {
     "editor.tabSize": 2,
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
     "editor.codeActionsOnSave": {
       "source.organizeImports": true,
       "source.fixAll": true
     }
+  },
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "[svelte]": {
     "editor.tabSize": 2,
     "editor.defaultFormatter": "svelte.svelte-vscode"
   },
   "[yaml]": {
-    "editor.tabSize": 2,
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+    "editor.tabSize": 2
   },
   "[python]": {
     "editor.tabSize": 4,
@@ -175,14 +183,15 @@
   },
   "colorize.languages": ["python"],
   "javascript.updateImportsOnFileMove.enabled": "always",
-  "indentRainbow.colors": [
-    "rgba(240, 128, 128,0.15)",
-    "rgba(244, 151, 142,0.15)",
-    "rgba(248, 173, 157, 0.15)",
-    "rgba(251, 196, 171,0.15)",
-    "rgba(255, 218, 185,0.15)",
-    "rgba(255, 218, 185,0.1)",
-    "rgba(255, 218, 185,0.05)",
-    "rgba(255, 218, 185,0.025)"
-  ]
+  "[dockercompose]": {
+    "editor.defaultFormatter": "ms-azuretools.vscode-docker"
+  },
+  "RainbowBrackets.consecutivePairColors": [
+    "()",
+    "[]",
+    "{}",
+    ["#ff6ea5", "#68e3fd", "#3bf07b", "#f0f270"],
+    "#f2e5bc"
+  ],
+  "RainbowBrackets.depreciation-notice": false
 }

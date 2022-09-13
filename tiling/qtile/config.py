@@ -25,17 +25,27 @@
 # SOFTWARE.
 
 
-from libqtile import bar, layout
+import os
+import subprocess
+
+from libqtile import bar, hook, layout
 from libqtile.config import Match, Screen
 
 from modules.constants import colors
 from modules.keys import keys
-from modules.workspaces import workspaces, groups
 from modules.widgets import widget_list
+from modules.workspaces import groups, workspaces
 
 keys
 workspaces
 groups
+
+
+@hook.subscribe.startup_once
+def autostart():
+    home = os.path.expanduser("~/.config/qtile/autostart.sh")
+    subprocess.Popen([home])
+
 
 widget_defaults = dict(
     font="Mono Lisa Bold",

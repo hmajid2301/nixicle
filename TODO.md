@@ -2,8 +2,6 @@
 
 Things I want to do:
 
-- Move to fish shell again
-- xprofile -> autostart.sh
 - vscode LL
   - https://www.youtube.com/watch?v=g4dXZ0RQWdw
 - Fan control
@@ -12,9 +10,6 @@ Things I want to do:
 - Create new gpg keys
 - Picom styling
 - gsync on linux
-- Lock screen
-	- take you to greeter
-	- dual monitors on greeter
 - EWW
 	- widget manager
 	- top bar replacement? 
