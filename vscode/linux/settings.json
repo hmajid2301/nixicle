@@ -18,6 +18,18 @@
   "editor.tabSize": 4,
   "editor.cursorStyle": "line",
   "editor.lineNumbers": "on",
+  "editor.tokenColorCustomizations": {
+    "[Dracula]": {
+      "textMateRules": [
+        {
+          "scope": "source.go",
+          "settings": {
+            "foreground": "#6dd8ce"
+          }
+        }
+      ]
+    }
+  },
   "editor.wordSeparators": "/\\()\"':,.;<>~!@#$%^&*|+=[]{}`?-",
   "editor.formatOnPaste": true,
   "editor.semanticHighlighting.enabled": true,
@@ -98,6 +110,16 @@
       "after": ["<Esc>"]
     }
   ],
+  "vim.visualModeKeyBindings": [
+    {
+      "before": [">"],
+      "after": [">", "g", "v"]
+    },
+    {
+      "before": ["<"],
+      "after": ["<", "g", "v"]
+    }
+  ],
   "vim.handleKeys": {
     "<C-f>": false
   },
@@ -106,6 +128,18 @@
     {
       "before": [" "],
       "after": ["leader", "leader", "leader", "b", "d", "w"]
+    },
+    {
+      "before": ["K"],
+      "commands": [
+        {
+          "command": "editor.action.showDefinitionPreviewHover"
+        }
+      ]
+    },
+    {
+      "before": ["<leader>", "w"],
+      "commands": ["workbench.action.splitEditor"]
     }
   ],
   "vim.easymotion": true,
@@ -159,6 +193,9 @@
   "[json]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
+  "[jsonc]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
   "[svelte]": {
     "editor.tabSize": 2,
     "editor.defaultFormatter": "svelte.svelte-vscode"
@@ -173,6 +210,10 @@
       "source.organizeImports": true,
       "source.fixAll": true
     }
+  },
+  "[go]": {
+    "editor.tabSize": 4,
+    "editor.defaultFormatter": "golang.go"
   },
   "[terraform]": {
     "editor.defaultFormatter": "hashicorp.terraform",
