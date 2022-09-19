@@ -76,6 +76,13 @@
   "gitlens.hovers.enabled": false,
   "gitlens.currentLine.enabled": false,
   "gitlens.codeLens.enabled": false,
+  "macros": {
+    "showTerminal": [
+      "workbench.action.terminal.toggleTerminal",
+      "workbench.action.terminal.focus"
+    ],
+    "hideTerminal": ["workbench.action.terminal.toggleTerminal"]
+  },
   "python.analysis.autoSearchPaths": false,
   "python.linting.enabled": true,
   "python.linting.flake8Enabled": true,
@@ -148,31 +155,12 @@
     }
   ],
   "vscode-pets.theme": "forest",
-  "workbench.productIconTheme": "material-product-icons",
   "window.restoreWindows": "all",
   "window.titleBarStyle": "custom",
+  "workbench.productIconTheme": "material-product-icons",
   "workbench.iconTheme": "Monokai Pro Icons",
   "workbench.colorTheme": "Dracula",
   "workbench.startupEditor": "welcomePage",
-  "remote.containers.defaultExtensions": [
-    "eamodio.gitlens",
-    "oderwat.indent-rainbow",
-    "esbenp.prettier-vscode",
-    "redhat.vscode-yaml",
-    "coenraads.bracket-pair-colorizer"
-  ],
-  "remote.extensionKind": {
-    "2gua.rainbow-brackets": ["workspace"],
-    "aaron-bond.better-comments": ["workspace"],
-    "coenraads.bracket-pair-colorizer": ["workspace"]
-  },
-  "macros": {
-    "showTerminal": [
-      "workbench.action.terminal.toggleTerminal",
-      "workbench.action.terminal.focus"
-    ],
-    "hideTerminal": ["workbench.action.terminal.toggleTerminal"]
-  },
   "[toml]": {
     "editor.tabSize": 2
   },

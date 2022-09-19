@@ -50,11 +50,11 @@
     "when": "editorTextFoucs && !editorTabMovesFocus"
   },
   {
-    "key": "ctrl+tab",
+    "key": "tab",
     "command": "workbench.action.nextEditor"
   },
   {
-    "key": "ctrl+shift+tab",
+    "key": "shift+tab",
     "command": "workbench.action.previousEditor"
   },
 
@@ -158,11 +158,5 @@
   {
     "key": "ctrl+b",
     "command": "-workbench.action.toggleSidebarVisibility"
-  },
-  {
-    "command": "vscode-neovim.compositeEscape1",
-    "key": "j",
-    "when": "neovim.mode == insert && editorTextFocus",
-    "args": "j"
   }
 ]
