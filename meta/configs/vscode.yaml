@@ -4,10 +4,3 @@
       if: "[[ `uname` = Linux ]]"
       path: vscode/linux/*.json
       glob: true
-      force: true
-
-    # Windows specific config
-    "/mnt/c/Users/Haseeb Majid/AppData/Roaming/Code/User/":
-      if: "[ `grep 'WSL' /proc/version` ]"
-      path: vscode/windows/*.json
-      glob: true

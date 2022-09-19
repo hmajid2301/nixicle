@@ -66,8 +66,8 @@ layout_theme = {
 
 layouts = [
     layout.Bsp(**layout_theme),  # type: ignore
-    layout.MonadTall(**layout_theme),  # type: ignore
     layout.Max(),  # type: ignore
+    layout.MonadTall(**layout_theme),  # type: ignore
     layout.Columns(**layout_theme),  # type: ignore
     # Try more layouts by unleashing below layouts.
     # layout.Stack(num_stacks=2),
