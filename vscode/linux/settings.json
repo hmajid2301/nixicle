@@ -100,8 +100,141 @@
   "terminal.integrated.shellIntegration.decorationsEnabled": "never",
   "terminal.integrated.copyOnSelection": true,
   "terminal.integrated.rightClickBehavior": "copyPaste",
-  "vscode-neovim.neovimExecutablePaths.linux": "/usr/bin/nvim",
-  "vscode-neovim.neovimInitVimPaths.linux": "$HOME/.config/nvim/init.vim",
+  "vim.easymotion": true,
+  "vim.incsearch": true,
+  "vim.hlsearch": true,
+  "vim.leader": "<Space>",
+  "vim.smartRelativeLine": true,
+  "vim.insertModeKeyBindings": [
+    {
+      "before": ["j", "j"],
+      "after": ["<Esc>"]
+    }
+  ],
+  "vim.visualModeKeyBindings": [
+    {
+      "before": [">"],
+      "after": [">", "g", "v"]
+    },
+    {
+      "before": ["<"],
+      "after": ["<", "g", "v"]
+    }
+  ],
+  "vim.handleKeys": {
+    "<C-f>": false
+  },
+  "vim.easymotionMarkerBackgroundColor": "#7e57c2",
+  "vim.normalModeKeyBindingsNonRecursive": [
+    {
+      "before": ["<Space>", "a"],
+      "after": ["leader", "leader", "leader", "b", "d", "w"]
+    },
+    {
+      "before": [";"],
+      "commands": ["whichkey.show"]
+    },
+    {
+      "before": ["K"],
+      "commands": [
+        {
+          "command": "editor.action.showDefinitionPreviewHover"
+        }
+      ]
+    },
+    {
+      "before": ["<leader>", "w"],
+      "commands": ["workbench.action.splitEditor"]
+    }
+  ],
+  "vscode-pets.theme": "forest",
+  "workbench.productIconTheme": "material-product-icons",
+  "window.restoreWindows": "all",
+  "window.titleBarStyle": "custom",
+  "workbench.iconTheme": "Monokai Pro Icons",
+  "workbench.colorTheme": "Dracula",
+  "workbench.startupEditor": "welcomePage",
+  "remote.containers.defaultExtensions": [
+    "eamodio.gitlens",
+    "oderwat.indent-rainbow",
+    "esbenp.prettier-vscode",
+    "redhat.vscode-yaml",
+    "coenraads.bracket-pair-colorizer"
+  ],
+  "remote.extensionKind": {
+    "2gua.rainbow-brackets": ["workspace"],
+    "aaron-bond.better-comments": ["workspace"],
+    "coenraads.bracket-pair-colorizer": ["workspace"]
+  },
+  "macros": {
+    "showTerminal": [
+      "workbench.action.terminal.toggleTerminal",
+      "workbench.action.terminal.focus"
+    ],
+    "hideTerminal": ["workbench.action.terminal.toggleTerminal"]
+  },
+  "[toml]": {
+    "editor.tabSize": 2
+  },
+  "[markdown]": {
+    "editor.formatOnSave": false
+  },
+  "[makefile]": {
+    "editor.tabSize": 4,
+    "editor.insertSpaces": false
+  },
+  "[typescript]": {
+    "editor.tabSize": 2,
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": true,
+      "source.fixAll": true
+    }
+  },
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[svelte]": {
+    "editor.tabSize": 2,
+    "editor.defaultFormatter": "svelte.svelte-vscode"
+  },
+  "[yaml]": {
+    "editor.tabSize": 2
+  },
+  "[python]": {
+    "editor.tabSize": 4,
+    "editor.insertSpaces": true,
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": true,
+      "source.fixAll": true
+    }
+  },
+  "[go]": {
+    "editor.tabSize": 4,
+    "editor.defaultFormatter": "golang.go"
+  },
+  "[terraform]": {
+    "editor.defaultFormatter": "hashicorp.terraform",
+    "editor.formatOnSave": false,
+    "editor.codeActionsOnSave": {
+      "source.formatAll.terraform": true
+    }
+  },
+  "colorize.languages": ["python"],
+  "javascript.updateImportsOnFileMove.enabled": "always",
+  "[dockercompose]": {
+    "editor.defaultFormatter": "ms-azuretools.vscode-docker"
+  },
+  "RainbowBrackets.consecutivePairColors": [
+    "()",
+    "[]",
+    "{}",
+    ["#ff6ea5", "#68e3fd", "#3bf07b", "#f0f270"],
+    "#f2e5bc"
+  ],
+  "RainbowBrackets.depreciation-notice": false,
   "whichkey.sortOrder": "alphabetically",
   "whichkey.bindings": [
     {
@@ -674,136 +807,5 @@
       "type": "command",
       "command": "workbench.action.toggleZenMode"
     }
-  ],
-  "vim.insertModeKeyBindings": [
-    {
-      "before": ["j", "j"],
-      "after": ["<Esc>"]
-    }
-  ],
-  "vim.visualModeKeyBindings": [
-    {
-      "before": [">"],
-      "after": [">", "g", "v"]
-    },
-    {
-      "before": ["<"],
-      "after": ["<", "g", "v"]
-    }
-  ],
-  "vim.handleKeys": {
-    "<C-f>": false
-  },
-  "vim.easymotionMarkerBackgroundColor": "#7e57c2",
-  "vim.normalModeKeyBindingsNonRecursive": [
-    {
-      "before": [" "],
-      "after": ["leader", "leader", "leader", "b", "d", "w"]
-    },
-    {
-      "before": ["K"],
-      "commands": [
-        {
-          "command": "editor.action.showDefinitionPreviewHover"
-        }
-      ]
-    },
-    {
-      "before": ["<leader>", "w"],
-      "commands": ["workbench.action.splitEditor"]
-    }
-  ],
-  "vim.easymotion": true,
-  "vim.incsearch": true,
-  "vim.hlsearch": true,
-  "vim.leader": "<Space>",
-  "vim.smartRelativeLine": true,
-  "vscode-pets.theme": "forest",
-  "workbench.productIconTheme": "material-product-icons",
-  "window.restoreWindows": "all",
-  "window.titleBarStyle": "custom",
-  "workbench.iconTheme": "Monokai Pro Icons",
-  "workbench.colorTheme": "Dracula",
-  "workbench.startupEditor": "welcomePage",
-  "remote.containers.defaultExtensions": [
-    "eamodio.gitlens",
-    "oderwat.indent-rainbow",
-    "esbenp.prettier-vscode",
-    "redhat.vscode-yaml",
-    "coenraads.bracket-pair-colorizer"
-  ],
-  "remote.extensionKind": {
-    "2gua.rainbow-brackets": ["workspace"],
-    "aaron-bond.better-comments": ["workspace"],
-    "coenraads.bracket-pair-colorizer": ["workspace"]
-  },
-  "macros": {
-    "showTerminal": [
-      "workbench.action.terminal.toggleTerminal",
-      "workbench.action.terminal.focus"
-    ],
-    "hideTerminal": ["workbench.action.terminal.toggleTerminal"]
-  },
-  "[toml]": {
-    "editor.tabSize": 2
-  },
-  "[markdown]": {
-    "editor.formatOnSave": false
-  },
-  "[makefile]": {
-    "editor.tabSize": 4,
-    "editor.insertSpaces": false
-  },
-  "[typescript]": {
-    "editor.tabSize": 2,
-    "editor.codeActionsOnSave": {
-      "source.organizeImports": true,
-      "source.fixAll": true
-    }
-  },
-  "[json]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "[jsonc]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "[svelte]": {
-    "editor.tabSize": 2,
-    "editor.defaultFormatter": "svelte.svelte-vscode"
-  },
-  "[yaml]": {
-    "editor.tabSize": 2
-  },
-  "[python]": {
-    "editor.tabSize": 4,
-    "editor.insertSpaces": true,
-    "editor.codeActionsOnSave": {
-      "source.organizeImports": true,
-      "source.fixAll": true
-    }
-  },
-  "[go]": {
-    "editor.tabSize": 4,
-    "editor.defaultFormatter": "golang.go"
-  },
-  "[terraform]": {
-    "editor.defaultFormatter": "hashicorp.terraform",
-    "editor.formatOnSave": false,
-    "editor.codeActionsOnSave": {
-      "source.formatAll.terraform": true
-    }
-  },
-  "colorize.languages": ["python"],
-  "javascript.updateImportsOnFileMove.enabled": "always",
-  "[dockercompose]": {
-    "editor.defaultFormatter": "ms-azuretools.vscode-docker"
-  },
-  "RainbowBrackets.consecutivePairColors": [
-    "()",
-    "[]",
-    "{}",
-    ["#ff6ea5", "#68e3fd", "#3bf07b", "#f0f270"],
-    "#f2e5bc"
-  ],
-  "RainbowBrackets.depreciation-notice": false
+  ]
 }
