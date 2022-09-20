@@ -2,14 +2,12 @@
 
 Things I want to do:
 
-- vscode LL
-  - https://www.youtube.com/watch?v=g4dXZ0RQWdw
 - Fan control
-- off-site backups
 - setup ufw rules
+- Plymouth
+	- https://www.youtube.com/watch?v=eTk2yG1JFsE
 - Create new gpg keys
 - Picom styling
-- gsync on linux
 - EWW
 	- widget manager
 	- top bar replacement? 

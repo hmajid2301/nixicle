@@ -50,16 +50,6 @@
     "when": "editorTextFoucs && !editorTabMovesFocus"
   },
   {
-    "key": "tab",
-    "command": "workbench.action.nextEditor"
-  },
-  {
-    "key": "shift+tab",
-    "command": "workbench.action.previousEditor"
-  },
-
-  // Vim bindings
-  {
     "key": "ctrl+j",
     "command": "selectNextSuggestion",
     "when": "editorTextFocus && suggestWidgetMultipleSuggestions && suggestWidgetVisible"
@@ -140,11 +130,6 @@
   {
     "key": "ctrl+j",
     "command": "workbench.action.navigateDown"
-  },
-  {
-    "key": "ctrl+shift+f",
-    "command": "workbench.view.explorer",
-    "when": "viewContainer.workbench.view.explorer.enabled"
   },
   {
     "key": "ctrl+shift+e",

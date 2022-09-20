@@ -142,10 +142,18 @@
       "commands": ["whichkey.show"]
     },
     {
-      "before": ["K"],
+      "before": ["tab"],
       "commands": [
         {
-          "command": "editor.action.showDefinitionPreviewHover"
+          "command": "workbench.action.nextEditor"
+        }
+      ]
+    },
+    {
+      "before": ["shift", "tab"],
+      "commands": [
+        {
+          "command": "workbench.action.previousEditor"
         }
       ]
     },
@@ -561,6 +569,19 @@
       "type": "command",
       "command": "vscode-neovim.send",
       "args": ":noh<CR>"
+    },
+    {
+      "key": "o",
+      "name": "Open...",
+      "type": "bindings",
+      "bindings": [
+        {
+          "key": "r",
+          "name": "Open Recent Project",
+          "type": "command",
+          "command": "workbench.action.openRecent"
+        }
+      ]
     },
     {
       "key": "s",

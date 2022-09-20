@@ -4,3 +4,4 @@
     ~/.config/btop/themes/catpuccin_frappe.theme: btop/catppucin_frappe.theme
     ~/.config/bat/themes/frappe.tmTheme: bat/frappe.tmTheme
     ~/.config/bat/config: bat/config
+    ~/.config/backup/restic.sh: backups/restic.sh
