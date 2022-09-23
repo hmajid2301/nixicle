@@ -5,16 +5,16 @@ shell:
   program: /usr/bin/fish
 font:
   normal:
-    family: Fira Code
+    family: MonoLisa
     style: Regular
   bold:
-    family: Fira Code
+    family: MonoLisa
     style: Bold
   italic:
-    family: Fira Code
+    family: MonoLisa
     style: Italic
 
-  size: 10.0
+  size: 14.0
 
 window:
   padding:

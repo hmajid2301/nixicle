@@ -9,7 +9,7 @@ help: ## Generates a help README
 # prompt_example> make install profile="devcontainer"
 .PHONY: install
 install: ## Run dotbot install script
-	sudo ./install-profile -c $(profile)
+	./install-profile -c $(profile)
 
 
 vscode-extension-load: ## Install extensions from vscode/extensions.txt
@@ -18,3 +18,11 @@ vscode-extension-load: ## Install extensions from vscode/extensions.txt
 
 vscode-extension-dump: ## Save all current extensions to vscode/extensions.txt
 	code --list-extensions > vscode/extensions.txt
+
+
+gnome-backup: ## Backup gnome settings
+	dconf dump / > gnome/settings.ini
+
+
+gnome-restore: ## Restore gnome settings
+	dconf load / < gnome/settings.ini

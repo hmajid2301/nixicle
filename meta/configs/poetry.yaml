@@ -1,5 +1,0 @@
-- create:
-    - ~/.config/pypoetry
-
-- link:
-    ~/.config/pypoetry/config.toml: poetry/config.toml

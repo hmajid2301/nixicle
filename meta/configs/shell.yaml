@@ -1,2 +1,11 @@
+- link:
+    ~/.config/fish:
+      path: fish/**
+      glob: true
+      create: true
+
 - shell:
+    - command: curl -fsSL https://starship.rs/install.sh | sh -s -- --yes
+      stdout: true
+      stderr: true
     - chsh -s $(which fish)

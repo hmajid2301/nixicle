@@ -1,0 +1,5 @@
+- link:
+    ~/.config/alacritty/:
+      path: alacritty/**
+      glob: true
+      create: true

@@ -1,11 +1,8 @@
+terminal
+shell
 misc
 vscode
-qtile
-fish
-alacritty
 tmux
 packages.arch-sudo
-poetry
 ssh
 git
-shell

@@ -138,7 +138,7 @@
       "after": ["leader", "leader", "leader", "b", "d", "w"]
     },
     {
-      "before": [";"],
+      "before": ["/"],
       "commands": ["whichkey.show"]
     },
     {
@@ -197,6 +197,10 @@
     "editor.defaultFormatter": "svelte.svelte-vscode"
   },
   "[yaml]": {
+    "editor.tabSize": 2,
+    "editor.defaultFormatter": "redhat.vscode-yaml"
+  },
+  "[yml]": {
     "editor.tabSize": 2
   },
   "[python]": {
@@ -816,5 +820,6 @@
       "type": "command",
       "command": "workbench.action.toggleZenMode"
     }
-  ]
+  ],
+  "workbench.editor.enablePreview": false
 }
