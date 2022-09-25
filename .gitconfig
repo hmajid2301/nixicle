@@ -1,6 +1,7 @@
 [user]
 	email = hello@haseebmajid.dev
 	name = Haseeb Majid
+	signingkey = A236785D59F190761E9CE8EC78283DB3D233E1F9
 [core]
         editor = vim
         pager = diff-so-fancy | less --tabs=4 -RFX
@@ -27,3 +28,5 @@
 	default = current
 [init]
 	defaultBranch = main
+[gpg]
+	format = ssh

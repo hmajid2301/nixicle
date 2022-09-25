@@ -17,9 +17,10 @@ font:
   size: 14.0
 
 window:
+  decorations: None
   padding:
-    x: 10
-    y: 10
+    x: 30
+    y: 30
 
 selection:
   save_to_clipboard: true

@@ -68,6 +68,8 @@
   "gopls": {
     "ui.semanticTokens": true
   },
+  "go.lintTool": "golangci-lint",
+  "go.lintFlags": ["--fast", "--enable", "unconvert"],
   "git.autofetch": true,
   "git.enableSmartCommit": true,
   "git.confirmSync": false,
