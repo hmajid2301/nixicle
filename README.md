@@ -21,3 +21,7 @@ To use with VSCode devcontainers, add the following to your `settings.json` file
 "dotfiles.targetPath": "~/dotfiles",
 "dotfiles.installCommand": "~/dotfiles/install.devcontainer.sh",
 ```
+
+## Appendix
+
+- <a href="https://www.flaticon.com/free-icons/dot" title="dot icons">Dot icons created by Roundicons - Flaticon</a>
