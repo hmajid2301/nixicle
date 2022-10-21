@@ -13,7 +13,13 @@
   "editor.bracketPairColorization.enabled": true,
   "editor.acceptSuggestionOnEnter": "smart",
   "editor.insertSpaces": false,
-  "editor.fontSize": 16,
+  "editor.fontSize": 15,
+  "editor.linkedEditing": true,
+  "editor.autoClosingBrackets": "never",
+  "editor.autoClosingQuotes": "never",
+  "html.autoClosingTags": true,
+  "javascript.autoClosingTags": true,
+  "typescript.autoClosingTags": true,
   "editor.suggestSelection": "first",
   "editor.tabSize": 4,
   "editor.cursorStyle": "line",
@@ -164,10 +170,10 @@
       "commands": ["workbench.action.splitEditor"]
     }
   ],
-  "vscode-pets.theme": "forest",
+  "vscode-pets.theme": "beach",
   "window.restoreWindows": "all",
   "window.titleBarStyle": "custom",
-  "workbench.productIconTheme": "material-product-icons",
+  "workbench.productIconTheme": "fluent-icons",
   "workbench.iconTheme": "Monokai Pro Icons",
   "workbench.colorTheme": "Dracula",
   "workbench.startupEditor": "welcomePage",
@@ -192,6 +198,9 @@
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "[jsonc]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[html]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "[svelte]": {
@@ -823,5 +832,6 @@
       "command": "workbench.action.toggleZenMode"
     }
   ],
-  "workbench.editor.enablePreview": false
+  "workbench.editor.enablePreview": false,
+  "redhat.telemetry.enabled": false
 }

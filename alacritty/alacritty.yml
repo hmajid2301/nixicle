@@ -17,7 +17,6 @@ font:
   size: 14.0
 
 window:
-  decorations: None
   padding:
     x: 30
     y: 30

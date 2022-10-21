@@ -26,6 +26,7 @@
 	ff = only
 [push]
 	default = current
+	autoSetupRemote = true
 [init]
 	defaultBranch = main
 [gpg]

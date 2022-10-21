@@ -2,13 +2,9 @@
 
 Things I want to do:
 
-- (check if done) Background Apps Minimised 
-- (check if done) Plymouth and Grub Themes
-- (check if done) UFW
-- (check if done) Restic automatic backup
-- Fan Control
-- FreeSync
-	- Remove nvidia
+- DoH
+	- https://wiki.archlinux.org/title/DNS_over_HTTPS_servers#coreDNS
+    - https://www.quad9.net/service/service-addresses-and-features
 
 ## Future TODOs
 
