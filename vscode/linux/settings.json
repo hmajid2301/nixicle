@@ -15,8 +15,6 @@
   "editor.insertSpaces": false,
   "editor.fontSize": 15,
   "editor.linkedEditing": true,
-  "editor.autoClosingBrackets": "never",
-  "editor.autoClosingQuotes": "never",
   "html.autoClosingTags": true,
   "javascript.autoClosingTags": true,
   "typescript.autoClosingTags": true,
@@ -122,7 +120,7 @@
   "vim.smartRelativeLine": true,
   "vim.insertModeKeyBindings": [
     {
-      "before": ["j", "j"],
+      "before": ["j", "k"],
       "after": ["<Esc>"]
     }
   ],
@@ -833,5 +831,6 @@
     }
   ],
   "workbench.editor.enablePreview": false,
-  "redhat.telemetry.enabled": false
+  "redhat.telemetry.enabled": false,
+  "go.toolsManagement.autoUpdate": true
 }

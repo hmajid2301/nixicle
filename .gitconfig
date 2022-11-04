@@ -31,3 +31,12 @@
 	defaultBranch = main
 [gpg]
 	format = ssh
+[filter "lfs"]
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
+	clean = git-lfs clean -- %f
+
+# This next lines include Netlify's Git Credential Helper configuration in your Git configuration.
+[include]
+        path = /home/haseeb/.config/netlify/helper/git-config

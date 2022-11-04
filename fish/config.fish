@@ -14,3 +14,6 @@ if command -v pyenv 1>/dev/null 2>&1
 end
 
 zoxide init fish | source
+
+# The next line updates PATH for Netlify's Git Credential Helper.
+test -f '/home/haseeb/.config/netlify/helper/path.fish.inc' && source '/home/haseeb/.config/netlify/helper/path.fish.inc'
