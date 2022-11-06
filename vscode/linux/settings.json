@@ -3,6 +3,9 @@
   "breadcrumbs.filePath": "on",
   "debug.console.fontFamily": "'MonoLisa', 'Droid Sans Mono', 'monospace', 'Noto Color Emoji'",
   "debug.console.fontSize": 16,
+  "dotfiles.repository": "hmajid2301/dotfiles",
+  "dotfiles.targetPath": "~/dotfiles",
+  "dotfiles.installCommand": "~/dotfiles/install.devcontainer.sh",
   "editor.autoIndent": "full",
   "editor.cursorSurroundingLines": 5,
   "editor.formatOnSave": true,
@@ -135,7 +138,8 @@
     }
   ],
   "vim.handleKeys": {
-    "<C-f>": false
+    "<C-f>": false,
+    "<C-r>": false
   },
   "vim.easymotionMarkerBackgroundColor": "#7e57c2",
   "vim.normalModeKeyBindingsNonRecursive": [
@@ -144,7 +148,7 @@
       "after": ["leader", "leader", "leader", "b", "d", "w"]
     },
     {
-      "before": ["/"],
+      "before": ["<Space>", "k"],
       "commands": ["whichkey.show"]
     },
     {
@@ -157,11 +161,7 @@
     },
     {
       "before": ["shift", "tab"],
-      "commands": [
-        {
-          "command": "workbench.action.previousEditor"
-        }
-      ]
+      "commands": ["workbench.action.previousEditor"]
     },
     {
       "before": ["<leader>", "w"],

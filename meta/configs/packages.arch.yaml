@@ -26,6 +26,7 @@
     - flameshot
     - solaar
     - psensor
+    - starship
 
 - shell:
     - tldr --update
