@@ -3,9 +3,10 @@
     - curl -sS https://starship.rs/install.sh | sh -s -- --yes
 
 - apt:
-    - zsh
     - jq
     - fzf
     - vim
     - make
+    - zoxide
+    - exa
     - fish/bullseye-backports
