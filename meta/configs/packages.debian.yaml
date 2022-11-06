@@ -1,5 +1,6 @@
 - shell:
     - echo "deb http://deb.debian.org/debian bullseye-backports main" | sudo tee /etc/apt/sources.list.d/backports.list
+    - curl -sS https://starship.rs/install.sh | sh
 
 - apt:
     - zsh
