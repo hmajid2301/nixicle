@@ -139,7 +139,7 @@
   ],
   "vim.handleKeys": {
     "<C-f>": false,
-    "<C-r>": false
+    "<C-r>": true
   },
   "vim.easymotionMarkerBackgroundColor": "#7e57c2",
   "vim.normalModeKeyBindingsNonRecursive": [
@@ -193,6 +193,9 @@
     }
   },
   "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[javascript]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "[jsonc]": {
@@ -832,5 +835,7 @@
   ],
   "workbench.editor.enablePreview": false,
   "redhat.telemetry.enabled": false,
-  "go.toolsManagement.autoUpdate": true
+  "go.toolsManagement.autoUpdate": true,
+  "terminal.integrated.defaultProfile.osx": "fish",
+  "remoteHub.uncommittedChangesOnEntry": "none"
 }
