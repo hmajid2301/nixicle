@@ -77,6 +77,10 @@
   },
   "go.lintTool": "golangci-lint",
   "go.lintFlags": ["--fast", "--enable", "unconvert"],
+  "go.toolsManagement.autoUpdate": true,
+  "go.buildFlags": ["-tags=bdd,integration"],
+  "go.testTags": "integration,bdd",
+  "go.formatTool": "goimports",
   "git.autofetch": true,
   "git.enableSmartCommit": true,
   "git.confirmSync": false,
@@ -108,14 +112,18 @@
   "python.languageServer": "Pylance",
   "python.analysis.extraPaths": ["./src"],
   "svelte.enable-ts-plugin": true,
+  "svelte.plugin.svelte.note-new-transformation": false,
   "scm.diffDecorationsGutterWidth": 5,
   "typescript.updateImportsOnFileMove.enabled": "always",
+  "terminal.integrated.defaultProfile.osx": "fish",
   "terminal.integrated.fontSize": 16,
   "terminal.integrated.tabs.enabled": false,
   "terminal.integrated.enableMultiLinePasteWarning": false,
   "terminal.integrated.shellIntegration.decorationsEnabled": "never",
   "terminal.integrated.copyOnSelection": true,
   "terminal.integrated.rightClickBehavior": "copyPaste",
+  "workbench.editor.enablePreview": false,
+  "redhat.telemetry.enabled": false,
   "vim.easymotion": true,
   "vim.incsearch": true,
   "vim.hlsearch": true,
@@ -137,15 +145,25 @@
       "after": ["<", "g", "v"]
     }
   ],
+  "vim.useCtrlKeys": true,
   "vim.handleKeys": {
     "<C-f>": false,
-    "<C-r>": true
+    "<C-r>": true,
+    "<C-a>": true
   },
   "vim.easymotionMarkerBackgroundColor": "#7e57c2",
   "vim.normalModeKeyBindingsNonRecursive": [
     {
       "before": ["<Space>", "a"],
       "after": ["leader", "leader", "leader", "b", "d", "w"]
+    },
+    {
+      "before": ["d", "s", "f"],
+      "after": ["%", "x", "`", "`", "d", "f", "("]
+    },
+    {
+      "before": ["y", "a", "f"],
+      "after": ["v", "a", "{", "V", "y"]
     },
     {
       "before": ["<Space>", "k"],
@@ -179,13 +197,19 @@
     "editor.tabSize": 2
   },
   "[markdown]": {
-    "editor.formatOnSave": false
+    "editor.formatOnSave": false,
+    "editor.quickSuggestions": {
+      "other": "on",
+      "comments": "off",
+      "strings": "off"
+    }
   },
   "[makefile]": {
     "editor.tabSize": 4,
     "editor.insertSpaces": false
   },
   "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
     "editor.tabSize": 2,
     "editor.codeActionsOnSave": {
       "source.organizeImports": true,
@@ -206,7 +230,7 @@
   },
   "[svelte]": {
     "editor.tabSize": 2,
-    "editor.defaultFormatter": "svelte.svelte-vscode"
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "[yaml]": {
     "editor.tabSize": 2,
@@ -221,11 +245,17 @@
     "editor.codeActionsOnSave": {
       "source.organizeImports": true,
       "source.fixAll": true
-    }
+    },
+    "editor.formatOnType": true
   },
+
   "[go]": {
+    "editor.defaultFormatter": "golang.go",
     "editor.tabSize": 4,
-    "editor.defaultFormatter": "golang.go"
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": true
+    }
   },
   "[terraform]": {
     "editor.defaultFormatter": "hashicorp.terraform",
@@ -832,10 +862,5 @@
       "type": "command",
       "command": "workbench.action.toggleZenMode"
     }
-  ],
-  "workbench.editor.enablePreview": false,
-  "redhat.telemetry.enabled": false,
-  "go.toolsManagement.autoUpdate": true,
-  "terminal.integrated.defaultProfile.osx": "fish",
-  "remoteHub.uncommittedChangesOnEntry": "none"
+  ]
 }
