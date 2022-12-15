@@ -234,7 +234,7 @@
   },
   "[yaml]": {
     "editor.tabSize": 2,
-    "editor.defaultFormatter": "redhat.vscode-yaml"
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "[yml]": {
     "editor.tabSize": 2
@@ -245,8 +245,7 @@
     "editor.codeActionsOnSave": {
       "source.organizeImports": true,
       "source.fixAll": true
-    },
-    "editor.formatOnType": true
+    }
   },
 
   "[go]": {
