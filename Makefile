@@ -22,7 +22,9 @@ vscode-extension-backup: ## Save all current extensions to vscode/extensions.txt
 
 gnome-backup: ## Backup gnome settings
 	dconf dump / > gnome/settings.ini
+	pacman -Qqme > gnome/installs.txt
 
 
 gnome-restore: ## Restore gnome settings
 	dconf load / < gnome/settings.ini
+	yay -S $(cat installs.txt)
