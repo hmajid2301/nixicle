@@ -190,7 +190,7 @@
   "window.restoreWindows": "all",
   "window.titleBarStyle": "custom",
   "workbench.productIconTheme": "fluent-icons",
-  "workbench.iconTheme": "Monokai Pro Icons",
+  "workbench.iconTheme": "material-icon-theme",
   "workbench.colorTheme": "Dracula",
   "workbench.startupEditor": "welcomePage",
   "[toml]": {
@@ -230,7 +230,11 @@
   },
   "[svelte]": {
     "editor.tabSize": 2,
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": true,
+      "source.fixAll": true
+    }
   },
   "[yaml]": {
     "editor.tabSize": 2,
@@ -861,5 +865,7 @@
       "type": "command",
       "command": "workbench.action.toggleZenMode"
     }
-  ]
+  ],
+  "workbench.editor.labelFormat": "short",
+  "playwright.reuseBrowser": false
 }
