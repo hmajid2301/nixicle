@@ -17,3 +17,8 @@ zoxide init fish | source
 
 # The next line updates PATH for Netlify's Git Credential Helper.
 test -f '/home/haseeb/.config/netlify/helper/path.fish.inc' && source '/home/haseeb/.config/netlify/helper/path.fish.inc'
+# pnpm
+set -gx PNPM_HOME "/home/haseeb/.local/share/pnpm"
+set -gx PATH "$PNPM_HOME" $PATH
+alias pn=pnpm
+# pnpm end

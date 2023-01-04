@@ -27,4 +27,4 @@ gnome-backup: ## Backup gnome settings
 
 gnome-restore: ## Restore gnome settings
 	dconf load / < gnome/settings.ini
-	yay -S $(cat installs.txt)
+	yay -S $(cat gnome/installs.txt)

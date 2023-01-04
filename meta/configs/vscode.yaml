@@ -4,3 +4,4 @@
       if: "[[ `uname` = Linux ]]"
       path: vscode/linux/*.json
       glob: true
+      force: true

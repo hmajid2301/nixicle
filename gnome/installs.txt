@@ -31,7 +31,6 @@ showmethekey
 spicetify-cli
 spicetify-theme-dracula-git
 spotify
-tela-circle-icon-theme-git
 timeshift
 video-trimmer
 visual-studio-code-bin
