@@ -4,19 +4,13 @@ return {
     "goolord/alpha-nvim",
     opts = function(_, opts)
       -- customize the dashboard header
-      opts.section.header.val = {
-        " █████  ███████ ████████ ██████   ██████",
-        "██   ██ ██         ██    ██   ██ ██    ██",
-        "███████ ███████    ██    ██████  ██    ██",
-        "██   ██      ██    ██    ██   ██ ██    ██",
-        "██   ██ ███████    ██    ██   ██  ██████",
-        " ",
-        "    ███    ██ ██    ██ ██ ███    ███",
-        "    ████   ██ ██    ██ ██ ████  ████",
-        "    ██ ██  ██ ██    ██ ██ ██ ████ ██",
-        "    ██  ██ ██  ██  ██  ██ ██  ██  ██",
-        "    ██   ████   ████   ██ ██      ██",
-      }
+      local dashboard = require("alpha.themes.dashboard")
+      local button = require("astronvim.utils").alpha_button
+      for _, button in ipairs(dashboard.section.buttons.val) do
+        button.opts.hl = "DashboardButtons"
+        button.opts.hl_shortcut = "DashboardShortcut"
+      end
+
       return opts
     end,
   },
