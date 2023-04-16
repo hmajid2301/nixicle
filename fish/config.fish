@@ -8,11 +8,6 @@ if [ -f "$HOME/google-cloud-sdk/path.fish.inc" ]
     . "$HOME/google-cloud-sdk/path.fish.inc"
 end
 
-# pyenv init
-if command -v pyenv 1>/dev/null 2>&1
-    pyenv init - | source
-end
-
 zoxide init fish | source
 
 # The next line updates PATH for Netlify's Git Credential Helper.
@@ -22,3 +17,5 @@ set -gx PNPM_HOME "/home/haseeb/.local/share/pnpm"
 set -gx PATH "$PNPM_HOME" $PATH
 alias pn=pnpm
 # pnpm end
+
+source /opt/asdf-vm/asdf.fish

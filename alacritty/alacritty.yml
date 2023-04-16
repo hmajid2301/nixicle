@@ -20,6 +20,7 @@ window:
   padding:
     x: 30
     y: 30
+  decorations: none
 
 selection:
   save_to_clipboard: true

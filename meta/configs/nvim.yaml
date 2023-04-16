@@ -1,0 +1,6 @@
+- link:
+    ~/.config/nvim:
+      path: nvim/**
+      glob: true
+      create: true
+      force: true

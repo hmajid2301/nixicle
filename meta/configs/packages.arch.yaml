@@ -19,14 +19,24 @@
     - fzf
     - vim
     - make
-    - flameshot
     - entr
     - ttf-fira-code
     - zsh
-    - flameshot
     - solaar
     - psensor
     - starship
+    - duf
+    - ag
+    - mcfly
+    - choose
+    - cheat
+    - gping
+    - procs
+    - curlie
+    - dog
+    - wl-clipboard
+    - fuck
+    - chafa
 
 - shell:
     - tldr --update

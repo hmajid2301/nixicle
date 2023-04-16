@@ -17,10 +17,6 @@
   "editor.acceptSuggestionOnEnter": "smart",
   "editor.insertSpaces": false,
   "editor.fontSize": 15,
-  "editor.linkedEditing": true,
-  "html.autoClosingTags": true,
-  "javascript.autoClosingTags": true,
-  "typescript.autoClosingTags": true,
   "editor.suggestSelection": "first",
   "editor.tabSize": 4,
   "editor.cursorStyle": "line",
@@ -41,9 +37,9 @@
   "editor.semanticHighlighting.enabled": true,
   "explorer.confirmDelete": false,
   "explorer.confirmDragAndDrop": false,
-  "eslint.codeActionsOnSave.mode": "all",
   "eslint.validate": [
     "javascript",
+    "svelte",
     "javascriptreact",
     "typescript",
     "typescriptreact"
@@ -75,8 +71,8 @@
   "gopls": {
     "ui.semanticTokens": true
   },
-  "go.lintTool": "golangci-lint",
-  "go.lintFlags": ["--fast", "--enable", "unconvert"],
+  // "go.lintTool": "golangci-lint",
+  // "go.lintFlags": ["--fast", "--enable", "unconvert"],
   "go.toolsManagement.autoUpdate": true,
   "go.buildFlags": ["-tags=bdd,integration"],
   "go.testTags": "integration,bdd",
@@ -104,7 +100,7 @@
   "python.analysis.indexing": true,
   "python.formatting.blackArgs": ["--line-length", "120"],
   "python.autoComplete.extraPaths": ["./src"],
-  "python.defaultInterpreterPath": "${workspaceFolder}/.venv/bin/python",
+  "python.defaultInterpreterPath": "/bin/python",
   "python.envFile": "${workspaceFolder}/.env",
   "python.analysis.typeCheckingMode": "basic",
   "python.terminal.activateEnvInCurrentTerminal": true,
@@ -112,7 +108,6 @@
   "python.languageServer": "Pylance",
   "python.analysis.extraPaths": ["./src"],
   "svelte.enable-ts-plugin": true,
-  "svelte.plugin.svelte.note-new-transformation": false,
   "scm.diffDecorationsGutterWidth": 5,
   "typescript.updateImportsOnFileMove.enabled": "always",
   "terminal.integrated.defaultProfile.osx": "fish",
@@ -212,8 +207,8 @@
     "editor.defaultFormatter": "esbenp.prettier-vscode",
     "editor.tabSize": 2,
     "editor.codeActionsOnSave": {
-      "source.organizeImports": true,
-      "source.fixAll": true
+      "source.fixAll": true,
+      "source.removeUnusedImports": true
     }
   },
   "[json]": {
@@ -229,11 +224,10 @@
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "[svelte]": {
-    "editor.tabSize": 2,
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.defaultFormatter": "svelte.svelte-vscode",
     "editor.codeActionsOnSave": {
-      "source.organizeImports": true,
-      "source.fixAll": true
+      "source.fixAll": true,
+      "source.removeUnusedImports": true
     }
   },
   "[yaml]": {
@@ -249,7 +243,8 @@
     "editor.codeActionsOnSave": {
       "source.organizeImports": true,
       "source.fixAll": true
-    }
+    },
+    "editor.formatOnType": true
   },
 
   "[go]": {
@@ -261,11 +256,17 @@
     }
   },
   "[terraform]": {
+    "editor.formatOnSave": true,
     "editor.defaultFormatter": "hashicorp.terraform",
-    "editor.formatOnSave": false,
-    "editor.codeActionsOnSave": {
-      "source.formatAll.terraform": true
-    }
+    "editor.tabSize": 2
+  },
+  "[terragrunt]": {
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "hashicorp.terraform",
+    "editor.tabSize": 2
+  },
+  "[terraform-vars]": {
+    "editor.tabSize": 2
   },
   "colorize.languages": ["python"],
   "javascript.updateImportsOnFileMove.enabled": "always",
@@ -866,6 +867,17 @@
       "command": "workbench.action.toggleZenMode"
     }
   ],
-  "workbench.editor.labelFormat": "short",
-  "playwright.reuseBrowser": false
+  "editor.tabCompletion": "on",
+  "editor.dragAndDrop": true,
+  "playwright.reuseBrowser": true,
+  "ltex.enabled": [
+    "bibtex",
+    "context",
+    "context.tex",
+    "latex",
+    "markdown",
+    "org",
+    "restructuredtext",
+    "rsweave"
+  ]
 }
