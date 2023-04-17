@@ -44,6 +44,8 @@
     - tree-sitter
     - tmux
     - coreutils
+    - lazydocker
+    - mdp
 
 - shell:
     - tldr --update

@@ -45,6 +45,8 @@
     - gdu
     - tree-sitter-cli
     - tmux
+    - lazydocker
+    - mdp
 
 - shell:
     - tldr --update
