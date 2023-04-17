@@ -1,8 +1,9 @@
 nvim
 terminal
+terminal.mac
+packages.mac
 shell
 vscode
 tmux
-packages.arch-sudo
 ssh
 git

@@ -14,7 +14,7 @@ font:
     family: MonoLisa
     style: Italic
 
-  size: 14.0
+  size: 16.0
 
 window:
   padding:

@@ -1,4 +1,7 @@
-- yay:
+- tap:
+    - homebrew/cask-fonts
+
+- brew:
     - zoxide
     - bat
     - fd
@@ -14,19 +17,16 @@
     - broot
     - procs
     - neofetch
-    - btop
     - yq
     - fzf
     - nvim
     - vim
     - make
     - entr
-    - ttf-fira-code
-    - solaar
-    - psensor
     - starship
     - fish
-    - duf
+    - go
+    - font-hack-nerd-font
     - ag
     - mcfly
     - choose
@@ -35,16 +35,15 @@
     - procs
     - curlie
     - dog
-    - wl-clipboard
-    - fuck
+    - thefuck
     - chafa
     - navi
     - go-task
     - lazygit
     - bottom
-    - gdu
-    - tree-sitter-cli
+    - tree-sitter
     - tmux
+    - coreutils
 
 - shell:
     - tldr --update

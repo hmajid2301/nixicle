@@ -1,2 +1,3 @@
 - link:
     ~/.gitconfig: .gitconfig
+    ~/work/.gitconfig: .gitconfig_work

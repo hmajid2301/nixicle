@@ -1,5 +1,7 @@
 - link:
-    ~/.config/alacritty/:
-      path: alacritty/**
-      glob: true
-      create: true
+    ~/.config/alacritty/theme.yml: alacritty/theme.yml
+
+    ~/.config/alacritty/alacritty.yml:
+      if: "[[ `uname` = Linux ]]"
+      path: alacritty/linux/alacritty.yml
+      force: true

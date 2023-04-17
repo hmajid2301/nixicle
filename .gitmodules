@@ -7,3 +7,6 @@
 [submodule "meta/dotbot-yay"]
 	path = meta/dotbot-yay
 	url = https://github.com/oxson/dotbot-yay
+[submodule "meta/dotbot-brew"]
+	path = meta/dotbot-brew
+	url = https://github.com/d12frosted/dotbot-brew.git
