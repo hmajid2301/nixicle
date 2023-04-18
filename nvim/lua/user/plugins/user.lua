@@ -9,16 +9,6 @@ return {
   --     require("lsp_signature").setup()
   --   end,
   -- },
-  -- {
-  --   'maxmx03/dracula.nvim',
-  --   lazy = false,    -- make sure we load this during startup if it is your main colorscheme
-  --   priority = 1000, -- make sure to load this before all the other start plugins
-  --   config = function()
-  --     local dracula = require('dracula')
-  --
-  --     dracula.setup({})
-  --   end
-  -- },
   {
     "Mofiqul/dracula.nvim",
     opts = function(_, opts)
@@ -32,5 +22,17 @@ return {
         DashboardFooter = { fg = colors.yellow, italic = true },
       }
     end,
-  }
+  },
+  {
+    "folke/todo-comments.nvim",
+    dependencies = "nvim-lua/plenary.nvim",
+    opts = {},
+    event = "User AstroFile"
+  },
+  {
+    "kylechui/nvim-surround",
+    event = "VeryLazy",
+    opts = {},
+    event = "User AstroFile"
+  },
 }
