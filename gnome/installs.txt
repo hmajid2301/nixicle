@@ -9,6 +9,7 @@ brave-bin
 cava
 cheat
 conky-git
+conky-manager2-git
 debtap
 dracula-grub-theme-git
 extension-manager-git
@@ -29,6 +30,7 @@ material-cursors-git
 mullvad-vpn-bin
 mutter-vrr
 nautilus-open-any-terminal
+navi
 nerd-fonts-complete-starship
 netlify
 obfuscate

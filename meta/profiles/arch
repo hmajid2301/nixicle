@@ -3,6 +3,6 @@ terminal
 shell
 vscode
 tmux
-packages.arch-sudo
 ssh
 git
+packages.arch-sudo

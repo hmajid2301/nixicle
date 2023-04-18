@@ -1,3 +1,5 @@
 - link:
     ~/.gitconfig: .gitconfig
-    ~/work/.gitconfig: .gitconfig_work
+    ~/work/.gitconfig:
+      if: "[ `uname` = Darwin ]"
+      path: .gitconfig_work

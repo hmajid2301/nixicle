@@ -15,9 +15,9 @@
     - procs
     - neofetch
     - btop
-    - yq
+    - go-yq
     - fzf
-    - nvim
+    - neovim
     - vim
     - make
     - entr
@@ -27,7 +27,6 @@
     - starship
     - fish
     - duf
-    - ag
     - mcfly
     - choose
     - cheat
@@ -45,7 +44,7 @@
     - gdu
     - tree-sitter-cli
     - tmux
-    - lazydocker
+    - lazydocker-bin
     - mdp
 
 - shell:

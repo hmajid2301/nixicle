@@ -16,5 +16,3 @@ set -gx PNPM_HOME "/home/haseeb/.local/share/pnpm"
 set -gx PATH "$PNPM_HOME" $PATH
 alias pn=pnpm
 # pnpm end
-
-bass source /usr/local/bin/source-aliases
