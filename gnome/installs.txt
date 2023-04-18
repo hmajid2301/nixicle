@@ -16,11 +16,8 @@ extension-manager-git
 flyctl
 gnome-browser-connector
 gnome-control-center-vrr
-gnome-shell-extension-emoji-selector-git
 gnome-shell-extension-pop-shell-git
 go-task
-goland
-goland-jre
 google-cloud-sdk
 goverlay-bin
 gradience-git

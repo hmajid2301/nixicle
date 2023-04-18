@@ -183,7 +183,8 @@ SETUVAR _fisher_edc_2F_bass_files:/home/haseeb/\x2econfig/fish/functions/__bass\
 SETUVAR _fisher_gazorby_2F_fish_2D_abbreviation_2D_tips_files:/home/haseeb/\x2econfig/fish/functions/__abbr_tips_bind_newline\x2efish\x1e/home/haseeb/\x2econfig/fish/functions/__abbr_tips_bind_space\x2efish\x1e/home/haseeb/\x2econfig/fish/functions/__abbr_tips_clean\x2efish\x1e/home/haseeb/\x2econfig/fish/functions/__abbr_tips_init\x2efish\x1e/home/haseeb/\x2econfig/fish/conf\x2ed/abbr_tips\x2efish
 SETUVAR _fisher_gazorby_2F_fish_2D_exa_files:/home/haseeb/\x2econfig/fish/functions/exa_git\x2efish\x1e/home/haseeb/\x2econfig/fish/conf\x2ed/fish\x2dexa\x2efish
 SETUVAR _fisher_jorgebucaran_2F_replay_2E_fish_files:/home/haseeb/\x2econfig/fish/functions/replay\x2efish\x1e/home/haseeb/\x2econfig/fish/completions/replay\x2efish
-SETUVAR _fisher_plugins:PatrickF1/fzf\x2efish\x1eedc/bass\x1edracula/fish\x1egazorby/fish\x2dexa\x1ejorgebucaran/replay\x2efish\x1egazorby/fish\x2dabbreviation\x2dtips
+SETUVAR _fisher_plugins:PatrickF1/fzf\x2efish\x1eedc/bass\x1edracula/fish\x1egazorby/fish\x2dexa\x1ejorgebucaran/replay\x2efish\x1egazorby/fish\x2dabbreviation\x2dtips\x1erstacruz/fish\x2dasdf
+SETUVAR _fisher_rstacruz_2F_fish_2D_asdf_files:/Users/haseeb/\x2econfig/fish/conf\x2ed/asdf\x2efish\x1e/Users/haseeb/\x2econfig/fish/completions/asdf\x2efish
 SETUVAR fish_color_autosuggestion:BD93F9
 SETUVAR fish_color_cancel:\x2d\x2dreverse
 SETUVAR fish_color_command:F92672
