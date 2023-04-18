@@ -1,0 +1,10 @@
+- link:
+    ~/.themes/my_theme:
+      path: themes/my_theme/**
+      glob: true
+      create: true
+      force: true
+
+- shell:
+    - dconf load / < gnome/settings.ini
+    - yay -S $(cat gnome/installs.txt)

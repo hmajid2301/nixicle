@@ -24,8 +24,8 @@ return {
     -- quick save
     -- ["<C-s>"] = { ":w!<cr>", desc = "Save File" },  -- change description but the same command
     ["<leader>cd"] = { require("telescope").extensions.zoxide.list, desc = "Change directory using zoxide" },
-    ["<leader>o"] = { "o<Esc>", desc = "Create new line below without leaving normal mode" },
-    ["<leader>O"] = { "O<Esc>", desc = "Create new line above without leaving normal mode" },
+    ["<ctrl>o"] = { "o<Esc>", desc = "Create new line below without leaving normal mode" },
+    ["<ctrl>O"] = { "O<Esc>", desc = "Create new line above without leaving normal mode" },
   },
   t = {
     -- setting a mapping to false will disable it

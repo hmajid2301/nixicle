@@ -14,7 +14,7 @@ font:
     family: MonoLisa
     style: Italic
 
-  size: 16.0
+  size: 14.0
 
 window:
   padding:
@@ -30,3 +30,4 @@ mouse_bindings:
 
 env:
   TERM: xterm-256color
+  # TERM: alacritty

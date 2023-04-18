@@ -8,12 +8,11 @@ betterdiscord-installer-bin
 brave-bin
 cava
 cheat
-conky-git
-conky-manager2-git
 debtap
 dracula-grub-theme-git
 extension-manager-git
 flyctl
+gdm-settings
 gnome-browser-connector
 gnome-control-center-vrr
 gnome-shell-extension-pop-shell-git

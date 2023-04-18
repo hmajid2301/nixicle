@@ -35,4 +35,8 @@ return {
     opts = {},
     event = "User AstroFile"
   },
+  {
+    "aserowy/tmux.nvim",
+    opts = {},
+  }
 }

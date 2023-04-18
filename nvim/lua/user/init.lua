@@ -64,6 +64,7 @@ return {
   -- augroups/autocommands and custom filetypes also this just pure lua so
   -- anything that doesn't fit in the normal config locations above can go here
   polish = function()
+    vim.o.termguicolors = true
     -- Set up custom filetypes
     -- vim.filetype.add {
     --   extension = {
