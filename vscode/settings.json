@@ -11,7 +11,7 @@
   "editor.formatOnSave": true,
   "editor.wordWrap": "off",
   "editor.fontFamily": "'MonoLisa', 'Droid Sans Mono', 'monospace', 'Noto Color Emoji'",
-  // "editor.fontFamily": "'Fira Code', 'Droid Sans Mono', 'monospace', 'Noto Color Emoji'",
+  //"editor.fontFamily": "'Fira Code', 'Droid Sans Mono', 'monospace', 'Noto Color Emoji'",
   "editor.fontLigatures": true,
   "editor.bracketPairColorization.enabled": true,
   "editor.acceptSuggestionOnEnter": "smart",

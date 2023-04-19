@@ -5,8 +5,8 @@ shell:
   program: /usr/local/bin/fish
 font:
   normal:
-    family: MonoLisa
-    style: Book
+    family: MonoLisa Nerd Font Mono
+    style: Regular
   bold:
     family: MonoLisa
     style: Bold
@@ -31,16 +31,6 @@ env:
   TERM: xterm-256color
 
 key_bindings:
-  - {
-      key: N,
-      mods: Command,
-      command:
-        {
-          program: "sh",
-          args: ["-c", "open ~/.config/alacritty/alacritty.yml"],
-        },
-    }
-  - { key: N, mods: Command, action: CreateNewWindow }
   - { key: C, mods: Command, chars: "\u0003" }
   - { key: D, mods: Command, chars: "\u0004" }
   - { key: R, mods: Command, chars: "\u0012" }
@@ -50,3 +40,10 @@ key_bindings:
   - { key: Right, mods: Super, chars: "\x1bf" } # one word right
   - { key: Left, mods: Command, chars: "\x1bOH", mode: AppCursor } # Home
   - { key: Right, mods: Command, chars: "\x1bOF", mode: AppCursor } # End
+  - { key: J, mods: Alt, chars: "\x1bj" }
+  - { key: K, mods: Alt, chars: "\x1bk" }
+  - { key: H, mods: Alt, chars: "\x1bh" }
+  - { key: L, mods: Alt, chars: "\x1bl" }
+  - { key: N, mods: Alt, chars: "\x1bn" }
+  - { key: Minus, mods: Alt, chars: "\x1b-" }
+  - { key: Equals, mods: Alt, chars: "\x1b=" }

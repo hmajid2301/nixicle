@@ -46,6 +46,8 @@
     - coreutils
     - lazydocker
     - mdp
+    - koekeishiya/formulae/yabai
+    - koekeishiya/formulae/skhd
 
 - shell:
     - tldr --update
