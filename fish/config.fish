@@ -9,3 +9,6 @@ fish_add_path $HOME/.config/tmux/plugins/t-smart-tmux-session-manager/bin
 starship init fish | source
 zoxide init fish | source
 source ~/.config/fish/extra.fish
+
+fish_vi_key_bindings
+bind --mode insert --sets-mode default jk repaint

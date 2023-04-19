@@ -26,6 +26,8 @@ return {
     ["<leader>cd"] = { require("telescope").extensions.zoxide.list, desc = "Change directory using zoxide" },
     ["<ctrl>o"] = { "o<Esc>", desc = "Create new line below without leaving normal mode" },
     ["<ctrl>O"] = { "O<Esc>", desc = "Create new line above without leaving normal mode" },
+    ["<C-o>"] = { "o<Esc>", desc = "Create new line below without leaving normal mode" },
+    ["<C-O>"] = { "O<Esc>", desc = "Create new line above without leaving normal mode" },
   },
   t = {
     -- setting a mapping to false will disable it

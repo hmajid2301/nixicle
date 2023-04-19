@@ -209,7 +209,7 @@ SETUVAR fish_color_status:red
 SETUVAR fish_color_user:brgreen
 SETUVAR fish_color_valid_path:\x2d\x2dunderline
 SETUVAR fish_greeting:Welcome\x20to\x20fish\x2c\x20the\x20friendly\x20interactive\x20shell\x0aType\x20\x60help\x60\x20for\x20instructions\x20on\x20how\x20to\x20use\x20fish
-SETUVAR fish_key_bindings:fish_default_key_bindings
+SETUVAR fish_key_bindings:fish_vi_key_bindings
 SETUVAR fish_pager_color_completion:75715E
 SETUVAR fish_pager_color_description:49483E
 SETUVAR fish_pager_color_prefix:F8F8F2
