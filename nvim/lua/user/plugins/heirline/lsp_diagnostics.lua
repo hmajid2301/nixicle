@@ -24,6 +24,7 @@ local LspDiagnostics = {
       return self.show_diagnostics
     end,
     helpers.LeftBubbleSeperator(colors.bg_light),
+    helpers.Space(2),
     hl = {
       bg = colors.bg_light
     },

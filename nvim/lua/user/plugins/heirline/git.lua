@@ -7,8 +7,8 @@ local Git = {
     fg = colors.cyan,
     bg = colors.bg_light,
   },
+  helpers.Space(2),
   {
-    helpers.Space(2),
     condition = conditions.is_git_repo,
     {
       provider = function()
@@ -63,8 +63,8 @@ local Git = {
       }
     },
     helpers.Space(2),
-    helpers.RightSeparator(colors.bg_light),
   },
+  helpers.RightSeparator(colors.bg_light),
 }
 
 return Git

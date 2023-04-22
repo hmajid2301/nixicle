@@ -2,11 +2,6 @@ local conditions = require('heirline.conditions')
 local colors = require('nvimpire').colors
 local helpers = require('user.plugins.heirline.helpers')
 
-local null_ls_map = {
-  prettierd = "prettier",
-  eslint_d = "eslint"
-}
-
 local lsp_map = {
   gopls = "go",
   lua_ls = "lua",

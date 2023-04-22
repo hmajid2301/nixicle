@@ -54,7 +54,7 @@ local mode_colors = {
   t = "red",
 }
 
-return {
+local Mode = {
   update = { "ModeChanged" },
   init = function(self)
     self.mode = vim.fn.mode(1)
@@ -92,3 +92,5 @@ return {
     end,
   }
 }
+
+return Mode

@@ -24,7 +24,7 @@ local Cwd = {
     end
   },
   helpers.Space(2),
-  helpers.RightSeparator(colors.bg_lighter),
+  helpers.RightSeparator(colors.bg_lighter, colors.bg_light),
 }
 
 return Cwd

@@ -1,10 +1,10 @@
 local colors = require('nvimpire').colors
 
 local signs = {
-  error = "",
-  warn = "",
-  hint = "",
-  info = "",
+  error = " ",
+  warn = " ",
+  hint = " ",
+  info = " ",
 }
 
 local Diagnostics = {
@@ -19,7 +19,6 @@ local Diagnostics = {
     info_icon = signs.hint,
     hint_icon = signs.info,
   },
-
   {
     provider = function(self)
       -- 0 is just another output, we can decide to print it or not!
@@ -27,7 +26,6 @@ local Diagnostics = {
     end,
     hl = { fg = colors.red },
   },
-
   {
     provider = function(self)
       -- 0 is just another output, we can decide to print it or not!
@@ -35,7 +33,6 @@ local Diagnostics = {
     end,
     hl = { fg = colors.orange },
   },
-
   {
     provider = function(self)
       -- 0 is just another output, we can decide to print it or not!
@@ -43,7 +40,6 @@ local Diagnostics = {
     end,
     hl = { fg = colors.cyan },
   },
-
   {
     provider = function(self)
       -- 0 is just another output, we can decide to print it or not!
