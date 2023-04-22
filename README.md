@@ -63,6 +63,20 @@ CLI tools that I use often include:
 - [ripgrep](https://github.com/BurntSushi/ripgrep): A faster `grep`
 - [navi](https://github.com/denisidoro/navi): Interactive cheat sheet
 
+## NeoVim
+
+I have started using nvim as my default editor (IDE?). It uses [astronvim](astronvim.com/) as
+the base config and adds a few plugins on top.
+
+- [trouble](https://github.com/folke/trouble.nvim): For showing all lsp diagnostic issues in a file
+
+Some of the nvim setup was heavily inspired by this [repo](https://github.com/colevoss/neovoss).
+Including the status bar.
+
+Check out this cool place for tracking my neovim setup:
+
+- https://dotfyle.com/hmajid2301/dotfiles-nvim
+
 ## Appendix
 
 - <a href="https://www.flaticon.com/free-icons/dot" title="dot icons">Dot icons created by Roundicons - Flaticon</a>
@@ -73,3 +87,4 @@ CLI tools that I use often include:
 - https://github.com/lime-desu/dootsfile
 - https://github.com/ghostx31/dotfiles/tree/37587b043f277ff5831ce5f1a3287fbaec1d9fe3
 - https://github.com/Anant-mishra1729/Village-Linux-rice
+- https://github.com/colevoss/dotfiles

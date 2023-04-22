@@ -24,10 +24,17 @@ return {
     -- quick save
     -- ["<C-s>"] = { ":w!<cr>", desc = "Save File" },  -- change description but the same command
     ["<leader>cd"] = { require("telescope").extensions.zoxide.list, desc = "Change directory using zoxide" },
-    ["<ctrl>o"] = { "o<Esc>", desc = "Create new line below without leaving normal mode" },
-    ["<ctrl>O"] = { "O<Esc>", desc = "Create new line above without leaving normal mode" },
     ["<C-o>"] = { "o<Esc>", desc = "Create new line below without leaving normal mode" },
     ["<C-O>"] = { "O<Esc>", desc = "Create new line above without leaving normal mode" },
+    ["<leader>u"] = { "<cmd>Telescope undo<cr>", desc = "Show undoo tree" },
+    --
+    -- Trouble
+    ["<leader>xx"] = { "<cmd>TroubleToggle<CR>", desc = "Trouble: Toggle" },
+    ["<leader>xw"] = { "<cmd>Trouble workspace_diagnostics<CR>", desc = "Trouble: Workspace Diagnostics" },
+    ["<leader>xf"] = { "<cmd>Trouble document_diagnostics<CR>", desc = "Trouble: Document Diagnostics" },
+    ["<leader>xq"] = { "<cmd>Trouble quickfix<CR>", desc = "Trouble: Quick Fix" },
+    ["<leader>xr"] = { "<cmd>Trouble lsp_references<CR>", desc = "Trouble: Open LSP References" },
+    ["<leader>xd"] = { "<cmd>Trouble lsp_definitions<CR>", desc = "Trouble: Open Defitions" },
   },
   t = {
     -- setting a mapping to false will disable it

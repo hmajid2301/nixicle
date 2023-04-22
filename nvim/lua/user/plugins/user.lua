@@ -24,6 +24,11 @@ return {
     end,
   },
   {
+    "colevoss/nvimpire",
+    opts = {},
+    event = "User AstroFile"
+  },
+  {
     "folke/todo-comments.nvim",
     dependencies = "nvim-lua/plenary.nvim",
     opts = {},
@@ -33,10 +38,23 @@ return {
     "kylechui/nvim-surround",
     event = "VeryLazy",
     opts = {},
-    event = "User AstroFile"
   },
   {
     "aserowy/tmux.nvim",
     opts = {},
+    event = "User AstroFile"
+  },
+  {
+    "folke/trouble.nvim",
+    opts = {},
+    event = "User AstroFile"
+  },
+  {
+    "olimorris/persisted.nvim",
+    event = "VimEnter",
+    priority = 500,
+    opts = {
+      autoload = true
+    }
   }
 }

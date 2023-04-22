@@ -12,3 +12,4 @@ source ~/.config/fish/extra.fish
 
 fish_vi_key_bindings
 bind --mode insert --sets-mode default jk repaint
+/usr/bin/rtx activate fish | source

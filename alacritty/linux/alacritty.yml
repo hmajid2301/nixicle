@@ -5,13 +5,13 @@ shell:
   program: /usr/bin/fish
 font:
   normal:
-    family: MonoLisa
+    family: "MonoLisa Nerd Font"
     style: Regular
   bold:
-    family: MonoLisa
+    family: "MonoLisa Nerd Font"
     style: Bold
   italic:
-    family: MonoLisa
+    family: "MonoLisa Nerd Font"
     style: Italic
 
   size: 14.0

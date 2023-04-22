@@ -1,12 +1,7 @@
 -- set vim options here (vim.<first_key>.<second_key> = value)
 return {
   opt = {
-    -- set to true or false etc.
-    relativenumber = true, -- sets vim.opt.relativenumber
-    number = true,         -- sets vim.opt.number
-    spell = false,         -- sets vim.opt.spell
-    signcolumn = "auto",   -- sets vim.opt.signcolumn to auto
-    wrap = false,          -- sets vim.opt.wrap
+    timeoutlen = 100, -- Shorten key timeout length a little bit for which-key
   },
   g = {
     mapleader = " ",                 -- sets vim.g.mapleader
