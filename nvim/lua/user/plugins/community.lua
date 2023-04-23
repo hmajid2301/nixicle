@@ -1,34 +1,12 @@
-local colors = {
-  blue   = '#80a0ff',
-  cyan   = '#79dac8',
-  black  = '#080808',
-  white  = '#c6c6c6',
-  red    = '#ff5189',
-  violet = '#d183e8',
-  grey   = '#303030',
-}
-
-
-local bubbles_theme = {
-  normal = {
-    a = { fg = colors.black, bg = colors.violet },
-    b = { fg = colors.white, bg = colors.grey },
-    c = { fg = colors.black, bg = colors.black },
-  },
-  insert = { a = { fg = colors.black, bg = colors.blue } },
-  visual = { a = { fg = colors.black, bg = colors.cyan } },
-  replace = { a = { fg = colors.black, bg = colors.red } },
-  inactive = {
-    a = { fg = colors.white, bg = colors.black },
-    b = { fg = colors.white, bg = colors.black },
-    c = { fg = colors.black, bg = colors.black },
-  },
-}
-
-
 return {
   -- Add the community repository of plugin specifications
   "AstroNvim/astrocommunity",
+  { import = "astrocommunity.diagnostics.trouble-nvim" },
+  { import = "astrocommunity.editing-support.todo-comments-nvim" },
+  { import = "astrocommunity.utility.noice-nvim" },
+  { import = "astrocommunity.motion.nvim-surround" },
+  { import = "astrocommunity.motion.harpoon" },
+  { import = "astrocommunity.motion.leap-nvim" },
   -- example of imporing a plugin, comment out to use it or add your own
   -- available plugins can be found at https://github.com/AstroNvim/astrocommunity
 

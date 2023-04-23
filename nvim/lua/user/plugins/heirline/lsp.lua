@@ -5,6 +5,8 @@ local helpers = require('user.plugins.heirline.helpers')
 local lsp_map = {
   gopls = "go",
   lua_ls = "lua",
+  json_ls = "json",
+  tsserver = "typescript",
   tailwindcss = "",
   golangci_lint = "",
 }
@@ -26,10 +28,11 @@ local LspActive = {
 
       local current_buff = vim.api.nvim_get_current_buf()
       for _, client in pairs(vim.lsp.get_active_clients({ bufnr = current_buff })) do
+        local show_name = client.name
         if client.name ~= 'null-ls' and lsp_map[client.name] ~= "" then
-          local show_name = lsp_map[client.name] or client.name
-          table.insert(names, show_name)
+          show_name = lsp_map[client.name]
         end
+        table.insert(names, show_name)
       end
 
       return "ﯶ " .. table.concat(names, ", ") .. " "

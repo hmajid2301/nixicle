@@ -2,6 +2,10 @@
 return {
   opt = {
     timeoutlen = 100, -- Shorten key timeout length a little bit for which-key
+    hlsearch = false,
+    incsearch = true,
+    termguicolors = true,
+    colorcolumn = "120"
   },
   g = {
     mapleader = " ",                 -- sets vim.g.mapleader

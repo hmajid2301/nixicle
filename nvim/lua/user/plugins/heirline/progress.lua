@@ -20,7 +20,7 @@ local ScrollBar = {
 }
 
 return {
-  helpers.LeftBubbleSeperator(colors.bg_light),
+  helpers.LeftBubbleSeperator(colors.bg_light, colors.bg_lighter),
   helpers.Space(2),
   hl = {
     bg = colors.bg_light,

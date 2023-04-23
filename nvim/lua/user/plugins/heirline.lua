@@ -16,8 +16,8 @@ return {
       cwd,
       git,
       helpers.Align,
-      progress,
       lsp_diagnostics,
+      progress,
     }
 
     opts.winbar = {

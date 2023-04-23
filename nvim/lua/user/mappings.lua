@@ -18,23 +18,16 @@ return {
       end,
       desc = "Pick to close",
     },
-    -- tables with the `name` key will be registered with which-key if it's installed
-    -- this is useful for naming menus
-    ["<leader>b"] = { name = "Buffers" },
-    -- quick save
-    -- ["<C-s>"] = { ":w!<cr>", desc = "Save File" },  -- change description but the same command
+    ["J"] = { "mzJ`z", desc = "combine with line up" },
+    ["<C-d>"] = { "<C-d>zz", desc = "Keep cursor in middle when jumping" },
+    ["<C-u>"] = { "<C-u>zz", desc = "Keep cursor in middle when jumping" },
     ["<leader>cd"] = { require("telescope").extensions.zoxide.list, desc = "Change directory using zoxide" },
     ["<C-o>"] = { "o<Esc>", desc = "Create new line below without leaving normal mode" },
     ["<C-O>"] = { "O<Esc>", desc = "Create new line above without leaving normal mode" },
     ["<leader>u"] = { "<cmd>Telescope undo<cr>", desc = "Show undoo tree" },
-    --
-    -- Trouble
-    ["<leader>xx"] = { "<cmd>TroubleToggle<CR>", desc = "Trouble: Toggle" },
-    ["<leader>xw"] = { "<cmd>Trouble workspace_diagnostics<CR>", desc = "Trouble: Workspace Diagnostics" },
-    ["<leader>xf"] = { "<cmd>Trouble document_diagnostics<CR>", desc = "Trouble: Document Diagnostics" },
-    ["<leader>xq"] = { "<cmd>Trouble quickfix<CR>", desc = "Trouble: Quick Fix" },
-    ["<leader>xr"] = { "<cmd>Trouble lsp_references<CR>", desc = "Trouble: Open LSP References" },
-    ["<leader>xd"] = { "<cmd>Trouble lsp_definitions<CR>", desc = "Trouble: Open Defitions" },
+  },
+  x = {
+    ["<leader>p"] = { "\"_dP", desc = "Paste without updating register" },
   },
   t = {
     -- setting a mapping to false will disable it
@@ -43,5 +36,7 @@ return {
   v = {
     ["<"] = { "<gv", desc = "Stay in visual mode during outdent" },
     [">"] = { ">gv", desc = "Stay in visual mode during indent" },
+    ["J"] = { ":m >+1<CR>gv=gv", desc = "Mouse selected lines down" },
+    ["K"] = { ":m >-2<CR>gv=gv", desc = "Mouse selected lines up" },
   }
 }
