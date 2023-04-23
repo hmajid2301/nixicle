@@ -63,19 +63,33 @@ CLI tools that I use often include:
 - [ripgrep](https://github.com/BurntSushi/ripgrep): A faster `grep`
 - [navi](https://github.com/denisidoro/navi): Interactive cheat sheet
 
+### Wallpaper
+
+![Wallpaper GIF](images/wallpaper.gif)
+
+I wanted to have wallpaper that changes with the day, I slightly changed the [sunpaper script](https://github.com/hexive/sunpaper).
+Which is a great script because it changes depending on the time of day i.e. when sunsets/rises.
+
 ## NeoVim
+
+### Screenshots
+
+![Neovim](images/neovim.png)
+![Neovim Telescope](images/neovim_telescope.png)
+![Neovim Noice](images/neovim_noice.png)
 
 I have started using nvim as my default editor (IDE?). It uses [astronvim](astronvim.com/) as
 the base config and adds a few plugins on top.
 
 - [trouble](https://github.com/folke/trouble.nvim): For showing all lsp diagnostic issues in a file
+- [telescope zoxide](https://github.com/jvgrootveld/telescope-zoxide): For showing all lsp diagnostic issues in a file
 
 Some of the nvim setup was heavily inspired by this [repo](https://github.com/colevoss/neovoss).
 Including the status bar.
 
 Check out this cool place for tracking my neovim setup:
 
-- https://dotfyle.com/hmajid2301/dotfiles-nvim
+- <https://dotfyle.com/hmajid2301/dotfiles-nvim>
 
 ## Appendix
 
@@ -84,7 +98,7 @@ Check out this cool place for tracking my neovim setup:
 
 ### Inspired By
 
-- https://github.com/lime-desu/dootsfile
-- https://github.com/ghostx31/dotfiles/tree/37587b043f277ff5831ce5f1a3287fbaec1d9fe3
-- https://github.com/Anant-mishra1729/Village-Linux-rice
-- https://github.com/colevoss/dotfiles
+- <https://github.com/lime-desu/dootsfile>
+- <https://github.com/ghostx31/dotfiles/tree/37587b043f277ff5831ce5f1a3287fbaec1d9fe3>
+- <https://github.com/Anant-mishra1729/Village-Linux-rice>
+- <https://github.com/colevoss/dotfiles>

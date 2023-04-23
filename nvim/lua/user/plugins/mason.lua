@@ -6,7 +6,7 @@ return {
     -- overrides `require("mason-lspconfig").setup(...)`
     opts = {
       ensure_installed = { "svelte", "terraformls", "cssls", "lua_ls", "tailwindcss", "golangci_lint_ls", "gopls",
-        "tsserver" },
+        "tsserver", "docker_compose_language_service", "dockerls", "marksman", "yamlls" },
     },
   },
   -- use mason-null-ls to configure Formatters/Linter installation for null-ls sources
@@ -24,4 +24,10 @@ return {
       ensure_installed = { "delve", "go-debug-adapter", "python" },
     },
   },
+  {
+    "nvim-treesitter/nvim-treesitter",
+    opts = {
+      ensure_installed = { "bash", "yaml", "python", "typescript", "dockerfile", "go" },
+    },
+  }
 }

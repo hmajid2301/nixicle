@@ -1,14 +1,4 @@
 return {
-  -- You can also add new plugins here as well:
-  -- Add plugins, the lazy syntax
-  -- "andweeb/presence.nvim",
-  -- {
-  --   "ray-x/lsp_signature.nvim",
-  --   event = "BufRead",
-  --   config = function()
-  --     require("lsp_signature").setup()
-  --   end,
-  -- },
   {
     "Mofiqul/dracula.nvim",
     opts = function(_, opts)
@@ -38,7 +28,12 @@ return {
     event = "VimEnter",
     priority = 500,
     opts = {
-      autoload = true
+      use_git_branch = true,
+      follow_cwd = true,
+      autoload = true,
+      on_autoload_no_session = function()
+        require("alpha").start(true)
+      end,
     }
   },
   {

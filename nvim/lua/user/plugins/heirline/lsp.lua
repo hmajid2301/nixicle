@@ -7,6 +7,10 @@ local lsp_map = {
   lua_ls = "lua",
   json_ls = "json",
   tsserver = "typescript",
+  marksman = "markdown",
+  yamlls = "yaml",
+  docker_ls = "docker",
+  docker_compose_language_service = "docker_compose",
   tailwindcss = "",
   golangci_lint = "",
 }
@@ -28,11 +32,10 @@ local LspActive = {
 
       local current_buff = vim.api.nvim_get_current_buf()
       for _, client in pairs(vim.lsp.get_active_clients({ bufnr = current_buff })) do
-        local show_name = client.name
         if client.name ~= 'null-ls' and lsp_map[client.name] ~= "" then
-          show_name = lsp_map[client.name]
+          local show_name = lsp_map[client.name] or client.name
+          table.insert(names, show_name)
         end
-        table.insert(names, show_name)
       end
 
       return "ﯶ " .. table.concat(names, ", ") .. " "
