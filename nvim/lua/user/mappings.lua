@@ -24,7 +24,7 @@ return {
     ["<leader>cd"] = { require("telescope").extensions.zoxide.list, desc = "Change directory using zoxide" },
     ["<C-o>"] = { "o<Esc>", desc = "Create new line below without leaving normal mode" },
     ["<C-O>"] = { "O<Esc>", desc = "Create new line above without leaving normal mode" },
-    ["<leader>u"] = { "<cmd>Telescope undo<cr>", desc = "Show undoo tree" },
+    ["<leader>uu"] = { "<cmd>Telescope undo<cr>", desc = "Show undoo tree" },
   },
   x = {
     ["<leader>p"] = { "\"_dP", desc = "Paste without updating register" },

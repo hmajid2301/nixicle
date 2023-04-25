@@ -1,0 +1,6 @@
+- link:
+    ~/.config/keyb/:
+      path: keyb/**
+      glob: true
+      create: true
+      force: true

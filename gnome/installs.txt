@@ -6,10 +6,12 @@ android-studio
 asdf-vm-git
 betterdiscord-installer-bin
 brave-bin
+brotab-git
 cava
 cheat
 debtap
 dracula-grub-theme-git
+dragon-drop
 dynamic-wallpaper-editor
 extension-manager-git
 flyctl
@@ -25,6 +27,7 @@ google-cloud-sdk
 goverlay-bin
 gradience-git
 hibernator
+keyb
 logseq-desktop-bin
 material-cursors-git
 mullvad-vpn-bin
@@ -40,12 +43,14 @@ preload
 protonup-qt
 raider-file-shredder
 restic-automatic-backup-scheduler
+rtx
 showmethekey
 skeuowaita-git
 spicetify-cli
 spicetify-theme-dracula-git
 spot-client
 spotify
+sunwait
 tela-circle-icon-theme-git
 timeshift
 video-trimmer

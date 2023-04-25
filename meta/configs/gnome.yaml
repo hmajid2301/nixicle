@@ -1,10 +1,8 @@
 - link:
-    ~/.themes/my_theme:
-      path: themes/my_theme/**
-      glob: true
+    ~/.themes/my_theme/gnome-shell/gnome-shell.css:
+      path: themes/my_theme/gnome-shell/gnome-shell.css
       create: true
       force: true
-
-- shell:
-    - dconf load / < gnome/settings.ini
-    - yay -S $(cat gnome/installs.txt)
+# - shell:
+#     - dconf load / < gnome/settings.ini
+#     - yay -S $(cat gnome/installs.txt)

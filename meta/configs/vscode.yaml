@@ -1,12 +1,10 @@
 - link:
     # Linux specific config
     ~/.config/Code/User/settings:
-      if: "[[ `uname` = Linux ]]"
       path: vscode/settings.json
       force: true
 
     ~/.config/Code/User/keybindings.json:
-      if: "[[ `uname` = Linux ]]"
       path: vscode/linux/keybindings.json
       force: true
 

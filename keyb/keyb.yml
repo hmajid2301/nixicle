@@ -1,0 +1,35 @@
+- name: astronvim
+  keybinds:
+    - name: Rename
+      key: Space + l + r
+
+- name: telescope undo
+  keybinds:
+    - name: Copy additions
+      key: ctrl + r
+    - name: Copy deletions
+      key: shift + ctrl + r
+    - name: Restore this version
+      key: ctrl + c + r
+
+- name: vim surround
+  keybinds:
+    - name: Delete surrounding function
+      key: d + s + f
+
+- name: tmux
+  prefix: ctrl + a
+  keybinds:
+    - name: Create new window
+      key: c
+    - name: Detach current session
+      key: d
+    - name: View all sessions
+      key: w
+    - name: Swap between projects and sessions
+      key: T
+    - name: Full size pane
+      key: z
+    - name: Prev, next window
+      key: Shift + {←, →}
+      ignore_prefix: true
