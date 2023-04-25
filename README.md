@@ -70,7 +70,7 @@ CLI tools that I use often include:
 I wanted to have wallpaper that changes with the day, I slightly changed the [sunpaper script](https://github.com/hexive/sunpaper).
 Which is a great script because it changes depending on the time of day i.e. when sunsets/rises.
 
-## NeoVim
+## Neovim
 
 ### Screenshots
 
@@ -93,6 +93,7 @@ Check out this cool place for tracking my neovim setup:
 
 ## Appendix
 
+- [Dropbox with extra assets](https://www.dropbox.com/sh/rqs2zce3ugf1dz2/AABam3J8BF5WOCvmYjVSXWKIa?dl=0)
 - <a href="https://www.flaticon.com/free-icons/dot" title="dot icons">Dot icons created by Roundicons - Flaticon</a>
 - [Wallpaper](https://old.reddit.com/r/wallpapers/comments/3ueq55/lakeside_day_night_transition_credit_louis_coyle/)
 

@@ -12,14 +12,6 @@ install: ## Run dotbot install script
 	./install-profile -c $(profile)
 
 
-vscode-extension-restore: ## Install extensions from vscode/extensions.txt
-	cat ./vscode/extensions.txt | xargs -L 1 code --install-extension
-
-
-vscode-extension-backup: ## Save all current extensions to vscode/extensions.txt
-	code --list-extensions > vscode/extensions.txt
-
-
 gnome-backup: ## Backup gnome settings
 	dconf dump / > gnome/settings.ini
 	pacman -Qqme > gnome/installs.txt

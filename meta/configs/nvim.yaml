@@ -1,6 +1,7 @@
+- shell:
+    - git clone --depth 1 https://github.com/AstroNvim/AstroNvim ~/.config/nvim || true
+
 - link:
-    ~/.config/nvim:
-      path: nvim/**
+    ~/.config/nvim/lua/user:
+      path: nvim/lua/user/**
       glob: true
-      create: true
-      force: true

@@ -2,5 +2,3 @@
     ~/.config/fish:
       path: fish/**
       glob: true
-      create: true
-      force: true

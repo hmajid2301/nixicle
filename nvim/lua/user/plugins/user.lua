@@ -13,6 +13,24 @@ return {
       }
     end,
   },
+  -- {
+  --   "rebelot/heirline.nvim",
+  --   event = "BufEnter",
+  --   opts = function()
+  --     local status = require "astronvim.utils.status"
+  --     return {
+  --       opts = {
+  --         disable_winbar_cb = function(args)
+  --           if not vim.api.nvim_buf_is_valid(args.buf) then return end
+  --           return status.condition.buffer_matches({
+  --             buftype = { "terminal", "prompt", "nofile", "help", "quickfix" },
+  --             filetype = { "NvimTree", "neo%-tree", "dashboard", "Outline", "aerial" },
+  --           }, args.buf)
+  --         end,
+  --       },
+  --     }
+  --   end
+  -- },
   {
     "colevoss/nvimpire",
     opts = {},
