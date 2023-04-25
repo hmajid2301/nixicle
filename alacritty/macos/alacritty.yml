@@ -5,8 +5,8 @@ shell:
   program: /usr/local/bin/fish
 font:
   normal:
-    family: MonoLisa
-    style: Book
+    family: MonoLisa Nerd Font
+    style: Regular
   bold:
     family: MonoLisa
     style: Bold

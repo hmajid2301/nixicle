@@ -31,6 +31,11 @@ return {
       use_git_branch = true,
       follow_cwd = true,
       autoload = true,
+      allowed_dirs = {
+        "~/.dotfiles",
+        "~/work",
+        "~/projects",
+      },
       on_autoload_no_session = function()
         require("alpha").start(true)
       end,
