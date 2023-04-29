@@ -13,10 +13,10 @@ install: ## Run dotbot install script
 
 
 gnome-backup: ## Backup gnome settings
-	dconf dump / > gnome/settings.ini
-	pacman -Qqme > gnome/installs.txt
+	dconf dump / > linux/gnome/settings.ini
+	pacman -Qqme > linux/gnome/installs.txt
 
 
 gnome-restore: ## Restore gnome settings
-	dconf load / < gnome/settings.ini
-	yay -S $(cat gnome/installs.txt)
+	dconf load / < linux/gnome/settings.ini
+	yay -S $(cat linux/gnome/installs.txt)

@@ -1,5 +1,5 @@
 import:
-  - ~/dotfiles/alacritty/theme.yml
+  - ~/dotfiles/alacritty/themes/catppuccin-frappe.yml
 
 shell:
   program: /usr/local/bin/fish
@@ -32,10 +32,14 @@ env:
 
 key_bindings:
   - { key: C, mods: Command, chars: "\x03" }
-  - { key: D, mods: Command, chars: "\x04" }
-  - { key: R, mods: Command, chars: "\x12" }
+  - { key: D, mods: Command, chars: "\x05" }
+  - { key: R, mods: Command, chars: "\x13" }
   - { key: W, mods: Command, chars: "\x17" }
   - { key: A, mods: Command, chars: "\x01" }
+  - { key: H, mods: Command, chars: "\x08" }
+  - { key: J, mods: Command, chars: "\x0A" }
+  - { key: K, mods: Command, chars: "\x0B" }
+  - { key: L, mods: Command, chars: "\x0C" }
   - { key: Back, mods: Super, chars: "\x15" }
   - { key: Left, mods: Super, chars: "\eb" }
   - { key: Right, mods: Super, chars: "\ef" }

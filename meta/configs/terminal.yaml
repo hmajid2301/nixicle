@@ -1,6 +1,4 @@
 - link:
-    ~/.config/alacritty/theme.yml: alacritty/theme.yml
-
     ~/.config/alacritty/alacritty.yml:
       path: alacritty/linux/alacritty.yml
       force: true

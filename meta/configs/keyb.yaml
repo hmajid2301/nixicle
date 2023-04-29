@@ -1,4 +1,0 @@
-- link:
-    ~/.config/keyb/:
-      path: keyb/**
-      glob: true

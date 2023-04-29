@@ -2,51 +2,48 @@
     - homebrew/cask-fonts
 
 - brew:
-    - zoxide
+    - ag
+    - amethyst
     - bat
-    - fd
-    - ripgrep
+    - bottom
+    - broot
+    - chafa
+    - cheat
+    - choose
+    - coreutils
+    - ctop
+    - curlie
+    - diff-so-fancy
+    - dog
+    - dust
+    - entr
     - exa
+    - fd
+    - fish
+    - font-hack-nerd-font
+    - fzf
+    - go
+    - go-task
+    - gping
     - httpie
     - hyperfine
-    - dust
-    - tealdeer
-    - sd
-    - diff-so-fancy
-    - ctop
-    - broot
-    - procs
-    - neofetch
-    - yq
-    - fzf
-    - nvim
-    - vim
-    - make
-    - entr
-    - starship
-    - fish
-    - go
-    - font-hack-nerd-font
-    - ag
-    - mcfly
-    - choose
-    - cheat
-    - gping
-    - procs
-    - curlie
-    - dog
-    - thefuck
-    - chafa
-    - navi
-    - go-task
-    - lazygit
-    - bottom
-    - tree-sitter
-    - tmux
-    - coreutils
     - lazydocker
+    - lazygit
+    - make
+    - mcfly
     - mdp
-    - amethyst
-
+    - navi
+    - neofetch
+    - nvim
+    - procs
+    - ripgrep
+    - sd
+    - starship
+    - tealdeer
+    - thefuck
+    - tmux
+    - tree-sitter
+    - yq
+    - zoxide
 - shell:
     - tldr --update

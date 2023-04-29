@@ -1,8 +1,7 @@
-nvim
+neovim
 terminal
 terminal.mac
 shell
-vscode
 tmux
 ssh
 git

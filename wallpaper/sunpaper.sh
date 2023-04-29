@@ -25,7 +25,7 @@ longitude="-0.127758W"
 # Apple: The-Beach The-Cliffs The-Lake The-Desert
 # Louis Coyle: Lakeside
 # 
-wallpaperPath="$HOME/Downloads/sunpaper/images/Lakeside"
+wallpaperPath="$HOME/wallpaper/24h_wallpaper/LakesideDeer"
 #wallpaperPath="$HOME/wallpaper/sunpaper"
 
 # Set how you want your wallpaper displayed

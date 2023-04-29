@@ -1,33 +1,25 @@
-import:
-  - ~/dotfiles/alacritty/theme.yml
-
+import: [ ~/dotfiles/alacritty/themes/catppuccin-frappe.yml ]
 shell:
   program: /usr/bin/fish
 font:
   normal:
-    family: "MonoLisa Nerd Font"
+    family: MonoLisa Nerd Font
     style: Regular
   bold:
-    family: "MonoLisa Nerd Font"
+    family: MonoLisa Nerd Font
     style: Bold
   italic:
-    family: "MonoLisa Nerd Font"
+    family: MonoLisa Nerd Font
     style: Italic
-
   size: 14.0
-
 window:
   padding:
     x: 30
     y: 30
   decorations: none
-
 selection:
   save_to_clipboard: true
-
 mouse_bindings:
   - { mouse: Right, action: Paste }
-
 env:
   TERM: xterm-256color
-  # TERM: alacritty

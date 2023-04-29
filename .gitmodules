@@ -10,3 +10,6 @@
 [submodule "meta/dotbot-brew"]
 	path = meta/dotbot-brew
 	url = https://github.com/d12frosted/dotbot-brew.git
+[submodule "neovim"]
+	path = neovim
+	url = git@github.com:hmajid2301/starter.git

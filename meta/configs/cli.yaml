@@ -1,0 +1,4 @@
+- link:
+    ~/.config/:
+      path: cli/**
+      glob: true

@@ -1,13 +1,18 @@
-set PATH $HOME/.pyenv/bin $HOME/.poetry/bin $HOME/.local/bin $HOME/go/bin /usr/local/bin $HOME/.cargo/bin $PATH 
+set PATH  $HOME/.local/bin $HOME/go/bin /usr/local/bin $HOME/.cargo/bin $HOME/.tmux/plugins/t-smart-tmux-session-manager/bin $PATH 
 set -x GOPATH $HOME/
 set -x EDITOR vim
-fish_add_path $HOME/.tmux/plugins/t-smart-tmux-session-manager/bin
-fish_add_path $HOME/.config/tmux/plugins/t-smart-tmux-session-manager/bin
 
 starship init fish | source
 zoxide init fish | source
-source ~/.config/fish/extra.fish
+rtx activate fish | source
 
 fish_vi_key_bindings
 bind --mode insert --sets-mode default jk repaint
-/usr/local/bin/rtx activate fish | source
+
+export FZF_DEFAULT_OPTS="
+--color=bg+:#414559,bg:#303446,spinner:#f2d5cf,hl:#e78284 
+--color=fg:#c6d0f5,header:#e78284,info:#ca9ee6,pointer:#f2d5cf 
+--color=marker:#f2d5cf,fg+:#c6d0f5,prompt:#ca9ee6,hl+:#e78284
+"
+
+source ~/.config/fish/extra.fish

@@ -1,8 +1,7 @@
 - link:
-    ~/.themes/my_theme/gnome-shell/gnome-shell.css:
-      path: themes/my_theme/gnome-shell/gnome-shell.css
-      create: true
-      force: true
+    ~/.themes/catppuccin/:
+      path: linux/gnome/themes/catppuccin/**
+      glob: true
 # - shell:
 #     - dconf load / < gnome/settings.ini
 #     - yay -S $(cat gnome/installs.txt)

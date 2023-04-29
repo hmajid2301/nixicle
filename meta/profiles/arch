@@ -1,10 +1,9 @@
-nvim
+neovim
 terminal
 shell
-vscode
 tmux
 ssh
 git
-keyb
+cli
 gnome
-packages.arch-sudo
+#packages.arch-sudo
