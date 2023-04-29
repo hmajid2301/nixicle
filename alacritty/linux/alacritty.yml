@@ -1,4 +1,4 @@
-import: [ ~/dotfiles/alacritty/themes/catppuccin-frappe.yml ]
+import: [~/dotfiles/alacritty/themes/catppuccin-frappe.yml]
 shell:
   program: /usr/bin/fish
 font:
