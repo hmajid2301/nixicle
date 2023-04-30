@@ -1,4 +1,4 @@
-set PATH  $HOME/.local/bin $HOME/go/bin /usr/local/bin $HOME/.cargo/bin $HOME/.tmux/plugins/t-smart-tmux-session-manager/bin $PATH 
+set PATH $HOME/.local/bin $HOME/go/bin /usr/local/bin $HOME/.cargo/bin $HOME/.tmux/plugins/t-smart-tmux-session-manager/bin $PATH
 set -x GOPATH $HOME/
 set -x EDITOR vim
 
@@ -14,5 +14,7 @@ export FZF_DEFAULT_OPTS="
 --color=fg:#c6d0f5,header:#e78284,info:#ca9ee6,pointer:#f2d5cf 
 --color=marker:#f2d5cf,fg+:#c6d0f5,prompt:#ca9ee6,hl+:#e78284
 "
+
+fish_config theme save "Catppuccin Frappe"
 
 source ~/.config/fish/extra.fish
