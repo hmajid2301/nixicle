@@ -5,22 +5,26 @@ function _fzf_search_history --description "Search command history. Replace the 
         builtin history merge
     end
 
-    set command_with_ts (
+    # Delinate commands throughout pipeline using null rather than newlines because commands can be multi-line
+    set commands_selected (
         # Reference https://devhints.io/strftime to understand strftime format symbols
         builtin history --null --show-time="%m-%d %H:%M:%S │ " |
         _fzf_wrapper --read0 \
+            --print0 \
+            --multi \
             --tiebreak=index \
+            --prompt="Search History> " \
             --query=(commandline) \
-            # preview current command using fish_ident in a window at the bottom 3 lines tall
             --preview="echo -- {4..} | fish_indent --ansi" \
             --preview-window="bottom:3:wrap" \
             $fzf_history_opts |
-        string collect
+        string split0 |
+        # remove timestamps from commands selected
+        string replace --regex '^\d\d-\d\d \d\d:\d\d:\d\d │ ' ''
     )
 
     if test $status -eq 0
-        set command_selected (string split --max 1 " │ " $command_with_ts)[2]
-        commandline --replace -- $command_selected
+        commandline --replace -- $commands_selected
     end
 
     commandline --function repaint

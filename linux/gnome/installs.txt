@@ -7,6 +7,10 @@ asdf-vm-git
 betterdiscord-installer-bin
 brave-bin
 brotab-git
+catppuccin-gtk-theme-frappe
+catppuccin-gtk-theme-latte
+catppuccin-gtk-theme-macchiato
+catppuccin-gtk-theme-mocha
 cava
 charasay
 cheat
@@ -16,7 +20,6 @@ diagnostic-languageserver
 dracula-grub-theme-git
 dragon-drop
 dynamic-wallpaper-editor
-erdtree
 extension-manager-git
 flyctl
 gdm-settings
@@ -39,7 +42,7 @@ nerd-fonts-complete-starship
 netlify
 obfuscate
 openrgb-git
-papirus-folders
+papirus-folders-catppuccin-git
 pnpm
 preload
 protonup-qt

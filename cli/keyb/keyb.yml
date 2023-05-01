@@ -16,6 +16,8 @@
   keybinds:
     - name: Delete surrounding function
       key: d + s + f
+    - name: Surround word in parenthesis
+      key: g + z + a + i + w + )
 
 - name: tmux
   prefix: ctrl + a

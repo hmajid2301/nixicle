@@ -55,24 +55,24 @@
 }
 
 .popup-menu-item:hover {
-  /* background-color: #babbf1; */
+  background-color: #babbf1;
   background-color: #000000;
   color: #babbf1;
 }
 
 .popup-menu-item:active {
-  /* background-color: #babbf1; */
+  background-color: #babbf1;
   background-color: #000000;
   color: #ffffff;
 }
 .popup-sub-menu {
-  /* background-color: #babbf1; */
+  background-color: #babbf1;
   background-color: #000000;
   color: black;
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.03);
 }
 .popup-sub-menu .popup-menu-item {
-  /* background-color: #babbf1; */
+  background-color: #babbf1;
   background-color: #000000;
   color: black;
   box-shadow: none;

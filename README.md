@@ -14,33 +14,32 @@ make install profile=arch
 
 ## System Overview
 
-![Quick Settings](images/quick_settings.png)
-![Tmux](images/tmux.png)
+![neovim](images/dev.png)
+![Tmux](images/fun.png)
 
 - OS: Arch Linux
 - DE: Gnome
 - Shell: Fish
   - Prompt: [Starship](https://starship.rs/)
 - Terminal: Alacritty
-  - Editor: Neovim (using [astronvim](https://astronvim.com/) config)
-- Colorscheme: [Dracula](https://draculatheme.com/)
-- Icons: [Tela-circle-dracula-dark](https://github.com/vinceliuice/Tela-circle-icon-theme)
+  - Editor: Neovim (using [LazyVim](https://www.lazyvim.org) config)
+- Colorscheme: [Catppuccin for EVERYTHING!!!](https://github.com/catppuccin)
 - Fonts: [Mono Lisa](https://www.monolisa.dev/)
 
 ### Extensions
 
 I use the following Gnome extension. You can find the config for the extensions in this [massive file here](gnome/settings.ini).
 
-- [Aylurs Widgets](https://extensions.gnome.org/extension/5338/aylurs-widgets/)
-- [Just Perfection](https://extensions.gnome.org/extension/3843/just-perfection/)
-- [Logo Menu](https://extensions.gnome.org/extension/4451/logo-menu/)
-- [Blur my Shell](https://extensions.gnome.org/extension/3193/blur-my-shell/)
 - [Pop Shell](https://github.com/pop-os/shell)
-  - Used for tiling
-- [Rounded Window Corners](https://extensions.gnome.org/extension/5237/rounded-window-corners/)
-- [Pano](https://extensions.gnome.org/extension/5279/pano/)
+- [Space Bar](https://extensions.gnome.org/extension/5090/space-bar/)
+- [Aylurs Widgets](https://extensions.gnome.org/extension/5338/aylurs-widgets/)
 - [AppIndicator](https://extensions.gnome.org/extension/615/appindicator-support/)
 - [Updates Indicator](https://extensions.gnome.org/extension/1010/archlinux-updates-indicator/)
+- [Blur my Shell](https://extensions.gnome.org/extension/3193/blur-my-shell/)
+- [Rounded Window Corners](https://extensions.gnome.org/extension/5237/rounded-window-corners/)
+- [Pano](https://extensions.gnome.org/extension/5279/pano/)
+- [Just Perfection](https://extensions.gnome.org/extension/3843/just-perfection/)
+- [Logo Menu](https://extensions.gnome.org/extension/4451/logo-menu/)
 
 ### Top Bar
 
@@ -78,7 +77,7 @@ Which is a great script because it changes depending on the time of day i.e. whe
 ![Neovim Telescope](images/neovim_telescope.png)
 ![Neovim Noice](images/neovim_noice.png)
 
-I have started using nvim as my default editor (IDE?). It uses [astronvim](astronvim.com/) as
+I have started using nvim as my default editor (IDE?). It uses [LazyVim](lazyvim.org/) as
 the base config and adds a few plugins on top.
 
 - [trouble](https://github.com/folke/trouble.nvim): For showing all lsp diagnostic issues in a file
@@ -89,7 +88,7 @@ Including the status bar.
 
 Check out this cool place for tracking my neovim setup:
 
-- <https://dotfyle.com/hmajid2301/dotfiles-nvim>
+- <https://dotfyle.com/hmajid2301/starter>
 
 ## Appendix
 
