@@ -6,4 +6,4 @@ ssh
 git
 cli
 gnome
-#packages.arch-sudo
+packages.arch-sudo
