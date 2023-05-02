@@ -13,6 +13,3 @@
 [submodule "neovim"]
 	path = neovim
 	url = git@github.com:hmajid2301/starter.git
-[submodule "meta/dotbot-ifplatform"]
-	path = meta/dotbot-ifplatform
-	url = https://github.com/ssbanerje/dotbot-ifplatform.git
