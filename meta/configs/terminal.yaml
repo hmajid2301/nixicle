@@ -1,11 +1,10 @@
-- ifanylinux:
-    - link:
-        ~/.config/alacritty/alacritty.yml:
-          path: alacritty/linux/alacritty.yml
-          force: true
+- link:
+  ~/.config/alacritty/alacritty.yml:
+    path: alacritty/linux/alacritty.yml
+    force: true
 
-- ifmacos:
-    - link:
-        ~/.config/alacritty/alacritty.yml:
-          path: alacritty/macos/alacritty.yml
-          force: true
+- link:
+  ~/.config/alacritty/alacritty.yml:
+    path: alacritty/macos/alacritty.yml
+    if: "[ `uname` = Darwin ]"
+    force: true

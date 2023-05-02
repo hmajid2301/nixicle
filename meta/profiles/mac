@@ -1,8 +1,8 @@
 neovim
-terminal
 shell
 tmux
 ssh
 git
 cli
+terminal
 packages.mac

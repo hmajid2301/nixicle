@@ -1,10 +1,13 @@
 - yay:
     - ag
+    - asciiramia
     - bottom
     - broot
+    - cowsay
     - chafa
     - cheat
     - choose
+    - cmatrix
     - ctop
     - curlie
     - diff-so-fancy
@@ -15,6 +18,7 @@
     - exa
     - fd
     - fish
+    - fortune-mod
     - fuck
     - fzf
     - gdu
@@ -36,6 +40,7 @@
     - psensor
     - ripgrep
     - sd
+    - sl
     - solaar
     - starship
     - tealdeer
