@@ -40,6 +40,7 @@ key_bindings:
   - { key: J, mods: Command, chars: "\n" }
   - { key: K, mods: Command, chars: "\v" }
   - { key: L, mods: Command, chars: "\f" }
+  - { key: R, mods: Command, chars: "\x12" }
   - { key: S, mods: Command, chars: "\x13" }
   - { key: Back, mods: Super, chars: "\x15" }
   - { key: Left, mods: Super, chars: "\eb" }
