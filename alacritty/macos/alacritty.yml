@@ -36,15 +36,26 @@ key_bindings:
   - { key: R, mods: Command, chars: "\x13" }
   - { key: W, mods: Command, chars: "\x17" }
   - { key: A, mods: Command, chars: "\x01" }
-  - { key: H, mods: Command, chars: "\x08" }
-  - { key: J, mods: Command, chars: "\x0A" }
-  - { key: K, mods: Command, chars: "\x0B" }
-  - { key: L, mods: Command, chars: "\x0C" }
+  - { key: H, mods: Command, chars: "\b" }
+  - { key: J, mods: Command, chars: "\n" }
+  - { key: K, mods: Command, chars: "\v" }
+  - { key: L, mods: Command, chars: "\f" }
+  - { key: S, mods: Command, chars: "\x13" }
   - { key: Back, mods: Super, chars: "\x15" }
   - { key: Left, mods: Super, chars: "\eb" }
   - { key: Right, mods: Super, chars: "\ef" }
-  - { key: Left, mods: Command, chars: "\eOH", mode: AppCursor }
-  - { key: Right, mods: Command, chars: "\eOF", mode: AppCursor }
+  - {
+      key: Left,
+      mods: Command,
+      chars: "\eOH",
+      mode: AppCursor
+    }
+  - {
+      key: Right,
+      mods: Command,
+      chars: "\eOF",
+      mode: AppCursor
+    }
   - { key: J, mods: Alt, chars: "\ej" }
   - { key: K, mods: Alt, chars: "\ek" }
   - { key: H, mods: Alt, chars: "\eh" }
