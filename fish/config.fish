@@ -16,4 +16,5 @@ export FZF_DEFAULT_OPTS="
 --color=marker:#f2d5cf,fg+:#c6d0f5,prompt:#ca9ee6,hl+:#e78284
 "
 
-source ~/.config/fish/extra.fish
+source ~/dotfiles/fish/extra.fish
+source ~/dotfiles/fish/conf.d/abbr.fish
