@@ -3,27 +3,22 @@
 	name = Haseeb Majid
 	signingkey = A236785D59F190761E9CE8EC78283DB3D233E1F9
 [includeIf "gitdir:/Users/"]
-        path = .gitconfig.mac
+  path = .gitconfig.mac
 [core]
-        editor = vim
-        pager = diff-so-fancy | less --tabs=4 -RFX
+  editor = nvim
+  pager = delta
 [interactive]
-        diffFilter = diff-so-fancy --patch
+  diffFilter = delta --color-only
 [color]
-        ui = true
-[color "diff-highlight"]
-        oldNormal = red bold
-        oldHighlight = red bold 52
-        newNormal = green bold
-        newHighlight = green bold 22
-[color "diff"]
-        meta = 11
-        frag = magenta bold
-        func = 146 bold
-        commit = yellow bold
-        old = red bold
-        new = green bold
-        whitespace = red reverse
+  ui = true
+[delta]
+  navigate = true    # use n and N to move between diff sections
+  light = false      # set to true if you're in a terminal w/ a light background color (e.g. the default macOS terminal)
+  side-by-side = true
+[diff]
+  colorMoved = default
+[merge]
+    conflictstyle = diff3
 [pull]
 	ff = only
 [push]
@@ -40,4 +35,4 @@
 	clean = git-lfs clean -- %f
 # This next lines include Netlify's Git Credential Helper configuration in your Git configuration.
 [include]
-        path = /home/haseeb/.config/netlify/helper/git-config
+  path = /home/haseeb/.config/netlify/helper/git-config

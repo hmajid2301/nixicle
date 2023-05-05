@@ -14,7 +14,7 @@ SETUVAR --export EXA_LC_OPTIONS:\x2d\x2dacross
 SETUVAR --export EXA_LD_OPTIONS:\x2d\x2donly\x2ddirs
 SETUVAR --export EXA_LE_OPTIONS:\x2d\x2dextended\x1e\x2d\x2dlong
 SETUVAR --export EXA_LG_OPTIONS:\x2d\x2dgit\x1e\x2d\x2dgit\x2dignore\x1e\x2d\x2dlong
-SETUVAR --export EXA_LID_OPTIONS:\x2d\x2dicons
+SETUVAR --export EXA_LID_OPTIONS:\x2d\x2dicons\x1e\x2d\x2donly\x2ddirs
 SETUVAR --export EXA_LI_OPTIONS:\x2d\x2dicons
 SETUVAR --export EXA_LL_OPTIONS:\x2d\x2dlong
 SETUVAR --export EXA_LO_OPTIONS:\x2d\x2doneline

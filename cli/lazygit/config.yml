@@ -17,3 +17,17 @@ theme:
     - "#8caaee" # Blue
   unstagedChangesColor:
     - red # Red
+git:
+  paging:
+    colorArg: always
+    pager: delta --dark --paging=never
+
+customCommands:
+  - key: "W"
+    prompts:
+      - type: "input"
+        title: "Commit"
+        initialValue: ""
+    command: git commit -m "{{index .PromptResponses 0}}" --no-verify
+    context: "global"
+    subprocess: true
