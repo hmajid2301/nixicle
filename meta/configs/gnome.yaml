@@ -2,6 +2,3 @@
     ~/.themes/catppuccin/:
       path: linux/gnome/themes/catppuccin/**
       glob: true
-# - shell:
-#     - dconf load / < gnome/settings.ini
-#     - yay -S $(cat gnome/installs.txt)

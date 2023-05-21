@@ -1,6 +1,6 @@
 import: [~/dotfiles/alacritty/themes/catppuccin-frappe.yml]
 shell:
-  program: /usr/bin/fish
+  program: fish
 font:
   normal:
     family: MonoLisa Nerd Font

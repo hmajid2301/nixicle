@@ -1,4 +1,0 @@
-- link:
-    ~/.tmux.conf: tmux/tmux.conf
-- shell:
-    - git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm || true

@@ -32,10 +32,7 @@ for config in ${CONFIGS} ${@}; do
     suffix="-sudo"
     echo -e "$(<"${BASE_DIR}/${META_DIR}/${BASE_CONFIG}${CONFIG_SUFFIX}")\n$(<"${BASE_DIR}/${META_DIR}/${CONFIG_DIR}/${config%"$suffix"}${CONFIG_SUFFIX}")" > "$configFile"
 
-    cmd=("${BASE_DIR}/${META_DIR}/${DOTBOT_DIR}/${DOTBOT_BIN}" -d "${BASE_DIR}" \
-        -p "${BASE_DIR}/${META_DIR}/dotbot-apt/apt.py" \
-        -p "${BASE_DIR}/${META_DIR}/dotbot-brew/brew.py" \
-        -p "${BASE_DIR}/${META_DIR}/dotbot-yay/yay.py" -c "$configFile" -vvvv
+    cmd=("${BASE_DIR}/${META_DIR}/${DOTBOT_DIR}/${DOTBOT_BIN}" -d "${BASE_DIR}" -c "$configFile" -vvvv
         )
 
     if [[ $config == *"sudo"* ]]; then

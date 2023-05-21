@@ -23,6 +23,23 @@
     - name: Surround word in parenthesis
       key: g + z + a + i + w + )
 
+- name: tmux
+  prefix: ctrl + a
+  keybinds:
+    - name: Create new window
+      key: c
+    - name: Detach current session
+      key: d
+    - name: View all sessions
+      key: w
+    - name: Swap between projects and sessions
+      key: T
+    - name: Full size pane
+      key: z
+    - name: Prev, next window
+      key: Shift + {←, →}
+      ignore_prefix: true
+
 - name: firefox
   keybinds:
     - name: Attach tab

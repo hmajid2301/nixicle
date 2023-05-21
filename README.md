@@ -4,20 +4,23 @@
 
 ## Install
 
-> :fire: I wouldn't recommend just blinding using my dotfiles. They are setup for my specific use-case. I think you're better picking and choosing what you like :smile:.
+> :fire: I wouldn't recommend just blinding using my dotfiles. They are setup for my specific use-case.
+I think you're off using this repo as reference to create your own dotfiles.
 
 ```
 git clone git@github.com:hmajid2301/dotfiles.git
 cd dotfiles
-make install profile=arch
+./install-profile nixos
 ```
+
+You can read more about my dotfiles and development workflows on my [blog here](https://haseebmajid.dev/series/my-development-workflow/) (#ShamelessPlug)
 
 ## System Overview
 
 ![neovim](images/dev.png)
 ![Tmux](images/fun.png)
 
-- OS: Arch Linux
+- OS: NixOS
 - DE: Gnome
 - Shell: Fish
   - Prompt: [Starship](https://starship.rs/)
@@ -28,16 +31,17 @@ make install profile=arch
 
 ### Extensions
 
-I use the following Gnome extension. You can find the config for the extensions in this [massive file here](gnome/settings.ini).
+I use the following Gnome extension. You can find the config for the extensions in this [here](linux/nixos/modules/gnome.nix).
 
 - [Pop Shell](https://github.com/pop-os/shell)
 - [Space Bar](https://extensions.gnome.org/extension/5090/space-bar/)
+- [Smart Auto Move](https://github.com/khimaros/smart-auto-mov)
 - [Aylurs Widgets](https://extensions.gnome.org/extension/5338/aylurs-widgets/)
 - [AppIndicator](https://extensions.gnome.org/extension/615/appindicator-support/)
-- [Updates Indicator](https://extensions.gnome.org/extension/1010/archlinux-updates-indicator/)
 - [Blur my Shell](https://extensions.gnome.org/extension/3193/blur-my-shell/)
 - [Rounded Window Corners](https://extensions.gnome.org/extension/5237/rounded-window-corners/)
 - [Pano](https://extensions.gnome.org/extension/5279/pano/)
+- [Extensions Sync](https://github.com/oae/gnome-shell-extensions-sync)
 - [Just Perfection](https://extensions.gnome.org/extension/3843/just-perfection/)
 - [Logo Menu](https://extensions.gnome.org/extension/4451/logo-menu/)
 
@@ -51,7 +55,6 @@ I use the following Gnome extension. You can find the config for the extensions 
 ### Applications
 
 I basically just installed every package from [Modern Unix](https://github.com/ibraheemdev/modern-unix).
-You can find a full list of all the packages I "use" [here](https://gitlab.com/hmajid2301/dotfiles/-/blob/main/meta/configs/packages.arch.yaml#L2-48).
 
 CLI tools that I use often include:
 
@@ -69,6 +72,19 @@ CLI tools that I use often include:
 I wanted to have wallpaper that changes with the day, I slightly changed the [sunpaper script](https://github.com/hexive/sunpaper).
 Which is a great script because it changes depending on the time of day i.e. when sunsets/rises.
 
+## Tmux
+
+I manage my projects using tmux sessions with the
+[tmux smart session manager](https://github.com/joshmedeski/t-smart-tmux-session-manager).
+
+Where I create a new session for each project I'm working on and then jump between them.
+Where a project might be:
+
+- My Blog
+- My Dotfiles
+- Full stack application
+  - A window for each project i.e. GUI and API
+
 ## Neovim
 
 ### Screenshots
@@ -80,21 +96,12 @@ Which is a great script because it changes depending on the time of day i.e. whe
 I have started using nvim as my default editor (IDE?). It uses [LazyVim](lazyvim.org/) as
 the base config and adds a few plugins on top.
 
-- [trouble](https://github.com/folke/trouble.nvim): For showing all lsp diagnostic issues in a file
-- [telescope zoxide](https://github.com/jvgrootveld/telescope-zoxide): For showing all lsp diagnostic issues in a file
-
-Some of the nvim setup was heavily inspired by this [repo](https://github.com/colevoss/neovoss).
-Including the status bar.
-
-Check out this cool place for tracking my neovim setup:
-
-- <https://dotfyle.com/hmajid2301/starter>
-
 ## Appendix
 
 - [Dropbox with extra assets](https://www.dropbox.com/sh/rqs2zce3ugf1dz2/AABam3J8BF5WOCvmYjVSXWKIa?dl=0)
 - <a href="https://www.flaticon.com/free-icons/dot" title="dot icons">Dot icons created by Roundicons - Flaticon</a>
 - [Wallpaper](https://old.reddit.com/r/wallpapers/comments/3ueq55/lakeside_day_night_transition_credit_louis_coyle/)
+- <https://dotfyle.com/hmajid2301/starter>
 
 ### Inspired By
 

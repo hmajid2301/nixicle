@@ -1,0 +1,8 @@
+- link:
+    ~/.config/home-manager/:
+      path: linux/nixos/**
+      exclude: [ linux/nixos/system ]
+      glob: true
+
+- shell:
+   - bat cache --build

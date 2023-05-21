@@ -33,6 +33,8 @@ env:
 key_bindings:
   - { key: C, mods: Command, chars: "\x03" }
   - { key: D, mods: Command, chars: "\x05" }
+  - { key: N, mods: Command, chars: "\x0e" }
+  - { key: U, mods: Command, chars: "\x15" }
   - { key: R, mods: Command, chars: "\x13" }
   - { key: W, mods: Command, chars: "\x17" }
   - { key: A, mods: Command, chars: "\x01" }

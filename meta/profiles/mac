@@ -4,5 +4,5 @@ tmux
 ssh
 git
 cli
-terminal
+terminal.mac
 packages.mac

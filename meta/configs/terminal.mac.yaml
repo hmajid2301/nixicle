@@ -1,0 +1,4 @@
+- link:
+  ~/.config/alacritty/alacritty.yml:
+    path: alacritty/macos/alacritty.yml
+    force: true

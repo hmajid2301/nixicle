@@ -1,4 +1,0 @@
-- link:
-    ~/.config/fish:
-      path: fish/**
-      glob: true
