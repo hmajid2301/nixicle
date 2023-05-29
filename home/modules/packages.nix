@@ -16,6 +16,7 @@ in
     charasay
 
     # other
+    any-nix-shell
     brotab
     brave
     betterdiscord-installer

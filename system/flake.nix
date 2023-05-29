@@ -43,10 +43,10 @@
           ./modules/privacy.nix
         ];
       };
+      home.packages = with pkgs; [
+        rtx
+      ];
     };
-    home.packages = with pkgs; [
-      rtx
-    ];
   };
 }
 

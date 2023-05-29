@@ -15,6 +15,7 @@
         starship init fish | source
         zoxide init fish | source
         # rtx activate fish | source
+        any-nix-shell fish --info-right | source
       '' +
 
       # fifc setup

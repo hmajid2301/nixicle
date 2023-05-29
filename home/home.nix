@@ -13,6 +13,7 @@
     ./modules/firefox.nix
     ./modules/gnome.nix
     ./modules/git.nix
+    ./modules/nvim.nix
     ./modules/tmux.nix
     ./modules/packages.nix
     ./modules/unix_tools.nix
