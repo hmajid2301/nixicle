@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=Wallpaper Sunpaper
+GenericName=Start the sunpaper script to change wallpaper
+Exec=/home/haseeb/.config/home-manager/wallpaper/sunpaper.sh -d
+Terminal=false
+Type=Application
+X-GNOME-Autostart-enabled=true

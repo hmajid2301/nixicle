@@ -1,19 +1,38 @@
 # Dotfiles
 
-:house: My dotfiles setup using [Dotbot](https://github.com/anishathalye/dotbot/).
+:house: My dotfiles repo, setup using nixos/home-manager
 
 ## Install
 
 > :fire: I wouldn't recommend just blinding using my dotfiles. They are setup for my specific use-case.
 I think you're off using this repo as reference to create your own dotfiles.
 
-```
-git clone git@github.com:hmajid2301/dotfiles.git
+```bash
+git clone git@github.com:hmajid2301/dotfiles.git ~/dotfiles/
 cd dotfiles
-./install-profile nixos
+
+# System wide config (this will likely break your machine)
+sudo nixos-rebuild switch --flake ~/dotfiles/system#haseeb
+# Home config
+home-manager switch --flake ~/dotfiles/home#haseeb
 ```
 
-You can read more about my dotfiles and development workflows on my [blog here](https://haseebmajid.dev/series/my-development-workflow/) (#ShamelessPlug)
+You can read more about my dotfiles and development workflows on my [blog here](https://haseebmajid.dev/series/my-development-workflow/) (#ShamelessPlug).
+
+## Layout
+
+The project has the following layout:
+
+### System
+
+This contains all the config to configure my PC (i.e. Framework Laptop). Such as setting up LUKS encryption.
+
+### Home
+
+This contains most of my configuration, including packages to install. Config for various apps including nvim and
+tmux. Most of my tools are configured using nix files. Most things are configured using nix and a few tools are
+configured using normal files [dotfiles](./home/modules/config).
+
 
 ## System Overview
 
@@ -101,7 +120,6 @@ the base config and adds a few plugins on top.
 - [Dropbox with extra assets](https://www.dropbox.com/sh/rqs2zce3ugf1dz2/AABam3J8BF5WOCvmYjVSXWKIa?dl=0)
 - <a href="https://www.flaticon.com/free-icons/dot" title="dot icons">Dot icons created by Roundicons - Flaticon</a>
 - [Wallpaper](https://old.reddit.com/r/wallpapers/comments/3ueq55/lakeside_day_night_transition_credit_louis_coyle/)
-- <https://dotfyle.com/hmajid2301/starter>
 
 ### Inspired By
 

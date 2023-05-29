@@ -1,4 +1,0 @@
-- link:
-    ~/.themes/catppuccin/:
-      path: linux/gnome/themes/catppuccin/**
-      glob: true

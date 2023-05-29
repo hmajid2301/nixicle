@@ -1,6 +1,0 @@
-[submodule "meta/dotbot"]
-	path = meta/dotbot
-	url = https://github.com/anishathalye/dotbot
-[submodule "neovim"]
-	path = neovim
-	url = git@github.com:hmajid2301/starter.git

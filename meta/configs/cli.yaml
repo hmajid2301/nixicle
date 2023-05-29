@@ -1,8 +1,0 @@
-- link:
-    ~/.config/:
-      path: cli/**
-      glob: true
-
-- shell:
-   - bat cache --build
-
