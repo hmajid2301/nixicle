@@ -1,5 +1,7 @@
 # Dotfiles
 
+> THIS IS CURRENTLY A WIP!!! (working on styling hyprland)
+
 :house: My dotfiles repo, setup using nixos/home-manager
 
 ## Install
@@ -11,13 +13,19 @@ I think you're off using this repo as reference to create your own dotfiles.
 git clone git@github.com:hmajid2301/dotfiles.git ~/dotfiles/
 cd dotfiles
 
-# System wide config (this will likely break your machine)
-sudo nixos-rebuild switch --flake ~/dotfiles/system#haseeb
-# Home config
-home-manager switch --flake ~/dotfiles/home#haseeb
+
+nix-shell
+
+# To build system configuration
+sudo nixos-rebuild --flake .#framework
+
+# To build user configuration
+home-manager --flake .#framework
 ```
 
 You can read more about my dotfiles and development workflows on my [blog here](https://haseebmajid.dev/series/my-development-workflow/) (#ShamelessPlug).
+
+> Note my dotfiles are almost always changing!
 
 ## Layout
 
@@ -29,47 +37,20 @@ This contains all the config to configure my PC (i.e. Framework Laptop). Such as
 
 ### Home
 
-This contains most of my configuration, including packages to install. Config for various apps including nvim and
+This contains most of my configuration using home-manager, including packages to install. Config for various apps including nvim and
 tmux. Most of my tools are configured using nix files. Most things are configured using nix and a few tools are
 configured using normal files [dotfiles](./home/modules/config).
 
-
 ## System Overview
 
-![neovim](images/dev.png)
-![Tmux](images/fun.png)
-
 - OS: NixOS
-- DE: Gnome
+- WM: Hyprland
 - Shell: Fish
   - Prompt: [Starship](https://starship.rs/)
 - Terminal: Alacritty
   - Editor: Neovim (using [LazyVim](https://www.lazyvim.org) config)
 - Colorscheme: [Catppuccin for EVERYTHING!!!](https://github.com/catppuccin)
 - Fonts: [Mono Lisa](https://www.monolisa.dev/)
-
-### Extensions
-
-I use the following Gnome extension. You can find the config for the extensions in this [here](linux/nixos/modules/gnome.nix).
-
-- [Pop Shell](https://github.com/pop-os/shell)
-- [Space Bar](https://extensions.gnome.org/extension/5090/space-bar/)
-- [Smart Auto Move](https://github.com/khimaros/smart-auto-mov)
-- [Aylurs Widgets](https://extensions.gnome.org/extension/5338/aylurs-widgets/)
-- [AppIndicator](https://extensions.gnome.org/extension/615/appindicator-support/)
-- [Blur my Shell](https://extensions.gnome.org/extension/3193/blur-my-shell/)
-- [Rounded Window Corners](https://extensions.gnome.org/extension/5237/rounded-window-corners/)
-- [Pano](https://extensions.gnome.org/extension/5279/pano/)
-- [Extensions Sync](https://github.com/oae/gnome-shell-extensions-sync)
-- [Just Perfection](https://extensions.gnome.org/extension/3843/just-perfection/)
-- [Logo Menu](https://extensions.gnome.org/extension/4451/logo-menu/)
-
-### Top Bar
-
-![Top Bar](images/topbar.png)
-
-- [Aylurs extension config](https://gitlab.com/hmajid2301/dotfiles/-/blob/93133f7e829409a4a4c943ef38f22ffe2f5c3508/gnome/settings.ini#L763-942)
-- Rest of the top bar is configured using css [here](themes/my_theme/gnome-shell/gnome-shell.css)
 
 ### Applications
 
@@ -83,13 +64,6 @@ CLI tools that I use often include:
 - [exa](https://github.com/ogham/exa): A replacement for `ls` with better syntax highlighting
 - [ripgrep](https://github.com/BurntSushi/ripgrep): A faster `grep`
 - [navi](https://github.com/denisidoro/navi): Interactive cheat sheet
-
-### Wallpaper
-
-![Wallpaper GIF](images/wallpaper.gif)
-
-I wanted to have wallpaper that changes with the day, I slightly changed the [sunpaper script](https://github.com/hexive/sunpaper).
-Which is a great script because it changes depending on the time of day i.e. when sunsets/rises.
 
 ## Tmux
 
@@ -106,12 +80,6 @@ Where a project might be:
 
 ## Neovim
 
-### Screenshots
-
-![Neovim](images/neovim.png)
-![Neovim Telescope](images/neovim_telescope.png)
-![Neovim Noice](images/neovim_noice.png)
-
 I have started using nvim as my default editor (IDE?). It uses [LazyVim](lazyvim.org/) as
 the base config and adds a few plugins on top.
 
@@ -119,11 +87,7 @@ the base config and adds a few plugins on top.
 
 - [Dropbox with extra assets](https://www.dropbox.com/sh/rqs2zce3ugf1dz2/AABam3J8BF5WOCvmYjVSXWKIa?dl=0)
 - <a href="https://www.flaticon.com/free-icons/dot" title="dot icons">Dot icons created by Roundicons - Flaticon</a>
-- [Wallpaper](https://old.reddit.com/r/wallpapers/comments/3ueq55/lakeside_day_night_transition_credit_louis_coyle/)
 
 ### Inspired By
 
-- <https://github.com/lime-desu/dootsfile>
-- <https://github.com/ghostx31/dotfiles/tree/37587b043f277ff5831ce5f1a3287fbaec1d9fe3>
-- <https://github.com/Anant-mishra1729/Village-Linux-rice>
-- <https://github.com/colevoss/dotfiles>
+- https://github.com/Misterio77/nix-config (Heavily!)
