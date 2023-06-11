@@ -101,6 +101,7 @@ in
           extraConfig = ''
             set -g @continuum-restore 'on'
             set -g @continuum-boot 'on'
+            set -g @continuum-save-interval '60'
           '';
         }
         tmuxPlugins.better-mouse-mode
@@ -156,6 +157,7 @@ in
         "$SHELL --login -i -c 'navi --print | head -c -1 | tmux load-buffer -b tmp - ; tmux paste-buffer -p -t {last} -b tmp -d'"
       bind-key -T prefix C-l switch -t notes
       bind-key -T prefix C-d switch -t dotfiles
+      bind-key e send-keys "tmux capture-pane -p -S - | nvim -c 'set buftype=nofile' +" Enter
     '';
   };
 }

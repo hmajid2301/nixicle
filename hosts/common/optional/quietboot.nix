@@ -1,9 +1,9 @@
 { pkgs, inputs, config, ... }:
 {
-  console = {
-    useXkbConfig = true;
-    earlySetup = false;
-  };
+  #console = {
+  #  useXkbConfig = true;
+  #  earlySetup = false;
+  #};
 
   boot = {
     plymouth = {
@@ -11,9 +11,9 @@
       themePackages = [ (pkgs.catppuccin-plymouth.override { variant = "frappe"; }) ];
       theme = "catppuccin-frappe";
     };
-    loader.timeout = 0;
+    #loader.timeout = 0;
     kernelParams = [
-      "quiet"
+      #"quiet"
       "loglevel=3"
       "systemd.show_status=auto"
       "udev.log_level=3"

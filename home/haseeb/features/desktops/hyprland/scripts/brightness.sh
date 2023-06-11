@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-iDIR="$HOME/.config/hypr/mako/icons"
+iDIR="$HOME/dotfiles/home/haseeb/features/desktops/hyprland/icons/"
 
 # Get brightness
 get_backlight() {
@@ -39,10 +39,10 @@ case "$1" in
 	get_backlight
 	;;
 "--inc")
-	change_backlight "+10%"
+	change_backlight "+5%"
 	;;
 "--dec")
-	change_backlight "10%-"
+	change_backlight "5%-"
 	;;
 *)
 	get_backlight
