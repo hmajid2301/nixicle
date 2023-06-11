@@ -4,11 +4,14 @@
   imports = [
     ./bat.nix
     ./bottom.nix
+    ./exa.nix
+    ./fzf.nix
     ./git.nix
     ./gpg.nix
     ./lazygit.nix
     ./starship.nix
     ./tmux.nix
+    ./zoxide.nix
   ];
 
   xdg.configFile."." = {
@@ -16,7 +19,7 @@
     recursive = true;
   };
 
-  programs.zoxide = {
+  programs.nix-index = {
     enable = true;
     enableFishIntegration = true;
   };
@@ -29,16 +32,15 @@
     dog
     duf
     entr
-    exa
     erdtree
     fd
-    fzf
     delta
     gdu
     go-task
     gping
     hyperfine
     lazydocker
+    killall
     mcfly
     ouch
     silver-searcher

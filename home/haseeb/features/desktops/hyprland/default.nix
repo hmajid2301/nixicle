@@ -1,34 +1,29 @@
 {inputs, config, pkgs, ...}: {
   imports = [
     inputs.hyprland.homeManagerModules.default
+    ./gammastep.nix
+    ./mako.nix
+    ./rofi.nix
     ./swayidle.nix
     ./swaylock.nix
     ./waybar.nix
     #./xdg.nix
   ];
 
-  services.mako = {
-    enable = true;
-    defaultTimeout = 5000;
-  };
-
   home.packages = with pkgs; [
     inputs.hypr-contrib.packages.${pkgs.system}.grimblast
+    brightnessctl
     xdg-utils
     imv
     mpv
     gnome.nautilus
     gnome.sushi
     nautilus-open-any-terminal
-    libnotify
-    rofi-systemd
-    rofi-power-menu
-    rofi-wayland
     wl-clipboard
-    wlsunset
     pamixer
     mpc-cli
     sway-contrib.grimshot
+    swaybg
   ];
 
   wayland.windowManager.hyprland = {
@@ -45,7 +40,7 @@
       gaps_in = 3
       gaps_out = 5
       border_size = 3
-      col.active_border=0xff${config.colorscheme.colors.base0C}
+      col.active_border=0xff${config.colorscheme.colors.base07}
       col.inactive_border=0xff${config.colorscheme.colors.base02}
       col.group_border_active=0xff${config.colorscheme.colors.base0B}
       col.group_border=0xff${config.colorscheme.colors.base04}
@@ -62,10 +57,11 @@
 
     # auto-start
     exec-once = mako &
-    exec-once = wlsunset -l 51.5 -L 0.12 &
-    #exec-once = swayidle -w
+    exec-once = swayidle -w &
     exec-once = waybar &
+    exec=swaybg -i ~/dotfiles/home/haseeb/wallpapers/spill.jpg --mode fill &
     exec-once = ~/dotfiles/home/haseeb/features/desktops/hyprland/scripts/laptop_lid_switch.sh
+    
 
     bindl=,switch:Lid Switch, exec, ~/dotfiles/home/haseeb/features/desktops/hyprland/scripts/laptop_lid_switch.sh
     monitor=DP-7,3840x2160@60,3840x0,1
@@ -98,7 +94,7 @@
     bind=,XF86AudioRaiseVolume,exec, ~/dotfiles/home/haseeb/features/desktops/hyprland/scripts/volume.sh --inc
     bind=,XF86AudioLowerVolume,exec, ~/dotfiles/home/haseeb/features/desktops/hyprland/scripts/volume.sh --dec
     bind=,XF86AudioMute,exec, ~/dotfiles/home/haseeb/features/desktops/hyprland/scripts/volume.sh --toggle
-    bind=,XF86AudioMicMute,exec, ~/dotfiles/home-manager/desktops/hyprland/scripts/volume.sh --toggle-mic
+    bind=,XF86AudioMicMute,exec, ~/dotfiles/home/haseeb/features/desktops/hyprland/scripts/volume.sh --toggle-mic
     bind=,XF86AudioPlay,exec, mpc -q toggle 
     bind=,XF86AudioNext,exec, mpc -q next 
     bind=,XF86AudioPrev,exec, mpc -q prev
@@ -182,6 +178,10 @@
     bind = SUPER, Q, killactive,
     bind = SUPERSHIFT, Space, togglefloating,
     bind = SUPER,F,fullscreen
+
+    #-- Mouse Buttons ----------------------------------------------
+    bindm=SUPER, mouse:272, movewindow
+    bindm=SUPER, mouse:273, resizewindow
    '';
   };
 }

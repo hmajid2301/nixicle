@@ -21,6 +21,6 @@
     xkbVariant = "";
   };
   # Configure console keymap
-  #console.keyMap = "uk";
+  console.keyMap = "uk";
 }
 

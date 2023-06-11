@@ -27,20 +27,6 @@ You can read more about my dotfiles and development workflows on my [blog here](
 
 > Note my dotfiles are almost always changing!
 
-## Layout
-
-The project has the following layout:
-
-### System
-
-This contains all the config to configure my PC (i.e. Framework Laptop). Such as setting up LUKS encryption.
-
-### Home
-
-This contains most of my configuration using home-manager, including packages to install. Config for various apps including nvim and
-tmux. Most of my tools are configured using nix files. Most things are configured using nix and a few tools are
-configured using normal files [dotfiles](./home/modules/config).
-
 ## System Overview
 
 - OS: NixOS
@@ -85,9 +71,9 @@ the base config and adds a few plugins on top.
 
 ## Appendix
 
-- [Dropbox with extra assets](https://www.dropbox.com/sh/rqs2zce3ugf1dz2/AABam3J8BF5WOCvmYjVSXWKIa?dl=0)
 - <a href="https://www.flaticon.com/free-icons/dot" title="dot icons">Dot icons created by Roundicons - Flaticon</a>
 
 ### Inspired By
 
 - https://github.com/Misterio77/nix-config (Heavily!)
+- https://github.dev/yurihikari/garuda-sway-config (mostly scripts)

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-iDIR="$HOME/dotfiles/home-manager/desktops/hyprland/icons/"
+iDIR="$HOME/dotfiles/home/haseeb/features/desktops/hyprland/icons/"
 
 # Get Volume
 get_volume() {

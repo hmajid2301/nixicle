@@ -1,4 +1,4 @@
-{ inputs, lib, config, ... }:
+{ inputs, lib, config, pkgs, ... }:
 let
   isEd25519 = k: k.type == "ed25519";
   getKeyPath = k: k.path;
@@ -12,5 +12,8 @@ in
   sops = {
     age.sshKeyPaths = map getKeyPath keys;
   };
+  #packages = with pkgs; [
+  #  sops
+  #];
 }
 

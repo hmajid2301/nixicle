@@ -7,10 +7,11 @@
     ../common/global
     ../common/users/haseeb
 
+    ../common/optional/backup.nix
     ../common/optional/fingerprint.nix
     ../common/optional/gamemode.nix
-    #../common/optional/greetd.nix
     ../common/optional/pipewire.nix
+    ../common/optional/greetd.nix
     ../common/optional/quietboot.nix
     #../common/optional/wireless.nix
   ];
@@ -50,6 +51,17 @@
     # Enable swap on luks
     initrd.luks.devices."luks-d9d5df49-3bc4-4d76-b63b-f3b018df19f7".device = "/dev/disk/by-uuid/d9d5df49-3bc4-4d76-b63b-f3b018df19f7";
     initrd.luks.devices."luks-d9d5df49-3bc4-4d76-b63b-f3b018df19f7".keyFile = "/crypto_keyfile.bin";
+  };
+
+  system.autoUpgrade = {
+    enable = true;
+    allowReboot = true;
+    dates = "daily";
+    flags = [
+      "--refresh"
+      "--recreate-lock-file"
+      "--commit-lock-file"
+    ];
   };
 
 
