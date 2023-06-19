@@ -1,6 +1,6 @@
 { config, lib, ... }: {
   # Wireless secrets stored through sops
-  sops.secrets.wireless = {
+  sops.secrets.home_wireless_password = {
     sopsFile = ../secrets.yaml;
     neededForUsers = true;
   };
@@ -9,8 +9,8 @@
     enable = true;
     fallbackToWPA2 = false;
     networks = {
-      "JVGCLARO" = {
-        psk = config.sops.secrets.wireless.path;
+      "SKYFQFHK" = {
+        psk = config.sops.secrets.home_wireless_password.path;
       };
     };
 

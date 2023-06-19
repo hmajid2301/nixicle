@@ -61,7 +61,7 @@ in
         set -g fish_pager_color_prefix f4b8e4
         set -g fish_pager_color_completion ${colors.base05}
         set -g fish_pager_color_description 737994
-      '' + 
+      '' +
 
       # Use vim bindings and cursors
       ''

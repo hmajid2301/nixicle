@@ -1,4 +1,3 @@
-
 { config, pkgs, ... }:
 
 {
@@ -19,7 +18,9 @@
     nodejs
 
     # python
-    python3Full
+    python311
+
+    luarocks
 
     # rust
     rustc

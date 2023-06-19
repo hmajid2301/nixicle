@@ -1,4 +1,4 @@
-{pkgs, ...}:
+{ pkgs, ... }:
 {
   home.file."./.config/nvim/" = {
     source = ./config;
@@ -13,5 +13,8 @@
   home.packages = with pkgs; [
     # parser (nvim)
     tree-sitter
+    wget
+    python311Packages.pip
+    python311Packages.pillow
   ];
 }

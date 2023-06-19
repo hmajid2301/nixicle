@@ -9,38 +9,38 @@ with lib.hm.gvariant;
   };
 
   home.packages = with pkgs; [
-     # apps
-     gnome.gnome-tweaks
-     gnome.dconf-editor
-     gnome-extension-manager
-     gradience
+    # apps
+    gnome.gnome-tweaks
+    gnome.dconf-editor
+    gnome-extension-manager
+    gradience
 
-     # useful utils
-     nautilus-open-any-terminal
+    # useful utils
+    nautilus-open-any-terminal
 
-     # extensions
-     gnomeExtensions.appindicator
-     gnomeExtensions.aylurs-widgets
-     gnomeExtensions.blur-my-shell
-     gnomeExtensions.extensions-sync
-     gnomeExtensions.hibernate-status-button
-     gnomeExtensions.logo-menu
-     gnomeExtensions.just-perfection
-     gnomeExtensions.pano
-     gnomeExtensions.pop-shell
-     gnomeExtensions.rounded-window-corners
-     gnomeExtensions.search-light
-     gnomeExtensions.smart-auto-move
-     gnomeExtensions.space-bar
-     gnomeExtensions.order-gnome-shell-extensions
+    # extensions
+    gnomeExtensions.appindicator
+    gnomeExtensions.aylurs-widgets
+    gnomeExtensions.blur-my-shell
+    gnomeExtensions.extensions-sync
+    gnomeExtensions.hibernate-status-button
+    gnomeExtensions.logo-menu
+    gnomeExtensions.just-perfection
+    gnomeExtensions.pano
+    gnomeExtensions.pop-shell
+    gnomeExtensions.rounded-window-corners
+    gnomeExtensions.search-light
+    gnomeExtensions.smart-auto-move
+    gnomeExtensions.space-bar
+    gnomeExtensions.order-gnome-shell-extensions
 
-     libgda # used by pano extension
+    libgda # used by pano extension
 
-     # styles
-     adw-gtk3
-     adwaita-qt
-     papirus-icon-theme
-     papirus-folders
+    # styles
+    adw-gtk3
+    adwaita-qt
+    papirus-icon-theme
+    papirus-folders
   ];
 
   dconf.settings = {
@@ -348,7 +348,7 @@ with lib.hm.gvariant;
       smart-gaps = false;
       snap-to-grid = true;
       tile-by-default = true;
-      toggle-stacking-global = [];
+      toggle-stacking-global = [ ];
     };
 
     "org/gnome/shell/extensions/rounded-window-corners" = {
