@@ -16,7 +16,7 @@ rec {
       package = pkgs.catppuccin-gtk.override {
         accents = [ "pink" ];
         size = "compact";
-        tweaks = [ "rimless" "black" ];
+        #tweaks = [ "rimless" "black" ];
         variant = "frappe";
       };
     };

@@ -7,6 +7,7 @@
     unzip
     pavucontrol
     gnupg
+    ferdium
 
     # other
     any-nix-shell
@@ -14,7 +15,6 @@
     brave
     betterdiscord-installer
     discord
-    mullvad-vpn
     showmethekey
   ];
 }

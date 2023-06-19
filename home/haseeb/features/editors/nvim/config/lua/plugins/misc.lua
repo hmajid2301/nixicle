@@ -15,6 +15,11 @@ return {
     opts = { timeout = 300 },
   },
   {
+    'TobinPalmer/pastify.nvim',
+    cmd = { 'Pastify' },
+    opts = {},
+  },
+  {
     "NvChad/nvim-colorizer.lua",
     opts = {},
     config = function(_, opts)

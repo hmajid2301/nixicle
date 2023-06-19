@@ -1,50 +1,50 @@
 { ... }:
 {
-  programs.alacritty  = {
-    enable  = true;
+  programs.alacritty = {
+    enable = true;
 
-    settings  = {
-      shell  = {
-        program  = "fish";
+    settings = {
+      shell = {
+        program = "fish";
       };
 
-      window  = {
-        padding  = {
-          x  = 30;
-          y  = 30;
+      window = {
+        padding = {
+          x = 30;
+          y = 30;
         };
-        decorations  = "none";
+        decorations = "none";
       };
 
-      selection  = {
-        save_to_clipboard  = true;
+      selection = {
+        save_to_clipboard = true;
       };
 
-      mouse_bindings  = [
+      mouse_bindings = [
         {
-          mouse  = "Right";
-          action  = "Paste";
+          mouse = "Right";
+          action = "Paste";
         }
       ];
 
-      env  = {
-        TERM  = "xterm-256color";
+      env = {
+        TERM = "xterm-256color";
       };
 
-      font  = {
-        normal  = {
-          family  = "MonoLisa Nerd Font";
-          style  = "Regular";
+      font = {
+        normal = {
+          family = "MonoLisa Nerd Font";
+          style = "Regular";
         };
-        bold  = {
-          family  = "MonoLisa Nerd Font";
-          style  = "Bold";
+        bold = {
+          family = "MonoLisa Nerd Font";
+          style = "Bold";
         };
-        italic  = {
-          family  = "MonoLisa Nerd Font";
-          style  = "Italic";
+        italic = {
+          family = "MonoLisa Nerd Font";
+          style = "Italic";
         };
-        size  = 14.0;
+        size = 14.0;
       };
       colors = {
         primary = {

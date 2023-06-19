@@ -11,99 +11,106 @@
       {
         layer = "top";
         position = "top";
-        height = 30;
-        margin =  "0 0 0 0";
+        height = 40;
+        margin = "0 0 0 0";
         modules-left = [
           "custom/launcher"
           "wlr/workspaces"
-          "tray"
-          "mpd#2"
-          "mpd#3"
-          "mpd#4"
-          "mpd"
+          "custom/currentplayer"
+          "custom/player"
         ];
         modules-center = [
           "clock"
         ];
         modules-right = [
+          "tray"
           "backlight"
           "pulseaudio"
           "temperature"
+          "cpu"
           "memory"
           "battery"
           "network"
           "custom/power"
         ];
-        "wlr/workspaces" =  {
-          format =  "{icon}";
-          sort-by-number =  true;
-          active-only =  false;
-          format-icons =  {
-            "1" =  "";
-            "2" =  "";
-            "3" =  "";
-            "4" =  "";
-            "5" =  "";
-            "6" =  "";
-            urgent =  "";
-            focused =  "";
-            default =  "";
+        "wlr/workspaces" = {
+          format = "{icon}";
+          sort-by-number = true;
+          active-only = false;
+          format-icons = {
+            "1" = "  ";
+            "2" = "  ";
+            "3" = " 󰎞 ";
+            "4" = " 󰌌 ";
+            "5" = "  ";
+            "6" = "  ";
+            urgent = "  ";
+            focused = "  ";
+            default = "  ";
           };
-          on-click =  "activate";
+          on-click = "activate";
         };
-        mpd = {
-          tooltip =  true;
-          tooltip-format =  "{artist} - {album} - {title} - Total Time  =  {totalTime = %M = %S}";
-          format =  " {elapsedTime = %M = %S}";
-          format-disconnected =  "⚠  Disconnected";
-          format-stopped =  " Not Playing";
-          on-click =  "mpc toggle";
-          state-icons =  {
-            playing =  "";
-            paused =  "";
+        "custom/currentplayer" = {
+          interval = 2;
+          return-type = "json";
+          #exec = jsonOutput "currentplayer" {
+          #  pre = ''
+          #    player="$(playerctl status -f "{{playerName}}" 2>/dev/null || echo "No player active" | cut -d '.' -f1)"
+          #    count="$(playerctl -l | wc -l)"
+          #    if ((count > 1)); then
+          #      more=" +$((count - 1))"
+          #    else
+          #      more=""
+          #    fi
+          #  '';
+          #  alt = "$player";
+          #  tooltip = "$player ($count available)";
+          #  text = "$more";
+          #};
+          format = "{icon}{}";
+          format-icons = {
+            "No player active" = " ";
+            "Celluloid" = " ";
+            "spotify" = " 阮";
+            "ncspot" = " 阮";
+            "qutebrowser" = "爵";
+            "firefox" = " ";
+            "discord" = " ﭮ ";
+            "sublimemusic" = " ";
+            "kdeconnect" = " ";
           };
+          on-click = "playerctld shift";
+          on-click-right = "playerctld unshift";
         };
-        "mpd#2" =  {
-          format =  "";
-          format-disconnected =  "";
-          format-paused =  "";
-          format-stopped =  "";
-          on-click =  "mpc -q pause && mpc -q prev && mpc -q start";
-        };
-        "mpd#3" =  {
-          interval =  1;
-          format =  "{stateIcon}";
-          format-disconnected =  "";
-          format-paused =  "{stateIcon}";
-          format-stopped =  "";
-          state-icons =  {
-            paused =  "";
-            playing =  "";
+        "custom/player" = {
+          exec-if = "playerctl status";
+          exec = ''playerctl metadata --format '{"text": "{{artist}} - {{title}}", "alt": "{{status}}", "tooltip": "{{title}} ({{artist}} - {{album}})"}' '';
+          return-type = "json";
+          interval = 1;
+          max-length = 30;
+          format = "{icon} {}";
+          format-icons = {
+            "Playing" = "契";
+            "Paused" = " ";
+            "Stopped" = "栗";
           };
-          on-click =  "mpc toggle";
-        };
-        "mpd#4" =  {
-          format =  "";
-          format-disconnected =  "";
-          format-paused =  "";
-          format-stopped =  "";
-          on-click =  "mpc -q pause && mpc -q next && mpc -q start";
+          on-click = "playerctl play-pause";
         };
         battery = {
           states = {
-            good = 95;
-            warning = 30;
+            good = 80;
+            warning = 50;
             critical = 15;
           };
-          format = "{icon} {capacity}%";
+          format = "{icon}  {capacity}%";
           format-alt = "{time}";
           format-full = "";
           format-charging = "  {capacity}%";
           format-plugged = "  {capacity}%";
-          format-icons = [ "" "" "" "" "" ];
+          format-icons = [ " " " " " " " " " " ];
         };
         temperature = {
-          interval = 1;
+          interval = 10;
           tooltip = false;
           thermal-zone = 1;
           critical-threshold = 80;
@@ -112,22 +119,22 @@
           format-icons = [ "" "" "" "" "" ];
         };
         cpu = {
-          interval = 1;
+          interval = 10;
           tooltip = false;
           format = " {usage}%";
         };
         memory = {
-          interval = 1;
+          interval = 10;
           format = "󰍛 {percentage}%";
           tooltip-format = "{used = 0.1f}GiB/{avail = 0.1f}GiB";
         };
         network = {
           interval = 1;
-          format-wifi = " {signalStrength}%";
+          format-wifi = "   {essid} {signalStrength}%";
           tooltip-format-wifi = "IP = {ipaddr}\nSSID = {essid}";
-          format-ethernet = "";
+          format-ethernet = "  ";
           tooltip-format-ethernet = "IP = {ipaddr}";
-          format-disconnected = "";
+          format-disconnected = "Disconnected ⚠";
           tooltip-format = ''
             {ifname}
             {ipaddr}/{cidr}
@@ -150,8 +157,10 @@
           };
         };
         clock = {
-          tooltip = false;
-          format = "{:%d/%m %H:%M}";
+          tooltip-format = "{:%A %B %d %Y | %H:%M}";
+          format = "  {:%a %d %b    %I:%M %p}";
+          format-alt = "  {:%d/%m/%Y  %H:%M:%S}";
+          interval = 1;
         };
         tray = {
           icon-size = 16;
@@ -163,45 +172,45 @@
           tooltip = false;
         };
         "custom/launcher" = {
-          format = " ";
+          format = "   ";
+          tooltip = ''$(cat /etc/os-release | grep PRETTY_NAME | cut -d '"' -f2)'';
           on-click = "rofi --show drun";
-          tooltip = false;
         };
       }
     ];
     style = let inherit (config.colorscheme) colors; in /* css */ ''
-     @define-color base   #24273a;
-     @define-color mantle #1e2030;
-     @define-color crust  #181926;
+           @define-color base   #24273a;
+           @define-color mantle #1e2030;
+           @define-color crust  #181926;
 
-     @define-color text     #cad3f5;
-     @define-color subtext0 #a5adcb;
-     @define-color subtext1 #b8c0e0;
+           @define-color text     #cad3f5;
+           @define-color subtext0 #a5adcb;
+           @define-color subtext1 #b8c0e0;
 
-     @define-color surface0 #363a4f;
-     @define-color surface1 #494d64;
-     @define-color surface2 #5b6078;
+           @define-color surface0 #363a4f;
+           @define-color surface1 #494d64;
+           @define-color surface2 #5b6078;
 
-     @define-color overlay0 #6e738d;
-     @define-color overlay1 #8087a2;
-     @define-color overlay2 #939ab7;
+           @define-color overlay0 #6e738d;
+           @define-color overlay1 #8087a2;
+           @define-color overlay2 #939ab7;
 
-     @define-color blue      #8aadf4;
-     @define-color lavender  #b7bdf8;
-     @define-color sapphire  #7dc4e4;
-     @define-color sky       #91d7e3;
-     @define-color teal      #8bd5ca;
-     @define-color green     #a6da95;
-     @define-color yellow    #eed49f;
-     @define-color peach     #f5a97f;
-     @define-color maroon    #ee99a0;
-     @define-color red       #ed8796;
-     @define-color mauve     #c6a0f6;
-     @define-color pink      #f5bde6;
-     @define-color flamingo  #f0c6c6;
-     @define-color rosewater #f4dbd6;
+           @define-color blue      #8aadf4;
+           @define-color lavender  #b7bdf8;
+           @define-color sapphire  #7dc4e4;
+           @define-color sky       #91d7e3;
+           @define-color teal      #8bd5ca;
+           @define-color green     #a6da95;
+           @define-color yellow    #eed49f;
+           @define-color peach     #f5a97f;
+           @define-color maroon    #ee99a0;
+           @define-color red       #ed8796;
+           @define-color mauve     #c6a0f6;
+           @define-color pink      #f5bde6;
+           @define-color flamingo  #f0c6c6;
+           @define-color rosewater #f4dbd6;
 
-     * {
+      * {
           color: @lavender;
           border: 0;
           padding: 0 0;
@@ -225,16 +234,19 @@
 
       #workspaces button {
           color: @base;
-          border-radius: 50%;
-          /* background-color: @base; */
-          margin: 0px 0px;
-          padding: 4 6 2 0;
+          border-radius: 20px;
+          margin: 2px 0px;
+          padding: 4px;
           margin: 0px 8px 0px 8px;
       }
 
       #workspaces button:hover {
           color: @mauve;
           border-radius: 20px;
+      }
+
+      #workspaces button:hover * {
+          color: @mauve;
       }
 
       #workspaces * {
@@ -250,26 +262,13 @@
       }
 
       #workspaces button.active {
-          color: @mauve;
+          color: white;
+          background-color: @mauve;
           border-radius: 20px;
-          /* background-color: @flamingo; */
       }
 
-      #workspaces button {
-        background-color: #${colors.base01};
-        color: #${colors.base05};
-        margin: 4px;
-      }
-
-      #workspaces button.hidden {
-        background-color: #${colors.base00};
-        color: #${colors.base04};
-      }
-
-      #workspaces button.focused,
-      #workspaces button.active {
-        background-color: #${colors.base0A};
-        color: #${colors.base00};
+      #workspaces button.active * {
+          color: @base;
       }
 
       #mode {
@@ -277,17 +276,22 @@
       }
 
       #clock,
+      #custom-swap,
       #custom-cava-internal,
       #battery,
       #cpu,
       #memory,
       #idle_inhibitor,
       #temperature,
+      #custom-keyboard-layout,
       #backlight,
       #network,
       #pulseaudio,
       #mode,
       #tray,
+      #custom-power,
+      #custom-pacman,
+      #custom-launcher,
       #mpd {
           padding: 5px 8px;
           border-style: solid;
@@ -329,6 +333,18 @@
       #mpd.4 {
           background-color: @base;
           font-size: 14px;
+      }
+
+      #custom-cava-internal {
+          border-radius: 10px;
+          color: @mauve;
+      }
+
+      #custom-swap {
+          border-radius: 10px;
+          color: @base;
+          margin-left: 5px;
+          background-color: @mauve;
       }
 
       #clock {
@@ -476,7 +492,7 @@
           border-radius: 0 10px 10px 0;
           margin-right: 10px;
       }
-   '';
+    '';
   };
 }
 

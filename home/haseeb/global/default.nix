@@ -5,6 +5,7 @@ in
 {
   imports = [
     inputs.nix-colors.homeManagerModule
+    inputs.nur.hmModules.nur
     ../features/editors/nvim
     ../features/packages/coding.nix
     ../features/packages/other.nix

@@ -8,7 +8,7 @@
 
     #signing = {
     #  signByDefault = true;
-    #  #key = "A236785D59F190761E9CE8EC78283DB3D233E1F9";
+    #  key = "F04F 743A 24CD 81B6 28A2  0667 CD20 E737 3D83 B71C";
     #};
 
     extraConfig = {
@@ -28,12 +28,14 @@
       };
 
       delta = {
+        enable = true;
         navigate = true;
         light = false;
         side-by-side = false;
+        options.syntax-theme = "catppuccin";
       };
 
-      pull =  {
+      pull = {
         ff = "only";
       };
 
