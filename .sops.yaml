@@ -1,8 +1,6 @@
 keys:
-  # Users
   - &users:
     - &haseeb F04F743A24CD81B628A20667CD20E7373D83B71C
-  # Hosts
   - &hosts:
     - &framework age1kzxen8ynw28h935jnjc9t8cx4p8mv6angk5suvkp6ntu4am9pe4smfw22z
 
@@ -14,7 +12,7 @@ creation_rules:
       pgp:
       - *haseeb
 
-  - path_regex: hosts/common/secrets.ya?ml$
+  - path_regex: nixos/secrets.ya?ml$
     key_groups:
     - age:
       - *framework
