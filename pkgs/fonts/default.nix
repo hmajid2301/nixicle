@@ -14,11 +14,11 @@ pkgs.stdenv.mkDerivation rec {
   pname = "monolisa";
   version = "0.1.0";
 
-  src = ./fonts/MonoLisa;
+  src = ./MonoLisa;
 
   installPhase = ''
     mkdir -p $out/share/fonts
-    cp -R $src $out/share/fonts/opentype/
+    cp -R $src $out/share/fonts/truetype/
   '';
 }
 

@@ -23,6 +23,7 @@
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     hardware.url = "github:nixos/nixos-hardware";
     sops-nix.url = "github:mic92/sops-nix";
+    impermanence.url = "github:nix-community/impermanence";
 
     grub-theme = {
       url = "github:catppuccin/grub";
@@ -31,6 +32,7 @@
 
     hyprland.url = "github:hyprwm/Hyprland";
     hypr-contrib.url = "github:hyprwm/contrib";
+    fufexan.url = "github:fufexan/dotfiles";
     nix-colors.url = "github:misterio77/nix-colors";
   };
 
@@ -79,14 +81,14 @@
       # NixOS configuration entrypoint
       # Available through 'nixos-rebuild --flake .#framework'
       nixosConfigurations = {
-        framework = mkNixos [ ./hosts/framework ];
+        framework = mkNixos [ ./hosts/framework/configuration.nix ];
       };
 
       # Standalone home-manager configuration entrypoint
-      # Available through 'home-manager --flake .#haseeb@framework'
+      # Available through 'home-manager --flake .#framework'
       homeConfigurations = {
         # Laptops
-        "haseeb@framework" = mkHome [ ./home/haseeb/framework.nix ] nixpkgs.legacyPackages."x86_64-linux";
+        framework = mkHome [ ./hosts/framework/home.nix ] nixpkgs.legacyPackages."x86_64-linux";
       };
     };
 }
