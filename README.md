@@ -1,6 +1,6 @@
 # Dotfiles
 
-> THIS IS CURRENTLY A WIP!!! (working on styling hyprland)
+**CURRENTLY A WIP**
 
 :house: My dotfiles repo, setup using nixos/home-manager
 
@@ -13,8 +13,7 @@ I think you're off using this repo as reference to create your own dotfiles.
 git clone git@github.com:hmajid2301/dotfiles.git ~/dotfiles/
 cd dotfiles
 
-
-nix-shell
+nix develop
 
 # To build system configuration
 sudo nixos-rebuild --flake .#framework
@@ -29,6 +28,8 @@ You can read more about my dotfiles and development workflows on my [blog here](
 
 ## System Overview
 
+![Neofetch](images/neofetch.png)
+
 - OS: NixOS
 - WM: Hyprland
 - Shell: Fish
@@ -38,7 +39,36 @@ You can read more about my dotfiles and development workflows on my [blog here](
 - Colorscheme: [Catppuccin for EVERYTHING!!!](https://github.com/catppuccin)
 - Fonts: [Mono Lisa](https://www.monolisa.dev/)
 
-### Applications
+## Photos
+
+![wallpaper](images/wallpaper.png)
+![neovim](images/neovim.png)
+![monkeytype](images/monkeytype.png)
+
+## Features
+
+Some features of my dotfiles:
+
+- Structured to allow multiple **NixOS configurations**, including **desktop**, **laptop**
+- **Declarative** config including **themes**, **wallpapers** and **nix-colors**
+- **Opt-in persistance** through impermanence + blank snapshot
+ - Delete files on boot
+- **Encrypted btrfs partition** 
+- **sops-nix** for secrets management
+- Different environments like **hyprland** and **gnome**
+
+## Structure
+
+- `flake.nix`: Entrypoint for hosts and home configurations
+- `nixos`: 
+  - `global`: Configurations that are globally applied to all my machines
+  - `optional`: Configurations that some of my machines use
+- `hosts`: NixOS Configurations, accessible via `nixos-rebuild --flake`.
+  - `framework`: Framework 12th gen laptop | Hyprland
+- `home-manager`: Most of my dotfiles configuration, user specific
+
+
+## Applications
 
 I basically just installed every package from [Modern Unix](https://github.com/ibraheemdev/modern-unix).
 
@@ -51,7 +81,7 @@ CLI tools that I use often include:
 - [ripgrep](https://github.com/BurntSushi/ripgrep): A faster `grep`
 - [navi](https://github.com/denisidoro/navi): Interactive cheat sheet
 
-## Tmux
+### Tmux
 
 I manage my projects using tmux sessions with the
 [tmux smart session manager](https://github.com/joshmedeski/t-smart-tmux-session-manager).
@@ -64,7 +94,7 @@ Where a project might be:
 - Full stack application
   - A window for each project i.e. GUI and API
 
-## Neovim
+### Neovim
 
 I have started using nvim as my default editor (IDE?). It uses [LazyVim](lazyvim.org/) as
 the base config and adds a few plugins on top.

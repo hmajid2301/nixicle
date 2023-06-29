@@ -1,5 +1,5 @@
-{...}: {
- services.kanshi = {
+{ ... }: {
+  services.kanshi = {
     enable = true;
     profiles = {
       undocked = {

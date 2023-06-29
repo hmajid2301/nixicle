@@ -19,3 +19,8 @@ creation_rules:
       pgp:
       - *haseeb
 
+  - path_regex: secrets.ya?ml$
+    key_groups:
+      pgp:
+      - *haseeb
+

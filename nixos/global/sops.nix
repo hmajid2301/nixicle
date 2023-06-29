@@ -9,10 +9,12 @@ in
     inputs.sops-nix.nixosModules.sops
   ];
 
-  sops.gnupg.sshKeyPaths = [];
-
   sops = {
-    age.sshKeyPaths = ["/etc/ssh/ssh_host_ed25519_key"];
+    gnupg = {
+      home = "~/.gnupg";
+      sshKeyPaths = [ ];
+    };
+    age.sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
   };
   #packages = with pkgs; [
   #  sops

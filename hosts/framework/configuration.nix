@@ -35,21 +35,17 @@
   services.gvfs.enable = true;
 
   boot = {
-    resumeDevice = "/dev/disk/by-uuid/ec9f42c1-12b4-43e9-9469-504eac0dc463";
     loader = {
       systemd-boot.enable = true;
       efi.canTouchEfiVariables = true;
     };
-    kernelPackages = pkgs.linuxPackages_latest;
-
-    # Setup keyfile
-    initrd.secrets = {
-      "/crypto_keyfile.bin" = null;
+    initrd.luks.devices = {
+      root = {
+        device = "/dev/disk/by-uuid/c64e5b76-65de-44a6-9cf8-b893cfab54e2";
+        preLVM = true;
+      };
     };
-
-    # Enable swap on luks
-    initrd.luks.devices."luks-ceed8a20-b881-418e-9d46-006127d1d2d0".device = "/dev/disk/by-uuid/ceed8a20-b881-418e-9d46-006127d1d2d0";
-    initrd.luks.devices."luks-ceed8a20-b881-418e-9d46-006127d1d2d0".keyFile = "/crypto_keyfile.bin";
+    kernelPackages = pkgs.linuxPackages_latest;
   };
 
   system.autoUpgrade = {

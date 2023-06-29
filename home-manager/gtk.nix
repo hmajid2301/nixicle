@@ -7,10 +7,11 @@ rec {
   home.packages = [ pkgs.dconf pkgs.gnome.dconf-editor ];
   gtk = {
     enable = true;
-    #font = {
-    #  name = config.fontProfiles.regular.family;
-    #  size = 12;
-    #};
+    font = {
+      name = config.fontProfiles.regular.family;
+      size = 12;
+    };
+
     theme = {
       name = "Catppuccin-Frappe-Compact-Pink-Dark";
       package = pkgs.catppuccin-gtk.override {
@@ -36,9 +37,11 @@ rec {
   };
 
   home.pointerCursor = {
-    package = pkgs.catppuccin-cursors;
-    name = "Catppuccin-Frappe-Red";
-    size = 32;
+    package = pkgs.catppuccin-cursors.macchiatoPink;
+    name = "Catppuccin-Macchiato-Pink-Cursors";
+    size = 40;
+    x11.enable = true;
+    gtk.enable = true;
   };
 }
 
