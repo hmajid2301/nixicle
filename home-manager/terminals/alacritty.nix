@@ -1,5 +1,6 @@
-{ ... }:
 {
+  ..., config }:
+  {
   programs.alacritty = {
     enable = true;
 
@@ -33,15 +34,15 @@
 
       font = {
         normal = {
-          family = "MonoLisa Nerd Font";
+          family = config.fontProfiles.monolisa.family;
           style = "Regular";
         };
         bold = {
-          family = "MonoLisa Nerd Font";
+          family = config.fontProfiles.monolisa.family;
           style = "Bold";
         };
         italic = {
-          family = "MonoLisa Nerd Font";
+          family = config.fontProfiles.monolisa.family;
           style = "Italic";
         };
         size = 14.0;

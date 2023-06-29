@@ -1,3 +1,3 @@
 { pkgs ? (import ../nixpkgs.nix) { } }: {
-  fonts = pkgs.callPackage ./fonts { };
+  monolisa = pkgs.callPackage ./monolisa { };
 }

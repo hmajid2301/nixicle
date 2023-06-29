@@ -1,4 +1,4 @@
-{ lib, pkgs, ... }:
+{ lib, pkgs, config, ... }:
 
 with lib.hm.gvariant;
 
@@ -69,7 +69,7 @@ with lib.hm.gvariant;
       font-hinting = "slight";
       gtk-theme = "adw-gtk3-dark";
       icon-theme = "Papirus-Dark";
-      monospace-font-name = "MonoLisa 10";
+      monospace-font-name = config.fontProfiles.monolisa.family;
       show-battery-percentage = true;
       toolkit-accessibility = false;
     };

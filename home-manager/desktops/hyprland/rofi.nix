@@ -28,7 +28,7 @@
       display-window = " 﩯  Window";
       display-Network = " 󰤨  Network";
       sidebar-mode = true;
-      #font = "MonoLisa Regular Nerd Font Complete";
+      font = config.fontProfiles.monolisa.family;
     };
     theme =
       let

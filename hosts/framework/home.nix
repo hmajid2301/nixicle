@@ -5,16 +5,19 @@ in
 {
   imports = [
     inputs.nix-colors.homeManagerModule
+    inputs.impermanence.nixosModules.home-manager.impermanence
     inputs.nur.hmModules.nur
     ../../home-manager/editors/nvim
     ../../home-manager/packages/coding.nix
     ../../home-manager/packages/other.nix
     ../../home-manager/programs/cli.nix
     ../../home-manager/browsers/firefox.nix
+    #../../home-manager/security/yubikey.nix
     ../../home-manager/terminals/alacritty.nix
     ../../home-manager/shells/fish.nix
     ../../home-manager/desktops/hyprland
     ../../home-manager/gtk.nix
+    ../../home-manager/fonts.nix
     ../../home-manager/games
   ] ++ (builtins.attrValues outputs.homeManagerModules);
 
@@ -52,6 +55,27 @@ in
       EDITOR = "nvim";
       GTK_THEME = "catppuccin";
     };
+
+    #persistence = {
+    #  "/persist/home/haseeb" = {
+    #    directories = [
+    #      "Documents"
+    #      "Downloads"
+    #      "Pictures"
+    #      "Videos"
+    #      "Games"
+    #      "projects"
+    #      "dotfiles"
+    #      "go"
+    #      ".local"
+    #      ".tmux"
+    #      ".ssh"
+    #      ".gnupg"
+    #      ".config/gtk"
+    #    ];
+    #    allowOther = true;
+    #  };
+    #};
   };
 }
 

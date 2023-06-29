@@ -23,6 +23,7 @@
     gnome.nautilus
     gnome.sushi
     gnome.gnome-disk-utility
+    gnome.gedit
     gnome.totem
     gnome.eog
     gnome.gvfs
@@ -67,8 +68,8 @@
       exec-once = kanshi &
       exec-once = swayidle -w &
       exec-once = waybar &
-      exec=swaybg -i ~/dotfiles/home/haseeb/wallpapers/spill.jpg --mode fill &
-      exec-once = ~/dotfiles/home/haseeb/features/desktops/hyprland/scripts/laptop_lid_switch.sh
+      exec=swaybg -i ~/dotfiles/home-manager/wallpapers/spill.jpg --mode fill &
+      exec-once = ~/dotfiles/home-manager/desktops/hyprland/scripts/laptop_lid_switch.sh
     
 
       bindl=,switch:Lid Switch, exec, ~/dotfiles/home/haseeb/features/desktops/hyprland/scripts/laptop_lid_switch.sh
@@ -76,7 +77,7 @@
       #monitor=DP-2,3840x2160@60,0x0,1
 
       # Other
-      bind=CONTROL_ALT,DELETE,exec,~/dotfiles/home/haseeb/desktops/hyprland/scripts/power_menu.sh
+      bind=CONTROL_ALT,DELETE,exec,~/dotfiles/home-manager/desktops/hyprland/scripts/power_menu.sh
 
       # Lock screen
       bind=,XF86Launch5,exec,swaylock -S
@@ -93,8 +94,8 @@
       bind=CONTROL,Print,exec,grimblast --notify copy screen
       bind=SUPER,Print,exec,grimblast --notify copy window
       bind=ALT,Print,exec,grimblast --notify copy area
-      bind=SUPER,bracketleft,exec,grimblast --notify --cursor  copysave area ~/Pictures/$(date "+%Y-%m-%d"T"%H:%M:%S_no_watermark").png
-      bind=SUPER,bracketright,exec, grimblast --notify --cursor  copy area
+      bind=SUPER,bracketleft,exec,grimblast --notify --cursor copysave area ~/Pictures/$(date "+%Y-%m-%d"T"%H:%M:%S_no_watermark").png
+      bind=SUPER,bracketright,exec, grimblast --notify --cursor copy area
 
       # Keyboard controls (brightness, media, sound, etc)
       bind=,XF86MonBrightnessUp,exec, ~/dotfiles/home-manager/desktops/hyprland/scripts/brightness.sh --inc
