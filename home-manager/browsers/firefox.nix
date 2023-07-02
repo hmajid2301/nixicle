@@ -8,23 +8,31 @@
     });
   };
 
+  home = {
+    sessionVariables.BROWSER = "firefox";
+    persistence = {
+      # Not persisting is safer
+      # "/persist/home/misterio".directories = [ ".mozilla/firefox" ];
+    };
+  };
+
   programs.firefox = {
     enable = true;
-    #profiles.default = {
-    #  name = "Default";
-    #  settings = {
-    #    "extensions.activeThemeID" = "firefox-compact-dark@mozilla.org";
+    profiles.default = {
+      name = "Default";
+      settings = {
+        "extensions.activeThemeID" = "firefox-compact-dark@mozilla.org";
 
-    #    # For Firefox GNOME theme:
-    #    "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
-    #    "browser.tabs.drawInTitlebar" = true;
-    #    "svg.context-properties.content.enabled" = true;
-    #  };
-    #  userChrome = ''
-    #    @import "firefox-gnome-theme/userChrome.css";
-    #    @import "firefox-gnome-theme/theme/colors/dark.css"; 
-    #  '';
-    #};
+        # For Firefox GNOME theme:
+        "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
+        "browser.tabs.drawInTitlebar" = true;
+        "svg.context-properties.content.enabled" = true;
+      };
+      userChrome = ''
+        @import "firefox-gnome-theme/userChrome.css";
+        @import "firefox-gnome-theme/theme/colors/dark.css"; 
+      '';
+    };
     #extensions = nur.repos.rycee.firefox-addons; [
     #  bitwarden
     #  facebook-container
