@@ -12,7 +12,7 @@ in
     ../../home-manager/packages/other.nix
     ../../home-manager/programs/cli.nix
     ../../home-manager/browsers/firefox.nix
-    #../../home-manager/security/yubikey.nix
+    ../../home-manager/security/yubikey.nix
     ../../home-manager/terminals/alacritty.nix
     ../../home-manager/shells/fish.nix
     ../../home-manager/desktops/hyprland
@@ -30,6 +30,7 @@ in
   };
 
   colorscheme = inputs.nix-colors.colorSchemes.catppuccin-frappe;
+  wallpaper = "~/dotfiles/home-manager/wallpapers/rainbow-nix.jpg";
 
   nix = {
     package = lib.mkDefault pkgs.nix;

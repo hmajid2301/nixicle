@@ -14,6 +14,8 @@
     };
     exclude = [
       "/home/haseeb/Games"
+      "~/.config/gtk"
+      "~/.local/steam"
     ];
 
     pruneOpts = [

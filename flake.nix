@@ -30,7 +30,12 @@
       flake = false;
     };
 
+    nix-gaming = {
+      url = "github:fufexan/nix-gaming";
+    };
+
     hyprland.url = "github:hyprwm/Hyprland";
+    hyprland.inputs.nixpkgs.follows = "nixpkgs";
     hypr-contrib.url = "github:hyprwm/contrib";
     fufexan.url = "github:fufexan/dotfiles";
     nix-colors.url = "github:misterio77/nix-colors";

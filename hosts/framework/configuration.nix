@@ -1,6 +1,8 @@
 { inputs, outputs, lib, config, pkgs, ... }: {
   imports = [
     inputs.hardware.nixosModules.framework-12th-gen-intel
+    inputs.nix-gaming.nixosModules.default
+    inputs.hyprland.nixosModules.default
 
     ./hardware-configuration.nix
     ./users/haseeb
@@ -8,7 +10,8 @@
     ../../nixos/global
     ../../nixos/optional/backup.nix
     ../../nixos/optional/fingerprint.nix
-    ../../nixos/optional/gamemode.nix
+    ../../nixos/optional/opengl.nix
+    ../../nixos/optional/gaming.nix
     ../../nixos/optional/pipewire.nix
     ../../nixos/optional/greetd.nix
     ../../nixos/optional/quietboot.nix
@@ -16,9 +19,6 @@
     ../../nixos/optional/mullvad.nix
     #../nixos/optional/wireless.nix
   ];
-
-  # Enable the X11 windowing system.
-  services.xserver.enable = true;
 
   # Enable networking
   networking = {
@@ -32,7 +32,9 @@
   # TODO: global
   services.printing.enable = true;
   services.fwupd.enable = true;
-  services.gvfs.enable = true;
+  services.udev.packages = with pkgs; [ yubikey-personalization ];
+  services.dbus.enable = true;
+  programs.dconf.enable = true;
 
   boot = {
     loader = {
@@ -41,7 +43,7 @@
     };
     initrd.luks.devices = {
       root = {
-        device = "/dev/disk/by-uuid/c64e5b76-65de-44a6-9cf8-b893cfab54e2";
+        device = "/dev/disk/by-uuid/fc112246-8ce0-47c7-95e5-106be34e9501";
         preLVM = true;
       };
     };

@@ -4,7 +4,6 @@ let
   inherit (inputs.nix-colors.lib-contrib { inherit pkgs; }) gtkThemeFromScheme;
 in
 rec {
-  home.packages = [ pkgs.dconf pkgs.gnome.dconf-editor ];
   gtk = {
     enable = true;
     font = {
@@ -13,33 +12,24 @@ rec {
     };
 
     theme = {
-      name = "Catppuccin-Frappe-Compact-Pink-Dark";
-      package = pkgs.catppuccin-gtk.override {
-        accents = [ "pink" ];
-        size = "compact";
-        #tweaks = [ "rimless" "black" ];
-        variant = "frappe";
-      };
+      name = "${config.colorscheme.slug}";
+      package = gtkThemeFromScheme { scheme = config.colorscheme; };
     };
 
     iconTheme = {
-      name = "Papirus-Dark";
-      package = pkgs.catppuccin-papirus-folders.override {
-        accent = "lavender";
-        flavor = "frappe";
-      };
+      name = "Papirus";
+      package = pkgs.papirus-icon-theme;
     };
 
     cursorTheme = {
       name = "Catppuccin-Frappe-Dark";
     };
-
   };
 
   home.pointerCursor = {
-    package = pkgs.catppuccin-cursors.macchiatoPink;
-    name = "Catppuccin-Macchiato-Pink-Cursors";
-    size = 40;
+    package = pkgs.catppuccin-cursors.frappeLight;
+    name = "Catppuccin-Frappe-Light-Cursors";
+    size = 32;
     x11.enable = true;
     gtk.enable = true;
   };

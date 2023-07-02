@@ -1,5 +1,7 @@
 { pkgs, lib, ... }: {
-  home.packages = [ pkgs.lutris ];
+  home.packages = with pkgs; [
+    lutris
+  ];
 
   #``home.persistence = {
   #``  "/persist/home/misterio" = {

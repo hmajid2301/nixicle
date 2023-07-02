@@ -10,7 +10,7 @@
     ];
 
   boot.initrd.availableKernelModules = [ "xhci_pci" "thunderbolt" "nvme" "uas" "usb_storage" "sd_mod" ];
-  boot.initrd.kernelModules = [ "dm-snapshot" ];
+  boot.initrd.kernelModules = [ "dm-snapshot" "amdgpu" ];
   boot.kernelModules = [ "kvm-intel" ];
   boot.extraModulePackages = [ ];
 
@@ -53,7 +53,7 @@
 
   fileSystems."/boot" =
     {
-      device = "/dev/disk/by-label/BOOT";
+      device = "/dev/disk/by-label/boot";
       fsType = "vfat";
     };
 

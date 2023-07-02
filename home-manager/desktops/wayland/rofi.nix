@@ -1,16 +1,8 @@
 { config, pkgs, inputs, ... }:
 {
-
-  nixpkgs.overlays = [
-    inputs.nur.overlay
-  ];
-
-
   home.packages = with pkgs; [
     rofi-systemd
     rofi-power-menu
-    #nur.repos.peel.rofi-wifi-menu
-    #nur.repos.peel.rofi-emoji
   ];
 
   programs.rofi = {
@@ -28,7 +20,7 @@
       display-window = " 﩯  Window";
       display-Network = " 󰤨  Network";
       sidebar-mode = true;
-      font = config.fontProfiles.monolisa.family;
+      #font = config.fontProfiles.monospace.family;
     };
     theme =
       let

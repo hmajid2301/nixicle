@@ -1,6 +1,11 @@
+{ config, ... }:
 {
-  ..., config }:
-  {
+  home = {
+    sessionVariables = {
+      TERMINAL = "alacritty";
+    };
+  };
+
   programs.alacritty = {
     enable = true;
 
@@ -34,15 +39,15 @@
 
       font = {
         normal = {
-          family = config.fontProfiles.monolisa.family;
+          family = config.fontProfiles.monospace.family;
           style = "Regular";
         };
         bold = {
-          family = config.fontProfiles.monolisa.family;
+          family = config.fontProfiles.monospace.family;
           style = "Bold";
         };
         italic = {
-          family = config.fontProfiles.monolisa.family;
+          family = config.fontProfiles.monospace.family;
           style = "Italic";
         };
         size = 14.0;
