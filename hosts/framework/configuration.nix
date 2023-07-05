@@ -11,12 +11,14 @@
     ../../nixos/optional/backup.nix
     ../../nixos/optional/fingerprint.nix
     ../../nixos/optional/opengl.nix
+    ../../nixos/optional/thunderbolt.nix
     ../../nixos/optional/gaming.nix
     ../../nixos/optional/pipewire.nix
     ../../nixos/optional/greetd.nix
     ../../nixos/optional/quietboot.nix
     #../nixos/optional/grub.nix
     ../../nixos/optional/mullvad.nix
+    ../../nixos/optional/vfio.nix
     #../nixos/optional/wireless.nix
   ];
 
@@ -32,6 +34,7 @@
   # TODO: global
   services.printing.enable = true;
   services.fwupd.enable = true;
+   services.gvfs.enable = true;
   services.udev.packages = with pkgs; [ yubikey-personalization ];
   services.dbus.enable = true;
   programs.dconf.enable = true;

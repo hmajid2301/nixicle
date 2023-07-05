@@ -16,6 +16,7 @@ in
       # Source scripts
       ''
         any-nix-shell fish --info-right | source
+        fish_add_path ~/go/bin/
       '' +
 
       # fifc setup

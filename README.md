@@ -1,4 +1,4 @@
-# Dotfiles
+# Dotfiles (Hypernix)
 
 **CURRENTLY A WIP**
 
@@ -64,7 +64,7 @@ Some features of my dotfiles:
   - `global`: Configurations that are globally applied to all my machines
   - `optional`: Configurations that some of my machines use
 - `hosts`: NixOS Configurations, accessible via `nixos-rebuild --flake`.
-  - `framework`: Framework 12th gen laptop | Hyprland
+  - `framework`: Framework 12th gen laptop | Hyprland | eGPU 7900 XTX
 - `home-manager`: Most of my dotfiles configuration, user specific
 
 

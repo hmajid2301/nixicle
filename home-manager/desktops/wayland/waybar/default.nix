@@ -106,34 +106,31 @@
           format = "{icon}  {capacity}%";
           format-alt = "{time}";
           format-full = "";
-          format-charging = "🔌  {capacity}%";
-          format-plugged = "🔌  {capacity}%";
-          format-icons = [
-            "🪫"
-            "🪫"
-            "🔋"
-            "🔋"
-            "🔋"
-          ];
+          format-charging = "  {capacity}%";
+          format-plugged = "  {capacity}%";
+          format-icons = [ "   " "   " "   " "   " "   " ];
         };
         temperature = {
           interval = 10;
           tooltip = false;
           thermal-zone = 1;
           critical-threshold = 80;
-          format = "🌡️ {temperatureC}°C";
+          format = "{icon} {temperatureC}°C";
+          format-critical = "{icon} {temperatureC}°C";
+          format-icons = [ "  " "  " "  " "  " "  " ];
         };
         cpu = {
           interval = 10;
           tooltip = false;
-          format = "💻 {usage}%";
+          format = "    {usage}%";
         };
         memory = {
           interval = 10;
-          format = "🎞 {percentage}%";
+          format = " 󰍛  {percentage}%";
+          tooltip-format = "{used = 0.1f}GiB/{avail = 0.1f}GiB";
         };
         network = {
-          interval = 5;
+          interval = 1;
           format-wifi = "   {essid} {signalStrength}%";
           tooltip-format-wifi = "IP = {ipaddr}\nSSID = {essid}";
           format-ethernet = "  ";
@@ -147,26 +144,23 @@
         };
         backlight = {
           tooltip = false;
-          format = "🔆 {percent}%";
+          format = " {percent}%";
         };
         pulseaudio = {
           scroll-step = 2;
           format = "{icon} {volume}%";
           format-bluetooth = " {icon} {volume}%";
-          format-muted = "🔈 Muted";
+          format-muted = "";
           format-icons = {
-            headphone = "🎧";
-            headset = "🎧";
-            default = [
-              "🔈"
-              "🔉"
-              "🔊"
-            ];
+            headphone = "";
+            headset = "";
+            default = [ "" "" ];
           };
         };
         clock = {
           tooltip-format = "{:%A %B %d %Y | %H:%M}";
-          format = "📅  {:%a %d %b  🕑 %I:%M %p}";
+          format = "  {:%a %d %b    %I:%M %p}";
+          format-alt = "  {:%d/%m/%Y  %H:%M:%S}";
           interval = 1;
         };
         tray = {
