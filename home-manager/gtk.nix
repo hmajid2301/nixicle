@@ -11,9 +11,15 @@ rec {
       size = 12;
     };
 
+    # TODO: colorscheme
     theme = {
-      name = "${config.colorscheme.slug}";
-      package = gtkThemeFromScheme { scheme = config.colorscheme; };
+      name = "Catppuccin-Frappe-Compact-Pink-dark";
+      package = pkgs.catppuccin-gtk.override {
+        accents = [ "pink" ];
+        size = "compact";
+        tweaks = [ "rimless" "black" ];
+        variant = "frappe";
+      };
     };
 
     iconTheme = {
@@ -29,7 +35,7 @@ rec {
   home.pointerCursor = {
     package = pkgs.catppuccin-cursors.frappeLight;
     name = "Catppuccin-Frappe-Light-Cursors";
-    size = 32;
+    size = 50;
     x11.enable = true;
     gtk.enable = true;
   };

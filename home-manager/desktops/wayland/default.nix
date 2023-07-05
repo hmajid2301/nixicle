@@ -21,6 +21,7 @@
     celluloid
     via
     mtpfs
+    jmtpfs
     brightnessctl
     xdg-utils
     gnome.nautilus

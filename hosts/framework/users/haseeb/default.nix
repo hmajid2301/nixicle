@@ -18,6 +18,8 @@ in
       "video"
       "audio"
       "networkmanager"
+      "libvirtd"
+      "kvm"
     ] ++ ifTheyExist [
       "docker"
       "podman"
