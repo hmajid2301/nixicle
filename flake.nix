@@ -21,6 +21,7 @@
 
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
+    devenv.url = "github:cachix/devenv/latest";
     hardware.url = "github:nixos/nixos-hardware";
     sops-nix.url = "github:mic92/sops-nix";
     impermanence.url = "github:nix-community/impermanence";
@@ -41,7 +42,7 @@
     nix-colors.url = "github:misterio77/nix-colors";
   };
 
-  outputs = { self, nixpkgs, home-manager, nur, ... }@inputs:
+  outputs = { self, nixpkgs, home-manager, nur, devenv, ... }@inputs:
     let
       inherit (self) outputs;
       forAllSystems = nixpkgs.lib.genAttrs [
@@ -64,8 +65,10 @@
       # Your custom packages
       # Acessible through 'nix build', 'nix shell', etc
       packages = forAllSystems (system:
-        let pkgs = nixpkgs.legacyPackages.${system};
-        in import ./pkgs { inherit pkgs; }
+        let
+          pkgs = nixpkgs.legacyPackages.${system};
+        in
+        import ./pkgs { inherit pkgs; }
       );
       # Devshell for bootstrapping
       # Acessible through 'nix develop' or 'nix-shell' (legacy)
@@ -93,7 +96,12 @@
       # Available through 'home-manager --flake .#framework'
       homeConfigurations = {
         # Laptops
-        framework = mkHome [ ./hosts/framework/home.nix ] nixpkgs.legacyPackages."x86_64-linux";
+        framework = home-manager.lib.homeManagerConfiguration {
+          modules = [ ./hosts/framework/home.nix ];
+          pkgs = nixpkgs.legacyPackages.x86_64-linux;
+          extraSpecialArgs = { inherit inputs outputs; };
+        };
+        #framework = mkHome [ ./hosts/framework/home.nix ] nixpkgs.legacyPackages."x86_64-linux";
       };
     };
 }
