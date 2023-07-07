@@ -108,7 +108,7 @@
           format-full = "";
           format-charging = "  {capacity}%";
           format-plugged = "  {capacity}%";
-          format-icons = [ "   " "   " "   " "   " "   " ];
+          format-icons = [ " " " " " " " " " " ];
         };
         temperature = {
           interval = 10;
@@ -117,23 +117,23 @@
           critical-threshold = 80;
           format = "{icon} {temperatureC}°C";
           format-critical = "{icon} {temperatureC}°C";
-          format-icons = [ "  " "  " "  " "  " "  " ];
+          format-icons = [ "" "" "" "" "" ];
         };
         cpu = {
           interval = 10;
           tooltip = false;
-          format = "    {usage}%";
+          format = " {usage}%";
         };
         memory = {
           interval = 10;
-          format = " 󰍛  {percentage}%";
+          format = "󰍛 {percentage}%";
           tooltip-format = "{used = 0.1f}GiB/{avail = 0.1f}GiB";
         };
         network = {
           interval = 1;
-          format-wifi = "   {essid} {signalStrength}%";
+          format-wifi = "  {essid} {signalStrength}%";
           tooltip-format-wifi = "IP = {ipaddr}\nSSID = {essid}";
-          format-ethernet = "  ";
+          format-ethernet = "";
           tooltip-format-ethernet = "IP = {ipaddr}";
           format-disconnected = "Disconnected ⚠";
           tooltip-format = ''
@@ -158,10 +158,30 @@
           };
         };
         clock = {
-          tooltip-format = "{:%A %B %d %Y | %H:%M}";
           format = "  {:%a %d %b    %I:%M %p}";
           format-alt = "  {:%d/%m/%Y  %H:%M:%S}";
           interval = 1;
+          calendar = {
+            mode = "year";
+            "mode-mon-col" = 3;
+            "weeks-pos" = "right";
+            "on-scroll" = 1;
+            "on-click-right" = "mode";
+            format = {
+              months = "<span color='#ffead3'><b>{}</b></span>";
+              days = "<span color='#ecc6d9'><b>{}</b></span>";
+              weeks = "<span color='#99ffdd'><b>W{}</b></span>";
+              weekdays = "<span color='#ffcc66'><b>{}</b></span>";
+              today = "<span color='#ff6699'><b><u>{}</u></b></span>";
+            };
+          };
+          actions = {
+            "on-click-right" = "mode";
+            "on-click-forward" = "tz_up";
+            "on-click-backward" = "tz_down";
+            "on-scroll-up" = "shift_up";
+            "on-scroll-down" = "shift_down";
+          };
         };
         tray = {
           icon-size = 16;
@@ -180,7 +200,7 @@
       }
     ];
     style = (import ./styles.nix {
-      inherit (config) colorscheme;
+      inherit (config) fontProfiles colorscheme;
     });
   };
 }

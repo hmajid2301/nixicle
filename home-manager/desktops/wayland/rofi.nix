@@ -20,7 +20,7 @@
       display-window = " 﩯  Window";
       display-Network = " 󰤨  Network";
       sidebar-mode = true;
-      #font = config.fontProfiles.monospace.family;
+      font = config.fontProfiles.monospace.family;
     };
     theme =
       let
@@ -29,13 +29,13 @@
       {
         #"@import" = "default";
         "*" = {
-          bg-col = mkLiteral "#303446";
-          bg-col-light = mkLiteral "#303446";
-          border-col = mkLiteral "#303446";
-          selected-col = mkLiteral "#303446";
-          blue = mkLiteral "#8caaee";
-          fg-col = mkLiteral "#c6d0f5";
-          fg-col2 = mkLiteral "#e78284";
+          bg-col = mkLiteral "#${config.colorscheme.colors.base00}";
+          bg-col-light = mkLiteral "#${config.colorscheme.colors.base00}";
+          border-col = mkLiteral "#${config.colorscheme.colors.base00}";
+          selected-col = mkLiteral "#${config.colorscheme.colors.base00}";
+          blue = mkLiteral "#${config.colorscheme.colors.base0D}";
+          fg-col = mkLiteral "#${config.colorscheme.colors.base05}";
+          fg-col2 = mkLiteral "#${config.colorscheme.colors.base08}";
           grey = mkLiteral "#737994";
           width = 600;
         };

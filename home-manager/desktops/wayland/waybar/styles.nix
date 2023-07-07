@@ -1,41 +1,19 @@
-{ colorscheme }:
+{ colorscheme, fontProfiles, ... }:
 ''
-  @define-color base   #24273a;
-  @define-color mantle #1e2030;
-  @define-color crust  #181926;
-
-  @define-color text     #cad3f5;
-  @define-color subtext0 #a5adcb;
-  @define-color subtext1 #b8c0e0;
-
-  @define-color surface0 #363a4f;
-  @define-color surface1 #494d64;
-  @define-color surface2 #5b6078;
-
-  @define-color overlay0 #6e738d;
-  @define-color overlay1 #8087a2;
-  @define-color overlay2 #939ab7;
-
-  @define-color blue      #8aadf4;
-  @define-color lavender  #b7bdf8;
-  @define-color sapphire  #7dc4e4;
-  @define-color sky       #91d7e3;
-  @define-color teal      #8bd5ca;
-  @define-color green     #a6da95;
-  @define-color yellow    #eed49f;
-  @define-color peach     #f5a97f;
-  @define-color maroon    #ee99a0;
-  @define-color red       #ed8796;
-  @define-color mauve     #c6a0f6;
-  @define-color pink      #f5bde6;
-  @define-color flamingo  #f0c6c6;
-  @define-color rosewater #f4dbd6;
+  @define-color base      #${colorscheme.colors.base00};
+  @define-color blue      #${colorscheme.colors.base0D};
+  @define-color lavender  #${colorscheme.colors.base07};
+  @define-color teal      #${colorscheme.colors.base0C};
+  @define-color yellow    #${colorscheme.colors.base0A};
+  @define-color red       #${colorscheme.colors.base08};
+  @define-color mauve     #${colorscheme.colors.base0E};
+  @define-color flamingo  #${colorscheme.colors.base0F};
 
   * {
       color: @lavender;
       border: 0;
       padding: 0 0;
-      font-family: UbuntuMono;
+      font-family: ${fontProfiles.monospace.family};
       font-size: 18px;
       font-weight: bold;
   }
@@ -63,7 +41,7 @@
   }
 
   #workspaces * {
-      color: whitesmoke;
+      color: white;
   }
 
   #workspaces {
@@ -85,7 +63,7 @@
   }
 
   #mode {
-      color: #ebcb8b;
+      color: @yellow;
   }
 
   #clock,
@@ -155,7 +133,7 @@
   }
 
   #battery {
-      color: @sapphire;
+      color: @lavender;
       border-radius: 0 10px 10px 0;
       margin-right: 10px;
   }
@@ -171,7 +149,7 @@
   }
 
   #battery.critical:not(.charging) {
-      color: #bf616a;
+      color: @red;
       animation-name: blink;
       animation-duration: 0.5s;
       animation-timing-function: linear;
@@ -198,7 +176,7 @@
   }
 
   #network.disconnected {
-      color: @maroon;
+      color: @red;
   }
 
   #pulseaudio {
@@ -217,11 +195,11 @@
   }
 
   #temperature.critical {
-      color: @maroon;
+      color: @red;
   }
 
   #idle_inhibitor {
-      background-color: #ebcb8b;
+      background-color: @yellow;
       color: @base;
   }
 
@@ -248,7 +226,7 @@
       margin-bottom: 0px;
       border-radius: 10px;
       transition: none;
-      color: #F28FAD;
+      color: @red;
       background: @base;
   }
 

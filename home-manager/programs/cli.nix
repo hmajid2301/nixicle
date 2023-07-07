@@ -4,7 +4,10 @@
   imports = [
     ./bat.nix
     ./bottom.nix
+    ./calcure.nix
     ./exa.nix
+    ./devenv.nix
+    ./dooit.nix
     ./fzf.nix
     ./git.nix
     ./gpg.nix

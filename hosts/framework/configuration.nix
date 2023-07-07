@@ -13,6 +13,7 @@
     ../../nixos/optional/opengl.nix
     ../../nixos/optional/thunderbolt.nix
     ../../nixos/optional/gaming.nix
+    ../../nixos/optional/fonts.nix
     ../../nixos/optional/pipewire.nix
     ../../nixos/optional/greetd.nix
     ../../nixos/optional/quietboot.nix
@@ -34,7 +35,7 @@
   # TODO: global
   services.printing.enable = true;
   services.fwupd.enable = true;
-   services.gvfs.enable = true;
+  services.gvfs.enable = true;
   services.udev.packages = with pkgs; [ yubikey-personalization ];
   services.dbus.enable = true;
   programs.dconf.enable = true;
