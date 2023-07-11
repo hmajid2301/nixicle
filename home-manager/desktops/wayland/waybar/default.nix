@@ -18,6 +18,7 @@
           "wlr/workspaces"
           "custom/currentplayer"
           "custom/player"
+          "custom/audio_idle_inhibitor"
         ];
         modules-center = [
           "clock"
@@ -50,6 +51,17 @@
             default = "  ";
           };
           on-click = "activate";
+        };
+        "custom/audio_idle_inhibitor" = {
+          format = "{icon}";
+          exec = "sway-audio-idle-inhibit --dry-print-both-waybar";
+          exec-if = "which sway-audio-idle-inhibit";
+          return-type = "json";
+          format-icons = {
+            output = "";
+            input = "";
+            output-input = "  ";
+          };
         };
         "custom/currentplayer" = {
           interval = 2;
@@ -111,7 +123,7 @@
           format-icons = [ " " " " " " " " " " ];
         };
         temperature = {
-          interval = 10;
+          interval = 1;
           tooltip = false;
           thermal-zone = 1;
           critical-threshold = 80;
@@ -120,12 +132,12 @@
           format-icons = [ "" "" "" "" "" ];
         };
         cpu = {
-          interval = 10;
+          interval = 1;
           tooltip = false;
           format = " {usage}%";
         };
         memory = {
-          interval = 10;
+          interval = 1;
           format = "󰍛 {percentage}%";
           tooltip-format = "{used = 0.1f}GiB/{avail = 0.1f}GiB";
         };

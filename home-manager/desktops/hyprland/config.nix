@@ -33,16 +33,22 @@ in
 
   # exceptions
   windowrule = float, title:^(Steam)$
-  windowrule = float, title:^(Guild Wars 2)$
-  windowrulev2 = float, title:^(Steam)$
+  windowrule = fullscreen, title:^(Guild Wars 2)$
 
   # auto-start
   exec-once = mako &
   exec-once = kanshi &
-  exec-once = swayidle -w &
+  exec-once = sway-audio-idle-inhibit -w &
   exec-once = waybar &
-  exec=swaybg -i ${wallpaper} --mode fill &
+  exec-once = gammastep-indicator &
+  exec-once = swaybg -i ${wallpaper} --mode fill &
   exec-once = ~/dotfiles/home-manager/desktops/wayland/scripts/laptop_lid_switch.sh
+
+  # Ignore swayidle
+  windowrule = idleinhibit focus,mpv
+  windowrule = idleinhibit fullscreen,firefox
+  windowrulev2 = idleinhibit focus, class:^(mpv|.+exe)$
+  windowrulev2 = idleinhibit fullscreen, class:^(firefox|brave)$
 
   # Other
   bind=CONTROL_ALT,DELETE,exec,~/dotfiles/home-manager/desktops/wayland/scripts/power_menu.sh

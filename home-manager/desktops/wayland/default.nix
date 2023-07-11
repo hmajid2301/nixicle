@@ -1,6 +1,6 @@
 { inputs, config, pkgs, ... }: {
   imports = [
-    ./eww.nix
+    #./eww.nix
     ./gammastep.nix
     ./mako.nix
     ./kanshi.nix
@@ -24,10 +24,8 @@
     jmtpfs
     brightnessctl
     xdg-utils
-    gnome.nautilus
-    gnome.sushi
+    xfce.thunar
     gnome.gnome-disk-utility
-    gnome.gedit
     gnome.totem
     gnome.eog
     gnome.gvfs

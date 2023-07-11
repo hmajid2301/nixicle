@@ -7,7 +7,7 @@ let
     mkdir /tmp -p
     MNTPOINT=$(mktemp -d)
     (
-      mount -t btrfs -o subvol=/ /dev/disk/by-label/${hostname} "$MNTPOINT"
+      mount -t btrfs -o subvol=/ /dev/disk/by-label/nixos "$MNTPOINT"
       trap 'umount "$MNTPOINT"' EXIT
 
       echo "Creating needed directories"
@@ -27,17 +27,16 @@ let
 in
 {
   boot.initrd = {
-    supportedFilesystems = [ "btrfs" ];
     postDeviceCommands = lib.mkIf (!phase1Systemd) (lib.mkBefore wipeScript);
     systemd.services.restore-root = lib.mkIf phase1Systemd {
       description = "Rollback btrfs rootfs";
       wantedBy = [ "initrd.target" ];
       requires = [
-        "dev-disk-by\\x2dlabel-${hostname}.device"
+        "dev-disk-by\\x2dlabel-nixos.device"
       ];
       after = [
-        "dev-disk-by\\x2dlabel-${hostname}.device"
-        "systemd-cryptsetup@${hostname}.service"
+        "dev-disk-by\\x2dlabel-nixos.device"
+        "systemd-cryptsetup@nixos.service"
       ];
       before = [ "sysroot.mount" ];
       unitConfig.DefaultDependencies = "no";
@@ -45,33 +44,5 @@ in
       script = wipeScript;
     };
   };
-
-  fileSystems = {
-    "/" = {
-      device = "/dev/disk/by-label/${hostname}";
-      fsType = "btrfs";
-      options = [ "subvol=root" "compress=zstd" ];
-    };
-
-    "/nix" = {
-      device = "/dev/disk/by-label/${hostname}";
-      fsType = "btrfs";
-      options = [ "subvol=nix" "noatime" "compress=zstd" ];
-    };
-
-    "/persist" = {
-      device = "/dev/disk/by-label/${hostname}";
-      fsType = "btrfs";
-      options = [ "subvol=persist" "compress=zstd" ];
-      neededForBoot = true;
-    };
-
-    "/swap" = {
-      device = "/dev/disk/by-label/${hostname}";
-      fsType = "btrfs";
-      options = [ "subvol=swap" "noatime" ];
-    };
-  };
-
 }
 

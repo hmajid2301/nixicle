@@ -21,6 +21,8 @@
     ../../nixos/optional/mullvad.nix
     ../../nixos/optional/vfio.nix
     #../nixos/optional/wireless.nix
+
+    #../../nixos/optional/ephemeral.nix
   ];
 
   # Enable networking
@@ -58,6 +60,7 @@
     enable = true;
     allowReboot = true;
     dates = "daily";
+    flake = "gitlab:hmajid2301/dotfiles";
     flags = [
       "--refresh"
       "--recreate-lock-file"

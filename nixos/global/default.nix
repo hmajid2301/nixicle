@@ -5,7 +5,7 @@
     ./locale.nix
     ./nix.nix
     ./openssh.nix
-    ./persistance.nix
+    #./persistance.nix
     ./sops.nix
     ./openssh.nix
     ./sops.nix
