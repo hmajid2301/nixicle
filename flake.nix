@@ -40,6 +40,7 @@
     hypr-contrib.url = "github:hyprwm/contrib";
     fufexan.url = "github:fufexan/dotfiles";
     nix-colors.url = "github:misterio77/nix-colors";
+    comma.url = "github:nix-community/comma";
   };
 
   outputs = { self, nixpkgs, home-manager, nur, devenv, ... }@inputs:

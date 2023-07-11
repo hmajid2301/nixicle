@@ -37,8 +37,8 @@ in
       {
         owner = "catppuccin";
         repo = "lazygit";
-        rev = "f01edfd57fa2aa7cd69a92537a613bb3c91e65dd";
-        sha256 = "sha256-zjzDtXcGtUon4QbrZnlAPzngEyH56yy8TCyFv0rIbOA=";
+        rev = "b2ecb6d41b6f54a82104879573c538e8bdaeb0bf";
+        sha256 = "0p68z82cq3sgc25l16r8nfny8ab9158jj49xym2a4d932xcnc47l";
       }
     + "/themes/frappe.yml");
   };

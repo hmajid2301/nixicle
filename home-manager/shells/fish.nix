@@ -81,6 +81,7 @@ in
       vim = "nvim";
       n = "nvim";
       cd = "z";
+      cp = "xcp";
       grep = "rga";
       dig = "dog";
       cat = "bat";
@@ -140,8 +141,8 @@ in
         src = pkgs.fetchFromGitHub {
           owner = "kidonng";
           repo = "nix.fish";
-          rev = "19cfe6c7f1e8ae60865b22197fc43506d78888f8";
-          sha256 = "sha256-gVHF7qJrqoiUJm0EirP5uAG37P0rbsFIIlc1TtSKsWE=";
+          rev = "ad57d970841ae4a24521b5b1a68121cf385ba71e";
+          sha256 = "13x3bfif906nszf4mgsqxfshnjcn6qm4qw1gv7nw89wi4cdp9i8q";
         };
       }
       {
@@ -149,8 +150,8 @@ in
         src = pkgs.fetchFromGitHub {
           owner = "gazorby";
           repo = "fish-abbreviation-tips";
-          rev = "75f7f66ca092d53197c1a97c7d8e93b1402fdc15";
-          sha256 = "sha256-uo8pAIwq7FRQNWHh+cvXAR9Imd2PvNmlrqEiDQHWvEY=";
+          rev = "8ed76a62bb044ba4ad8e3e6832640178880df485";
+          sha256 = "05b5qp7yly7mwsqykjlb79gl24bs6mbqzaj5b3xfn3v2b7apqnqp";
         };
       }
       {
@@ -158,8 +159,8 @@ in
         src = pkgs.fetchFromGitHub {
           owner = "gazorby";
           repo = "fifc";
-          rev = "v0.1.1";
-          sha256 = "sha256-p5E4Mx6j8hcM1bDbeftikyhfHxQ+qPDanuM1wNqGm6E=";
+          rev = "8bd370c4a5db3b71f52a3079b758f0f2ed082044";
+          sha256 = "19mxl9wp335scmg4r4sijgwlhar2kiiir7fl7amahx3fih2ps4f2";
         };
       }
       {
@@ -167,8 +168,8 @@ in
         src = pkgs.fetchFromGitHub {
           owner = "kidonng";
           repo = "nix.fish";
-          rev = "19cfe6c7f1e8ae60865b22197fc43506d78888f8";
-          sha256 = "sha256-gVHF7qJrqoiUJm0EirP5uAG37P0rbsFIIlc1TtSKsWE=";
+          rev = "ad57d970841ae4a24521b5b1a68121cf385ba71e";
+          sha256 = "13x3bfif906nszf4mgsqxfshnjcn6qm4qw1gv7nw89wi4cdp9i8q";
         };
       }
       {
@@ -176,8 +177,8 @@ in
         src = pkgs.fetchFromGitHub {
           owner = "lewisacidic";
           repo = "fish-git-abbr";
-          rev = "0.2.1";
-          sha256 = "sha256-wye76M1fkKEmEGJI9zXBIgLr7T8dBIgJudwTXWOIFjg=";
+          rev = "dc590a5b9d9d2095f95f7d90608b48e55bea0b0e";
+          sha256 = "1gciqw4gypszqzrc1q6psc5qmkb8k10fjaaiqlwzy23wdfpxcggb";
         };
       }
       {
@@ -185,8 +186,8 @@ in
         src = pkgs.fetchFromGitHub {
           owner = "lewisacidic";
           repo = "fish-tmux-abbr";
-          rev = "v0.1.0";
-          sha256 = "sha256-f9o+BD5G6uOkz9oSQYMXvZYdEVhKnf3rq1bDAvi6Pvg=";
+          rev = "47d633a36bec3fe0ed150473e93bdb54000a5216";
+          sha256 = "1y1ypbw05hsnmgmzv7aab08iv5mx2y1l24nsryjf7sj67q23xnkz";
         };
       }
     ];

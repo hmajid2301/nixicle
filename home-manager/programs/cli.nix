@@ -52,8 +52,10 @@
     psensor
     ripgrep-all
     ripgrep # for neovim
+    tokei
     trash-cli
     sd
+    xcp
     yq
 
     # cheat sheets

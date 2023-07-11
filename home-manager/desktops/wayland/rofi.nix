@@ -20,7 +20,7 @@
       display-window = " 﩯  Window";
       display-Network = " 󰤨  Network";
       sidebar-mode = true;
-      font = config.fontProfiles.monospace.family;
+      #font = config.fontProfiles.monospace.family;
     };
     theme =
       let

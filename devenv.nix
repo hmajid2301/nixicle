@@ -5,13 +5,12 @@
   env.GREET = "devenv";
 
   # https://devenv.sh/packages/
-  packages = [ pkgs.git pkgs.nixpkgs-fmt ];
+  packages = [ pkgs.git pkgs.nixpkgs-fmt pkgs.update-nix-fetchgit ];
 
   # https://devenv.sh/scripts/
   #scripts.hello.exec = "echo hello from $GREET";
 
   enterShell = ''
-    fish
   '';
 
   # https://devenv.sh/languages/

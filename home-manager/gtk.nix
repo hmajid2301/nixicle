@@ -4,6 +4,12 @@ let
   inherit (inputs.nix-colors.lib-contrib { inherit pkgs; }) gtkThemeFromScheme;
 in
 rec {
+  dconf.settings = {
+    "org/gnome/desktop/interface" = {
+      color-scheme = "prefer-dark";
+    };
+  };
+
   gtk = {
     enable = true;
     font = {
@@ -11,33 +17,40 @@ rec {
       size = 12;
     };
 
-    # TODO: colorscheme
     theme = {
-      name = "Catppuccin-Frappe-Compact-Pink-dark";
-      package = pkgs.catppuccin-gtk.override {
-        accents = [ "pink" ];
-        size = "compact";
-        tweaks = [ "rimless" "black" ];
-        variant = "frappe";
-      };
+      name = "${config.colorscheme.slug}";
+      package = gtkThemeFromScheme { scheme = config.colorscheme; };
     };
 
     iconTheme = {
-      name = "Papirus";
+      name = "Papirus-Dark";
       package = pkgs.papirus-icon-theme;
     };
 
-    cursorTheme = {
-      name = "Catppuccin-Frappe-Dark";
+    gtk3.extraConfig = {
+      Settings = ''
+        gtk-application-prefer-dark-theme=1
+      '';
+    };
+
+    gtk4.extraConfig = {
+      Settings = ''
+        gtk-application-prefer-dark-theme=1
+      '';
     };
   };
 
+  home.sessionVariables.GTK_THEME = "${config.colorscheme.slug}";
   home.pointerCursor = {
     package = pkgs.catppuccin-cursors.frappeLight;
     name = "Catppuccin-Frappe-Light-Cursors";
     size = 50;
     x11.enable = true;
     gtk.enable = true;
+  };
+  home.sessionVariables = {
+    XCURSOR_THEME = "Catppuccin-Frappe-Light-Cursors";
+    XCURSOR_SIZE = "32";
   };
 }
 

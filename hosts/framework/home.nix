@@ -55,7 +55,6 @@ in
     sessionPath = [ "$HOME/.local/bin" ];
     sessionVariables = {
       EDITOR = "nvim";
-      GTK_THEME = "catppuccin";
     };
 
     #persistence = {

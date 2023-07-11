@@ -5,6 +5,7 @@
     nvtop-amd
     htop
     ranger
+    lf
     unzip
     pavucontrol
     gnupg
