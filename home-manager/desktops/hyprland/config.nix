@@ -45,10 +45,8 @@ in
   exec-once = ~/dotfiles/home-manager/desktops/wayland/scripts/laptop_lid_switch.sh
 
   # Ignore swayidle
-  windowrule = idleinhibit focus,mpv
-  windowrule = idleinhibit fullscreen,firefox
-  windowrulev2 = idleinhibit focus, class:^(mpv|.+exe)$
-  windowrulev2 = idleinhibit fullscreen, class:^(firefox|brave)$
+  #windowrulev2 = idleinhibit focus, class:^(mpv)$
+  #windowrulev2 = idleinhibit fullscreen, class:^(firefox)$
 
   # Other
   bind=CONTROL_ALT,DELETE,exec,~/dotfiles/home-manager/desktops/wayland/scripts/power_menu.sh

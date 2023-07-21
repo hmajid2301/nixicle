@@ -14,6 +14,7 @@
     ./lazygit.nix
     ./starship.nix
     ./tmux.nix
+    ./uair.nix
     ./zoxide.nix
   ];
 
@@ -34,10 +35,11 @@
     curlie
     dog
     duf
+    delta
+    dysk
     entr
     erdtree
     fd
-    delta
     gdu
     go-task
     gping

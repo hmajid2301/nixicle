@@ -26,25 +26,6 @@ You can read more about my dotfiles and development workflows on my [blog here](
 
 > Note my dotfiles are almost always changing!
 
-## System Overview
-
-![Neofetch](images/neofetch.png)
-
-- OS: NixOS
-- WM: Hyprland
-- Shell: Fish
-  - Prompt: [Starship](https://starship.rs/)
-- Terminal: Alacritty
-  - Editor: Neovim (using [LazyVim](https://www.lazyvim.org) config)
-- Colorscheme: [Catppuccin for EVERYTHING!!!](https://github.com/catppuccin)
-- Fonts: [Mono Lisa](https://www.monolisa.dev/)
-
-## Photos
-
-![wallpaper](images/wallpaper.png)
-![neovim](images/neovim.png)
-![monkeytype](images/monkeytype.png)
-
 ## Features
 
 Some features of my dotfiles:
@@ -56,6 +37,7 @@ Some features of my dotfiles:
 - **Encrypted btrfs partition** 
 - **sops-nix** for secrets management
 - Different environments like **hyprland** and **gnome**
+- Laptop setup with eGPU and **vfio** for playing games on windows
 
 ## Structure
 
@@ -66,6 +48,36 @@ Some features of my dotfiles:
 - `hosts`: NixOS Configurations, accessible via `nixos-rebuild --flake`.
   - `framework`: Framework 12th gen laptop | Hyprland | eGPU 7900 XTX
 - `home-manager`: Most of my dotfiles configuration, user specific
+
+## Devices
+
+Here is a list of the devices this repo is used to configure.
+
+### Framework Laptop
+
+![Neofetch](images/neofetch.png)
+
+| Type           | Program      |
+| :------------- | :----------: |
+| Editor         | [NeoVim](https://neovim.io/) |
+| Launcher       | [Rofi](https://github.com/davatorium/rofi) |
+| Shell          | [Fish](https://fishshell.com/) |
+| Status Bar     | [Waybar](https://github.com/Alexays/Waybar) |
+| Terminal       | [Alacritty](https://github.com/alacritty/alacritty) |
+| Window Manager | [Hyprland](https://hyprland.org/) |
+
+- OS: NixOS
+- WM: Hyprland
+- Shell: Fish
+  - Prompt: [Starship](https://starship.rs/)
+- Terminal: Alacritty
+  - Editor: Neovim (using [LazyVim](https://www.lazyvim.org) config)
+- Colorscheme: [Catppuccin for EVERYTHING!!!](https://github.com/catppuccin)
+- Fonts: [Mono Lisa](https://www.monolisa.dev/)
+
+![wallpaper](images/wallpaper.png)
+![neovim](images/neovim.png)
+![monkeytype](images/monkeytype.png)
 
 
 ## Applications
@@ -83,8 +95,7 @@ CLI tools that I use often include:
 
 ### Tmux
 
-I manage my projects using tmux sessions with the
-[tmux smart session manager](https://github.com/joshmedeski/t-smart-tmux-session-manager).
+I manage my projects using tmux sessions with the [tmux smart session manager](https://github.com/joshmedeski/t-smart-tmux-session-manager).
 
 Where I create a new session for each project I'm working on and then jump between them.
 Where a project might be:
@@ -93,11 +104,6 @@ Where a project might be:
 - My Dotfiles
 - Full stack application
   - A window for each project i.e. GUI and API
-
-### Neovim
-
-I have started using nvim as my default editor (IDE?). It uses [LazyVim](lazyvim.org/) as
-the base config and adds a few plugins on top.
 
 ## Appendix
 

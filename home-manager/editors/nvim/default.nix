@@ -12,6 +12,7 @@
 
   home.packages = with pkgs; [
     # parser (nvim)
+    gcc
     tree-sitter
     wget
     python311Packages.pip
