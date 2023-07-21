@@ -6,14 +6,16 @@ in
   imports = [
     inputs.nix-colors.homeManagerModule
     inputs.impermanence.nixosModules.home-manager.impermanence
+    inputs.nixvim.homeManagerModules.nixvim
     inputs.nur.hmModules.nur
-    ../../home-manager/browsers/firefox.nix
-    ../../home-manager/desktops/hyprland
     ../../home-manager/editors/nvim
-    ../../home-manager/fonts.nix
+    ../../home-manager/desktops/hyprland
     ../../home-manager/games
+    ../../home-manager/coding
+
+    ../../home-manager/browsers/firefox.nix
+    ../../home-manager/fonts.nix
     ../../home-manager/gtk.nix
-    ../../home-manager/packages/coding.nix
     ../../home-manager/packages/other.nix
     ../../home-manager/programs/cli.nix
     ../../home-manager/programs/kdeconnect.nix

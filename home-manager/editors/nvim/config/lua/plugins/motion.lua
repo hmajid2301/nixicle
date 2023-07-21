@@ -1,14 +1,9 @@
 local prefix = "<leader><leader>"
 return {
-  -- disable leap
   {
-    "ggandor/leap.nvim",
-    keys = function()
-      return {}
-    end,
-    config = function() end,
+    "folke/flash.nvim",
+    enabled = false,
   },
-
   {
     "ThePrimeagen/harpoon",
     dependencies = {

@@ -10,14 +10,12 @@ pvcreate /dev/mapper/enc
 vgcreate lvm /dev/mapper/enc
 
 lvcreate --size 32G --name swap lvm
- lvcreate --extents 100%FREE --name root lvm
+lvcreate --extents 100%FREE --name root lvm
 
 mkswap -L swap /dev/lvm/swap
 mkfs.btrfs -L nixos /dev/lvm/root
 
 swapon /dev/lvm/swap
-
-
 
 # Then create subvolumes
 

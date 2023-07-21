@@ -1,5 +1,5 @@
 {
-  description = "My NixOS Config";
+  description = "My Nix Config";
 
   nixConfig = {
     experimental-features = [ "nix-command" "flakes" ];
@@ -31,19 +31,18 @@
       flake = false;
     };
 
-    nix-gaming = {
-      url = "github:fufexan/nix-gaming";
-    };
+    nix-gaming.url = "github:fufexan/nix-gaming";
 
     hyprland.url = "github:hyprwm/Hyprland";
     hyprland.inputs.nixpkgs.follows = "nixpkgs";
     hypr-contrib.url = "github:hyprwm/contrib";
     fufexan.url = "github:fufexan/dotfiles";
     nix-colors.url = "github:misterio77/nix-colors";
+    nixvim.url = "github:pta2002/nixvim";
     comma.url = "github:nix-community/comma";
   };
 
-  outputs = { self, nixpkgs, home-manager, nur, devenv, ... }@inputs:
+  outputs = { self, nixpkgs, home-manager, nur, ... }@inputs:
     let
       inherit (self) outputs;
       forAllSystems = nixpkgs.lib.genAttrs [

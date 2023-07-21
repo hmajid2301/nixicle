@@ -6,6 +6,7 @@
     htop
     ranger
     lf
+    ctpv
     unzip
     pavucontrol
     gnupg

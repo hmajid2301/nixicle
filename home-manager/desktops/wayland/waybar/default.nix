@@ -32,6 +32,7 @@
           "memory"
           "battery"
           "network"
+          "custom/pomodoro"
           "custom/power"
         ];
         "wlr/workspaces" = {
@@ -58,10 +59,15 @@
           exec-if = "which sway-audio-idle-inhibit";
           return-type = "json";
           format-icons = {
-            output = "";
-            input = "";
+            output = "  ";
+            input = "  ";
             output-input = "  ";
           };
+        };
+        "custom/pomodoro" = {
+          format = " 󱎫  {}";
+          exec = "uairctl fetch %";
+          exec-if = "uairctl listen";
         };
         "custom/currentplayer" = {
           interval = 2;
@@ -137,8 +143,8 @@
           format = " {usage}%";
         };
         memory = {
-          interval = 1;
-          format = "󰍛 {percentage}%";
+          interval = 30;
+          format = "󰍛 {used:0.1f}GiB";
           tooltip-format = "{used = 0.1f}GiB/{avail = 0.1f}GiB";
         };
         network = {
@@ -170,7 +176,7 @@
           };
         };
         clock = {
-          format = "  {:%a %d %b    %I:%M %p}";
+          format = "  {:%a %d %b  %I:%M %p}";
           format-alt = "  {:%d/%m/%Y  %H:%M:%S}";
           interval = 1;
           calendar = {

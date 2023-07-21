@@ -2,9 +2,11 @@
 ''
   @define-color base      #${colorscheme.colors.base00};
   @define-color blue      #${colorscheme.colors.base0D};
+  @define-color rosewater #${colorscheme.colors.base06};
   @define-color lavender  #${colorscheme.colors.base07};
   @define-color teal      #${colorscheme.colors.base0C};
   @define-color yellow    #${colorscheme.colors.base0A};
+  @define-color green     #${colorscheme.colors.base0B};
   @define-color red       #${colorscheme.colors.base08};
   @define-color mauve     #${colorscheme.colors.base0E};
   @define-color flamingo  #${colorscheme.colors.base0F};
@@ -133,13 +135,13 @@
   }
 
   #battery {
-      color: @lavender;
+      color: @rosewater;
       border-radius: 0 10px 10px 0;
       margin-right: 10px;
   }
 
   #battery.charging {
-      color: @lavender;
+      color: @green;
   }
 
   @keyframes blink {

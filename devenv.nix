@@ -5,7 +5,7 @@
   env.GREET = "devenv";
 
   # https://devenv.sh/packages/
-  packages = [ pkgs.git pkgs.nixpkgs-fmt pkgs.update-nix-fetchgit ];
+  packages = [ pkgs.nixpkgs-fmt pkgs.update-nix-fetchgit ];
 
   # https://devenv.sh/scripts/
   #scripts.hello.exec = "echo hello from $GREET";
@@ -14,12 +14,9 @@
   '';
 
   # https://devenv.sh/languages/
-  # languages.nix.enable = true;
   languages.nix.enable = true;
 
   # https://devenv.sh/pre-commit-hooks/
-  # pre-commit.hooks.shellcheck.enable = true;
-  #
   pre-commit.hooks = {
     nixpkgs-fmt.enable = true;
   };
