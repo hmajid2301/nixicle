@@ -1,10 +1,17 @@
-# Dotfiles (Hypernix)
 
-**CURRENTLY A WIP**
+██████╗░░█████╗░████████╗███████╗██╗██╗░░░░░███████╗░██████╗
+██╔══██╗██╔══██╗╚══██╔══╝██╔════╝██║██║░░░░░██╔════╝██╔════╝
+██║░░██║██║░░██║░░░██║░░░█████╗░░██║██║░░░░░█████╗░░╚█████╗░
+██║░░██║██║░░██║░░░██║░░░██╔══╝░░██║██║░░░░░██╔══╝░░░╚═══██╗
+██████╔╝╚█████╔╝░░░██║░░░██║░░░░░██║███████╗███████╗██████╔╝
+╚═════╝░░╚════╝░░░░╚═╝░░░╚═╝░░░░░╚═╝╚══════╝╚══════╝╚═════╝░
 
-:house: My dotfiles repo, setup using nixos/home-manager
+<div align="center">
+  <h1> Haseeb's Dot Files :house_with_garden:</h1>
+  <a href="https://git.io/typing-svg"><img src="https://readme-typing-svg.demolab.com?font=Fira+Code&pause=1000&color=2A98C9&width=435&lines=My+Dotfiles+repo+setup+using+NixOS" alt="Typing SVG" /></a>
+</div>
 
-## Install
+## 👥 Install
 
 > :fire: I wouldn't recommend just blinding using my dotfiles. They are setup for my specific use-case.
 I think you're off using this repo as reference to create your own dotfiles.
@@ -26,7 +33,7 @@ You can read more about my dotfiles and development workflows on my [blog here](
 
 > Note my dotfiles are almost always changing!
 
-## Features
+## 🚀 Features
 
 Some features of my dotfiles:
 
@@ -39,7 +46,7 @@ Some features of my dotfiles:
 - Different environments like **hyprland** and **gnome**
 - Laptop setup with eGPU and **vfio** for playing games on windows
 
-## Structure
+## 🏠 Structure
 
 - `flake.nix`: Entrypoint for hosts and home configurations
 - `nixos`: 
@@ -49,36 +56,29 @@ Some features of my dotfiles:
   - `framework`: Framework 12th gen laptop | Hyprland | eGPU 7900 XTX
 - `home-manager`: Most of my dotfiles configuration, user specific
 
-## Devices
+## 🔌 Devices
 
 Here is a list of the devices this repo is used to configure.
 
-### Framework Laptop
-
-![Neofetch](images/neofetch.png)
+### 💻 Framework Laptop
 
 | Type           | Program      |
 | :------------- | :----------: |
-| Editor         | [NeoVim](https://neovim.io/) |
+| OS             | [NixOS](https://nixos.com/) |
+| Editor         | [NeoVim](https://neovim.io/) (LazyVim) |
+| Prompt         | [Starship](https://starship.rs/) |
 | Launcher       | [Rofi](https://github.com/davatorium/rofi) |
 | Shell          | [Fish](https://fishshell.com/) |
 | Status Bar     | [Waybar](https://github.com/Alexays/Waybar) |
 | Terminal       | [Alacritty](https://github.com/alacritty/alacritty) |
 | Window Manager | [Hyprland](https://hyprland.org/) |
+| Fonts          | [Mono Lisa](https://www.monolisa.dev/) |
+| Colorscheme    | [Catppuccin](https://github.com/catppuccin) |
 
-- OS: NixOS
-- WM: Hyprland
-- Shell: Fish
-  - Prompt: [Starship](https://starship.rs/)
-- Terminal: Alacritty
-  - Editor: Neovim (using [LazyVim](https://www.lazyvim.org) config)
-- Colorscheme: [Catppuccin for EVERYTHING!!!](https://github.com/catppuccin)
-- Fonts: [Mono Lisa](https://www.monolisa.dev/)
-
+![Neofetch](images/neofetch.png)
 ![wallpaper](images/wallpaper.png)
 ![neovim](images/neovim.png)
 ![monkeytype](images/monkeytype.png)
-
 
 ## Applications
 
