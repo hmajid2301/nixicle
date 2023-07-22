@@ -1,6 +1,6 @@
 return {
-  {
-    "mickael-menu/zk-nvim",
-    opts = {},
-  },
+	{
+		"mickael-menu/zk-nvim",
+		opts = {},
+	},
 }

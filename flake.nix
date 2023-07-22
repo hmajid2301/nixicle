@@ -25,6 +25,7 @@
     hardware.url = "github:nixos/nixos-hardware";
     sops-nix.url = "github:mic92/sops-nix";
     impermanence.url = "github:nix-community/impermanence";
+    nwg-displays.url = "github:nwg-piotr/nwg-displays/master";
 
     grub-theme = {
       url = "github:catppuccin/grub";

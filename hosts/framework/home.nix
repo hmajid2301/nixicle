@@ -8,6 +8,7 @@ in
     inputs.impermanence.nixosModules.home-manager.impermanence
     inputs.nixvim.homeManagerModules.nixvim
     inputs.nur.hmModules.nur
+    #inputs.nwg-displays.packages."x86_64-linux".default
     ../../home-manager/editors/nvim
     ../../home-manager/desktops/hyprland
     ../../home-manager/games

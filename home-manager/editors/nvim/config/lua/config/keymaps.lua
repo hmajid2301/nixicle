@@ -26,13 +26,13 @@ vim.keymap.set("n", "N", "Nzzzv", { desc = "Back search '/' or '?'" })
 
 -- Toggle floating windows
 vim.keymap.set("n", "<leader>tt", function()
-  Util.float_term({ "gdu" }, { cwd = Util.get_root(), esc_esc = false })
+	Util.float_term({ "gdu" }, { cwd = Util.get_root(), esc_esc = false })
 end, { desc = "Toggle: Go Disk Usage" })
 vim.keymap.set("n", "<leader>tu", function()
-  Util.float_term({ "btm" }, { cwd = Util.get_root(), esc_esc = false })
+	Util.float_term({ "btm" }, { cwd = Util.get_root(), esc_esc = false })
 end, { desc = "Toggle: Bottom" })
 vim.keymap.set("n", "<leader>tr", function()
-  Util.float_term({ "ranger" }, { cwd = Util.get_root(), esc_esc = false })
+	Util.float_term({ "ranger" }, { cwd = Util.get_root(), esc_esc = false })
 end, { desc = "Toggle ranger" })
 
 -- vim.keymap.set("n", "<A-J>", "mzJ`z", { desc = "combine with line up" })
@@ -43,14 +43,14 @@ vim.keymap.set("n", "<leader>O", 'O<Esc>0"_D', { desc = "Create a new line above
 
 -- Tmux
 local function map(mode, lhs, rhs, opts)
-  local keys = require("lazy.core.handler").handlers.keys
-  ---@cast keys LazyKeysHandler
-  -- do not create the keymap if a lazy keys handler exists
-  if not keys.active[keys.parse({ lhs, mode = mode }).id] then
-    opts = opts or {}
-    opts.silent = opts.silent ~= false
-    vim.keymap.set(mode, lhs, rhs, opts)
-  end
+	local keys = require("lazy.core.handler").handlers.keys
+	---@cast keys LazyKeysHandler
+	-- do not create the keymap if a lazy keys handler exists
+	if not keys.active[keys.parse({ lhs, mode = mode }).id] then
+		opts = opts or {}
+		opts.silent = opts.silent ~= false
+		vim.keymap.set(mode, lhs, rhs, opts)
+	end
 end
 
 -- buffer

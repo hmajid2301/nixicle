@@ -10,7 +10,7 @@
     kernelParams = [
       # enable IOMMU
       "intel_iommu=on"
-      "vfio-pci.ids=1002:744c,1002:ab30"
+      #"vfio-pci.ids=1002:744c,1002:ab30"
     ];
   };
 
