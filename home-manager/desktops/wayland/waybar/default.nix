@@ -207,13 +207,13 @@
         };
         "custom/power" = {
           format = " ⏻ ";
-          on-click = "~/dotfiles/home-manager/desktops/hyprland/scripts/power_menu.sh";
+          on-click = "rofi -show p -modi p:rofi-power-menu";
           tooltip = false;
         };
         "custom/launcher" = {
           format = "   ";
           tooltip = ''$(cat /etc/os-release | grep PRETTY_NAME | cut -d '"' -f2)'';
-          on-click = "rofi --show drun";
+          #on-click = " rofi -show drun -modi drun";
         };
       }
     ];

@@ -17,11 +17,11 @@
     ../../nixos/optional/pipewire.nix
     ../../nixos/optional/greetd.nix
     ../../nixos/optional/quietboot.nix
-    #../nixos/optional/grub.nix
     ../../nixos/optional/mullvad.nix
     ../../nixos/optional/vfio.nix
-    #../nixos/optional/wireless.nix
 
+    #../nixos/optional/grub.nix
+    #../nixos/optional/wireless.nix
     #../../nixos/optional/ephemeral.nix
   ];
 

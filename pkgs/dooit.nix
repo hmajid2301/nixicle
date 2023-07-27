@@ -11,7 +11,7 @@ python3.pkgs.buildPythonApplication rec {
   src = fetchFromGitHub {
     owner = "kraanzu";
     repo = pname;
-    rev = "b2be7b452f17b7903dcdb2407d4cf2eb32b21da1";
+    rev = "v1.0.2";
     hash = "sha256-RGt/Ru8pZfDcq0ycezLDWbJtUkeNuchXtMmGfgI+JyY=";
   };
 

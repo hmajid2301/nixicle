@@ -1,54 +1,17 @@
 { pkgs, lib, ... }:
 let
   # TODO: move to official trepo
-  t-smart-manager = pkgs.tmuxPlugins.mkTmuxPlugin
-    {
-      pluginName = "t-smart-tmux-session-manager";
-      version = "unstable-2023-06-05";
-      rtpFilePath = "t-smart-tmux-session-manager.tmux";
-      src = pkgs.fetchFromGitHub {
-        owner = "joshmedeski";
-        repo = "t-smart-tmux-session-manager";
-        rev = "0a4c77c5c3858814621597a8d3997948b3cdd35d";
-        sha256 = "1dr5w02a0y84q2iw4jp1psxvkyj4g6pr87gc22syw1jd4ibkn925";
-      };
+  t-smart-manager = pkgs.tmuxPlugins.mkTmuxPlugin {
+    pluginName = "t-smart-tmux-session-manager";
+    version = "unstable-2023-06-05";
+    rtpFilePath = "t-smart-tmux-session-manager.tmux";
+    src = pkgs.fetchFromGitHub {
+      owner = "joshmedeski";
+      repo = "t-smart-tmux-session-manager";
+      rev = "0a4c77c5c3858814621597a8d3997948b3cdd35d";
+      sha256 = "1dr5w02a0y84q2iw4jp1psxvkyj4g6pr87gc22syw1jd4ibkn925";
     };
-  tmux-nvim = pkgs.tmuxPlugins.mkTmuxPlugin
-    {
-      pluginName = "tmux.nvim";
-      version = "unstable-2023-01-06";
-      src = pkgs.fetchFromGitHub {
-        owner = "aserowy";
-        repo = "tmux.nvim";
-        rev = "57220071739c723c3a318e9d529d3e5045f503b8";
-        sha256 = "sha256-zpg7XJky7PRa5sC7sPRsU2ZOjj0wcepITLAelPjEkSI=";
-      };
-    };
-  tmux-browser = pkgs.tmuxPlugins.mkTmuxPlugin
-    {
-      pluginName = "tmux-browser";
-      version = "unstable-2022-10-24";
-      src = pkgs.fetchFromGitHub {
-        owner = "ofirgall";
-        repo = "tmux-browser";
-        rev = "c3e115f9ebc5ec6646d563abccc6cf89a0feadb8";
-        sha256 = "sha256-ngYZDzXjm4Ne0yO6pI+C2uGO/zFDptdcpkL847P+HCI=";
-      };
-    };
-
-  tmux-super-fingers = pkgs.tmuxPlugins.mkTmuxPlugin
-    {
-      pluginName = "tmux-super-fingers";
-      version = "unstable-2023-05-31";
-      src = pkgs.fetchFromGitHub {
-        owner = "artemave";
-        repo = "tmux_super_fingers";
-        rev = "2c12044984124e74e21a5a87d00f844083e4bdf7";
-        sha256 = "sha256-cPZCV8xk9QpU49/7H8iGhQYK6JwWjviL29eWabuqruc=";
-      };
-    };
-
-
+  };
 in
 {
   # TODO: what if this is defined in another file? Merge it!
@@ -69,11 +32,12 @@ in
     shell = "${pkgs.fish}/bin/fish";
     terminal = "tmux-256color";
     historyLimit = 100000;
-    plugins = with pkgs;
+    plugins = with pkgs.tmuxPlugins;
       [
-        tmux-nvim
-        tmuxPlugins.tmux-thumbs
-        # TODO: why do I have to manually set this
+        sensible
+        better-mouse-mode
+        yank
+        tmux-thumbs
         {
           plugin = t-smart-manager;
           extraConfig = ''
@@ -82,20 +46,65 @@ in
           '';
         }
         {
-          plugin = tmux-super-fingers;
-          extraConfig = "set -g @super-fingers-key f";
+          plugin = mkTmuxPlugin {
+            pluginName = "tmux-super-fingers";
+            version = "unstable-2023-05-31";
+            src = pkgs.fetchFromGitHub {
+              owner = "artemave";
+              repo = "tmux_super_fingers";
+              rev = "2c12044984124e74e21a5a87d00f844083e4bdf7";
+              sha256 = "sha256-cPZCV8xk9QpU49/7H8iGhQYK6JwWjviL29eWabuqruc=";
+            };
+          };
+          extraConfig = ''
+            set -g @super-fingers-key f
+          '';
         }
         {
-          plugin = tmux-browser;
+          plugin = mkTmuxPlugin {
+            pluginName = "tmux-super-fingers";
+            version = "unstable-2023-05-31";
+            src = pkgs.fetchFromGitHub {
+              owner = "artemave";
+              repo = "tmux_super_fingers";
+              rev = "2c12044984124e74e21a5a87d00f844083e4bdf7";
+              sha256 = "sha256-cPZCV8xk9QpU49/7H8iGhQYK6JwWjviL29eWabuqruc=";
+            };
+          };
+          extraConfig = ''
+            set -g @super-fingers-key f
+          '';
+        }
+        {
+          plugin = mkTmuxPlugin {
+            pluginName = "tmux-browser";
+            version = "unstable-2022-10-24";
+            src = pkgs.fetchFromGitHub {
+              owner = "ofirgall";
+              repo = "tmux-browser";
+              rev = "c3e115f9ebc5ec6646d563abccc6cf89a0feadb8";
+              sha256 = "sha256-ngYZDzXjm4Ne0yO6pI+C2uGO/zFDptdcpkL847P+HCI=";
+            };
+          };
           extraConfig = ''
             set -g @browser_close_on_deattach '1'
           '';
         }
-
-        tmuxPlugins.sensible
+        {
+          plugin = mkTmuxPlugin {
+            pluginName = "tmux.nvim";
+            version = "unstable-2023-01-06";
+            src = pkgs.fetchFromGitHub {
+              owner = "aserowy";
+              repo = "tmux.nvim";
+              rev = "57220071739c723c3a318e9d529d3e5045f503b8";
+              sha256 = "sha256-zpg7XJky7PRa5sC7sPRsU2ZOjj0wcepITLAelPjEkSI=";
+            };
+          };
+        }
         # must be before continuum edits right status bar
         {
-          plugin = tmuxPlugins.catppuccin;
+          plugin = catppuccin;
           extraConfig = '' 
             set -g @catppuccin_flavour 'frappe'
             set -g @catppuccin_window_tabs_enabled on
@@ -103,7 +112,7 @@ in
           '';
         }
         {
-          plugin = tmuxPlugins.resurrect;
+          plugin = resurrect;
           extraConfig = ''
             set -g @resurrect-strategy-vim 'session'
             set -g @resurrect-strategy-nvim 'session'
@@ -111,107 +120,63 @@ in
           '';
         }
         {
-          plugin = tmuxPlugins.continuum;
+          plugin = continuum;
           extraConfig = ''
             set -g @continuum-restore 'on'
             set -g @continuum-boot 'on'
             set -g @continuum-save-interval '10'
           '';
         }
-        tmuxPlugins.better-mouse-mode
-        tmuxPlugins.yank
       ];
     extraConfig = ''
-      set -g default-terminal "tmux-256color"
-      set -ag terminal-overrides ",xterm-256color:RGB"
+            set -g default-terminal "tmux-256color"
+            set -ag terminal-overrides ",xterm-256color:RGB"
 
-      set-option -g prefix C-a
-      unbind-key C-b
-      bind-key C-a send-prefix
+            set-option -g prefix C-a
+            unbind-key C-b
+            bind-key C-a send-prefix
 
-      set -g mouse on
+            set -g mouse on
 
-      # Change splits to match nvim and easier to remember
-      # Open new split at cwd of current split
-      unbind %
-      unbind '"'
-      bind | split-window -h -c "#{pane_current_path}"
-      bind - split-window -v -c "#{pane_current_path}"
+            # Change splits to match nvim and easier to remember
+            # Open new split at cwd of current split
+            unbind %
+            unbind '"'
+            bind | split-window -h -c "#{pane_current_path}"
+            bind - split-window -v -c "#{pane_current_path}"
 
-      # Use vim keybindings in copy mode
-      set-window-option -g mode-keys vi
+            # Use vim keybindings in copy mode
+            set-window-option -g mode-keys vi
 
-      # v in copy mode starts making selection
-      bind-key -T copy-mode-vi v send-keys -X begin-selection
-      bind-key -T copy-mode-vi C-v send-keys -X rectangle-toggle
-      bind-key -T copy-mode-vi y send-keys -X copy-selection-and-cancel
+            # v in copy mode starts making selection
+            bind-key -T copy-mode-vi v send-keys -X begin-selection
+            bind-key -T copy-mode-vi C-v send-keys -X rectangle-toggle
+            bind-key -T copy-mode-vi y send-keys -X copy-selection-and-cancel
 
-      # Escape turns on copy mode
-      bind Escape copy-mode
+            # Escape turns on copy mode
+            bind Escape copy-mode
 
-      # Easier reload of config
-      bind r source-file ~/.config/tmux/tmux.conf
+            # Easier reload of config
+            bind r source-file ~/.config/tmux/tmux.conf
 
-      set-option -g status-position top
+            set-option -g status-position top
 
-      # make Prefix p paste the buffer.
-      unbind p
-      bind p paste-buffer
+            # make Prefix p paste the buffer.
+            unbind p
+            bind p paste-buffer
 
-      # Bind Keys
-      bind-key -T prefix C-g split-window \
-        "$SHELL --login -i -c 'navi --print | head -c -1 | tmux load-buffer -b tmp - ; tmux paste-buffer -p -t {last} -b tmp -d'"
-      bind-key -T prefix C-l switch -t notes
-      bind-key -T prefix C-d switch -t dotfiles
-      bind-key e send-keys "tmux capture-pane -p -S - | nvim -c 'set buftype=nofile' +" Enter
+      
+      bind-key -T copy-mode-vi M-h resize-pane -L 1
+      bind-key -T copy-mode-vi M-j resize-pane -D 1
+      bind-key -T copy-mode-vi M-k resize-pane -U 1
+      bind-key -T copy-mode-vi M-l resize-pane -R 1
+
+            # Bind Keys
+            bind-key -T prefix C-g split-window \
+              "$SHELL --login -i -c 'navi --print | head -c -1 | tmux load-buffer -b tmp - ; tmux paste-buffer -p -t {last} -b tmp -d'"
+            bind-key -T prefix C-l switch -t notes
+            bind-key -T prefix C-d switch -t dotfiles
+            bind-key e send-keys "tmux capture-pane -p -S - | nvim -c 'set buftype=nofile' +" Enter
     '';
   };
 }
-
-
-#t-smart-manager = pkgs.tmuxPlugins.mkTmuxPlugin
-#  {
-#    pluginName = "t-smart-tmux-session-manager";
-#    version = "unstable-2023-06-05";
-#    rtpFilePath = "t-smart-tmux-session-manager.tmux";
-#    src = pkgs.fetchFromGitHub {
-#      owner = "joshmedeski";
-#      repo = "t-smart-tmux-session-manager";
-#      rev = "0a4c77c5c3858814621597a8d3997948b3cdd35d";
-#      sha256 = "1dr5w02a0y84q2iw4jp1psxvkyj4g6pr87gc22syw1jd4ibkn925";
-#    };
-#  };
-#tmux-nvim = pkgs.tmuxPlugins.mkTmuxPlugin
-#  {
-#    pluginName = "tmux.nvim";
-#    version = "unstable-2023-01-06";
-#    src = pkgs.fetchFromGitHub {
-#      owner = "aserowy";
-#      repo = "tmux.nvim";
-#      rev = "57220071739c723c3a318e9d529d3e5045f503b8";
-#      sha256 = "sha256-zpg7XJky7PRa5sC7sPRsU2ZOjj0wcepITLAelPjEkSI=";
-#    };
-#  };
-#tmux-browser = pkgs.tmuxPlugins.mkTmuxPlugin
-#  {
-#    pluginName = "tmux-browser";
-#    version = "unstable-2022-10-24";
-#    src = pkgs.fetchFromGitHub {
-#      owner = "hmajid2301";
-#      repo = "tmux-browser";
-#      rev = "0156f7bf2034899dc8bec32a6c930839f55aedd8";
-#      sha256 = "sha256-+f0UDmFBX/bShep5IrnIYKgA9Ia2Ok41ohWHAdQFopU";
-#    };
-#  };
-
-#tmux-super-fingers = pkgs.tmuxPlugins.mkTmuxPlugin
-#  {
-#    pluginName = "tmux-super-fingers";
-#    version = "unstable-2023-05-31";
-#    src = pkgs.fetchFromGitHub {
-#      owner = "artemave";
-#      repo = "tmux_super_fingers";
-#      rev = "2c12044984124e74e21a5a87d00f844083e4bdf7";
-#      sha256 = "sha256-cPZCV8xk9QpU49/7H8iGhQYK6JwWjviL29eWabuqruc=";
-#    };
-#  };
