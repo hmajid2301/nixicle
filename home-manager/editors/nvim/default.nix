@@ -14,6 +14,7 @@
     # parser (nvim)
     gcc
     tree-sitter
+    stylua
     wget
     python311Packages.pip
     python311Packages.pillow

@@ -2,10 +2,10 @@
   # Add Firefox GNOME theme directory
   home.file."firefox-gnome-theme" = {
     target = ".mozilla/firefox/default/chrome/firefox-gnome-theme";
-    source = (fetchTarball {
+    source = fetchTarball {
       url = "https://github.com/rafaelmardojai/firefox-gnome-theme/archive/refs/tags/v113.zip";
       sha256 = "sha256:0vxyi5vv6qzgzfh5y83spxig7f8hkhdkr29i957q28qmjmwx6m3k";
-    });
+    };
   };
 
   home = {
@@ -30,7 +30,7 @@
       };
       userChrome = ''
         @import "firefox-gnome-theme/userChrome.css";
-        @import "firefox-gnome-theme/theme/colors/dark.css"; 
+        @import "firefox-gnome-theme/theme/colors/dark.css";
       '';
     };
     #extensions = nur.repos.rycee.firefox-addons; [

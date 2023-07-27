@@ -10,7 +10,7 @@
     kernelParams = [
       # enable IOMMU
       "intel_iommu=on"
-      #"vfio-pci.ids=1002:744c,1002:ab30"
+      "vfio-pci.ids=1002:744c,1002:ab30,10de:2208,10de:1aef"
     ];
   };
 
@@ -40,6 +40,7 @@
       };
     };
   };
+
   # TODO: generalise with user
   systemd.tmpfiles.rules = [
     "f /dev/shm/looking-glass 0660 haseeb kvm -"

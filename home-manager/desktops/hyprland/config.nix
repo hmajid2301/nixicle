@@ -100,14 +100,12 @@ in
   bind=SUPER,k,movefocus,u
   bind=SUPER,j,movefocus,d
 
-
   # █▀ █░█░█ ▄▀█ █▀█   █░█░█ █ █▄░█ █▀▄ █▀█ █░█░█ █▀
   # ▄█ ▀▄▀▄▀ █▀█ █▀▀   ▀▄▀▄▀ █ █░▀█ █▄▀ █▄█ ▀▄▀▄▀ ▄█
   bind=SUPERSHIFT,h,swapwindow,l
   bind=SUPERSHIFT,l,swapwindow,r
   bind=SUPERSHIFT,k,swapwindow,u
   bind=SUPERSHIFT,j,swapwindow,d
-
 
   # █▀▀ █▀█ █▀▀ █░█ █▀   █▀▄▀█ █▀█ █▄░█ █ ▀█▀ █▀█ █▀█
   # █▀░ █▄█ █▄▄ █▄█ ▄█   █░▀░█ █▄█ █░▀█ █ ░█░ █▄█ █▀▄
@@ -166,9 +164,9 @@ in
 
   # █▀█ █▀▀ █▀ █ ▀█ █▀▀
   # █▀▄ ██▄ ▄█ █ █▄ ██▄
-  binde = ALT, h, resizeactive, -20 0
-  binde = ALT, l, resizeactive, 20 0
-  binde = ALT, k, resizeactive, 0 -20
-  binde = ALT, j, resizeactive, 0 20
+  binde = SUPERALT, h, resizeactive, -20 0
+  binde = SUPERALT, l, resizeactive, 20 0
+  binde = SUPERALT, k, resizeactive, 0 -20
+  binde = SUPERALT, j, resizeactive, 0 20
 ''
 
