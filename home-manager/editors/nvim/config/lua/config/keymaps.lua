@@ -25,13 +25,13 @@ vim.keymap.set("n", "n", "nzzzv", { desc = "Fwd  search '/' or '?'" })
 vim.keymap.set("n", "N", "Nzzzv", { desc = "Back search '/' or '?'" })
 
 -- Toggle floating windows
-vim.keymap.set("n", "<leader>tt", function()
+vim.keymap.set("n", "<leader>ttt", function()
 	Util.float_term({ "gdu" }, { cwd = Util.get_root(), esc_esc = false })
 end, { desc = "Toggle: Go Disk Usage" })
-vim.keymap.set("n", "<leader>tu", function()
+vim.keymap.set("n", "<leader>ttu", function()
 	Util.float_term({ "btm" }, { cwd = Util.get_root(), esc_esc = false })
 end, { desc = "Toggle: Bottom" })
-vim.keymap.set("n", "<leader>tr", function()
+vim.keymap.set("n", "<leader>ttr", function()
 	Util.float_term({ "ranger" }, { cwd = Util.get_root(), esc_esc = false })
 end, { desc = "Toggle ranger" })
 
@@ -76,7 +76,6 @@ map("v", "<S-A-j>", ":m '>+1<cr>gv=gv", { desc = "Move down" })
 map("v", "<S-A-k>", ":m '<-2<cr>gv=gv", { desc = "Move up" })
 
 -- Telekasten
-
 vim.keymap.set("n", "<leader>zz", "<cmd>Telekasten panel<CR>")
 vim.keymap.set("n", "<leader>zf", "<cmd>Telekasten find_notes<CR>")
 vim.keymap.set("n", "<leader>zg", "<cmd>Telekasten search_notes<CR>")
