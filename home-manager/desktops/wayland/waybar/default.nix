@@ -25,6 +25,7 @@
         ];
         modules-right = [
           "tray"
+          "idle_inhibitor"
           "backlight"
           "pulseaudio"
           "temperature"
@@ -52,6 +53,13 @@
             default = "  ";
           };
           on-click = "activate";
+        };
+        "idle_inhibitor" = {
+          format = "{icon}";
+          format-icons = {
+            activated = "";
+            deactivated = "";
+          };
         };
         "custom/audio_idle_inhibitor" = {
           format = "{icon}";
