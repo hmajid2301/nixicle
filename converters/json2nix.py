@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """Converts JSON objects into nix (hackishly)."""
 
 import sys

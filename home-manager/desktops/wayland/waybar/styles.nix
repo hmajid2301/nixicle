@@ -78,6 +78,7 @@
   #pulseaudio,
   #mode,
   #tray,
+  #idle_inhibitor,
   #custom-power,
   #custom-launcher,
   #mpd {
@@ -135,7 +136,7 @@
   }
 
   #battery {
-      color: @rosewater;
+      color: @yellow;
       border-radius: 0 10px 10px 0;
       margin-right: 10px;
   }
@@ -148,6 +149,16 @@
       to {
           color: @red;
       }
+  }
+
+  #idle_inhibitor.deactivated {
+    background-color: shade(@base, 1);
+    color: @lavender;
+  }
+
+  #idle_inhibitor.activated {
+      background-color: shade(@base, 1);
+      color: @green;
   }
 
   #battery.critical:not(.charging) {

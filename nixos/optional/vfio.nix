@@ -1,4 +1,4 @@
-{ pkgs, lib, config, ... }: {
+{ pkgs, ... }: {
   boot = {
     initrd.kernelModules = [
       "vfio_pci"
@@ -10,7 +10,7 @@
     kernelParams = [
       # enable IOMMU
       "intel_iommu=on"
-      "vfio-pci.ids=1002:744c,1002:ab30,10de:2208,10de:1aef"
+      "vfio-pci.ids=10de:2208,10de:1aef"
     ];
   };
 

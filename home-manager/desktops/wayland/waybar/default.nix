@@ -1,5 +1,4 @@
-{ config, inputs, lib, pkgs, ... }:
-
+{ config, inputs, pkgs, ... }:
 {
   programs.waybar = {
     enable = true;
@@ -24,6 +23,7 @@
           "clock"
         ];
         modules-right = [
+          "gamemode"
           "tray"
           "idle_inhibitor"
           "backlight"
@@ -57,8 +57,8 @@
         "idle_inhibitor" = {
           format = "{icon}";
           format-icons = {
-            activated = "";
-            deactivated = "";
+            activated = "  ";
+            deactivated = "  ";
           };
         };
         "custom/audio_idle_inhibitor" = {
@@ -212,6 +212,18 @@
         tray = {
           icon-size = 16;
           spacing = 8;
+        };
+        gamemode = {
+          format = "{glyph}";
+          "format-alt" = "{glyph} {count}";
+          glyph = "\uf7b3";
+          "hide-not-running" = true;
+          "use-icon" = true;
+          "icon-name" = "input-gaming-symbolic";
+          "icon-spacing" = 4;
+          "icon-size" = 20;
+          tooltip = true;
+          "tooltip-format" = "Games running: {count}";
         };
         "custom/power" = {
           format = " ⏻ ";

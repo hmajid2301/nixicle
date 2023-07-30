@@ -17,6 +17,7 @@ in
     ../../home-manager/browsers/firefox.nix
     ../../home-manager/fonts.nix
     ../../home-manager/gtk.nix
+    ../../home-manager/atuin.nix
     ../../home-manager/packages/other.nix
     ../../home-manager/programs/cli.nix
     ../../home-manager/programs/kdeconnect.nix
