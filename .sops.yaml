@@ -21,6 +21,8 @@ creation_rules:
 
   - path_regex: secrets.ya?ml$
     key_groups:
+    - age:
+      - *framework
       pgp:
       - *haseeb
 

@@ -20,10 +20,10 @@ in
       "networkmanager"
       "libvirtd"
       "kvm"
-    ] ++ ifTheyExist [
       "docker"
       "podman"
       "git"
+    ] ++ ifTheyExist [
     ];
     passwordFile = config.sops.secrets.haseeb_password.path;
     packages = [ pkgs.home-manager ];

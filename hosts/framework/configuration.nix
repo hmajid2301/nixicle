@@ -13,6 +13,7 @@
     ../../nixos/optional/opengl.nix
     ../../nixos/optional/thunderbolt.nix
     ../../nixos/optional/gaming.nix
+    ../../nixos/optional/docker.nix
     ../../nixos/optional/fonts.nix
     ../../nixos/optional/pipewire.nix
     ../../nixos/optional/greetd.nix

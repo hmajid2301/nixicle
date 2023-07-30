@@ -8,7 +8,7 @@
   packages = [ pkgs.nixpkgs-fmt pkgs.update-nix-fetchgit ];
 
   # https://devenv.sh/scripts/
-  #scripts.hello.exec = "echo hello from $GREET";
+  scripts.convert_copied.exec = "wl-paste | ${pkgs.python3} ./converters/json2nix.py /dev/stdin";
 
   enterShell = ''
   '';

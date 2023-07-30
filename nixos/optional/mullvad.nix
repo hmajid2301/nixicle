@@ -1,8 +1,8 @@
-{ pkgs, config, ... }: {
-  #environment.systemPackages = [ pkgs.mullvad-vpn pkgs.mullvad ];
-  #networking.wireguard.enable = true;
+{ pkgs, ... }: {
+  environment.systemPackages = [ pkgs.mullvad-vpn pkgs.mullvad ];
+  networking.wireguard.enable = true;
   services.mullvad-vpn = {
-    #enable = true;
+    enable = true;
   };
 
   # TODO: secret file login
