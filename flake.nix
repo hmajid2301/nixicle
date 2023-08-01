@@ -86,12 +86,19 @@
       # NixOS configuration entrypoint
       # Available through 'nixos-rebuild --flake .#framework'
       nixosConfigurations = {
+        mesmer = mkNixos [ ./hosts/mesmer/configuration.nix ];
         framework = mkNixos [ ./hosts/framework/configuration.nix ];
       };
 
       # Standalone home-manager configuration entrypoint
       # Available through 'home-manager --flake .#framework'
       homeConfigurations = {
+        # Desktops
+        mesmer = home-manager.lib.homeManagerConfiguration {
+          modules = [ ./hosts/mesmer/home.nix ];
+          pkgs = nixpkgs.legacyPackages.x86_64-linux;
+          extraSpecialArgs = { inherit inputs outputs; };
+        };
         # Laptops
         framework = home-manager.lib.homeManagerConfiguration {
           modules = [ ./hosts/framework/home.nix ];

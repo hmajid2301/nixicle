@@ -1,6 +1,6 @@
 { home, colorscheme, wallpaper }:
 let
-  inherit (home.sessionVariables) TERMINAL BROWSER EDITOR;
+  inherit (home.sessionVariables) TERMINAL BROWSER;
 in
 ''
   # ASCII Art from https://fsymbols.com/generators/carty/
