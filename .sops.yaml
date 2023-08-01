@@ -19,7 +19,7 @@ creation_rules:
       pgp:
       - *haseeb
 
-  - path_regex: secrets.ya?ml$
+  - path_regex: home-manager/secrets.ya?ml$
     key_groups:
     - age:
       - *framework

@@ -52,6 +52,7 @@
     thefuck
     procs
     psensor
+    shell-genie
     ripgrep-all
     ripgrep # for neovim
     tokei

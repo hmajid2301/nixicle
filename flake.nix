@@ -43,7 +43,7 @@
     comma.url = "github:nix-community/comma";
   };
 
-  outputs = { self, nixpkgs, home-manager, nur, ... }@inputs:
+  outputs = { self, nixpkgs, home-manager, ... }@inputs:
     let
       inherit (self) outputs;
       forAllSystems = nixpkgs.lib.genAttrs [
@@ -56,10 +56,6 @@
       mkNixos = modules: nixpkgs.lib.nixosSystem {
         inherit modules;
         specialArgs = { inherit inputs outputs; };
-      };
-      mkHome = modules: pkgs: home-manager.lib.homeManagerConfiguration {
-        inherit modules pkgs;
-        extraSpecialArgs = { inherit inputs outputs; };
       };
     in
     rec {
@@ -102,7 +98,6 @@
           pkgs = nixpkgs.legacyPackages.x86_64-linux;
           extraSpecialArgs = { inherit inputs outputs; };
         };
-        #framework = mkHome [ ./hosts/framework/home.nix ] nixpkgs.legacyPackages."x86_64-linux";
       };
     };
 }
