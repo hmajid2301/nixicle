@@ -47,22 +47,6 @@ Some features of my dotfiles:
 - Different environments like **hyprland** and **gnome**
 - Laptop setup with eGPU and **vfio** for playing games on windows
 
-## 🏠 Structure
-
-- `flake.nix`: Entrypoint for hosts and home configurations
-- `nixos`: 
-  - `global`: Configurations that are globally applied to all my machines
-  - `optional`: Configurations that some of my machines use
-- `hosts`: NixOS Configurations, accessible via `nixos-rebuild --flake`.
-  - `framework`: Framework 12th gen laptop | Hyprland | eGPU 7900 XTX
-- `home-manager`: Most of my dotfiles configuration, user specific
-
-## 🔌 Devices
-
-Here is a list of the devices this repo is used to configure.
-
-### 💻 Framework Laptop
-
 | Type           | Program      |
 | :------------- | :----------: |
 | OS             | [NixOS](https://nixos.com/) |
@@ -76,10 +60,36 @@ Here is a list of the devices this repo is used to configure.
 | Fonts          | [Mono Lisa](https://www.monolisa.dev/) |
 | Colorscheme    | [Catppuccin](https://github.com/catppuccin) |
 
-![Neofetch](images/neofetch.png)
-![wallpaper](images/wallpaper.png)
-![neovim](images/neovim.png)
-![monkeytype](images/monkeytype.png)
+
+## 🏠 Structure
+
+- `flake.nix`: Entrypoint for hosts and home configurations
+- `nixos`: 
+  - `global`: Configurations that are globally applied to all my machines
+  - `optional`: Configurations that some of my machines use
+- `hosts`: NixOS Configurations, accessible via `nixos-rebuild --flake`.
+  - `framework`: Framework 12th gen laptop | Hyprland | eGPU 3080
+  - `mesmer`: Desktop AMD Ryzen 9 5950X  | Hyprland | GPU 7900 XTX
+- `home-manager`: Most of my dotfiles configuration, user specific
+
+## 🔌 Devices
+
+Here is a list of the devices this repo is used to configure.
+
+
+### 💻 Framework
+
+![Neofetch](images/framework/neofetch.png)
+
+This is my 12th gen Intel framework laptop. Which also can use a eGPU with VFIO (gpu passthrough).
+For gaming in a Windows 11 VM setup with libvirt/qemu.
+
+### 💻 Mesmer
+
+![Neofetch](images/mesmer/neofetch.png)
+
+This is my Desktop using a Ryzen AMD CPU and an AMD GPU. This is my main development machine
+at the moment.
 
 ## Applications
 
@@ -105,6 +115,14 @@ Where a project might be:
 - My Dotfiles
 - Full stack application
   - A window for each project i.e. GUI and API
+
+
+## Screenshots
+
+![wallpaper](images/mesmer/wallpaper.png)
+![neovim](images/neovim.png)
+![monkeytype](images/monkeytype.png)
+
 
 ## Appendix
 

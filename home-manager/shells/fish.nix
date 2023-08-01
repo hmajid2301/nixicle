@@ -1,4 +1,4 @@
-{ lib, pkgs, config, ... }:
+{ pkgs, config, ... }:
 
 let
   inherit (config) colorscheme;
@@ -93,8 +93,8 @@ in
       cava = "TERM=st-256color cava";
 
       # nix
-      hms = "home-manager switch --flake ~/dotfiles#framework";
-      nrs = "sudo nixos-rebuild switch --flake ~/dotfiles#framework";
+      hms = "home-manager switch --flake ~/dotfiles#mesmer";
+      nrs = "sudo nixos-rebuild switch --flake ~/dotfiles#mesmer";
 
       # new commads
       kp = "ps -ef | sed 1d | eval \"fzf $FZF_DEFAULT_OPTS -m --header=\'[kill:process]\'\" | awk \'{print $2}\'";
