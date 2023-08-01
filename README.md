@@ -76,7 +76,6 @@ Some features of my dotfiles:
 
 Here is a list of the devices this repo is used to configure.
 
-
 ### 💻 Framework
 
 ![Neofetch](images/framework/neofetch.png)
@@ -84,12 +83,18 @@ Here is a list of the devices this repo is used to configure.
 This is my 12th gen Intel framework laptop. Which also can use a eGPU with VFIO (gpu passthrough).
 For gaming in a Windows 11 VM setup with libvirt/qemu.
 
+![wallpaper](images/framework/wallpaper.png)
+
 ### 💻 Mesmer
 
 ![Neofetch](images/mesmer/neofetch.png)
+![wallpaper](images/mesmer/wallpaper.png)
 
 This is my Desktop using a Ryzen AMD CPU and an AMD GPU. This is my main development machine
 at the moment.
+
+![neovim](images/neovim.png)
+![monkeytype](images/monkeytype.png)
 
 ## Applications
 
