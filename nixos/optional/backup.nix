@@ -2,7 +2,7 @@
 {
   environment.systemPackages = [ pkgs.restic ];
 
-  services.restic.backups.myaccount = {
+  services.restic.backups.backblaze = {
     initialize = true;
     passwordFile = config.sops.secrets.restic_password.path;
     environmentFile = config.sops.secrets.restic_env.path;
@@ -24,14 +24,11 @@
     ];
   };
 
-  # TODO: look at refactoring
   sops.secrets.restic_password = {
     sopsFile = ../secrets.yaml;
   };
   sops.secrets.restic_env = {
     sopsFile = ../secrets.yaml;
   };
-
-  systemd.services.restic-backups-myaccount = { };
 }
 

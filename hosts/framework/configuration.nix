@@ -1,4 +1,4 @@
-{ inputs, outputs, lib, config, pkgs, ... }: {
+{ inputs, pkgs, ... }: {
   imports = [
     inputs.hardware.nixosModules.framework-12th-gen-intel
     inputs.nix-gaming.nixosModules.default
@@ -12,14 +12,12 @@
     ../../nixos/optional/fingerprint.nix
     ../../nixos/optional/opengl.nix
     ../../nixos/optional/thunderbolt.nix
-    ../../nixos/optional/gaming.nix
     ../../nixos/optional/docker.nix
     ../../nixos/optional/fonts.nix
     ../../nixos/optional/pipewire.nix
     ../../nixos/optional/greetd.nix
     ../../nixos/optional/quietboot.nix
     ../../nixos/optional/mullvad.nix
-    ../../nixos/optional/vfio.nix
 
     #../nixos/optional/grub.nix
     #../nixos/optional/wireless.nix
