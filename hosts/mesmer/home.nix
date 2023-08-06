@@ -1,7 +1,4 @@
 { inputs, lib, pkgs, config, outputs, ... }:
-let
-  inherit (inputs.nix-colors) colorSchemes;
-in
 {
   imports = [
     inputs.nix-colors.homeManagerModule
@@ -20,12 +17,14 @@ in
     ../../home-manager/coding
 
     ../../home-manager/browsers/firefox.nix
+    ../../home-manager/photos/management.nix
     ../../home-manager/packages/other.nix
     ../../home-manager/programs/cli.nix
     ../../home-manager/programs/kdeconnect.nix
     ../../home-manager/security/yubikey.nix
     ../../home-manager/shells/fish.nix
     ../../home-manager/terminals/alacritty.nix
+    ../../home-manager/terminals/foot.nix
   ] ++ (builtins.attrValues outputs.homeManagerModules);
 
   nixpkgs = {

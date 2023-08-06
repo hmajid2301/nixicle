@@ -53,8 +53,10 @@
         preLVM = true;
       };
     };
+    resumeDevice = "/dev/disk/by-label/swap";
     kernelPackages = pkgs.linuxPackages_latest;
   };
+
 
   system.autoUpgrade = {
     enable = true;
