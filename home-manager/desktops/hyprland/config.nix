@@ -69,7 +69,7 @@ in
 
   # █▀ █▀▀ █▀█ █▀▀ █▀▀ █▄░█ █▀ █░█ █▀█ ▀█▀
   # ▄█ █▄▄ █▀▄ ██▄ ██▄ █░▀█ ▄█ █▀█ █▄█ ░█░
-  bind=,Print,exec,grimblast --notify copy output
+  bind=,Print,exec,grimblast --notify copysave area
   bind=SHIFT,Print,exec,grimblast --notify copy active
   bind=CONTROL,Print,exec,grimblast --notify copy screen
   bind=SUPER,Print,exec,grimblast --notify copy window
@@ -146,6 +146,11 @@ in
   bind=SUPERSHIFT,8,movetoworkspacesilent,08
   bind=SUPERSHIFT,9,movetoworkspacesilent,09
   bind=SUPERSHIFT,0,movetoworkspacesilent,10
+
+  bind=ALTCTRL,L,movewindow,r
+  bind=ALTCTRL,H,movewindow,l
+  bind=ALTCTRL,K,movewindow,u
+  bind=ALTCTRL,J,movewindow,d
 
   # █░█░█ █ █▄░█ █▀▄ █▀█ █░█░█   █▀▄▀█ ▄▀█ █▄░█ ▄▀█ █▀▀ █▀▄▀█ █▀▀ █▄░█ ▀█▀
   # ▀▄▀▄▀ █ █░▀█ █▄▀ █▄█ ▀▄▀▄▀   █░▀░█ █▀█ █░▀█ █▀█ █▄█ █░▀░█ ██▄ █░▀█ ░█░
