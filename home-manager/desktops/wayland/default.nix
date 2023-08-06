@@ -6,6 +6,7 @@
     ./kanshi.nix
     ./rofi.nix
     ./swaylock.nix
+    ./wlogout.nix
     ./waybar
     #./xdg.nix
   ];

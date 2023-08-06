@@ -40,7 +40,28 @@ return {
 	--     },
 	--   },
 	-- },
-
+	{
+		"anuvyklack/windows.nvim",
+		dependencies = {
+			"anuvyklack/middleclass",
+			"anuvyklack/animation.nvim",
+		},
+		opts = {},
+		cmd = {
+			"WindowsMaximize",
+			"WindowsMaximizeVertically",
+			"WindowsMaximizeHorizontally",
+			"WindowsEqualize",
+			"WindowsEnableAutowidth",
+			"WindowsDisableAutowidth",
+			"WindowsToggleAutowidth",
+		},
+		init = function()
+			vim.o.winwidth = 10
+			vim.o.winminwidth = 10
+			vim.o.equalalways = false
+		end,
+	},
 	{
 		"nvim-neo-tree/neo-tree.nvim",
 		opts = {
@@ -88,6 +109,10 @@ return {
 			local icons = require("lazyvim.config").icons
 			local Util = require("lazyvim.util")
 
+			local function maximize_status()
+				return vim.t.maximized and "   " or ""
+			end
+
 			return {
 				options = {
 					theme = "catppuccin",
@@ -112,6 +137,7 @@ return {
 						},
 					},
 					lualine_x = {
+						maximize_status,
             -- stylua: ignore
             {
               function() return require("noice").api.status.command.get() end,

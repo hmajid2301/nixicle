@@ -33,9 +33,7 @@
     };
 
     nix-gaming.url = "github:fufexan/nix-gaming";
-
     hyprland.url = "github:hyprwm/Hyprland";
-    hyprland.inputs.nixpkgs.follows = "nixpkgs";
     hypr-contrib.url = "github:hyprwm/contrib";
     fufexan.url = "github:fufexan/dotfiles";
     nix-colors.url = "github:misterio77/nix-colors";
@@ -46,61 +44,46 @@
   outputs = { self, nixpkgs, home-manager, ... }@inputs:
     let
       inherit (self) outputs;
-      forAllSystems = nixpkgs.lib.genAttrs [
-        "aarch64-linux"
-        "i686-linux"
-        "x86_64-linux"
-        "aarch64-darwin"
-        "x86_64-darwin"
-      ];
-      mkNixos = modules: nixpkgs.lib.nixosSystem {
-        inherit modules;
-        specialArgs = { inherit inputs outputs; };
-      };
+      lib = nixpkgs.lib // home-manager.lib;
+      systems = [ "x86_64-linux" "aarch64-linux" ];
+      forEachSystem = f: lib.genAttrs systems (sys: f pkgsFor.${sys});
+      pkgsFor = nixpkgs.legacyPackages;
     in
-    rec {
-      # Your custom packages
-      # Acessible through 'nix build', 'nix shell', etc
-      packages = forAllSystems (system:
-        let
-          pkgs = nixpkgs.legacyPackages.${system};
-        in
-        import ./pkgs { inherit pkgs; }
-      );
-      # Devshell for bootstrapping
-      # Acessible through 'nix develop' or 'nix-shell' (legacy)
-      devShells = forAllSystems (system:
-        let pkgs = nixpkgs.legacyPackages.${system};
-        in import ./shell.nix { inherit pkgs; }
-      );
-
-      # Your custom packages and modifications, exported as overlays
-      overlays = import ./overlays { inherit inputs; };
-      # Reusable nixos modules you might want to export
-      # These are usually stuff you would upstream into nixpkgs
+    {
+      inherit lib;
       nixosModules = import ./modules/nixos;
-      # Reusable home-manager modules you might want to export
-      # These are usually stuff you would upstream into home-manager
       homeManagerModules = import ./modules/home-manager;
 
-      # NixOS configuration entrypoint
-      # Available through 'nixos-rebuild --flake .#framework'
+      overlays = import ./overlays { inherit inputs outputs; };
+
+      packages = forEachSystem (pkgs: import ./pkgs { inherit pkgs; });
+      devShells = forEachSystem (pkgs: import ./shell.nix { inherit pkgs; });
+      formatter = forEachSystem (pkgs: pkgs.nixpkgs-fmt);
+
       nixosConfigurations = {
-        mesmer = mkNixos [ ./hosts/mesmer/configuration.nix ];
-        framework = mkNixos [ ./hosts/framework/configuration.nix ];
+        # Main desktop
+        mesmer = lib.nixosSystem {
+          modules = [ ./hosts/mesmer/configuration.nix ];
+          specialArgs = { inherit inputs outputs; };
+        };
+
+        # Personal laptop
+        framework = lib.nixosSystem {
+          modules = [ ./hosts/framework/configuration.nix ];
+          specialArgs = { inherit inputs outputs; };
+        };
       };
 
-      # Standalone home-manager configuration entrypoint
-      # Available through 'home-manager --flake .#framework'
       homeConfigurations = {
         # Desktops
-        mesmer = home-manager.lib.homeManagerConfiguration {
+        mesmer = lib.homeManagerConfiguration {
           modules = [ ./hosts/mesmer/home.nix ];
           pkgs = nixpkgs.legacyPackages.x86_64-linux;
           extraSpecialArgs = { inherit inputs outputs; };
         };
+
         # Laptops
-        framework = home-manager.lib.homeManagerConfiguration {
+        framework = lib.homeManagerConfiguration {
           modules = [ ./hosts/framework/home.nix ];
           pkgs = nixpkgs.legacyPackages.x86_64-linux;
           extraSpecialArgs = { inherit inputs outputs; };
