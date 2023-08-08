@@ -47,19 +47,6 @@ Some features of my dotfiles:
 - Different environments like **hyprland** and **gnome**
 - Laptop setup with eGPU and **vfio** for playing games on windows
 
-| Type           | Program      |
-| :------------- | :----------: |
-| OS             | [NixOS](https://nixos.com/) |
-| Editor         | [NeoVim](https://neovim.io/) (LazyVim) |
-| Prompt         | [Starship](https://starship.rs/) |
-| Launcher       | [Rofi](https://github.com/davatorium/rofi) |
-| Shell          | [Fish](https://fishshell.com/) |
-| Status Bar     | [Waybar](https://github.com/Alexays/Waybar) |
-| Terminal       | [Alacritty](https://github.com/alacritty/alacritty) |
-| Window Manager | [Hyprland](https://hyprland.org/) |
-| Fonts          | [Mono Lisa](https://www.monolisa.dev/) |
-| Colorscheme    | [Catppuccin](https://github.com/catppuccin) |
-
 
 ## 🏠 Structure
 
@@ -76,6 +63,19 @@ Some features of my dotfiles:
 
 Here is a list of the devices this repo is used to configure.
 
+| Type           | Program      |
+| :------------- | :----------: |
+| OS             | [NixOS](https://nixos.com/) |
+| Editor         | [NeoVim](https://neovim.io/) (LazyVim) |
+| Prompt         | [Starship](https://starship.rs/) |
+| Launcher       | [Rofi](https://github.com/davatorium/rofi) |
+| Shell          | [Fish](https://fishshell.com/) |
+| Status Bar     | [Waybar](https://github.com/Alexays/Waybar) |
+| Terminal       | [Alacritty](https://github.com/alacritty/alacritty) |
+| Window Manager | [Hyprland](https://hyprland.org/) |
+| Fonts          | [Mono Lisa](https://www.monolisa.dev/) |
+| Colorscheme    | [Catppuccin](https://github.com/catppuccin) |
+
 ### 💻 Framework
 
 ![Neofetch](images/framework/neofetch.png)
@@ -83,18 +83,12 @@ Here is a list of the devices this repo is used to configure.
 This is my 12th gen Intel framework laptop. Which also can use a eGPU with VFIO (gpu passthrough).
 For gaming in a Windows 11 VM setup with libvirt/qemu.
 
-![wallpaper](images/framework/wallpaper.png)
-
 ### 💻 Mesmer
 
 ![Neofetch](images/mesmer/neofetch.png)
-![wallpaper](images/mesmer/wallpaper.png)
 
 This is my Desktop using a Ryzen AMD CPU and an AMD GPU. This is my main development machine
 at the moment.
-
-![neovim](images/neovim.png)
-![monkeytype](images/monkeytype.png)
 
 ## Applications
 
