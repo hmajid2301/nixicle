@@ -65,6 +65,6 @@ vim.keymap.set("v", "<S-A-j>", ":m '>+1<cr>gv=gv", { desc = "Move down" })
 vim.keymap.set("v", "<S-A-k>", ":m '<-2<cr>gv=gv", { desc = "Move up" })
 
 -- Windows
-vim.keymap.set('n', '<leader>z', cmd 'WindowsMaximize')
-vim.keymap.set('n', '<leader>=', cmd 'WindowsEqualize')
-vim.keymap.set('n', '<leader>wt', cmd 'WindowsToggleAutowidth')
+vim.keymap.set("n", "<leader>z", cmd("WindowsMaximize"))
+vim.keymap.set("n", "<leader>=", cmd("WindowsEqualize"))
+vim.keymap.set("n", "<leader>wt", cmd("WindowsToggleAutowidth"))

@@ -5,10 +5,10 @@ return {
 		opts = {
 			servers = {
 				-- Ensure mason installs the server
-				rnix = {},
+				nil_ls = {},
 			},
 			settings = {
-				rnix = {},
+				nil_ls = {},
 			},
 		},
 	},
