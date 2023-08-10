@@ -14,7 +14,6 @@
     ./lazygit.nix
     ./starship.nix
     ./tmux.nix
-    ./uair.nix
     ./zoxide.nix
   ];
 
