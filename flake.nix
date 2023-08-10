@@ -39,6 +39,7 @@
     nix-colors.url = "github:misterio77/nix-colors";
     nixvim.url = "github:pta2002/nixvim";
     comma.url = "github:nix-community/comma";
+    attic.url = "github:zhaofengli/attic";
   };
 
   outputs = { self, nixpkgs, home-manager, ... }@inputs:
