@@ -1,24 +1,21 @@
 { inputs, lib, pkgs, config, outputs, ... }:
-let
-  inherit (inputs.nix-colors) colorSchemes;
-in
 {
   imports = [
     inputs.nix-colors.homeManagerModule
     inputs.impermanence.nixosModules.home-manager.impermanence
     inputs.nixvim.homeManagerModules.nixvim
     inputs.nur.hmModules.nur
-    #inputs.nwg-displays.packages."x86_64-linux".default
-    ../../home-manager/sops.nix
+    ../../home-manager/security/sops.nix
     ../../home-manager/editors/nvim
     ../../home-manager/desktops/hyprland
+    ../../home-manager/desktops/gtk.nix
     ../../home-manager/games
     ../../home-manager/coding
 
     ../../home-manager/browsers/firefox.nix
     ../../home-manager/fonts.nix
     ../../home-manager/gtk.nix
-    ../../home-manager/atuin.nix
+    ../../home-manager/atuin
     ../../home-manager/packages/other.nix
     ../../home-manager/programs/cli.nix
     ../../home-manager/programs/kdeconnect.nix

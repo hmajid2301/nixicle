@@ -8,18 +8,21 @@
 
     ../../nixos/global
 
-    ../../nixos/optional/backup.nix
-    ../../nixos/optional/opengl.nix
-    ../../nixos/optional/thunderbolt.nix
-    ../../nixos/optional/docker.nix
-    ../../nixos/optional/fonts.nix
-    ../../nixos/optional/pipewire.nix
     ../../nixos/optional/greetd.nix
     ../../nixos/optional/quietboot.nix
+
+    ../../nixos/optional/docker.nix
+    ../../nixos/optional/fonts.nix
     ../../nixos/optional/mullvad.nix
+    ../../nixos/optional/pipewire.nix
+
+    ../../nixos/optional/thunderbolt.nix
+    ../../nixos/optional/opengl.nix
     ../../nixos/optional/vfio.nix
     ../../nixos/optional/gaming.nix
 
+    #../../nixos/optional/attic.nix
+    ../../nixos/optional/backup.nix
     #../nixos/optional/grub.nix
     #../nixos/optional/wireless.nix
     #../../nixos/optional/ephemeral.nix
@@ -38,6 +41,7 @@
   services.printing.enable = true;
   services.fwupd.enable = true;
   services.gvfs.enable = true;
+  services.pcscd.enable = true;
   services.udev.packages = with pkgs; [ yubikey-personalization ];
   services.dbus.enable = true;
   programs.dconf.enable = true;

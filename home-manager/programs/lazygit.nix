@@ -1,18 +1,4 @@
-{ pkgs, lib, config, ... }:
-
-let
-  fromYAML = f:
-    let
-      jsonFile =
-        pkgs.runCommand "in.json"
-          {
-            nativeBuildInputs = [ pkgs.jc ];
-          } ''
-          jc --yaml < "${f}" > "$out"
-        '';
-    in
-    builtins.elemAt (builtins.fromJSON (builtins.readFile jsonFile)) 0;
-in
+{ config, ... }:
 {
   programs.lazygit = {
     enable = true;
@@ -24,6 +10,17 @@ in
           useConfig = false;
         };
       };
+      gui.theme = {
+        lightTheme = false;
+        activeBorderColor = [ "#${config.colorscheme.colors.base0B}" "bold" ];
+        inactiveBorderColor = [ "#${config.colorscheme.colors.base05}" ];
+        optionsTextColor = [ "#${config.colorscheme.colors.base0D}" ];
+        selectedLineBgColor = [ "#${config.colorscheme.colors.base02}" ];
+        selectedRangeBgColor = [ "#${config.colorscheme.colors.base02}" ];
+        cherryPickedCommitBgColor = [ "#${config.colorscheme.colors.base0C}" ];
+        cherryPickedCommitFgColor = [ "#${config.colorscheme.colors.base0D}" ];
+        unstagedChangesColor = [ "#${config.colorscheme.colors.base08}" ];
+      };
       customCommands = [
         {
           key = "W";
@@ -33,14 +30,7 @@ in
           subprocess = true;
         }
       ];
-    } // fromYAML (pkgs.fetchFromGitHub
-      {
-        owner = "catppuccin";
-        repo = "lazygit";
-        rev = "b2ecb6d41b6f54a82104879573c538e8bdaeb0bf";
-        sha256 = "0p68z82cq3sgc25l16r8nfny8ab9158jj49xym2a4d932xcnc47l";
-      }
-    + "/themes/frappe.yml");
+    };
   };
 }
 

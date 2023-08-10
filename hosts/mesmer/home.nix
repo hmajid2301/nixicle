@@ -5,14 +5,14 @@
     inputs.impermanence.nixosModules.home-manager.impermanence
     inputs.nixvim.homeManagerModules.nixvim
     inputs.nur.hmModules.nur
-    #inputs.nwg-displays.packages."x86_64-linux".default
-    ../../home-manager/sops.nix
+
     ../../home-manager/fonts.nix
-    ../../home-manager/gtk.nix
-    ../../home-manager/atuin.nix
+    ../../home-manager/atuin
+    ../../home-manager/security/sops.nix
 
     ../../home-manager/editors/nvim
     ../../home-manager/desktops/hyprland
+    ../../home-manager/desktops/gtk.nix
     ../../home-manager/games
     ../../home-manager/coding
 

@@ -1,4 +1,4 @@
-{ pkgs, lib, ... }:
+{ pkgs, ... }:
 let
   # TODO: move to official trepo
   t-smart-manager = pkgs.tmuxPlugins.mkTmuxPlugin {
@@ -129,41 +129,41 @@ in
         }
       ];
     extraConfig = ''
-            set -g default-terminal "tmux-256color"
-            set -ag terminal-overrides ",xterm-256color:RGB"
+      set -g default-terminal "tmux-256color"
+      set -ag terminal-overrides ",xterm-256color:RGB"
 
-            set-option -g prefix C-a
-            unbind-key C-b
-            bind-key C-a send-prefix
+      set-option -g prefix C-a
+      unbind-key C-b
+      bind-key C-a send-prefix
 
-            set -g mouse on
+      set -g mouse on
 
-            # Change splits to match nvim and easier to remember
-            # Open new split at cwd of current split
-            unbind %
-            unbind '"'
-            bind | split-window -h -c "#{pane_current_path}"
-            bind - split-window -v -c "#{pane_current_path}"
+      # Change splits to match nvim and easier to remember
+      # Open new split at cwd of current split
+      unbind %
+      unbind '"'
+      bind | split-window -h -c "#{pane_current_path}"
+      bind - split-window -v -c "#{pane_current_path}"
 
-            # Use vim keybindings in copy mode
-            set-window-option -g mode-keys vi
+      # Use vim keybindings in copy mode
+      set-window-option -g mode-keys vi
 
-            # v in copy mode starts making selection
-            bind-key -T copy-mode-vi v send-keys -X begin-selection
-            bind-key -T copy-mode-vi C-v send-keys -X rectangle-toggle
-            bind-key -T copy-mode-vi y send-keys -X copy-selection-and-cancel
+      # v in copy mode starts making selection
+      bind-key -T copy-mode-vi v send-keys -X begin-selection
+      bind-key -T copy-mode-vi C-v send-keys -X rectangle-toggle
+      bind-key -T copy-mode-vi y send-keys -X copy-selection-and-cancel
 
-            # Escape turns on copy mode
-            bind Escape copy-mode
+      # Escape turns on copy mode
+      bind Escape copy-mode
 
-            # Easier reload of config
-            bind r source-file ~/.config/tmux/tmux.conf
+      # Easier reload of config
+      bind r source-file ~/.config/tmux/tmux.conf
 
-            set-option -g status-position top
+      set-option -g status-position top
 
-            # make Prefix p paste the buffer.
-            unbind p
-            bind p paste-buffer
+      # make Prefix p paste the buffer.
+      unbind p
+      bind p paste-buffer
 
       
       bind-key -T copy-mode-vi M-h resize-pane -L 1
@@ -171,12 +171,12 @@ in
       bind-key -T copy-mode-vi M-k resize-pane -U 1
       bind-key -T copy-mode-vi M-l resize-pane -R 1
 
-            # Bind Keys
-            bind-key -T prefix C-g split-window \
-              "$SHELL --login -i -c 'navi --print | head -c -1 | tmux load-buffer -b tmp - ; tmux paste-buffer -p -t {last} -b tmp -d'"
-            bind-key -T prefix C-l switch -t notes
-            bind-key -T prefix C-d switch -t dotfiles
-            bind-key e send-keys "tmux capture-pane -p -S - | nvim -c 'set buftype=nofile' +" Enter
+      # Bind Keys
+      bind-key -T prefix C-g split-window \
+        "$SHELL --login -i -c 'navi --print | head -c -1 | tmux load-buffer -b tmp - ; tmux paste-buffer -p -t {last} -b tmp -d'"
+      bind-key -T prefix C-l switch -t notes
+      bind-key -T prefix C-d switch -t dotfiles
+      bind-key e send-keys "tmux capture-pane -p -S - | nvim -c 'set buftype=nofile' +" Enter
     '';
   };
 }
