@@ -28,6 +28,9 @@
   };
 
   home.packages = with pkgs; [
+    nix-init
+    nix-update
+
     # modern "unix" tools
     broot
     choose
@@ -35,12 +38,12 @@
     dog
     duf
     delta
+    du-dust
     dysk
     entr
     erdtree
     fd
     gdu
-    go-task
     gping
     hyperfine
     lazydocker

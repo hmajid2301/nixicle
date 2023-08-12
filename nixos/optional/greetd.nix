@@ -1,12 +1,14 @@
-{ pkgs, ... }: {
+{
   services.greetd = {
     enable = true;
-    settings = rec {
+    settings = {
       initial_session = {
-        command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --cmd  Hyprland";
+        command = "Hyprland";
         user = "haseeb";
       };
-      default_session = initial_session;
+      default_session = {
+        command = "initial_session";
+      };
     };
   };
   environment.etc."greetd/environments".text = ''

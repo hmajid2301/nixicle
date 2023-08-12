@@ -24,17 +24,6 @@ vim.keymap.set("n", "J", "mzJ`z", { desc = "Keep cusors in middle" })
 vim.keymap.set("n", "n", "nzzzv", { desc = "Fwd  search '/' or '?'" })
 vim.keymap.set("n", "N", "Nzzzv", { desc = "Back search '/' or '?'" })
 
--- Toggle floating windows
-vim.keymap.set("n", "<leader>ttt", function()
-	Util.float_term({ "gdu" }, { cwd = Util.get_root(), esc_esc = false })
-end, { desc = "Toggle: Go Disk Usage" })
-vim.keymap.set("n", "<leader>ttu", function()
-	Util.float_term({ "btm" }, { cwd = Util.get_root(), esc_esc = false })
-end, { desc = "Toggle: Bottom" })
-vim.keymap.set("n", "<leader>ttr", function()
-	Util.float_term({ "ranger" }, { cwd = Util.get_root(), esc_esc = false })
-end, { desc = "Toggle ranger" })
-
 -- vim.keymap.set("n", "<A-J>", "mzJ`z", { desc = "combine with line up" })
 
 -- Newlines
@@ -65,6 +54,6 @@ vim.keymap.set("v", "<S-A-j>", ":m '>+1<cr>gv=gv", { desc = "Move down" })
 vim.keymap.set("v", "<S-A-k>", ":m '<-2<cr>gv=gv", { desc = "Move up" })
 
 -- Windows
-vim.keymap.set("n", "<leader>z", cmd("WindowsMaximize"))
-vim.keymap.set("n", "<leader>=", cmd("WindowsEqualize"))
-vim.keymap.set("n", "<leader>wt", cmd("WindowsToggleAutowidth"))
+vim.keymap.set("n", "<leader>z", "<cmd>WindowsMaximize<cr>")
+vim.keymap.set("n", "<leader>=", "<cmd>WindowsEqualize<cr>")
+vim.keymap.set("n", "<leader>wt", "<cmd>WindowsToggleAutowidth<cr>")
