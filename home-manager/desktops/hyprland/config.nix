@@ -37,7 +37,6 @@ in
 
   # █▀▀ ▀▄▀ █▀▀ █▀▀ █▀█ ▀█▀ █ █▀█ █▄░█ █▀
   # ██▄ █░█ █▄▄ ██▄ █▀▀ ░█░ █ █▄█ █░▀█ ▄█
-  windowrule = float, title:^(Steam)$
   windowrule = fullscreen, title:^(Guild Wars 2)$
   windowrulev2 = idleinhibit focus, class:^(mpv)$
   windowrulev2 = idleinhibit fullscreen, class:^(firefox)$

@@ -16,9 +16,6 @@ return {
 		end,
 		opts = function(_, opts)
 			opts.extensions = {
-				zoxide = {
-					prompt_title = " Projects List",
-				},
 				undo = {},
 			}
 		end,

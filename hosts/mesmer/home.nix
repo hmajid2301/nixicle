@@ -14,7 +14,6 @@
     ../../home-manager/desktops/hyprland
     ../../home-manager/desktops/gtk.nix
     ../../home-manager/games
-    ../../home-manager/coding
 
     ../../home-manager/browsers/firefox.nix
     ../../home-manager/photos/management.nix

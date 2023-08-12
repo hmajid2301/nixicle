@@ -19,6 +19,6 @@
         silent = true;
         expr = true;
       };
-    }
-      };
-  }
+    };
+  };
+}
