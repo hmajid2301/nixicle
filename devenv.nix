@@ -2,6 +2,7 @@
 
 {
   # https://devenv.sh/basics/
+
   env.GREET = "devenv";
 
   # https://devenv.sh/packages/
@@ -12,7 +13,6 @@
 
   enterShell = ''
   '';
-
   # https://devenv.sh/languages/
   languages.nix.enable = true;
 

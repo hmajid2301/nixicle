@@ -4,16 +4,13 @@
   imports = [
     ./bat.nix
     ./bottom.nix
-    ./calcure.nix
     ./exa.nix
     ./devenv.nix
     ./dooit.nix
     ./fzf.nix
     ./git.nix
     ./gpg.nix
-    ./lazygit.nix
     ./starship.nix
-    ./tmux.nix
     ./zoxide.nix
   ];
 
@@ -28,6 +25,10 @@
   };
 
   home.packages = with pkgs; [
+    #tmp
+    cargo
+    rustc
+
     nix-init
     nix-update
 
@@ -48,20 +49,19 @@
     hyperfine
     lazydocker
     killall
-    mcfly
     ouch
     silver-searcher
     thefuck
     procs
     psensor
     shell-genie
-    ripgrep-all
-    ripgrep # for neovim
     tokei
     trash-cli
+    ripgrep
     sd
     xcp
     yq
+    zk
 
     # cheat sheets
     cheat

@@ -7,6 +7,7 @@ local Util = require("lazyvim.util")
 -- Paste
 vim.keymap.set("x", "<leader>p", '"_dP', { desc = "Paste without updating register" })
 
+
 -- Copy
 vim.keymap.set("v", "<", "<gv", { desc = "Stay in visual mode during outdent" })
 vim.keymap.set("v", ">", ">gv", { desc = "Stay in visual mode during indent" })

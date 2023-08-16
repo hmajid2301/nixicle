@@ -82,7 +82,7 @@ in
       n = "nvim";
       cd = "z";
       cp = "xcp";
-      grep = "rga";
+      grep = "rg";
       dig = "dog";
       cat = "bat";
       curl = "curlie";
