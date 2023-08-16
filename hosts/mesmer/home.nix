@@ -6,24 +6,29 @@
     inputs.nixvim.homeManagerModules.nixvim
     inputs.nur.hmModules.nur
 
-    ../../home-manager/fonts.nix
-    ../../home-manager/atuin
-    ../../home-manager/security/sops.nix
-
-    ../../home-manager/editors/nvim
     ../../home-manager/desktops/hyprland
     ../../home-manager/desktops/gtk.nix
-    ../../home-manager/games
+    ../../home-manager/fonts.nix
 
-    ../../home-manager/browsers/firefox.nix
-    ../../home-manager/photos/management.nix
-    ../../home-manager/packages/other.nix
-    ../../home-manager/programs/cli.nix
-    ../../home-manager/programs/kdeconnect.nix
-    ../../home-manager/security/yubikey.nix
+
     ../../home-manager/shells/fish.nix
     ../../home-manager/terminals/alacritty.nix
     ../../home-manager/terminals/foot.nix
+
+    ../../home-manager/programs/cli
+    ../../home-manager/programs/tuis
+    ../../home-manager/editors/nvim
+    ../../home-manager/programs/multiplexers/tmux.nix
+    ../../home-manager/browsers/firefox.nix
+
+    ../../home-manager/atuin
+
+    ../../home-manager/games
+    ../../home-manager/security/sops.nix
+    ../../home-manager/security/yubikey.nix
+    ../../home-manager/programs/kdeconnect.nix
+    ../../home-manager/photos/management.nix
+    ../../home-manager/packages/other.nix
   ] ++ (builtins.attrValues outputs.homeManagerModules);
 
   nixpkgs = {

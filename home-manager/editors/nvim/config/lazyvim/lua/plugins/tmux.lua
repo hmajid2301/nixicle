@@ -4,9 +4,4 @@ return {
 		opts = {},
 		event = "VimEnter",
 	},
-	{
-		"tpope/vim-obsession",
-		opts = {},
-		cmd = "Obsession",
-	},
 }

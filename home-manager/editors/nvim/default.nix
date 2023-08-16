@@ -1,22 +1,27 @@
-{ pkgs, ... }:
+{ ... }:
 {
-  home.file."./.config/nvim/" = {
+  # TODO: Old LazyVim config, slowly being ported to nixvim
+  home.file."./.config/" = {
     source = ./config;
     recursive = true;
   };
 
-  programs.neovim = {
-    enable = true;
-    defaultEditor = true;
-  };
+  imports = [
+    ./plugins/colorscheme.nix
+    ./plugins/treesitter.nix
+    ./plugins/telescope.nix
+    ./plugins/startup.nix
+    ./plugins/editor.nix
 
-  home.packages = with pkgs; [
-    # parser (nvim)
-    gcc
-    tree-sitter
-    stylua
-    wget
-    python311Packages.pip
-    python311Packages.pillow
+    ./plugins/ui.nix
+
+    ./plugins/keymaps.nix
+    ./plugins/options.nix
+
+    ./plugins/langs/go.nix
   ];
+
+  programs.nixvim = {
+    enable = true;
+  };
 }
