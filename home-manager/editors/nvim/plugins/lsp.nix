@@ -1,23 +1,26 @@
-{ pkgs, ... }: {
+{pkgs, ...}: {
   programs.nixvim = {
     plugins.lsp = {
       enable = true;
     };
 
     # TODO: move to nixvim
-    extraPlugins = with pkgs.vimPlugins; [ null-ls-nvim ];
+    extraPlugins = with pkgs.vimPlugins; [null-ls-nvim];
     extraConfigLua =
       #lua
       ''
         require("null-ls").setup({
             sources = {
+                -- lua
                 require("null-ls").builtins.formatting.stylua.with({ command = "${pkgs.stylua}/bin/stylua" }),
                 require("null-ls").builtins.formatting.fish_indent.with({ command = "${pkgs.fish}/bin/fish_indent" }),
 
+                -- Nix
                 require("null-ls").builtins.formatting.alejandra.with({ command = "${pkgs.alejandra}/bin/alejandra" }),
                 require("null-ls").builtins.diagnostics.deadnix.with({ command = "${pkgs.deadnix}/bin/deadnix" }),
                 require("null-ls").builtins.code_actions.statix.with({ command = "${pkgs.statix}/bin/statix" }),
 
+                -- Go
                 require("null-ls").builtins.formatting.goimports.with({ command = "${pkgs.gotools}/bin/goimports" }),
                 require("null-ls").builtins.formatting.gofumpt.with({ command = "${pkgs.gofumpt}/bin/gofumpt" }),
                 require("null-ls").builtins.code_actions.gomodifytags.with({ command = "${pkgs.gomodifytags}/bin/gomodifytags" }),

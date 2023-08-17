@@ -1,4 +1,4 @@
-{ pkgs, ... }: {
+{pkgs, ...}: {
   programs.nixvim = {
     plugins.telescope = {
       enable = true;
@@ -59,7 +59,7 @@
           "╯"
           "╰"
         ];
-        border = { };
+        border = {};
         layout_strategy = "horizontal";
         layout_config = {
           horizontal = {
@@ -79,7 +79,3 @@
     };
   };
 }
-
-
-
-

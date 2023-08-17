@@ -8,9 +8,10 @@
   imports = [
     ./plugins/editor.nix
     ./plugins/debug.nix
+    ./plugins/git.nix
     ./plugins/session.nix
     ./plugins/startup.nix
-    ./plugins/telescope.nix
+    ./plugins/test.nix
 
     ./plugins/lsp.nix
     ./plugins/treesitter.nix
@@ -21,9 +22,9 @@
     ./plugins/keymaps.nix
     ./plugins/options.nix
 
-    ./plugins/langs/go.nix
-    ./plugins/langs/lua.nix
-    ./plugins/langs/nix.nix
+    ./plugins/lang/go.nix
+    ./plugins/lang/lua.nix
+    ./plugins/lang/nix.nix
     ./plugins/tmux.nix
   ];
 

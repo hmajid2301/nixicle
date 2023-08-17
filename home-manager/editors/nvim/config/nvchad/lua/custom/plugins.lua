@@ -20,13 +20,13 @@ local plugins = {
 		event = "InsertCharPre",
 		opts = { timeout = 300 },
 	},
-  -- {
-  -- "neovim/nvim-lspconfig",
-  --  config = function()
-  --     -- require "plugins.configs.lspconfig"
-  --     require "custom.configs.lspconfig"
-  --  end,
-  -- },
+  {
+  "neovim/nvim-lspconfig",
+   config = function()
+      -- require "plugins.configs.lspconfig"
+      require "custom.configs.lspconfig"
+   end,
+  },
 	{
 		"calops/hmts.nvim",
 		ft = "nix",
