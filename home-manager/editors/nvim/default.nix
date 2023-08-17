@@ -24,6 +24,7 @@
     ./plugins/langs/go.nix
     ./plugins/langs/lua.nix
     ./plugins/langs/nix.nix
+    ./plugins/tmux.nix
   ];
 
   programs.nixvim = {
