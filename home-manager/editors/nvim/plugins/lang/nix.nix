@@ -1,15 +1,23 @@
-{ pkgs, config, ... }: {
+{
+  pkgs,
+  config,
+  ...
+}: {
   programs.nixvim = {
     plugins.lsp.servers.nil_ls = {
       enable = true;
       settings = {
-        formatting.command = [ "${pkgs.alejandra}/bin/alejandra" ];
+        formatting.command = ["${pkgs.alejandra}/bin/alejandra"];
       };
     };
 
-    extraConfigVim = /* vim */ ''
-      au BufRead,BufNewFile flake.lock setf json
-    '';
+    extraConfigVim =
+      /*
+      vim
+      */
+      ''
+        au BufRead,BufNewFile flake.lock setf json
+      '';
 
     plugins.treesitter = {
       grammarPackages = with config.programs.nixvim.plugins.treesitter.package.builtGrammars; [
@@ -17,7 +25,6 @@
       ];
     };
 
-    extraPlugins = with pkgs; [ hmts-nvim ];
+    extraPlugins = with pkgs; [hmts-nvim];
   };
 }
-  
