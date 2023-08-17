@@ -6,6 +6,10 @@
           action = "<C-d>zz";
           desc = "Keep cursor in middle when jumping";
         };
+        "<leader>ds" = {
+          action = "require('dap').set_breakpoint(vim.fn.input('Breakpoint condition: '))";
+          desc = "Keep cursor in middle when jumping";
+        };
         "<C-u>" = {
           action = "<C-u>zz";
           desc = "Keep cursor in middle when jumping";
@@ -22,8 +26,6 @@
           action = "Nzzzv";
           desc = "Keep cursor in middle when searching";
         };
-
-        # better up/down
         "j" = {
           action = "v:count == 0 ? 'gj' : 'j'";
           silent = true;
@@ -33,6 +35,14 @@
           action = "v:count == 0 ? 'gk' : 'k'";
           silent = true;
           expr = true;
+        };
+        "<leader>|" = {
+          action = "<C-W>v";
+          desc = "Split window right";
+        };
+        "<leader>-" = {
+          action = "<C-W>s";
+          desc = "Split window below";
         };
       };
 
@@ -56,4 +66,3 @@
     };
   };
 }
-

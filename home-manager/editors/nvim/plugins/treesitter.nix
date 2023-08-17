@@ -19,11 +19,6 @@
         markdown
         markdown_inline
 
-        lua
-        luadoc
-        luap
-
-        nix
         vim
         vimdoc
 
