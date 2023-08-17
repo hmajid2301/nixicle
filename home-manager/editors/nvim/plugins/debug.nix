@@ -7,13 +7,14 @@
         dap-virtual-text.enable = true;
       };
     };
+    # TODO: Use keymaps i.e. "<cmd>lua require('dap-go').debug_test()<CR>"
     extraConfigLua =
       # lua
       ''
-        vim.keymap.set('n', '<F5>', function() require('dap').continue() end)
-        vim.keymap.set('n', '<F10>', function() require('dap').step_over() end)
-        vim.keymap.set('n', '<F11>', function() require('dap').step_into() end)
-        vim.keymap.set('n', '<F12>', function() require('dap').step_out() end)
+        vim.keymap.set('n', '<leader>dc', function() require('dap').continue() end)
+        vim.keymap.set('n', '<leader>dO', function() require('dap').step_over() end)
+        vim.keymap.set('n', '<leader>di', function() require('dap').step_into() end)
+        vim.keymap.set('n', '<leader>do', function() require('dap').step_out() end)
         vim.keymap.set('n', '<Leader>db', function() require('dap').toggle_breakpoint() end)
         vim.keymap.set('n', '<Leader>dB', function() require('dap').set_breakpoint() end)
         vim.keymap.set('n', '<Leader>dlp', function() require('dap').set_breakpoint(nil, nil, vim.fn.input('Log point message: ')) end)
