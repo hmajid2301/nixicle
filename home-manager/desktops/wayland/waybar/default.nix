@@ -1,8 +1,12 @@
-{ config, inputs, pkgs, ... }:
 {
+  config,
+  inputs,
+  pkgs,
+  ...
+}: {
   programs.waybar = {
     enable = true;
-    package = inputs.hyprland.packages.${pkgs.system}.waybar-hyprland;
+    package = pkgs.waybar-hyprland;
     systemd = {
       enable = false;
     };
@@ -134,7 +138,7 @@
           format-full = "";
           format-charging = "  {capacity}%";
           format-plugged = "  {capacity}%";
-          format-icons = [ " " " " " " " " " " ];
+          format-icons = [" " " " " " " " " "];
         };
         temperature = {
           interval = 1;
@@ -143,7 +147,7 @@
           critical-threshold = 80;
           format = "{icon} {temperatureC}°C";
           format-critical = "{icon} {temperatureC}°C";
-          format-icons = [ "" "" "" "" "" ];
+          format-icons = ["" "" "" "" ""];
         };
         cpu = {
           interval = 1;
@@ -180,7 +184,7 @@
           format-icons = {
             headphone = "";
             headset = "";
-            default = [ "" "" ];
+            default = ["" ""];
           };
         };
         clock = {
@@ -237,9 +241,8 @@
         };
       }
     ];
-    style = (import ./styles.nix {
+    style = import ./styles.nix {
       inherit (config) fontProfiles colorscheme;
-    });
+    };
   };
 }
-

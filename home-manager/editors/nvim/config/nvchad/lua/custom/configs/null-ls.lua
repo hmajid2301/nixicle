@@ -8,7 +8,6 @@ local sources = {
    code_actions.statix,
    formatting.alejandra,
    diagnostics.deadnix,
-   formatting.stylua,
 }
 
 null_ls.setup {

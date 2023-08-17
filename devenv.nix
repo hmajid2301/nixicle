@@ -1,28 +1,19 @@
-{ pkgs, ... }:
+{pkgs, ...}: {
+  packages = with pkgs; [
+    alejandra
+    update-nix-fetchgit
+    home-manager
+    sops
+    ssh-to-age
+    gnupg
+    age
+  ];
 
-{
-  # https://devenv.sh/basics/
+  scripts.convert_copied.exec = "wl-paste | ${pkgs.python3} ./scripts/converters/json2nix.py /dev/stdin";
 
-  env.GREET = "devenv";
-
-  # https://devenv.sh/packages/
-  packages = [ pkgs.nixpkgs-fmt pkgs.update-nix-fetchgit ];
-
-  # https://devenv.sh/scripts/
-  scripts.convert_copied.exec = "wl-paste | ${pkgs.python3} ./converters/json2nix.py /dev/stdin";
-
-  enterShell = ''
-  '';
-  # https://devenv.sh/languages/
   languages.nix.enable = true;
 
-  # https://devenv.sh/pre-commit-hooks/
   pre-commit.hooks = {
-    nixpkgs-fmt.enable = true;
+    alejandra.enable = true;
   };
-
-  # https://devenv.sh/processes/
-  # processes.ping.exec = "ping example.com";
-
-  # See full reference at https://devenv.sh/reference/options/
 }

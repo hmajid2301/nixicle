@@ -28,6 +28,7 @@
     #tmp
     cargo
     rustc
+    go
 
     nix-init
     nix-update
