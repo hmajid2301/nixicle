@@ -6,13 +6,13 @@
   };
 
   imports = [
-    ./plugins/editor.nix
     ./plugins/debug.nix
+    ./plugins/editor.nix
     ./plugins/git.nix
-    ./plugins/session.nix
     ./plugins/startup.nix
     ./plugins/test.nix
 
+    ./plugins/coding.nix
     ./plugins/lsp.nix
     ./plugins/treesitter.nix
 

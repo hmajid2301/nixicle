@@ -1,5 +1,7 @@
-{
+{pkgs, ...}: {
   programs.nixvim = {
+    extraPlugins = with pkgs.vimPlugins; [persistence-nvim];
+
     plugins.alpha = {
       enable = true;
       layout = [
