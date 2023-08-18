@@ -18,6 +18,7 @@
       softtabstop = 4;
 
       number = true;
+      relativenumber = true;
       numberwidth = 2;
       ruler = false;
 

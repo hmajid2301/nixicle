@@ -1,30 +1,32 @@
-{ pkgs, config, ... }:
-
-let
+{
+  pkgs,
+  config,
+  ...
+}: let
   inherit (config) colorscheme;
   inherit (colorscheme) colors;
-in
-{
+in {
   programs.fish = {
     enable = true;
     interactiveShellInit =
       # Open command buffer in vim when alt+e is pressed
       ''
-        bind \ee edit_command_buffer 
-      '' +
-
+        bind \ee edit_command_buffer
+      ''
+      +
       # Source scripts
       ''
         any-nix-shell fish --info-right | source
         fish_add_path ~/go/bin/
-      '' +
-
+        set -x GOPATH $HOME/go
+      ''
+      +
       # fifc setup
       ''
         set -Ux fifc_editor nvim
         set -U fifc_keybinding \cx
-      '' +
-
+      ''
+      +
       # FZF
       ''
         export FZF_DEFAULT_OPTS="
@@ -33,9 +35,8 @@ in
         --color=fg:#${colors.base05},header:#${colors.base08},info:#${colors.base0E},pointer:#${colors.base06}
         --color=marker:#${colors.base06},fg+:#${colors.base05},prompt:#${colors.base0E},hl+:#${colors.base08}
         "
-      '' +
-
       ''
+      + ''
         set -g fish_color_normal ${colors.base05}
         set -g fish_color_command ${colors.base0D}
         set -g fish_color_param ${colors.base0F}
@@ -62,8 +63,8 @@ in
         set -g fish_pager_color_prefix f4b8e4
         set -g fish_pager_color_completion ${colors.base05}
         set -g fish_pager_color_description 737994
-      '' +
-
+      ''
+      +
       # Use vim bindings and cursors
       ''
         fish_vi_key_bindings
@@ -131,11 +132,16 @@ in
         description = "Greeting to show when starting a fish shell";
         body = "fortune | lolcat -f | chara say -c kitten";
       };
-
     };
     plugins = [
-      { name = "bass"; src = pkgs.fishPlugins.bass.src; }
-      { name = "fzf-fish"; src = pkgs.fishPlugins.fzf-fish.src; }
+      {
+        name = "bass";
+        src = pkgs.fishPlugins.bass.src;
+      }
+      {
+        name = "fzf-fish";
+        src = pkgs.fishPlugins.fzf-fish.src;
+      }
       {
         name = "nix";
         src = pkgs.fetchFromGitHub {
@@ -196,5 +202,4 @@ in
     url = "https://raw.githubusercontent.com/catppuccin/fish/main/themes/Catppuccin%20Frappe.theme";
     sha256 = "sha256-DX02wNghAaOhcqqEGo5StwV7Gdr2Hej82EYNkqCXEOM=";
   });
-
 }
