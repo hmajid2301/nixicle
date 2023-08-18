@@ -11,6 +11,10 @@
     extraConfigLua =
       # lua
       ''
+        require("which-key").register({
+          ["<leader>s"] = { name = "+surround" },
+        })
+
         require("luasnip.loaders.from_vscode").lazy_load()
 
         require("nvim-surround").setup({

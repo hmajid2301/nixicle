@@ -1,6 +1,10 @@
-{ config, ... }: {
+{config, ...}: {
   programs.atuin = {
     enable = true;
+    flags = [
+      "--disable-up-arrow"
+      "--disable-ctrl-r"
+    ];
     settings = {
       sync_address = "https://majiy00-shell.fly.dev";
       sync_frequency = "15m";
@@ -13,4 +17,3 @@
     sopsFile = ../secrets.yaml;
   };
 }
-

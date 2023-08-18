@@ -8,6 +8,15 @@
         };
       };
     };
+
+    extraConfigLua =
+      # lua
+      ''
+        require("which-key").register({
+          ["<leader>g"] = { name = "+git" },
+        })
+      '';
+
     plugins = {
       gitsigns = {
         enable = true;

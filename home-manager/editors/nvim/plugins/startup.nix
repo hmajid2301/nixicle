@@ -1,6 +1,15 @@
 {pkgs, ...}: {
   programs.nixvim = {
     extraPlugins = with pkgs.vimPlugins; [persistence-nvim];
+    extraConfigLua =
+      # lua
+      ''
+        require("persistence").setup({
+          options = { "buffers", "curdir", "tabpages", "winsize", "help", "globals", "skiprtp" },
+          dir = vim.fn.expand(vim.fn.stdpath("state") .. "/sessions/"), -- directory where session files are saved
+          pre_save = nil, -- a function to call before saving the session
+        })
+      '';
 
     plugins.alpha = {
       enable = true;
@@ -37,7 +46,7 @@
           type = "group";
           val = [
             {
-              command = "<CMD>:Telescope find_files <CR>";
+              command = "<CMD>:Telescope find_files follow=true no_ignore=true hidden=true <CR>";
               desc = "  Find file";
               shortcut = "f";
             }

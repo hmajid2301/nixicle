@@ -1,11 +1,13 @@
-{ config, pkgs, ... }: {
+{
+  config,
+  pkgs,
+  ...
+}: {
   programs.nixvim.plugins = {
     treesitter = {
       enable = true;
       nixvimInjections = true;
-
-      folding = true;
-      indent = true;
+      indent = false;
 
       incrementalSelection = {
         enable = true;
@@ -45,4 +47,3 @@
     # };
   };
 }
-

@@ -1,14 +1,19 @@
 {pkgs, ...}: {
   programs.nixvim = {
+    maps = {
+      normal = {
+        "<leader>ff" = {
+          action = "<cmd> Telescope find_files follow=true no_ignore=true hidden=true <CR>";
+          desc = "Find Files";
+        };
+      };
+    };
+
     plugins.telescope = {
       enable = true;
       extensions.fzf-native.enable = true;
 
       keymaps = {
-        "<leader>ff" = {
-          action = "find_files";
-          desc = "Find Files";
-        };
         "<leader>fz" = {
           action = "current_buffer_fuzzy_find";
           desc = "Find in current buffer";
