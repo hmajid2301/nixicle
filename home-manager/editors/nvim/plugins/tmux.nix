@@ -4,7 +4,7 @@
     extraConfigLua =
       # lua
       ''
-        function() return require("tmux").setup()
+        require("tmux").setup()
       '';
   };
 }

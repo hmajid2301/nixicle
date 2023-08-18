@@ -6,10 +6,6 @@
           action = "<C-d>zz";
           desc = "Keep cursor in middle when jumping";
         };
-        "<leader>ds" = {
-          action = "require('dap').set_breakpoint(vim.fn.input('Breakpoint condition: '))";
-          desc = "Keep cursor in middle when jumping";
-        };
         "<C-u>" = {
           action = "<C-u>zz";
           desc = "Keep cursor in middle when jumping";
