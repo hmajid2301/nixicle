@@ -2,7 +2,7 @@
   programs.nixvim = {
     maps = {
       normal = {
-        "<leader>ff" = {
+        "<leader>fa" = {
           action = "<cmd> Telescope find_files follow=true no_ignore=true hidden=true <CR>";
           desc = "Find Files";
         };
@@ -14,6 +14,10 @@
       extensions.fzf-native.enable = true;
 
       keymaps = {
+        "<leader>ff" = {
+          action = "find_files";
+          desc = "Find Files";
+        };
         "<leader>fz" = {
           action = "current_buffer_fuzzy_find";
           desc = "Find in current buffer";
@@ -46,6 +50,12 @@
           "--line-number"
           "--column"
           "--smart-case"
+        ];
+        file_ignore_patterns = [
+          "node_modules"
+          ".devenv"
+          ".direnv"
+          ".git"
         ];
         prompt_prefix = "   ";
         selection_caret = "  ";

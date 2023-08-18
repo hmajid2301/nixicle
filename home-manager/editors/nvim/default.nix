@@ -25,6 +25,7 @@
     ./plugins/lang/go.nix
     ./plugins/lang/lua.nix
     ./plugins/lang/nix.nix
+    ./plugins/lang/yaml.nix
     ./plugins/tmux.nix
   ];
 

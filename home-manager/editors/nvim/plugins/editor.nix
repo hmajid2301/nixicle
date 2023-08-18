@@ -32,6 +32,24 @@
         enable = true;
       };
 
+      indent-blankline = {
+        enable = true;
+        filetypeExclude = [
+          "help"
+          "terminal"
+          "lazy"
+          "lspinfo"
+          "TelescopePrompt"
+          "TelescopeResults"
+          "Alpha"
+          ""
+        ];
+        showTrailingBlanklineIndent = false;
+        showFirstIndentLevel = false;
+        showCurrentContext = true;
+        showCurrentContextStart = true;
+      };
+
       toggleterm = {
         enable = true;
         direction = "float";

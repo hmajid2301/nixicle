@@ -24,7 +24,6 @@
         vim
         vimdoc
 
-        yaml
         json
         toml
       ];
