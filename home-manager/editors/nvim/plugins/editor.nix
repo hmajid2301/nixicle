@@ -6,6 +6,10 @@
 
   programs.nixvim = {
     plugins = {
+      auto-save = {
+        enable = true;
+      };
+
       illuminate = {
         enable = true;
         delay = 200;
@@ -48,6 +52,7 @@
           ["<leader>d"] = { name = "+debug" },
           ["<leader>t"] = { name = "+test" },
           ["<leader>x"] = { name = "+quickfix" },
+          ["<leader>s"] = { name = "+surround" },
         })
 
         require("better_escape").setup()

@@ -1,8 +1,6 @@
 {
   programs.nixvim = {
-
     colorschemes.catppuccin = {
-
       enable = true;
       flavour = "frappe";
       # TODO: use nix-colors here
@@ -64,25 +62,12 @@
         # lua
         ''
           function(c)
-          
+
             local hl = vim.api.nvim_set_hl
             return {
               AlphaHeader = { fg = c.blue, bg = 'NONE' },
               AlphaButtons = { fg = c.purple, bg = 'NONE' },
               AlphaFooter = { fg = c.cyan, bg = 'NONE' },
-
-              TelescopeNormal = { fg = 'NONE', bg = c.darker_black },
-              TelescopePreviewTitle= { fg = c.black, bg = c.green, bold=true },
-              TelescopePromptTitle= { fg = c.black, bg = c.red, bold=true },
-              TelescopeResultsTitle= { fg = c.darker_black, bg = c.darker_black, bold=true },
-              TelescopeSelection ={ fg = c.white, bg = c.black2 },
-              TelescopeBorder={ fg = c.darker_black, bg = c.darker_black },
-              TelescopePromptBorder = { fg = c.black2, bg = c.black2 },
-              TelescopePromptNormal ={ fg = c.white, bg = c.black2 },
-              TelescopePromptPrefix = { fg = c.red, bg = c.black2 },
-              TelescopeResultsDiffAdd = { fg = c.green, bg = 'NONE' },
-              TelescopeResultsDiffChange = { fg = c.blue, bg = 'NONE' },
-              TelescopeResultsDiffDelete = { fg = c.red, bg = 'NONE' },
 
               Normal = { fg = c.base05, bg = c.base00 },
               SignColumn = { fg = c.base03, bg = 'NONE', sp = 'NONE',  },
@@ -368,6 +353,13 @@
               DashboardCenter = { fg = c.purple, bg = 'NONE' },
               DashboardFooter = { fg = c.cyan, bg = 'NONE' },
 
+              CmpItemAbbr = { fg = c.white },
+              CmpItemAbbrMatch = { fg = c.blue, bold = true },
+              CmpDoc = { bg = c.darker_black },
+              CmpBorder = { fg = c.grey_fg },
+              CmpDocBorder = { fg = c.darker_black, bg = c.darker_black },
+              CmpPmenu = { bg = c.black },
+              CmpSel = { link = "PmenuSel", bold = true },
               CmpItemAbbrDeprecated = { fg = c.grey, bg = 'NONE', strikethrough=true, },
               CmpItemAbbrMatch = { fg = c.blue, bg = 'NONE' },
               CmpItemAbbrMatchFuzzy = { fg = c.blue, bg = 'NONE' },
