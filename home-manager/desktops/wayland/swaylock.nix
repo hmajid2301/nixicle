@@ -1,8 +1,11 @@
-{ inputs, pkgs, config, ... }:
-let inherit (config.colorscheme) colors;
-in
 {
-
+  inputs,
+  pkgs,
+  config,
+  ...
+}: let
+  inherit (config.colorscheme) colors;
+in {
   # TODO: move to home.nix
   nixpkgs.overlays = [
     inputs.nur.overlay
@@ -14,7 +17,7 @@ in
 
   programs.swaylock = {
     enable = true;
-    package = pkgs.swaylock-effects2;
+    package = pkgs.swaylock-effects;
     settings = {
       # Show number of failed attempts
       show-failed-attempts = true;

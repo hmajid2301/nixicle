@@ -1,5 +1,11 @@
-{ pkgs, ... }: {
+{pkgs, ...}: {
+  imports = [
+    ./ui/lualine.nix
+  ];
+
   programs.nixvim = {
-    extraPlugins = with pkgs.vimPlugins; [ nvim-web-devicons ];
+    extraPlugins = with pkgs.vimPlugins; [
+      nvim-web-devicons
+    ];
   };
 }

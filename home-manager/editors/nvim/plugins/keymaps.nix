@@ -1,6 +1,12 @@
 {
   programs.nixvim = {
     maps = {
+      normalVisualOp = {
+        "<C-s>" = {
+          action = "<cmd>w<cr><esc>";
+          desc = "Save File";
+        };
+      };
       normal = {
         "<C-d>" = {
           action = "<C-d>zz";
