@@ -2,7 +2,7 @@
   programs.nixvim = {
     colorschemes.catppuccin = {
       enable = true;
-      flavour = "frappe";
+      flavour = "macchiato";
       # TODO: use nix-colors here
       # or update to use these colors if i prefer them
       colorOverrides = {
@@ -64,10 +64,6 @@
         ''
           function(c)
             return {
-              AlphaHeader = { fg = c.blue, bg = 'NONE' },
-              AlphaButtons = { fg = c.purple, bg = 'NONE' },
-              AlphaFooter = { fg = c.cyan, bg = 'NONE' },
-
               Normal = { fg = c.base05, bg = c.base00 },
               SignColumn = { fg = c.base03, bg = 'NONE', sp = 'NONE',  },
               MsgArea = { fg = c.base05, bg = c.base00 },
@@ -351,6 +347,10 @@
               DashboardHeader = { fg = c.blue, bg = 'NONE' },
               DashboardCenter = { fg = c.purple, bg = 'NONE' },
               DashboardFooter = { fg = c.cyan, bg = 'NONE' },
+
+              AlphaHeader = { fg = c.blue, bg = 'NONE' },
+              AlphaButtons = { fg = c.purple, bg = 'NONE' },
+              AlphaFooter = { fg = c.cyan, bg = 'NONE' },
 
               CmpItemAbbr = { fg = c.white },
               CmpItemAbbrMatch = { fg = c.blue, bold = true },

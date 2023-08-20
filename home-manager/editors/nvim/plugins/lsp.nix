@@ -15,6 +15,7 @@
           gi = "implementation";
           gt = "type_definition";
           "<leader>ca" = "code_action";
+          "<leader>cr" = "rename";
         };
       };
     };

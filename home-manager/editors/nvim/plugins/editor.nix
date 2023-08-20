@@ -1,5 +1,6 @@
 {pkgs, ...}: {
   imports = [
+    ./editor/nvim-tree.nix
     ./editor/telescope.nix
     ./editor/trouble.nix
   ];

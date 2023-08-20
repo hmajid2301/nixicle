@@ -1,34 +1,48 @@
-{ inputs, lib, pkgs, config, outputs, ... }:
 {
-  imports = [
-    inputs.nix-colors.homeManagerModule
-    inputs.impermanence.nixosModules.home-manager.impermanence
-    inputs.nixvim.homeManagerModules.nixvim
-    inputs.nur.hmModules.nur
-    ../../home-manager/security/sops.nix
-    ../../home-manager/editors/nvim
-    ../../home-manager/desktops/hyprland
-    ../../home-manager/desktops/gtk.nix
-    ../../home-manager/games
-    ../../home-manager/coding
+  inputs,
+  lib,
+  pkgs,
+  config,
+  outputs,
+  ...
+}: {
+  imports =
+    [
+      inputs.nix-colors.homeManagerModule
+      inputs.impermanence.nixosModules.home-manager.impermanence
+      inputs.nixvim.homeManagerModules.nixvim
+      inputs.nur.hmModules.nur
 
-    ../../home-manager/browsers/firefox.nix
-    ../../home-manager/fonts.nix
-    ../../home-manager/gtk.nix
-    ../../home-manager/atuin
-    ../../home-manager/packages/other.nix
-    ../../home-manager/programs/cli.nix
-    ../../home-manager/programs/kdeconnect.nix
-    ../../home-manager/security/yubikey.nix
-    ../../home-manager/shells/fish.nix
-    ../../home-manager/terminals/alacritty.nix
-  ] ++ (builtins.attrValues outputs.homeManagerModules);
+      ../../home-manager/desktops/hyprland
+      ../../home-manager/desktops/gtk.nix
+      ../../home-manager/fonts.nix
+
+      ../../home-manager/shells/fish.nix
+      ../../home-manager/terminals/alacritty.nix
+      ../../home-manager/terminals/foot.nix
+
+      ../../home-manager/programs/cli
+      ../../home-manager/programs/tuis
+      ../../home-manager/editors/nvim
+      ../../home-manager/programs/multiplexers/tmux.nix
+      ../../home-manager/browsers/firefox.nix
+
+      ../../home-manager/atuin
+
+      ../../home-manager/games
+      ../../home-manager/security/sops.nix
+      ../../home-manager/security/yubikey.nix
+      ../../home-manager/programs/kdeconnect.nix
+      ../../home-manager/photos/management.nix
+      ../../home-manager/packages/other.nix
+    ]
+    ++ (builtins.attrValues outputs.homeManagerModules);
 
   nixpkgs = {
     overlays = builtins.attrValues outputs.overlays;
     config = {
       allowUnfree = true;
-      allowUnfreePredicate = (_: true);
+      allowUnfreePredicate = _: true;
     };
   };
 
@@ -38,7 +52,7 @@
   nix = {
     package = lib.mkDefault pkgs.nix;
     settings = {
-      experimental-features = [ "nix-command" "flakes" "repl-flake" ];
+      experimental-features = ["nix-command" "flakes" "repl-flake"];
       warn-dirty = false;
     };
   };
@@ -54,7 +68,7 @@
     username = lib.mkDefault "haseeb";
     homeDirectory = lib.mkDefault "/home/${config.home.username}";
     stateVersion = lib.mkDefault "23.05";
-    sessionPath = [ "$HOME/.local/bin" ];
+    sessionPath = ["$HOME/.local/bin"];
     sessionVariables = {
       EDITOR = "nvim";
     };
@@ -81,4 +95,3 @@
     #};
   };
 }
-
