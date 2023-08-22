@@ -1,11 +1,4 @@
-{ config, ... }:
-{
-  home = {
-    sessionVariables = {
-      TERMINAL = "alacritty";
-    };
-  };
-
+{config, ...}: {
   programs.alacritty = {
     enable = true;
 

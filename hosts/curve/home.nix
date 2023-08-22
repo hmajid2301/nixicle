@@ -9,12 +9,11 @@
   imports =
     [
       inputs.nix-colors.homeManagerModule
-      inputs.impermanence.nixosModules.home-manager.impermanence
       inputs.nixvim.homeManagerModules.nixvim
       inputs.nur.hmModules.nur
 
       ../../home-manager/desktops/hyprland
-      ../../home-manager/desktops/gtk.nix
+      #../../home-manager/desktops/gtk.nix
       ../../home-manager/fonts.nix
 
       ../../home-manager/shells/fish.nix
@@ -22,18 +21,20 @@
       ../../home-manager/terminals/foot.nix
 
       ../../home-manager/programs/cli
+      ../../home-manager/programs/cli/k8s.nix
+      ../../home-manager/programs/cli/kafka.nix
+      ../../home-manager/programs/pritunl.nix
       ../../home-manager/programs/tuis
+      ../../home-manager/programs/android.nix
       ../../home-manager/editors/nvim
       ../../home-manager/programs/multiplexers/tmux.nix
       ../../home-manager/browsers/firefox.nix
 
       ../../home-manager/atuin
 
-      ../../home-manager/games
       ../../home-manager/security/sops.nix
       ../../home-manager/security/yubikey.nix
       ../../home-manager/programs/kdeconnect.nix
-      ../../home-manager/photos/management.nix
       ../../home-manager/packages/other.nix
     ]
     ++ (builtins.attrValues outputs.homeManagerModules);
@@ -65,35 +66,14 @@
   };
 
   home = {
-    username = lib.mkDefault "haseeb";
+    username = lib.mkDefault "haseebmajid";
     homeDirectory = lib.mkDefault "/home/${config.home.username}";
     stateVersion = lib.mkDefault "23.05";
     sessionPath = ["$HOME/.local/bin"];
     sessionVariables = {
+      BROWSER = "chrome";
       EDITOR = "nvim";
-      TERMINAL = "alacritty";
-      BROWSER = "firefox";
+      TERMINAL = "foot";
     };
-
-    #persistence = {
-    #  "/persist/home/haseeb" = {
-    #    directories = [
-    #      "Documents"
-    #      "Downloads"
-    #      "Pictures"
-    #      "Videos"
-    #      "Games"
-    #      "projects"
-    #      "dotfiles"
-    #      "go"
-    #      ".local"
-    #      ".tmux"
-    #      ".ssh"
-    #      ".gnupg"
-    #      ".config/gtk"
-    #    ];
-    #    allowOther = true;
-    #  };
-    #};
   };
 }
