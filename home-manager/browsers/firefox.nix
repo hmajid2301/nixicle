@@ -1,4 +1,4 @@
-{ inputs, ... }: {
+{inputs, ...}: {
   # Add Firefox GNOME theme directory
   home.file."firefox-gnome-theme" = {
     target = ".mozilla/firefox/default/chrome/firefox-gnome-theme";
@@ -8,13 +8,12 @@
     };
   };
 
-  home = {
-    sessionVariables.BROWSER = "firefox";
-    persistence = {
-      # Not persisting is safer
-      # "/persist/home/misterio".directories = [ ".mozilla/firefox" ];
-    };
-  };
+  # home = {
+  #   persistence = {
+  #     # Not persisting is safer
+  #     "/persist/home/misterio".directories = [ ".mozilla/firefox" ];
+  #   };
+  # };
 
   programs.firefox = {
     enable = true;

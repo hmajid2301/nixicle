@@ -71,6 +71,8 @@
     sessionPath = ["$HOME/.local/bin"];
     sessionVariables = {
       EDITOR = "nvim";
+      TERMINAL = "alacritty";
+      BROWSER = "firefox";
     };
 
     #persistence = {

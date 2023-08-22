@@ -1,9 +1,11 @@
 keys:
   - &users:
     - &haseeb F04F743A24CD81B628A20667CD20E7373D83B71C
+    - &haseebmajid F04F743A24CD81B628A20667CD20E7373D83B71C
   - &hosts:
     - &framework age1kzxen8ynw28h935jnjc9t8cx4p8mv6angk5suvkp6ntu4am9pe4smfw22z
     - &mesmer age1pgvcff3h4hayms7mss4gmfvyr6w4xpamwmk809xqnuyfk06h6f8s24l6xd
+    - &curve age1f44n6uklwmhfxthpq8k9ztq7q60k6g0u89ratdy3gurc0pqhhqjsx2x75g
 
 creation_rules:
   - path_regex: hosts/framework/secrets.ya?ml$
@@ -20,6 +22,13 @@ creation_rules:
       pgp:
       - *haseeb
 
+  - path_regex: hosts/curve/secrets.ya?ml$
+    key_groups:
+    - age:
+      - *curve
+      pgp:
+      - *haseebmajid
+
   - path_regex: nixos/secrets.ya?ml$
     key_groups:
     - age:
@@ -33,6 +42,8 @@ creation_rules:
     - age:
       - *framework
       - *mesmer
+      - *curve
       pgp:
       - *haseeb
+      - *haseebmajid
 
