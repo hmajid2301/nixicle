@@ -3,7 +3,7 @@
   config,
   ...
 }: let
-  inherit (config) colorscheme;
+  inherit (config) colorscheme host;
   inherit (colorscheme) colors;
 in {
   programs.fish = {
@@ -94,8 +94,8 @@ in {
       cava = "TERM=st-256color cava";
 
       # nix
-      hms = "home-manager switch --flake ~/dotfiles#mesmer";
-      nrs = "sudo nixos-rebuild switch --flake ~/dotfiles#mesmer";
+      hms = "home-manager switch --flake ~/dotfiles#${host}";
+      nrs = "sudo nixos-rebuild switch --flake ~/dotfiles#${host}";
 
       # new commads
       kp = "ps -ef | sed 1d | eval \"fzf $FZF_DEFAULT_OPTS -m --header=\'[kill:process]\'\" | awk \'{print $2}\'";
