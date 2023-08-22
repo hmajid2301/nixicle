@@ -48,6 +48,7 @@
 
   colorscheme = inputs.nix-colors.colorSchemes.catppuccin-frappe;
   wallpaper = "~/dotfiles/home-manager/wallpapers/rainbow-nix.jpg";
+  host = "mesmer";
 
   nix = {
     package = lib.mkDefault pkgs.nix;

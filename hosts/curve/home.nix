@@ -49,6 +49,7 @@
 
   colorscheme = inputs.nix-colors.colorSchemes.catppuccin-frappe;
   wallpaper = "~/dotfiles/home-manager/wallpapers/rainbow-nix.jpg";
+  host = "curve";
 
   nix = {
     package = lib.mkDefault pkgs.nix;
