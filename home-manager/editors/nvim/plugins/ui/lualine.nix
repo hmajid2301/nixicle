@@ -2,6 +2,7 @@
   programs.nixvim = {
     extraPlugins = with pkgs.vimPlugins; [
       lualine-lsp-progress
+      # git-blame-nvim
     ];
 
     plugins.lualine = {
@@ -20,7 +21,7 @@
             bg = "#2f2e3e";
           };
           c = {
-            fg = "#D9E0EE";
+            fg = "#605f6f";
             bg = "#232232";
           };
         };
@@ -136,8 +137,6 @@
               icon = "";
               colored = false;
               color = {
-                fg = "#605f6f";
-                bg = "#232232";
                 gui = "bold";
               };
             };
@@ -146,10 +145,6 @@
             name = "diff";
             extraConfig = {
               colored = false;
-              color = {
-                fg = "#605f6f";
-                bg = "#232232";
-              };
               symbols = {
                 added = " ";
                 modified = " ";
@@ -157,6 +152,23 @@
               };
             };
           }
+          # {
+          #   name.__raw =
+          #     # lua
+          #     ''
+          #       function()
+          #       	vim.g.gitblame_display_virtual_text = 0 -- Disable virtual text
+          #       	vim.g.gitblame_date_format = "%r"
+          #       	local git_blame = require('gitblame')
+          #
+          #       	local blame = git_blame.is_blame_text_available()
+          #       	if blame then
+          #       		return git_blame.get_current_blame_text()
+          #       	end
+          #       	return ""
+          #       end
+          #     '';
+          # }
         ];
         lualine_x = [
           {

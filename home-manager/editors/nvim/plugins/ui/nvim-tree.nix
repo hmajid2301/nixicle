@@ -53,10 +53,10 @@
             default = "󰈚";
             symlink = "";
             folder = {
-              default = "";
+              default = "";
               empty = "";
               emptyOpen = "";
-              open = "";
+              open = "󰝰";
               symlink = "";
               symlinkOpen = "";
               arrowOpen = "";

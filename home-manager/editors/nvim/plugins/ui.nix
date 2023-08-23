@@ -1,5 +1,6 @@
 {pkgs, ...}: {
   imports = [
+    ./ui/nvim-tree.nix
     ./ui/lualine.nix
   ];
 

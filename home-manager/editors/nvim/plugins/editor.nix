@@ -1,12 +1,30 @@
 {pkgs, ...}: {
   imports = [
-    ./editor/nvim-tree.nix
     ./editor/telescope.nix
     ./editor/trouble.nix
   ];
 
   programs.nixvim = {
     clipboard.providers.wl-copy.enable = true;
+
+    maps = {
+      normal = {
+        "<leader>uu" = {
+          action = "<cmd>Telescope undo<cr>";
+          desc = "Show undo tree";
+        };
+        "<leader>sr" = {
+          action =
+            # lua
+            ''
+              function()
+              	require("spectre").open()
+              end
+            '';
+          desc = "Replace in files";
+        };
+      };
+    };
 
     plugins = {
       # auto-save = {
@@ -20,8 +38,24 @@
       illuminate = {
         enable = true;
         delay = 200;
+        underCursor = true;
         largeFileOverrides = {
           largeFileCutoff = 2000;
+        };
+      };
+
+      oil = {
+        enable = true;
+      };
+
+      harpoon = {
+        enable = true;
+        tmuxAutocloseWindows = true;
+        keymaps = {
+          addFile = "<leader>ha";
+          toggleQuickMenu = "<leader>ht";
+          navNext = "<leader>hn";
+          navPrev = "<leader>hp";
         };
       };
 
@@ -47,8 +81,8 @@
         ];
         showTrailingBlanklineIndent = false;
         showFirstIndentLevel = false;
-        showCurrentContext = true;
-        showCurrentContextStart = true;
+        spaceCharBlankline = " ";
+        showEndOfLine = true;
       };
 
       toggleterm = {
@@ -61,16 +95,27 @@
       };
     };
 
-    extraPlugins = with pkgs.vimPlugins; [better-escape-nvim];
+    extraPlugins = with pkgs.vimPlugins; [
+      better-escape-nvim
+      telescope-undo-nvim
+      nvim-spectre
+    ];
     extraConfigLua =
       # lua
       ''
+         -- undo-telescope
+        require("telescope").load_extension("undo")
         require("which-key").register({
-          mode = {"n", "v"},
-          ["<leader>f"] = { name = "+file/find" },
+        	mode = {"n", "v"},
+        	["<leader>f"] = { name = "+file/find" },
         })
 
         require("better_escape").setup()
+
+        -- indent blankline
+        vim.opt.list = true
+        vim.opt.listchars:append "eol:↴"
+        vim.opt.listchars:append "space:⋅"
       '';
   };
 }

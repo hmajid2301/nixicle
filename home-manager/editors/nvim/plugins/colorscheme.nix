@@ -77,7 +77,7 @@
               Pmenu = { fg = 'NONE', bg = c.one_bg },
               PmenuSel = { fg = c.black, bg = c.pmenu_bg },
               WildMenu = { fg = c.base08, bg = c.base0A },
-              CursorLineNr = { fg = c.white, bg = 'NONE' },
+              CursorLineNr = { fg = c.white },
               Comment = { fg = c.grey_fg, bg = 'NONE' },
               Folded = { fg = c.base03, bg = c.base01 },
               FoldColumn = { fg = c.base0C, bg = c.base01 },
@@ -294,7 +294,7 @@
               TelescopeResultsDiffDelete = { fg = c.red, bg = 'NONE' },
 
               NvimTreeFolderIcon = { fg = c.blue, bg = 'NONE' },
-              NvimTreeIndentMarker = { fg = '#c5c5c5', bg = 'NONE' },
+              NvimTreeIndentMarker = { fg = c.grey_fg, bg = 'NONE' },
               NvimTreeNormal = { fg = 'NONE', bg = c.darker_black },
               NvimTreeVertSplit = { fg = c.darker_black, bg = c.darker_black },
               NvimTreeFolderName = { fg = c.blue, bg = 'NONE' },
@@ -377,20 +377,22 @@
               CmpItemKindConstant = { fg = c.orange, bg = 'NONE' },
               CmpItemKindKeyword = { fg = c.purple, bg = 'NONE' },
               CmpItemKindModule = { fg = c.cyan, bg = 'NONE' },
-              CmpItemKindValue = { fg = c.base05, bg = 'NONE' },
-              CmpItemKindUnit = { fg = c.base05, bg = 'NONE' },
-              CmpItemKindText = { fg = c.base05, bg = 'NONE' },
+              CmpItemKindValue = { fg = c.cyan, bg = 'NONE' },
+              CmpItemKindUnit = { fg = c.base0E, bg = 'NONE' },
+              CmpItemKindText = { fg = c.base0B, bg = 'NONE' },
               CmpItemKindSnippet = { fg = c.yellow, bg = 'NONE' },
-              CmpItemKindFile = { fg = c.base05, bg = 'NONE' },
-              CmpItemKindFolder = { fg = c.base05, bg = 'NONE' },
-              CmpItemKindColor = { fg = c.base05, bg = 'NONE' },
+              CmpItemKindFile = { fg = c.base07, bg = 'NONE' },
+              CmpItemKindFolder = { fg = c.base07, bg = 'NONE' },
+              CmpItemKindColor = { fg = c.white, bg = 'NONE' },
               CmpItemKindReference = { fg = c.base05, bg = 'NONE' },
               CmpItemKindOperator = { fg = c.base05, bg = 'NONE' },
-              CmpItemKindTypeParameter = { fg = c.red, bg = 'NONE' },
+              CmpItemKindTypeParameter = { fg = c.base08, bg = 'NONE' },
 
               ToggleTerm1FloatBorder = { fg = c.line, bg = 'NONE' },
 
-              IlluminatedWordText = { fg = 'NONE', bg = c.base02, sp = 'NONE',  },
+              IlluminatedWordText = { fg = 'NONE', bg = c.base03, },
+              IlluminatedWordRead = { fg = 'NONE', bg = c.base03, },
+              IlluminatedWordWrite = { fg = 'NONE', bg = c.base03, },
             }
           end
         '';
