@@ -33,6 +33,7 @@
 
         require("which-key").register({
           ["<leader>s"] = { name = "+surround" },
+          ["<leader>z"] = { name = "+fold" },
         })
 
         require("luasnip.loaders.from_vscode").lazy_load()
@@ -52,7 +53,7 @@
 
     maps = {
       normal = {
-        "<leader>zR" = {
+        "<leader>uR" = {
           action =
             # lua
             ''
@@ -62,7 +63,7 @@
             '';
           desc = "Open all folds";
         };
-        "<leader>zM" = {
+        "<leader>uM" = {
           action =
             # lua
             ''
@@ -73,13 +74,6 @@
           desc = "Close all folds";
         };
       };
-    };
-
-    options = {
-      foldcolumn = "1";
-      foldlevel = 99;
-      foldlevelstart = 99;
-      foldenable = true;
     };
 
     plugins = {

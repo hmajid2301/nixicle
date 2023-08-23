@@ -152,6 +152,15 @@
               };
             };
           }
+          {
+            name.__raw =
+              # lua
+              ''
+                function()
+                	 return vim.t.maximized and "  " or ""
+                end
+              '';
+          }
           # {
           #   name.__raw =
           #     # lua
@@ -227,7 +236,7 @@
               # lua
               ''
                 function()
-                    local msg = ""
+                    local msg = "None"
                     local buf_ft = vim.api.nvim_buf_get_option(0, 'filetype')
                     local clients = vim.lsp.get_active_clients()
                     if next(clients) == nil then

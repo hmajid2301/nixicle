@@ -18,7 +18,6 @@
       swapfile = false;
       hlsearch = false;
       incsearch = true;
-      #listchars = ["space:⋅" "eol:↴"];
 
       shiftwidth = 4;
       tabstop = 4;
@@ -40,6 +39,10 @@
       updatetime = 100;
       timeout = true;
       timeoutlen = 300;
+
+      foldlevel = 99;
+      foldlevelstart = 99;
+      foldenable = true;
     };
   };
 }

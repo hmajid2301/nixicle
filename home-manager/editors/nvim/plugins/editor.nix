@@ -8,6 +8,28 @@
     clipboard.providers.wl-copy.enable = true;
 
     maps = {
+      normalVisualOp = {
+        "<leader>fls" = {
+          action =
+            # lua
+            ''
+              function()
+                      require("flash").jump()
+              end
+            '';
+          desc = "Run flash";
+        };
+        "<leader>flt" = {
+          action =
+            # lua
+            ''
+              function()
+                      require("flash").treesitter()
+              end
+            '';
+          desc = "Run flash treesitter";
+        };
+      };
       normal = {
         "<leader>uu" = {
           action = "<cmd>Telescope undo<cr>";
@@ -99,6 +121,7 @@
       better-escape-nvim
       telescope-undo-nvim
       nvim-spectre
+      flash-nvim
     ];
     extraConfigLua =
       # lua
@@ -108,9 +131,11 @@
         require("which-key").register({
         	mode = {"n", "v"},
         	["<leader>f"] = { name = "+file/find" },
+        	["<leader>h"] = { name = "+harpoon" },
         })
 
-        require("better_escape").setup()
+        require("better_escape").setup({})
+        require("flash").setup()
 
         -- indent blankline
         vim.opt.list = true
