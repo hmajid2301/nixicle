@@ -4,19 +4,29 @@
       mapleader = " ";
     };
 
+    extraConfigLua =
+      # lua
+      ''
+        vim.opt.list = true
+        vim.opt.listchars:append "eol:↴"
+        vim.opt.listchars:append "space:⋅"
+      '';
+
     options = {
       termguicolors = true;
       scrolloff = 8;
       swapfile = false;
       hlsearch = false;
       incsearch = true;
+      #listchars = ["space:⋅" "eol:↴"];
 
       shiftwidth = 4;
-      expandtab = true;
-      smartindent = true;
       tabstop = 4;
       softtabstop = 4;
+      expandtab = true;
+      smartindent = true;
 
+      cursorline = true;
       number = true;
       relativenumber = true;
       numberwidth = 2;

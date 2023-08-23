@@ -23,7 +23,6 @@
       ../../home-manager/programs/cli
       ../../home-manager/programs/cli/k8s.nix
       ../../home-manager/programs/cli/kafka.nix
-      ../../home-manager/programs/pritunl.nix
       ../../home-manager/programs/tuis
       ../../home-manager/programs/android.nix
       ../../home-manager/editors/nvim
