@@ -14,7 +14,10 @@
           gd = "definition";
           gi = "implementation";
           gt = "type_definition";
-          "<leader>ca" = "code_action";
+          "<leader>ca" = {
+            action = "code_action";
+            desc = "test";
+          };
           "<leader>cr" = "rename";
         };
       };
@@ -25,6 +28,13 @@
     extraConfigLua =
       #lua
       ''
+        require("which-key").register({
+        	["<leader>c"] = { name = "+code" },
+        	["g"] = { name = "+goto" },
+        	["]"] = { name = "+next" },
+        	["["] = { name = "+prev" },
+        })
+
         require("null-ls").setup({
           sources = {
             -- lua

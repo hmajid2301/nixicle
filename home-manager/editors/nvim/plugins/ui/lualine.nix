@@ -89,6 +89,17 @@
         left = "";
         right = "";
       };
+      # winbar = {
+      #   lualine_c = [
+      #     {
+      #       name = "navic";
+      #       extraConfig = {
+      #         draw_empty = true;
+      #         color_correction = "dynamic";
+      #       };
+      #     }
+      #   ];
+      # };
       # TODO: Add dap debugger
       # https://www.lazyvim.org/plugins/ui#lualinenvim
       sections = {

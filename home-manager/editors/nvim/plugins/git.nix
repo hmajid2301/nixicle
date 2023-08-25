@@ -17,6 +17,7 @@
 
         require("which-key").register({
         	["<leader>g"] = { name = "+git" },
+        	["<leader>gh"] = { name = "+hunks" },
         })
         require("git-worktree").setup()
       '';

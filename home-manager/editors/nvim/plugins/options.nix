@@ -30,7 +30,7 @@
 
       updatetime = 100;
       timeout = true;
-      timeoutlen = 100;
+      timeoutlen = 250;
 
       foldlevel = 99;
       foldlevelstart = 99;
