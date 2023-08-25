@@ -1,4 +1,4 @@
-{ pkgs, ... }: {
+{pkgs, ...}: {
   imports = [
     ./lutris.nix
     ./steam.nix
@@ -9,4 +9,3 @@
     protonup-qt
   ];
 }
-

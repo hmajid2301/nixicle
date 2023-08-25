@@ -59,11 +59,6 @@
                 shortcut = "c";
               }
               {
-                command = "[[:lua require('persistence').load() <cr>]]";
-                desc = " Restore Session";
-                shortcut = "s";
-              }
-              {
                 command = ":qa<CR>";
                 desc = "  Quit Neovim";
                 shortcut = "q";

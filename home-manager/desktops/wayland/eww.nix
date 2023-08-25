@@ -1,5 +1,9 @@
-{ inputs, pkgs, ... }: {
-  imports = [ inputs.fufexan.homeManagerModules.eww-hyprland ];
+{
+  inputs,
+  pkgs,
+  ...
+}: {
+  imports = [inputs.fufexan.homeManagerModules.eww-hyprland];
 
   programs.eww-hyprland = {
     enable = true;
@@ -11,6 +15,6 @@
     #colors = builtins.readFile ./frappe.scss;
 
     # set to true to reload on change
-    #autoReload = true; 
+    #autoReload = true;
   };
 }

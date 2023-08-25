@@ -1,5 +1,4 @@
-{ config, ... }:
-{
+{config, ...}: {
   # home = {
   #   sessionVariables = {
   #     TERMINAL = "foot";

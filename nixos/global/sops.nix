@@ -1,10 +1,14 @@
-{ inputs, lib, config, pkgs, ... }:
-let
+{
+  inputs,
+  lib,
+  config,
+  pkgs,
+  ...
+}: let
   isEd25519 = k: k.type == "ed25519";
   getKeyPath = k: k.path;
   keys = builtins.filter isEd25519 config.services.openssh.hostKeys;
-in
-{
+in {
   imports = [
     inputs.sops-nix.nixosModules.sops
   ];
@@ -12,12 +16,11 @@ in
   sops = {
     gnupg = {
       home = "~/.gnupg";
-      sshKeyPaths = [ ];
+      sshKeyPaths = [];
     };
-    age.sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
+    age.sshKeyPaths = ["/etc/ssh/ssh_host_ed25519_key"];
   };
   #packages = with pkgs; [
   #  sops
   #];
 }
-

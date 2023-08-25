@@ -1,4 +1,8 @@
-{ config, lib, ... }: {
+{
+  config,
+  lib,
+  ...
+}: {
   # Wireless secrets stored through sops
   sops.secrets.home_wireless_password = {
     sopsFile = ../secrets.yaml;
@@ -26,5 +30,5 @@
   };
 
   # Ensure group exists
-  users.groups.network = { };
+  users.groups.network = {};
 }

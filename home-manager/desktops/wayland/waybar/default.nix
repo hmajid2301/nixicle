@@ -12,7 +12,7 @@
         margin = "0 0 0 0";
         modules-left = [
           "custom/launcher"
-          "wlr/workspaces"
+          "hyprland/workspaces"
           "custom/currentplayer"
           "custom/player"
           "custom/audio_idle_inhibitor"
@@ -31,10 +31,9 @@
           "memory"
           "battery"
           "network"
-          "custom/pomodoro"
           "custom/power"
         ];
-        "wlr/workspaces" = {
+        "hyprland/workspaces" = {
           format = "{icon}";
           sort-by-number = true;
           active-only = false;
@@ -69,11 +68,6 @@
             input = "  ";
             output-input = "  ";
           };
-        };
-        "custom/pomodoro" = {
-          format = " 󱎫  {}";
-          exec = "uairctl fetch %";
-          exec-if = "uairctl listen";
         };
         "custom/currentplayer" = {
           interval = 2;

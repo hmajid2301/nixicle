@@ -1,5 +1,8 @@
-{ colorscheme, fontProfiles, ... }:
-''
+{
+  colorscheme,
+  fontProfiles,
+  ...
+}: ''
   @define-color base      #${colorscheme.colors.base00};
   @define-color blue      #${colorscheme.colors.base0D};
   @define-color rosewater #${colorscheme.colors.base06};

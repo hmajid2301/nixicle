@@ -1,4 +1,4 @@
-{ pkgs, ... }: {
+{pkgs, ...}: {
   fontProfiles = {
     enable = true;
     monospace = {
@@ -12,4 +12,3 @@
     };
   };
 }
-

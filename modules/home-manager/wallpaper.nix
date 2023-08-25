@@ -1,7 +1,6 @@
-{ lib, ... }:
-let inherit (lib) types mkOption;
-in
-{
+{lib, ...}: let
+  inherit (lib) types mkOption;
+in {
   options.wallpaper = mkOption {
     type = types.str;
     default = "";
@@ -10,4 +9,3 @@ in
     '';
   };
 }
-

@@ -1,13 +1,16 @@
-{ config, pkgs, ... }:
 {
-  environment.systemPackages = [ pkgs.restic ];
+  config,
+  pkgs,
+  ...
+}: {
+  environment.systemPackages = [pkgs.restic];
 
   services.restic.backups.backblaze = {
     initialize = true;
     passwordFile = config.sops.secrets.restic_password.path;
     environmentFile = config.sops.secrets.restic_env.path;
 
-    paths = [ "/home/haseeb" ];
+    paths = ["/home/haseeb"];
     repository = "b2:Majiy00Backup";
     timerConfig = {
       OnUnitActiveSec = "1d";
@@ -31,4 +34,3 @@
     sopsFile = ../secrets.yaml;
   };
 }
-
