@@ -1,5 +1,10 @@
-{ config, pkgs, inputs, ... }: {
-  imports = [ inputs.attic.nixosModules.atticd ];
+{
+  config,
+  pkgs,
+  inputs,
+  ...
+}: {
+  imports = [inputs.attic.nixosModules.atticd];
 
   environment.systemPackages = with pkgs; [
     attic
@@ -38,12 +43,14 @@
 
   services.postgresql = {
     enable = true;
-    ensureUsers = [{
-      name = "atticd";
-      ensurePermissions = {
-        "DATABASE atticd" = "ALL PRIVILEGES";
-      };
-    }];
-    ensureDatabases = [ "atticd" ];
+    ensureUsers = [
+      {
+        name = "atticd";
+        ensurePermissions = {
+          "DATABASE atticd" = "ALL PRIVILEGES";
+        };
+      }
+    ];
+    ensureDatabases = ["atticd"];
   };
 }

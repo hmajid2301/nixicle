@@ -1,8 +1,10 @@
-{ inputs, pkgs, ... }: {
-
+{
+  inputs,
+  pkgs,
+  ...
+}: {
   home.packages = [
-    # TODO: system variable
-    inputs.devenv.packages."x86_64-linux".devenv
+    inputs.devenv.packages."${pkgs.system}".devenv
     pkgs.cachix
   ];
 

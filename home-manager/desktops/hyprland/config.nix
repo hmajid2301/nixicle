@@ -1,8 +1,10 @@
-{ home, colorscheme, wallpaper }:
-let
+{
+  home,
+  colorscheme,
+  wallpaper,
+}: let
   inherit (home.sessionVariables) TERMINAL BROWSER;
-in
-''
+in ''
   # ASCII Art from https://fsymbols.com/generators/carty/
   input {
     kb_layout = gb
@@ -26,7 +28,7 @@ in
   }
 
   $notifycmd = notify-send -h string:x-canonical-private-synchronous:hypr-cfg -u low
-  
+
   # █▀ █░█ █▀█ █▀█ ▀█▀ █▀▀ █░█ ▀█▀ █▀
   # ▄█ █▀█ █▄█ █▀▄ ░█░ █▄▄ █▄█ ░█░ ▄█
   bind = SUPER, Return, exec, ${TERMINAL}
@@ -174,4 +176,3 @@ in
   binde = SUPERALT, k, resizeactive, 0 -20
   binde = SUPERALT, j, resizeactive, 0 20
 ''
-

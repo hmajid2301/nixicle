@@ -1,4 +1,9 @@
-{ inputs, config, pkgs, ... }: {
+{
+  inputs,
+  config,
+  pkgs,
+  ...
+}: {
   imports = [
     inputs.hyprland.homeManagerModules.default
     ../wayland
@@ -12,8 +17,8 @@
 
   wayland.windowManager.hyprland = {
     enable = true;
-    extraConfig = (import ./config.nix {
+    extraConfig = import ./config.nix {
       inherit (config) home colorscheme wallpaper;
-    });
+    };
   };
 }

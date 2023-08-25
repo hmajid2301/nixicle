@@ -153,12 +153,15 @@ in {
           set -g @continuum-restore 'on'
           set -g @continuum-boot 'on'
           set -g @continuum-save-interval '10'
-          set -g @continuum-systemd-start-cmd = 'start-server'
+          set -g @continuum-systemd-start-cmd 'start-server'
         '';
       }
     ];
     extraConfig = ''
       set -ag terminal-overrides ",xterm-256color:RGB"
+
+      # Quicker escape in neovim
+      set -sg escape-time 0
 
       # Change splits to match nvim and easier to remember
       # Open new split at cwd of current split
@@ -187,7 +190,6 @@ in {
       unbind p
       bind p paste-buffer
 
-
       bind-key -T copy-mode-vi M-h resize-pane -L 1
       bind-key -T copy-mode-vi M-j resize-pane -D 1
       bind-key -T copy-mode-vi M-k resize-pane -U 1
@@ -195,7 +197,7 @@ in {
 
       # Bind Keys
       bind-key -T prefix C-g split-window \
-        "$SHELL --login -i -c 'navi --print | head -c -1 | tmux load-buffer -b tmp - ; tmux paste-buffer -p -t {last} -b tmp -d'"
+      	"$SHELL --login -i -c 'navi --print | head -c -1 | tmux load-buffer -b tmp - ; tmux paste-buffer -p -t {last} -b tmp -d'"
       bind-key -T prefix C-l switch -t notes
       bind-key -T prefix C-d switch -t dotfiles
       bind-key e send-keys "tmux capture-pane -p -S - | nvim -c 'set buftype=nofile' +" Enter

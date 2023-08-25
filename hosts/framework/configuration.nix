@@ -1,4 +1,8 @@
-{ inputs, pkgs, ... }: {
+{
+  inputs,
+  pkgs,
+  ...
+}: {
   imports = [
     inputs.hardware.nixosModules.framework-12th-gen-intel
     inputs.nix-gaming.nixosModules.default
@@ -37,7 +41,7 @@
   services.printing.enable = true;
   services.fwupd.enable = true;
   services.gvfs.enable = true;
-  services.udev.packages = with pkgs; [ yubikey-personalization ];
+  services.udev.packages = with pkgs; [yubikey-personalization];
   services.dbus.enable = true;
   programs.dconf.enable = true;
 

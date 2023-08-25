@@ -1,4 +1,4 @@
-{ pkgs, ... }: {
+{pkgs, ...}: {
   boot = {
     initrd.kernelModules = [
       "vfio_pci"
@@ -15,7 +15,7 @@
   };
 
   # VM Packages
-  environment.systemPackages = with pkgs; [ libguestfs win-virtio win-spice virt-manager virt-viewer looking-glass-client ];
+  environment.systemPackages = with pkgs; [libguestfs win-virtio win-spice virt-manager virt-viewer looking-glass-client];
   programs.dconf.enable = true;
 
   # VM Utilities
@@ -35,7 +35,7 @@
         swtpm.enable = true;
         ovmf = {
           enable = true;
-          packages = [ pkgs.OVMFFull.fd ];
+          packages = [pkgs.OVMFFull.fd];
         };
       };
     };
@@ -46,4 +46,3 @@
     "f /dev/shm/looking-glass 0660 haseeb kvm -"
   ];
 }
-

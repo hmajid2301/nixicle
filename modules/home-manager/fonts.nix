@@ -1,6 +1,8 @@
-{ lib, config, ... }:
-
-let
+{
+  lib,
+  config,
+  ...
+}: let
   mkFontOption = kind: {
     family = lib.mkOption {
       type = lib.types.str;
@@ -16,18 +18,15 @@ let
     };
   };
   cfg = config.fontProfiles;
-in
-{
+in {
   options.fontProfiles = {
     enable = lib.mkEnableOption "Whether to enable font profiles";
     monospace = mkFontOption "monospace";
     regular = mkFontOption "regular";
   };
 
-
   config = lib.mkIf cfg.enable {
     fonts.fontconfig.enable = true;
-    home.packages = [ cfg.monospace.package cfg.regular.package ];
+    home.packages = [cfg.monospace.package cfg.regular.package];
   };
 }
-

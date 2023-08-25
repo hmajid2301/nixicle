@@ -21,20 +21,19 @@
       ../../home-manager/terminals/alacritty.nix
       ../../home-manager/terminals/foot.nix
 
+      ../../home-manager/browsers/firefox.nix
+      ../../home-manager/apps/kdeconnect.nix
+      ../../home-manager/apps/photos.nix
+
       ../../home-manager/programs/cli
+      ../../home-manager/programs/cli/atuin
       ../../home-manager/programs/tuis
       ../../home-manager/editors/nvim
       ../../home-manager/programs/multiplexers/tmux.nix
-      ../../home-manager/browsers/firefox.nix
-
-      ../../home-manager/atuin
 
       ../../home-manager/games
       ../../home-manager/security/sops.nix
       ../../home-manager/security/yubikey.nix
-      ../../home-manager/programs/apps/kdeconnect.nix
-      ../../home-manager/photos/management.nix
-      ../../home-manager/packages/other.nix
     ]
     ++ (builtins.attrValues outputs.homeManagerModules);
 
@@ -48,6 +47,7 @@
 
   colorscheme = inputs.nix-colors.colorSchemes.catppuccin-frappe;
   wallpaper = "~/dotfiles/home-manager/wallpapers/rainbow-nix.jpg";
+  host = "framework";
 
   nix = {
     package = lib.mkDefault pkgs.nix;
@@ -70,7 +70,9 @@
     stateVersion = lib.mkDefault "23.05";
     sessionPath = ["$HOME/.local/bin"];
     sessionVariables = {
+      TERMINAL = "alacritty";
       EDITOR = "nvim";
+      BROWSER = "firefox";
     };
 
     #persistence = {

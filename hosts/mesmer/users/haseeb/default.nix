@@ -1,4 +1,8 @@
-{ pkgs, config, ... }: {
+{
+  pkgs,
+  config,
+  ...
+}: {
   sops.secrets.haseeb_password = {
     sopsFile = ../../secrets.yaml;
     neededForUsers = true;
@@ -22,13 +26,13 @@
       "git"
     ];
     passwordFile = config.sops.secrets.haseeb_password.path;
-    packages = [ pkgs.home-manager ];
+    packages = [pkgs.home-manager];
   };
 
   programs.fish.enable = true;
   services.geoclue2.enable = true;
   security.pam.services = {
-    swaylock = { };
+    swaylock = {};
     # TODO: move to yubikey
     login.u2fAuth = true;
     sudo.u2fAuth = true;
