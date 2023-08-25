@@ -1,4 +1,4 @@
-{...}: {
+{pkgs, ...}: {
   home.file."./.config/nvim" = {
     source = ./config;
     recursive = true;
@@ -20,16 +20,18 @@
     ./plugins/keymaps.nix
     ./plugins/options.nix
 
+    #./plugins/ai.nix
     ./plugins/training.nix
 
     ./plugins/lang/go.nix
     ./plugins/lang/lua.nix
     ./plugins/lang/nix.nix
     ./plugins/lang/yaml.nix
-    #./plugins/tmux.nix
+    ./plugins/tmux.nix
   ];
 
   programs.nixvim = {
     enable = true;
+    extraPlugins = with pkgs.vimPlugins; [plenary-nvim];
   };
 }

@@ -58,7 +58,6 @@
         };
       };
 
-      # TODO: how to split
       customHighlights =
         # lua
         ''

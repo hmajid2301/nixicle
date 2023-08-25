@@ -7,6 +7,7 @@
     extraPlugins = with pkgs.vimPlugins; [
       friendly-snippets
       nvim-surround
+      vim-wakatime
     ];
 
     extraConfigLua =
@@ -33,7 +34,7 @@
 
         require("which-key").register({
           ["<leader>s"] = { name = "+surround" },
-          ["<leader>z"] = { name = "+fold" },
+          ["<leader>u"] = { name = "+fold" },
         })
 
         require("luasnip.loaders.from_vscode").lazy_load()

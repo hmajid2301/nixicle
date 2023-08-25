@@ -4,14 +4,6 @@
       mapleader = " ";
     };
 
-    extraConfigLua =
-      # lua
-      ''
-        vim.opt.list = true
-        vim.opt.listchars:append "eol:↴"
-        vim.opt.listchars:append "space:⋅"
-      '';
-
     options = {
       termguicolors = true;
       scrolloff = 8;

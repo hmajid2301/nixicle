@@ -4,5 +4,5 @@
   catppuccin-lemmy = pkgs.callPackage ./catppuccin-lemmy.nix {};
   swaylock-effects2 = pkgs.callPackage ./swaylock-effects.nix {};
   hmts-nvim = pkgs.callPackage ./vim/hmts.nix {};
-  windex-nvim = pkgs.callPackage ./vim/windex.nix {};
+  maximize-nvim = pkgs.callPackage ./vim/maximize.nix {};
 }
