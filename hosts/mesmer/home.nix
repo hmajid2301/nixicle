@@ -21,20 +21,19 @@
       ../../home-manager/terminals/alacritty.nix
       ../../home-manager/terminals/foot.nix
 
+      ../../home-manager/browsers/firefox.nix
+      ../../home-manager/apps/kdeconnect.nix
+      ../../home-manager/apps/photos.nix
+
       ../../home-manager/programs/cli
+      ../../home-manager/programs/cli/atuin
       ../../home-manager/programs/tuis
       ../../home-manager/editors/nvim
       ../../home-manager/programs/multiplexers/tmux.nix
-      ../../home-manager/browsers/firefox.nix
-
-      ../../home-manager/atuin
 
       ../../home-manager/games
       ../../home-manager/security/sops.nix
       ../../home-manager/security/yubikey.nix
-      ../../home-manager/programs/kdeconnect.nix
-      ../../home-manager/photos/management.nix
-      ../../home-manager/packages/other.nix
     ]
     ++ (builtins.attrValues outputs.homeManagerModules);
 

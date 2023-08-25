@@ -1,5 +1,4 @@
-{ pkgs, ... }:
-let
+{pkgs, ...}: let
   # TODO: move to official trepo
   t-smart-manager = pkgs.tmuxPlugins.mkTmuxPlugin {
     pluginName = "t-smart-tmux-session-manager";
@@ -12,8 +11,7 @@ let
       sha256 = "1dr5w02a0y84q2iw4jp1psxvkyj4g6pr87gc22syw1jd4ibkn925";
     };
   };
-in
-{
+in {
   # TODO: what if this is defined in another file? Merge it!
   programs.fish = {
     shellInit = ''
@@ -32,140 +30,135 @@ in
     shell = "${pkgs.fish}/bin/fish";
     terminal = "tmux-256color";
     historyLimit = 100000;
-    plugins = with pkgs.tmuxPlugins;
-      [
-        sensible
-        better-mouse-mode
-        yank
-        tmux-thumbs
-        {
-          plugin = t-smart-manager;
-          extraConfig = ''
-            set -g @t-fzf-prompt '  '
-            set -g @t-bind "T"
-          '';
-        }
-        {
-          plugin = mkTmuxPlugin {
-            pluginName = "tmux-super-fingers";
-            version = "unstable-2023-05-31";
-            src = pkgs.fetchFromGitHub {
-              owner = "artemave";
-              repo = "tmux_super_fingers";
-              rev = "2c12044984124e74e21a5a87d00f844083e4bdf7";
-              sha256 = "sha256-cPZCV8xk9QpU49/7H8iGhQYK6JwWjviL29eWabuqruc=";
-            };
-          };
-          extraConfig = ''
-            set -g @super-fingers-key f
-          '';
-        }
-        {
-          plugin = mkTmuxPlugin {
-            pluginName = "tmux-super-fingers";
-            version = "unstable-2023-05-31";
-            src = pkgs.fetchFromGitHub {
-              owner = "artemave";
-              repo = "tmux_super_fingers";
-              rev = "2c12044984124e74e21a5a87d00f844083e4bdf7";
-              sha256 = "sha256-cPZCV8xk9QpU49/7H8iGhQYK6JwWjviL29eWabuqruc=";
-            };
-          };
-          extraConfig = ''
-            set -g @super-fingers-key f
-          '';
-        }
-        {
-          plugin = mkTmuxPlugin {
-            pluginName = "tmux-browser";
-            version = "unstable-2022-10-24";
-            src = pkgs.fetchFromGitHub {
-              owner = "ofirgall";
-              repo = "tmux-browser";
-              rev = "c3e115f9ebc5ec6646d563abccc6cf89a0feadb8";
-              sha256 = "sha256-ngYZDzXjm4Ne0yO6pI+C2uGO/zFDptdcpkL847P+HCI=";
-            };
-          };
-          extraConfig = ''
-            set -g @browser_close_on_deattach '1'
-          '';
-        }
-        {
-          plugin = mkTmuxPlugin {
-            pluginName = "tmux.nvim";
-            version = "unstable-2023-01-06";
-            src = pkgs.fetchFromGitHub {
-              owner = "aserowy";
-              repo = "tmux.nvim";
-              rev = "57220071739c723c3a318e9d529d3e5045f503b8";
-              sha256 = "sha256-zpg7XJky7PRa5sC7sPRsU2ZOjj0wcepITLAelPjEkSI=";
-            };
-          };
-        }
-        # must be before continuum edits right status bar
-        {
-          plugin = mkTmuxPlugin {
-            pluginName = "catppuccin";
-            version = "unstable-2023-07-15";
-            src = pkgs.fetchFromGitHub {
-              owner = "catppuccin";
-              repo = "tmux";
-              rev = "d60e40e09793b1268e25bcea0417f70559d43c0a";
-              hash = "sha256-JZ6O7l5Casb6UeCbGBZqnlbY+5DBW4hET4In8KhrxIA=";
-            };
-            postInstall = ''
-              sed -i -e 's|''${PLUGIN_DIR}/catppuccin-selected-theme.tmuxtheme|''${TMUX_TMPDIR}/catppuccin-selected-theme.tmuxtheme|g' $target/catppuccin.tmux
-            '';
-          };
-          extraConfig = '' 
-            set -g @catppuccin_flavour 'frappe'
-            set -g @catppuccin_window_left_separator "█"
-            set -g @catppuccin_window_right_separator "█ "
-            set -g @catppuccin_window_middle_separator " █"
-            set -g @catppuccin_window_number_position "right"
+    keyMode = "vi";
+    prefix = "C-a";
+    sensibleOnTop = true;
+    mouse = true;
 
-            set -g @catppuccin_window_default_fill "number"
-            set -g @catppuccin_window_default_text "#W"
-
-            set -g @catppuccin_window_current_fill "number"
-            set -g @catppuccin_window_current_text "#W"
-
-            set -g @catppuccin_status_modules "application directory user host session"
-            set -g @catppuccin_status_left_separator  " "
-            set -g @catppuccin_status_right_separator ""
-            set -g @catppuccin_status_right_separator_inverse "no"
-            set -g @catppuccin_status_fill "icon"
-            set -g @catppuccin_status_connect_separator "no"
-
-            set -g @catppuccin_directory_text "#{pane_current_path}"
+    plugins = with pkgs.tmuxPlugins; [
+      better-mouse-mode
+      yank
+      tmux-thumbs
+      {
+        plugin = t-smart-manager;
+        extraConfig = ''
+          set -g @t-fzf-prompt '  '
+          set -g @t-bind "T"
+        '';
+      }
+      {
+        plugin = mkTmuxPlugin {
+          pluginName = "tmux-super-fingers";
+          version = "unstable-2023-05-31";
+          src = pkgs.fetchFromGitHub {
+            owner = "artemave";
+            repo = "tmux_super_fingers";
+            rev = "2c12044984124e74e21a5a87d00f844083e4bdf7";
+            sha256 = "sha256-cPZCV8xk9QpU49/7H8iGhQYK6JwWjviL29eWabuqruc=";
+          };
+        };
+        extraConfig = ''
+          set -g @super-fingers-key f
+        '';
+      }
+      {
+        plugin = mkTmuxPlugin {
+          pluginName = "tmux-browser";
+          version = "unstable-2022-10-24";
+          src = pkgs.fetchFromGitHub {
+            owner = "ofirgall";
+            repo = "tmux-browser";
+            rev = "c3e115f9ebc5ec6646d563abccc6cf89a0feadb8";
+            sha256 = "sha256-ngYZDzXjm4Ne0yO6pI+C2uGO/zFDptdcpkL847P+HCI=";
+          };
+        };
+        extraConfig = ''
+          set -g @browser_close_on_deattach '1'
+        '';
+      }
+      {
+        plugin = mkTmuxPlugin {
+          pluginName = "tmux.nvim";
+          version = "unstable-2023-01-06";
+          src = pkgs.fetchFromGitHub {
+            owner = "aserowy";
+            repo = "tmux.nvim";
+            rev = "57220071739c723c3a318e9d529d3e5045f503b8";
+            sha256 = "sha256-zpg7XJky7PRa5sC7sPRsU2ZOjj0wcepITLAelPjEkSI=";
+          };
+        };
+      }
+      # must be before continuum edits right status bar
+      {
+        plugin = mkTmuxPlugin {
+          pluginName = "catppuccin";
+          version = "unstable-2023-07-15";
+          src = pkgs.fetchFromGitHub {
+            owner = "catppuccin";
+            repo = "tmux";
+            rev = "d60e40e09793b1268e25bcea0417f70559d43c0a";
+            hash = "sha256-JZ6O7l5Casb6UeCbGBZqnlbY+5DBW4hET4In8KhrxIA=";
+          };
+          postInstall = ''
+            sed -i -e 's|''${PLUGIN_DIR}/catppuccin-selected-theme.tmuxtheme|''${TMUX_TMPDIR}/catppuccin-selected-theme.tmuxtheme|g' $target/catppuccin.tmux
           '';
-        }
-        {
-          plugin = resurrect;
-          extraConfig = ''
-            set -g @resurrect-strategy-vim 'session'
-            set -g @resurrect-strategy-nvim 'session'
-            set -g @resurrect-capture-pane-contents 'on'
-          '';
-        }
-        {
-          plugin = continuum;
-          extraConfig = ''
-            set -g @continuum-restore 'on'
-            set -g @continuum-boot 'on'
-            set -g @continuum-save-interval '10'
-          '';
-        }
-      ];
+        };
+        extraConfig = ''
+          set -g @catppuccin_flavour 'frappe'
+          set -g @catppuccin_window_left_separator "█"
+          set -g @catppuccin_window_right_separator "█ "
+          set -g @catppuccin_window_middle_separator " █"
+          set -g @catppuccin_window_number_position "right"
+
+          set -g @catppuccin_window_default_fill "number"
+          set -g @catppuccin_window_default_text "#W"
+
+          set -g @catppuccin_window_current_fill "number"
+          set -g @catppuccin_window_current_text "#W"
+
+          set -g @catppuccin_status_modules "application session date_time"
+          set -g @catppuccin_status_left_separator  ""
+          set -g @catppuccin_status_right_separator ""
+          set -g @catppuccin_status_right_separator_inverse "no"
+          set -g @catppuccin_status_fill "icon"
+          #set -g @catppuccin_status_connect_separator "no"
+
+          set -g @catppuccin_directory_text "#{pane_current_path}"
+        '';
+      }
+      {
+        plugin = resurrect;
+        extraConfig = ''
+          set -g @resurrect-strategy-vim 'session'
+          set -g @resurrect-strategy-nvim 'session'
+          set -g @resurrect-capture-pane-contents 'on'
+
+          # Taken from: https://github.com/p3t33/nixos_flake/blob/5a989e5af403b4efe296be6f39ffe6d5d440d6d6/home/modules/tmux.nix
+          # This three lines are specific to NixOS and they are intended
+          # to edit the tmux_resurrect_* files that are created when tmux
+          # session is saved using the tmux-resurrect plugin. Without going
+          # into too much details the strings that are saved for some applications
+          # such as nvim, vim, man... when using NixOS, appimage, asdf-vm into the
+          # tmux_resurrect_* files can't be parsed and restored. This addition
+          # makes sure to fix the tmux_resurrect_* files so they can be parsed by
+          # the tmux-resurrect plugin and successfully restored.
+          resurrect_dir="$HOME/.tmux/resurrect"
+          set -g @resurrect-dir $resurrect_dir
+          set -g @resurrect-hook-post-save-all 'target=$(readlink -f $resurrect_dir/last); sed "s| --cmd .*-vim-pack-dir||g; s|/etc/profiles/per-user/$USER/bin/||g; s|/home/$USER/.nix-profile/bin/||g" $target | sponge $target'
+        '';
+      }
+      {
+        plugin = continuum;
+        extraConfig = ''
+          set -g @continuum-restore 'on'
+          set -g @continuum-boot 'on'
+          set -g @continuum-save-interval '10'
+          set -g @continuum-systemd-start-cmd = 'start-server'
+        '';
+      }
+    ];
     extraConfig = ''
-      set -g default-terminal "tmux-256color"
       set -ag terminal-overrides ",xterm-256color:RGB"
-
-      set-option -g prefix C-a
-      unbind-key C-b
-      bind-key C-a send-prefix
-
-      set -g mouse on
 
       # Change splits to match nvim and easier to remember
       # Open new split at cwd of current split
@@ -194,7 +187,7 @@ in
       unbind p
       bind p paste-buffer
 
-      
+
       bind-key -T copy-mode-vi M-h resize-pane -L 1
       bind-key -T copy-mode-vi M-j resize-pane -D 1
       bind-key -T copy-mode-vi M-k resize-pane -U 1

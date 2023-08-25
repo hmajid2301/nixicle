@@ -1,6 +1,4 @@
-{ pkgs, ... }:
-
-{
+{pkgs, ...}: {
   imports = [
     ./bat.nix
     ./bottom.nix
@@ -32,6 +30,24 @@
 
     nix-init
     nix-update
+    any-nix-shell
+
+    moreutils
+    nvtop-amd
+    htop
+    ranger
+    lf
+    ctpv
+    unzip
+    pavucontrol
+    gnupg
+    ferdium
+
+    # other
+    brotab
+    betterdiscord-installer
+    discord
+    showmethekey
 
     # modern "unix" tools
     broot
@@ -82,4 +98,3 @@
     sl
   ];
 }
-

@@ -8,16 +8,13 @@
   programs.nixvim = {
     extraPlugins = with pkgs; [
       vimPlugins.nvim-web-devicons
-      windex-nvim
+      maximize-nvim
     ];
 
     extraConfigLua =
       # lua
       ''
-        require('windex').setup {
-              extra_keymaps = true,
-              save_buffers = true,
-            }
+        require('maximize').setup()
       '';
   };
 }

@@ -36,7 +36,7 @@
         };
         closeButtonSelected = {
           fg = "#F38BA8";
-          bg = "#252434";
+          bg = "#1E1D2D";
         };
         fill = {
           bg = "#1E1D2D";

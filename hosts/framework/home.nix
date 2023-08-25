@@ -32,7 +32,7 @@
       ../../home-manager/games
       ../../home-manager/security/sops.nix
       ../../home-manager/security/yubikey.nix
-      ../../home-manager/programs/kdeconnect.nix
+      ../../home-manager/programs/apps/kdeconnect.nix
       ../../home-manager/photos/management.nix
       ../../home-manager/packages/other.nix
     ]

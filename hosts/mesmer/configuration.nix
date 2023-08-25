@@ -1,4 +1,8 @@
-{ inputs, pkgs, ... }: {
+{
+  inputs,
+  pkgs,
+  ...
+}: {
   imports = [
     inputs.nix-gaming.nixosModules.default
     inputs.hyprland.nixosModules.default
@@ -21,7 +25,7 @@
     ../../nixos/optional/vfio.nix
     ../../nixos/optional/gaming.nix
 
-    #../../nixos/optional/attic.nix
+    ../../nixos/optional/attic.nix
     ../../nixos/optional/backup.nix
     #../nixos/optional/grub.nix
     #../nixos/optional/wireless.nix
@@ -42,7 +46,7 @@
   services.fwupd.enable = true;
   services.gvfs.enable = true;
   services.pcscd.enable = true;
-  services.udev.packages = with pkgs; [ yubikey-personalization ];
+  services.udev.packages = with pkgs; [yubikey-personalization];
   services.dbus.enable = true;
   programs.dconf.enable = true;
 
@@ -60,7 +64,6 @@
     resumeDevice = "/dev/disk/by-label/swap";
     kernelPackages = pkgs.linuxPackages_latest;
   };
-
 
   system.autoUpgrade = {
     enable = true;

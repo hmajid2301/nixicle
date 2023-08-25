@@ -1,5 +1,6 @@
 {pkgs, ...}: {
   imports = [
+    ./editor/notes.nix
     ./editor/telescope.nix
     ./editor/trouble.nix
   ];
@@ -136,11 +137,6 @@
 
         require("better_escape").setup({})
         require("flash").setup()
-
-        -- indent blankline
-        vim.opt.list = true
-        vim.opt.listchars:append "eol:↴"
-        vim.opt.listchars:append "space:⋅"
       '';
   };
 }
