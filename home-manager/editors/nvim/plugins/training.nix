@@ -4,15 +4,6 @@
       hardtime-nvim
     ];
 
-    maps = {
-      normal = {
-        "<leader>vtt" = {
-          action = "<cmd>Hardtime toggle<cr>";
-          desc = "Toggle hardtime";
-        };
-      };
-    };
-
     extraConfigLua =
       # lua
       ''
