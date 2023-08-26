@@ -136,7 +136,6 @@ Some of the main plugins used in my nvim setup include:
 ## Screenshots
 
 ![wallpaper](images/wallpaper.png)
-![neovim](images/neovim.png)
 ![monkeytype](images/monkeytype.png)
 
 ## Appendix
