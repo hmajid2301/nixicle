@@ -12,7 +12,7 @@
   <a href="https://git.io/typing-svg"><img src="https://readme-typing-svg.demolab.com?font=Fira+Code&pause=1000&color=2A98C9&width=435&lines=My+Dotfiles+repo+setup+using+NixOS" alt="Typing SVG" /></a>
 </div>
 
-## 👥 Install
+##  Install
 
 > :fire: I wouldn't recommend just blinding using my dotfiles. They are setup for my specific use-case.
 I think you're off using this repo as reference to create your own dotfiles.
@@ -61,7 +61,7 @@ Some features of my dotfiles:
   - `mesmer`: Desktop AMD Ryzen 9 5950X  | Hyprland | GPU 7900 XTX
 - `home-manager`: Most of my dotfiles configuration, user specific
 
-## Applications
+## 󱃷 Applications
 
 | Type           | Program      |
 | :------------- | :----------: |
@@ -85,7 +85,7 @@ CLI tools that I use often include:
 - [exa](https://github.com/ogham/exa): A replacement for `ls` with better syntax highlighting
 - [ripgrep](https://github.com/BurntSushi/ripgrep): A faster `grep`
 
-### Tmux
+###  Tmux
 
 Some of the plugins I leverage with [tmux](./home-manager/multiplexers/tmux.nix) include:
 
@@ -104,7 +104,7 @@ I also leverage [tmux-browser](https://github.com/ofirgall/tmux-browser), to kee
 Another set of plugins I use are the [tmux-resurrect/continuum](https://github.com/tmux-plugins/tmux-continuum)
 plugins to auto save and restore my sessions. Alongside neovim's auto-session we can restore almost everything.
 
-### neovim
+###  neovim
 
 My [ neovim config ](./home-manager/editors/nvim/) is made using [nixvim](https://github.com/pta2002/nixvim/).
 Which converts all the nix files into a single "large" init.lua file. It also provides an easy way to add
@@ -125,18 +125,20 @@ Some of the main plugins used in my nvim setup include:
 - ColourScheme: notkens12 base46 (nvchad catppuccin)
 - Other: telescope (ofc)
 
-#### Showcase
+##  Showcase
+
+### Desktop
+
+![terminal](images/terminal.png)
+![wallpaper](images/wallpaper.png)
+![monkeytype](images/monkeytype.png)
+
+### Neovim
 
 ![Alpha](images/nvim/alpha.png)
 ![Telescope](images/nvim/telescope.png)
 ![Editor](images/nvim/editor.png)
 ![CMP](images/nvim/cmp.png)
-
-
-## Screenshots
-
-![wallpaper](images/wallpaper.png)
-![monkeytype](images/monkeytype.png)
 
 ## Appendix
 
@@ -144,5 +146,6 @@ Some of the main plugins used in my nvim setup include:
 
 ### Inspired By
 
-- https://github.com/Misterio77/nix-config (Heavily!)
-- https://github.dev/yurihikari/garuda-sway-config (mostly scripts)
+- Structure and nixlang code: https://github.com/Misterio77/nix-config
+- Waybar & scripts: https://github.dev/yurihikari/garuda-sway-config
+- Neovim UI: https://github.com/NvChad/nvchad
