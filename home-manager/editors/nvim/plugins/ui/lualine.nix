@@ -268,7 +268,7 @@
                             msg = msg .. client.name .. " "
                         end
                     end
-                    return msg
+                    return if (msg) then msg else "None" end
                 end
               '';
             color = {
