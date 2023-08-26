@@ -14,6 +14,6 @@
   };
 
   sops.secrets.atuin_key = {
-    sopsFile = ../../../secrets.yaml;
+    sopsFile = ../../secrets.yaml;
   };
 }

@@ -27,13 +27,6 @@
       ''
         require('maximize').setup({default_keymaps = false})
         require("barbecue").setup()
-        -- require('nvim-navic').setup({
-        -- 	highlight = true,
-        -- 	click = true;
-        -- 	lsp = {
-        -- 		auto_attach = true,
-        -- 	},
-        -- })
       '';
   };
 }

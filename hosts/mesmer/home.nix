@@ -22,14 +22,13 @@
       ../../home-manager/terminals/foot.nix
 
       ../../home-manager/browsers/firefox.nix
-      ../../home-manager/apps/kdeconnect.nix
-      ../../home-manager/apps/photos.nix
 
-      ../../home-manager/programs/cli
-      ../../home-manager/programs/cli/atuin
-      ../../home-manager/programs/tuis
+      ../../home-manager/programs
+      ../../home-manager/programs/atuin
+      ../../home-manager/programs/kdeconnect.nix
+      ../../home-manager/programs/photos.nix
+      ../../home-manager/multiplexers/tmux.nix
       ../../home-manager/editors/nvim
-      ../../home-manager/programs/multiplexers/tmux.nix
 
       ../../home-manager/games
       ../../home-manager/security/sops.nix
