@@ -1,7 +1,7 @@
 {pkgs, ...}: {
   imports = [
-    ./ui/nvim-tree.nix
-    ./ui/lualine.nix
+    ./ui/statusline.nix
+    ./ui/file-explorer.nix
     ./ui/bufferline.nix
   ];
 

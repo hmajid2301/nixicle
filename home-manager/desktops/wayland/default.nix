@@ -25,7 +25,9 @@
     jmtpfs
     brightnessctl
     xdg-utils
-    xfce.thunar
+    nautilus-open-any-terminal
+    gnome.sushi
+    gnome.nautilus
     gnome.gnome-disk-utility
     gnome.totem
     gnome.eog

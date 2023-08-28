@@ -52,10 +52,10 @@
           "--smart-case"
         ];
         file_ignore_patterns = [
-          "node_modules"
-          ".devenv"
-          ".direnv"
-          ".git"
+          "^node_modules/"
+          "^.devenv/"
+          "^.direnv/"
+          "^.git/"
         ];
         prompt_prefix = "   ";
         selection_caret = "  ";

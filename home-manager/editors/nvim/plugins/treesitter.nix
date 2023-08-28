@@ -22,9 +22,6 @@
         bash
         fish
 
-        markdown
-        markdown_inline
-
         vim
         vimdoc
 

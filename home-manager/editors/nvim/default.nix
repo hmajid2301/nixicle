@@ -20,12 +20,13 @@
     ./plugins/keymaps.nix
     ./plugins/options.nix
 
-    #./plugins/ai.nix
+    ./plugins/ai.nix
     ./plugins/training.nix
 
     ./plugins/lang/go.nix
     ./plugins/lang/lua.nix
     ./plugins/lang/nix.nix
+    ./plugins/lang/markdown.nix
     ./plugins/lang/yaml.nix
     ./plugins/tmux.nix
   ];

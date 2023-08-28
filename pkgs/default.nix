@@ -5,4 +5,6 @@
   swaylock-effects2 = pkgs.callPackage ./swaylock-effects.nix {};
   hmts-nvim = pkgs.callPackage ./vim/hmts.nix {};
   maximize-nvim = pkgs.callPackage ./vim/maximize.nix {};
+  codeium-nvim = pkgs.callPackage ./vim/codeium-nvim.nix {};
+  codeium-ls = pkgs.callPackage ./codeium-ls.nix {};
 }

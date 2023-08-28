@@ -217,6 +217,40 @@
               # lua
               ''
                 function()
+                    return "  "
+                end
+              '';
+
+            padding = {
+              left = 0;
+              right = 0;
+            };
+            color = {
+              fg = "#2d2c3c";
+              bg = "#FAE3B0";
+            };
+            separator = {
+              left = "";
+            };
+          }
+          {
+            name.__raw =
+              # lua
+              ''
+                function()
+                	return vim.fn["codeium#GetStatusString"]()
+                end
+              '';
+            color = {
+              fg = "#D9E0EE";
+              bg = "#2f2e3e";
+            };
+          }
+          {
+            name.__raw =
+              # lua
+              ''
+                function()
                 	 return vim.t.maximized and " " or ""
                 end
               '';
