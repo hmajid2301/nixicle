@@ -23,6 +23,11 @@
       numberwidth = 2;
       ruler = false;
 
+      splitbelow = true;
+      splitright = true;
+      undofile = true;
+      undolevels = 10000;
+
       signcolumn = "yes";
       cmdheight = 2;
       cot = ["menu" "menuone" "noselect"];

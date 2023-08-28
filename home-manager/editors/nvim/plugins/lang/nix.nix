@@ -25,6 +25,8 @@
       ];
     };
 
+    plugins.nix.enable = true;
+
     extraPlugins = with pkgs; [hmts-nvim];
   };
 }

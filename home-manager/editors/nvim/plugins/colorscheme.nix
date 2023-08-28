@@ -4,7 +4,6 @@
       enable = true;
       flavour = "macchiato";
       # TODO: use nix-colors here
-      # or update to use these colors if i prefer them
       colorOverrides = {
         all = {
           white = "#D9E0EE";
@@ -387,13 +386,57 @@
           	 CmpItemKindOperator = { fg = c.base05, bg = 'NONE' },
           	 CmpItemKindTypeParameter = { fg = c.base08, bg = 'NONE' },
 
-          	 ToggleTerm1FloatBorder = { fg = c.line, bg = 'NONE' },
+          	 DapBreakpoint = { fg = c.red },
+          	 DapBreakpointCondition = { fg = c.yellow },
+          	 DapLogPoint = { fg = c.cyan },
+          	 DapStopped = { fg = c.baby_pink },
 
-          	 IlluminatedWordText = { fg = 'NONE', bg = c.base03, },
-          	 IlluminatedWordRead = { fg = 'NONE', bg = c.base03, },
-          	 IlluminatedWordWrite = { fg = 'NONE', bg = c.base03, },
-           }
-          end
+          	 -- DapUI
+          	 DAPUIScope = { fg = c.cyan },
+          	 DAPUIType = { fg = c.dark_purple },
+          	 DAPUIValue = { fg = c.cyan },
+          	 DAPUIVariable = { fg = c.white },
+          	 DapUIModifiedValue = { fg = c.orange },
+          	 DapUIDecoration = { fg = c.cyan },
+          	 DapUIThread = { fg = c.green },
+          	 DapUIStoppedThread = { fg = c.cyan },
+          	 DapUISource = { fg = c.lavender },
+          	 DapUILineNumber = { fg = c.cyan },
+          	 DapUIFloatBorder = { fg = c.cyan },
+
+          	 DapUIWatchesEmpty = { fg = c.baby_pink },
+          	 DapUIWatchesValue = { fg = c.green },
+          	 DapUIWatchesError = { fg = c.baby_pink },
+
+          	 DapUIBreakpointsPath = { fg = c.cyan },
+          	 DapUIBreakpointsInfo = { fg = c.green },
+          	 DapUIBreakPointsCurrentLine = { fg = c.green, bold = true },
+          	 DapUIBreakpointsDisabledLine = { fg = c.grey_fg2 },
+
+          	 DapUIStepOver = { fg = c.blue },
+          	 DapUIStepOverNC = { fg = c.blue },
+          	 DapUIStepInto = { fg = c.blue },
+          	 DapUIStepIntoNC = { fg = c.blue },
+          	 DapUIStepBack = { fg = c.blue },
+          	 DapUIStepBackNC = { fg = c.blue },
+          	 DapUIStepOut = { fg = c.blue },
+          	 DapUIStepOutNC = { fg = c.blue },
+          	 DapUIStop = { fg = c.red },
+          	 DapUIStopNC = { fg = c.red },
+          	 DapUIPlayPause = { fg = c.green },
+          	 DapUIPlayPauseNC = { fg = c.green },
+          	 DapUIRestart = { fg = c.green },
+          	 DapUIRestartNC = { fg = c.green },
+          	 DapUIUnavailable = { fg = c.grey_fg },
+          	 DapUIUnavailableNC = { fg = c.grey_fg },
+
+          	ToggleTerm1FloatBorder = { fg = c.line, bg = 'NONE' },
+
+          	IlluminatedWordText = { fg = 'NONE', bg = c.base03, },
+          	IlluminatedWordRead = { fg = 'NONE', bg = c.base03, },
+          	IlluminatedWordWrite = { fg = 'NONE', bg = c.base03, },
+                 }
+                end
         '';
     };
   };

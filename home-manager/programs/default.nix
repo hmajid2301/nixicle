@@ -49,6 +49,7 @@
     betterdiscord-installer
     discord
     showmethekey
+    fontforge
 
     # modern "unix" tools
     broot
