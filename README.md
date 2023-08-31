@@ -110,6 +110,9 @@ My [ neovim config ](./home-manager/editors/nvim/) is made using [nixvim](https:
 Which converts all the nix files into a single "large" init.lua file. It also provides an easy way to add
 [ extra plugins and extra lua config  ](./home-manager/editors/nvim/plugins/coding.nix) that nixvim itself doesn't provide.
 
+As you will see down below a lot of the UI elements were inspired/copied from nvchad. As I think they have really nice
+looking editor altogether. Particularly the cmp menu, telescope and also the status line.
+
 #### Plugins
 
 Some of the main plugins used in my nvim setup include:

@@ -30,8 +30,6 @@
       ];
     };
 
-    treesitter-playground.enable = true;
-
     # extraPlugins = with pkgs.vimPlugins; [
     #   nvim-treesitter-textobjects
     # ];

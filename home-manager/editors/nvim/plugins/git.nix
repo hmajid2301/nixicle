@@ -1,10 +1,14 @@
 {pkgs, ...}: {
   programs.nixvim = {
-    extraPlugins = with pkgs.vimPlugins; [git-worktree-nvim];
+    extraPlugins = with pkgs.vimPlugins; [
+      git-worktree-nvim
+      lazygit-nvim
+    ];
+
     maps = {
       normal = {
         "<leader>gg" = {
-          action = "<cmd> TermExec cmd='lazygit'<cr>";
+          action = "<cmd>LazyGit<cr>";
           desc = "Open lazygit";
         };
       };
@@ -45,17 +49,8 @@
             		vim.keymap.set(mode, l, r, { buffer = buffer, desc = desc })
             	end
 
-            	local Terminal  = require('toggleterm.terminal').Terminal
-            	local lazygit = Terminal:new({ cmd = "lazygit", hidden = true })
-
-            	function _lazygit_toggle()
-            		lazygit:toggle()
-            	end
-
-            	map("n", "<leader>gg", "<cmd>lua _lazygit_toggle()<CR>")
             	map("n", "<leader>gt", function() require("telescope").extensions.git_worktree.git_worktrees() end, "Git worktree switch")
             	map("n", "<leader>gc", function() require("telescope").extensions.git_worktree.create_git_worktree() end, "New Git worktree")
-            	map("n", "<leader>gg", "<cmd>lua _lazygit_toggle()<CR>")
             	map("n", "]h", gs.next_hunk, "Next Hunk")
             	map("n", "[h", gs.prev_hunk, "Prev Hunk")
             	map({ "n", "v" }, "<leader>ghs", ":Gitsigns stage_hunk<CR>", "Stage Hunk")

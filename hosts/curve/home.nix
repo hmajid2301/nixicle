@@ -12,7 +12,7 @@
       inputs.nixvim.homeManagerModules.nixvim
       inputs.nur.hmModules.nur
 
-      ../../home-manager/desktops/hyprland
+      ../../home-manager/desktops/gnome
       #../../home-manager/desktops/gtk.nix
       ../../home-manager/fonts.nix
 
@@ -20,18 +20,17 @@
       ../../home-manager/terminals/alacritty.nix
       ../../home-manager/terminals/foot.nix
 
-      ../../home-manager/apps/android.nix
-      ../../home-manager/apps/kdeconnect.nix
+      ../../home-manager/programs/android.nix
+      ../../home-manager/programs/kdeconnect.nix
       ../../home-manager/browsers/firefox.nix
 
       ../../home-manager/editors/nvim
-      ../../home-manager/programs/multiplexers/tmux.nix
+      ../../home-manager/multiplexers/tmux.nix
 
-      ../../home-manager/programs/cli
-      ../../home-manager/programs/cli/k8s.nix
-      ../../home-manager/programs/cli/kafka.nix
-      ../../home-manager/programs/cli/atuin
-      ../../home-manager/programs/tuis
+      ../../home-manager/programs
+      ../../home-manager/programs/k8s.nix
+      ../../home-manager/programs/kafka.nix
+      ../../home-manager/programs/atuin
 
       ../../home-manager/security/sops.nix
       ../../home-manager/security/yubikey.nix
@@ -62,7 +61,6 @@
 
   programs = {
     home-manager.enable = true;
-    git.enable = true;
   };
 
   home = {
@@ -76,4 +74,12 @@
       TERMINAL = "foot";
     };
   };
+
+  targets.genericLinux.enable = true;
+  xdg.mime.enable = true;
+  xdg.systemDirs.data = ["${config.home.homeDirectory}/.nix-profile/share/applications"];
+
+  programs.git.userEmail = lib.mkForce "haseeb.majid@imaginecurve.com";
+  programs.git.extraConfig."url \"git@git.curve.tools:\"" = {insteadOf = "https://git.curve.tools/";};
+  programs.git.extraConfig."url \"git@gitlab.com:imaginecurve/\"" = {insteadOf = "https://gitlab.com/imaginecurve";};
 }

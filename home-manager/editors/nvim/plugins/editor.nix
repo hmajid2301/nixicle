@@ -108,11 +108,6 @@
         showEndOfLine = true;
       };
 
-      toggleterm = {
-        enable = true;
-        direction = "float";
-      };
-
       which-key = {
         enable = true;
       };
