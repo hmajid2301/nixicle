@@ -9,8 +9,7 @@
     ../wayland
   ];
 
-  home.packages = with pkgs; [
-    dconf
+  home.packages = [
     inputs.hypr-contrib.packages.${pkgs.system}.grimblast
     inputs.hyprland.packages.${pkgs.system}.xdg-desktop-portal-hyprland
   ];
