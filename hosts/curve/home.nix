@@ -12,7 +12,7 @@
       inputs.nixvim.homeManagerModules.nixvim
       inputs.nur.hmModules.nur
 
-      ../../home-manager/desktops/gnome
+      ../../home-manager/desktops/sway
       #../../home-manager/desktops/gtk.nix
       ../../home-manager/fonts.nix
 
@@ -69,7 +69,7 @@
     stateVersion = lib.mkDefault "23.05";
     sessionPath = ["$HOME/.local/bin"];
     sessionVariables = {
-      BROWSER = "chrome";
+      BROWSER = "firefox";
       EDITOR = "nvim";
       TERMINAL = "foot";
     };
