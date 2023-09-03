@@ -7,7 +7,6 @@
     extraPlugins = with pkgs.vimPlugins; [
       friendly-snippets
       nvim-surround
-      vim-wakatime
     ];
 
     extraConfigLua =

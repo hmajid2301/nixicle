@@ -1,10 +1,5 @@
-{pkgs, ...}: {
+{
   programs.nixvim = {
-    extraPlugins = with pkgs.vimPlugins; [
-      lualine-lsp-progress
-      # git-blame-nvim
-    ];
-
     plugins.lualine = {
       enable = true;
       globalstatus = true;
@@ -198,52 +193,6 @@
                 error = " ";
                 warn = " ";
               };
-            };
-          }
-          {
-            name = "lsp_progress";
-            extraConfig = {
-              color = {
-                fg = "#605f6f";
-                bg = "#232232";
-                gui = "bold";
-              };
-              display_components = ["lsp_client_name" "spinner"];
-              spinner_symbols = ["" "󰪞" "󰪟" "󰪠" "󰪢" "󰪣" "󰪤" "󰪥"];
-            };
-          }
-          {
-            name.__raw =
-              # lua
-              ''
-                function()
-                    return "  "
-                end
-              '';
-
-            padding = {
-              left = 0;
-              right = 0;
-            };
-            color = {
-              fg = "#2d2c3c";
-              bg = "#FAE3B0";
-            };
-            separator = {
-              left = "";
-            };
-          }
-          {
-            name.__raw =
-              # lua
-              ''
-                function()
-                	return vim.fn["codeium#GetStatusString"]()
-                end
-              '';
-            color = {
-              fg = "#D9E0EE";
-              bg = "#2f2e3e";
             };
           }
           {

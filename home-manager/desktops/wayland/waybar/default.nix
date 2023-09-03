@@ -12,7 +12,11 @@
         margin = "0 0 0 0";
         modules-left = [
           "custom/launcher"
-          "hyprland/workspaces"
+          (
+            if config.wayland.windowManager.sway.enable == true
+            then "sway/workspaces"
+            else "hyprland/workspaces"
+          )
           "custom/currentplayer"
           "custom/player"
           "custom/audio_idle_inhibitor"
@@ -33,6 +37,23 @@
           "network"
           "custom/power"
         ];
+        "sway/workspaces" = {
+          format = "{icon}";
+          sort-by-number = true;
+          active-only = false;
+          format-icons = {
+            "1" = "  ";
+            "2" = "  ";
+            "3" = " 󰎞 ";
+            "4" = " 󰒱 ";
+            "5" = "  ";
+            "6" = "  ";
+            # urgent = "  ";
+            # focused = "  ";
+            # default = "  ";
+          };
+          on-click = "activate";
+        };
         "hyprland/workspaces" = {
           format = "{icon}";
           sort-by-number = true;

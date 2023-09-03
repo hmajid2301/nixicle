@@ -29,7 +29,7 @@
     plugins = {
       gitsigns = {
         enable = true;
-        currentLineBlame = true;
+        currentLineBlame = false;
         signs = {
           add = {text = "│";};
           change = {text = "│";};
