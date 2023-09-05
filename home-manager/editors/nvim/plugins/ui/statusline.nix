@@ -200,7 +200,7 @@
               # lua
               ''
                 function()
-                	 return vim.t.maximized and " " or ""
+                	 return (vim.t.maximized and " ") or ""
                 end
               '';
             color = {
