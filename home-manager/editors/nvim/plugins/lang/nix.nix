@@ -3,23 +3,22 @@
 , ...
 }: {
   programs.nixvim = {
-    plugins.lsp.servers.nixd = {
-      enable = true;
+    plugins = {
+      nix.enable = true;
+      lsp.servers.nixd = {
+        enable = true;
+      };
+
+      treesitter = {
+        grammarPackages = with config.programs.nixvim.plugins.treesitter.package.builtGrammars; [
+          nix
+        ];
+      };
     };
 
-    extraConfigVim =
-      # vim
-      ''
-        au BufRead,BufNewFile flake.lock setf json
-      '';
-
-    plugins.treesitter = {
-      grammarPackages = with config.programs.nixvim.plugins.treesitter.package.builtGrammars; [
-        nix
-      ];
-    };
-
-    plugins.nix.enable = true;
     extraPlugins = with pkgs; [ hmts-nvim ];
+    extraConfigVim = ''
+      au BufRead,BufNewFile flake.lock setf json
+    '';
   };
 }

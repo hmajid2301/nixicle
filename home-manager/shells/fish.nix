@@ -18,7 +18,7 @@ in
       # Source scripts
       ''
         any-nix-shell fish --info-right | source
-        fish_add_path ~/go/bin/
+        fish_add_path --path --append ~/go/bin/
         set -x GOPATH $HOME/go
       ''
       +
@@ -31,7 +31,7 @@ in
       # FZF
       ''
         export FZF_DEFAULT_OPTS="
-        --bind 'j:down,k:up,ctrl-j:preview-down,ctrl-k:preview-up'
+        --bind 'ctrl-j:preview-down,ctrl-k:preview-up'
         --color=bg+:#${colors.base02},bg:#${colors.base00},spinner:#${colors.base06},hl:#${colors.base08}
         --color=fg:#${colors.base05},header:#${colors.base08},info:#${colors.base0E},pointer:#${colors.base06}
         --color=marker:#${colors.base06},fg+:#${colors.base05},prompt:#${colors.base0E},hl+:#${colors.base08}
