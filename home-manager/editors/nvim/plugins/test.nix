@@ -1,4 +1,4 @@
-{pkgs, ...}: {
+{ pkgs, ... }: {
   programs.nixvim = {
     maps = {
       normal = {
@@ -94,7 +94,7 @@
       };
     };
 
-    extraPlugins = with pkgs.vimPlugins; [neotest];
+    extraPlugins = with pkgs.vimPlugins; [ neotest ];
     extraConfigLua =
       # lua
       ''

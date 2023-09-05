@@ -1,4 +1,4 @@
-{pkgs, ...}: {
+{ pkgs, ... }: {
   programs.nixvim = {
     extraPlugins = with pkgs.vimPlugins; [
       hardtime-nvim

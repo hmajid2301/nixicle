@@ -1,10 +1,9 @@
-{
-  inputs,
-  lib,
-  pkgs,
-  config,
-  outputs,
-  ...
+{ inputs
+, lib
+, pkgs
+, config
+, outputs
+, ...
 }: {
   imports =
     [
@@ -52,7 +51,7 @@
   nix = {
     package = lib.mkDefault pkgs.nix;
     settings = {
-      experimental-features = ["nix-command" "flakes" "repl-flake"];
+      experimental-features = [ "nix-command" "flakes" "repl-flake" ];
       warn-dirty = false;
     };
   };
@@ -68,7 +67,7 @@
     username = lib.mkDefault "haseeb";
     homeDirectory = lib.mkDefault "/home/${config.home.username}";
     stateVersion = lib.mkDefault "23.05";
-    sessionPath = ["$HOME/.local/bin"];
+    sessionPath = [ "$HOME/.local/bin" ];
     sessionVariables = {
       TERMINAL = "alacritty";
       EDITOR = "nvim";

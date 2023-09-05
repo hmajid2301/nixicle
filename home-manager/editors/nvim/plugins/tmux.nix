@@ -1,6 +1,6 @@
-{pkgs, ...}: {
+{ pkgs, ... }: {
   programs.nixvim = {
-    extraPlugins = with pkgs.vimPlugins; [tmux-nvim];
+    extraPlugins = with pkgs.vimPlugins; [ tmux-nvim ];
     extraConfigLua =
       # lua
       ''

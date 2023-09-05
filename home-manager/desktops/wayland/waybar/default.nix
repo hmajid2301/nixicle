@@ -1,4 +1,4 @@
-{config, ...}: {
+{ config, ... }: {
   programs.waybar = {
     enable = true;
     systemd = {
@@ -35,6 +35,7 @@
           "memory"
           "battery"
           "network"
+          "custom/notification"
           "custom/power"
         ];
         "sway/workspaces" = {
@@ -89,6 +90,26 @@
             input = "  ";
             output-input = "  ";
           };
+        };
+        "custom/notification" = {
+          tooltip = false;
+          format = "{icon}";
+          "format-icons" = {
+            notification = " <<span foreground='red'><sup></sup></span>";
+            none = "";
+            "dnd-notification" = "<<span foreground='red'><sup></sup></span>";
+            "dnd-none" = "";
+            "inhibited-notification" = "<span foreground='red'><sup></sup></span>";
+            "inhibited-none" = "";
+            "dnd-inhibited-notification" = "<span foreground='red'><sup></sup></span>";
+            "dnd-inhibited-none" = "";
+          };
+          "return-type" = "json";
+          "exec-if" = "which swaync-client";
+          exec = "swaync-client -swb";
+          "on-click" = "swaync-client -t -sw";
+          "on-click-right" = "swaync-client -d -sw";
+          escape = true;
         };
         "custom/currentplayer" = {
           interval = 2;
@@ -147,7 +168,7 @@
           format-full = "";
           format-charging = "  {capacity}%";
           format-plugged = "  {capacity}%";
-          format-icons = [" " " " " " " " " "];
+          format-icons = [ " " " " " " " " " " ];
         };
         temperature = {
           interval = 1;
@@ -156,7 +177,7 @@
           critical-threshold = 80;
           format = "{icon} {temperatureC}°C";
           format-critical = "{icon} {temperatureC}°C";
-          format-icons = ["" "" "" "" ""];
+          format-icons = [ "" "" "" "" "" ];
         };
         cpu = {
           interval = 1;
@@ -193,7 +214,7 @@
           format-icons = {
             headphone = "";
             headset = "";
-            default = ["" ""];
+            default = [ "" "" ];
           };
         };
         clock = {
@@ -245,8 +266,7 @@
         };
         "custom/launcher" = {
           format = "   ";
-          tooltip = ''$(cat /etc/os-release | grep PRETTY_NAME | cut -d '"' -f2)'';
-          #on-click = " rofi -show drun -modi drun";
+          on-click = " rofi -show drun -modi drun";
         };
       }
     ];

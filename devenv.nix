@@ -1,6 +1,6 @@
-{pkgs, ...}: {
+{ pkgs, ... }: {
   packages = with pkgs; [
-    alejandra
+    nixpkgs-fmt
     update-nix-fetchgit
     home-manager
     sops
@@ -15,6 +15,6 @@
   languages.nix.enable = true;
 
   pre-commit.hooks = {
-    alejandra.enable = true;
+    nixpkgs-fmt.enable = true;
   };
 }

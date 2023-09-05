@@ -1,10 +1,4 @@
-{config, ...}: {
-  # home = {
-  #   sessionVariables = {
-  #     TERMINAL = "foot";
-  #   };
-  # };
-
+{ config, ... }: {
   programs.foot = {
     enable = true;
 
@@ -18,7 +12,7 @@
         regular2 = "${config.colorscheme.colors.base0B}"; # green
         regular4 = "${config.colorscheme.colors.base0A}"; # yellow
         regular3 = "${config.colorscheme.colors.base0D}"; # blue
-        regular5 = "${config.colorscheme.colors.base0F}"; # pink
+        regular5 = "f4b8e4"; # pink
         regular6 = "${config.colorscheme.colors.base0C}"; # teal
         regular7 = "b5bfe2"; # subtext 1
 
@@ -27,7 +21,7 @@
         bright2 = "${config.colorscheme.colors.base0B}"; # green
         bright4 = "${config.colorscheme.colors.base0A}"; # yellow
         bright3 = "${config.colorscheme.colors.base0D}"; # blue
-        bright5 = "${config.colorscheme.colors.base0F}"; # pink
+        bright5 = "f4b8e4"; # pink
         bright6 = "${config.colorscheme.colors.base0C}"; # teal
         bright7 = "a5adce"; # subtext 0
       };

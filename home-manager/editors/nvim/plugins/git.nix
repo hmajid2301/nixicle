@@ -1,4 +1,4 @@
-{pkgs, ...}: {
+{ pkgs, ... }: {
   programs.nixvim = {
     extraPlugins = with pkgs.vimPlugins; [
       git-worktree-nvim
@@ -31,12 +31,12 @@
         enable = true;
         currentLineBlame = false;
         signs = {
-          add = {text = "│";};
-          change = {text = "│";};
-          delete = {text = "󰍵";};
-          topdelete = {text = "‾";};
-          changedelete = {text = "~";};
-          untracked = {text = "│";};
+          add = { text = "│"; };
+          change = { text = "│"; };
+          delete = { text = "󰍵"; };
+          topdelete = { text = "‾"; };
+          changedelete = { text = "~"; };
+          untracked = { text = "│"; };
         };
 
         onAttach.function =

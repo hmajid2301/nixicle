@@ -1,18 +1,18 @@
-{
-  lib,
-  stdenv,
-  fetchFromGitHub,
-  meson,
-  ninja,
-  pkg-config,
-  scdoc,
-  wayland,
-  wayland-protocols,
-  wayland-scanner,
-  libxkbcommon,
-  cairo,
-  gdk-pixbuf,
-  pam,
+{ lib
+, stdenv
+, fetchFromGitHub
+, meson
+, ninja
+, pkg-config
+, scdoc
+, wayland
+, wayland-protocols
+, wayland-scanner
+, libxkbcommon
+, cairo
+, gdk-pixbuf
+, pam
+,
 }:
 stdenv.mkDerivation rec {
   pname = "swaylock-effects";
@@ -30,8 +30,8 @@ stdenv.mkDerivation rec {
   '';
 
   strictDeps = true;
-  nativeBuildInputs = [meson ninja pkg-config scdoc wayland-scanner];
-  buildInputs = [wayland wayland-protocols libxkbcommon cairo gdk-pixbuf pam];
+  nativeBuildInputs = [ meson ninja pkg-config scdoc wayland-scanner ];
+  buildInputs = [ wayland wayland-protocols libxkbcommon cairo gdk-pixbuf pam ];
 
   mesonFlags = [
     "-Dpam=enabled"
@@ -48,6 +48,6 @@ stdenv.mkDerivation rec {
     inherit (src.meta) homepage;
     license = licenses.mit;
     platforms = platforms.linux;
-    maintainers = with maintainers; [gnxlxnxx];
+    maintainers = with maintainers; [ gnxlxnxx ];
   };
 }

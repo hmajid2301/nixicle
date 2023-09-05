@@ -1,4 +1,4 @@
-{pkgs, ...}: {
+{ pkgs, ... }: {
   home.file."./.config/nvim" = {
     source = ./config;
     recursive = true;
@@ -27,12 +27,13 @@
     ./plugins/lang/lua.nix
     ./plugins/lang/nix.nix
     ./plugins/lang/markdown.nix
+    #./plugins/lang/css.nix
     ./plugins/lang/yaml.nix
     ./plugins/tmux.nix
   ];
 
   programs.nixvim = {
     enable = true;
-    extraPlugins = with pkgs.vimPlugins; [plenary-nvim];
+    extraPlugins = with pkgs.vimPlugins; [ plenary-nvim ];
   };
 }

@@ -1,10 +1,9 @@
-{
-  inputs,
-  lib,
-  pkgs,
-  config,
-  outputs,
-  ...
+{ inputs
+, lib
+, pkgs
+, config
+, outputs
+, ...
 }: {
   imports =
     [
@@ -18,7 +17,6 @@
       ../../home-manager/fonts.nix
 
       ../../home-manager/shells/fish.nix
-      ../../home-manager/terminals/alacritty.nix
       ../../home-manager/terminals/foot.nix
 
       ../../home-manager/browsers/firefox.nix
@@ -51,7 +49,7 @@
   nix = {
     package = lib.mkDefault pkgs.nix;
     settings = {
-      experimental-features = ["nix-command" "flakes" "repl-flake"];
+      experimental-features = [ "nix-command" "flakes" "repl-flake" ];
       warn-dirty = false;
     };
   };
@@ -67,10 +65,10 @@
     username = lib.mkDefault "haseeb";
     homeDirectory = lib.mkDefault "/home/${config.home.username}";
     stateVersion = lib.mkDefault "23.05";
-    sessionPath = ["$HOME/.local/bin"];
+    sessionPath = [ "$HOME/.local/bin" ];
     sessionVariables = {
       EDITOR = "nvim";
-      TERMINAL = "alacritty";
+      TERMINAL = "foot";
       BROWSER = "firefox";
     };
 

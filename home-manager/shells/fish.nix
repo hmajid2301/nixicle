@@ -1,11 +1,12 @@
-{
-  pkgs,
-  config,
-  ...
-}: let
+{ pkgs
+, config
+, ...
+}:
+let
   inherit (config) colorscheme host;
   inherit (colorscheme) colors;
-in {
+in
+{
   programs.fish = {
     enable = true;
     interactiveShellInit =
@@ -106,7 +107,10 @@ in {
       dk = "docker kill (docker ps -q)";
       ds = "docker stop (docker ps -a -q)";
       drm = "docker rm (docker ps -a -q)";
+      docker-compose = "podman-compose";
+      "docker compose" = "podman-compose";
     };
+
     functions = {
       envsource = ''
         for line in (cat $argv | grep -v '^#')

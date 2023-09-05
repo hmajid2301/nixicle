@@ -1,7 +1,7 @@
-{
-  stdenv,
-  fetchurl,
-  autoPatchelfHook,
+{ stdenv
+, fetchurl
+, autoPatchelfHook
+,
 }:
 stdenv.mkDerivation {
   name = "codeium";
@@ -9,7 +9,7 @@ stdenv.mkDerivation {
     url = "https://github.com/Exafunction/codeium/releases/download/language-server-v1.2.76/language_server_linux_x64";
     sha256 = "sha256-q9FqfElQMTMzWod7YwcpbZNUz/dy1o5QgmzvIfrAPAo=";
   };
-  nativeBuildInputs = [autoPatchelfHook];
+  nativeBuildInputs = [ autoPatchelfHook ];
   unpackPhase = "true";
   installPhase = ''
     ls -lR $src

@@ -1,7 +1,6 @@
-{
-  config,
-  pkgs,
-  ...
+{ config
+, pkgs
+, ...
 }: {
   home.packages = with pkgs; [
     tree-sitter
@@ -19,6 +18,7 @@
 
       grammarPackages = with config.programs.nixvim.plugins.treesitter.package.builtGrammars; [
         c
+        css
         bash
         fish
 

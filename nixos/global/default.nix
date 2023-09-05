@@ -1,8 +1,7 @@
 # This file (and the global directory) holds config that i use on all hosts
-{
-  inputs,
-  outputs,
-  ...
+{ inputs
+, outputs
+, ...
 }: {
   imports =
     [
@@ -17,7 +16,7 @@
     ]
     ++ (builtins.attrValues outputs.nixosModules);
 
-  home-manager.extraSpecialArgs = {inherit inputs outputs;};
+  home-manager.extraSpecialArgs = { inherit inputs outputs; };
 
   nixpkgs = {
     overlays = builtins.attrValues outputs.overlays;

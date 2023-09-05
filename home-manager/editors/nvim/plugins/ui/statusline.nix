@@ -3,8 +3,8 @@
     plugins.lualine = {
       enable = true;
       globalstatus = true;
-      disabledFiletypes.statusline = ["alpha" "NvimTree"];
-      extensions = ["nvim-tree"];
+      disabledFiletypes.statusline = [ "alpha" "NvimTree" ];
+      extensions = [ "nvim-tree" ];
       theme = {
         normal = {
           a = {
@@ -186,8 +186,8 @@
                 gui = "bold";
               };
               diagnostics_color = {
-                color_error = {fg = "#F38BA8";};
-                color_warn = {fg = "#FAE3B0";};
+                color_error = { fg = "#F38BA8"; };
+                color_warn = { fg = "#FAE3B0"; };
               };
               symbols = {
                 error = " ";

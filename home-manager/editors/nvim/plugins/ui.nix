@@ -1,4 +1,4 @@
-{pkgs, ...}: {
+{ pkgs, ... }: {
   imports = [
     ./ui/statusline.nix
     ./ui/file-explorer.nix
