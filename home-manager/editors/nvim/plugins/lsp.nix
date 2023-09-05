@@ -42,7 +42,7 @@
             require("null-ls").builtins.formatting.fish_indent.with({ command = "${pkgs.fish}/bin/fish_indent" }),
 
             -- Nix
-            require("null-ls").builtins.formatting.alejandra.with({ command = "${pkgs.alejandra}/bin/alejandra" }),
+            require("null-ls").builtins.formatting.nixpkgs_fmt.with({ command = "${pkgs.nixpkgs-fmt}/bin/nixpkgs-fmt" }),
             require("null-ls").builtins.diagnostics.deadnix.with({ command = "${pkgs.deadnix}/bin/deadnix" }),
             require("null-ls").builtins.code_actions.statix.with({ command = "${pkgs.statix}/bin/statix" }),
 

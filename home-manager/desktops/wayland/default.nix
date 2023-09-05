@@ -40,5 +40,7 @@
     playerctl
     sway-contrib.grimshot
     swaybg
+
+    nwg-displays
   ];
 }
