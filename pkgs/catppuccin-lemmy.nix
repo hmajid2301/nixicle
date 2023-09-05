@@ -1,10 +1,10 @@
-{
-  stdenv,
-  fetchurl,
-  unzip,
-  bash,
-  nodePackages,
-  which,
+{ stdenv
+, fetchurl
+, unzip
+, bash
+, nodePackages
+, which
+,
 }:
 stdenv.mkDerivation {
   pname = "catppuccin-lemmy";
@@ -18,7 +18,7 @@ stdenv.mkDerivation {
     ../.
   ];
 
-  nativeBuildInputs = [unzip nodePackages.sass bash which];
+  nativeBuildInputs = [ unzip nodePackages.sass bash which ];
 
   unpackPhase = ''
     runHook preUnpack

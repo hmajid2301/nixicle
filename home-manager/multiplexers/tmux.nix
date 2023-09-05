@@ -1,4 +1,5 @@
-{pkgs, ...}: let
+{ pkgs, ... }:
+let
   # TODO: move to official trepo
   t-smart-manager = pkgs.tmuxPlugins.mkTmuxPlugin {
     pluginName = "t-smart-tmux-session-manager";
@@ -11,7 +12,8 @@
       sha256 = "1dr5w02a0y84q2iw4jp1psxvkyj4g6pr87gc22syw1jd4ibkn925";
     };
   };
-in {
+in
+{
   # TODO: what if this is defined in another file? Merge it!
   programs.fish = {
     shellInit = ''

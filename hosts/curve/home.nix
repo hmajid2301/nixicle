@@ -1,10 +1,9 @@
-{
-  inputs,
-  lib,
-  pkgs,
-  config,
-  outputs,
-  ...
+{ inputs
+, lib
+, pkgs
+, config
+, outputs
+, ...
 }: {
   imports =
     [
@@ -12,12 +11,11 @@
       inputs.nixvim.homeManagerModules.nixvim
       inputs.nur.hmModules.nur
 
-      ../../home-manager/desktops/sway
+      ../../home-manager/desktops/sway.nix
       #../../home-manager/desktops/gtk.nix
       ../../home-manager/fonts.nix
 
       ../../home-manager/shells/fish.nix
-      ../../home-manager/terminals/alacritty.nix
       ../../home-manager/terminals/foot.nix
 
       ../../home-manager/programs/android.nix
@@ -52,7 +50,7 @@
   nix = {
     package = lib.mkDefault pkgs.nix;
     settings = {
-      experimental-features = ["nix-command" "flakes" "repl-flake"];
+      experimental-features = [ "nix-command" "flakes" "repl-flake" ];
       warn-dirty = false;
     };
   };
@@ -67,7 +65,7 @@
     username = lib.mkDefault "haseebmajid";
     homeDirectory = lib.mkDefault "/home/${config.home.username}";
     stateVersion = lib.mkDefault "23.05";
-    sessionPath = ["$HOME/.local/bin"];
+    sessionPath = [ "$HOME/.local/bin" ];
     sessionVariables = {
       BROWSER = "firefox";
       EDITOR = "nvim";
@@ -75,11 +73,15 @@
     };
   };
 
+  # To show in Gnome
   targets.genericLinux.enable = true;
   xdg.mime.enable = true;
-  xdg.systemDirs.data = ["${config.home.homeDirectory}/.nix-profile/share/applications"];
+  xdg.systemDirs.data = [ "${config.home.homeDirectory}/.nix-profile/share/applications" ];
 
   programs.git.userEmail = lib.mkForce "haseeb.majid@imaginecurve.com";
-  programs.git.extraConfig."url \"git@git.curve.tools:\"" = {insteadOf = "https://git.curve.tools/";};
-  programs.git.extraConfig."url \"git@gitlab.com:imaginecurve/\"" = {insteadOf = "https://gitlab.com/imaginecurve";};
+  programs.git.extraConfig."url \"git@git.curve.tools:\"" = { insteadOf = "https://git.curve.tools/"; };
+  programs.git.extraConfig."url \"git@gitlab.com:imaginecurve/\"" = { insteadOf = "https://gitlab.com/imaginecurve"; };
+
+  # sway (swayfx) is installed via manually building binaries
+  wayland.windowManager.sway.package = lib.mkForce null;
 }

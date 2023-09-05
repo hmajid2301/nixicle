@@ -24,15 +24,15 @@
       nvim-cmp = {
         enable = true;
         sources = [
-          {name = "nvim_lsp";}
-          {name = "luasnip";}
-          {name = "buffer";}
-          {name = "nvim_lua";}
-          {name = "path";}
+          { name = "nvim_lsp"; }
+          { name = "luasnip"; }
+          { name = "buffer"; }
+          { name = "nvim_lua"; }
+          { name = "path"; }
         ];
 
         formatting = {
-          fields = ["abbr" "kind" "menu"];
+          fields = [ "abbr" "kind" "menu" ];
           format =
             # lua
             ''
@@ -134,7 +134,7 @@
           "<C-e>" = "cmp.mapping.close()";
           "<CR>" = "cmp.mapping.confirm({ behavior = cmp.ConfirmBehavior.Insert, select = true })";
           "<Tab>" = {
-            modes = ["i" "s"];
+            modes = [ "i" "s" ];
             action =
               # lua
               ''
@@ -150,7 +150,7 @@
               '';
           };
           "<S-Tab>" = {
-            modes = ["i" "s"];
+            modes = [ "i" "s" ];
             action =
               # lua
               ''

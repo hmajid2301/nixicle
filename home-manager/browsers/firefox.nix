@@ -1,4 +1,4 @@
-{inputs, ...}: {
+{ inputs, ... }: {
   # Add Firefox GNOME theme directory
   home.file."firefox-gnome-theme" = {
     target = ".mozilla/firefox/default/chrome/firefox-gnome-theme";

@@ -1,20 +1,14 @@
-{
-  pkgs,
-  config,
-  ...
+{ pkgs
+, config
+, ...
 }: {
   programs.nixvim = {
-    plugins.lsp.servers.nil_ls = {
+    plugins.lsp.servers.nixd = {
       enable = true;
-      settings = {
-        formatting.command = ["${pkgs.alejandra}/bin/alejandra"];
-      };
     };
 
     extraConfigVim =
-      /*
-      vim
-      */
+      # vim
       ''
         au BufRead,BufNewFile flake.lock setf json
       '';
@@ -26,7 +20,6 @@
     };
 
     plugins.nix.enable = true;
-
-    extraPlugins = with pkgs; [hmts-nvim];
+    extraPlugins = with pkgs; [ hmts-nvim ];
   };
 }
