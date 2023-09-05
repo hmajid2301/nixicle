@@ -1,10 +1,9 @@
-{
-  config,
-  pkgs,
-  inputs,
-  ...
+{ config
+, pkgs
+, inputs
+, ...
 }: {
-  imports = [inputs.attic.nixosModules.atticd];
+  imports = [ inputs.attic.nixosModules.atticd ];
 
   environment.systemPackages = with pkgs; [
     attic
@@ -51,6 +50,6 @@
         };
       }
     ];
-    ensureDatabases = ["atticd"];
+    ensureDatabases = [ "atticd" ];
   };
 }

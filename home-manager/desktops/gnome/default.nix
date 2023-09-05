@@ -1,8 +1,7 @@
-{
-  lib,
-  pkgs,
-  config,
-  ...
+{ lib
+, pkgs
+, config
+, ...
 }:
 with lib.hm.gvariant; {
   home.file.".themes" = {
@@ -173,12 +172,12 @@ with lib.hm.gvariant; {
       dash-levels-width = 0;
       dash-levels-x-align = 0;
       dash-levels-x-expand = true;
-      dash-link-names = ["reddit" "youtube" "gmail" "twitter" "github"];
-      dash-link-urls = ["https://www.reddit.com/" "https://www.youtube.com/" "https://www.gmail.com/" "https://twitter.com/" "https://www.github.com/"];
+      dash-link-names = [ "reddit" "youtube" "gmail" "twitter" "github" ];
+      dash-link-urls = [ "https://www.reddit.com/" "https://www.youtube.com/" "https://www.gmail.com/" "https://twitter.com/" "https://www.github.com/" ];
       dash-links-background = true;
       dash-links-icon-size = 58;
-      dash-links-names = ["reddit" "youtube" "gmail" "github"];
-      dash-links-urls = ["https://www.reddit.com/" "https://www.youtube.com/" "https://www.gmail.com/" "https://www.github.com/"];
+      dash-links-names = [ "reddit" "youtube" "gmail" "github" ];
+      dash-links-urls = [ "https://www.reddit.com/" "https://www.youtube.com/" "https://www.gmail.com/" "https://www.github.com/" ];
       dash-links-vertical = false;
       dash-links-x-expand = false;
       dash-links-y-expand = false;
@@ -189,7 +188,7 @@ with lib.hm.gvariant; {
       dash-read-config = 9;
       dash-settings-icon-size = 34;
       dash-settings-vertical = false;
-      dash-shortcut = [""];
+      dash-shortcut = [ "" ];
       dash-system-background = true;
       dash-system-icon-size = 34;
       dash-system-layout = 0;
@@ -339,7 +338,7 @@ with lib.hm.gvariant; {
     };
 
     "org/gnome/shell/extensions/pop-shell" = {
-      activate-launcher = ["<Super>space"];
+      activate-launcher = [ "<Super>space" ];
       active-hint = true;
       active-hint-border-radius = mkUint32 15;
       gap-inner = mkUint32 3;
@@ -349,11 +348,11 @@ with lib.hm.gvariant; {
       smart-gaps = false;
       snap-to-grid = true;
       tile-by-default = true;
-      toggle-stacking-global = [];
+      toggle-stacking-global = [ ];
     };
 
     "org/gnome/shell/extensions/rounded-window-corners" = {
-      border-color = mkTuple [0.729411780834198 0.7607843279838562];
+      border-color = mkTuple [ 0.729411780834198 0.7607843279838562 ];
       border-width = 0;
       custom-rounded-corner-settings = "@a{sv} {}";
       focused-shadow = "{'vertical_offset': 4, 'horizontal_offset': 0, 'blur_offset': 28, 'spread_radius': 4, 'opacity': 60}";
@@ -365,7 +364,7 @@ with lib.hm.gvariant; {
     };
 
     "org/gnome/shell/extensions/search-light" = {
-      background-color = mkTuple [0.1568627506494522 0.16470588743686676];
+      background-color = mkTuple [ 0.1568627506494522 0.16470588743686676 ];
       blur-background = true;
       blur-brightness = 0.6;
       blur-sigma = 200.0;
@@ -375,7 +374,7 @@ with lib.hm.gvariant; {
       popup-at-cursor-monitor = true;
       scale-height = 0.1;
       scale-width = 0.1;
-      shortcut-search = ["<Super>a"];
+      shortcut-search = [ "<Super>a" ];
       show-panel-icon = true;
     };
 

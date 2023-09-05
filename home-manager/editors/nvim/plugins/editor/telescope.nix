@@ -1,4 +1,4 @@
-{pkgs, ...}: {
+{ pkgs, ... }: {
   programs.nixvim = {
     maps = {
       normal = {
@@ -74,7 +74,7 @@
           "╯"
           "╰"
         ];
-        border = {};
+        border = { };
         layout_strategy = "horizontal";
         layout_config = {
           horizontal = {

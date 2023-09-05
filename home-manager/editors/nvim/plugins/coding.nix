@@ -1,4 +1,4 @@
-{pkgs, ...}: {
+{ pkgs, ... }: {
   imports = [
     ./coding/cmp.nix
   ];
@@ -76,7 +76,7 @@
 
       nvim-autopairs = {
         enable = true;
-        disabledFiletypes = ["TelescopePrompt" "vim"];
+        disabledFiletypes = [ "TelescopePrompt" "vim" ];
       };
 
       comment-nvim = {

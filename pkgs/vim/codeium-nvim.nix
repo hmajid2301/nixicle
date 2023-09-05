@@ -1,6 +1,6 @@
-{
-  pkgs,
-  fetchFromGitHub,
+{ pkgs
+, fetchFromGitHub
+,
 }:
 pkgs.vimUtils.buildVimPlugin {
   name = "codeium-nvim";

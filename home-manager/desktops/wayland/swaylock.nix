@@ -1,11 +1,12 @@
-{
-  inputs,
-  pkgs,
-  config,
-  ...
-}: let
+{ inputs
+, pkgs
+, config
+, ...
+}:
+let
   inherit (config.colorscheme) colors;
-in {
+in
+{
   # TODO: move to home.nix
   nixpkgs.overlays = [
     inputs.nur.overlay

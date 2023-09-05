@@ -1,11 +1,12 @@
+{ config
+, pkgs
+, inputs
+, ...
+}:
+let
+  inherit (inputs.nix-colors.lib-contrib { inherit pkgs; }) gtkThemeFromScheme;
+in
 {
-  config,
-  pkgs,
-  inputs,
-  ...
-}: let
-  inherit (inputs.nix-colors.lib-contrib {inherit pkgs;}) gtkThemeFromScheme;
-in {
   dconf.settings = {
     "org/gnome/desktop/interface" = {
       color-scheme = "prefer-dark";
@@ -21,7 +22,7 @@ in {
 
     theme = {
       name = "${config.colorscheme.slug}";
-      package = gtkThemeFromScheme {scheme = config.colorscheme;};
+      package = gtkThemeFromScheme { scheme = config.colorscheme; };
     };
 
     iconTheme = {

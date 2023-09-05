@@ -30,7 +30,7 @@
 
       signcolumn = "yes";
       cmdheight = 2;
-      cot = ["menu" "menuone" "noselect"];
+      cot = [ "menu" "menuone" "noselect" ];
       colorcolumn = "120";
 
       updatetime = 100;
