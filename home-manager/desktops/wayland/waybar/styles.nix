@@ -62,7 +62,17 @@
        border-radius: 20px;
    }
 
-   #workspaces button.active * {
+   #workspaces button.visible * {
+       color: @base;
+   }
+
+   #workspaces button.visible {
+       color: white;
+       background-color: @mauve;
+       border-radius: 20px;
+   }
+
+   #workspaces button.visible * {
        color: @base;
    }
 

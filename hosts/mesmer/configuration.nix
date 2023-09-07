@@ -45,6 +45,7 @@
   services.fwupd.enable = true;
   services.gvfs.enable = true;
   services.pcscd.enable = true;
+  services.udisks2.enable = true;
   services.udev.packages = with pkgs; [ yubikey-personalization ];
   services.dbus.enable = true;
   programs.dconf.enable = true;
