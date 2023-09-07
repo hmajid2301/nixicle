@@ -108,7 +108,6 @@ in
       ds = "docker stop (docker ps -a -q)";
       drm = "docker rm (docker ps -a -q)";
       docker-compose = "podman-compose";
-      "docker compose" = "podman-compose";
     };
 
     functions = {

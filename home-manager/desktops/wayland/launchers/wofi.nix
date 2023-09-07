@@ -116,9 +116,10 @@
   };
 
   # TODO: don't hardcode to just sway could use in hyprland as well
-  wayland.windowManager.sway.config = {
-    keybindings = {
-      "${config.wayland.windowManager.sway.config.modifier}+a" = "exec wofi --show drun";
-    };
-  };
+  # TODO: extend don't overwrite
+  # wayland.windowManager.sway.config = {
+  #   keybindings = {
+  #     "${config.wayland.windowManager.sway.config.modifier}+a" = "exec wofi --show drun";
+  #   };
+  # };
 }

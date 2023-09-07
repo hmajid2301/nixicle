@@ -27,11 +27,6 @@
     impermanence.url = "github:nix-community/impermanence";
     nwg-displays.url = "github:nwg-piotr/nwg-displays/master";
 
-    grub-theme = {
-      url = "github:catppuccin/grub";
-      flake = false;
-    };
-
     nix-gaming.url = "github:fufexan/nix-gaming";
     hyprland.url = "github:hyprwm/Hyprland";
     hypr-contrib.url = "github:hyprwm/contrib";
@@ -40,6 +35,22 @@
     nixvim.url = "github:pta2002/nixvim";
     comma.url = "github:nix-community/comma";
     attic.url = "github:zhaofengli/attic";
+
+    grub-theme = {
+      url = "github:catppuccin/grub";
+      flake = false;
+    };
+
+    flake-parts = {
+      url = "github:hercules-ci/flake-parts";
+      inputs.nixpkgs-lib.follows = "nixpkgs";
+    };
+
+    gross = {
+      url = "github:fufexan/gross";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.flake-parts.follows = "flake-parts";
+    };
   };
 
   outputs =

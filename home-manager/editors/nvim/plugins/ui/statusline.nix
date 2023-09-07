@@ -3,8 +3,8 @@
     plugins.lualine = {
       enable = true;
       globalstatus = true;
-      disabledFiletypes.statusline = [ "alpha" "NvimTree" ];
-      extensions = [ "nvim-tree" ];
+      disabledFiletypes.statusline = [ "alpha" "neo-tree" ];
+      extensions = [ "neo-tree" ];
       theme = {
         normal = {
           a = {

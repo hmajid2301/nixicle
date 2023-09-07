@@ -28,7 +28,7 @@
     },
     "anyrun": {
       "inputs": {
-        "flake-parts": "flake-parts",
+        "flake-parts": "flake-parts_2",
         "nixpkgs": [
           "fufexan",
           "nixpkgs"
@@ -509,6 +509,26 @@
     "flake-parts": {
       "inputs": {
         "nixpkgs-lib": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1693611461,
+        "narHash": "sha256-aPODl8vAgGQ0ZYFIRisxYG5MOGSkIczvu2Cd8Gb9+1Y=",
+        "owner": "hercules-ci",
+        "repo": "flake-parts",
+        "rev": "7f53fdb7bdc5bb237da7fefef12d099e4fd611ca",
+        "type": "github"
+      },
+      "original": {
+        "owner": "hercules-ci",
+        "repo": "flake-parts",
+        "type": "github"
+      }
+    },
+    "flake-parts_2": {
+      "inputs": {
+        "nixpkgs-lib": [
           "fufexan",
           "anyrun",
           "nixpkgs"
@@ -528,7 +548,7 @@
         "type": "github"
       }
     },
-    "flake-parts_2": {
+    "flake-parts_3": {
       "inputs": {
         "nixpkgs-lib": [
           "fufexan",
@@ -549,7 +569,7 @@
         "type": "github"
       }
     },
-    "flake-parts_3": {
+    "flake-parts_4": {
       "inputs": {
         "nixpkgs-lib": [
           "fufexan",
@@ -571,7 +591,7 @@
         "type": "github"
       }
     },
-    "flake-parts_4": {
+    "flake-parts_5": {
       "inputs": {
         "nixpkgs-lib": "nixpkgs-lib_2"
       },
@@ -589,7 +609,7 @@
         "type": "github"
       }
     },
-    "flake-parts_5": {
+    "flake-parts_6": {
       "inputs": {
         "nixpkgs-lib": "nixpkgs-lib_3"
       },
@@ -733,7 +753,7 @@
         "anyrun": "anyrun",
         "anyrun-nixos-options": "anyrun-nixos-options",
         "eww": "eww",
-        "flake-parts": "flake-parts_2",
+        "flake-parts": "flake-parts_3",
         "fu": "fu",
         "gross": "gross",
         "helix": "helix",
@@ -855,6 +875,29 @@
         "type": "github"
       }
     },
+    "gross_2": {
+      "inputs": {
+        "flake-parts": [
+          "flake-parts"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1690794516,
+        "narHash": "sha256-Loxw0IyPShJ4avHX1oC+JbVqN9U9aFQnJEcZBJ1pVQ0=",
+        "owner": "fufexan",
+        "repo": "gross",
+        "rev": "b8d2b259b134c7f7830826ca8d43f5c7dd581328",
+        "type": "github"
+      },
+      "original": {
+        "owner": "fufexan",
+        "repo": "gross",
+        "type": "github"
+      }
+    },
     "grub-theme": {
       "flake": false,
       "locked": {
@@ -945,11 +988,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1693859358,
-        "narHash": "sha256-r3Pak/ao3p8weTzR+Ry3qQrfRsmSOwWW5sAe73mrYKs=",
+        "lastModified": 1693972774,
+        "narHash": "sha256-Dt9UZs0/DaIex598quYRYFuGabUbvFdNrHuvGc6HjBc=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "886ea1d213efd1082f419d066e89ef37635dc970",
+        "rev": "b22d7bab30076bbb73744867d6c5bf7d6380570c",
         "type": "github"
       },
       "original": {
@@ -963,11 +1006,11 @@
         "nixpkgs": "nixpkgs_8"
       },
       "locked": {
-        "lastModified": 1693839821,
-        "narHash": "sha256-ha9Cxqb81Yni217SoM/zFxE0nNz8IMtreTw4SlXw/D4=",
+        "lastModified": 1693997747,
+        "narHash": "sha256-W23nMGmDnyBgxO8O/9jcZtiSpa0taMNcRAD1das/ttw=",
         "owner": "hyprwm",
         "repo": "contrib",
-        "rev": "74aa6b02ff4bd48aaee4da461a16c4cbaaa0ca7e",
+        "rev": "5b67181fced4fb06d26afcf9614b35765c576168",
         "type": "github"
       },
       "original": {
@@ -1080,11 +1123,11 @@
         "xdph": "xdph_2"
       },
       "locked": {
-        "lastModified": 1693851147,
-        "narHash": "sha256-kkI7FXwKufOmNIIQQHr868tneIV8ggqupBA0EJ/jAuI=",
+        "lastModified": 1694009658,
+        "narHash": "sha256-ol7Zt9JEzT+lGix97GkhAtrnDuufPP+JpJK4stRvWoM=",
         "owner": "hyprwm",
         "repo": "Hyprland",
-        "rev": "4ddcda93f5887792a953332bf1b487e4b2c3b4ed",
+        "rev": "a15e3e1f380e3b90f976bc7d1d8b4daabd4cbd3b",
         "type": "github"
       },
       "original": {
@@ -1134,7 +1177,7 @@
     "lanzaboote": {
       "inputs": {
         "flake-compat": "flake-compat_6",
-        "flake-parts": "flake-parts_3",
+        "flake-parts": "flake-parts_4",
         "flake-utils": "flake-utils_3",
         "nixpkgs": "nixpkgs_5",
         "pre-commit-hooks-nix": "pre-commit-hooks-nix"
@@ -1345,7 +1388,7 @@
     },
     "nix-gaming_2": {
       "inputs": {
-        "flake-parts": "flake-parts_4",
+        "flake-parts": "flake-parts_5",
         "nixpkgs": "nixpkgs_10"
       },
       "locked": {
@@ -1579,11 +1622,11 @@
     },
     "nixpkgs_11": {
       "locked": {
-        "lastModified": 1693663421,
-        "narHash": "sha256-ImMIlWE/idjcZAfxKK8sQA7A1Gi/O58u5/CJA+mxvl8=",
+        "lastModified": 1693844670,
+        "narHash": "sha256-t69F2nBB8DNQUWHD809oJZJVE+23XBrth4QZuVd6IE0=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "e56990880811a451abd32515698c712788be5720",
+        "rev": "3c15feef7770eb5500a4b8792623e2d6f598c9c1",
         "type": "github"
       },
       "original": {
@@ -1792,11 +1835,11 @@
     },
     "nur": {
       "locked": {
-        "lastModified": 1693897617,
-        "narHash": "sha256-4Cs/ViCgZIVA/yo44aGnAuw3w3pQg7D+nr3zHPtRp4Y=",
+        "lastModified": 1694011534,
+        "narHash": "sha256-gB7LM/w61gjZ2n75JN7FQKAF4o2QumqI33Pac16ZvjI=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "d914dfcbb7fdd85b4d1dd543de77571774aacbd1",
+        "rev": "0572f3d2f4d1b231196f8ed7a3280c7f0724c95e",
         "type": "github"
       },
       "original": {
@@ -1807,7 +1850,7 @@
     },
     "nwg-displays": {
       "inputs": {
-        "flake-parts": "flake-parts_5",
+        "flake-parts": "flake-parts_6",
         "nixpkgs": "nixpkgs_13"
       },
       "locked": {
@@ -1967,7 +2010,9 @@
         "attic": "attic",
         "comma": "comma",
         "devenv": "devenv",
+        "flake-parts": "flake-parts",
         "fufexan": "fufexan",
+        "gross": "gross_2",
         "grub-theme": "grub-theme",
         "hardware": "hardware",
         "home-manager": "home-manager",
