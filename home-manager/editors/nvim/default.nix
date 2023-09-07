@@ -5,6 +5,10 @@
   };
 
   imports = [
+    ./keymaps.nix
+    ./options.nix
+    ./autocmds.nix
+
     ./plugins/debug.nix
     ./plugins/coding.nix
     ./plugins/editor.nix
@@ -17,8 +21,6 @@
 
     ./plugins/colorscheme.nix
     ./plugins/ui.nix
-    ./plugins/keymaps.nix
-    ./plugins/options.nix
 
     ./plugins/ai.nix
     ./plugins/training.nix

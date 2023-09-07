@@ -12,7 +12,7 @@
       inputs.nixvim.homeManagerModules.nixvim
       inputs.nur.hmModules.nur
 
-      ../../home-manager/desktops/hyprland
+      ../../home-manager/desktops/hyprland.nix
       ../../home-manager/desktops/gtk.nix
       ../../home-manager/fonts.nix
 

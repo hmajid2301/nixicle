@@ -84,4 +84,8 @@
 
   # sway (swayfx) is installed via manually building binaries
   wayland.windowManager.sway.package = lib.mkForce null;
+
+  home.packages = with pkgs; [
+    podman-compose
+  ];
 }

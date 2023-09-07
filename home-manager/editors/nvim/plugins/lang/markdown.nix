@@ -2,11 +2,11 @@
 , pkgs
 , ...
 }: {
-  programs.nixvim = {
-    extraPlugins = with pkgs; [
-      marksman
-    ];
+  home.packages = with pkgs;  [
+    marksman
+  ];
 
+  programs.nixvim = {
     extraConfigLua =
       # lua
       ''

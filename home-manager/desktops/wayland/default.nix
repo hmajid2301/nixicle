@@ -1,16 +1,16 @@
 { pkgs, ... }: {
   imports = [
     ./notifications/mako.nix
-    ./notifications/swaync.nix
-    ./app_launcher/rofi.nix
-    ./app_launcher/wofi.nix
+    #./notifications/swaync.nix
+    ./launchers/rofi.nix
+    ./launchers/wofi.nix
 
     ./gammastep.nix
     ./kanshi.nix
     ./swaylock.nix
     ./wlogout.nix
     ./waybar
-    # ./eww.nix
+    ./eww.nix
     #./xdg.nix
   ];
 
