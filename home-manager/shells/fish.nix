@@ -7,6 +7,7 @@ let
   inherit (colorscheme) colors;
 in
 {
+  # TODO: set in terminal depending on shell
   programs.fish = {
     enable = true;
     interactiveShellInit =
@@ -31,7 +32,6 @@ in
       # FZF
       ''
         export FZF_DEFAULT_OPTS="
-        --bind 'ctrl-j:preview-down,ctrl-k:preview-up'
         --color=bg+:#${colors.base02},bg:#${colors.base00},spinner:#${colors.base06},hl:#${colors.base08}
         --color=fg:#${colors.base05},header:#${colors.base08},info:#${colors.base0E},pointer:#${colors.base06}
         --color=marker:#${colors.base06},fg+:#${colors.base05},prompt:#${colors.base0E},hl+:#${colors.base08}
@@ -93,8 +93,11 @@ in
       ls = "exa";
       sl = "exa";
       cava = "TERM=st-256color cava";
+      tree = "exa --tree";
 
       # nix
+      nd = "nix develop";
+      nfu = "nix flake update";
       hms = "home-manager switch --flake ~/dotfiles#${host}";
       nrs = "sudo nixos-rebuild switch --flake ~/dotfiles#${host}";
 
@@ -118,9 +121,25 @@ in
           echo "Exported key $item[1]"
         end
       '';
+
+      nix = {
+        wraps = "nix";
+        description = "Wraps `nix develop` to run fish instead of bash";
+        body = ''
+          if status is-interactive
+            and test (count $argv) = 1
+            and test $argv[1] = develop
+            command nix develop --command (status fish-path)
+          else
+            command nix $argv
+          end
+        '';
+      };
+
       chtshfzf = ''
         curl --silent "cheat.sh/$(__fzf_cheat_selector)?style=rtt" | bat --style=plain
       '';
+
       __fzf_cheat_selector = ''
         curl --silent "cheat.sh/:list" \
             | fzf-tmux \
@@ -131,6 +150,7 @@ in
             --bind "?:toggle-preview" \
             --preview-window hidden,60%
       '';
+
       fish_greeting = {
         description = "Greeting to show when starting a fish shell";
         body = "fortune | lolcat -f | chara say -c kitten";

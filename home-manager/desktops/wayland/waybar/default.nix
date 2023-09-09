@@ -221,6 +221,7 @@
           format = "  {:%a %d %b  %I:%M %p}";
           format-alt = "  {:%d/%m/%Y  %H:%M:%S}";
           interval = 1;
+          tooltip-format = "<tt><small>{calendar}</small></tt>";
           calendar = {
             mode = "year";
             "mode-mon-col" = 3;

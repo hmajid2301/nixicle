@@ -8,6 +8,7 @@
   programs.nixvim = {
     extraPlugins = with pkgs; [
       vimPlugins.nvim-navic
+      vimPlugins.nui-nvim
       vimPlugins.nvim-web-devicons
       vimPlugins.barbecue-nvim
       maximize-nvim

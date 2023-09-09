@@ -31,7 +31,9 @@
 
     nix-init
     nix-update
-    any-nix-shell
+
+    # sourcegraph
+    src-cli
 
     moreutils
     nvtop-amd
