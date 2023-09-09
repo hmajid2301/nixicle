@@ -19,6 +19,7 @@
     extraPlugins = with pkgs; [ hmts-nvim ];
     extraConfigVim = ''
       au BufRead,BufNewFile flake.lock setf json
+
     '';
   };
 }
