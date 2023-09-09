@@ -5,7 +5,7 @@ devenv.local.nix
 
 # direnv
 .direnv
+.env
 
 # pre-commit
 .pre-commit-config.yaml
-

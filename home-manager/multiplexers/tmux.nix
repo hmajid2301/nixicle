@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, config, ... }:
 let
   # TODO: move to official trepo
   t-smart-manager = pkgs.tmuxPlugins.mkTmuxPlugin {
@@ -130,24 +130,26 @@ in
       }
       {
         plugin = resurrect;
-        extraConfig = ''
-          set -g @resurrect-strategy-vim 'session'
-          set -g @resurrect-strategy-nvim 'session'
-          set -g @resurrect-capture-pane-contents 'on'
+        extraConfig =
+          ''
+            set -g @resurrect-strategy-vim 'session'
+            set -g @resurrect-strategy-nvim 'session'
+            set -g @resurrect-capture-pane-contents 'on'
+          ''
+          +
+          (
+            # NOTE: Only edit resurrect file for NixOS devices
+            if config.host == "curve"
+            then ""
+            else
+              ''
+                # Taken from: https://github.com/p3t33/nixos_flake/blob/5a989e5af403b4efe296be6f39ffe6d5d440d6d6/home/modules/tmux.nix
+                resurrect_dir="$HOME/.tmux/resurrect"
+                set -g @resurrect-dir $resurrect_dir
 
-          # Taken from: https://github.com/p3t33/nixos_flake/blob/5a989e5af403b4efe296be6f39ffe6d5d440d6d6/home/modules/tmux.nix
-          # This three lines are specific to NixOS and they are intended
-          # to edit the tmux_resurrect_* files that are created when tmux
-          # session is saved using the tmux-resurrect plugin. Without going
-          # into too much details the strings that are saved for some applications
-          # such as nvim, vim, man... when using NixOS, appimage, asdf-vm into the
-          # tmux_resurrect_* files can't be parsed and restored. This addition
-          # makes sure to fix the tmux_resurrect_* files so they can be parsed by
-          # the tmux-resurrect plugin and successfully restored.
-          resurrect_dir="$HOME/.tmux/resurrect"
-          set -g @resurrect-dir $resurrect_dir
-          set -g @resurrect-hook-post-save-all 'target=$(readlink -f $resurrect_dir/last); sed "s| --cmd .*-vim-pack-dir||g; s|/etc/profiles/per-user/$USER/bin/||g; s|/home/$USER/.nix-profile/bin/||g" $target | sponge $target'
-        '';
+                set -g @resurrect-hook-post-save-all 'target=$(readlink -f $resurrect_dir/last); sed "s| --cmd .*-vim-pack-dir||g; s|/etc/profiles/per-user/$USER/bin/||g; s|/home/$USER/.nix-profile/bin/||g" $target | sponge $target'
+              ''
+          );
       }
       {
         plugin = continuum;

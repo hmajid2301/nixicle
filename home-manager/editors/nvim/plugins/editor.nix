@@ -36,6 +36,10 @@
           action = "<cmd>Telescope undo<cr>";
           desc = "Show undo tree";
         };
+        "<leader>cn" = {
+          action = "<cmd>Navbuddy<cr>";
+          desc = "Show navbuddy";
+        };
         "<leader>sr" = {
           action =
             # lua
@@ -118,6 +122,7 @@
       telescope-undo-nvim
       nvim-spectre
       flash-nvim
+      nvim-navbuddy
     ];
     extraConfigLua =
       # lua
@@ -132,6 +137,7 @@
 
         require("better_escape").setup()
         require("flash").setup()
+        require("nvim-navbuddy").setup({lsp = { auto_attach = true }})
       '';
   };
 }
