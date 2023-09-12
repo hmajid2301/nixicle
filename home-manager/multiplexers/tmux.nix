@@ -14,12 +14,9 @@ let
   };
 in
 {
-  # TODO: what if this is defined in another file? Merge it!
-  programs.fish = {
-    shellInit = ''
-      fish_add_path ${t-smart-manager}/share/tmux-plugins/t-smart-tmux-session-manager/bin/
-    '';
-  };
+  programs.fish.shellInit = ''
+    fish_add_path ${t-smart-manager}/share/tmux-plugins/t-smart-tmux-session-manager/bin/
+  '';
 
   home.packages = with pkgs; [
     lsof
@@ -29,7 +26,7 @@ in
 
   programs.tmux = {
     enable = true;
-    shell = "${pkgs.fish}/bin/fish";
+    shell = "${config.my.settings.defaultShell}";
     terminal = "tmux-256color";
     historyLimit = 100000;
     keyMode = "vi";
@@ -139,16 +136,16 @@ in
           +
           (
             # NOTE: Only edit resurrect file for NixOS devices
-            if config.host == "curve"
-            then ""
-            else
-              ''
-                # Taken from: https://github.com/p3t33/nixos_flake/blob/5a989e5af403b4efe296be6f39ffe6d5d440d6d6/home/modules/tmux.nix
-                resurrect_dir="$HOME/.tmux/resurrect"
-                set -g @resurrect-dir $resurrect_dir
+            # if config.my.settings.host == "curve"
+            # then ""
+            # else
+            ''
+              # Taken from: https://github.com/p3t33/nixos_flake/blob/5a989e5af403b4efe296be6f39ffe6d5d440d6d6/home/modules/tmux.nix
+              resurrect_dir="$HOME/.tmux/resurrect"
+              set -g @resurrect-dir $resurrect_dir
 
-                set -g @resurrect-hook-post-save-all 'target=$(readlink -f $resurrect_dir/last); sed "s| --cmd .*-vim-pack-dir||g; s|/etc/profiles/per-user/$USER/bin/||g; s|/home/$USER/.nix-profile/bin/||g" $target | sponge $target'
-              ''
+              set -g @resurrect-hook-post-save-all 'target=$(readlink -f $resurrect_dir/last); sed "s| --cmd .*-vim-pack-dir||g; s|/etc/profiles/per-user/$USER/bin/||g; s|/home/$USER/.nix-profile/bin/||g" $target | sponge $target'
+            ''
           );
       }
       {

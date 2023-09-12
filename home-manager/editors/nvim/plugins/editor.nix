@@ -36,7 +36,7 @@
           action = "<cmd>Telescope undo<cr>";
           desc = "Show undo tree";
         };
-        "<leader>cn" = {
+        "<leader>nb" = {
           action = "<cmd>Navbuddy<cr>";
           desc = "Show navbuddy";
         };
