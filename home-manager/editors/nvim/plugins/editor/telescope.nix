@@ -30,6 +30,10 @@
           action = "live_grep";
           desc = "Grep";
         };
+        "<leader>fw" = {
+          action = "grep_string";
+          desc = "Search word under cursor";
+        };
         "<leader>fb" = {
           action = "buffers";
           desc = "Buffers";

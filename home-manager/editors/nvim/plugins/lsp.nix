@@ -16,9 +16,9 @@
           gt = "type_definition";
           "<leader>ca" = {
             action = "code_action";
-            desc = "test";
+            desc = "Show code actions";
           };
-          "<leader>cr" = "rename";
+          "<leader>cr" = { action = "rename"; desc = "Rename"; };
         };
       };
     };

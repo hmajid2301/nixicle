@@ -4,7 +4,7 @@
 , ...
 }: {
   imports = [
-    ./wayland
+    ./common
   ];
 
   # TODO: do I need this? Or is pkgs enough
@@ -19,8 +19,7 @@
     config = {
       modifier = "Mod4";
       window.titlebar = false;
-      # TODO: move this to foot config or let it get set by home.nix
-      terminal = "${pkgs.foot}/bin/foot";
+      terminal = "${config.my.settings.defaultTerminal}";
       menu = "wofi --show drun";
 
       input."type:keyboard" = {
@@ -66,7 +65,7 @@
         { command = "${pkgs.mako}/bin/mako"; }
         { command = "${pkgs.kanshi}/bin/kanshi"; }
         { command = "${pkgs.gammastep}/bin/gammastep-indicator"; }
-        { command = "${pkgs.swaybg}/bin/swaybg -i ${config.wallpaper} --mode fill"; }
+        { command = "${pkgs.swaybg}/bin/swaybg -i ${config.my.settings.wallpaper} --mode fill"; }
         { command = "sway-audio-idle-inhibit -w"; }
         { command = "${pkgs.flashfocus}/bin/flashfocus"; }
         { command = "${pkgs.autotiling}/bin/autotiling"; }
@@ -78,9 +77,8 @@
       keybindings =
         let modifier = config.wayland.windowManager.sway.config.modifier;
         in lib.mkOptionDefault {
-          # TODO: do i need this with terminal
-          "${modifier}+Return" = "exec foot";
-          "${modifier}+b" = "exec ${config.home.sessionVariables.BROWSER}";
+          "${modifier}+Return" = "exec ${config.my.settings.defaultTerminal}";
+          "${modifier}+b" = "exec ${config.my.settings.defaultBrowser}";
           "${modifier}+a" = "exec ${pkgs.wofi}/bin/wofi --show drun";
           "${modifier}+p" = "exec rofi -show drun -mode drun";
           "${modifier}+q" = "kill";
