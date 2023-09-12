@@ -51,6 +51,7 @@ in
     x11.enable = true;
     gtk.enable = true;
   };
+
   home.sessionVariables = {
     XCURSOR_THEME = "Catppuccin-Frappe-Light-Cursors";
     XCURSOR_SIZE = "32";

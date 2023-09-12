@@ -9,7 +9,7 @@
       parse_search = true;
       insensitive = true;
       no_actions = true;
-      term = config.home.sessionVariables.TERMINAL;
+      term = config.my.settings.defaultTerminal;
       location = 0;
       key_up = "CTRL_L-k";
       key_down = "CTRL_L-j";
@@ -114,12 +114,4 @@
          }
       '';
   };
-
-  # TODO: don't hardcode to just sway could use in hyprland as well
-  # TODO: extend don't overwrite
-  # wayland.windowManager.sway.config = {
-  #   keybindings = {
-  #     "${config.wayland.windowManager.sway.config.modifier}+a" = "exec wofi --show drun";
-  #   };
-  # };
 }
