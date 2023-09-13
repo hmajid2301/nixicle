@@ -77,6 +77,12 @@
       devShells = forEachSystem (pkgs: import ./shell.nix { inherit pkgs; });
 
       nixosConfigurations = {
+        iso-desktop = lib.nixosSystem {
+          hostname = "iso-desktop";
+          username = "nixos";
+          installer = nixpkgs + "/nixos/modules/installer/cd-dvd/installation-cd-graphical-gnome.nix";
+        };
+
         # Main desktop
         mesmer = lib.nixosSystem {
           modules = [ ./hosts/mesmer/configuration.nix ];

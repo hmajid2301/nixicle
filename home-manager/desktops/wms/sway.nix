@@ -4,7 +4,7 @@
 , ...
 }: {
   imports = [
-    ./common
+    ./commowaylandn
   ];
 
   # TODO: do I need this? Or is pkgs enough
@@ -19,7 +19,7 @@
     config = {
       modifier = "Mod4";
       window.titlebar = false;
-      terminal = "${config.my.settings.defaultTerminal}";
+      terminal = "${config.my.settings.default.terminal}";
       menu = "wofi --show drun";
 
       input."type:keyboard" = {
@@ -77,8 +77,8 @@
       keybindings =
         let modifier = config.wayland.windowManager.sway.config.modifier;
         in lib.mkOptionDefault {
-          "${modifier}+Return" = "exec ${config.my.settings.defaultTerminal}";
-          "${modifier}+b" = "exec ${config.my.settings.defaultBrowser}";
+          "${modifier}+Return" = "exec ${config.my.settings.default.terminal}";
+          "${modifier}+b" = "exec ${config.my.settings.default.browser}";
           "${modifier}+a" = "exec ${pkgs.wofi}/bin/wofi --show drun";
           "${modifier}+p" = "exec rofi -show drun -mode drun";
           "${modifier}+q" = "kill";
@@ -99,12 +99,12 @@
           "${modifier}+braceleft" = "grimblast --notify --cursor copy area";
 
           # Special Keys
-          XF86MonBrightnessUp = "~/dotfiles/home-manager/desktops/wayland/scripts/brightness.sh --inc";
-          XF86MonBrightnessDown = "~/dotfiles/home-manager/desktops/wayland/scripts/brightness.sh --dec";
-          XF86AudioRaiseVolume = "~/dotfiles/home-manager/desktops/wayland/scripts/volume.sh --inc";
-          XF86AudioLowerVolume = "~/dotfiles/home-manager/desktops/wayland/scripts/volume.sh --dec";
-          XF86AudioMute = "~/dotfiles/home-manager/desktops/wayland/scripts/volume.sh --toggle";
-          XF86AudioMicMute = "~/dotfiles/home-manager/desktops/wayland/scripts/volume.sh --toggle-mic";
+          XF86MonBrightnessUp = "~/dotfiles/home-manager/desktops/wms/common/scripts/brightness.sh --inc";
+          XF86MonBrightnessDown = "~/dotfiles/home-manager/desktops/wms/common/scripts/brightness.sh --dec";
+          XF86AudioRaiseVolume = "~/dotfiles/home-manager/desktops/wms/common/scripts/volume.sh --inc";
+          XF86AudioLowerVolume = "~/dotfiles/home-manager/desktops/wms/common/scripts/volume.sh --dec";
+          XF86AudioMute = "~/dotfiles/home-manager/desktops/wms/common/scripts/volume.sh --toggle";
+          XF86AudioMicMute = "~/dotfiles/home-manager/desktops/wms/common/scripts/volume.sh --toggle-mic";
           XF86AudioNext = "playerctl next";
           XF86AudioPrev = "playerctl previous";
           XF86AudioPlay = "playerctl play-pause";
@@ -119,5 +119,4 @@
       corner_radius 5
     '';
   };
-
 }

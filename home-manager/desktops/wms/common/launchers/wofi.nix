@@ -9,7 +9,7 @@
       parse_search = true;
       insensitive = true;
       no_actions = true;
-      term = config.my.settings.defaultTerminal;
+      term = config.my.settings.default.terminal;
       location = 0;
       key_up = "CTRL_L-k";
       key_down = "CTRL_L-j";

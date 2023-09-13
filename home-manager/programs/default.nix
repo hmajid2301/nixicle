@@ -3,7 +3,7 @@
     ./bat.nix
     ./bottom.nix
     ./calcure.nix
-    ./exa.nix
+    ./eza.nix
     ./devenv.nix
     ./dooit.nix
     ./fzf.nix
@@ -28,6 +28,8 @@
     cargo
     rustc
     go
+
+    ventoy-full
 
     nix-init
     nix-update

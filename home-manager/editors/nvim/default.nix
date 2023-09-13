@@ -1,9 +1,10 @@
-{ pkgs, ... }: {
-  home.file."./.config/nvim" = {
-    source = ./config;
-    recursive = true;
-  };
+{ pkgs, lib, config, ... }:
 
+with lib;
+let
+  cfg = config.modules.editors.nvim;
+in
+{
   imports = [
     ./keymaps.nix
     ./options.nix
@@ -34,8 +35,19 @@
     ./plugins/tmux.nix
   ];
 
-  programs.nixvim = {
-    enable = true;
-    extraPlugins = with pkgs.vimPlugins; [ plenary-nvim ];
+  options.modules.editors.nvim = {
+    enable = mkEnableOption "enable neovim editor";
+  };
+
+  config = mkIf cfg.enable {
+    home.file."./.config/nvim" = {
+      source = ./config;
+      recursive = true;
+    };
+
+    programs.nixvim = {
+      enable = true;
+      extraPlugins = with pkgs.vimPlugins; [ plenary-nvim ];
+    };
   };
 }
