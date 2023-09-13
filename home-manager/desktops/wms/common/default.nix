@@ -5,6 +5,7 @@
     ./launchers/rofi.nix
     ./launchers/wofi.nix
 
+    ./gtk.nix
     ./gammastep.nix
     ./kanshi.nix
     ./swaylock.nix

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-iDIR="$HOME/dotfiles/home-manager/desktops/wayland/icons/"
+iDIR="$HOME/dotfiles/home-manager/desktops/wms/common/icons/"
 
 # Get brightness
 get_backlight() {
