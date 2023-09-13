@@ -1,14 +1,31 @@
-{ lib
+{ inputs
+, lib
 , pkgs
 , config
 , outputs
 , ...
-}:
-{
-  imports = [
-    ./shells/fish.nix
-    ./shells/zsh.nix
-  ] ++ builtins.attrValues outputs.homeManagerModules;
+}: {
+  imports =
+    [
+      inputs.nix-colors.homeManagerModule
+      inputs.nixvim.homeManagerModules.nixvim
+      inputs.nur.hmModules.nur
+      inputs.impermanence.nixosModules.home-manager.impermanence
+
+      ./browsers/firefox.nix
+
+      ./editors/nvim
+
+      ./multiplexers/tmux.nix
+      ./multiplexers/zellij.nix
+
+      ./shells/fish.nix
+      ./shells/zsh.nix
+
+      ./terminals/alacritty.nix
+      ./terminals/foot.nix
+    ]
+    ++ builtins.attrValues outputs.homeManagerModules;
 
   systemd.user.startServices = "sd-switch";
 
@@ -16,7 +33,7 @@
     home-manager.enable = true;
   };
 
-  home.sessionVariables.EDITOR = config.my.settings.defaultEditor;
+  home.sessionVariables.EDITOR = config.my.settings.default.editor;
 
   nixpkgs = {
     overlays = builtins.attrValues outputs.overlays;

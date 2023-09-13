@@ -40,7 +40,7 @@ in
         main = {
           term = "xterm-256color";
           font = "${config.fontProfiles.monospace.family}:size=14";
-          shell = "${config.my.settings.defaultShell}";
+          shell = "${config.my.settings.default.shell}";
           pad = "30x30";
           selection-target = "clipboard";
         };

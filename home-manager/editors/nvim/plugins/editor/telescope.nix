@@ -4,7 +4,7 @@
       normal = {
         "<leader>fa" = {
           action = "<cmd> Telescope find_files follow=true no_ignore=true hidden=true <CR>";
-          desc = "Find Files";
+          desc = "Find All Files";
         };
       };
     };

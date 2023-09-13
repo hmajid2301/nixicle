@@ -5,7 +5,7 @@
 }: {
   imports = [
     inputs.hyprland.homeManagerModules.default
-    ./wayland
+    ./common
   ];
 
   home.packages = [
@@ -15,175 +15,178 @@
 
   wayland.windowManager.hyprland = {
     enable = true;
-    # TODO: rewrite using settings https://mipmip.github.io/home-manager-option-search/?query=hyprland.
-    settings = {
-      "$mod" = "SUPER";
+    # TODO: move to https://github.com/spikespaz/hyprland-nix
+    extraConfig = ''
+      # ASCII Art from https://fsymbols.com/generators/carty/
+      input {
+        kb_layout = gb
+        touchpad {
+          disable_while_typing=false
+        }
+      }
 
-      "$notifycmd" = "notify-send -h string:x-canonical-private-synchronous:hypr-cfg -u low";
+      general {
+        gaps_in = 3
+        gaps_out = 5
+        border_size = 3
+        col.active_border=0xff${config.colorscheme.colors.base07}
+        col.inactive_border=0xff${config.colorscheme.colors.base02}
+        col.group_border_active=0xff${config.colorscheme.colors.base0B}
+        col.group_border=0xff${config.colorscheme.colors.base04}
+      }
 
-      decoration = {
-        rounding = 5;
-      };
+      decoration {
+        rounding=5
+      }
 
-      input = {
-        kb_layout = "gb";
-        touchpad = {
-          disable_while_typing = false;
-        };
-        follow_mouse = 1;
-      };
+      $notifycmd = notify-send -h string:x-canonical-private-synchronous:hypr-cfg -u low
 
-      general = {
-        gaps_in = 3;
-        gaps_out = 5;
-        border_size = 3;
-        "col.active_border" = "0xff${config.colorscheme.colors.base07}";
-        "col.inactive_border" = "0xff${config.colorscheme.colors.base02}";
-        "col.group_border_active" = "0xff${config.colorscheme.colors.base0B}";
-        "col.group_border" = "0xff${config.colorscheme.colors.base04}";
-      };
+      # █▀ █░█ █▀█ █▀█ ▀█▀ █▀▀ █░█ ▀█▀ █▀
+      # ▄█ █▀█ █▄█ █▀▄ ░█░ █▄▄ █▄█ ░█░ ▄█
+      bind = SUPER, Return, exec, ${config.my.settings.default.terminal}
+      bind = SUPER, b, exec, ${config.my.settings.default.browser}
+      bind = SUPER_SHIFT, f, exec, thunar
+      bind = SUPER, a, exec, rofi -show drun -modi drun
+      bind = SUPER, w, exec, makoctl dismiss
 
-      exec-once = [
-        "mako &"
-        "kanshi &"
-        "sway-audio-idle-inhibit &"
-        "waybar &"
-        "gammastep-indicator &"
-        "swaybg -i ${config.wallpaper} --mode fill &"
-      ];
+      # █▀▀ ▀▄▀ █▀▀ █▀▀ █▀█ ▀█▀ █ █▀█ █▄░█ █▀
+      # ██▄ █░█ █▄▄ ██▄ █▀▀ ░█░ █ █▄█ █░▀█ ▄█
+      windowrule = fullscreen, title:^(Steam)$
+      windowrule = fullscreen, title:^(Guild Wars 2)$
+      windowrulev2 = idleinhibit focus, class:^(mpv)$
+      windowrulev2 = idleinhibit fullscreen, class:^(firefox)$
 
-      windowrulev2 = [
-        # Ignore default rules
-        "fullscreen, title:^(Steam)$"
-        "fullscreen, title:^(Guild Wars 2)$"
-        "idleinhibit focus, class:^(mpv)$"
-        "idleinhibit fullscreen, class:^(firefox)"
-      ];
+      # ▄▀█ █░█ ▀█▀ █▀█   █▀ ▀█▀ ▄▀█ █▀█ ▀█▀
+      # █▀█ █▄█ ░█░ █▄█   ▄█ ░█░ █▀█ █▀▄ ░█░
+      exec-once = mako &
+      exec-once = kanshi &
+      exec-once = sway-audio-idle-inhibit -w &
+      exec-once = waybar &
+      exec-once = gammastep-indicator &
+      exec-once = swaybg -i ${config.my.settings.wallpaper} --mode fill &
 
-      bind = [
-        # scripts
-        "CONTROL_ALT,DELETE,exec,~/dotfiles/home-manager/desktops/wayland/scripts/power_menu.sh"
-        "$mod, w, exec, makoctl dismiss"
+      # █▀ █▀▀ █▀█ █ █▀█ ▀█▀ █▀
+      # ▄█ █▄▄ █▀▄ █ █▀▀ ░█░ ▄█
+      bind=CONTROL_ALT,DELETE,exec,~/dotfiles/home-manager/desktops/wayland/scripts/power_menu.sh
+      bindl=,switch:Lid Switch, exec, ~/dotfiles/home-manager/desktops/wayland/scripts/laptop_lid_switch.sh
 
-        # change mode
-        "$mod, F, fullscreen, 0"
-        "$mod, F, exec, $notifycmd 'Fullscreen Mode'"
-        "$mod, S, pseudo,"
-        "$mod, S, exec, $notifycmd 'Pseudo Mode'"
-        "$mod, Space, togglefloating,"
-        "$mod, Space, centerwindow,"
+      # █░░ █▀█ █▀▀ █▄▀   █▀ █▀▀ █▀█ █▀▀ █▀▀ █▄░█
+      # █▄▄ █▄█ █▄▄ █░█   ▄█ █▄▄ █▀▄ ██▄ ██▄ █░▀█
+      bind=,XF86Launch5,exec,swaylock -S
+      bind=,XF86Launch4,exec,swaylock -S
+      bind=SUPER,backspace,exec,swaylock -S
 
-        # move to workspace
-        "$mod,1,workspace,01"
-        "$mod,2,workspace,02"
-        "$mod,3,workspace,03"
-        "$mod,4,workspace,04"
-        "$mod,5,workspace,05"
-        "$mod,6,workspace,06"
-        "$mod,7,workspace,07"
-        "$mod,8,workspace,08"
-        "$mod,9,workspace,09"
-        "$mod,0,workspace,10"
+      # █▀ █▀▀ █▀█ ▄▀█ ▀█▀ █▀▀ █░█ █▀█ ▄▀█ █▀▄
+      # ▄█ █▄▄ █▀▄ █▀█ ░█░ █▄▄ █▀█ █▀▀ █▀█ █▄▀
+      bind=SUPER,u,togglespecialworkspace
+      bind=SUPERSHIFT,u,movetoworkspace,special
 
-        # move window to workspace (without changing)
-        "SUPERSHIFT,1,movetoworkspacesilent,01"
-        "SUPERSHIFT,2,movetoworkspacesilent,02"
-        "SUPERSHIFT,3,movetoworkspacesilent,03"
-        "SUPERSHIFT,4,movetoworkspacesilent,04"
-        "SUPERSHIFT,5,movetoworkspacesilent,05"
-        "SUPERSHIFT,6,movetoworkspacesilent,06"
-        "SUPERSHIFT,7,movetoworkspacesilent,07"
-        "SUPERSHIFT,8,movetoworkspacesilent,08"
-        "SUPERSHIFT,9,movetoworkspacesilent,09"
-        "SUPERSHIFT,0,movetoworkspacesilent,10"
+      # █▀ █▀▀ █▀█ █▀▀ █▀▀ █▄░█ █▀ █░█ █▀█ ▀█▀
+      # ▄█ █▄▄ █▀▄ ██▄ ██▄ █░▀█ ▄█ █▀█ █▄█ ░█░
+      bind=,Print,exec,grimblast --notify copysave area
+      bind=SHIFT,Print,exec,grimblast --notify copy active
+      bind=CONTROL,Print,exec,grimblast --notify copy screen
+      bind=SUPER,Print,exec,grimblast --notify copy window
+      bind=ALT,Print,exec,grimblast --notify copy area
+      bind=SUPER,bracketleft,exec,grimblast --notify --cursor copysave area ~/Pictures/$(date "+%Y-%m-%d"T"%H:%M:%S_no_watermark").png
+      bind=SUPER,bracketright,exec, grimblast --notify --cursor copy area
 
-        # swap windows
-        "SUPERSHIFT,h,swapwindow,l"
-        "SUPERSHIFT,l,swapwindow,r"
-        "SUPERSHIFT,k,swapwindow,u"
-        "SUPERSHIFT,j,swapwindow,d"
+      # █▄▀ █▀▀ █▄█ █▄▄ █▀█ ▄▀█ █▀█ █▀▄   █▀▀ █▀█ █▄░█ ▀█▀ █▀█ █▀█ █░░ █▀
+      # █░█ ██▄ ░█░ █▄█ █▄█ █▀█ █▀▄ █▄▀   █▄▄ █▄█ █░▀█ ░█░ █▀▄ █▄█ █▄▄ ▄█
+      bind=,XF86MonBrightnessUp,exec, ~/dotfiles/home-manager/desktops/wayland/scripts/brightness.sh --inc
+      bind=,XF86MonBrightnessDown,exec, ~/dotfiles/home-manager/desktops/wayland/scripts/brightness.sh --dec
+      bind=,XF86AudioRaiseVolume,exec, ~/dotfiles/home-manager/desktops/wayland/scripts/volume.sh --inc
+      bind=,XF86AudioLowerVolume,exec, ~/dotfiles/home-manager/desktops/wayland/scripts/volume.sh --dec
+      bind=,XF86AudioMute,exec, ~/dotfiles/home-manager/desktops/wayland/scripts/volume.sh --toggle
+      bind=,XF86AudioMicMute,exec, ~/dotfiles/home-manager/desktops/wayland/scripts/volume.sh --toggle-mic
+      bind=,XF86AudioNext,exec,playerctl next
+      bind=,XF86AudioPrev,exec,playerctl previous
+      bind=,XF86AudioPlay,exec,playerctl play-pause
+      bind=,XF86AudioStop,exec,playerctl stop
+      bind=ALT,XF86AudioNext,exec,playerctld shift
+      bind=ALT,XF86AudioPrev,exec,playerctld unshift
+      bind=ALT,XF86AudioPlay,exec,systemctl --user restart playerctld
 
-        # move window
-        "ALTCTRL,l,movewindow,r"
-        "ALTCTRL,h,movewindow,l"
-        "ALTCTRL,k,movewindow,u"
-        "ALTCTRL,j,movewindow,d"
+      # █▀▀ █▀█ █▀▀ █░█ █▀
+      # █▀░ █▄█ █▄▄ █▄█ ▄█
+      bind=SUPER,h,movefocus,l
+      bind=SUPER,l,movefocus,r
+      bind=SUPER,k,movefocus,u
+      bind=SUPER,j,movefocus,d
 
-        # focus
-        "$mod,h,movefocus,l"
-        "$mod,l,movefocus,r"
-        "$mod,k,movefocus,u"
-        "$mod,j,movefocus,d"
+      # █▀ █░█░█ ▄▀█ █▀█   █░█░█ █ █▄░█ █▀▄ █▀█ █░█░█ █▀
+      # ▄█ ▀▄▀▄▀ █▀█ █▀▀   ▀▄▀▄▀ █ █░▀█ █▄▀ █▄█ ▀▄▀▄▀ ▄█
+      bind=SUPERSHIFT,h,swapwindow,l
+      bind=SUPERSHIFT,l,swapwindow,r
+      bind=SUPERSHIFT,k,swapwindow,u
+      bind=SUPERSHIFT,j,swapwindow,d
 
-        # focus monitor
-        "SUPERCONTROL,h,focusmonitor,l"
-        "SUPERCONTROL,l,focusmonitor,r"
-        "SUPERCONTROL,k,focusmonitor,u"
-        "SUPERCONTROL,j,focusmonitor,d"
+      # █▀▀ █▀█ █▀▀ █░█ █▀   █▀▄▀█ █▀█ █▄░█ █ ▀█▀ █▀█ █▀█
+      # █▀░ █▄█ █▄▄ █▄█ ▄█   █░▀░█ █▄█ █░▀█ █ ░█░ █▄█ █▀▄
+      bind=SUPERCONTROL,h,focusmonitor,l
+      bind=SUPERCONTROL,l,focusmonitor,r
+      bind=SUPERCONTROL,k,focusmonitor,u
+      bind=SUPERCONTROL,j,focusmonitor,d
 
-        # move window to monitor
-        "SUPERALT,h,movecurrentworkspacetomonitor,l"
-        "SUPERALT,l,movecurrentworkspacetomonitor,r"
-        "SUPERALT,k,movecurrentworkspacetomonitor,u"
-        "SUPERALT,j,movecurrentworkspacetomonitor,d"
+      # █▀▄▀█ █▀█ █░█ █▀▀   ▀█▀ █▀█   █▀▄▀█ █▀█ █▄░█ █ ▀█▀ █▀█ █▀█
+      # █░▀░█ █▄█ ▀▄▀ ██▄   ░█░ █▄█   █░▀░█ █▄█ █░▀█ █ ░█░ █▄█ █▀▄
+      bind=SUPERALT,h,movecurrentworkspacetomonitor,l
+      bind=SUPERALT,l,movecurrentworkspacetomonitor,r
+      bind=SUPERALT,k,movecurrentworkspacetomonitor,u
+      bind=SUPERALT,j,movecurrentworkspacetomonitor,d
 
-        # screenshot
-        ",Print,exec,grimblast --notify copysave area"
-        "SHIFT,Print,exec,grimblast --notify copy active"
-        "CONTROL,Print,exec,grimblast --notify copy screen"
-        "SUPER,Print,exec,grimblast --notify copy window"
-        "ALT,Print,exec,grimblast --notify copy area"
-        "SUPER,bracketleft,exec,grimblast --notify --cursor copysave area ~/Pictures/$(date \"+%Y-%m-%d\" T \"%H:%M:%S_no_watermark\").png"
-        "SUPER,bracketright,exec, grimblast --notify --cursor copy area"
+      # █▀▀ █░█ ▄▀█ █▄░█ █▀▀ █▀▀   █░█░█ █▀█ █▀█ █▄▀ █▀ █▀█ ▄▀█ █▀▀ █▀▀
+      # █▄▄ █▀█ █▀█ █░▀█ █▄█ ██▄   ▀▄▀▄▀ █▄█ █▀▄ █░█ ▄█ █▀▀ █▀█ █▄▄ ██▄
+      bind=SUPER,1,workspace,01
+      bind=SUPER,2,workspace,02
+      bind=SUPER,3,workspace,03
+      bind=SUPER,4,workspace,04
+      bind=SUPER,5,workspace,05
+      bind=SUPER,6,workspace,06
+      bind=SUPER,7,workspace,07
+      bind=SUPER,8,workspace,08
+      bind=SUPER,9,workspace,09
+      bind=SUPER,0,workspace,10
 
-        # keyboard controls
-        ",XF86MonBrightnessUp,exec, ~/dotfiles/home-manager/desktops/wayland/scripts/brightness.sh --inc"
-        ",XF86MonBrightnessDown,exec, ~/dotfiles/home-manager/desktops/wayland/scripts/brightness.sh --dec"
-        ",XF86AudioRaiseVolume,exec, ~/dotfiles/home-manager/desktops/wayland/scripts/volume.sh --inc"
-        ",XF86AudioLowerVolume,exec, ~/dotfiles/home-manager/desktops/wayland/scripts/volume.sh --dec"
-        ",XF86AudioMute,exec, ~/dotfiles/home-manager/desktops/wayland/scripts/volume.sh --toggle"
-        ",XF86AudioMicMute,exec, ~/dotfiles/home-manager/desktops/wayland/scripts/volume.sh --toggle-mic"
-        ",XF86AudioNext,exec,playerctl next"
-        ",XF86AudioPrev,exec,playerctl previous"
-        ",XF86AudioPlay,exec,playerctl play-pause"
-        ",XF86AudioStop,exec,playerctl stop"
-        "ALT,XF86AudioNext,exec,playerctld shift"
-        "ALT,XF86AudioPrev,exec,playerctld unshift"
-        "ALT,XF86AudioPlay,exec,systemctl --user restart playerctld"
+      # █▀▄▀█ █▀█ █░█ █▀▀   ▀█▀ █▀█   █░█░█ █▀█ █▀█ █▄▀ █▀ █▀█ ▄▀█ █▀▀ █▀▀
+      # █░▀░█ █▄█ ▀▄▀ ██▄   ░█░ █▄█   ▀▄▀▄▀ █▄█ █▀▄ █░█ ▄█ █▀▀ █▀█ █▄▄ ██▄
+      bind=SUPERSHIFT,1,movetoworkspacesilent,01
+      bind=SUPERSHIFT,2,movetoworkspacesilent,02
+      bind=SUPERSHIFT,3,movetoworkspacesilent,03
+      bind=SUPERSHIFT,4,movetoworkspacesilent,04
+      bind=SUPERSHIFT,5,movetoworkspacesilent,05
+      bind=SUPERSHIFT,6,movetoworkspacesilent,06
+      bind=SUPERSHIFT,7,movetoworkspacesilent,07
+      bind=SUPERSHIFT,8,movetoworkspacesilent,08
+      bind=SUPERSHIFT,9,movetoworkspacesilent,09
+      bind=SUPERSHIFT,0,movetoworkspacesilent,10
 
-        # scratch pad
-        "$mod,u,togglespecialworkspace"
-        "SUPERSHIFT,u,movetoworkspace,special"
-      ];
+      bind=ALTCTRL,L,movewindow,r
+      bind=ALTCTRL,H,movewindow,l
+      bind=ALTCTRL,K,movewindow,u
+      bind=ALTCTRL,J,movewindow,d
 
-      bindl = [
-        ",switch:Lid Switch, exec, ~/dotfiles/home-manager/desktops/wayland/scripts/laptop_lid_switch.sh"
-      ];
+      # █░█░█ █ █▄░█ █▀▄ █▀█ █░█░█   █▀▄▀█ ▄▀█ █▄░█ ▄▀█ █▀▀ █▀▄▀█ █▀▀ █▄░█ ▀█▀
+      # ▀▄▀▄▀ █ █░▀█ █▄▀ █▄█ ▀▄▀▄▀   █░▀░█ █▀█ █░▀█ █▀█ █▄█ █░▀░█ ██▄ █░▀█ ░█░
+      bind = SUPER, Q, killactive,
+      bind = SUPER, F,      fullscreen, 0
+      bind = SUPER, F,      exec, $notifycmd 'Fullscreen Mode'
+      bind = SUPER, S,      pseudo,
+      bind = SUPER, S,      exec, $notifycmd 'Pseudo Mode'
+      bind = SUPER, Space,  togglefloating,
+      bind = SUPER, Space,  centerwindow,
 
-      bindm = [
-        # main shortcuts
-        "$mod, Return, exec, ${config.home.sessionVariables.TERMINAL}"
-        "$mod, b, exec, ${config.home.sessionVariables.browser}"
-        "$mod, a, exec, ${pkgs.rofi}/bin/rofi -show drun -modi drun"
-        "$mod, q, exec, killactive"
+      # █▀▄▀█ █▀█ █░█ █▀ █▀▀   █▄▄ █ █▄░█ █▀▄ █ █▄░█ █▀▀
+      # █░▀░█ █▄█ █▄█ ▄█ ██▄   █▄█ █ █░▀█ █▄▀ █ █░▀█ █▄█
+      bindm=SUPER, mouse:272, movewindow
+      bindm=SUPER, mouse:273, resizewindow
 
-        # Lock screen
-        "XF86Launch5, exec, swaylock -S"
-        "XF86Launch4, exec, swaylock -S"
-        "$mod, backspace, exec, swaylock -S"
-
-        # mouse movements
-        "$mod, mouse:272, movewindow"
-        "$mod, mouse:273, resizewindow"
-        "$mod ALT, mouse:272, resizewindow"
-      ];
-
-      binde = [
-        "SUPERALT, h, resizeactive, -20 0"
-        "SUPERALT, l, resizeactive, 20 0"
-        "SUPERALT, k, resizeactive, 0 -20"
-        "SUPERALT, j, resizeactive, 0 20"
-      ];
-    };
+      # █▀█ █▀▀ █▀ █ ▀█ █▀▀
+      # █▀▄ ██▄ ▄█ █ █▄ ██▄
+      binde = SUPERALT, h, resizeactive, -20 0
+      binde = SUPERALT, l, resizeactive, 20 0
+      binde = SUPERALT, k, resizeactive, 0 -20
+      binde = SUPERALT, j, resizeactive, 0 20
+    '';
   };
 }
