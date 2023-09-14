@@ -18,29 +18,27 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     nur.url = "github:nix-community/NUR";
-
     home-manager.url = "github:nix-community/home-manager";
-    home-manager.inputs.nixpkgs.follows = "nixpkgs";
-    devenv.url = "github:cachix/devenv/latest";
+
+    disko.url = "github:nix-community/disko";
     hardware.url = "github:nixos/nixos-hardware";
     sops-nix.url = "github:mic92/sops-nix";
     impermanence.url = "github:nix-community/impermanence";
-    nwg-displays.url = "github:nwg-piotr/nwg-displays/master";
 
-    nix-gaming.url = "github:fufexan/nix-gaming";
     hyprland.url = "github:hyprwm/Hyprland";
     hypr-contrib.url = "github:hyprwm/contrib";
-    fufexan.url = "github:fufexan/dotfiles";
     nix-colors.url = "github:misterio77/nix-colors";
     nixvim.url = "github:pta2002/nixvim";
+
+    pre-commit-hooks.url = "github:cachix/pre-commit-hooks.nix";
     comma.url = "github:nix-community/comma";
-    attic.url = "github:zhaofengli/attic";
 
     grub-theme = {
       url = "github:catppuccin/grub";
       flake = false;
     };
 
+    fufexan.url = "github:fufexan/dotfiles";
     flake-parts = {
       url = "github:hercules-ci/flake-parts";
       inputs.nixpkgs-lib.follows = "nixpkgs";
@@ -51,12 +49,15 @@
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.flake-parts.follows = "flake-parts";
     };
+    attic.url = "github:zhaofengli/attic";
+    nwg-displays.url = "github:nwg-piotr/nwg-displays/master";
   };
 
   outputs =
     { self
     , nixpkgs
     , home-manager
+    , pre-commit-hooks
     , ...
     } @ inputs:
     let
@@ -70,17 +71,58 @@
       inherit lib;
       nixosModules = import ./modules/nixos;
       homeManagerModules = import ./modules/home-manager;
-
       overlays = import ./overlays { inherit inputs outputs; };
-
       packages = forEachSystem (pkgs: import ./pkgs { inherit pkgs; });
-      devShells = forEachSystem (pkgs: import ./shell.nix { inherit pkgs; });
+
+      devShells = forEachSystem ({ pkgs }: {
+        checks = {
+          pre-commit-check = pre-commit-hooks.lib.${pkgs.system}.run {
+            src = ./.;
+            hooks = {
+              nixpkgs-fmt.enable = true;
+              statix.enable = true;
+            };
+          };
+        };
+
+        inherit (self.checks.${pkgs.system}.pre-commit-check) shellHook;
+
+        json2nix = pkgs.writeScriptBin "json2nix" ''
+          ${pkgs.python3}/bin/python ${pkgs.fetchurl {
+            url = "https://gist.githubusercontent.com/Scoder12/0538252ed4b82d65e59115075369d34d/raw/e86d1d64d1373a497118beb1259dab149cea951d/json2nix.py";
+            hash = "sha256-ROUIrOrY9Mp1F3m+bVaT+m8ASh2Bgz8VrPyyrQf9UNQ=";
+          }} $@
+        '';
+
+        yaml2nix = pkgs.writeScriptBin "yaml2nix" ''
+          										nix run github:euank/yaml2nix '.args'
+        '';
+
+        default = pkgs.mkShell {
+          NIX_CONFIG = "extra-experimental-features = nix-command flakes repl-flake";
+          nativeBuildInputs = with pkgs; [
+            nixpkgs-fmt
+            update-nix-fetchgit
+            nix
+            home-manager
+            git
+
+            sops
+            ssh-to-age
+            gnupg
+            age
+          ];
+        };
+      });
 
       nixosConfigurations = {
-        iso-desktop = lib.nixosSystem {
-          hostname = "iso-desktop";
-          username = "nixos";
-          installer = nixpkgs + "/nixos/modules/installer/cd-dvd/installation-cd-graphical-gnome.nix";
+        iso = lib.nixosSystem {
+          modules = [
+            "${nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-graphical-calamares-gnome.nix"
+            "${nixpkgs}/nixos/modules/installer/cd-dvd/channel.nix"
+            ./hosts/iso/configuration.nix
+          ];
+          specialArgs = { inherit inputs outputs; };
         };
 
         # Main desktop

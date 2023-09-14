@@ -1,11 +1,9 @@
-{ inputs
-, pkgs
-, ...
-}: {
+{ inputs, pkgs, ... }: {
   imports = [
     inputs.hardware.nixosModules.framework-12th-gen-intel
     inputs.nix-gaming.nixosModules.default
     inputs.hyprland.nixosModules.default
+    inputs.disko.nixosModules.disko
 
     ./hardware-configuration.nix
     ./users/haseeb
@@ -21,8 +19,8 @@
     ../../nixos/optional/greetd.nix
     ../../nixos/optional/quietboot.nix
     ../../nixos/optional/mullvad.nix
+    ../../nixos/optional/grub.nix
 
-    #../nixos/optional/grub.nix
     #../nixos/optional/wireless.nix
     #../../nixos/optional/ephemeral.nix
   ];
@@ -44,20 +42,6 @@
   services.udisks2.enable = true;
   services.dbus.enable = true;
   programs.dconf.enable = true;
-
-  boot = {
-    loader = {
-      systemd-boot.enable = true;
-      efi.canTouchEfiVariables = true;
-    };
-    initrd.luks.devices = {
-      root = {
-        device = "/dev/disk/by-uuid/fc112246-8ce0-47c7-95e5-106be34e9501";
-        preLVM = true;
-      };
-    };
-    kernelPackages = pkgs.linuxPackages_latest;
-  };
 
   system.autoUpgrade = {
     enable = true;
