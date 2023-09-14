@@ -67,8 +67,8 @@
 
       # █▀ █▀▀ █▀█ █ █▀█ ▀█▀ █▀
       # ▄█ █▄▄ █▀▄ █ █▀▀ ░█░ ▄█
-      bind=CONTROL_ALT,DELETE,exec,~/dotfiles/home-manager/desktops/wayland/scripts/power_menu.sh
-      bindl=,switch:Lid Switch, exec, ~/dotfiles/home-manager/desktops/wayland/scripts/laptop_lid_switch.sh
+      bind=CONTROL_ALT,DELETE,exec,~/dotfiles/home-manager/desktops/wms/common/scripts/power_menu.sh
+      bindl=,switch:Lid Switch, exec, ~/dotfiles/home-manager/desktops/wms/common/scripts/laptop_lid_switch.sh
 
       # █░░ █▀█ █▀▀ █▄▀   █▀ █▀▀ █▀█ █▀▀ █▀▀ █▄░█
       # █▄▄ █▄█ █▄▄ █░█   ▄█ █▄▄ █▀▄ ██▄ ██▄ █░▀█
@@ -93,12 +93,12 @@
 
       # █▄▀ █▀▀ █▄█ █▄▄ █▀█ ▄▀█ █▀█ █▀▄   █▀▀ █▀█ █▄░█ ▀█▀ █▀█ █▀█ █░░ █▀
       # █░█ ██▄ ░█░ █▄█ █▄█ █▀█ █▀▄ █▄▀   █▄▄ █▄█ █░▀█ ░█░ █▀▄ █▄█ █▄▄ ▄█
-      bind=,XF86MonBrightnessUp,exec, ~/dotfiles/home-manager/desktops/wayland/scripts/brightness.sh --inc
-      bind=,XF86MonBrightnessDown,exec, ~/dotfiles/home-manager/desktops/wayland/scripts/brightness.sh --dec
-      bind=,XF86AudioRaiseVolume,exec, ~/dotfiles/home-manager/desktops/wayland/scripts/volume.sh --inc
-      bind=,XF86AudioLowerVolume,exec, ~/dotfiles/home-manager/desktops/wayland/scripts/volume.sh --dec
-      bind=,XF86AudioMute,exec, ~/dotfiles/home-manager/desktops/wayland/scripts/volume.sh --toggle
-      bind=,XF86AudioMicMute,exec, ~/dotfiles/home-manager/desktops/wayland/scripts/volume.sh --toggle-mic
+      bind=,XF86MonBrightnessUp,exec, ~/dotfiles/home-manager/desktops/wms/common/scripts/brightness.sh --inc
+      bind=,XF86MonBrightnessDown,exec, ~/dotfiles/home-manager/desktops/wms/common/scripts/brightness.sh --dec
+      bind=,XF86AudioRaiseVolume,exec, ~/dotfiles/home-manager/desktops/wms/common/scripts/volume.sh --inc
+      bind=,XF86AudioLowerVolume,exec, ~/dotfiles/home-manager/desktops/wms/common/scripts/volume.sh --dec
+      bind=,XF86AudioMute,exec, ~/dotfiles/home-manager/desktops/wms/common/scripts/volume.sh --toggle
+      bind=,XF86AudioMicMute,exec, ~/dotfiles/home-manager/desktops/wms/common/scripts/volume.sh --toggle-mic
       bind=,XF86AudioNext,exec,playerctl next
       bind=,XF86AudioPrev,exec,playerctl previous
       bind=,XF86AudioPlay,exec,playerctl play-pause

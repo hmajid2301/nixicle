@@ -4,7 +4,7 @@
     ./bottom.nix
     ./calcure.nix
     ./eza.nix
-    ./devenv.nix
+    ./direnv.nix
     ./dooit.nix
     ./fzf.nix
     ./git.nix
