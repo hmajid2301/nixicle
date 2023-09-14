@@ -73,47 +73,7 @@
       homeManagerModules = import ./modules/home-manager;
       overlays = import ./overlays { inherit inputs outputs; };
       packages = forEachSystem (pkgs: import ./pkgs { inherit pkgs; });
-
-      devShells = forEachSystem ({ pkgs }: {
-        checks = {
-          pre-commit-check = pre-commit-hooks.lib.${pkgs.system}.run {
-            src = ./.;
-            hooks = {
-              nixpkgs-fmt.enable = true;
-              statix.enable = true;
-            };
-          };
-        };
-
-        inherit (self.checks.${pkgs.system}.pre-commit-check) shellHook;
-
-        json2nix = pkgs.writeScriptBin "json2nix" ''
-          ${pkgs.python3}/bin/python ${pkgs.fetchurl {
-            url = "https://gist.githubusercontent.com/Scoder12/0538252ed4b82d65e59115075369d34d/raw/e86d1d64d1373a497118beb1259dab149cea951d/json2nix.py";
-            hash = "sha256-ROUIrOrY9Mp1F3m+bVaT+m8ASh2Bgz8VrPyyrQf9UNQ=";
-          }} $@
-        '';
-
-        yaml2nix = pkgs.writeScriptBin "yaml2nix" ''
-          										nix run github:euank/yaml2nix '.args'
-        '';
-
-        default = pkgs.mkShell {
-          NIX_CONFIG = "extra-experimental-features = nix-command flakes repl-flake";
-          nativeBuildInputs = with pkgs; [
-            nixpkgs-fmt
-            update-nix-fetchgit
-            nix
-            home-manager
-            git
-
-            sops
-            ssh-to-age
-            gnupg
-            age
-          ];
-        };
-      });
+      devShells = forEachSystem (pkgs: import ./shell.nix { inherit pkgs pre-commit-hooks; });
 
       nixosConfigurations = {
         iso = lib.nixosSystem {
