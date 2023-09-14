@@ -49,6 +49,7 @@
             -- Go
             require("null-ls").builtins.formatting.goimports.with({ command = "${pkgs.gotools}/bin/goimports" }),
             require("null-ls").builtins.formatting.gofumpt.with({ command = "${pkgs.gofumpt}/bin/gofumpt" }),
+            require("null-ls").builtins.diagnostics.golangci_lint.with({ command = "${pkgs.golangci-lint}/bin/golangci-lint" }),
             require("null-ls").builtins.code_actions.gomodifytags.with({ command = "${pkgs.gomodifytags}/bin/gomodifytags" }),
             require("null-ls").builtins.code_actions.impl.with({ command = "${pkgs.impl}/bin/impl" }),
           },

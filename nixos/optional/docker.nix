@@ -15,9 +15,9 @@
     podman-tui
   ];
 
-  environment.persistence = {
-    "/persist".directories = [
-      "/var/lib/containers"
-    ];
-  };
+  # environment.persistence = {
+  #   "/persist".directories = [
+  #     "/var/lib/containers"
+  #   ];
+  # };
 }

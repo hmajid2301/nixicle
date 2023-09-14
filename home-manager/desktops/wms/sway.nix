@@ -4,7 +4,7 @@
 , ...
 }: {
   imports = [
-    ./commowaylandn
+    ./common
   ];
 
   # TODO: do I need this? Or is pkgs enough
