@@ -35,7 +35,6 @@
         	set -euo pipefail
 
         	TARGET_HOST="''${1:-}"
-        	TARGET_USER="''${2:-haseeb}"
 
         	if [ "$(id -u)" -eq 0 ]; then
         		echo "ERROR! $(basename "$0") should be run as a regular user"
@@ -45,8 +44,6 @@
         	if [ ! -d "$HOME/dotfiles/.git" ]; then
         		git clone https://gitlab.com/hmajid2301/dotfiles.git "$HOME/dotfiles"
         	fi
-
-        	mkdir "$HOME/dotfiles/"
 
         	if [[ -z "$TARGET_HOST" ]]; then
         		echo "ERROR! $(basename "$0") requires a hostname as the first argument"
