@@ -4,12 +4,14 @@
 }: {
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  nixpkgs.config.allowUnfree = true;
 
+  hardware.enableAllFirmware = true;
   boot.kernelPackages = pkgs.linuxPackages_latest;
   boot.supportedFilesystems = lib.mkForce [ "btrfs" "reiserfs" "vfat" "f2fs" "xfs" "ntfs" "cifs" ];
 
   services.openssh.enable = true;
-  services.openssh.settings.passwordAuthentication = true;
+  services.openssh.settings.PasswordAuthentication = true;
 
   systemd.services.sshd.wantedBy = pkgs.lib.mkForce [ "multi-user.target" ];
 
