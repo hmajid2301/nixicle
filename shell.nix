@@ -23,6 +23,7 @@
       };
     in
     pkgs.mkShell {
+      NIX_CONFIG = "experimental-features = nix-command flakes";
       inherit (pre-commit-check) shellHook;
 
       json2nix = pkgs.writeScriptBin "json2nix" ''

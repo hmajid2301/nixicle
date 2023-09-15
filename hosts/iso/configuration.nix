@@ -6,7 +6,6 @@
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
   nixpkgs.config.allowUnfree = true;
 
-  hardware.enableAllFirmware = true;
   boot.kernelPackages = pkgs.linuxPackages_latest;
   boot.supportedFilesystems = lib.mkForce [ "btrfs" "reiserfs" "vfat" "f2fs" "xfs" "ntfs" "cifs" ];
 
@@ -20,11 +19,13 @@
     "ssh-ed25519 AaAeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee username@host"
   ];
 
+  programs.direnv.package = true;
+  programs.direnv.nix-direnv.enable = true;
+
   services.xserver = {
     layout = "gb";
     xkbVariant = "";
   };
-  # Configure console keymap
   console.keyMap = "uk";
 
   environment.systemPackages = with pkgs; [
