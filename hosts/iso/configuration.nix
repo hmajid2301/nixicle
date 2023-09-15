@@ -31,7 +31,7 @@
   environment.systemPackages = with pkgs; [
     git
     (
-      writeShellScriptBin "install" ''
+      writeShellScriptBin "nix_installer" ''
         	#!/usr/bin/env bash
         	set -euo pipefail
 
