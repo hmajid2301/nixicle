@@ -16,8 +16,8 @@
       };
     };
     initrd.luks.devices = {
-      root = {
-        device = "/dev/disk/by-label/luks";
+      cryptroot = {
+        device = "/dev/nvme0n1p3";
       };
     };
     kernelPackages = pkgs.linuxPackages_latest;
