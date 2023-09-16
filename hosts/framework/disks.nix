@@ -49,8 +49,7 @@
                   type = "btrfs";
                   extraArgs = [ "-L" "nixos" ]; # -f ?
                   subvolumes = {
-                    "/root" = { };
-                    "/" = {
+                    "/root" = {
                       mountpoint = "/";
                       mountOptions = [ "subvol=root" "compress=zstd" "noatime" ];
                     };
