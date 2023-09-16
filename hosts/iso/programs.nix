@@ -1,7 +1,6 @@
 {
   imports = [
     ../../home-manager
-    ../../home-manager/programs
   ];
 
   config = {
