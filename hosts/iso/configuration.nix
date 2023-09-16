@@ -2,15 +2,19 @@
 , lib
 , ...
 }: {
+  imports = [
+    ../../nixos/global
+  ];
+
+  home-manager.users.nixos = import ./home.nix;
+
+
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
   nixpkgs.config.allowUnfree = true;
 
   boot.kernelPackages = pkgs.linuxPackages_latest;
   boot.supportedFilesystems = lib.mkForce [ "btrfs" "reiserfs" "vfat" "f2fs" "xfs" "ntfs" "cifs" ];
-
-  services.openssh.enable = true;
-  services.openssh.settings.PasswordAuthentication = true;
 
   systemd.services.sshd.wantedBy = pkgs.lib.mkForce [ "multi-user.target" ];
 
@@ -22,6 +26,7 @@
   programs.direnv.package = true;
   programs.direnv.nix-direnv.enable = true;
 
+  services.openssh.settings.PermitRootLogin = lib.mkForce "yes";
   services.xserver = {
     layout = "gb";
     xkbVariant = "";
@@ -29,6 +34,7 @@
   console.keyMap = "uk";
 
   environment.systemPackages = with pkgs; [
+    vim
     git
     (
       writeShellScriptBin "nix_installer" ''

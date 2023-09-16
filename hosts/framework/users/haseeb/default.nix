@@ -1,11 +1,7 @@
 { pkgs
 , config
 , ...
-}:
-let
-  ifTheyExist = groups: builtins.filter (group: builtins.hasAttr group config.users.groups) groups;
-in
-{
+}: {
   sops.secrets.haseeb_password = {
     sopsFile = ../../secrets.yaml;
     neededForUsers = true;
@@ -17,20 +13,17 @@ in
     isNormalUser = true;
     shell = pkgs.fish;
     description = "haseeb";
-    extraGroups =
-      [
-        "wheel"
-        "video"
-        "audio"
-        "networkmanager"
-        "libvirtd"
-        "kvm"
-        "docker"
-        "podman"
-        "git"
-      ]
-      ++ ifTheyExist [
-      ];
+    extraGroups = [
+      "wheel"
+      "video"
+      "audio"
+      "networkmanager"
+      "libvirtd"
+      "kvm"
+      "docker"
+      "podman"
+      "git"
+    ];
     passwordFile = config.sops.secrets.haseeb_password.path;
     packages = [ pkgs.home-manager ];
   };
