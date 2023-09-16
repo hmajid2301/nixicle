@@ -49,12 +49,12 @@
         	if [[ -z "$TARGET_HOST" ]]; then
         		echo "ERROR! $(basename "$0") requires a hostname as the first argument"
         		echo "       The following hosts are available"
-        		ls -1 nixos/*/default.nix | cut -d'/' -f2 | grep -v iso
+        		ls -1 ~/dotfiles/hosts/*/configuration.nix | cut -d'/' -f2 | grep -v iso
         		exit 1
         	fi
 
-        	if [ ! -e "hosts/$TARGET_HOST/disks.nix" ]; then
-        		echo "ERROR! $(basename "$0") could not find the required nixos/$TARGET_HOST/disks.nix"
+        	if [ ! -e "~/dotfiles/hosts/$TARGET_HOST/disks.nix" ]; then
+        		echo "ERROR! $(basename "$0") could not find the required ~/dotfiles/hosts/$TARGET_HOST/disks.nix"
         		exit 1
         	fi
 
@@ -69,7 +69,6 @@
 
         		sudo nix run github:nix-community/disko \
         			--no-write-lock-file \
-        			-- \
         			--mode zap_create_mount \
         			"~/dotfiles/hosts/$TARGET_HOST/disks.nix"
 
