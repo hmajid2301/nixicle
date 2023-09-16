@@ -3,7 +3,6 @@
 , ...
 }: {
   imports = [
-    inputs.nix-gaming.nixosModules.default
     inputs.hyprland.nixosModules.default
 
     ./hardware-configuration.nix

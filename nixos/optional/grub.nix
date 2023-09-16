@@ -14,7 +14,7 @@
         useOSProber = true;
         theme = inputs.grub-theme + "/src/catppuccin-mocha-grub-theme";
         enableCryptodisk = true;
-        device = "/dev/nvme0n1";
+        device = "/dev/nvme0n1p1";
       };
     };
     initrd.luks.devices = {
