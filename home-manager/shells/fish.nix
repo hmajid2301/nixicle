@@ -108,6 +108,7 @@ in
         nfu = "nix flake update";
         hms = "home-manager switch --flake ~/dotfiles#${host}";
         nrs = "sudo nixos-rebuild switch --flake ~/dotfiles#${host}";
+        niso = "nix build .#nixosConfigurations.iso.config.system.build.isoImage";
 
         # new commads
         kp = "ps -ef | sed 1d | eval \"fzf $FZF_DEFAULT_OPTS -m --header=\'[kill:process]\'\" | awk \'{print $2}\'";
