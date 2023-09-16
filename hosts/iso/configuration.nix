@@ -16,7 +16,6 @@
   systemd.services.sshd.wantedBy = pkgs.lib.mkForce [ "multi-user.target" ];
 
   home-manager.users.nixos = import ./home.nix;
-  users.defaultUserShell = pkgs.fish;
   users.extraUsers.root.password = "nixos";
   users.users.root.openssh.authorizedKeys.keys = [
     "ssh-ed25519 AaAeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee username@host"
@@ -62,6 +61,8 @@
 
         sudo true
 
+				echo "Partitioning Disks"
+
         sudo nix run github:nix-community/disko \
         --extra-experimental-features "nix-command flakes" \
         --no-write-lock-file \
@@ -69,9 +70,11 @@
         --mode zap_create_mount \
         "$HOME/dotfiles/hosts/$TARGET_HOST/disks.nix"
 
+				echo "Creating blank volume"
         sudo btrfs subvolume create /mnt/root
         sudo btrfs subvolume snapshot -r /mnt/root /mnt/root-blank
-        sudo nixos-install --flake "$HOME/dotfiles#$TARGET_HOST"
+
+				sudo nixos-install --flake "$HOME/dotfiles#$TARGET_HOST"
       ''
     )
   ];
