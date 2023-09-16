@@ -10,7 +10,7 @@
 
     maps = {
       normalVisualOp = {
-        "<leader>fls" = {
+        "<leader>gls" = {
           action =
             # lua
             ''
@@ -20,7 +20,7 @@
             '';
           desc = "Run flash";
         };
-        "<leader>flt" = {
+        "<leader>glt" = {
           action =
             # lua
             ''

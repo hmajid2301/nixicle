@@ -84,7 +84,7 @@ in
           bind --mode insert --sets-mode default jk repaint
         '';
       shellAliases = {
-        l = "exa --group --header --group-directories-first --long --git --all --binary --all --icons";
+        l = "eza --group --header --group-directories-first --long --git --all --binary --all --icons";
       };
       shellAbbrs = {
         # abbr existing commands
@@ -98,10 +98,10 @@ in
         curl = "curlie";
         rm = "trash";
         ping = "gping";
-        ls = "exa";
-        sl = "exa";
+        ls = "eza";
+        sl = "eza";
         cava = "TERM=st-256color cava";
-        tree = "exa --tree";
+        tree = "eza --tree";
 
         # nix
         nd = "nix develop";

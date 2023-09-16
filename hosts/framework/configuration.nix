@@ -1,7 +1,6 @@
 { inputs, pkgs, ... }: {
   imports = [
     inputs.hardware.nixosModules.framework-12th-gen-intel
-    inputs.nix-gaming.nixosModules.default
     inputs.hyprland.nixosModules.default
     inputs.disko.nixosModules.disko
 
