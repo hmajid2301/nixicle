@@ -10,11 +10,10 @@
       };
       grub = {
         enable = true;
+        version = 2;
         efiSupport = true;
-        useOSProber = true;
         theme = inputs.grub-theme + "/src/catppuccin-mocha-grub-theme";
-        enableCryptodisk = true;
-        device = "/dev/nvme0n1p1";
+        device = "nodev";
       };
     };
     initrd.luks.devices = {
