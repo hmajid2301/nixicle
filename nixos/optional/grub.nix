@@ -10,7 +10,6 @@
       };
       grub = {
         enable = true;
-        version = 2;
         efiSupport = true;
         theme = inputs.grub-theme + "/src/catppuccin-mocha-grub-theme";
         device = "nodev";

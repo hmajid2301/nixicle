@@ -12,6 +12,9 @@
       inputs.nur.hmModules.nur
       inputs.impermanence.nixosModules.home-manager.impermanence
 
+      ./fonts.nix
+      ./programs
+
       ./browsers/firefox.nix
 
       ./editors/nvim

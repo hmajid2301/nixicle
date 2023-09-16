@@ -2,18 +2,12 @@
   imports = [
     ../../home-manager
     ../../home-manager/desktops/wms/hyprland.nix
-    ../../home-manager/fonts.nix
 
     ../../home-manager/programs/android.nix
     ../../home-manager/programs/kdeconnect.nix
-    ../../home-manager/browsers/firefox.nix
-
-    ../../home-manager/editors/nvim
-    ../../home-manager/multiplexers/tmux.nix
 
     ../../home-manager/games
 
-    ../../home-manager/programs
     ../../home-manager/programs/k8s.nix
     ../../home-manager/programs/atuin
 
