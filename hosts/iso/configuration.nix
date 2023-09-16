@@ -76,7 +76,7 @@
 
         	sudo btrfs subvolume create /mnt/root
         	sudo btrfs subvolume snapshot -r /mnt/root /mnt/root-blank
-        	sudo nixos-install --flake "~/dotfiles#$TARGET_HOST"
+        	sudo nixos-install --flake "$HOME/dotfiles#$TARGET_HOST"
         fi
       ''
     )
