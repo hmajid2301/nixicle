@@ -10,7 +10,6 @@
     ../../home-manager/programs
     ../../home-manager/programs/k8s.nix
     ../../home-manager/programs/kafka.nix
-    ../../home-manager/programs/atuin
 
     ../../home-manager/security/sops.nix
     ../../home-manager/security/yubikey.nix

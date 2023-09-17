@@ -14,10 +14,10 @@ in
       size = 12;
     };
 
-    # theme = {
-    #   name = "${config.colorscheme.slug}";
-    #   package = gtkThemeFromScheme { scheme = config.colorscheme; };
-    # };
+    theme = {
+      name = "${config.colorscheme.slug}";
+      package = gtkThemeFromScheme { scheme = config.colorscheme; };
+    };
 
     iconTheme = {
       name = "Papirus-Dark";

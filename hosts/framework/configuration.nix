@@ -8,6 +8,7 @@
     ./users/haseeb
 
     ../../nixos/global
+    ../../nixos/optional/attic.nix
     ../../nixos/optional/backup.nix
     ../../nixos/optional/fingerprint.nix
     ../../nixos/optional/opengl.nix
