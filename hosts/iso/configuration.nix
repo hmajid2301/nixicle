@@ -4,6 +4,7 @@
 }: {
   imports = [
     ../../nixos/global
+    ../../nixos/optional/attic.nix
   ];
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
@@ -61,8 +62,8 @@
 
         sudo true
 
-				echo "Partitioning Disks"
-
+        echo "Partitioning Disks"
+        # TODO: partition inside nixos install
         sudo nix run github:nix-community/disko \
         --extra-experimental-features "nix-command flakes" \
         --no-write-lock-file \
@@ -70,11 +71,16 @@
         --mode zap_create_mount \
         "$HOME/dotfiles/hosts/$TARGET_HOST/disks.nix"
 
-				echo "Creating blank volume"
+        echo "Creating blank volume"
         sudo btrfs subvolume create /mnt/root
         sudo btrfs subvolume snapshot -r /mnt/root /mnt/root-blank
 
-				sudo nixos-install --flake "$HOME/dotfiles#$TARGET_HOST"
+        echo "Set up attic binary cache"
+        ATTIC_TOKEN=$(gum input --placeholder "Enter your Attic token here" --password)
+        attic login prod https://majiy00-nix-binary-cache.fly.dev $ATTIC_TOKEN
+        attic use cache prod:prod
+
+        sudo nixos-install --flake "$HOME/dotfiles#$TARGET_HOST"
       ''
     )
   ];

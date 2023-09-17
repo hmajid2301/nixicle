@@ -5,6 +5,7 @@
     experimental-features = [ "nix-command" "flakes" ];
     substituters = [
       "https://cache.nixos.org/"
+      "https://majiy00-nix-binary-cache.fly.dev/prod"
     ];
 
     extra-substituters = [
@@ -12,6 +13,7 @@
     ];
     extra-trusted-public-keys = [
       "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
+      "prod:fjP15qp9O3/x2WTb1LiQ2bhjxkBBip3uhjlDyqywz3I="
     ];
   };
 
