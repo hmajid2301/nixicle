@@ -4,24 +4,41 @@
 , ...
 }: {
   imports = [
-    ./programs.nix
+    ../../home-manager
+    ../../home-manager/programs
   ];
 
-  my.settings = {
-    host = "iso";
-    default = {
-      shell = "fish";
-      terminal = "foot";
-      browser = "firefox";
-      editor = "nvim";
+  config = {
+    modules = {
+      editors = {
+        nvim.enable = true;
+      };
+
+      shells = {
+        fish.enable = true;
+      };
+
+      terminals = {
+        foot.enable = true;
+      };
     };
-  };
 
-  colorscheme = inputs.nix-colors.colorSchemes.catppuccin-mocha;
+    my.settings = {
+      host = "iso";
+      default = {
+        shell = "fish";
+        terminal = "foot";
+        browser = "firefox";
+        editor = "nvim";
+      };
+    };
 
-  home = {
-    username = lib.mkDefault "nixos";
-    homeDirectory = lib.mkDefault "/home/${config.home.username}";
-    stateVersion = lib.mkDefault "23.05";
+    colorscheme = inputs.nix-colors.colorSchemes.catppuccin-mocha;
+
+    home = {
+      username = lib.mkDefault "nixos";
+      homeDirectory = lib.mkDefault "/home/${config.home.username}";
+      stateVersion = lib.mkDefault "23.05";
+    };
   };
 }

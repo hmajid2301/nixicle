@@ -112,7 +112,7 @@
           desc = "Breakpoint Condition";
           lua = true;
         };
-        "<leader>dr" = {
+        "<leader>drr" = {
           action =
             # lua
             ''
@@ -121,6 +121,20 @@
               end
             '';
           desc = "Toggle REPL";
+          lua = true;
+        };
+        "<leader>dr" = {
+          action =
+            # lua
+            ''
+              function()
+              	local dap = require('dap')
+              	dap.disconnect()
+              	dap.close()
+              	dap.run_last()
+              end
+            '';
+          desc = "Restart debugger";
           lua = true;
         };
         "<leader>dl" = {

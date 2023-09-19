@@ -22,15 +22,8 @@
     "ssh-ed25519 AaAeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee username@host"
   ];
 
-  programs.direnv.package = true;
-  programs.direnv.nix-direnv.enable = true;
-
+  services.hardware.bolt.enable = true;
   services.openssh.settings.PermitRootLogin = lib.mkForce "yes";
-  services.xserver = {
-    layout = "gb";
-    xkbVariant = "";
-  };
-  console.keyMap = "uk";
 
   environment.systemPackages = with pkgs; [
     git
@@ -78,7 +71,7 @@
         echo "Set up attic binary cache"
         ATTIC_TOKEN=$(gum input --placeholder "Enter your Attic token here" --password)
         attic login prod https://majiy00-nix-binary-cache.fly.dev $ATTIC_TOKEN
-        attic use cache prod:prod
+        attic use prod:prod || true
 
         sudo nixos-install --flake "$HOME/dotfiles#$TARGET_HOST"
       ''

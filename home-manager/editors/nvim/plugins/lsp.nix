@@ -1,5 +1,17 @@
 { pkgs, ... }: {
   programs.nixvim = {
+    maps.normalVisualOp = {
+      "<leader>ca" = {
+        action =
+          # lua
+          ''
+            function()
+            	return vim.lsp.buf.code_action
+            end
+          '';
+        desc = "Show code actions";
+      };
+    };
     plugins.lsp = {
       enable = true;
       keymaps = {
@@ -14,10 +26,6 @@
           gd = "definition";
           gi = "implementation";
           gt = "type_definition";
-          "<leader>ca" = {
-            action = "code_action";
-            desc = "Show code actions";
-          };
           "<leader>cr" = { action = "rename"; desc = "Rename"; };
         };
       };
