@@ -1,4 +1,5 @@
 { inputs
+, pkgs
 , lib
 , config
 , ...
@@ -26,8 +27,8 @@
     my.settings = {
       host = "iso";
       default = {
-        shell = "fish";
-        terminal = "foot";
+        shell = "${pkgs.fish}/bin/fish";
+        terminal = "${pkgs.foot}/bin/foot";
         browser = "firefox";
         editor = "nvim";
       };

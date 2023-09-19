@@ -1,4 +1,5 @@
 { inputs
+, pkgs
 , lib
 , config
 , ...
@@ -47,8 +48,8 @@
       wallpaper = "../../home-manager/wallpapers/rainbow-nix.jpg";
       host = "mesmer";
       default = {
-        shell = "fish";
-        terminal = "foot";
+        shell = "${pkgs.fish}/bin/fish";
+        terminal = "${pkgs.foot}/bin/foot";
         browser = "firefox";
         editor = "nvim";
       };

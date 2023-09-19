@@ -5,6 +5,7 @@
   imports = [
     ../../nixos/global
     ../../nixos/optional/attic.nix
+    ../../nixos/optional/thunderbolt.nix
   ];
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
