@@ -16,7 +16,7 @@
       };
     };
     initrd.luks.devices = {
-      cryptroot = {
+      root = {
         device = "/dev/nvme0n1p3";
       };
     };
