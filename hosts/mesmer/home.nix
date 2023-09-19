@@ -4,46 +4,83 @@
 , ...
 }: {
   imports = [
-    ./programs.nix
+    ../../home-manager
+    ../../home-manager/desktops/wms/hyprland.nix
+
+    ../../home-manager/programs/android.nix
+    ../../home-manager/programs/atuin.nix
+    ../../home-manager/programs/kdeconnect.nix
+
+    ../../home-manager/games
+
+    ../../home-manager/programs/k8s.nix
+
+    ../../home-manager/security/sops.nix
+    ../../home-manager/security/yubikey.nix
   ];
 
-  my.settings = {
-    wallpaper = "../../home-manager/wallpapers/rainbow-nix.jpg";
-    host = "mesmer";
-    default = {
-      shell = "fish";
-      terminal = "foot";
-      browser = "firefox";
-      editor = "nvim";
+  config = {
+    modules = {
+      browsers = {
+        firefox.enable = true;
+      };
+
+      editors = {
+        nvim.enable = true;
+      };
+
+      multiplexers = {
+        tmux.enable = true;
+      };
+
+      shells = {
+        fish.enable = true;
+      };
+
+      terminals = {
+        alacritty.enable = true;
+        foot.enable = true;
+      };
     };
-  };
 
-  colorscheme = inputs.nix-colors.colorSchemes.catppuccin-mocha;
+    my.settings = {
+      wallpaper = "../../home-manager/wallpapers/rainbow-nix.jpg";
+      host = "mesmer";
+      default = {
+        shell = "fish";
+        terminal = "foot";
+        browser = "firefox";
+        editor = "nvim";
+      };
+    };
 
-  home = {
-    username = lib.mkDefault "haseeb";
-    homeDirectory = lib.mkDefault "/home/${config.home.username}";
-    stateVersion = lib.mkDefault "23.05";
+    colorscheme = inputs.nix-colors.colorSchemes.catppuccin-mocha;
 
-    #persistence = {
-    #  "/persist/home/haseeb" = {
-    #    directories = [
-    #      "Documents"
-    #      "Downloads"
-    #      "Pictures"
-    #      "Videos"
-    #      "Games"
-    #      "projects"
-    #      "dotfiles"
-    #      "go"
-    #      ".local"
-    #      ".tmux"
-    #      ".ssh"
-    #      ".gnupg"
-    #      ".config/gtk"
-    #    ];
-    #    allowOther = true;
-    #  };
-    #};
+    home = {
+      username = lib.mkDefault "haseeb";
+      homeDirectory = lib.mkDefault "/home/${config.home.username}";
+      stateVersion = lib.mkDefault "23.05";
+
+      #persistence = {
+      #  "/persist/home/haseeb" = {
+      #    directories = [
+      #      "Documents"
+      #      "Downloads"
+      #      "Pictures"
+      #      "Videos"
+      #      "Games"
+      #      "projects"
+      #      "dotfiles"
+      #      "go"
+      #      ".local"
+      #      ".tmux"
+      #      ".ssh"
+      #      ".gnupg"
+      #      ".config/gtk"
+      #    ];
+      #    allowOther = true;
+      #  };
+      #};
+    };
   };
 }
