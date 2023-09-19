@@ -4,6 +4,7 @@
     ./bottom.nix
     ./calcure.nix
     ./eza.nix
+    ./foliate.nix
     ./direnv.nix
     ./dooit.nix
     ./fzf.nix
