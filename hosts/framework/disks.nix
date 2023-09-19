@@ -39,6 +39,7 @@
               label = "luks";
               content = {
                 type = "luks";
+                extraArgs = [ "--label" "enc-nixos" ];
                 name = "cryptroot";
                 extraOpenArgs = [
                   "--allow-discards"
