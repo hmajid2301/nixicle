@@ -45,6 +45,8 @@ in
           --color=fg:#${colors.base05},header:#${colors.base08},info:#${colors.base0E},pointer:#${colors.base06}
           --color=marker:#${colors.base06},fg+:#${colors.base05},prompt:#${colors.base0E},hl+:#${colors.base08}
           "
+          bind \cr _fzf_search_history
+          bind -M insert \cr _fzf_search_history
         ''
         + ''
           set -g fish_color_normal ${colors.base05}
