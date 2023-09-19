@@ -39,7 +39,6 @@
               label = "luks";
               content = {
                 type = "luks";
-                extraArgs = [ "--label" "enc-nixos" ];
                 name = "cryptroot";
                 extraOpenArgs = [
                   "--allow-discards"
@@ -50,7 +49,7 @@
                 settings = { crypttabExtraOpts = [ "fido2-device=auto" "token-timeout=10" ]; };
                 content = {
                   type = "btrfs";
-                  extraArgs = [ "-L" "nixos" ];
+                  extraArgs = [ "-L" "nixos" "-f" ];
                   subvolumes = {
                     "/root" = {
                       mountpoint = "/";
