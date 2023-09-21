@@ -1,5 +1,4 @@
 { config
-, lib
 , ...
 }: {
   # Wireless secrets stored through sops

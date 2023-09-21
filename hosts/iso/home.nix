@@ -10,6 +10,22 @@
   ];
 
   config = {
+    # TODO: Auto start foot with fish shell
+    # TODO: Auto start use my settings
+    home.file.".config/autostart/foot.desktop".text =
+      ''
+        [Desktop Entry]
+        Type=Application
+        Exec=foot -m fish -c 'nix_installer'
+        Hidden=false
+        NoDisplay=false
+        X-GNOME-Autostart-enabled=true
+        Name[en_NG]=Terminal
+        Name=Terminal
+        Comment[en_NG]=Start Terminal On Startup
+        Comment=Start Terminal On Startup
+      '';
+
     modules = {
       editors = {
         nvim.enable = true;

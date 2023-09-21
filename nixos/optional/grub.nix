@@ -15,11 +15,11 @@
         device = "nodev";
       };
     };
-    initrd.luks.devices = {
-      root = {
-        device = "/dev/nvme0n1p3";
-      };
-    };
+    # initrd.luks.devices = {
+    #   root = {
+    #     device = "/dev/nvme0n1p3";
+    #   };
+    # };
     kernelPackages = pkgs.linuxPackages_latest;
   };
 }

@@ -1,4 +1,4 @@
-{ pkgs, ... }: {
+{ pkgs, inputs, ... }: {
   imports = [
     ./notifications/mako.nix
     #./notifications/swaync.nix
@@ -42,6 +42,6 @@
     sway-contrib.grimshot
     swaybg
 
-    nwg-displays
+    inputs.nwg-displays.packages."${pkgs.system}".default
   ];
 }

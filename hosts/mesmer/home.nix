@@ -45,7 +45,7 @@
     };
 
     my.settings = {
-      wallpaper = "../../home-manager/wallpapers/rainbow-nix.jpg";
+      wallpaper = "~/dotfiles/home-manager/wallpapers/rainbow-nix.jpg";
       host = "mesmer";
       default = {
         shell = "${pkgs.fish}/bin/fish";
