@@ -5,6 +5,7 @@
     };
 
     options = {
+      sessionoptions = "blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal,localoptions";
       termguicolors = true;
       scrolloff = 8;
       swapfile = false;
@@ -29,7 +30,7 @@
       undolevels = 10000;
 
       signcolumn = "yes";
-      cmdheight = 2;
+      cmdheight = 0;
       cot = [ "menu" "menuone" "noselect" ];
       colorcolumn = "120";
 

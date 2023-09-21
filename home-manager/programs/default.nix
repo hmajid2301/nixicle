@@ -61,7 +61,7 @@
     broot
     choose
     curlie
-    dog
+    dogdns
     duf
     delta
     du-dust
