@@ -29,6 +29,16 @@ creation_rules:
       pgp:
       - *haseebmajid
 
+  - path_regex: hosts/iso/secrets.ya?ml$
+    key_groups:
+    - age:
+      - *framework
+      - *mesmer
+      - *curve
+      pgp:
+      - *haseeb
+      - *haseebmajid
+
   - path_regex: nixos/secrets.ya?ml$
     key_groups:
     - age:

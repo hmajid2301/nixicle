@@ -26,6 +26,8 @@ in
     enableExtraSocket = true;
   };
 
+
+
   programs =
     let
       fixGpg = ''
@@ -42,6 +44,7 @@ in
 
       gpg = {
         enable = true;
+        publicKeys = [{ source = ../security/public.gpg; }];
       };
     };
 
@@ -63,4 +66,3 @@ in
   };
 }
 # vim: filetype=nix
-

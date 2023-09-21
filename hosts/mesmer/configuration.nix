@@ -15,7 +15,7 @@
 
     ../../nixos/optional/docker.nix
     ../../nixos/optional/fonts.nix
-    ../../nixos/optional/mullvad.nix
+    ../../nixos/optional/vpn.nix
     ../../nixos/optional/pipewire.nix
 
     ../../nixos/optional/thunderbolt.nix
@@ -25,6 +25,7 @@
 
     ../../nixos/optional/attic.nix
     ../../nixos/optional/backup.nix
+    ../../nixos/optional/pam.nix
     #../nixos/optional/grub.nix
     #../nixos/optional/wireless.nix
     #../../nixos/optional/ephemeral.nix

@@ -19,24 +19,28 @@
     extraConfig = ''
       # ASCII Art from https://fsymbols.com/generators/carty/
       input {
-        kb_layout = gb
-        touchpad {
-          disable_while_typing=false
-        }
+      	kb_layout = gb
+      	touchpad {
+      		disable_while_typing=false
+      	}
       }
 
       general {
-        gaps_in = 3
-        gaps_out = 5
-        border_size = 3
-        col.active_border=0xff${config.colorscheme.colors.base07}
-        col.inactive_border=0xff${config.colorscheme.colors.base02}
-        col.group_border_active=0xff${config.colorscheme.colors.base0B}
-        col.group_border=0xff${config.colorscheme.colors.base04}
+      	gaps_in = 3
+      	gaps_out = 5
+      	border_size = 3
+      	col.active_border=0xff${config.colorscheme.colors.base07}
+      	col.inactive_border=0xff${config.colorscheme.colors.base02}
+      	col.group_border_active=0xff${config.colorscheme.colors.base0B}
+      	col.group_border=0xff${config.colorscheme.colors.base04}
       }
 
       decoration {
-        rounding=5
+      	rounding=5
+      }
+
+      misc {
+       vrr = 2
       }
 
       $notifycmd = notify-send -h string:x-canonical-private-synchronous:hypr-cfg -u low
@@ -63,6 +67,7 @@
       exec-once = sway-audio-idle-inhibit -w &
       exec-once = waybar &
       exec-once = gammastep-indicator &
+      exec-once = mullvad-gui &
       exec-once = swaybg -i ${config.my.settings.wallpaper} --mode fill &
 
       # █▀ █▀▀ █▀█ █ █▀█ ▀█▀ █▀
