@@ -11,23 +11,19 @@
       vimPlugins.nui-nvim
       vimPlugins.nvim-web-devicons
       vimPlugins.barbecue-nvim
-      maximize-nvim
+
+      # for window-nvim plugin
+      vimExtraPlugins.windows-nvim
+      vimExtraPlugins.middleclass
     ];
 
-    maps = {
-      normal = {
-        "<leader>z" = {
-          action = "<Cmd>lua require('maximize').toggle()<CR>";
-          desc = "Toggle Maximize";
-        };
-      };
-    };
+    maps = { };
 
     extraConfigLua =
       # lua
       ''
-        require('maximize').setup({default_keymaps = false})
         require("barbecue").setup()
+        require('windows').setup()
       '';
   };
 }

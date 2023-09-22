@@ -11,6 +11,7 @@
       "audio"
       "networkmanager"
       "libvirtd"
+      "libvirt"
       "kvm"
       "docker"
       "podman"

@@ -43,15 +43,15 @@ in
 
         font = {
           normal = {
-            family = config.fontProfiles.monospace.family;
+            inherit (config.fontProfiles.monospace) family;
             style = "Regular";
           };
           bold = {
-            family = config.fontProfiles.monospace.family;
+            inherit (config.fontProfiles.monospace) family;
             style = "Bold";
           };
           italic = {
-            family = config.fontProfiles.monospace.family;
+            inherit (config.fontProfiles.monospace) family;
             style = "Italic";
           };
           size = 14.0;

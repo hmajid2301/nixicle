@@ -13,7 +13,7 @@
         modules-left = [
           "custom/launcher"
           (
-            if config.wayland.windowManager.sway.enable == true
+            if config.wayland.windowManager.sway.enable
             then "sway/workspaces"
             else "hyprland/workspaces"
           )
