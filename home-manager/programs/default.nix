@@ -6,7 +6,6 @@
     ./eza.nix
     ./foliate.nix
     ./direnv.nix
-    ./dooit.nix
     ./fzf.nix
     ./git.nix
     ./gpg.nix
@@ -29,12 +28,13 @@
     cargo
     rustc
     go
+    dooit
 
     ventoy-full
 
     nix-init
     nix-update
-    any-nix-shell
+    nix-your-shell
 
     # sourcegraph
     src-cli
@@ -56,6 +56,7 @@
     discord
     showmethekey
     fontforge
+    thunderbird-unwrapped
 
     # modern "unix" tools
     broot

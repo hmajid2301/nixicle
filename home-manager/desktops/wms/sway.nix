@@ -75,7 +75,7 @@
       ];
 
       keybindings =
-        let modifier = config.wayland.windowManager.sway.config.modifier;
+        let inherit (config.wayland.windowManager.sway.config) modifier;
         in lib.mkOptionDefault {
           "${modifier}+Return" = "exec ${config.my.settings.default.terminal}";
           "${modifier}+b" = "exec ${config.my.settings.default.browser}";

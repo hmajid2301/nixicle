@@ -39,7 +39,11 @@
   home.sessionVariables.EDITOR = config.my.settings.default.editor;
 
   nixpkgs = {
-    overlays = builtins.attrValues outputs.overlays;
+    overlays = builtins.attrValues outputs.overlays ++ [
+      inputs.nixneovimplugins.overlays.default
+      inputs.nur.overlay
+    ];
+
     config = {
       allowUnfree = true;
       allowUnfreePredicate = _: true;

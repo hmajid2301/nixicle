@@ -36,6 +36,7 @@
     gnome.totem
     gnome.eog
     gnome.gvfs
+    gnome-text-editor
     wl-clipboard
     pamixer
     playerctl

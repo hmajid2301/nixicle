@@ -71,6 +71,14 @@
     programs.git.userEmail = lib.mkForce "haseeb.majid@imaginecurve.com";
     programs.git.extraConfig."url \"git@git.curve.tools:\"" = { insteadOf = "https://git.curve.tools/"; };
     programs.git.extraConfig."url \"git@gitlab.com:imaginecurve/\"" = { insteadOf = "https://gitlab.com/imaginecurve"; };
+    programs.git.core.excludesfile = "~/.config/git/ignore";
+    xdg.configFile."git/ignore".text = ''
+      projects/**/**/flake.nix
+      projects/**/**/flake.lock
+    '';
+
+
+
 
     # sway (swayfx) is installed via manually building binaries
     wayland.windowManager.sway.package = lib.mkForce null;

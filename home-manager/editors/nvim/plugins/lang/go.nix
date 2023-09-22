@@ -24,10 +24,11 @@
     extraConfigLua =
       # lua
       ''
-        require("go").setup()
+        require("go").setup({
+        	icons = false;
+        })
 
-        local neotest = require('neotest')
-        neotest.setup {
+        require('neotest').setup {
         	adapters = {
         		require('neotest-go') {
         		},

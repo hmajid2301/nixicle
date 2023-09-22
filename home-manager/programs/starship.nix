@@ -10,8 +10,8 @@
         {
           owner = "catppuccin";
           repo = "starship";
-          rev = "3e3e54410c3189053f4da7a7043261361a1ed1bc";
-          sha256 = "11pfbly5w5jg44jvgxa8i0h31sqn261l27ahcjibfl5pb9b030dj";
+          rev = "5629d2356f62a9f2f8efad3ff37476c19969bd4f";
+          sha256 = "1bdm1vzapbpnwjby51dys5ayijldq05mw4wf20r0jvaa072nxi4y";
         }
       + /palettes/frappe.toml));
   };

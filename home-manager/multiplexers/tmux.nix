@@ -4,13 +4,13 @@ let
   # TODO: move to official trepo
   t-smart-manager = pkgs.tmuxPlugins.mkTmuxPlugin {
     pluginName = "t-smart-tmux-session-manager";
-    version = "unstable-2023-06-05";
+    version = "unstable-2023-09-20";
     rtpFilePath = "t-smart-tmux-session-manager.tmux";
     src = pkgs.fetchFromGitHub {
       owner = "joshmedeski";
       repo = "t-smart-tmux-session-manager";
-      rev = "0a4c77c5c3858814621597a8d3997948b3cdd35d";
-      sha256 = "1dr5w02a0y84q2iw4jp1psxvkyj4g6pr87gc22syw1jd4ibkn925";
+      rev = "63360755451a1d536f5847b3a3dc41bb3050b10c";
+      sha256 = "00051slyy55qdxf0l41kfw6sr46nm2br31hdkwpy879ia5acligi";
     };
   };
   cfg = config.modules.multiplexers.tmux;
@@ -55,12 +55,12 @@ in
         {
           plugin = mkTmuxPlugin {
             pluginName = "tmux-super-fingers";
-            version = "unstable-2023-05-31";
+            version = "unstable-2023-09-04";
             src = pkgs.fetchFromGitHub {
               owner = "artemave";
               repo = "tmux_super_fingers";
-              rev = "2c12044984124e74e21a5a87d00f844083e4bdf7";
-              sha256 = "sha256-cPZCV8xk9QpU49/7H8iGhQYK6JwWjviL29eWabuqruc=";
+              rev = "19945b066ecea03165231d45a73ec0862a1e5e03";
+              sha256 = "0vgh1nc2l5lsp2gwl0kbd9bxr3acj5g647p9522f5yzlhw7sbr33";
             };
           };
           extraConfig = ''
@@ -75,7 +75,7 @@ in
               owner = "ofirgall";
               repo = "tmux-browser";
               rev = "c3e115f9ebc5ec6646d563abccc6cf89a0feadb8";
-              sha256 = "sha256-ngYZDzXjm4Ne0yO6pI+C2uGO/zFDptdcpkL847P+HCI=";
+              sha256 = "08hwzsry7z22lrfdg9j367zqxqfsha7s9fi3sdg876z36l7ij1ly";
             };
           };
           extraConfig = ''
@@ -85,12 +85,12 @@ in
         {
           plugin = mkTmuxPlugin {
             pluginName = "tmux.nvim";
-            version = "unstable-2023-01-06";
+            version = "unstable-2023-09-06";
             src = pkgs.fetchFromGitHub {
               owner = "aserowy";
               repo = "tmux.nvim";
-              rev = "57220071739c723c3a318e9d529d3e5045f503b8";
-              sha256 = "sha256-zpg7XJky7PRa5sC7sPRsU2ZOjj0wcepITLAelPjEkSI=";
+              rev = "673782b74a6055d430d3f5148a033edd99e5519f";
+              sha256 = "0q3942mzp54jjkv3f1aazbnlwmqz3jxvd1jlfgfbk2jpk008r5xg";
             };
           };
         }
