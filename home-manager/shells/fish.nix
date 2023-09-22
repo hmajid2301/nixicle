@@ -26,8 +26,9 @@ in
         ''
         +
         # Source scripts
+        # TODO: maybe only need one of the nix ones
         ''
-          any-nix-shell fish --info-right | source
+          nix-your-shell fish | source
           fish_add_path --path --append ~/go/bin/
           set -x GOPATH $HOME/go
         ''
@@ -134,20 +135,6 @@ in
           end
         '';
 
-        nix = {
-          wraps = "nix";
-          description = "Wraps `nix develop` to run fish instead of bash";
-          body = ''
-            if status is-interactive
-              and test (count $argv) = 1
-              and test $argv[1] = develop
-              command nix develop --command (status fish-path)
-            else
-              command nix $argv
-            end
-          '';
-        };
-
         fish_command_not_found = ''
           # If you run the command with comma, running the same command
           # will not prompt for confirmation for the rest of the session
@@ -189,11 +176,11 @@ in
       plugins = [
         {
           name = "bass";
-          src = pkgs.fishPlugins.bass.src;
+          inherit (pkgs.fishPlugins.bass) src;
         }
         {
           name = "fzf-fish";
-          src = pkgs.fishPlugins.fzf-fish.src;
+          inherit (pkgs.fishPlugins.fzf-fish) src;
         }
         {
           name = "nix";
@@ -218,8 +205,8 @@ in
           src = pkgs.fetchFromGitHub {
             owner = "gazorby";
             repo = "fifc";
-            rev = "8bd370c4a5db3b71f52a3079b758f0f2ed082044";
-            sha256 = "19mxl9wp335scmg4r4sijgwlhar2kiiir7fl7amahx3fih2ps4f2";
+            rev = "2ee5beec7dfd28101026357633616a211fe240ae";
+            sha256 = "00f6vklsknnav09abrsfy2m577r30m0pphy0hr86b1w0nnvspdin";
           };
         }
         {

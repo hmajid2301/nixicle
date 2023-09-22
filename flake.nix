@@ -31,8 +31,8 @@
     hypr-contrib.url = "github:hyprwm/contrib";
     nix-colors.url = "github:misterio77/nix-colors";
     nixvim.url = "github:pta2002/nixvim";
+    nixneovimplugins.url = "github:jooooscha/nixpkgs-vim-extra-plugins";
 
-    pre-commit-hooks.url = "github:cachix/pre-commit-hooks.nix";
     comma.url = "github:nix-community/comma";
 
     grub-theme = {
@@ -59,7 +59,6 @@
     { self
     , nixpkgs
     , home-manager
-    , pre-commit-hooks
     , ...
     } @ inputs:
     let
@@ -75,7 +74,7 @@
       homeManagerModules = import ./modules/home-manager;
       overlays = import ./overlays { inherit inputs outputs; };
       packages = forEachSystem (pkgs: import ./pkgs { inherit pkgs; });
-      devShells = forEachSystem (pkgs: import ./shell.nix { inherit pkgs pre-commit-hooks; });
+      devShells = forEachSystem (pkgs: import ./shell.nix { inherit pkgs; });
 
       nixosConfigurations = {
         iso = lib.nixosSystem {

@@ -1,7 +1,7 @@
 { pkgs, ... }: {
   programs.nixvim = {
-    extraPlugins = with pkgs; [
-      codeium-nvim
+    extraPlugins = with pkgs.vimPlugins; [
+      codeium-vim
     ];
 
     extraConfigLua =

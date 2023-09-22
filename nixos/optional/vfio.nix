@@ -4,6 +4,8 @@
       "vfio_pci"
       "vfio"
       "vfio_iommu_type1"
+      "kvm-amd"
+      "kvm-intel"
       "amdgpu"
     ];
 
@@ -31,7 +33,6 @@
       onBoot = "ignore";
       onShutdown = "shutdown";
       qemu = {
-        package = pkgs.qemu_kvm;
         swtpm.enable = true;
         ovmf = {
           enable = true;
