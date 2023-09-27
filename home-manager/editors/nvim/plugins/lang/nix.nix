@@ -2,6 +2,10 @@
 , config
 , ...
 }: {
+  home.packages = with pkgs; [
+    nixd
+  ];
+
   programs.nixvim = {
     plugins = {
       nix.enable = true;
@@ -16,7 +20,11 @@
       };
     };
 
-    extraPlugins = with pkgs.vimPlugins; [ hmts-nvim ];
+    extraPlugins = with pkgs.vimPlugins; [
+      hmts-nvim
+      nix-develop-nvim
+    ];
+
     extraConfigVim = ''
       au BufRead,BufNewFile flake.lock setf json
 

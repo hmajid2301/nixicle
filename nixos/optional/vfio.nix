@@ -17,7 +17,15 @@
   };
 
   # VM Packages
-  environment.systemPackages = with pkgs; [ libguestfs win-virtio win-spice virt-manager virt-viewer looking-glass-client ];
+  environment.systemPackages = with pkgs; [
+    libguestfs
+    win-virtio
+    win-spice
+    virt-manager
+    virt-viewer
+    looking-glass-client
+    virtiofsd
+  ];
   programs.dconf.enable = true;
 
   # VM Utilities

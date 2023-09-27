@@ -15,6 +15,7 @@
 
     ../../nixos/optional/docker.nix
     ../../nixos/optional/fonts.nix
+    ../../nixos/optional/firewall.nix
     ../../nixos/optional/vpn.nix
     ../../nixos/optional/pipewire.nix
 

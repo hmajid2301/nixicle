@@ -401,7 +401,7 @@
           	 DapUIThread = { fg = c.green },
           	 DapUIStoppedThread = { fg = c.cyan },
           	 DapUISource = { fg = c.lavender },
-          	 DapUILineNumber = { fg = c.cyan },
+          	 DapUILineNumber = { fg = c.cyan, bg = c.lavender },
           	 DapUIFloatBorder = { fg = c.cyan },
 
           	 DapUIWatchesEmpty = { fg = c.baby_pink },
@@ -410,7 +410,8 @@
 
           	 DapUIBreakpointsPath = { fg = c.cyan },
           	 DapUIBreakpointsInfo = { fg = c.green },
-          	 DapUIBreakPointsCurrentLine = { fg = c.green, bold = true },
+          	 DapUIBreakpointsLine = { fg = c.green, bg = c.lavender, bold = true },
+          	 DapUIBreakPointsCurrentLine = { fg = c.green, bg = c.lavender, bold = true },
           	 DapUIBreakpointsDisabledLine = { fg = c.grey_fg2 },
 
           	 DapUIStepOver = { fg = c.blue },

@@ -34,7 +34,6 @@
     # TODO: move to nixvim
     extraPlugins = with pkgs.vimPlugins; [ null-ls-nvim ];
     extraConfigLua =
-      #lua
       ''
         require("which-key").register({
         	["<leader>c"] = { name = "+code" },

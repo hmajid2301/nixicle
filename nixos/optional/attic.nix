@@ -1,10 +1,12 @@
 { pkgs
+, config
 , inputs
 , ...
 }: {
   nix.settings = {
     extra-substituters = [
-      "https://majiy00-nix-binary-cache.fly.dev/prod"
+      "https://majiy00-nix-binary-cache.fly.dev"
+      "https://cache.saumon.network/camille"
     ];
     extra-trusted-public-keys = [
       "prod:fjP15qp9O3/x2WTb1LiQ2bhjxkBBip3uhjlDyqywz3I="
@@ -17,22 +19,20 @@
     attic
   ];
 
+  sops.secrets.attic_auth_token = {
+    sopsFile = ../../hosts/iso/secrets.yaml;
+    neededForUsers = true;
+  };
 
   systemd.services.attic-watch-store = {
     wantedBy = [ "multi-user.target" ];
     after = [ "network-online.target" ];
-    serviceConfig = {
-      ExecStart = "${pkgs.attic}/bin/attic watch-store prod:prod";
-      Restart = "on-failure";
-      ProtectKernelLogs = true;
-      ProtectKernelModules = true;
-      ProtectKernelTunables = true;
-      ProtectProc = "invisible";
-      ProtectSystem = "strict";
-      RestrictAddressFamilies = [ "AF_INET" "AF_INET6" "AF_UNIX" ];
-      RestrictNamespaces = true;
-      RestrictRealtime = true;
-      RestrictSUIDSGID = true;
-    };
+    script = ''
+      #!/run/current-system/sw/bin/bash
+      ATTIC_TOKEN=$(cat ${config.sops.secrets.attic_auth_token.path})
+      ${pkgs.attic}/bin/attic login prod https://majiy00-nix-binary-cache.fly.dev $ATTIC_TOKEN
+      ${pkgs.attic}/bin/attic use prod
+      ${pkgs.attic}/bin/attic watch-store prod:prod
+    '';
   };
 }

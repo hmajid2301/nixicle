@@ -73,6 +73,11 @@
 
       oil = {
         enable = true;
+        deleteToTrash = true;
+      };
+
+      nvim-lightbulb = {
+        enable = true;
       };
 
       harpoon = {
@@ -117,22 +122,24 @@
       };
     };
 
-    extraPlugins = with pkgs.vimPlugins; [
-      better-escape-nvim
-      telescope-undo-nvim
-      nvim-spectre
-      flash-nvim
-      nvim-navbuddy
+    extraPlugins = with pkgs; [
+      vimPlugins.better-escape-nvim
+      vimPlugins.telescope-undo-nvim
+      vimPlugins.nvim-spectre
+      vimPlugins.flash-nvim
+      vimPlugins.nvim-navbuddy
+      vimPlugins.sqlite-lua
     ];
+
     extraConfigLua =
       # lua
       ''
-         -- undo-telescope
+        -- undo-telescope
         require("telescope").load_extension("undo")
         require("which-key").register({
-        	mode = {"n", "v"},
-        	["<leader>f"] = { name = "+file/find" },
-        	["<leader>h"] = { name = "+harpoon" },
+        mode = {"n", "v"},
+        ["<leader>f"] = { name = "+file/find" },
+        ["<leader>h"] = { name = "+harpoon" },
         })
 
         require("better_escape").setup()
