@@ -13,51 +13,8 @@
   boot.initrd.availableKernelModules = [ "xhci_pci" "thunderbolt" "nvme" "uas" "usb_storage" "sd_mod" ];
   boot.initrd.kernelModules = [ "dm-snapshot" "amdgpu" ];
   boot.kernelModules = [ "kvm-intel" ];
+  boot.kernelParams = [ "boot.debug1devices" ];
   boot.extraModulePackages = [ ];
-
-  # TODO: Replace with disko
-  fileSystems."/" = {
-    device = "/dev/disk/by-label/nixos";
-    fsType = "btrfs";
-    options = [ "subvol=root" "compress=zstd" "noatime" ];
-  };
-
-  fileSystems."/home" = {
-    device = "/dev/disk/by-label/nixos";
-    fsType = "btrfs";
-    options = [ "subvol=home" "compress=zstd" "noatime" ];
-  };
-
-  fileSystems."/nix" = {
-    device = "/dev/disk/by-label/nixos";
-    fsType = "btrfs";
-    options = [ "subvol=nix" "compress=zstd" "noatime" ];
-  };
-
-  fileSystems."/persist" = {
-    device = "/dev/disk/by-label/nixos";
-    fsType = "btrfs";
-    options = [ "subvol=persist" "compress=zstd" "noatime" ];
-    neededForBoot = true;
-  };
-
-  fileSystems."/var/log" = {
-    device = "/dev/disk/by-label/nixos";
-    fsType = "btrfs";
-    options = [ "subvol=log" "compress=zstd" "noatime" ];
-    neededForBoot = true;
-  };
-
-  fileSystems."/boot" = {
-    device = "/dev/disk/by-label/boot";
-    fsType = "vfat";
-  };
-
-  swapDevices = [
-    {
-      device = "/dev/disk/by-label/swap";
-    }
-  ];
 
   # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
   # (the default) this is the recommended approach. When using systemd-networkd it's

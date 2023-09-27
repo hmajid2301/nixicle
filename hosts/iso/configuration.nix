@@ -24,6 +24,16 @@
     "ssh-ed25519 AaAeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee username@host"
   ];
 
+  # TODO: gnome power settings do not turn off screen
+  systemd.targets.sleep.enable = false;
+  systemd.targets.suspend.enable = false;
+  systemd.targets.hibernate.enable = false;
+  systemd.targets.hybrid-sleep.enable = false;
+
+  environment.extraInit = ''
+    xset s off -dpms
+  '';
+
   services.hardware.bolt.enable = true;
   services.openssh.settings.PermitRootLogin = lib.mkForce "yes";
 
@@ -43,6 +53,7 @@
     "podman"
     "git"
   ];
+
 
 
   environment.systemPackages = with pkgs; [
@@ -73,7 +84,6 @@
           "🔥 🔥 🔥 WARNING!!!! This will ERASE ALL DATA on the disk $TARGET_HOST. Are you sure you want to continue?" 
 
           echo "Partitioning Disks"
-          # TODO: partition inside nixos install
           sudo nix run github:nix-community/disko \
           --extra-experimental-features "nix-command flakes" \
           --no-write-lock-file \
@@ -82,8 +92,8 @@
           "$HOME/dotfiles/hosts/$TARGET_HOST/disks.nix"
 
           echo "Creating blank volume"
-          sudo btrfs subvolume create /mnt/root
-          sudo btrfs subvolume snapshot -r /mnt/root /mnt/root-blank
+          # sudo btrfs subvolume create /mnt/root
+          # sudo btrfs subvolume snapshot -r /mnt/root /mnt/root-blank
 
           echo "Set up attic binary cache"
         	ATTIC_TOKEN=$(sudo cat ${config.sops.secrets.attic_auth_token.path} || true)

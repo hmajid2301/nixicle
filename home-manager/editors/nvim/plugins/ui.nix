@@ -15,14 +15,18 @@
       # for window-nvim plugin
       vimExtraPlugins.windows-nvim
       vimExtraPlugins.middleclass
+      vimExtraPlugins.animation-nvim
     ];
 
     maps = { };
 
     extraConfigLua =
-      # lua
       ''
         require("barbecue").setup()
+
+        vim.o.winwidth = 10
+        vim.o.winminwidth = 10
+        vim.o.equalalways = false
         require('windows').setup()
       '';
   };
