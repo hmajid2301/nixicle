@@ -36,7 +36,7 @@
              background-color: @base;
              opacity: 1;
              border-radius: 10px;
-             margin: 8px 8px 8px 8px;
+             margin: 8px;
          }
 
          #workspaces button {
@@ -90,7 +90,7 @@
              border-style: solid;
              background-color: shade(@base, 1);
              opacity: 1;
-             margin: 8px 0;
+             margin: 8px;
          }
 
          /* -----------------------------------------------------------------------------
@@ -225,23 +225,18 @@
          }
 
          #tray {
-             margin: 8px 10px;
+             margin: 8px;
              border-radius: 10px;
          }
 
          #custom-launcher {
-             background-color: @mauve;
-             color: @base;
              border-radius: 10px;
-             padding: 5px 10px;
-             margin-left: 15px;
-             font-size: 24px;
+             padding: 5px;
          }
 
          #custom-power {
   				   padding: 5px;
              border-radius: 10px;
-             transition: none;
              color: @red;
              background: @base;
          }

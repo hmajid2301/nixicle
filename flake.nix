@@ -84,15 +84,21 @@
           specialArgs = { inherit inputs outputs; };
         };
 
-        # Main desktop
+        # Desktops
         mesmer = lib.nixosSystem {
           modules = [ ./hosts/mesmer/configuration.nix ];
           specialArgs = { inherit inputs outputs; };
         };
 
-        # Personal laptop
+        # Laptops
         framework = lib.nixosSystem {
           modules = [ ./hosts/framework/configuration.nix ];
+          specialArgs = { inherit inputs outputs; };
+        };
+
+        # VMs
+        staging = lib.nixosSystem {
+          modules = [ ./hosts/staging/configuration.nix ];
           specialArgs = { inherit inputs outputs; };
         };
       };
@@ -114,6 +120,13 @@
 
         curve = lib.homeManagerConfiguration {
           modules = [ ./hosts/curve/home.nix ];
+          pkgs = nixpkgs.legacyPackages.x86_64-linux;
+          extraSpecialArgs = { inherit inputs outputs; };
+        };
+
+        # VMs
+        staging = lib.homeManagerConfiguration {
+          modules = [ ./hosts/staging/home.nix ];
           pkgs = nixpkgs.legacyPackages.x86_64-linux;
           extraSpecialArgs = { inherit inputs outputs; };
         };

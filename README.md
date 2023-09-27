@@ -1,12 +1,36 @@
 <div align="center">
-  <h1> Haseeb's Dot Files :house_with_garden:</h1>
+  <h1> :house_with_garden: Haseeb's Dotfiles </h1>
   <a href="https://git.io/typing-svg"><img src="https://readme-typing-svg.demolab.com?font=Fira+Code&pause=1000&color=2A98C9&width=435&lines=My+Dotfiles+repo+setup+using+NixOS" alt="Typing SVG" /></a>
 </div>
 
-##  Install
+You can read more about my dotfiles and development workflows on my [blog here](https://haseebmajid.dev/series/my-development-workflow/) (#ShamelessPlug).
 
-> :fire: I wouldn't recommend just blinding using my dotfiles. They are setup for my specific use-case.
+## 💽 Usage
+
+> :fire: I wouldn't recommend just blindly using my dotfiles. They are setup for my specific use-case.
 I think you're off using this repo as reference to create your own dotfiles.
+
+### Install
+
+To install nixos on any of my devices I create my own ISO live media image. You can build the ISO by doing the following:
+
+
+```bash
+git clone git@github.com:hmajid2301/dotfiles.git ~/dotfiles/
+cd dotfiles
+
+nix develop
+
+# To build ISO
+sudo nix build .#nixosConfigurations.iso.config.system.build.isoImage
+```
+
+After building it you can copy the ISO from the `result` folder to your USB.
+Then run `nix_installer`, which will then ask you which host you would like to install.
+
+### Building
+
+To build my dotfiles for a specific host you can do something like:
 
 ```bash
 git clone git@github.com:hmajid2301/dotfiles.git ~/dotfiles/
@@ -15,15 +39,11 @@ cd dotfiles
 nix develop
 
 # To build system configuration
-sudo nixos-rebuild --flake .#framework
+sudo nixos-rebuild switch --flake .#framework
 
 # To build user configuration
-home-manager --flake .#framework
+home-manager switch --flake .#framework
 ```
-
-You can read more about my dotfiles and development workflows on my [blog here](https://haseebmajid.dev/series/my-development-workflow/) (#ShamelessPlug).
-
-> Note my dotfiles are almost always changing!
 
 ## 🚀 Features
 
@@ -32,13 +52,12 @@ Some features of my dotfiles:
 - Structured to allow multiple **NixOS configurations**, including **desktop**, **laptop**
 - **Declarative** config including **themes**, **wallpapers** and **nix-colors**
 - **Opt-in persistance** through impermanence + blank snapshot
- - Delete files on boot
 - **Encrypted btrfs partition** 
 - **sops-nix** for secrets management
 - Different environments like **hyprland** and **gnome**
 - Laptop setup with eGPU and **vfio** for playing games on windows
+- Custom live media **ISO**, with an **"automated" install** script
 - Custom **neovim** setup using **nixvim**
-
 
 ## 🏠 Structure
 
@@ -52,7 +71,7 @@ Some features of my dotfiles:
   - `mesmer`: Desktop AMD Ryzen 9 5950X  | Hyprland | GPU 7900 XTX
 - `home-manager`: Most of my dotfiles configuration, user specific
 
-## 󱃷 Applications
+## 📱 Applications
 
 | Type           | Program      |
 | :------------- | :----------: |
@@ -68,15 +87,8 @@ Some features of my dotfiles:
 | Colorscheme    | [Catppuccin](https://github.com/catppuccin) |
 
 I basically just installed every package from [Modern Unix](https://github.com/ibraheemdev/modern-unix).
-CLI tools that I use often include:
 
-- [fzf](https://github.com/junegunn/fzf): Fuzzy search tool
-  - Especially for reverse search in my terminal with [fish shell](https://github.com/PatrickF1/fzf.fish)
-- [zoxide](https://github.com/ajeetdsouza/zoxide): Smarter cd tool, integrated well with fzf, nvim and tmux
-- [exa](https://github.com/ogham/exa): A replacement for `ls` with better syntax highlighting
-- [ripgrep](https://github.com/BurntSushi/ripgrep): A faster `grep`
-
-###  Tmux
+### Tmux
 
 Some of the plugins I leverage with [tmux](./home-manager/multiplexers/tmux.nix) include:
 
@@ -95,7 +107,7 @@ I also leverage [tmux-browser](https://github.com/ofirgall/tmux-browser), to kee
 Another set of plugins I use are the [tmux-resurrect/continuum](https://github.com/tmux-plugins/tmux-continuum)
 plugins to auto save and restore my sessions. Alongside neovim's auto-session we can restore almost everything.
 
-###  neovim
+### neovim
 
 My [ neovim config ](./home-manager/editors/nvim/) is made using [nixvim](https://github.com/pta2002/nixvim/).
 Which converts all the nix files into a single "large" init.lua file. It also provides an easy way to add
@@ -113,13 +125,13 @@ Some of the main plugins used in my nvim setup include:
 - Status Line: lualine
 - Buffer Line: bufferline
 - Winbar: barbecue & navic
-- File Explorer: nvim-tree
+- File Explorer: neo-tree
 - LSP: lsp, nvim-cmp, luasnip, friendly-snippets
-- Git: gitsigns, toggleterm (with lazygit)
+- Git: gitsigns, lazygit
 - ColourScheme: notkens12 base46 (nvchad catppuccin)
 - Other: telescope (ofc)
 
-##  Showcase
+## 🖼️Sohowcase
 
 ### Desktop
 

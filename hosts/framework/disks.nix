@@ -1,11 +1,8 @@
 {
-  # TODO: how to run these commands in here
-  # sudo btrfs subvolume create /mnt/root && sudo btrfs subvolume snapshot -r /mnt/root /mnt/root-blank
   disko.devices = {
     disk = {
       nvme0n1 = {
         type = "disk";
-        # device = "/dev/vda";
         device = "/dev/nvme0n1";
         content = {
           type = "gpt";
