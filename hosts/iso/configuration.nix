@@ -93,14 +93,14 @@
 
           echo "Creating blank volume"
           # sudo btrfs subvolume create /mnt/root
-          # sudo btrfs subvolume snapshot -r /mnt/root /mnt/root-blank
+          sudo btrfs subvolume snapshot -r /mnt/ /mnt/root-blank
 
           echo "Set up attic binary cache"
         	ATTIC_TOKEN=$(sudo cat ${config.sops.secrets.attic_auth_token.path} || true)
           attic login prod https://majiy00-nix-binary-cache.fly.dev $ATTIC_TOKEN
           attic use prod:prod || true
 
-          sudo nixos-install --flake "$HOME/dotfiles#$TARGET_HOST"
+          sudo nixos-install --flake "$HOME/dotfiles#$TARGET_HOST" 
       ''
     )
   ];
