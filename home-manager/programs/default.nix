@@ -6,6 +6,7 @@
     ./eza.nix
     ./foliate.nix
     ./direnv.nix
+    ./photos.nix
     ./fzf.nix
     ./git.nix
     ./gpg.nix
@@ -39,7 +40,8 @@
     # sourcegraph
     src-cli
 
-    moreutils
+    parallel
+    #moreutils
     nvtop-amd
     htop
     ranger

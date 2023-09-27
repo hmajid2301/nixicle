@@ -5,24 +5,25 @@
     inputs.disko.nixosModules.disko
 
     ./hardware-configuration.nix
-    ./users/haseeb
+    #./users/haseeb
+    ./disks.nix
 
-    ../../nixos/global
-    ../../nixos/optional/attic.nix
-    ../../nixos/optional/backup.nix
-    ../../nixos/optional/fingerprint.nix
-    ../../nixos/optional/opengl.nix
-    ../../nixos/optional/thunderbolt.nix
-    ../../nixos/optional/docker.nix
-    ../../nixos/optional/fonts.nix
-    ../../nixos/optional/pipewire.nix
-    ../../nixos/optional/greetd.nix
-    ../../nixos/optional/quietboot.nix
-    ../../nixos/optional/vfio.nix
-    ../../nixos/optional/vpn.nix
+    #../../nixos/global
+    # ../../nixos/optional/attic.nix
+    # ../../nixos/optional/backup.nix
+    # ../../nixos/optional/fingerprint.nix
+    # ../../nixos/optional/opengl.nix
+    # ../../nixos/optional/thunderbolt.nix
+    # ../../nixos/optional/docker.nix
+    # ../../nixos/optional/fonts.nix
+    # ../../nixos/optional/pipewire.nix
+    #../../nixos/optional/greetd.nix
+    # #../../nixos/optional/quietboot.nix
+    # ../../nixos/optional/vfio.nix
+    # ../../nixos/optional/vpn.nix
+    # ../../nixos/optional/pam.nix
+    #
     ../../nixos/optional/grub.nix
-    ../../nixos/optional/pam.nix
-
     #../nixos/optional/wireless.nix
     #../../nixos/optional/ephemeral.nix
   ];

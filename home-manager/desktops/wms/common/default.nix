@@ -29,6 +29,7 @@
     jmtpfs
     brightnessctl
     xdg-utils
+    gnome.nautilus-python
     nautilus-open-any-terminal
     gnome.sushi
     gnome.nautilus

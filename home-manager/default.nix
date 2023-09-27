@@ -53,8 +53,19 @@
   nix = {
     package = lib.mkDefault pkgs.nix;
     settings = {
+      substituters = [
+        "https://majiy00-nix-binary-cache.fly.dev/prod"
+        "https://cache.nixos.org"
+      ];
+
+      trusted-public-keys = [
+        "prod:fjP15qp9O3/x2WTb1LiQ2bhjxkBBip3uhjlDyqywz3I="
+        "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
+      ];
+
       experimental-features = [ "nix-command" "flakes" "repl-flake" ];
       warn-dirty = false;
+      netrc-file = "$HOME/.config/nix/netrc";
     };
   };
 }

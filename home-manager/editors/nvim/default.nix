@@ -19,6 +19,7 @@ in
 
     ./plugins/lsp.nix
     ./plugins/treesitter.nix
+    ./plugins/settings.nix
 
     ./plugins/colorscheme.nix
     ./plugins/ui.nix
