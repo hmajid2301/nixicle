@@ -6,15 +6,20 @@
   imports = [
     ../../nixos/global
     ../../nixos/optional/attic.nix
-    ../../nixos/optional/thunderbolt.nix
   ];
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
   nixpkgs.config.allowUnfree = true;
 
+  nix.extraOptions = "experimental-features = nix-command flakes";
+
   boot.kernelPackages = pkgs.linuxPackages_latest;
   boot.supportedFilesystems = lib.mkForce [ "btrfs" "reiserfs" "vfat" "f2fs" "xfs" "ntfs" "cifs" ];
+
+  networking = {
+    hostName = "iso";
+  };
 
   systemd.services.sshd.wantedBy = pkgs.lib.mkForce [ "multi-user.target" ];
 
@@ -30,31 +35,13 @@
   systemd.targets.hibernate.enable = false;
   systemd.targets.hybrid-sleep.enable = false;
 
-  environment.extraInit = ''
-    xset s off -dpms
-  '';
-
-  services.hardware.bolt.enable = true;
+  services.qemuGuest.enable = true;
   services.openssh.settings.PermitRootLogin = lib.mkForce "yes";
 
   sops.secrets.attic_auth_token = {
     sopsFile = ./secrets.yaml;
     neededForUsers = true;
   };
-
-  users.users.nixos.extraGroups = [
-    "wheel"
-    "video"
-    "audio"
-    "networkmanager"
-    "libvirtd"
-    "kvm"
-    "docker"
-    "podman"
-    "git"
-  ];
-
-
 
   environment.systemPackages = with pkgs; [
     git
@@ -92,7 +79,6 @@
           "$HOME/dotfiles/hosts/$TARGET_HOST/disks.nix"
 
           echo "Creating blank volume"
-          # sudo btrfs subvolume create /mnt/root
           sudo btrfs subvolume snapshot -r /mnt/ /mnt/root-blank
 
           echo "Set up attic binary cache"

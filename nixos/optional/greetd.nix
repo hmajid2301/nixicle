@@ -1,17 +1,20 @@
-{
+{ config, ... }: {
   services.greetd = {
     enable = true;
-    settings = {
+    settings = rec {
       initial_session = {
-        command = "Hyprland";
+        command = (
+          if config.home-manager.users.haseeb.wayland.windowManager.sway.enable
+          then "sway"
+          else "Hyprland"
+        );
         user = "haseeb";
       };
-      default_session = {
-        command = "initial_session";
-      };
+      default_session = initial_session;
     };
   };
   environment.etc."greetd/environments".text = ''
-    Hyprland
+        Hyprland
+    		sway
   '';
 }

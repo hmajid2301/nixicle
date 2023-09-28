@@ -7,8 +7,6 @@
       extraPackages = with pkgs; [
         mesa
       ];
-      extraPackages32 = with pkgs; [
-      ];
     };
   };
 }

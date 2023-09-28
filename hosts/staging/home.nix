@@ -6,7 +6,7 @@
 }: {
   imports = [
     ../../home-manager
-    ../../home-manager/desktops/wms/hyprland.nix
+    ../../home-manager/desktops/wms/sway.nix
 
     ../../home-manager/programs/android.nix
     ../../home-manager/programs/atuin.nix

@@ -40,6 +40,7 @@
       homeDirectory = lib.mkDefault "/home/${config.home.username}";
       stateVersion = lib.mkDefault "23.05";
     };
+
     modules = {
       browsers = {
         firefox.enable = true;

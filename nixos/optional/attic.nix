@@ -27,6 +27,11 @@
   systemd.services.attic-watch-store = {
     wantedBy = [ "multi-user.target" ];
     after = [ "network-online.target" ];
+    serviceConfig = {
+      MemoryHigh = "5%";
+      MemoryMax = "10%";
+    };
+
     script = ''
       #!/run/current-system/sw/bin/bash
       ATTIC_TOKEN=$(cat ${config.sops.secrets.attic_auth_token.path})
