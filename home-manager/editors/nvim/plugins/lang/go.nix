@@ -43,6 +43,7 @@
 
         extraOptions.settings = {
           gopls = {
+            buildFlags = [ "-tags=integration" ];
             gofumpt = true;
             codelenses = {
               gc_details = false;
