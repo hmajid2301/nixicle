@@ -28,6 +28,139 @@ sudo nix build .#nixosConfigurations.iso.config.system.build.isoImage
 After building it you can copy the ISO from the `result` folder to your USB.
 Then run `nix_installer`, which will then ask you which host you would like to install.
 
+#### Adding Host
+
+To add a new host in the `hosts/` folder. The folder name should be the name of your host i.e. `framework`.
+(I recommend look at an example host to see what the files below could look like)
+Then add the following files:
+
+##### hardware-configuration.nix
+
+You can create this file running a NixOS ISO (like the ISO we created above). Then run the following command:
+
+```
+nixos-generate-config --no-filesystems --root /mnt
+cp /mnt/nixos/hardware-configuration.nix ~/dotfiles/hosts/<hostname>
+```
+
+##### disks.nix
+
+We use disko to partition the drives for us. During install this file is used to automatically partition our drives.
+Add this in a file called `disks.nix`.
+
+##### configuration.nix
+
+If the host is running NixOS to manage the configuration for NixOS create a `configuration.nix` file.
+Add imports for all the hardware configuration and disko configuration alongisde the main nixos/global imports
+`../../nixos/global`.
+
+Then decide which optional parts you want such as using setting up docker, vpn or grub bootloader.
+
+```nix
+  imports = [
+    inputs.hardware.nixosModules.framework-12th-gen-intel
+    inputs.hyprland.nixosModules.default
+    inputs.disko.nixosModules.disko
+
+    ./hardware-configuration.nix
+    ./users/haseeb
+    ./disks.nix
+
+    ../../nixos/global
+    ../../nixos/optional/attic.nix
+    ../../nixos/optional/backup.nix
+    ../../nixos/optional/fingerprint.nix
+    ../../nixos/optional/opengl.nix
+    ../../nixos/optional/thunderbolt.nix
+    ../../nixos/optional/docker.nix
+    ../../nixos/optional/fonts.nix
+    ../../nixos/optional/pipewire.nix
+    ../../nixos/optional/greetd.nix
+    ../../nixos/optional/quietboot.nix
+    ../../nixos/optional/vfio.nix
+    ../../nixos/optional/vpn.nix
+    ../../nixos/optional/pam.nix
+    ../../nixos/optional/grub.nix
+  ];
+```
+
+##### home.nix
+
+This is the entrypoint for home-manager, which is used to to manage most of our apps, anything that can be managed
+in the userland i.e. doesn't need "sudo" to run. So this will include things like our editor, terminal, browser.
+
+It contains two main parts, the first part being which apps we want to enable on our host.
+
+```nix
+  config = {
+    modules = {
+      browsers = {
+        firefox.enable = true;
+      };
+
+      editors = {
+        nvim.enable = true;
+      };
+
+      multiplexers = {
+        tmux.enable = true;
+      };
+
+      shells = {
+        fish.enable = true;
+      };
+
+      terminals = {
+        alacritty.enable = true;
+        foot.enable = true;
+      };
+    };
+  };
+```
+
+Then preferences for colorscheme, wallpaper and default applications to use.
+
+```nix
+my.settings = {
+  wallpaper = "~/dotfiles/home-manager/wallpapers/rainbow-nix.jpg";
+  host = "framework";
+  default = {
+    shell = "${pkgs.fish}/bin/fish";
+    terminal = "${pkgs.foot}/bin/foot";
+    browser = "firefox";
+    editor = "nvim";
+  };
+};
+
+colorscheme = inputs.nix-colors.colorSchemes.catppuccin-mocha;
+```
+
+##### flake.nix
+
+Then we need to add our host to the entry i.e. if our device was called `staging`.
+
+```nix
+  nixosConfigurations = {
+    # VMs
+    staging = lib.nixosSystem {
+      modules = [ ./hosts/staging/configuration.nix ];
+      specialArgs = { inherit inputs outputs; };
+    };
+  };
+
+  homeConfigurations = {
+    # VMs
+    staging = lib.homeManagerConfiguration {
+      modules = [ ./hosts/staging/home.nix ];
+      pkgs = nixpkgs.legacyPackages.x86_64-linux;
+      extraSpecialArgs = { inherit inputs outputs; };
+    };
+  };
+```
+
+> NOTE: You can also just add `home.nix`, if you want to just use home-manager. Or your device is not using NixOS but just the nix package manager.
+
+
 ### Building
 
 To build my dotfiles for a specific host you can do something like:
@@ -107,7 +240,7 @@ I also leverage [tmux-browser](https://github.com/ofirgall/tmux-browser), to kee
 Another set of plugins I use are the [tmux-resurrect/continuum](https://github.com/tmux-plugins/tmux-continuum)
 plugins to auto save and restore my sessions. Alongside neovim's auto-session we can restore almost everything.
 
-### neovim
+### Neovim
 
 My [ neovim config ](./home-manager/editors/nvim/) is made using [nixvim](https://github.com/pta2002/nixvim/).
 Which converts all the nix files into a single "large" init.lua file. It also provides an easy way to add
@@ -131,7 +264,7 @@ Some of the main plugins used in my nvim setup include:
 - ColourScheme: notkens12 base46 (nvchad catppuccin)
 - Other: telescope (ofc)
 
-## 🖼️Sohowcase
+## 🖼️ Showcase
 
 ### Desktop
 
