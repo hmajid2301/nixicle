@@ -31,7 +31,6 @@
       };
     };
 
-    # TODO: move to nixvim
     extraPlugins = with pkgs.vimPlugins; [ null-ls-nvim ];
     extraConfigLua =
       ''

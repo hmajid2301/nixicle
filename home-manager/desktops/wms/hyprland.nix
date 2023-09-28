@@ -51,6 +51,7 @@
       bind = SUPER, b, exec, ${config.my.settings.default.browser}
       bind = SUPER_SHIFT, f, exec, thunar
       bind = SUPER, a, exec, rofi -show drun -modi drun
+      bind = ALT, Tab, exec, rofi -show window
       bind = SUPER, w, exec, makoctl dismiss
 
       # █▀▀ ▀▄▀ █▀▀ █▀▀ █▀█ ▀█▀ █ █▀█ █▄░█ █▀
@@ -71,7 +72,6 @@
 
       # █▀ █▀▀ █▀█ █ █▀█ ▀█▀ █▀
       # ▄█ █▄▄ █▀▄ █ █▀▀ ░█░ ▄█
-      bind=CONTROL_ALT,DELETE,exec,~/dotfiles/home-manager/desktops/wms/common/scripts/power_menu.sh
       bindl=,switch:Lid Switch, exec, ~/dotfiles/home-manager/desktops/wms/common/scripts/laptop_lid_switch.sh
 
       # █░░ █▀█ █▀▀ █▄▀   █▀ █▀▀ █▀█ █▀▀ █▀▀ █▄░█

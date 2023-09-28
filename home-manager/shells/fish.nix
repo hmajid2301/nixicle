@@ -26,7 +26,6 @@ in
         ''
         +
         # Source scripts
-        # TODO: maybe only need one of the nix ones
         ''
           nix-your-shell fish | source
           fish_add_path --path --append ~/go/bin/
