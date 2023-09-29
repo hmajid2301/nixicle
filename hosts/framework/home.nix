@@ -9,7 +9,6 @@
     ../../home-manager/desktops/wms/hyprland.nix
 
     ../../home-manager/programs/android.nix
-    ../../home-manager/programs/atuin.nix
     ../../home-manager/programs/kdeconnect.nix
 
     ../../home-manager/games

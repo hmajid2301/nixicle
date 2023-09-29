@@ -20,7 +20,7 @@
   ];
 
   sops.secrets.attic_auth_token = {
-    sopsFile = ../../hosts/iso/secrets.yaml;
+    sopsFile = ../../nixos/secrets.yaml;
     neededForUsers = true;
   };
 
