@@ -1,10 +1,10 @@
 {
   imports = [
     ./hardware-configuration.nix
-    ./users/haseeb
     ./disks.nix
 
     ../../nixos/global
+    ../../nixos/users/haseeb.nix
 
     ../../nixos/optional/auto-upgrade.nix
     ../../nixos/optional/attic.nix

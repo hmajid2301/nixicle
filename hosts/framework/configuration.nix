@@ -5,10 +5,11 @@
     inputs.disko.nixosModules.disko
 
     ./hardware-configuration.nix
-    ./users/haseeb
     ./disks.nix
 
     ../../nixos/global
+    ../../nixos/users/haseeb.nix
+
     ../../nixos/optional/attic.nix
     ../../nixos/optional/backup.nix
     ../../nixos/optional/fingerprint.nix
