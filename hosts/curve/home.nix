@@ -9,7 +9,6 @@
     ../../home-manager/desktops/wms/sway.nix
     ../../home-manager/fonts.nix
 
-    ../../home-manager/programs/atuin.nix
     ../../home-manager/programs/android.nix
     ../../home-manager/programs/kdeconnect.nix
 
@@ -63,6 +62,7 @@
       };
     };
 
+    # USE Gnome
     # To show nix installed apps in Gnome
     targets.genericLinux.enable = true;
     xdg.mime.enable = true;

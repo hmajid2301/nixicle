@@ -12,8 +12,6 @@
     ../../nixos/optional/attic.nix
     ../../nixos/optional/backup.nix
     ../../nixos/optional/fingerprint.nix
-    ../../nixos/optional/opengl.nix
-    ../../nixos/optional/thunderbolt.nix
     ../../nixos/optional/docker.nix
     ../../nixos/optional/fonts.nix
     ../../nixos/optional/pipewire.nix

@@ -42,6 +42,7 @@
     overlays = builtins.attrValues outputs.overlays ++ [
       inputs.nixneovimplugins.overlays.default
       inputs.nur.overlay
+      inputs.attic.overlays.default
     ];
 
     config = {

@@ -12,7 +12,6 @@
     ../../nixos/optional/docker.nix
     ../../nixos/optional/fonts.nix
     ../../nixos/optional/pipewire.nix
-    ../../nixos/optional/greetd.nix
     ../../nixos/optional/quietboot.nix
     ../../nixos/optional/vfio.nix
     ../../nixos/optional/vpn.nix
@@ -21,6 +20,12 @@
 
     #../nixos/optional/wireless.nix
   ];
+
+  services.xserver.enable = true;
+  services.xserver.displayManager.gdm.enable = true;
+  services.xserver.desktopManager.gnome.enable = true;
+  services.qemuGuest.enable = true;
+  services.spice-vdagentd.enable = true;
 
   networking = {
     hostName = "staging";

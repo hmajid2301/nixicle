@@ -54,14 +54,6 @@
     };
 
     plugins = {
-      # auto-save = {
-      #   enable = true;
-      #   debounceDelay = 5000;
-      #   extraOptions = {
-      #     trigger_events = ["TextChanged"];
-      #   };
-      # };
-
       illuminate = {
         enable = true;
         delay = 200;
@@ -128,11 +120,13 @@
       vimPlugins.nvim-spectre
       vimPlugins.flash-nvim
       vimPlugins.nvim-navbuddy
+
+      # for yanky
       vimPlugins.sqlite-lua
+      vimExtraPlugins.yanky-nvim
     ];
 
     extraConfigLua =
-      # lua
       ''
         -- undo-telescope
         require("telescope").load_extension("undo")
@@ -145,6 +139,19 @@
         require("better_escape").setup()
         require("flash").setup()
         require("nvim-navbuddy").setup({lsp = { auto_attach = true }})
+
+        -- yanky
+        require("telescope").load_extension("yank_history")
+        require("yanky").setup({
+        	highlight = { timer = 250 },
+        	ring = { storage = jit.os:find("Windows") and "shada" or "sqlite" },
+        })
+        vim.keymap.set({"n","x"}, "p", "<Plug>(YankyPutAfter)")
+        vim.keymap.set({"n","x"}, "P", "<Plug>(YankyPutBefore)")
+        vim.keymap.set({"n","x"}, "gp", "<Plug>(YankyGPutAfter)")
+        vim.keymap.set({"n","x"}, "gP", "<Plug>(YankyGPutBefore)")
+        vim.keymap.set("n", "<c-n>", "<Plug>(YankyCycleForward)")
+        vim.keymap.set("n", "<c-p>", "<Plug>(YankyCycleBackward)")
       '';
   };
 }

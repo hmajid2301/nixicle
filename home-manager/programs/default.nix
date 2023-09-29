@@ -1,5 +1,7 @@
-{ pkgs, ... }: {
+{ pkgs, lib, ... }: {
   imports = [
+    ./attic.nix
+    ./atuin.nix
     ./bat.nix
     ./bottom.nix
     ./calcure.nix
@@ -40,8 +42,8 @@
     # sourcegraph
     src-cli
 
-    parallel
-    #moreutils
+    (lib.hiPrio parallel)
+    moreutils
     nvtop-amd
     htop
     ranger
