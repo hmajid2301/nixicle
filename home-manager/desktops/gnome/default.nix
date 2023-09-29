@@ -9,6 +9,11 @@ with lib.hm.gvariant; {
     recursive = true;
   };
 
+  # To show nix installed apps in Gnome
+  targets.genericLinux.enable = true;
+  xdg.mime.enable = true;
+  xdg.systemDirs.data = [ "${config.home.homeDirectory}/.nix-profile/share/applications" ];
+
   home.packages = with pkgs; [
     # apps
     gnome.gnome-tweaks

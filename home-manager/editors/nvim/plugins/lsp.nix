@@ -31,7 +31,16 @@
       };
     };
 
-    extraPlugins = with pkgs.vimPlugins; [ null-ls-nvim ];
+    extraPlugins = with pkgs.vimPlugins; [
+      neoconf-nvim
+      null-ls-nvim
+    ];
+
+    extraConfigLuaPre =
+      ''
+        require("neoconf").setup({})
+      '';
+
     extraConfigLua =
       ''
         require("which-key").register({

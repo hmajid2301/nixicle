@@ -6,10 +6,9 @@
 }: {
   imports = [
     ../../home-manager
-    ../../home-manager/desktops/wms/sway.nix
+    ../../home-manager/desktops/gnome
 
     ../../home-manager/programs/android.nix
-    ../../home-manager/programs/atuin.nix
     ../../home-manager/programs/kdeconnect.nix
 
     ../../home-manager/games
@@ -19,6 +18,8 @@
     ../../home-manager/security/sops.nix
     ../../home-manager/security/yubikey.nix
   ];
+
+
 
   config = {
     modules = {
