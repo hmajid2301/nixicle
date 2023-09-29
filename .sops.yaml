@@ -57,3 +57,12 @@ creation_rules:
       - *haseeb
       - *haseebmajid
 
+  - path_regex: nixos/users/secrets.ya?ml$
+    key_groups:
+    - age:
+      - *framework
+      - *mesmer
+      - *curve
+      pgp:
+      - *haseeb
+      - *haseebmajid

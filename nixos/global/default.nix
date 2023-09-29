@@ -31,6 +31,7 @@
   networking.firewall.enable = true;
   services.printing.enable = true;
   services.dbus.enable = true;
+  services.geoclue2.enable = true;
 
   networking.networkmanager.enable = true;
 
