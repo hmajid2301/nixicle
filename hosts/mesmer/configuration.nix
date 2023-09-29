@@ -1,9 +1,9 @@
 { pkgs, ... }: {
   imports = [
     ./hardware-configuration.nix
-    ./users/haseeb
 
     ../../nixos/global
+    ../../nixos/users/haseeb.nix
 
     ../../nixos/optional/greetd.nix
     ../../nixos/optional/quietboot.nix
