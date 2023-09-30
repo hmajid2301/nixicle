@@ -66,6 +66,7 @@
     broot
     choose
     curlie
+    chafa
     dogdns
     duf
     delta
@@ -77,8 +78,8 @@
     gdu
     gping
     hyperfine
+    hexyl
     lazydocker
-    killall
     ouch
     silver-searcher
     thefuck
@@ -103,7 +104,6 @@
     asciinema
     cava
     cmatrix
-    chafa
     charasay
     fortune
     lolcat
