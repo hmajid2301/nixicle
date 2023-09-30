@@ -9,7 +9,7 @@ in
     neededForUsers = true;
   };
 
-  users.mutableUsers = false;
+  #users.mutableUsers = false;
   users.users.haseeb = {
     isNormalUser = true;
     shell = pkgs.fish;
@@ -29,7 +29,8 @@ in
       "i2c"
     ];
 
-    passwordFile = config.sops.secrets.haseeb-password.path;
+    hashedPasswordFile = config.sops.secrets.haseeb-password.path;
+    packages = [ pkgs.home-manager ];
   };
 
   programs.fish.enable = true;
