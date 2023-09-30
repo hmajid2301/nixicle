@@ -36,6 +36,8 @@ in
         ''
           set -Ux fifc_editor nvim
           set -U fifc_keybinding \cx
+          bind \cx _fifc
+          bind -M insert \cx _fifc
         ''
         +
         # FZF
