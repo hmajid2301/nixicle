@@ -7,6 +7,7 @@
   imports = [
     ../../home-manager
     ../../home-manager/programs
+    ../../home-manager/security/sops.nix
   ];
 
   config = {

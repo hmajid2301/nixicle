@@ -12,11 +12,11 @@
     ../../nixos/optional/docker.nix
     ../../nixos/optional/fonts.nix
     ../../nixos/optional/pipewire.nix
-    ../../nixos/optional/quietboot.nix
+    #../../nixos/optional/quietboot.nix
     ../../nixos/optional/vfio.nix
     ../../nixos/optional/vpn.nix
     ../../nixos/optional/grub.nix
-    #../../nixos/optional/ephemeral.nix
+    ../../nixos/optional/ephemeral.nix
 
     #../nixos/optional/wireless.nix
   ];
