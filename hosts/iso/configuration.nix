@@ -42,9 +42,32 @@
     git
     gum
     (
+      writeShellScriptBin "rescue" ''
+        #!/usr/bin/env bash
+        set -euo pipefail
+
+        gum "device name"
+
+        sudo mkdir -p /mnt/{dev,proc,sys,boot}
+        sudo mount -o bind /dev /mnt/dev
+        sudo mount -o bind /proc /mnt/proc
+        sudo mount -o bind /sys /mnt/sys
+        sudo chroot /mnt /nix/var/nix/profiles/system/activate
+        sudo chroot /mnt /run/current-system/sw/bin/bash
+
+        sudo mount /dev/vda1 /mnt/boot
+        sudo cryptsetup open /dev/vda3 cryptroot
+        sudo mount /dev/mapper/cryptroot /mnt/
+
+        sudo nixos-enter
+      ''
+    )
+    (
       writeShellScriptBin "nix_installer" ''
         #!/usr/bin/env bash
         set -euo pipefail
+        gsettings set org.gnome.desktop.session idle-delay 0
+        gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-ac-type 'nothing'
 
         if [ "$(id -u)" -eq 0 ]; then
         	echo "ERROR! $(basename "$0") should be run as a regular user"
@@ -73,8 +96,8 @@
         --mode zap_create_mount \
         "$HOME/dotfiles/hosts/$TARGET_HOST/disks.nix"
 
-          echo "Creating blank volume"
-          sudo btrfs subvolume snapshot -r /mnt/ /mnt/root-blank
+        	echo "Creating blank volume"
+        	sudo btrfs subvolume snapshot -r /mnt/ /mnt/root-blank
 
         echo "Set up attic binary cache"
         attic use prod || true

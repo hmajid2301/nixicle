@@ -1,9 +1,4 @@
-# This file defines the "non-hardware dependent" part of opt-in persistence
-# It imports impermanence, defines the basic persisted dirs, and ensures each
-# users' home persist dir exists and has the right permissions
-#
-# It works even if / is tmpfs, btrfs snapshot, or even not ephemeral at all.
-{ lib, inputs, config, ... }: {
+{ inputs, ... }: {
   imports = [
     inputs.impermanence.nixosModules.impermanence
   ];
@@ -15,19 +10,20 @@
         "/var/lib/nixos"
         "/var/log"
         "/srv"
+        "/home/haseeb"
+        "/etc/ssh"
+        "/var/log"
+        "/var/lib/cups"
+        "/var/lib/fprint"
+        "/var/db/sudo/lectured"
+      ];
+      files = [
+        "/etc/machine-id"
+        "/etc/nix/id_rsa"
+        "/var/lib/cups/printers.conf"
+        "/var/lib/logrotate.status"
       ];
     };
   };
   programs.fuse.userAllowOther = true;
-
-  system.activationScripts.persistent-dirs.text =
-    let
-      mkHomePersist = user: lib.optionalString user.createHome ''
-        mkdir -p /persist/${user.home}
-        chown ${user.name}:${user.group} /persist/${user.home}
-        chmod ${user.homeMode} /persist/${user.home}
-      '';
-      users = lib.attrValues config.users.users;
-    in
-    lib.concatLines (map mkHomePersist users);
 }
