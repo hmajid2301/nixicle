@@ -21,6 +21,7 @@
       go-nvim
     ];
 
+    # TODO: can we replace with go.nvim to do tests?
     extraConfigLua =
       # lua
       ''

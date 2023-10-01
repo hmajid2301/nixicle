@@ -6,6 +6,7 @@
     ./bottom.nix
     ./calcure.nix
     ./eza.nix
+    ./gaming.nix
     ./foliate.nix
     ./direnv.nix
     ./photos.nix
@@ -30,10 +31,8 @@
     #tmp
     cargo
     rustc
-    go
-    dooit
-
-    ventoy-full
+    #go
+    tudu
 
     nix-init
     nix-update
@@ -46,7 +45,6 @@
     moreutils
     nvtop-amd
     htop
-    ranger
     lf
     ctpv
     unzip

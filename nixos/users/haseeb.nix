@@ -29,7 +29,7 @@ in
       "i2c"
     ];
 
-    hashedPasswordFile = config.sops.secrets.haseeb-password.path;
+    #hashedPasswordFile = config.sops.secrets.haseeb-password.path;
     packages = [ pkgs.home-manager ];
   };
 
