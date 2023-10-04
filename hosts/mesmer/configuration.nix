@@ -16,7 +16,6 @@
     ../../nixos/optional/gaming.nix
     ../../nixos/optional/auto-upgrade.nix
 
-    ../../nixos/optional/attic.nix
     ../../nixos/optional/backup.nix
     #../nixos/optional/grub.nix
     #../nixos/optional/wireless.nix
