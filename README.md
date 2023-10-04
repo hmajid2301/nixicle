@@ -67,7 +67,6 @@ Then decide which optional parts you want such as using setting up docker, vpn o
     ./disks.nix
 
     ../../nixos/global
-    ../../nixos/optional/attic.nix
     ../../nixos/optional/backup.nix
     ../../nixos/optional/fingerprint.nix
     ../../nixos/optional/opengl.nix

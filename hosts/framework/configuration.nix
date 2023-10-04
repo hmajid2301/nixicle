@@ -10,7 +10,6 @@
     ../../nixos/global
     ../../nixos/users/haseeb.nix
 
-    ../../nixos/optional/attic.nix
     ../../nixos/optional/backup.nix
     ../../nixos/optional/fingerprint.nix
     ../../nixos/optional/docker.nix
