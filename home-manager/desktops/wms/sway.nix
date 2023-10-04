@@ -7,12 +7,6 @@
     ./common
   ];
 
-  # TODO: do I need this? Or is pkgs enough
-  home.packages = with pkgs; [
-    autotiling
-    flashfocus
-  ];
-
   wayland.windowManager.sway = {
     enable = true;
     package = pkgs.swayfx;
@@ -77,7 +71,6 @@
       keybindings =
         let inherit (config.wayland.windowManager.sway.config) modifier;
         in lib.mkOptionDefault {
-          "${modifier}+Return" = "exec ${config.my.settings.default.terminal}";
           "${modifier}+b" = "exec ${config.my.settings.default.browser}";
           "${modifier}+a" = "exec ${pkgs.wofi}/bin/wofi --show drun";
           "${modifier}+p" = "exec rofi -show drun -mode drun";
@@ -87,7 +80,8 @@
           "${modifier}+bracketleft" = "workspace prev";
           XF86Launch5 = "swaylock -S";
           XF86Launch4 = "swaylock -S";
-          "${modifier}+backspace" = "swaylock -S";
+          # "${modifier}+backspace" = "swaylock -S";
+          "${modifier}+backspace" = "xdg-screensaver lock";
 
           # Print Screen
           Print = "grimblast --notify copysave area";
@@ -117,6 +111,8 @@
 
     extraConfig = ''
       corner_radius 5
+      bindswitch --locked --reload lid:on output eDP-1 disable
+      bindswitch --locked --reload lid:off output eDP-1 enable
     '';
   };
 }
