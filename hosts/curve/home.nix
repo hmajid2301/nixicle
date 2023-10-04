@@ -9,12 +9,7 @@
     ../../home-manager/desktops/wms/sway.nix
     ../../home-manager/fonts.nix
 
-    ../../home-manager/programs/android.nix
-    ../../home-manager/programs/kdeconnect.nix
-
     ../../home-manager/programs
-    ../../home-manager/programs/k8s.nix
-    ../../home-manager/programs/kafka.nix
 
     ../../home-manager/security/sops.nix
     ../../home-manager/security/yubikey.nix
@@ -80,11 +75,13 @@
 
     # sway (swayfx) is installed via manually building binaries
     wayland.windowManager.sway.package = lib.mkForce null;
+    programs.swaylock.enable = lib.mkForce false;
     gtk.enable = lib.mkForce false;
 
     home.packages = with pkgs; [
       podman-compose
       podman-tui
+      android-studio
     ];
   };
 }

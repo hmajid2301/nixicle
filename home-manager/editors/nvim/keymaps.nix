@@ -46,22 +46,6 @@
           action = "<C-W>s";
           desc = "Split window below";
         };
-        "<S-H>" = {
-          desc = "Go to previous buffer";
-          action = "<CMD>BufferLineCyclePrev<CR>";
-        };
-        "<S-L>" = {
-          desc = "Go to next buffer";
-          action = "<CMD>BufferLineCycleNext<CR>";
-        };
-        "[b" = {
-          desc = "Go to previous buffer";
-          action = "<CMD>BufferLineCyclePrev<CR>";
-        };
-        "]b>" = {
-          desc = "Go to next buffer";
-          action = "<CMD>BufferLineCycleNext<CR>";
-        };
       };
 
       visualOnly = {
