@@ -6,7 +6,6 @@
   nix.settings = {
     extra-substituters = [
       "https://majiy00-nix-binary-cache.fly.dev"
-      "https://cache.saumon.network/camille"
     ];
     extra-trusted-public-keys = [
       "prod:fjP15qp9O3/x2WTb1LiQ2bhjxkBBip3uhjlDyqywz3I="

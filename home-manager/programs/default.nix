@@ -5,14 +5,18 @@
     ./bat.nix
     ./bottom.nix
     ./calcure.nix
-    ./eza.nix
-    ./gaming.nix
-    ./foliate.nix
     ./direnv.nix
-    ./photos.nix
+    ./eza.nix
+    ./foliate.nix
     ./fzf.nix
     ./git.nix
     ./gpg.nix
+    ./k8s.nix
+    ./kafka.nix
+    ./gaming.nix
+    ./kdeconnect.nix
+    ./lf.nix
+    ./photos.nix
     ./starship.nix
     ./zoxide.nix
   ];
@@ -45,7 +49,6 @@
     moreutils
     nvtop-amd
     htop
-    lf
     ctpv
     unzip
     pavucontrol

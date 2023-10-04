@@ -4,12 +4,6 @@
 }: {
   nix = {
     settings = {
-      substituters = [
-        "https://cache.m7.rs"
-      ];
-      trusted-public-keys = [
-        "cache.m7.rs:kszZ/NSwE/TjhOcPPQ16IuUiuRSisdiIwhKZCxguaWg="
-      ];
       trusted-users = [ "root" "@wheel" ];
       auto-optimise-store = lib.mkDefault true;
       experimental-features = [ "nix-command" "flakes" "repl-flake" ];

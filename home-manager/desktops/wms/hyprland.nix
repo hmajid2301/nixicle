@@ -41,6 +41,8 @@
 
       misc {
        vrr = 2
+       disable_hyprland_logo = 1;
+       disable_hypr_chan = 1
       }
 
       $notifycmd = notify-send -h string:x-canonical-private-synchronous:hypr-cfg -u low
