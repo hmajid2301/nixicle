@@ -7,7 +7,6 @@
     ../../nixos/users/haseeb.nix
 
     ../../nixos/optional/auto-upgrade.nix
-    ../../nixos/optional/attic.nix
     ../../nixos/optional/backup.nix
     ../../nixos/optional/docker.nix
     ../../nixos/optional/fonts.nix

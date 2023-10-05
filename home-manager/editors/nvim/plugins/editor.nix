@@ -68,6 +68,11 @@
         deleteToTrash = true;
       };
 
+      navbuddy = {
+        enable = true;
+        lsp.autoAttach = true;
+      };
+
       nvim-lightbulb = {
         enable = true;
       };
@@ -119,7 +124,6 @@
       vimPlugins.telescope-undo-nvim
       vimPlugins.nvim-spectre
       vimPlugins.flash-nvim
-      vimPlugins.nvim-navbuddy
 
       # for yanky
       vimPlugins.sqlite-lua
@@ -138,7 +142,6 @@
 
         require("better_escape").setup()
         require("flash").setup()
-        require("nvim-navbuddy").setup({lsp = { auto_attach = true }})
 
         -- yanky
         require("telescope").load_extension("yank_history")
@@ -152,6 +155,10 @@
         vim.keymap.set({"n","x"}, "gP", "<Plug>(YankyGPutBefore)")
         vim.keymap.set("n", "<c-n>", "<Plug>(YankyCycleForward)")
         vim.keymap.set("n", "<c-p>", "<Plug>(YankyCycleBackward)")
+
+        -- workout how to telescope maps
+        require("telescope").load_extension("harpoon")
+        vim.keymap.set("n", "<leader>hm", "<cmd>:Telescope harpoon marks<CR>")
       '';
   };
 }

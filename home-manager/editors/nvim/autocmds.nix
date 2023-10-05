@@ -9,7 +9,7 @@
       {
         event = [ "TextYankPost" ];
         group = "highlight_yank";
-        description = "Highlight yanked content";
+        desc = "Highlight yanked content";
         callback = { __raw = "function() vim.highlight.on_yank() end"; };
       }
       # {

@@ -6,16 +6,14 @@
   environment.persistence = {
     "/persist" = {
       directories = [
+        "/srv"
+        "/etc/ssh"
         "/var/lib/systemd"
         "/var/lib/nixos"
-        "/var/log"
-        "/srv"
-        "/home/haseeb"
-        "/etc/ssh"
-        "/var/log"
         "/var/lib/cups"
         "/var/lib/fprint"
         "/var/db/sudo/lectured"
+        "/home"
       ];
       files = [
         "/etc/machine-id"

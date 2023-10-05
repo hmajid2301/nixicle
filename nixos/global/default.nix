@@ -15,7 +15,7 @@
       ./openssh.nix
       ./opengl.nix
       ./pam.nix
-      #./persistance.nix
+      ./persistance.nix
       ./sops.nix
     ]
     ++ (builtins.attrValues outputs.nixosModules);
