@@ -75,6 +75,9 @@
 
       nvim-lightbulb = {
         enable = true;
+        autocmd.enabled = true;
+        virtualText.enabled = true;
+        statusText.enabled = true;
       };
 
       harpoon = {
@@ -135,9 +138,9 @@
         -- undo-telescope
         require("telescope").load_extension("undo")
         require("which-key").register({
-        mode = {"n", "v"},
-        ["<leader>f"] = { name = "+file/find" },
-        ["<leader>h"] = { name = "+harpoon" },
+        	mode = {"n", "v"},
+        	["<leader>f"] = { name = "+file/find" },
+        	["<leader>h"] = { name = "+harpoon" },
         })
 
         require("better_escape").setup()
