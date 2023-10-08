@@ -1,8 +1,15 @@
 {
   programs.nixvim = {
-    # TODO: maybe move this to keymaps if this works as is.
     extraConfigLua = ''
-      vim.api.nvim_set_keymap('n', '<Leader>vs', '<Cmd>lua $MYVIMRC<CR>', { silent = true, noremap = true })
+      function ReloadConfig()
+      	RELOAD = require("plenary.reload").reload_module
+      	RELOAD(os.getenv("MYVIMRC"))
+      	vim.cmd [[luafile $MYVIMRC]]
+      	print(vim.inspect(name .. " RELOADED!!!"))
+      end
+
+      vim.api.nvim_set_keymap('n', '<Leader>vs', '<Cmd>lua ReloadConfig()<CR>', { silent = true, noremap = true })
+      vim.cmd('command! ReloadConfig lua ReloadConfig()')
     '';
   };
 }

@@ -13,7 +13,6 @@
         "/var/lib/cups"
         "/var/lib/fprint"
         "/var/db/sudo/lectured"
-        "/home"
       ];
       files = [
         "/etc/machine-id"
