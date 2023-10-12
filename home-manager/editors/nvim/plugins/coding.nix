@@ -32,7 +32,6 @@
         cmp.event:on('confirm_done', cmp_autopairs.on_confirm_done())
 
         require("which-key").register({
-          ["<leader>s"] = { name = "+surround" },
           ["<leader>u"] = { name = "+fold" },
         })
 

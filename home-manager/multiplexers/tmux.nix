@@ -194,6 +194,10 @@ in
         unbind p
         bind p paste-buffer
 
+        set -g allow-passthrough on
+        set -ga update-environment TERM
+        set -ga update-environment TERM_PROGRAM
+
         bind-key -T copy-mode-vi M-h resize-pane -L 1
         bind-key -T copy-mode-vi M-j resize-pane -D 1
         bind-key -T copy-mode-vi M-k resize-pane -U 1
