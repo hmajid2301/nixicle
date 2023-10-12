@@ -76,7 +76,6 @@
       nvim-lightbulb = {
         enable = true;
         autocmd.enabled = true;
-        virtualText.enabled = true;
         statusText.enabled = true;
       };
 
@@ -141,10 +140,12 @@
         	mode = {"n", "v"},
         	["<leader>f"] = { name = "+file/find" },
         	["<leader>h"] = { name = "+harpoon" },
+          ["<leader>s"] = { name = "+spectre" },
         })
 
         require("better_escape").setup()
         require("flash").setup()
+        require("spectre").setup()
 
         -- yanky
         require("telescope").load_extension("yank_history")
