@@ -10,6 +10,7 @@
       vimPlugins.nui-nvim
       vimPlugins.nvim-web-devicons
       vimPlugins.barbecue-nvim
+      vimPlugins.dressing-nvim
 
       # for go.nvim
       vimExtraPlugins.guihua-lua

@@ -15,7 +15,8 @@
     ./kafka.nix
     ./gaming.nix
     ./kdeconnect.nix
-    ./lf.nix
+    ./file_managers/lf.nix
+    ./file_managers/yazi.nix
     ./photos.nix
     ./starship.nix
     ./zoxide.nix
