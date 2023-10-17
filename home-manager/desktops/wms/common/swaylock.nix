@@ -7,11 +7,6 @@ let
   inherit (config.colorscheme) colors;
 in
 {
-  # TODO: move to home.nix
-  nixpkgs.overlays = [
-    inputs.nur.overlay
-  ];
-
   home.packages = with pkgs; [
     nur.repos."999eagle".swayaudioidleinhibit
   ];

@@ -73,7 +73,7 @@
         in lib.mkOptionDefault {
           "${modifier}+b" = "exec ${config.my.settings.default.browser}";
           "${modifier}+a" = "exec ${pkgs.wofi}/bin/wofi --show drun";
-          "${modifier}+p" = "exec rofi -show drun -mode drun";
+          "${modifier}+p" = "exec ${pkgs.rofi}/bin/rofi -show drun -mode drun";
           "${modifier}+q" = "kill";
           "${modifier}+slash" = "workspace back_and_forth";
           "${modifier}+bracketright" = "workspace next";
@@ -95,10 +95,10 @@
           # Special Keys
           XF86MonBrightnessUp = "~/dotfiles/home-manager/desktops/wms/common/scripts/brightness.sh --inc";
           XF86MonBrightnessDown = "~/dotfiles/home-manager/desktops/wms/common/scripts/brightness.sh --dec";
-          XF86AudioRaiseVolume = "~/dotfiles/home-manager/desktops/wms/common/scripts/volume.sh --inc";
-          XF86AudioLowerVolume = "~/dotfiles/home-manager/desktops/wms/common/scripts/volume.sh --dec";
-          XF86AudioMute = "~/dotfiles/home-manager/desktops/wms/common/scripts/volume.sh --toggle";
-          XF86AudioMicMute = "~/dotfiles/home-manager/desktops/wms/common/scripts/volume.sh --toggle-mic";
+          "XF86AudioRaiseVolume" = "exec volume --inc";
+          "XF86AudioLowerVolume" = "exec volume --dec";
+          XF86AudioMute = "exec volume --toggle";
+          XF86AudioMicMute = "exec volume --toggle-mic";
           XF86AudioNext = "playerctl next";
           XF86AudioPrev = "playerctl previous";
           XF86AudioPlay = "playerctl play-pause";

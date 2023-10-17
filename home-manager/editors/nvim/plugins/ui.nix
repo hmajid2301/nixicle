@@ -2,7 +2,7 @@
   imports = [
     ./ui/statusline.nix
     ./ui/file-explorer.nix
-    #./ui/bufferline.nix
+    ./ui/bufferline.nix
   ];
 
   programs.nixvim = {

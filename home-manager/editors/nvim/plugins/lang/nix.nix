@@ -9,6 +9,7 @@
   programs.nixvim = {
     plugins = {
       nix.enable = true;
+      hmts.enable = true;
       lsp.servers.nixd = {
         enable = true;
       };
@@ -21,7 +22,6 @@
     };
 
     extraPlugins = with pkgs.vimPlugins; [
-      hmts-nvim
       nix-develop-nvim
     ];
 

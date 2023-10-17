@@ -6,8 +6,8 @@
 stdenv.mkDerivation {
   name = "codeium";
   src = fetchurl {
-    url = "https://github.com/Exafunction/codeium/releases/download/language-server-v1.2.95/language_server_linux_x64";
-    sha256 = "sha256-x7ctMzLS4PCfp5BKfj9yA691MTAj0lYOcvSpMJepONw=";
+    url = "https://github.com/Exafunction/codeium/releases/download/language-server-v1.2.99/language_server_linux_x64";
+    sha256 = "sha256-AF04IXag1tF/gaU2aVOC1VdFpOpNeba1oJy0gMo9wKk=";
   };
   nativeBuildInputs = [ autoPatchelfHook ];
   unpackPhase = "true";

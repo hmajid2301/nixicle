@@ -73,7 +73,7 @@
         {
           key = "W";
           command = "git commit -m '{{index .PromptResponses 0}}' --no-verify";
-          description = "ignore commit hooks";
+          description = "commit without verification";
           context = "global";
           subprocess = true;
         }

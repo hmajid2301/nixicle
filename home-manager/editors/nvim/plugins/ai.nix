@@ -18,7 +18,7 @@
   home = {
     file = {
       codeium_ls = {
-        target = ".codeium/bin/9f90299b936d762be496ee01acc3ff2db68b8ae5/language_server_linux_x64";
+        target = ".codeium/bin/7b00044fee859ddf8cf5e6501e648af5c6587c22/language_server_linux_x64";
         source = "${pkgs.codeium-ls}/bin/language_server_linux_x64";
       };
     };

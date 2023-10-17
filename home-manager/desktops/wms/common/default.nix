@@ -12,6 +12,7 @@
     ./wlogout.nix
     ./waybar
     ./eww.nix
+    ./scripts.nix
     #./xdg.nix
   ];
 
