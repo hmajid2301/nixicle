@@ -54,6 +54,10 @@
     };
 
     plugins = {
+      better-escape = {
+        enable = true;
+      };
+
       illuminate = {
         enable = true;
         delay = 200;
@@ -79,16 +83,15 @@
         statusText.enabled = true;
       };
 
-      harpoon = {
-        enable = true;
-        tmuxAutocloseWindows = true;
-        keymaps = {
-          addFile = "<leader>ha";
-          toggleQuickMenu = "<leader>ht";
-          navNext = "<leader>hn";
-          navPrev = "<leader>hp";
-        };
-      };
+      # harpoon = {
+      #   enable = true;
+      #   keymaps = {
+      #     addFile = "<leader>ha";
+      #     toggleQuickMenu = "<leader>ht";
+      #     navNext = "<leader>hn";
+      #     navPrev = "<leader>hp";
+      #   };
+      # };
 
       nvim-colorizer = {
         enable = true;
@@ -122,7 +125,6 @@
     };
 
     extraPlugins = with pkgs; [
-      vimPlugins.better-escape-nvim
       vimPlugins.telescope-undo-nvim
       vimPlugins.nvim-spectre
       vimPlugins.flash-nvim
@@ -143,7 +145,6 @@
           ["<leader>s"] = { name = "+spectre" },
         })
 
-        require("better_escape").setup()
         require("flash").setup()
         require("spectre").setup()
 
@@ -161,8 +162,8 @@
         vim.keymap.set("n", "<c-p>", "<Plug>(YankyCycleBackward)")
 
         -- workout how to telescope maps
-        require("telescope").load_extension("harpoon")
-        vim.keymap.set("n", "<leader>hm", "<cmd>:Telescope harpoon marks<CR>")
+        -- require("telescope").load_extension("harpoon")
+        -- vim.keymap.set("n", "<leader>hm", "<cmd>:Telescope harpoon marks<CR>")
       '';
   };
 }

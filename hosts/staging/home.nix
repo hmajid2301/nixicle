@@ -35,7 +35,6 @@
       };
 
       terminals = {
-        alacritty.enable = true;
         foot.enable = true;
       };
     };
