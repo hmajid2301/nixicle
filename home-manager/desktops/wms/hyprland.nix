@@ -13,6 +13,11 @@
     inputs.hyprland.packages.${pkgs.system}.xdg-desktop-portal-hyprland
   ];
 
+  nix.settings = {
+    substituters = [ "https://hyprland.cachix.org" ];
+    trusted-public-keys = [ "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc=" ];
+  };
+
   wayland.windowManager.hyprland = {
     enable = true;
     # TODO: move to https://github.com/spikespaz/hyprland-nix
@@ -31,8 +36,6 @@
       	border_size = 3
       	col.active_border=0xff${config.colorscheme.colors.base07}
       	col.inactive_border=0xff${config.colorscheme.colors.base02}
-      	col.group_border_active=0xff${config.colorscheme.colors.base0B}
-      	col.group_border=0xff${config.colorscheme.colors.base04}
       }
 
       decoration {
@@ -42,7 +45,7 @@
       misc {
        vrr = 2
        disable_hyprland_logo = 1;
-       disable_hypr_chan = 1
+       #disable_hypr_chan = 1
       }
 
       $notifycmd = notify-send -h string:x-canonical-private-synchronous:hypr-cfg -u low

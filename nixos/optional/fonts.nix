@@ -6,6 +6,11 @@
     liberation_ttf
     fira-code
     fira-code-symbols
+    roboto
+    ubuntu_font_family
+    oxygenfonts
+    cantarell-fonts
+    open-sans
     mplus-outline-fonts.githubRelease
     dina-font
     proggyfonts
