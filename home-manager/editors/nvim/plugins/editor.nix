@@ -11,23 +11,11 @@
     maps = {
       normalVisualOp = {
         "<leader>gls" = {
-          action =
-            # lua
-            ''
-              function()
-                      require("flash").jump()
-              end
-            '';
+          action = ''<cmd>lua require("flash").jump()<cr>'';
           desc = "Run flash";
         };
         "<leader>glt" = {
-          action =
-            # lua
-            ''
-              function()
-                      require("flash").treesitter()
-              end
-            '';
+          action = ''<cmd>lua require("flash").treesitter()<cr>'';
           desc = "Run flash treesitter";
         };
       };
@@ -41,13 +29,7 @@
           desc = "Show navbuddy";
         };
         "<leader>sr" = {
-          action =
-            # lua
-            ''
-              function()
-              	require("spectre").open()
-              end
-            '';
+          action = ''<cmd>lua require("spectre").open()<cr>'';
           desc = "Replace in files";
         };
       };
@@ -70,6 +52,10 @@
       oil = {
         enable = true;
         deleteToTrash = true;
+      };
+
+      flash = {
+        enable = true;
       };
 
       navbuddy = {
@@ -127,7 +113,6 @@
     extraPlugins = with pkgs; [
       vimPlugins.telescope-undo-nvim
       vimPlugins.nvim-spectre
-      vimPlugins.flash-nvim
 
       # for yanky
       vimPlugins.sqlite-lua
@@ -145,7 +130,6 @@
           ["<leader>s"] = { name = "+spectre" },
         })
 
-        require("flash").setup()
         require("spectre").setup()
 
         -- yanky

@@ -10,6 +10,8 @@
     plugins = {
       nix.enable = true;
       hmts.enable = true;
+      nix-develop.enable = true;
+
       lsp.servers.nixd = {
         enable = true;
       };
@@ -21,13 +23,8 @@
       };
     };
 
-    extraPlugins = with pkgs.vimPlugins; [
-      nix-develop-nvim
-    ];
-
     extraConfigVim = ''
       au BufRead,BufNewFile flake.lock setf json
-
     '';
   };
 }
