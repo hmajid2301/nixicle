@@ -54,6 +54,7 @@
 
       terminals = {
         foot.enable = true;
+        wezterm.enable = true;
       };
     };
 

@@ -16,8 +16,12 @@ in
       extraConfig =
         # lua
         ''
+          local wezterm = require 'wezterm'
           return {
           	color_scheme = "Catppuccin Mocha",
+          	font = wezterm.font  ${config.fontProfiles.monospace.family},
+          	font_size = 14.0,
+          	enable_tab_bar = false,
           }
         '';
     };
