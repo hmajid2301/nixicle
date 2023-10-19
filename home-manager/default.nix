@@ -27,6 +27,7 @@
 
       ./terminals/alacritty.nix
       ./terminals/foot.nix
+      ./terminals/wezterm.nix
     ]
     ++ builtins.attrValues outputs.homeManagerModules;
 
