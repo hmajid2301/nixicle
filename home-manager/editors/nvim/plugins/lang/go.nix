@@ -18,7 +18,6 @@
     };
 
     extraPlugins = with pkgs.vimPlugins; [
-      neotest-go
       go-nvim
     ];
 
@@ -27,15 +26,6 @@
       	icons = false;
       })
 
-      require('neotest').setup {
-      	adapters = {
-      		require('neotest-go') {
-      			args = { "-tags=integration" }
-      		},
-      	},
-      }
-
-      			
       local capabilities = require("cmp_nvim_lsp").default_capabilities(vim.lsp.protocol.make_client_capabilities())
 
       require("lspconfig")["gopls"].setup({
