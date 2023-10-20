@@ -94,18 +94,32 @@
       };
     };
 
-    extraPlugins = with pkgs.vimPlugins; [ neotest ];
+    extraPlugins = with pkgs.vimPlugins; [
+      neotest
+      neotest-python
+      neotest-go
+    ];
+
+    # TODO: workout how to move neotest to specific language files
     extraConfigLua =
-      # lua
       ''
         require("which-key").register({
-          ["<leader>t"] = { name = "+test" },
+        	["<leader>t"] = { name = "+test" },
         })
 
         local neotest = require('neotest')
         neotest.setup({
-          status = { virtual_text = true },
-          output = { open_on_run = true },
+        	status = { virtual_text = true },
+        	output = { open_on_run = true },
+        	adapters = {
+        		require('neotest-python') {},
+        		require('neotest-go') {
+        			experimental = {
+        				test_table = true,
+        			},
+        			args = { "-tags=integration" }
+        		},
+        	},
         })
       '';
   };
