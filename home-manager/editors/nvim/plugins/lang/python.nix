@@ -7,18 +7,7 @@
   ];
 
   programs.nixvim = {
-    extraPlugins = with pkgs.vimPlugins; [
-      neotest-python
-    ];
-
     extraConfigLua = ''
-      require('neotest').setup {
-      	adapters = {
-      		require('neotest-python') {
-      		},
-      	},
-      }
-
       require("lspconfig")["pyright"].setup({})
     '';
 
