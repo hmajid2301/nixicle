@@ -33,7 +33,7 @@ in
     ./plugins/lang/html.nix
     ./plugins/lang/markdown.nix
     ./plugins/lang/python.nix
-    #./plugins/lang/css.nix
+    ./plugins/lang/css.nix
     ./plugins/lang/yaml.nix
 
     ./plugins/tmux.nix

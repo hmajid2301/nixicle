@@ -9,8 +9,8 @@
     ./gammastep.nix
     ./kanshi.nix
     ./swaylock.nix
+    ./waybar.nix
     ./wlogout.nix
-    ./waybar
     ./eww.nix
     ./scripts.nix
     ./xdg.nix
