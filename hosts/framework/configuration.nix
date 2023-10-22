@@ -21,8 +21,6 @@
     ../../nixos/optional/vpn.nix
     ../../nixos/optional/pam.nix
     ../../nixos/optional/grub.nix
-    #../nixos/optional/wireless.nix
-    #../../nixos/optional/ephemeral.nix
   ];
 
   networking = {

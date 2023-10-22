@@ -18,8 +18,6 @@
 
     ../../nixos/optional/backup.nix
     #../nixos/optional/grub.nix
-    #../nixos/optional/wireless.nix
-    #../../nixos/optional/ephemeral.nix
   ];
 
   networking = {
