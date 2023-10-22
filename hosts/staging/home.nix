@@ -52,31 +52,36 @@
 
     colorscheme = inputs.nix-colors.colorSchemes.catppuccin-mocha;
 
+    # TODO: use the one in gnome.nix?
+    targets.genericLinux.enable = true;
+    xdg.mime.enable = true;
+    xdg.systemDirs.data = [ "${config.home.homeDirectory}/.nix-profile/share/applications" ];
+
     home = {
       username = lib.mkDefault "haseeb";
       homeDirectory = lib.mkDefault "/home/${config.home.username}";
       stateVersion = lib.mkDefault "23.05";
 
-      persistence = {
-        "/persist/home/haseeb" = {
-          directories = [
-            "Documents"
-            "Downloads"
-            "Pictures"
-            "Videos"
-            "Games"
-            "projects"
-            "dotfiles"
-            "go"
-            ".local"
-            ".tmux"
-            ".ssh"
-            ".gnupg"
-            ".config/gtk"
-          ];
-          allowOther = true;
-        };
-      };
+      # persistence = {
+      #   "/persist/home/haseeb" = {
+      #     directories = [
+      #       "Documents"
+      #       "Downloads"
+      #       "Pictures"
+      #       "Videos"
+      #       "Games"
+      #       "projects"
+      #       "dotfiles"
+      #       "go"
+      #       ".local"
+      #       ".tmux"
+      #       ".ssh"
+      #       ".gnupg"
+      #       ".config/gtk"
+      #     ];
+      #     allowOther = true;
+      #   };
+      # };
     };
   };
 }
