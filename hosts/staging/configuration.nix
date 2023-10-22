@@ -15,9 +15,7 @@
     ../../nixos/optional/vfio.nix
     ../../nixos/optional/vpn.nix
     ../../nixos/optional/grub.nix
-    #../../nixos/optional/ephemeral.nix
 
-    #../nixos/optional/wireless.nix
   ];
 
   services.xserver.enable = true;
