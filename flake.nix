@@ -24,6 +24,7 @@
     hardware.url = "github:nixos/nixos-hardware";
     sops-nix.url = "github:mic92/sops-nix";
     impermanence.url = "github:nix-community/impermanence";
+    lanzaboote.url = "github:nix-community/lanzaboote";
 
     hyprland.url = "github:hyprwm/Hyprland";
     hypr-contrib.url = "github:hyprwm/contrib";
