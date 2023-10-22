@@ -2,8 +2,8 @@
 let
   json2nix = pkgs.writeScriptBin "json2nix" ''
     ${pkgs.python3}/bin/python ${pkgs.fetchurl {
-      url = "https://gist.githubusercontent.com/Scoder12/0538252ed4b82d65e59115075369d34d/raw/e86d1d64d1373a497118beb1259dab149cea951d/json2nix.py";
-      hash = "sha256-ROUIrOrY9Mp1F3m+bVaT+m8ASh2Bgz8VrPyyrQf9UNQ=";
+      url = "https://gitlab.com/-/snippets/3613708/raw/main/json2nix.py";
+      hash = "sha256-zZeL3JwwD8gmrf+fG/SPP51vOOUuhsfcQuMj6HNfppU=";
     }} $@
   '';
 

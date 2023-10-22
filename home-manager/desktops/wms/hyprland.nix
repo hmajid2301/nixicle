@@ -80,7 +80,6 @@ in
 
       # ▄▀█ █░█ ▀█▀ █▀█   █▀ ▀█▀ ▄▀█ █▀█ ▀█▀
       # █▀█ █▄█ ░█░ █▄█   ▄█ ░█░ █▀█ █▀▄ ░█░
-      # exec-once = mako &
       exec-once = swaync &
       exec-once = kanshi &
       exec-once = sway-audio-idle-inhibit -w &

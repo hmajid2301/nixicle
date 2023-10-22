@@ -1,4 +1,4 @@
-{ pkgs, ... }: {
+{ pkgs, config, ... }: {
   home.packages = with pkgs; [
     swaynotificationcenter
   ];
@@ -6,12 +6,11 @@
   # TODO: move to nix-colors
   xdg.configFile."swaync/style.css" = {
     text =
-      # css
       ''
         * {
         	all: unset;
         	font-size: 14px;
-        	font-family: "Ubuntu Nerd Font";
+        	font-family: ${config.fontProfiles.monospace.family};
         	transition: 200ms;
         }
 

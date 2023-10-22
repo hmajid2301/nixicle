@@ -10,8 +10,8 @@ You can read more about my dotfiles and development workflows on my [blog here](
 > :fire: I wouldn't recommend just blindly using my dotfiles. They are setup for my specific use-case.
 I think you're off using this repo as reference to create your own dotfiles.
 
-### Install
-
+<details>
+  <summary>Install</summary>
 To install nixos on any of my devices I create my own ISO live media image. You can build the ISO by doing the following:
 
 
@@ -160,6 +160,8 @@ Then we need to add our host to the entry i.e. if our device was called `staging
 > NOTE: You can also just add `home.nix`, if you want to just use home-manager. Or your device is not using NixOS but just the nix package manager.
 
 
+</details>
+
 ### Building
 
 To build my dotfiles for a specific host you can do something like:
@@ -186,10 +188,10 @@ Some features of my dotfiles:
 - **Opt-in persistance** through impermanence + blank snapshot
 - **Encrypted btrfs partition** 
 - **sops-nix** for secrets management
-- Different environments like **hyprland** and **gnome**
-- Laptop setup with eGPU and **vfio** for playing games on windows
+- Different environments like **hyprland**, **sway** and **gnome**
 - Custom live media **ISO**, with an **"automated" install** script
-- Custom **neovim** setup using **nixvim**
+- Custom **neovim** setup declaratively using **nixvim**
+- Laptop setup with eGPU and **vfio** for playing games on windows
 
 ## 🏠 Structure
 
@@ -201,7 +203,7 @@ Some features of my dotfiles:
   - `framework`: Framework 12th gen laptop | Hyprland | eGPU 3080
   - `curve`: Framework 13th gen work laptop | Ubuntu Hyprland
   - `mesmer`: Desktop AMD Ryzen 9 5950X  | Hyprland | GPU 7900 XTX
-- `home-manager`: Most of my dotfiles configuration, user specific
+- `home-manager`: Most of my dotfiles configuration, home-manager modules
 
 ## 📱 Applications
 
