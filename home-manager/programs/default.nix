@@ -32,6 +32,10 @@
     enableFishIntegration = true;
   };
 
+  # programs.obs-studio = {
+  #   enable = true;
+  # };
+
   home.packages = with pkgs; [
     #tmp
     cargo
