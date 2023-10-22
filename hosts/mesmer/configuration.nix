@@ -1,4 +1,4 @@
-{ pkgs, ... }: {
+{ pkgs, inputs, ... }: {
   imports = [
     ./hardware-configuration.nix
 
@@ -24,6 +24,11 @@
 
   networking = {
     hostName = "mesmer";
+  };
+
+  programs.hyprland = {
+    enable = true;
+    package = inputs.hyprland.packages.${pkgs.system}.hyprland;
   };
 
   boot = {
