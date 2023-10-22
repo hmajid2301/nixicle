@@ -56,7 +56,6 @@ in
           };
           size = 14.0;
         };
-        # TODO: move to nix colors
         colors = {
           primary = {
             background = "#${config.colorscheme.colors.base00}";

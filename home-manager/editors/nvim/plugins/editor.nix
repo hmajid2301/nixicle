@@ -113,12 +113,14 @@
     extraPlugins = with pkgs; [
       vimPlugins.telescope-undo-nvim
       vimPlugins.nvim-spectre
+      vimPlugins.refactoring-nvim
 
       # for yanky
       vimPlugins.sqlite-lua
       vimExtraPlugins.yanky-nvim
     ];
 
+    # TODO: look at combing refactor and code actions ? 
     extraConfigLua =
       ''
         -- undo-telescope
@@ -127,7 +129,8 @@
         	mode = {"n", "v"},
         	["<leader>f"] = { name = "+file/find" },
         	["<leader>h"] = { name = "+harpoon" },
-          ["<leader>s"] = { name = "+spectre" },
+        	["<leader>s"] = { name = "+spectre" },
+        	["<leader>r"] = { name = "+refactor" },
         })
 
         require("spectre").setup()
@@ -148,6 +151,20 @@
         -- workout how to telescope maps
         -- require("telescope").load_extension("harpoon")
         -- vim.keymap.set("n", "<leader>hm", "<cmd>:Telescope harpoon marks<CR>")
+
+        -- refactoring
+        require('refactoring').setup()
+        vim.keymap.set("x", "<leader>re", ":Refactor extract ")
+        vim.keymap.set("x", "<leader>rf", ":Refactor extract_to_file ")
+
+        vim.keymap.set("x", "<leader>rv", ":Refactor extract_var ")
+
+        vim.keymap.set({ "n", "x" }, "<leader>ri", ":Refactor inline_var")
+
+        vim.keymap.set( "n", "<leader>rI", ":Refactor inline_func")
+
+        vim.keymap.set("n", "<leader>rb", ":Refactor extract_block")
+        vim.keymap.set("n", "<leader>rbf", ":Refactor extract_block_to_file")
       '';
   };
 }

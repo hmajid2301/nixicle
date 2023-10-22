@@ -1,7 +1,7 @@
 { pkgs, inputs, ... }: {
   imports = [
     ./notifications/mako.nix
-    #./notifications/swaync.nix
+    ./notifications/swaync.nix
     ./launchers/rofi.nix
     ./launchers/wofi.nix
 
@@ -13,7 +13,7 @@
     ./waybar
     ./eww.nix
     ./scripts.nix
-    #./xdg.nix
+    ./xdg.nix
   ];
 
   home.sessionVariables = {

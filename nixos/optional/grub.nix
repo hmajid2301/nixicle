@@ -3,6 +3,10 @@
 , ...
 }: {
   boot = {
+    lanzaboote = {
+      enable = true;
+      pkiBundle = "/etc/secureboot";
+    };
     loader = {
       efi = {
         canTouchEfiVariables = true;

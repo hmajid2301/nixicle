@@ -2,7 +2,21 @@
 , config
 , pkgs
 , ...
-}: {
+}:
+let
+  laptop_lid_switch = pkgs.writeShellScriptBin "laptop_lid_switch" ''
+    #!/usr/bin/env bash
+
+    if grep open /proc/acpi/button/lid/LID0/state; then
+        hyprctl keyword monitor "eDP-1, 2256x1504@60, 0x0, 1"
+    else
+        if [[ `hyprctl monitors | grep "Monitor" | wc -l` != 1 ]]; then
+            hyprctl keyword monitor "eDP-1, disable"
+        fi
+    fi
+  '';
+in
+{
   imports = [
     inputs.hyprland.homeManagerModules.default
     ./common
@@ -54,7 +68,6 @@
       # ▄█ █▀█ █▄█ █▀▄ ░█░ █▄▄ █▄█ ░█░ ▄█
       bind = SUPER, Return, exec, ${config.my.settings.default.terminal}
       bind = SUPER, b, exec, ${config.my.settings.default.browser}
-      bind = SUPER_SHIFT, f, exec, thunar
       bind = SUPER, a, exec, rofi -show drun -modi drun
       bind = ALT, Tab, exec, rofi -show window
       bind = SUPER, w, exec, makoctl dismiss
@@ -67,7 +80,8 @@
 
       # ▄▀█ █░█ ▀█▀ █▀█   █▀ ▀█▀ ▄▀█ █▀█ ▀█▀
       # █▀█ █▄█ ░█░ █▄█   ▄█ ░█░ █▀█ █▀▄ ░█░
-      exec-once = mako &
+      # exec-once = mako &
+      exec-once = swaync &
       exec-once = kanshi &
       exec-once = sway-audio-idle-inhibit -w &
       exec-once = waybar &
@@ -77,7 +91,7 @@
 
       # █▀ █▀▀ █▀█ █ █▀█ ▀█▀ █▀
       # ▄█ █▄▄ █▀▄ █ █▀▀ ░█░ ▄█
-      bindl=,switch:Lid Switch, exec, ~/dotfiles/home-manager/desktops/wms/common/scripts/laptop_lid_switch.sh
+      bindl=,switch:Lid Switch, exec, ${laptop_lid_switch}
 
       # █░░ █▀█ █▀▀ █▄▀   █▀ █▀▀ █▀█ █▀▀ █▀▀ █▄░█
       # █▄▄ █▄█ █▄▄ █░█   ▄█ █▄▄ █▀▄ ██▄ ██▄ █░▀█
@@ -102,12 +116,12 @@
 
       # █▄▀ █▀▀ █▄█ █▄▄ █▀█ ▄▀█ █▀█ █▀▄   █▀▀ █▀█ █▄░█ ▀█▀ █▀█ █▀█ █░░ █▀
       # █░█ ██▄ ░█░ █▄█ █▄█ █▀█ █▀▄ █▄▀   █▄▄ █▄█ █░▀█ ░█░ █▀▄ █▄█ █▄▄ ▄█
-      bind=,XF86MonBrightnessUp,exec, ~/dotfiles/home-manager/desktops/wms/common/scripts/brightness.sh --inc
-      bind=,XF86MonBrightnessDown,exec, ~/dotfiles/home-manager/desktops/wms/common/scripts/brightness.sh --dec
-      bind=,XF86AudioRaiseVolume,exec, ~/dotfiles/home-manager/desktops/wms/common/scripts/volume.sh --inc
-      bind=,XF86AudioLowerVolume,exec, ~/dotfiles/home-manager/desktops/wms/common/scripts/volume.sh --dec
-      bind=,XF86AudioMute,exec, ~/dotfiles/home-manager/desktops/wms/common/scripts/volume.sh --toggle
-      bind=,XF86AudioMicMute,exec, ~/dotfiles/home-manager/desktops/wms/common/scripts/volume.sh --toggle-mic
+      bind=,XF86MonBrightnessUp,exec, brightness --inc
+      bind=,XF86MonBrightnessDown,exec, brightness --dec
+      bind=,XF86AudioRaiseVolume,exec, volume --inc
+      bind=,XF86AudioLowerVolume,exec, volume --dec
+      bind=,XF86AudioMute,exec, volume --toggle
+      bind=,XF86AudioMicMute,exec, volume --toggle-mic
       bind=,XF86AudioNext,exec,playerctl next
       bind=,XF86AudioPrev,exec,playerctl previous
       bind=,XF86AudioPlay,exec,playerctl play-pause
@@ -178,12 +192,12 @@
       # █░█░█ █ █▄░█ █▀▄ █▀█ █░█░█   █▀▄▀█ ▄▀█ █▄░█ ▄▀█ █▀▀ █▀▄▀█ █▀▀ █▄░█ ▀█▀
       # ▀▄▀▄▀ █ █░▀█ █▄▀ █▄█ ▀▄▀▄▀   █░▀░█ █▀█ █░▀█ █▀█ █▄█ █░▀░█ ██▄ █░▀█ ░█░
       bind = SUPER, Q, killactive,
-      bind = SUPER, F,      fullscreen, 0
-      bind = SUPER, F,      exec, $notifycmd 'Fullscreen Mode'
-      bind = SUPER, S,      pseudo,
-      bind = SUPER, S,      exec, $notifycmd 'Pseudo Mode'
-      bind = SUPER, Space,  togglefloating,
-      bind = SUPER, Space,  centerwindow,
+      bind = SUPER, F, fullscreen, 0
+      bind = SUPER, F, exec, $notifycmd 'Fullscreen Mode'
+      bind = SUPER, S, pseudo,
+      bind = SUPER, S, exec, $notifycmd 'Pseudo Mode'
+      bind = SUPER, Space, togglefloating,
+      bind = SUPER, Space, centerwindow,
 
       # █▀▄▀█ █▀█ █░█ █▀ █▀▀   █▄▄ █ █▄░█ █▀▄ █ █▄░█ █▀▀
       # █░▀░█ █▄█ █▄█ ▄█ ██▄   █▄█ █ █░▀█ █▄▀ █ █░▀█ █▄█

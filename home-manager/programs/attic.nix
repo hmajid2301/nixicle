@@ -34,6 +34,8 @@
 				${pkgs.attic}/bin/attic use prod
 				${pkgs.attic}/bin/attic watch-store prod:prod
       ''}";
+      MemoryHigh = "1.5G";
+      MemoryMax = "2G";
     };
   };
 }
