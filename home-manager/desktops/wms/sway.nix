@@ -93,8 +93,8 @@
           "${modifier}+braceleft" = "grimblast --notify --cursor copy area";
 
           # Special Keys
-          XF86MonBrightnessUp = "~/dotfiles/home-manager/desktops/wms/common/scripts/brightness.sh --inc";
-          XF86MonBrightnessDown = "~/dotfiles/home-manager/desktops/wms/common/scripts/brightness.sh --dec";
+          XF86MonBrightnessUp = "exec brightness --inc";
+          XF86MonBrightnessDown = "exec brightness --dec";
           "XF86AudioRaiseVolume" = "exec volume --inc";
           "XF86AudioLowerVolume" = "exec volume --dec";
           XF86AudioMute = "exec volume --toggle";

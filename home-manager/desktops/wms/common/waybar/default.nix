@@ -91,26 +91,6 @@
             output-input = "  ";
           };
         };
-        "custom/notification" = {
-          tooltip = false;
-          format = "{icon}";
-          "format-icons" = {
-            notification = " <<span foreground='red'><sup></sup></span>";
-            none = "";
-            "dnd-notification" = "<<span foreground='red'><sup></sup></span>";
-            "dnd-none" = "";
-            "inhibited-notification" = "<span foreground='red'><sup></sup></span>";
-            "inhibited-none" = "";
-            "dnd-inhibited-notification" = "<span foreground='red'><sup></sup></span>";
-            "dnd-inhibited-none" = "";
-          };
-          "return-type" = "json";
-          "exec-if" = "which swaync-client";
-          exec = "swaync-client -swb";
-          "on-click" = "swaync-client -t -sw";
-          "on-click-right" = "swaync-client -d -sw";
-          escape = true;
-        };
         "custom/currentplayer" = {
           interval = 2;
           return-type = "json";
@@ -259,6 +239,26 @@
           "icon-size" = 20;
           tooltip = true;
           "tooltip-format" = "Games running: {count}";
+        };
+        "custom/notification" = {
+          tooltip = false;
+          format = "{} {icon}";
+          "format-icons" = {
+            notification = "\uf0a2<span foreground='red'><sup>\uf444</sup></span>";
+            none = "\uf0a2";
+            "dnd-notification" = "\uf1f7<span foreground='red'><sup>\uf444</sup></span>";
+            "dnd-none" = "\uf1f7";
+            "inhibited-notification" = "\uf0a2<span foreground='red'><sup>\uf444</sup></span>";
+            "inhibited-none" = "\uf0a2";
+            "dnd-inhibited-notification" = "\uf1f7<span foreground='red'><sup>\uf444</sup></span>";
+            "dnd-inhibited-none" = "\uf1f7";
+          };
+          "return-type" = "json";
+          "exec-if" = "which swaync-client";
+          exec = "swaync-client -swb";
+          "on-click" = "swaync-client -t -sw";
+          "on-click-right" = "swaync-client -d -sw";
+          escape = true;
         };
         "custom/power" = {
           format = " ⏻ ";

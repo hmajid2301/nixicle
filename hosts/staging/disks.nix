@@ -44,7 +44,11 @@
                   "--perf-no_write_workqueue"
                 ];
                 # https://0pointer.net/blog/unlocking-luks2-volumes-with-tpm2-fido2-pkcs11-security-hardware-on-systemd-248.html
-                settings = { crypttabExtraOpts = [ "fido2-device=auto" "token-timeout=10" ]; };
+                settings = {
+                  fido2.passwordLess = true;
+                  fido2.credentials = "5cb80c8f63c016ec14179fd44a631ceb";
+                  crypttabExtraOpts = [ "fido2-device=auto" "token-timeout=10" ];
+                };
                 content = {
                   type = "btrfs";
                   extraArgs = [ "-L" "nixos" "-f" ];
