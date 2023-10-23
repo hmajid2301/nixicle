@@ -31,6 +31,7 @@ in
         modules-right = [
           "gamemode"
           "tray"
+          "custom/notification"
           "idle_inhibitor"
           "backlight"
           "pulseaudio"
@@ -39,7 +40,6 @@ in
           "memory"
           "battery"
           "network"
-          # "custom/notification"
           "custom/power"
         ];
         "sway/workspaces" = {
@@ -248,14 +248,14 @@ in
           tooltip = false;
           format = "{} {icon}";
           "format-icons" = {
-            notification = "\uf0a2<span foreground='red'><sup>\uf444</sup></span>";
-            none = "\uf0a2";
-            "dnd-notification" = "\uf1f7<span foreground='red'><sup>\uf444</sup></span>";
-            "dnd-none" = "\uf1f7";
-            "inhibited-notification" = "\uf0a2<span foreground='red'><sup>\uf444</sup></span>";
-            "inhibited-none" = "\uf0a2";
-            "dnd-inhibited-notification" = "\uf1f7<span foreground='red'><sup>\uf444</sup></span>";
-            "dnd-inhibited-none" = "\uf1f7";
+            notification = " <span foreground='red'><sup> </sup></span>";
+            none = "  ";
+            "dnd-notification" = "   <span foreground='red'><sup> </sup></span>";
+            "dnd-none" = "   ";
+            "inhibited-notification" = "  <span foreground='red'><sup> </sup></span>";
+            "inhibited-none" = "  ";
+            "dnd-inhibited-notification" = "  <span foreground='red'><sup> </sup></span>";
+            "dnd-inhibited-none" = "   ";
           };
           "return-type" = "json";
           "exec-if" = "which swaync-client";
@@ -435,17 +435,31 @@ in
         }
 
         #custom-notification {
-        font-family: "MonoLisa Nerd Font";
+        	font-family: ${fontProfiles.monospace.family};
+        	border-radius: 10px 0 0 10px;
+        	margin-left: 10px;
+        	color: @lavender;
+        	background: @base;
+        }
+
+        #tray {
+        	 margin: 8px 10px;
+        	 border-radius: 10px;
         }
 
         #idle_inhibitor.deactivated {
-         background-color: shade(@base, 1);
-         color: @lavender;
+        	background-color: shade(@base, 1);
+        	color: @lavender;
         }
 
         #idle_inhibitor.activated {
         	 background-color: shade(@base, 1);
         	 color: @green;
+        }
+
+        #idle_inhibitor {
+        	 background-color: @yellow;
+        	 color: @base;
         }
 
         #battery.critical:not(.charging) {
@@ -455,28 +469,6 @@ in
         	 animation-timing-function: linear;
         	 animation-iteration-count: infinite;
         	 animation-direction: alternate;
-        }
-
-        #cpu {
-        	 color: @blue;
-        }
-
-        #cpu #cpu-icon {
-        	 color: @blue;
-        }
-
-        #memory {
-        	 color: @flamingo;
-        }
-
-        #network {
-        	 color: @lavender;
-        	 border-radius: 10px;
-        	 margin-right: 5px;
-        }
-
-        #network.disconnected {
-        	 color: @red;
         }
 
         #pulseaudio {
@@ -498,14 +490,28 @@ in
         	 color: @red;
         }
 
-        #idle_inhibitor {
-        	 background-color: @yellow;
-        	 color: @base;
+        #cpu {
+        	 color: @blue;
         }
 
-        #tray {
-        	 margin: 8px 10px;
+        #cpu #cpu-icon {
+        	 color: @blue;
+        }
+
+        #memory {
+        	 color: @flamingo;
+        	 border-radius: 0 10px 10px 0;
+        	 margin-right: 5px;
+        }
+
+        #network {
+        	 color: @lavender;
         	 border-radius: 10px;
+        	 margin-right: 5px;
+        }
+
+        #network.disconnected {
+        	 color: @red;
         }
 
         #custom-launcher {
@@ -523,15 +529,6 @@ in
         	 border-radius: 10px;
         	 transition: none;
         	 color: @red;
-        	 background: @base;
-        }
-
-        #custom-notification {
-        	 margin: 8px;
-        	 padding: 5px;
-        	 border-radius: 10px;
-        	 transition: none;
-        	 color: @lavender;
         	 background: @base;
         }
 
