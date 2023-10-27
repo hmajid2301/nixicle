@@ -1,70 +1,142 @@
 {
   programs.nixvim = {
-    maps = {
-      normalVisualOp = {
-        "<C-s>" = {
-          action = "<cmd>w<cr><esc>";
-          desc = "Save File";
-        };
-      };
-      normal = {
-        "<C-d>" = {
-          action = "<C-d>zz";
+    keymaps = [
+      {
+        action = "<C-d>zz";
+        key = "<C-d>";
+        options = {
           desc = "Keep cursor in middle when jumping";
         };
-        "<C-u>" = {
-          action = "<C-u>zz";
+        mode = [
+          "n"
+        ];
+      }
+      {
+        action = "<C-u>zz";
+        key = "<C-u>";
+        options = {
           desc = "Keep cursor in middle when jumping";
         };
-        "J" = {
-          action = "mzJ`z";
-          desc = "Keep cursor in middle when jumping";
+        mode = [
+          "n"
+        ];
+      }
+      {
+        action = "mzJ`z";
+        key = "J";
+        options = {
+          desc = "Combine line into one";
         };
-        "n" = {
-          action = "nzzzv";
+        mode = [
+          "n"
+        ];
+      }
+      {
+        action = "nzzzv";
+        key = "n";
+        options = {
           desc = "Keep cursor in middle when searching";
         };
-        "N" = {
-          action = "Nzzzv";
+        mode = [
+          "n"
+        ];
+      }
+      {
+        action = "Nzzzv";
+        key = "N";
+        options = {
           desc = "Keep cursor in middle when searching";
         };
-        "j" = {
-          action = "v:count == 0 ? 'gj' : 'j'";
+        mode = [
+          "n"
+        ];
+      }
+      {
+        action = "v:count == 0 ? 'gj' : 'j'";
+        key = "j";
+        options = {
           silent = true;
           expr = true;
         };
-        "k" = {
-          action = "v:count == 0 ? 'gk' : 'k'";
+        mode = [
+          "n"
+        ];
+      }
+      {
+        action = "v:count == 0 ? 'gk' : 'k'";
+        key = "k";
+        options = {
           silent = true;
           expr = true;
         };
-        "<leader>|" = {
-          action = "<C-W>v";
+        mode = [
+          "n"
+        ];
+      }
+      {
+        action = "<C-w>v";
+        key = "<leader>|";
+        options = {
           desc = "Split window right";
         };
-        "<leader>-" = {
-          action = "<C-W>s";
+        mode = [
+          "n"
+        ];
+      }
+      {
+        action = "<C-w>s";
+        key = "<leader>-";
+        options = {
           desc = "Split window below";
         };
-      };
-
-      visualOnly = {
-        "<leader>p" = {
-          action = "'_dP";
-          desc = "Paste with out updating buffer";
+        mode = [
+          "n"
+        ];
+      }
+      {
+        action = "<cmd>w<cr><esc>";
+        key = "<C-s>";
+        options = {
+          desc = "Save file";
         };
-      };
-
-      visual = {
-        ">" = {
-          action = ">gv";
-          desc = "Stay in visual mode during indent";
+        mode = [
+          "n"
+          "v"
+          "x"
+        ];
+      }
+      {
+        action = "'_dP";
+        key = "<leader>p";
+        options = {
+          desc = "Paste without updating buffer";
         };
-        "<" = {
-          action = "<gv";
+        mode = [
+          "v"
+        ];
+      }
+      {
+        action = ">gv";
+        key = ">";
+        options = {
           desc = "Stay in visual mode during outdent";
         };
-      };
-    };
+        mode = [
+          "v"
+          "x"
+        ];
+      }
+      {
+        action = "<gv";
+        key = "<";
+        options = {
+          desc = "Stay in visual mode during indent";
+        };
+        mode = [
+          "v"
+          "x"
+        ];
+      }
+    ];
   };
 }

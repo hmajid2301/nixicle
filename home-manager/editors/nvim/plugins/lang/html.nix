@@ -5,7 +5,7 @@
     plugins = {
       lsp.servers.html = {
         enable = true;
-        extraSettings = {
+        extraOptions.settings = {
           html = {
             format = {
               templating = true;

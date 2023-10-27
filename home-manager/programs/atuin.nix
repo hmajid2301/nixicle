@@ -1,4 +1,6 @@
-{ config, ... }: {
+{ config, pkgs, ... }: {
+  #home.packages = [ pkgs.atuin-export-fish ];
+
   programs.atuin = {
     enable = true;
     flags = [

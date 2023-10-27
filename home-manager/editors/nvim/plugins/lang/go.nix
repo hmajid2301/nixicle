@@ -8,14 +8,18 @@
   ];
 
   programs.nixvim = {
-    maps = {
-      normal = {
-        "<leader>td" = {
-          action = "<cmd>lua require('dap-go').debug_test()<CR>";
+    keymaps = [
+      {
+        action = "<cmd> lua require('dap-go').debug_test()<CR>";
+        key = "<leader>td";
+        options = {
           desc = "Debug Nearest (Go)";
         };
-      };
-    };
+        mode = [
+          "n"
+        ];
+      }
+    ];
 
     extraPlugins = with pkgs.vimPlugins; [
       go-nvim
@@ -25,6 +29,25 @@
       require("go").setup({
       	icons = false;
       })
+
+      require("conform").setup({
+      	formatters_by_ft = {
+      		go = { "goimports" },
+      	},
+      	formatters = {
+      		goimports = {
+      			command = "${pkgs.gotools}/bin/goimports",
+      			},
+      		},
+      	}
+      })
+
+      require('lint').linters_by_ft = {
+      	go = {'golangcilint'}
+      }
+      require('lint').linters.golangcilint = {
+      	cmd = "${pkgs.golangci-lint}/bin/golangci-lint",
+      }
 
       local capabilities = require("cmp_nvim_lsp").default_capabilities(vim.lsp.protocol.make_client_capabilities())
 

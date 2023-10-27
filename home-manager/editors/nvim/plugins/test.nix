@@ -1,98 +1,132 @@
 { pkgs, ... }: {
   programs.nixvim = {
-    maps = {
-      normal = {
-        "<leader>tt" = {
-          action =
-            # lua
-            ''
-              function()
-                require("neotest").run.run(vim.fn.expand("%"))
-              end
-            '';
-          desc = "Run File";
-          lua = true;
-        };
-        "<leader>tT" = {
-          action =
-            # lua
-            ''
-              function()
-                require("neotest").run.run(vim.loop.cwd())
-              end
-            '';
-          desc = "Run All Test Files";
-          lua = true;
-        };
-        "<leader>tS" = {
-          action =
-            # lua
-            ''
-              function()
-                require("neotest").stop()
-              end
-            '';
-          desc = "Stop Tests";
-          lua = true;
-        };
-        "<leader>tr" = {
-          action =
-            # lua
-            ''
-              function()
-                require("neotest").run.run()
-              end
-            '';
-          desc = "Run Nearest";
-          lua = true;
-        };
-        # TODO: how to do language specific binding i.e. golang
-        # "<leader>td" = {
-        #   action =
-        #     # lua
-        #     ''
-        #       function()
-        #         require("neotest").run.run({strategy = "dap"})
-        #       end
-        #     '';
-        #   desc = "Debug Test (Nearest)";
-        #   lua = true;
-        # };
-        "<leader>ts" = {
-          action =
-            # lua
-            ''
-              function()
-                require("neotest").summary.toggle()
-              end
-            '';
-          desc = "Toggle Summary";
-          lua = true;
-        };
-        "<leader>to" = {
-          action =
-            # lua
-            ''
-              function()
-                require("neotest").output.open({ enter = true, auto_close = true })
-              end
-            '';
-          desc = "Show Output";
-          lua = true;
-        };
-        "<leader>tO" = {
-          action =
-            # lua
-            ''
-              function()
-                require("neotest").output_panel.toggle()
-              end
-            '';
-          desc = "Toggle Output Panel";
-          lua = true;
-        };
-      };
+    plugins.which-key.registrations = {
+      "<leader>t" = "+test";
     };
+
+
+
+    keymaps = [
+      {
+        action =
+          # lua
+          ''
+            function()
+              require("neotest").run.run(vim.fn.expand("%"))
+            end
+          '';
+        key = "<leader>tt";
+        lua = true;
+        options = {
+          desc = "Run file";
+        };
+        mode = [
+          "n"
+        ];
+      }
+      {
+        action =
+          # lua
+          ''
+            function()
+              require("neotest").run.run(vim.loop.cwd())
+            end
+          '';
+        key = "<leader>tT";
+        lua = true;
+        options = {
+          desc = "Run all test file(s)";
+        };
+        mode = [
+          "n"
+        ];
+      }
+      {
+        action =
+          # lua
+          ''
+            function()
+              require("neotest").stop()
+            end
+          '';
+        key = "<leader>tS";
+        lua = true;
+        options = {
+          desc = "Stop Tests";
+        };
+        mode = [
+          "n"
+        ];
+      }
+      {
+        action =
+          # lua
+          ''
+            function()
+              require("neotest").run().run()
+            end
+          '';
+        key = "<leader>tr";
+        lua = true;
+        options = {
+          desc = "Run Nearest";
+        };
+        mode = [
+          "n"
+        ];
+      }
+      {
+        action =
+          # lua
+          ''
+            function()
+              require("neotest").summary().toggle()
+            end
+          '';
+        key = "<leader>ts";
+        lua = true;
+        options = {
+          desc = "Toggle Summary";
+        };
+        mode = [
+          "n"
+        ];
+      }
+      {
+        action =
+          # lua
+          ''
+            function()
+            	require("neotest").output.open({ enter = true, auto_close = true })
+            end
+          '';
+        key = "<leader>to";
+        lua = true;
+        options = {
+          desc = "Show Output";
+        };
+        mode = [
+          "n"
+        ];
+      }
+      {
+        action =
+          # lua
+          ''
+            function()
+              require("neotest").output_panel.toggle()
+            end
+          '';
+        key = "<leader>tO";
+        lua = true;
+        options = {
+          desc = "Toggle Output";
+        };
+        mode = [
+          "n"
+        ];
+      }
+    ];
 
     extraPlugins = with pkgs.vimPlugins; [
       neotest
