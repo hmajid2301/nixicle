@@ -5,28 +5,30 @@
       lazygit-nvim
     ];
 
-    maps = {
-      normal = {
-        "<leader>gg" = {
-          action = "<cmd>LazyGit<cr>";
-          desc = "Open lazygit";
+    keymaps = [
+      {
+        action = "<cmd>LazyGit<cr>";
+        key = "<leader>gg";
+        options = {
+          desc = "Open LazyGit";
         };
-      };
-    };
+        mode = [
+          "n"
+        ];
+      }
+    ];
 
     extraConfigLua =
-      # lua
       ''
-        require("telescope").load_extension("git_worktree")
-
-        require("which-key").register({
-        	["<leader>g"] = { name = "+git" },
-        	["<leader>gh"] = { name = "+hunks" },
-        })
         require("git-worktree").setup()
+        require("telescope").load_extension("git_worktree")
       '';
 
     plugins = {
+      which-key.registrations = {
+        "<leader>g" = "+git";
+        "<leader>gh" = "+hunks";
+      };
       gitsigns = {
         enable = true;
         currentLineBlame = false;

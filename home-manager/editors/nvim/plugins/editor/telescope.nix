@@ -1,17 +1,22 @@
 { pkgs, ... }: {
   programs.nixvim = {
-    maps = {
-      normal = {
-        "<leader>fa" = {
-          action = "<cmd> Telescope find_files follow=true no_ignore=true hidden=true <CR>";
-          desc = "Find All Files";
+    keymaps = [
+      {
+        action = "<cmd> Telescope find_files follow=true no_ignore=true hidden=true <CR>";
+        key = "<leader>fa";
+        options = {
+          desc = "Find all files";
         };
-      };
-    };
+        mode = [
+          "n"
+        ];
+      }
+    ];
 
     plugins.telescope = {
       enable = true;
       extensions.fzf-native.enable = true;
+      extensions.undo.enable = true;
 
       keymaps = {
         "<leader>ff" = {
@@ -38,7 +43,7 @@
           action = "buffers";
           desc = "Buffers";
         };
-        "<leader>:" = {
+        "<leader>fc" = {
           action = "command_history";
           desc = "Command History";
         };

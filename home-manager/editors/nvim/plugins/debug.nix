@@ -1,5 +1,23 @@
 {
   programs.nixvim = {
+    extraConfigLua =
+      ''
+        local dap, dapui = require("dap"),require("dapui")
+        dap.listeners.after.event_initialized["dapui_config"]=function()
+        	dapui.open()
+        end
+        dap.listeners.before.event_terminated["dapui_config"]=function()
+        	dapui.close()
+        end
+        dap.listeners.before.event_exited["dapui_config"]=function()
+        	dapui.close()
+        end
+      '';
+
+    plugins.which-key.registrations = {
+      "<leader>d" = "+debug";
+    };
+
     plugins.dap = {
       enable = true;
       signs = {
@@ -33,197 +51,284 @@
       };
     };
 
-    maps = {
-      normal = {
-        "<leader>dc" = {
-          action =
-            # lua
-            ''
-              function()
-                require('dap').continue()
-              end
-            '';
+    keymaps = [
+      {
+        action =
+          # lua
+          ''
+            function()
+              require('dap').continue()
+            end
+          '';
+        key = "<leader>dc";
+        lua = true;
+        options = {
           desc = "Continue";
-          lua = true;
         };
-        "<leader>dO" = {
-          action =
-            # lua
-            ''
-              function()
-                require('dap').step_over()
-              end
-            '';
-          desc = "Step Over";
-          lua = true;
+        mode = [
+          "n"
+        ];
+      }
+      {
+        action =
+          # lua
+          ''
+            function()
+              require('dap').step_over()
+            end
+          '';
+        key = "<leader>dO";
+        lua = true;
+        options = {
+          desc = "Step over";
         };
-        "<leader>di" = {
-          action =
-            # lua
-            ''
-              function()
-                require('dap').step_into()
-              end
-            '';
+        mode = [
+          "n"
+        ];
+      }
+      {
+        action =
+          # lua
+          ''
+            function()
+              require('dap').step_into()
+            end
+          '';
+        key = "<leader>di";
+        lua = true;
+        options = {
           desc = "Step Into";
-          lua = true;
         };
-        "<leader>do" = {
-          action =
-            # lua
-            ''
-              function()
-                require('dap').step_out()
-              end
-            '';
+        mode = [
+          "n"
+        ];
+      }
+      {
+        action =
+          # lua
+          ''
+            function()
+              require('dap').step_out()
+            end
+          '';
+        key = "<leader>do";
+        lua = true;
+        options = {
           desc = "Step Out";
-          lua = true;
         };
-        "<leader>dp" = {
-          action =
-            # lua
-            ''
-              function()
-                require('dap').pause()
-              end
-            '';
+        mode = [
+          "n"
+        ];
+      }
+      {
+        action =
+          # lua
+          ''
+            function()
+              require('dap').pause()
+            end
+          '';
+        key = "<leader>dp";
+        lua = true;
+        options = {
           desc = "Pause";
-          lua = true;
         };
-        "<leader>db" = {
-          action =
-            # lua
-            ''
-              function()
-                require('dap').toggle_breakpoint()
-              end
-            '';
+        mode = [
+          "n"
+        ];
+      }
+      {
+        action =
+          # lua
+          ''
+            function()
+              require('dap').pause()
+            end
+          '';
+        key = "<leader>dp";
+        lua = true;
+        options = {
+          desc = "Pause";
+        };
+        mode = [
+          "n"
+        ];
+      }
+      {
+        action =
+          # lua
+          ''
+            function()
+              require('dap').toggle_breakpoint()
+            end
+          '';
+        key = "<leader>db";
+        lua = true;
+        options = {
           desc = "Toggle Breakpoint";
-          lua = true;
         };
-        "<leader>dB" = {
-          action =
-            # lua
-            ''
-              function()
-                require('dap').set_breakpoint(vim.fn.input('Breakpoint condition: '))
-              end
-            '';
-          desc = "Breakpoint Condition";
-          lua = true;
+        mode = [
+          "n"
+        ];
+      }
+      {
+        action =
+          # lua
+          ''
+            function()
+            	require('dap').set_breakpoint(vim.fn.input('Breakpoint condition: '))
+            end
+          '';
+        key = "<leader>dB";
+        lua = true;
+        options = {
+          desc = "Breakpoint (conditional)";
         };
-        "<leader>drr" = {
-          action =
-            # lua
-            ''
-              function()
-                require('dap').repl.toggle()
-              end
-            '';
+        mode = [
+          "n"
+        ];
+      }
+      {
+        action =
+          # lua
+          ''
+            function()
+              require('dap').repl.toggle()
+            end
+          '';
+        key = "<leader>dR";
+        lua = true;
+        options = {
           desc = "Toggle REPL";
-          lua = true;
         };
-        "<leader>dr" = {
-          action =
-            # lua
-            ''
-              function()
-              	local dap = require('dap')
-              	dap.disconnect()
-              	dap.close()
-              	dap.run_last()
-              end
-            '';
-          desc = "Restart debugger";
-          lua = true;
+        mode = [
+          "n"
+        ];
+      }
+      {
+        action =
+          # lua
+          ''
+            function()
+            	local dap = require('dap')
+            	dap.disconnect()
+            	dap.close()
+            	dap.run_last()
+            end
+          '';
+        key = "<leader>dr";
+        lua = true;
+        options = {
+          desc = "Restart Debugger";
         };
-        "<leader>dl" = {
-          action =
-            # lua
-            ''
-              function()
-                require('dap').run_last()
-              end
-            '';
+        mode = [
+          "n"
+        ];
+      }
+      {
+        action =
+          # lua
+          ''
+            function()
+              require('dap').run_last()
+            end
+          '';
+        key = "<leader>dr";
+        lua = true;
+        options = {
           desc = "Run Last";
-          lua = true;
         };
-        "<leader>ds" = {
-          action =
-            # lua
-            ''
-              function()
-                require('dap').session()
-              end
-            '';
+        mode = [
+          "n"
+        ];
+      }
+      {
+        action =
+          # lua
+          ''
+            function()
+              require('dap').session()
+            end
+          '';
+        key = "<leader>ds";
+        lua = true;
+        options = {
           desc = "Session";
-          lua = true;
         };
-        "<leader>dt" = {
-          action =
-            # lua
-            ''
-              function()
-                require('dap').terminate()
-              end
-            '';
+        mode = [
+          "n"
+        ];
+      }
+      {
+        action =
+          # lua
+          ''
+            function()
+              require('dap').terminate()
+            end
+          '';
+        key = "<leader>dt";
+        lua = true;
+        options = {
           desc = "Terminate";
-          lua = true;
         };
-        "<leader>dw" = {
-          action =
-            # lua
-            ''
-              function()
-                require('dap.ui.widgets').hover()
-              end
-            '';
+        mode = [
+          "n"
+        ];
+      }
+      {
+        action =
+          # lua
+          ''
+            function()
+              require('dap.ui.widgets').hover()
+            end
+          '';
+        key = "<leader>dw";
+        lua = true;
+        options = {
           desc = "Hover Widget";
-          lua = true;
         };
-        "<leader>du" = {
-          action =
-            # lua
-            ''
-              function()
-                require('dapui').toggle()
-              end
-            '';
-          desc = "Debug UI";
-          lua = true;
+        mode = [
+          "n"
+        ];
+      }
+      {
+        action =
+          # lua
+          ''
+            function()
+              require('dapui').toggle()
+            end
+          '';
+        key = "<leader>du";
+        lua = true;
+        options = {
+          desc = "Toggle UI";
         };
-        "<leader>de" = {
-          action =
-            # lua
-            ''
-              function()
-                require('dapui').eval()
-              end
-            '';
+        mode = [
+          "n"
+        ];
+      }
+      {
+        action =
+          # lua
+          ''
+            function()
+              require('dapui').eval()
+            end
+          '';
+        key = "<leader>de";
+        lua = true;
+        options = {
           desc = "Eval";
-          lua = true;
         };
-      };
-    };
-
-    extraConfigLua =
-      # lua
-      ''
-        require("which-key").register({
-        	["<leader>d"] = { name = "+debug" },
-        })
-
-        -- auto open/close dap-ui
-        local dap, dapui = require("dap"),require("dapui")
-        dap.listeners.after.event_initialized["dapui_config"]=function()
-        	dapui.open()
-        end
-        dap.listeners.before.event_terminated["dapui_config"]=function()
-        	dapui.close()
-        end
-        dap.listeners.before.event_exited["dapui_config"]=function()
-        	dapui.close()
-        end
-      '';
+        mode = [
+          "n"
+        ];
+      }
+    ];
   };
+
+
 }
