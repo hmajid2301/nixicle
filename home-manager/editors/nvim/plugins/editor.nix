@@ -7,33 +7,60 @@
 
   programs.nixvim = {
     clipboard.providers.wl-copy.enable = true;
-
-    maps = {
-      normalVisualOp = {
-        "<leader>gls" = {
-          action = ''<cmd>lua require("flash").jump()<cr>'';
+    keymaps = [
+      {
+        action = "<cmd>lua require('flash').jump()<cr>";
+        key = "<leader>gls";
+        options = {
           desc = "Run flash";
         };
-        "<leader>glt" = {
-          action = ''<cmd>lua require("flash").treesitter()<cr>'';
+        mode = [
+          "n"
+          "x"
+        ];
+      }
+      {
+        action = "<cmd>lua require('flash').treesitter()<cr>";
+        key = "<leader>glt";
+        options = {
           desc = "Run flash treesitter";
         };
-      };
-      normal = {
-        "<leader>uu" = {
-          action = "<cmd>Telescope undo<cr>";
+        mode = [
+          "n"
+          "x"
+        ];
+      }
+      {
+        action = "<cmd>Telescope undo<cr>";
+        key = "<leader>uu";
+        options = {
           desc = "Show undo tree";
         };
-        "<leader>nb" = {
-          action = "<cmd>Navbuddy<cr>";
+        mode = [
+          "n"
+        ];
+      }
+      {
+        action = "<cmd>Navbuddy<cr>";
+        key = "<leader>nb";
+        options = {
           desc = "Show navbuddy";
         };
-        "<leader>sr" = {
-          action = ''<cmd>lua require("spectre").open()<cr>'';
-          desc = "Replace in files";
+        mode = [
+          "n"
+        ];
+      }
+      {
+        action = "<cmd>lua require('spectre').open()<cr>";
+        key = "<leader>sr";
+        options = {
+          desc = "Replace in file";
         };
-      };
-    };
+        mode = [
+          "n"
+        ];
+      }
+    ];
 
     plugins = {
       better-escape = {
@@ -69,15 +96,16 @@
         statusText.enabled = true;
       };
 
-      # harpoon = {
-      #   enable = true;
-      #   keymaps = {
-      #     addFile = "<leader>ha";
-      #     toggleQuickMenu = "<leader>ht";
-      #     navNext = "<leader>hn";
-      #     navPrev = "<leader>hp";
-      #   };
-      # };
+      harpoon = {
+        enable = true;
+        enableTelescope = true;
+        keymaps = {
+          addFile = "<leader>ha";
+          toggleQuickMenu = "<leader>ht";
+          navNext = "<leader>hn";
+          navPrev = "<leader>hp";
+        };
+      };
 
       nvim-colorizer = {
         enable = true;
@@ -89,29 +117,33 @@
 
       indent-blankline = {
         enable = true;
-        filetypeExclude = [
-          "help"
-          "terminal"
-          "lazy"
-          "lspinfo"
-          "TelescopePrompt"
-          "TelescopeResults"
-          "Alpha"
-          ""
-        ];
-        showTrailingBlanklineIndent = false;
-        showFirstIndentLevel = false;
-        spaceCharBlankline = " ";
-        showEndOfLine = true;
+        exclude = {
+          filetypes = [
+            "help"
+            "terminal"
+            "lazy"
+            "lspinfo"
+            "TelescopePrompt"
+            "TelescopeResults"
+            "Alpha"
+            ""
+          ];
+        };
       };
 
       which-key = {
         enable = true;
+
+        registrations = {
+          "<leader>f" = "+file/find";
+          "<leader>h" = "+harpoon";
+          "<leader>s" = "+spectre";
+          "<leader>r" = "+refactor";
+        };
       };
     };
 
     extraPlugins = with pkgs; [
-      vimPlugins.telescope-undo-nvim
       vimPlugins.nvim-spectre
       vimPlugins.refactoring-nvim
 
@@ -123,16 +155,6 @@
     # TODO: look at combing refactor and code actions ? 
     extraConfigLua =
       ''
-        -- undo-telescope
-        require("telescope").load_extension("undo")
-        require("which-key").register({
-        	mode = {"n", "v"},
-        	["<leader>f"] = { name = "+file/find" },
-        	["<leader>h"] = { name = "+harpoon" },
-        	["<leader>s"] = { name = "+spectre" },
-        	["<leader>r"] = { name = "+refactor" },
-        })
-
         require("spectre").setup()
 
         -- yanky
@@ -141,16 +163,14 @@
         	highlight = { timer = 250 },
         	ring = { storage = jit.os:find("Windows") and "shada" or "sqlite" },
         })
+
+        -- TODO: move to keymaps
         vim.keymap.set({"n","x"}, "p", "<Plug>(YankyPutAfter)")
         vim.keymap.set({"n","x"}, "P", "<Plug>(YankyPutBefore)")
         vim.keymap.set({"n","x"}, "gp", "<Plug>(YankyGPutAfter)")
         vim.keymap.set({"n","x"}, "gP", "<Plug>(YankyGPutBefore)")
         vim.keymap.set("n", "<c-n>", "<Plug>(YankyCycleForward)")
         vim.keymap.set("n", "<c-p>", "<Plug>(YankyCycleBackward)")
-
-        -- workout how to telescope maps
-        -- require("telescope").load_extension("harpoon")
-        -- vim.keymap.set("n", "<leader>hm", "<cmd>:Telescope harpoon marks<CR>")
 
         -- refactoring
         require('refactoring').setup()

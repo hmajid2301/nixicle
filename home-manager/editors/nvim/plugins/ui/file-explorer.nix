@@ -1,21 +1,21 @@
 {
   programs.nixvim = {
-    maps = {
-      normal = {
-        "<leader>e" = {
+    keymaps = [
+      {
+        action = "<cmd> Neotree toggle <CR>";
+        key = "<leader>e";
+        options = {
           desc = "Toggle Tree";
-          action = "<cmd> Neotree toggle <CR>";
         };
-      };
-    };
+        mode = [
+          "n"
+        ];
+      }
+    ];
 
-    extraConfigLua =
-      # lua
-      ''
-        require("which-key").register({
-          ["<leader>e"] = { name = "+tree" },
-        })
-      '';
+    plugins.which-key.registrations = {
+      "<leader>e" = "+tree";
+    };
 
     plugins.neo-tree = {
       enable = true;
@@ -51,4 +51,6 @@
       };
     };
   };
+
+
 }

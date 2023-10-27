@@ -1,4 +1,4 @@
-{ pkgs, ... }: {
+{
   programs.nixvim = {
     plugins = {
       trouble = {
@@ -7,77 +7,129 @@
       };
     };
 
-    extraConfigLua =
-      # lua
-      ''
-        require("which-key").register({
-          ["<leader>x"] = { name = "+quickfix" },
-        })
-      '';
+    plugins.which-key.registrations = {
+      "<leader>x" = "+quickfix";
+    };
 
-    maps = {
-      normal = {
-        "]q" = {
-          action =
-            # lua
-            ''
-              function()
-                if require("trouble").is_open() then
-                  require("trouble").next({ skip_groups = true, jump = true })
-                else
-                  local ok, err = pcall(vim.cmd.cnext)
-                  if not ok then
-                    vim.notify(err, vim.log.levels.ERROR)
-                  end
+    keymaps = [
+      {
+        action =
+          # lua
+          ''
+            function()
+              if require("trouble").is_open() then
+                require("trouble").next({ skip_groups = true, jump = true })
+              else
+                local ok, err = pcall(vim.cmd.cnext)
+                if not ok then
+                  vim.notify(err, vim.log.levels.ERROR)
                 end
               end
-            '';
-          lua = true;
-          desc = "Next Quick Fix Item";
+            end
+          '';
+        key = "]q";
+        lua = true;
+        options = {
+          desc = "Next quickfix item";
         };
-        "[q" = {
-          action =
-            # lua
-            ''
-              function()
-                if require("trouble").is_open() then
-                  require("trouble").previous({ skip_groups = true, jump = true })
-                else
-                  local ok, err = pcall(vim.cmd.cprev)
-                  if not ok then
-                    vim.notify(err, vim.log.levels.ERROR)
-                  end
-                end
-              end
-            '';
-          lua = true;
-          desc = "Previous Quick Fix Item";
+        mode = [
+          "n"
+        ];
+      }
+      {
+        action =
+          # lua
+          ''
+            	function()
+            		if require("trouble").is_open() then
+            			require("trouble").previous({ skip_groups = true, jump = true })
+            		else
+            			local ok, err = pcall(vim.cmd.cprev)
+            			if not ok then
+            				vim.notify(err, vim.log.levels.ERROR)
+            			end
+            		end
+            	end
+          '';
+        key = "[q";
+        lua = true;
+        options = {
+          desc = "Previous quickfix item";
         };
-        "<leader>xx" = {
-          action = "<cmd>TroubleToggle document_diagnostics<cr>";
-          desc = "Document Diagnostics";
+        mode = [
+          "n"
+        ];
+      }
+      {
+        action = "<cmd>TroubleToggle document_diagnostics<cr>";
+        key = "<leader>xx";
+        options = {
+          desc = "Document diagnostics";
         };
-        "<leader>xX" = {
-          action = "<cmd>TroubleToggle workspace_diagnostics<cr>";
-          desc = "Workspace Diagnostics";
+        mode = [
+          "n"
+        ];
+      }
+      {
+        action = "<cmd>TroubleToggle workspace_diagnostics<cr>";
+        key = "<leader>xX";
+        options = {
+          desc = "Workplace diagnostics";
         };
-        "<leader>xL" = {
-          action = "<cmd>TroubleToggle loclist<cr>";
-          desc = "Location List";
+        mode = [
+          "n"
+        ];
+      }
+      {
+        action = "<cmd>TroubleToggle loclist<cr>";
+        key = "<leader>xL";
+        options = {
+          desc = "Location list";
         };
-        "<leader>xQ" = {
-          action = "<cmd>TroubleToggle quickfix<cr>";
-          desc = "Quickfix List";
+        mode = [
+          "n"
+        ];
+      }
+      {
+        action = "<cmd>TroubleToggle quickfix<cr>";
+        key = "<leader>xQ";
+        options = {
+          desc = "Quickfix list";
         };
-        "<leader>xt" = {
-          action = "<cmd>TodoTrouble<cr>";
+        mode = [
+          "n"
+        ];
+      }
+      {
+        action = "<cmd>TroubleToggle quickfix<cr>";
+        key = "<leader>xQ";
+        options = {
+          desc = "Quickfix list";
+        };
+        mode = [
+          "n"
+        ];
+      }
+      {
+        action = "<cmd>TodoTrouble<cr>";
+        key = "<leader>xt";
+        options = {
           desc = "Todo (trouble)";
         };
-        "<leader>ft" = {
-          action = "<cmd>TodoTelescope<cr>";
+        mode = [
+          "n"
+        ];
+      }
+      {
+        action = "<cmd>TodoTelescope<cr>";
+        key = "<leader>ft";
+        options = {
           desc = "Find Todos";
         };
-      };
-    };
+        mode = [
+          "n"
+        ];
+      }
+    ];
   };
 }

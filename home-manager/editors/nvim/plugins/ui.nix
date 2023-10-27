@@ -6,10 +6,57 @@
   ];
 
   programs.nixvim = {
+    plugins.barbecue.enable = true;
+    plugins.which-key.registrations = {
+      "<C-w>" = "+windows";
+    };
+
+    keymaps = [
+      {
+        action = "<cmd>WindowsMaximize";
+        key = "<C-w>z";
+        options = {
+          desc = "Maximise current window";
+        };
+        mode = [
+          "n"
+        ];
+      }
+      {
+        action = "<cmd>WindowsMaximizeVertically";
+        key = "<C-w>|";
+        options = {
+          desc = "Maximise window vertically";
+        };
+        mode = [
+          "n"
+        ];
+      }
+      {
+        action = "<cmd>WindowsMaximizeHorizontally";
+        key = "<C-w>-";
+        options = {
+          desc = "Maximise window horizontally";
+        };
+        mode = [
+          "n"
+        ];
+      }
+      {
+        action = "<cmd>WindowsEqualize";
+        key = "<C-w>=";
+        options = {
+          desc = "Maximise window equalise";
+        };
+        mode = [
+          "n"
+        ];
+      }
+    ];
+
     extraPlugins = with pkgs; [
       vimPlugins.nui-nvim
       vimPlugins.nvim-web-devicons
-      vimPlugins.barbecue-nvim
       vimPlugins.dressing-nvim
 
       # for go.nvim
@@ -21,22 +68,12 @@
       vimExtraPlugins.animation-nvim
     ];
 
-    maps = { };
-
     extraConfigLua =
       ''
-        require("barbecue").setup()
-
         vim.o.winwidth = 10
         vim.o.winminwidth = 10
         vim.o.equalalways = false
         require('windows').setup()
-
-        -- TODO: move to keymaps
-        vim.keymap.set('n', '<C-w>z', '<cmd>WindowsMaximize', {desc = "Maximise current window"})
-        vim.keymap.set('n', '<C-w>_', '<cmd>WindowsMaximizeVertically', {desc = "Maximise window vertically"})
-        vim.keymap.set('n', '<C-w>|', '<cmd>WindowsMaximizeHorizontally', {desc = "Maximise window horizontally"})
-        vim.keymap.set('n', '<C-w>=', '<cmd>WindowsEqualize', {desc = "Maximise window equalize"})
       '';
   };
 }

@@ -31,40 +31,52 @@
         local cmp = require('cmp')
         cmp.event:on('confirm_done', cmp_autopairs.on_confirm_done())
 
-        require("which-key").register({
-          ["<leader>u"] = { name = "+fold" },
-        })
-
         require("luasnip.loaders.from_vscode").lazy_load()
         require("nvim-surround").setup()
       '';
 
-    maps = {
-      normal = {
-        "<leader>uR" = {
-          action =
-            # lua
-            ''
-              function()
-              	require("ufo").openAllFolds
-              end
-            '';
+    keymaps = [
+      {
+        key = "<leader>uR";
+        action =
+          # lua
+          ''
+            function()
+            	require("ufo").openAllFolds
+            end
+          '';
+        lua = true;
+        options = {
           desc = "Open all folds";
         };
-        "<leader>uM" = {
-          action =
-            # lua
-            ''
-              function()
-              	require("ufo").closeAllFolds
-              end
-            '';
+        mode = [
+          "n"
+        ];
+      }
+      {
+        key = "<leader>uM";
+        action =
+          # lua
+          ''
+            function()
+            	require("ufo").closeAllFolds
+            end
+          '';
+        lua = true;
+        options = {
           desc = "Close all folds";
         };
-      };
-    };
+        mode = [
+          "n"
+        ];
+      }
+    ];
 
     plugins = {
+      which-key.registrations = {
+        "u" = "+fold";
+      };
+
       luasnip = {
         enable = true;
       };

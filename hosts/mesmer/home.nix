@@ -56,5 +56,9 @@
       homeDirectory = lib.mkDefault "/home/${config.home.username}";
       stateVersion = lib.mkDefault "23.05";
     };
+
+
+    # TODO: enable sway/hyprland via options
+    services.mako.enable = lib.mkForce true;
   };
 }
