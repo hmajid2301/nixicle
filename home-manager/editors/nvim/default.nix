@@ -43,15 +43,17 @@ in
     enable = mkEnableOption "enable neovim editor";
   };
 
-  config = mkIf cfg.enable {
-    home.file."./.config/nvim" = {
-      source = ./config;
-      recursive = true;
-    };
+  config = mkIf
+    cfg.enable
+    {
+      home.file."./.config/nvim" = {
+        source = ./config;
+        recursive = true;
+      };
 
-    programs.nixvim = {
-      enable = true;
-      extraPlugins = with pkgs.vimPlugins; [ plenary-nvim ];
+      programs.nixvim = {
+        enable = true;
+        extraPlugins = with pkgs.vimPlugins; [ plenary-nvim ];
+      };
     };
-  };
 }

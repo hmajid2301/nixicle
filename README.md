@@ -270,6 +270,9 @@ Some of the main plugins used in my nvim setup include:
 ### Desktop
 
 ![terminal](images/terminal.png)
+![terminal full](./images/terminal-full.png)
+![tmux session](./images/tmux-session.png)
+![Side By Side](images/side-by-side.png)
 ![wallpaper](images/wallpaper.png)
 ![monkeytype](images/monkeytype.png)
 
@@ -278,6 +281,7 @@ Some of the main plugins used in my nvim setup include:
 ![Alpha](images/nvim/alpha.png)
 ![Telescope](images/nvim/telescope.png)
 ![Editor](images/nvim/editor.png)
+![Go Code](images/nvim/go-code.png)
 ![CMP](images/nvim/cmp.png)
 
 ## Appendix

@@ -4,8 +4,6 @@
       "<leader>t" = "+test";
     };
 
-
-
     keymaps = [
       {
         action =
@@ -151,7 +149,7 @@
         			experimental = {
         				test_table = true,
         			},
-        			args = { "-tags=integration" }
+        			args = { "-tags=integration,!integration" }
         		},
         	},
         })

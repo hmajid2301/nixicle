@@ -32,6 +32,11 @@
   services.printing.enable = true;
   services.dbus.enable = true;
   services.geoclue2.enable = true;
+  environment.pathsToLink = [
+    "/share/fish"
+    "/share/zsh"
+    "/share/bash"
+  ];
 
   networking.networkmanager.enable = true;
 

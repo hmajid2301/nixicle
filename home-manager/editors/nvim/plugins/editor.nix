@@ -63,6 +63,11 @@
     ];
 
     plugins = {
+      auto-save = {
+        enable = true;
+				writeAllBuffers = true;
+      };
+
       better-escape = {
         enable = true;
       };
@@ -117,6 +122,13 @@
 
       indent-blankline = {
         enable = true;
+        whitespace = {
+          highlight = [ "IndentBlanklineSpaceChar" "IndentBlanklineSpaceCharBlankline" ];
+        };
+        scope = {
+          showStart = false;
+          showEnd = false;
+        };
         exclude = {
           filetypes = [
             "help"
