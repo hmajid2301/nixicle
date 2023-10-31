@@ -32,9 +32,8 @@
       	formatters = {
       		nixpkgs_fmt  = {
       			command = "${pkgs.nixpkgs-fmt}/bin/nixpkgs-fmt",
-      			},
       		},
-      	}
+      	},
       })
 
       require('lint').linters_by_ft = {

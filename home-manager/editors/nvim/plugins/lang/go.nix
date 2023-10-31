@@ -37,9 +37,8 @@
       	formatters = {
       		goimports = {
       			command = "${pkgs.gotools}/bin/goimports",
-      			},
       		},
-      	}
+      	},
       })
 
       require('lint').linters_by_ft = {
@@ -56,7 +55,7 @@
       		settings = {
       			gopls = {
       				gofumpt = true,
-      				buildFlags = { "-tags=integration" },
+      				buildFlags = { "-tags=integration,!integration" },
       				codelenses = {
       					gc_details = false,
       					generate = true,

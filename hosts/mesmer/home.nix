@@ -32,6 +32,13 @@
         fish.enable = true;
       };
 
+      wms = {
+        hyprland.enable = true;
+        # TODO: conflict notifications
+        notifications.swaync.enable = true;
+        launchers.rofi.enable = true;
+      };
+
       terminals = {
         foot.enable = true;
         wezterm.enable = true;

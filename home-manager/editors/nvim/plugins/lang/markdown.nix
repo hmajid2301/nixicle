@@ -4,13 +4,19 @@
 }: {
   home.packages = with pkgs;  [
     marksman
+    ltex-ls
   ];
 
   programs.nixvim = {
     extraConfigLua =
-      # lua
       ''
         require'lspconfig'.marksman.setup{}
+        require('lspconfig')['ltex']({
+        	on_attach = on_attach,
+        	cmd = { "ltex-ls" },
+        	filetypes = { "markdown", "text" },
+        	flags = { debounce_text_changes = 300 },
+        })
       '';
 
     plugins.treesitter = {

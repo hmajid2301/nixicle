@@ -1,16 +1,16 @@
 { config, pkgs, ... }: {
-  #home.packages = [ pkgs.atuin-export-fish ];
+  home.packages = [ pkgs.atuin-export-fish ];
 
   programs.atuin = {
     enable = true;
     flags = [
       "--disable-up-arrow"
-      "--disable-ctrl-r"
     ];
     settings = {
       sync_address = "https://majiy00-shell.fly.dev";
       sync_frequency = "15m";
       dialect = "uk";
+      enter_accept = true;
       #key_path = config.sops.secrets.atuin_key.path;
     };
   };

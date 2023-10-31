@@ -2,7 +2,7 @@
   imports = [
     ./ui/statusline.nix
     ./ui/file-explorer.nix
-    ./ui/bufferline.nix
+    # ./ui/bufferline.nix
   ];
 
   programs.nixvim = {
@@ -13,7 +13,7 @@
 
     keymaps = [
       {
-        action = "<cmd>WindowsMaximize";
+        action = "<cmd>WindowsMaximize<cr>";
         key = "<C-w>z";
         options = {
           desc = "Maximise current window";
@@ -23,7 +23,7 @@
         ];
       }
       {
-        action = "<cmd>WindowsMaximizeVertically";
+        action = "<cmd>WindowsMaximizeVertically<cr>";
         key = "<C-w>|";
         options = {
           desc = "Maximise window vertically";
@@ -33,7 +33,7 @@
         ];
       }
       {
-        action = "<cmd>WindowsMaximizeHorizontally";
+        action = "<cmd>WindowsMaximizeHorizontally<cr>";
         key = "<C-w>-";
         options = {
           desc = "Maximise window horizontally";

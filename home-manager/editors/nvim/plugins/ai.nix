@@ -5,7 +5,6 @@
     ];
 
     extraConfigLua =
-      # lua
       ''
         vim.g.codeium_disable_bindings = 1
         vim.keymap.set('i', '<C-a>', function () return vim.fn['codeium#Accept']() end, { expr = true, desc = "Codeium Accept"})
@@ -18,7 +17,7 @@
   home = {
     file = {
       codeium_ls = {
-        target = ".codeium/bin/7b00044fee859ddf8cf5e6501e648af5c6587c22/language_server_linux_x64";
+        target = ".codeium/bin/fa6d9e9d6113dd40a57c5478d2f4bb0e35f36b92/language_server_linux_x64";
         source = "${pkgs.codeium-ls}/bin/language_server_linux_x64";
       };
     };

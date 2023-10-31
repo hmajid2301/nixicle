@@ -1,15 +1,8 @@
-{ pkgs, ... }: {
+{
   programs.nixvim = {
-    extraPlugins = with pkgs.vimPlugins; [
-      hardtime-nvim
-    ];
-
-    extraConfigLua =
-      # lua
-      ''
-        require("hardtime").setup({
-        	enabled = false,
-        })
-      '';
+    plugins.hardtime = {
+      enable = true;
+      enabled = false;
+    };
   };
 }

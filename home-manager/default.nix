@@ -22,6 +22,13 @@
       ./multiplexers/tmux.nix
       ./multiplexers/zellij.nix
 
+      ./desktops/wms/sway.nix
+      ./desktops/wms/hyprland.nix
+
+      ./desktops/wms/common
+      ./desktops/wms/common/notifications/mako.nix
+      ./desktops/wms/common/notifications/swaync.nix
+
       ./shells/fish.nix
       ./shells/zsh.nix
 

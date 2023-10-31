@@ -21,7 +21,7 @@
       keymaps = {
         "<leader>ff" = {
           action = "find_files";
-          desc = "Find Files";
+          desc = "Find files";
         };
         "<leader>fz" = {
           action = "current_buffer_fuzzy_find";
@@ -29,7 +29,7 @@
         };
         "<leader>fr" = {
           action = "oldfiles";
-          desc = "Recent Files";
+          desc = "Recent files";
         };
         "<leader>fg" = {
           action = "live_grep";
@@ -41,11 +41,11 @@
         };
         "<leader>fb" = {
           action = "buffers";
-          desc = "Buffers";
+          desc = "Find buffer";
         };
         "<leader>fc" = {
           action = "command_history";
-          desc = "Command History";
+          desc = "Search in command history";
         };
       };
 
@@ -59,6 +59,7 @@
           "--line-number"
           "--column"
           "--smart-case"
+          "--fixed-strings"
         ];
         file_ignore_patterns = [
           "^node_modules/"
