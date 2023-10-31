@@ -10,22 +10,7 @@
     ];
 
     extraConfigLua =
-      # lua
       ''
-        -- nvim-ufo
-        local capabilities = vim.lsp.protocol.make_client_capabilities()
-        capabilities.textDocument.foldingRange = {
-        		dynamicRegistration = false,
-        		lineFoldingOnly = true
-        }
-        local language_servers = require("lspconfig").util.available_servers()
-        for _, ls in ipairs(language_servers) do
-        		require('lspconfig')[ls].setup({
-        				capabilities = capabilities
-        		})
-        end
-        require('ufo').setup()
-
         -- autopairs
         local cmp_autopairs = require('nvim-autopairs.completion.cmp')
         local cmp = require('cmp')
@@ -35,42 +20,6 @@
         require("nvim-surround").setup()
       '';
 
-    keymaps = [
-      {
-        key = "<leader>uR";
-        action =
-          # lua
-          ''
-            function()
-            	require("ufo").openAllFolds
-            end
-          '';
-        lua = true;
-        options = {
-          desc = "Open all folds";
-        };
-        mode = [
-          "n"
-        ];
-      }
-      {
-        key = "<leader>uM";
-        action =
-          # lua
-          ''
-            function()
-            	require("ufo").closeAllFolds
-            end
-          '';
-        lua = true;
-        options = {
-          desc = "Close all folds";
-        };
-        mode = [
-          "n"
-        ];
-      }
-    ];
 
     plugins = {
       which-key.registrations = {
@@ -78,10 +27,6 @@
       };
 
       luasnip = {
-        enable = true;
-      };
-
-      nvim-ufo = {
         enable = true;
       };
 

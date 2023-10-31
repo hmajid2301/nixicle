@@ -246,7 +246,7 @@ in
         };
         "custom/notification" = {
           tooltip = false;
-          format = "{} {icon}";
+          format = "{}{icon}";
           "format-icons" = {
             notification = " <span foreground='red'><sup> </sup></span>";
             none = "  ";
@@ -297,6 +297,7 @@ in
         	 font-family: ${fontProfiles.monospace.family};
         	 font-size: 18px;
         	 font-weight: bold;
+        	 z-index: 99;
         }
 
         window#waybar {
