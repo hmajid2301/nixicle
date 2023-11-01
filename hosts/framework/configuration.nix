@@ -10,6 +10,8 @@
     ../../nixos/global
     ../../nixos/users/haseeb.nix
 
+    ../../nixos/optional/auto-upgrade.nix
+    ../../nixos/optional/avahi.nix
     ../../nixos/optional/backup.nix
     ../../nixos/optional/fingerprint.nix
     ../../nixos/optional/docker.nix
