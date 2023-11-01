@@ -11,12 +11,11 @@
     extraConfigLua =
       ''
         require'lspconfig'.marksman.setup{}
-        require('lspconfig')['ltex']({
-        	on_attach = on_attach,
+				require'lspconfig'.ltex.setup{
         	cmd = { "ltex-ls" },
         	filetypes = { "markdown", "text" },
         	flags = { debounce_text_changes = 300 },
-        })
+				}
       '';
 
     plugins.treesitter = {
