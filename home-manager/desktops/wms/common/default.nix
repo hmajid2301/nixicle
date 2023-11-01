@@ -31,7 +31,6 @@
     brightnessctl
     xdg-utils
     gnome.nautilus-python
-    nautilus-open-any-terminal
     gnome.sushi
     gnome.nautilus
     gnome.gnome-disk-utility
@@ -45,6 +44,7 @@
     sway-contrib.grimshot
     swaybg
 
+    networkmanagerapplet
     inputs.nwg-displays.packages."${pkgs.system}".default
   ];
 }

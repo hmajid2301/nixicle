@@ -5,16 +5,16 @@
     ../../nixos/global
     ../../nixos/users/haseeb.nix
 
+    ../../nixos/optional/auto-upgrade.nix
+    ../../nixos/optional/avahi.nix
     ../../nixos/optional/greetd.nix
     ../../nixos/optional/quietboot.nix
-
     ../../nixos/optional/docker.nix
     ../../nixos/optional/fonts.nix
     ../../nixos/optional/vpn.nix
     ../../nixos/optional/pipewire.nix
     ../../nixos/optional/vfio.nix
     ../../nixos/optional/gaming.nix
-    ../../nixos/optional/auto-upgrade.nix
 
     ../../nixos/optional/backup.nix
     #../nixos/optional/grub.nix
