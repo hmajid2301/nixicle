@@ -20,6 +20,14 @@
     #../nixos/optional/grub.nix
   ];
 
+  environment.systemPackages = [
+    pkgs.headsetcontrol2
+    pkgs.headset-charge-indicator
+  ];
+  services.udev.packages = [ pkgs.headsetcontrol2 ];
+
+
+
   networking = {
     hostName = "mesmer";
   };

@@ -184,21 +184,12 @@ in
           inherit (pkgs.fishPlugins.fzf-fish) src;
         }
         {
-          name = "nix";
+          name = "nix.fish";
           src = pkgs.fetchFromGitHub {
             owner = "kidonng";
             repo = "nix.fish";
             rev = "ad57d970841ae4a24521b5b1a68121cf385ba71e";
             sha256 = "13x3bfif906nszf4mgsqxfshnjcn6qm4qw1gv7nw89wi4cdp9i8q";
-          };
-        }
-        {
-          name = "abbr-tips";
-          src = pkgs.fetchFromGitHub {
-            owner = "gazorby";
-            repo = "fish-abbreviation-tips";
-            rev = "8ed76a62bb044ba4ad8e3e6832640178880df485";
-            sha256 = "05b5qp7yly7mwsqykjlb79gl24bs6mbqzaj5b3xfn3v2b7apqnqp";
           };
         }
         {
@@ -208,15 +199,6 @@ in
             repo = "fifc";
             rev = "2ee5beec7dfd28101026357633616a211fe240ae";
             sha256 = "00f6vklsknnav09abrsfy2m577r30m0pphy0hr86b1w0nnvspdin";
-          };
-        }
-        {
-          name = "nix.fish";
-          src = pkgs.fetchFromGitHub {
-            owner = "kidonng";
-            repo = "nix.fish";
-            rev = "ad57d970841ae4a24521b5b1a68121cf385ba71e";
-            sha256 = "13x3bfif906nszf4mgsqxfshnjcn6qm4qw1gv7nw89wi4cdp9i8q";
           };
         }
         {
