@@ -26,10 +26,6 @@
     ];
 
     extraConfigLua = ''
-      require("go").setup({
-      	icons = false;
-      })
-
       require("conform").setup({
       	formatters_by_ft = {
       		go = { "goimports" },
