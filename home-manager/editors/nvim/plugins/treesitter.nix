@@ -55,6 +55,11 @@
       				["il"] = "@loop.inner",
       				["ak"] = "@block.outer",
       				["ik"] = "@block.inner",
+      				["is"] = "@statement.inner",
+      				["as"] = "@statement.outer",
+      				["ad"] = "@comment.outer",
+      				["am"] = "@call.outer",
+      				["im"] = "@call.inner"
       			},
       		},
 
