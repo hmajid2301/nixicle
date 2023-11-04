@@ -96,20 +96,8 @@ in
         }
         # must be before continuum edits right status bar
         {
-          plugin = mkTmuxPlugin {
-            pluginName = "catppuccin";
-            version = "unstable-2023-07-15";
-            src = pkgs.fetchFromGitHub {
-              owner = "catppuccin";
-              repo = "tmux";
-              rev = "d60e40e09793b1268e25bcea0417f70559d43c0a";
-              hash = "sha256-JZ6O7l5Casb6UeCbGBZqnlbY+5DBW4hET4In8KhrxIA=";
-            };
-            postInstall = ''
-              sed -i -e 's|''${PLUGIN_DIR}/catppuccin-selected-theme.tmuxtheme|''${TMUX_TMPDIR}/catppuccin-selected-theme.tmuxtheme|g' $target/catppuccin.tmux
-            '';
-          };
-          extraConfig = ''
+					plugin = catppuccin;
+					extraConfig = ''
             set -g @catppuccin_flavour 'mocha'
             set -g @catppuccin_window_left_separator "█"
             set -g @catppuccin_window_right_separator "█ "
