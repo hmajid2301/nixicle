@@ -52,6 +52,7 @@
     };
     attic.url = "github:zhaofengli/attic";
     nwg-displays.url = "github:nwg-piotr/nwg-displays/master";
+    colmena.url = "github:zhaofengli/colmena";
   };
 
   outputs =
@@ -73,7 +74,7 @@
       homeManagerModules = import ./modules/home-manager;
       overlays = import ./overlays { inherit inputs outputs; };
       packages = forEachSystem (pkgs: import ./pkgs { inherit pkgs; });
-      devShells = forEachSystem (pkgs: import ./shell.nix { inherit pkgs; });
+      devShells = forEachSystem (pkgs: import ./shell.nix { inherit pkgs inputs; });
 
       nixosConfigurations = {
         iso = lib.nixosSystem {

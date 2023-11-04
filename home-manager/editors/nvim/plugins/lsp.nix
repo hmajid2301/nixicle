@@ -45,6 +45,11 @@
 
     extraConfigLua =
       ''
+        local lsp = vim.lsp
+        lsp.handlers["textDocument/hover"] = lsp.with(vim.lsp.handlers.hover, {
+        	border = "rounded",
+        })
+
         require("conform").setup({})
 
         vim.api.nvim_create_autocmd("BufWritePre", {

@@ -17,13 +17,14 @@ in
         # lua
         ''
           local wezterm = require 'wezterm'
+          local act = wezterm.action
           return {
           	color_scheme = "Catppuccin Mocha",
           	font = wezterm.font "${config.fontProfiles.monospace.family}",
           	font_size = 14.0,
           	enable_tab_bar = false,
-          	config.leader = { key = "a", mods = "CTRL", timeout_milliseconds = 1000 }
-          	config.keys = {
+          	leader = { key = "a", mods = "CTRL", timeout_milliseconds = 1000 },
+          	keys = {
           		-- Send C-a when pressing C-a twice
           		{ key = "a",          mods = "LEADER|CTRL", action = act.SendKey { key = "a", mods = "CTRL" } },
           		{ key = "c",          mods = "LEADER",      action = act.ActivateCopyMode },
@@ -62,7 +63,7 @@ in
           						window:active_tab():set_title(line)
           					end
           				end)
-          			}
+          			},
           		},
           	},
           }

@@ -1,14 +1,32 @@
 <div align="center">
-  <h1> :house_with_garden: Haseeb's Dotfiles </h1>
-  <a href="https://git.io/typing-svg"><img src="https://readme-typing-svg.demolab.com?font=Fira+Code&pause=1000&color=2A98C9&width=435&lines=My+Dotfiles+repo+setup+using+NixOS" alt="Typing SVG" /></a>
+<h1>
+<img width="96" src="./images/logo.png"></img> <br>
+  Nix Config
+</h1>
+</h2><img src="https://raw.githubusercontent.com/catppuccin/catppuccin/main/assets/palette/macchiato.png" width="500" />
+<p></p>
+   <a href="https://github.com/hmajid2301/dotfiles/stargazers">
+      <img src="https://img.shields.io/github/stars/hmajid2301/dotfiles?color=ca9ee6&labelColor=303446&style=for-the-badge">
+   </a>
+   <a href="https://github.com/hmajid2301/dotfiles/blob/main">
+      <img src="https://img.shields.io/github/repo-size/hmajid2301/dotfiles?color=fab387&labelColor=303446&style=for-the-badge&logo=github&logoColor=fab387">
+   </a>
+   <a href="https://github.com/hmajid2301/dotfiles/blob/main/LICENSE">
+    <img src="https://img.shields.io/static/v1.svg?style=for-the-badge&label=License&message=MIT&logoColor=ca9ee6&colorA=313244&colorB=cba6f7"/>
+   </a>
+ <p></p>
+<img src="https://builtwithnix.org/badge.svg">
+ <p></p>
+<img src="./images/go.png"></img>
+<p>
+  Screenshot updated: 2023-11-04
+</p>
+<h4>
+  :warning: This config repo is constantly changing, 
+  Let me know if you see something that can be improved or done better :smile: .</h4>
 </div>
 
-You can read more about my dotfiles and development workflows on my [blog here](https://haseebmajid.dev/series/my-development-workflow/) (#ShamelessPlug).
-
 ## 💽 Usage
-
-> :fire: I wouldn't recommend just blindly using my dotfiles. They are setup for my specific use-case.
-I think you're off using this repo as reference to create your own dotfiles.
 
 <details>
   <summary>Install</summary>
@@ -287,9 +305,11 @@ Some of the main plugins used in my nvim setup include:
 ## Appendix
 
 - <a href="https://www.flaticon.com/free-icons/dot" title="dot icons">Dot icons created by Roundicons - Flaticon</a>
+-  You can read more about my dotfiles and development workflows on my [blog here](https://haseebmajid.dev/series/my-development-workflow/) (#ShamelessPlug).
 
 ### Inspired By
 
 - Structure and nixlang code: https://github.com/Misterio77/nix-config
 - Waybar & scripts: https://github.dev/yurihikari/garuda-sway-config
 - Neovim UI: https://github.com/NvChad/nvchad
+- README: https://github.com/notohh/snowflake/tree/master

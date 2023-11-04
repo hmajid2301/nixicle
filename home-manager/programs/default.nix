@@ -1,4 +1,4 @@
-{ pkgs, lib, ... }: {
+{ inputs, pkgs, lib, ... }: {
   imports = [
     ./attic.nix
     ./atuin.nix

@@ -46,7 +46,7 @@
     };
 
     my.settings = {
-      wallpaper = "~/dotfiles/home-manager/wallpapers/rainbow-nix.jpg";
+      wallpaper = "~/dotfiles/home-manager/wallpapers/nixppuccin.png";
       host = "mesmer";
       default = {
         shell = "${pkgs.fish}/bin/fish";
@@ -63,9 +63,5 @@
       homeDirectory = lib.mkDefault "/home/${config.home.username}";
       stateVersion = lib.mkDefault "23.05";
     };
-
-
-    # TODO: enable sway/hyprland via options
-    services.mako.enable = lib.mkForce true;
   };
 }

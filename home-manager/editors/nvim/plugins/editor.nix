@@ -60,6 +60,77 @@
           "n"
         ];
       }
+			{
+        action = "<cmd>Refactor extract<cr>";
+        key = "<leader>re";
+        options = {
+          desc = "Refactor extract";
+        };
+        mode = [
+          "x"
+        ];
+			}
+			{
+        action = "<cmd>Refactor extract_to_file<cr>";
+        key = "<leader>rf";
+        options = {
+          desc = "Refactor extract to file";
+        };
+        mode = [
+          "x"
+        ];
+			}
+			{
+        action = "<cmd>Refactor extract_var<cr>";
+        key = "<leader>rv";
+        options = {
+          desc = "Refactor variable";
+        };
+        mode = [
+          "x"
+        ];
+			}
+			{
+        action = "<cmd>Refactor inline_var<cr>";
+        key = "<leader>ri";
+        options = {
+          desc = "Refactor inline variable";
+        };
+        mode = [
+          "x"
+          "n"
+        ];
+			}
+			{
+        action = "<cmd>Refactor inline_func<cr>";
+        key = "<leader>rI";
+        options = {
+          desc = "Refactor inline function";
+        };
+        mode = [
+          "n"
+        ];
+			}
+			{
+        action = "<cmd>Refactor extract_block<cr>";
+        key = "<leader>rb";
+        options = {
+          desc = "Refactor extract block";
+        };
+        mode = [
+          "n"
+        ];
+			}
+			{
+        action = "<cmd>Refactor extract_block_to_file<cr>";
+        key = "<leader>rbf";
+        options = {
+          desc = "Refactor extract block to file";
+        };
+        mode = [
+          "n"
+        ];
+      }
     ];
 
     plugins = {
@@ -143,6 +214,10 @@
         };
       };
 
+			refactoring = {
+				enable = true;
+			};
+
       which-key = {
         enable = true;
 
@@ -157,7 +232,7 @@
 
     extraPlugins = with pkgs; [
       vimPlugins.nvim-spectre
-      vimPlugins.refactoring-nvim
+			vimPlugins.tabout-nvim
 
       # for yanky
       vimPlugins.sqlite-lua
@@ -167,13 +242,15 @@
     # TODO: look at combing refactor and code actions ? 
     extraConfigLua =
       ''
+				require("tabout").setup()
+
         require("spectre").setup()
 
         -- yanky
         require("telescope").load_extension("yank_history")
         require("yanky").setup({
         	highlight = { timer = 250 },
-        	ring = { storage = jit.os:find("Windows") and "shada" or "sqlite" },
+        	ring = { storage = "sqlite" },
         })
 
         -- TODO: move to keymaps
@@ -183,20 +260,6 @@
         vim.keymap.set({"n","x"}, "gP", "<Plug>(YankyGPutBefore)")
         vim.keymap.set("n", "<c-n>", "<Plug>(YankyCycleForward)")
         vim.keymap.set("n", "<c-p>", "<Plug>(YankyCycleBackward)")
-
-        -- refactoring
-        require('refactoring').setup()
-        vim.keymap.set("x", "<leader>re", ":Refactor extract ")
-        vim.keymap.set("x", "<leader>rf", ":Refactor extract_to_file ")
-
-        vim.keymap.set("x", "<leader>rv", ":Refactor extract_var ")
-
-        vim.keymap.set({ "n", "x" }, "<leader>ri", ":Refactor inline_var")
-
-        vim.keymap.set( "n", "<leader>rI", ":Refactor inline_func")
-
-        vim.keymap.set("n", "<leader>rb", ":Refactor extract_block")
-        vim.keymap.set("n", "<leader>rbf", ":Refactor extract_block_to_file")
       '';
   };
 }
