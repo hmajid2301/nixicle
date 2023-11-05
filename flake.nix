@@ -146,55 +146,61 @@
         defaults = { pkgs, ... }: {
           imports = [
             inputs.hardware.nixosModules.raspberry-pi-4
+            inputs.sops-nix.nixosModules.sops
+            ./hosts/rpis/common.nix
           ];
-
-          boot.kernelParams = [
-            "cgroup_memory=1"
-            "cgroup_enable=memory"
-          ];
-
-          services.k3s.enable = true;
-
-          networking = {
-            firewall = {
-              allowedTCPPorts = [ 6443 ];
-              enable = true;
-              trustedInterfaces = [ "cni0" ];
-            };
-          };
-
-          environment.systemPackages = with pkgs; [
-            git
-            vim
-            wget
-            curl
-            k3s
-          ];
-
-          services.avahi = {
-            enable = true;
-            nssmdns = true;
-            publish = {
-              enable = true;
-              addresses = true;
-              domain = true;
-              hinfo = true;
-              userServices = true;
-              workstation = true;
-            };
-          };
         };
 
 
         strawberry = {
           imports = [
-            ./hosts/rpis/strawberry/configuration.nix
+            ./hosts/rpis/strawberry.nix
           ];
 
           nixpkgs.system = "aarch64-linux";
           deployment = {
             targetHost = "strawberry.local";
             targetUser = "strawberry";
+            tags = [ "infra" ];
+          };
+        };
+
+        orange = {
+          imports = [
+            ./hosts/rpis/orange.nix
+          ];
+
+          nixpkgs.system = "aarch64-linux";
+          deployment = {
+            targetHost = "orange.local";
+            targetUser = "orange";
+            tags = [ "infra" ];
+          };
+        };
+
+        mango = {
+          imports = [
+            ./hosts/rpis/mango.nix
+          ];
+
+          nixpkgs.system = "aarch64-linux";
+          deployment = {
+            targetHost = "mango.local";
+            targetUser = "mango";
+            tags = [ "infra" ];
+          };
+        };
+
+
+        guava = {
+          imports = [
+            ./hosts/rpis/guava.nix
+          ];
+
+          nixpkgs.system = "aarch64-linux";
+          deployment = {
+            targetHost = "guava.local";
+            targetUser = "guava";
             tags = [ "infra" ];
           };
         };

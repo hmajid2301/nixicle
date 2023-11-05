@@ -50,6 +50,8 @@
     # sourcegraph
     src-cli
 
+		tailscale-systray
+
     (lib.hiPrio parallel)
     moreutils
     nvtop-amd

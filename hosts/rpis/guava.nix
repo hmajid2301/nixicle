@@ -1,7 +1,7 @@
 { config, pkgs, lib, ... }:
 
 let
-  hostname = "strawberry";
+  hostname = "guava";
 in
 {
   fileSystems = {
@@ -24,9 +24,8 @@ in
 
   nix.settings.trusted-users = [ hostname ];
 
-  services.k3s.extraFlags = "--bind-address 100.74.189.156";
-
   users = {
+    #mutableUsers = false;
     users."${hostname}" = {
       isNormalUser = true;
       extraGroups = [ "wheel" ];
@@ -35,4 +34,6 @@ in
     };
   };
 
+  hardware.enableRedistributableFirmware = true;
+  system.stateVersion = "23.11";
 }
