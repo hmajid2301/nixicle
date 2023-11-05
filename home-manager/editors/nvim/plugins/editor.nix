@@ -137,7 +137,7 @@
       auto-save = {
         enable = true;
         writeAllBuffers = true;
-        triggerEvents = [ "InsertLeave" ];
+        triggerEvents = [ ];
       };
 
       better-escape = {

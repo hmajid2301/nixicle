@@ -93,6 +93,7 @@ in
         exec-once = waybar &
         exec-once = gammastep-indicator &
         exec-once = mullvad-gui &
+        exec-once = tailscale-systray &
         exec-once = swaybg -i ${config.my.settings.wallpaper} --mode fill &
 
         # █▀ █▀▀ █▀█ █ █▀█ ▀█▀ █▀
