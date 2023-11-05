@@ -221,6 +221,7 @@ Some features of my dotfiles:
   - `framework`: Framework 12th gen laptop | Hyprland | eGPU 3080
   - `curve`: Framework 13th gen work laptop | Ubuntu Hyprland
   - `mesmer`: Desktop AMD Ryzen 9 5950X  | Hyprland | GPU 7900 XTX
+  - `rpis`: My Raspberry pi cluster | k3s
 - `home-manager`: Most of my dotfiles configuration, home-manager modules
 
 ## 📱 Applications

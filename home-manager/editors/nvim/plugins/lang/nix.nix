@@ -27,12 +27,7 @@
       require'lspconfig'.nixd.setup{}
       require("conform").setup({
       	formatters_by_ft = {
-      		nix = { "nixpkgs_fmt " },
-      	},
-      	formatters = {
-      		nixpkgs_fmt  = {
-      			command = "${pkgs.nixpkgs-fmt}/bin/nixpkgs-fmt",
-      		},
+      		nix = { "nixpkgs_fmt" },
       	},
       })
 

@@ -10,12 +10,12 @@
   programs.nixvim = {
     extraConfigLua =
       ''
-        require'lspconfig'.marksman.setup{}
-				require'lspconfig'.ltex.setup{
-        	cmd = { "ltex-ls" },
-        	filetypes = { "markdown", "text" },
-        	flags = { debounce_text_changes = 300 },
-				}
+                require'lspconfig'.marksman.setup{}
+        				require'lspconfig'.ltex.setup{
+                	cmd = { "ltex-ls" },
+                	filetypes = { "markdown", "text" },
+                	flags = { debounce_text_changes = 300 },
+        				}
       '';
 
     plugins.treesitter = {
