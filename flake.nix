@@ -59,6 +59,7 @@
     { self
     , nixpkgs
     , home-manager
+    , colmena
     , ...
     } @ inputs:
     let
@@ -131,6 +132,71 @@
           modules = [ ./hosts/staging/home.nix ];
           pkgs = nixpkgs.legacyPackages.x86_64-linux;
           extraSpecialArgs = { inherit inputs outputs; };
+        };
+      };
+
+      colmena = {
+        meta = {
+          nixpkgs = import nixpkgs {
+            system = "x86_64-linux";
+          };
+          specialArgs = inputs;
+        };
+
+        defaults = { pkgs, ... }: {
+          imports = [
+            inputs.hardware.nixosModules.raspberry-pi-4
+          ];
+
+          boot.kernelParams = [
+            "cgroup_memory=1"
+            "cgroup_enable=memory"
+          ];
+
+          services.k3s.enable = true;
+
+          networking = {
+            firewall = {
+              allowedTCPPorts = [ 6443 ];
+              enable = true;
+              trustedInterfaces = [ "cni0" ];
+            };
+          };
+
+          environment.systemPackages = with pkgs; [
+            git
+            vim
+            wget
+            curl
+            k3s
+          ];
+
+          services.avahi = {
+            enable = true;
+            nssmdns = true;
+            publish = {
+              enable = true;
+              addresses = true;
+              domain = true;
+              hinfo = true;
+              userServices = true;
+              workstation = true;
+            };
+          };
+        };
+
+
+        strawberry = {
+          imports = [
+            ./hosts/rpis/strawberry/configuration.nix
+          ];
+
+          nixpkgs.system = "aarch64-linux";
+          deployment = {
+            targetHost = "strawberry.local";
+            targetUser = "strawberry";
+            tags = [ "infra" ];
+          };
         };
       };
     };
