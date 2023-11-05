@@ -1,14 +1,9 @@
 { config, pkgs, lib, ... }:
 
 let
-  hostname = "strawberry";
+  hostname = "orange";
 in
 {
-
-  imports = [
-    "${builtins.fetchGit { url = "https://github.com/NixOS/nixos-hardware.git"; }}/raspberry-pi/4"
-  ];
-
   boot = {
     kernelPackages = pkgs.linuxKernel.packages.linux_rpi4;
     initrd.availableKernelModules = [ "xhci_pci" "usbhid" "usb_storage" ];
@@ -30,21 +25,14 @@ in
     hostName = hostname;
   };
 
-  environment.systemPackages = with pkgs; [ vim git ];
-
-  services.openssh.enable = true;
-
-  services.avahi = {
+  nix.settings.trusted-users = [ hostname ];
+  security.sudo.wheelNeedsPassword = false;
+  services.openssh = {
     enable = true;
-    nssmdns = true;
-    publish = {
-      enable = true;
-      addresses = true;
-      domain = true;
-      hinfo = true;
-      userServices = true;
-      workstation = true;
-    };
+    # require public key authentication for better security
+    settings.PasswordAuthentication = false;
+    settings.KbdInteractiveAuthentication = false;
+    #settings.PermitRootLogin = "yes";
   };
 
   users = {
@@ -52,6 +40,8 @@ in
     users."${hostname}" = {
       isNormalUser = true;
       extraGroups = [ "wheel" ];
+      password = hostname;
+      openssh.authorizedKeys.keys = [ "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMxe8kDCJa6xcAM9WE8c5amGG+2secXmnof7vlmAq1Da hello@haseebmajid.dev" ];
     };
   };
 

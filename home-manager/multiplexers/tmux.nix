@@ -96,8 +96,8 @@ in
         }
         # must be before continuum edits right status bar
         {
-					plugin = catppuccin;
-					extraConfig = ''
+          plugin = catppuccin;
+          extraConfig = ''
             set -g @catppuccin_flavour 'mocha'
             set -g @catppuccin_window_left_separator "█"
             set -g @catppuccin_window_right_separator "█ "

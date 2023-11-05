@@ -50,7 +50,13 @@
         	border = "rounded",
         })
 
-        require("conform").setup({})
+        require("conform").setup({
+        	 format_on_save = {
+        		-- These options will be passed to conform.format()
+        		timeout_ms = 500,
+        		lsp_fallback = true,
+        	},
+        })
 
         vim.api.nvim_create_autocmd("BufWritePre", {
         	pattern = "*",
@@ -58,8 +64,6 @@
         		require("conform").format({ bufnr = args.buf })
         	end,
         })
-
-        require('lint').linters_by_ft = {}
 
         vim.api.nvim_create_autocmd({ "BufWritePost" }, {
         	callback = function()
