@@ -4,18 +4,15 @@ let
   hostname = "orange";
 in
 {
-  boot = {
-    kernelPackages = pkgs.linuxKernel.packages.linux_rpi4;
-    initrd.availableKernelModules = [ "xhci_pci" "usbhid" "usb_storage" ];
-    loader = {
-      grub.enable = false;
-      generic-extlinux-compatible.enable = true;
-    };
-  };
-
   fileSystems = {
     "/" = {
       device = "/dev/disk/by-label/NIXOS_SD";
+      fsType = "ext4";
+      options = [ "noatime" ];
+    };
+
+    "/data" = {
+      device = "/dev/sda";
       fsType = "ext4";
       options = [ "noatime" ];
     };
@@ -26,14 +23,6 @@ in
   };
 
   nix.settings.trusted-users = [ hostname ];
-  security.sudo.wheelNeedsPassword = false;
-  services.openssh = {
-    enable = true;
-    # require public key authentication for better security
-    settings.PasswordAuthentication = false;
-    settings.KbdInteractiveAuthentication = false;
-    #settings.PermitRootLogin = "yes";
-  };
 
   users = {
     #mutableUsers = false;

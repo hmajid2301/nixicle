@@ -63,7 +63,8 @@ in
 
         startup = [
           # TODO: try swaync
-          { command = "${pkgs.mako}/bin/mako"; }
+          { command = "${pkgs.swaync}/bin/swaync"; }
+          { command = "${pkgs.tailscale-systray}/bin/tailscale-systray"; }
           { command = "${pkgs.kanshi}/bin/kanshi"; }
           { command = "${pkgs.gammastep}/bin/gammastep-indicator"; }
           { command = "${pkgs.swaybg}/bin/swaybg -i ${config.my.settings.wallpaper} --mode fill"; }

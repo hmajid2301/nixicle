@@ -15,6 +15,7 @@
     ../../home-manager/security/yubikey.nix
   ];
 
+
   config = {
     my.settings = {
       wallpaper = "~/dotfiles/home-manager/wallpapers/rainbow-nix.jpg";
@@ -63,6 +64,17 @@
     targets.genericLinux.enable = true;
     xdg.mime.enable = true;
     xdg.systemDirs.data = [ "${config.home.homeDirectory}/.nix-profile/share/applications" ];
+
+    xdg.configFile."autostart/tailscale.desktop".text = ''
+			[Desktop Entry]
+			Type=Application
+			Exec=tailscale-systray
+			Hidden=false
+			NoDisplay=false
+			X-GNOME-Autostart-enabled=true
+			Comment[en_NG]=Start Tailscale Systray
+		'';
+
 
     # Work Laptop different email
     programs.git.userEmail = lib.mkForce "haseeb.majid@imaginecurve.com";

@@ -4,18 +4,15 @@ let
   hostname = "strawberry";
 in
 {
-  boot = {
-    kernelPackages = pkgs.linuxKernel.packages.linux_rpi4;
-    initrd.availableKernelModules = [ "xhci_pci" "usbhid" "usb_storage" ];
-    loader = {
-      grub.enable = false;
-      generic-extlinux-compatible.enable = true;
-    };
-  };
-
   fileSystems = {
     "/" = {
       device = "/dev/disk/by-label/NIXOS_SD";
+      fsType = "ext4";
+      options = [ "noatime" ];
+    };
+
+    "/data" = {
+      device = "/dev/sda";
       fsType = "ext4";
       options = [ "noatime" ];
     };
@@ -26,17 +23,10 @@ in
   };
 
   nix.settings.trusted-users = [ hostname ];
-  security.sudo.wheelNeedsPassword = false;
-  services.openssh = {
-    enable = true;
-    # require public key authentication for better security
-    settings.PasswordAuthentication = false;
-    settings.KbdInteractiveAuthentication = false;
-    #settings.PermitRootLogin = "yes";
-  };
+
+  services.k3s.extraFlags = "--bind-address 100.74.189.156";
 
   users = {
-    #mutableUsers = false;
     users."${hostname}" = {
       isNormalUser = true;
       extraGroups = [ "wheel" ];
@@ -45,6 +35,4 @@ in
     };
   };
 
-  hardware.enableRedistributableFirmware = true;
-  system.stateVersion = "23.11";
 }

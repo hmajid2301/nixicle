@@ -15,6 +15,7 @@
     ../../nixos/optional/pipewire.nix
     ../../nixos/optional/vfio.nix
     ../../nixos/optional/gaming.nix
+    ../../nixos/optional/tailscale.nix
 
     ../../nixos/optional/backup.nix
     #../nixos/optional/grub.nix
@@ -25,8 +26,6 @@
     pkgs.headset-charge-indicator
   ];
   services.udev.packages = [ pkgs.headsetcontrol2 ];
-
-
 
   networking = {
     hostName = "mesmer";
