@@ -151,7 +151,6 @@
           ];
         };
 
-
         strawberry = {
           imports = [
             ./hosts/rpis/strawberry.nix
@@ -159,22 +158,36 @@
 
           nixpkgs.system = "aarch64-linux";
           deployment = {
-            targetHost = "strawberry.local";
+            targetHost = "strawberry";
             targetUser = "strawberry";
-            tags = [ "infra" ];
+            tags = [ "infra" "rpi" ];
           };
         };
 
-        orange = {
+        # TODO: figure out why this crashes
+        # orange = {
+        #   imports = [
+        #     ./hosts/rpis/orange.nix
+        #   ];
+        #
+        #   nixpkgs.system = "aarch64-linux";
+        #   deployment = {
+        #     targetHost = "orange";
+        #     targetUser = "orange";
+        #     tags = [ "infra" "rpi" ];
+        #   };
+        # };
+
+        guava = {
           imports = [
-            ./hosts/rpis/orange.nix
+            ./hosts/rpis/guava.nix
           ];
 
           nixpkgs.system = "aarch64-linux";
           deployment = {
-            targetHost = "orange.local";
-            targetUser = "orange";
-            tags = [ "infra" ];
+            targetHost = "guava";
+            targetUser = "guava";
+            tags = [ "infra" "rpi" ];
           };
         };
 
@@ -185,23 +198,9 @@
 
           nixpkgs.system = "aarch64-linux";
           deployment = {
-            targetHost = "mango.local";
+            targetHost = "mango";
             targetUser = "mango";
-            tags = [ "infra" ];
-          };
-        };
-
-
-        guava = {
-          imports = [
-            ./hosts/rpis/guava.nix
-          ];
-
-          nixpkgs.system = "aarch64-linux";
-          deployment = {
-            targetHost = "guava.local";
-            targetUser = "guava";
-            tags = [ "infra" ];
+            tags = [ "infra" "rpi" ];
           };
         };
       };
