@@ -134,11 +134,11 @@
     ];
 
     plugins = {
-      auto-save = {
-        enable = true;
-        writeAllBuffers = true;
-        triggerEvents = [ ];
-      };
+      # auto-save = {
+      #   enable = true;
+      #   writeAllBuffers = true;
+      #   triggerEvents = [ ];
+      # };
 
       better-escape = {
         enable = true;

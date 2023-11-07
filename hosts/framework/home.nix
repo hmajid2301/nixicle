@@ -32,8 +32,16 @@
         fish.enable = true;
       };
 
+      wms = {
+        sway.enable = true;
+        # TODO: conflict notifications
+        notifications.swaync.enable = true;
+        launchers.wofi.enable = true;
+      };
+
       terminals = {
         foot.enable = true;
+        wezterm.enable = true;
       };
     };
 
