@@ -23,6 +23,8 @@ in
   };
 
   nix.settings.trusted-users = [ hostname ];
+  services.k3s.role = "agent";
+  services.k3s.serverAddr = "strawberry";
 
   users = {
     #mutableUsers = false;

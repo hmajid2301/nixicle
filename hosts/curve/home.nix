@@ -18,7 +18,7 @@
 
   config = {
     my.settings = {
-      wallpaper = "~/dotfiles/home-manager/wallpapers/rainbow-nix.jpg";
+      wallpaper = "~/dotfiles/home-manager/wallpapers/nixppuccin.png";
       host = "curve";
       default = {
         shell = "${pkgs.fish}/bin/fish";
@@ -49,6 +49,12 @@
         tmux.enable = true;
       };
 
+      wms = {
+        sway.enable = true;
+        notifications.swaync.enable = true;
+        launchers.rofi.enable = true;
+      };
+
       shells = {
         fish.enable = true;
       };
@@ -66,15 +72,14 @@
     xdg.systemDirs.data = [ "${config.home.homeDirectory}/.nix-profile/share/applications" ];
 
     xdg.configFile."autostart/tailscale.desktop".text = ''
-			[Desktop Entry]
-			Type=Application
-			Exec=tailscale-systray
-			Hidden=false
-			NoDisplay=false
-			X-GNOME-Autostart-enabled=true
-			Comment[en_NG]=Start Tailscale Systray
-		'';
-
+      	[Desktop Entry]
+      	Type=Application
+      	Exec=tailscale-systray
+      	Hidden=false
+      	NoDisplay=false
+      	X-GNOME-Autostart-enabled=true
+      	Comment[en_NG]=Start Tailscale Systray
+    '';
 
     # Work Laptop different email
     programs.git.userEmail = lib.mkForce "haseeb.majid@imaginecurve.com";
@@ -88,13 +93,10 @@
 
     # sway (swayfx) is installed via manually building binaries
     wayland.windowManager.sway.package = lib.mkForce null;
-    programs.swaylock.enable = lib.mkForce false;
-    gtk.enable = lib.mkForce false;
 
     home.packages = with pkgs; [
       podman-compose
       podman-tui
-      android-studio
     ];
   };
 }

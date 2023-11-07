@@ -50,7 +50,7 @@
     # sourcegraph
     src-cli
 
-		tailscale-systray
+    tailscale-systray
 
     (lib.hiPrio parallel)
     moreutils

@@ -33,11 +33,11 @@ in
           "tray"
           "custom/notification"
           "idle_inhibitor"
-          "backlight"
           "pulseaudio"
           "temperature"
           "cpu"
           "memory"
+          "backlight"
           "battery"
           "network"
           "custom/power"
@@ -271,7 +271,7 @@ in
         };
         "custom/launcher" = {
           format = "   ";
-          on-click = " rofi -show drun -modi drun";
+          on-click = "rofi -show drun -modi drun";
         };
       }
     ];
@@ -291,63 +291,63 @@ in
         @define-color flamingo  #${colorscheme.colors.base0F};
 
         * {
-        	 color: @lavender;
-        	 border: 0;
-        	 padding: 0 0;
-        	 font-family: ${fontProfiles.monospace.family};
-        	 font-size: 18px;
-        	 font-weight: bold;
+         color: @lavender;
+         border: 0;
+         padding: 0 0;
+         font-family: ${fontProfiles.monospace.family};
+         font-size: 18px;
+         font-weight: bold;
         }
 
         window#waybar {
-        	 border: 0px solid rgba(0, 0, 0, 0);
-        	 background-color: rgba(0, 0, 0, 0);
+         border: 0px solid rgba(0, 0, 0, 0);
+         background-color: rgba(0, 0, 0, 0);
         }
 
         #workspaces * {
-        	 color: white;
+         color: white;
         }
 
         #workspaces {
-        	 border-style: solid;
-        	 background-color: @base;
-        	 opacity: 1;
-        	 border-radius: 10px;
-        	 margin: 8px 8px 8px 8px;
+         border-style: solid;
+         background-color: @base;
+         opacity: 1;
+         border-radius: 10px;
+         margin: 8px 8px 8px 8px;
         }
 
         #workspaces button {
-        	 color: @base;
-        	 border-radius: 20px;
-        	 padding: 2px;
-        	 margin: 2px 4px 0px 4px;
+         color: @base;
+         border-radius: 20px;
+         padding: 2px;
+         margin: 2px 4px 0px 4px;
         }
 
         #workspaces button:hover {
-        	 color: @mauve;
-        	 border-radius: 20px;
+         color: @mauve;
+         border-radius: 20px;
         }
 
 
         #workspaces button.active * {
-        	 color: @base;
-        	 background-color: @mauve;
-        	 border-radius: 20px;
+         color: @base;
+         background-color: @mauve;
+         border-radius: 20px;
         }
 
         #workspaces button.visible {
-        	 color: white;
-        	 background-color: @mauve;
-        	 border-radius: 20px;
+         color: white;
+         background-color: @mauve;
+         border-radius: 20px;
         }
 
         #workspaces button.visible * {
-        	 color: white;
-        	 color: @base;
+         color: white;
+         color: @base;
         }
 
         #mode {
-        	 color: @yellow;
+         color: @yellow;
         }
 
         #clock,
@@ -365,73 +365,84 @@ in
         #custom-launcher,
         #custom-notification,
         #mpd {
-        	 padding: 5px 8px;
-        	 border-style: solid;
-        	 background-color: shade(@base, 1);
-        	 opacity: 1;
-        	 margin: 8px 0;
+         padding: 5px 8px;
+         border-style: solid;
+         background-color: shade(@base, 1);
+         opacity: 1;
+         margin: 8px 0;
         }
 
         /* -----------------------------------------------------------------------------
-         * Module styles
-         * -------------------------------------------------------------------------- */
+        * Module styles
+        * -------------------------------------------------------------------------- */
         #mpd {
-        	 border-radius: 10px;
-        	 color: @mauve;
-        	 margin-left: 5px;
-        	 background-color: rgba(0, 0, 0, 0);
+         border-radius: 10px;
+         color: @mauve;
+         margin-left: 5px;
+         background-color: rgba(0, 0, 0, 0);
         }
 
         #mpd.2 {
-        	 border-radius: 10px 0px 0px 10px;
-        	 margin: 8px 0px 8px 6px;
-        	 padding: 4px 12px 4px 10px;
+         border-radius: 10px 0px 0px 10px;
+         margin: 8px 0px 8px 6px;
+         padding: 4px 12px 4px 10px;
         }
 
         #mpd.3 {
-        	 border-radius: 0px 0px 0px 0px;
-        	 margin: 8px 0px 8px 0px;
-        	 padding: 4px;
+         border-radius: 0px 0px 0px 0px;
+         margin: 8px 0px 8px 0px;
+         padding: 4px;
         }
 
         #mpd.4 {
-        	 border-radius: 0px 10px 10px 0px;
-        	 margin: 8px 0px 8px 0px;
-        	 padding: 4px 10px 4px 14px;
+         border-radius: 0px 10px 10px 0px;
+         margin: 8px 0px 8px 0px;
+         padding: 4px 10px 4px 14px;
         }
 
         #mpd.2,
         #mpd.3,
         #mpd.4 {
-        	 background-color: @base;
-        	 font-size: 14px;
+         background-color: @base;
+         font-size: 14px;
         }
 
         #clock {
-        	 color: @mauve;
-        	 border-radius: 10px;
-        	 margin: 8px 10px;
+         color: @mauve;
+         border-radius: 10px;
+         margin: 8px 10px;
         }
 
+
         #backlight {
-        	 color: @yellow;
-        	 border-radius: 10px 0 0 10px;
+         color: @yellow;
+         border-radius: 10px 0 0 10px;
+         margin-left: 10px;
         }
 
         #battery {
-        	 color: @yellow;
-        	 border-radius: 0 10px 10px 0;
-        	 margin-right: 10px;
+         color: @yellow;
+         border-radius: 0 10px 10px 0;
+         margin-right: 10px;
+        }
+
+        #battery.critical:not(.charging) {
+        color: @red;
+        animation-name: blink;
+        animation-duration: 0.5s;
+        animation-timing-function: linear;
+        animation-iteration-count: infinite;
+        animation-direction: alternate;
         }
 
         #battery.charging {
-        	 color: @green;
+         color: @green;
         }
 
         @keyframes blink {
-        	 to {
-        			 color: @red;
-        	 }
+         to {
+        		 color: @red;
+         }
         }
 
         #custom-notification {
@@ -462,14 +473,7 @@ in
         	 color: @base;
         }
 
-        #battery.critical:not(.charging) {
-        	 color: @red;
-        	 animation-name: blink;
-        	 animation-duration: 0.5s;
-        	 animation-timing-function: linear;
-        	 animation-iteration-count: infinite;
-        	 animation-direction: alternate;
-        }
+
 
         #pulseaudio {
         	 color: @flamingo;

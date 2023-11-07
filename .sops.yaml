@@ -66,3 +66,13 @@ creation_rules:
       pgp:
       - *haseeb
       - *haseebmajid
+
+  - path_regex: hosts/rpis/secrets.ya?ml$
+    key_groups:
+    - age:
+      - *framework
+      - *mesmer
+      - *curve
+      pgp:
+      - *haseeb
+      - *haseebmajid

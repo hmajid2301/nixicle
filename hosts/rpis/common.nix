@@ -1,6 +1,4 @@
-{ pkgs, ... }: {
-
-
+{ config, pkgs, ... }: {
   boot = {
     kernelPackages = pkgs.linuxKernel.packages.linux_rpi4;
     kernelParams = [
@@ -30,6 +28,16 @@
     curl
     k3s
   ];
+
+  sops.secrets.k3s_token = {
+    sopsFile = ./secrets.yaml;
+  };
+
+  services.k3s.tokenFile = config.sops.secrets.k3s_token.path;
+
+  sops = {
+    age.sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
+  };
 
   services.tailscale.enable = true;
   services.k3s.enable = true;

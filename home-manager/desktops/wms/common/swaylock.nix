@@ -60,23 +60,34 @@ in
 
   services.swayidle = {
     enable = true;
-    systemdTarget = "hyprland-session.target";
+    systemdTarget = "sway.target";
     events = [
       {
         event = "before-sleep";
-        command = "${pkgs.swaylock-effects}/bin/swaylock -fF";
+        command = "swaylock -fF";
       }
       {
         event = "lock";
-        command = "${pkgs.swaylock-effects}/bin/swaylock -fF";
+        command = "swaylock -fF";
       }
     ];
     timeouts = [
-      {
-        timeout = 600;
-        command = "${config.wayland.windowManager.hyprland.package}/bin/hyprctl dispatch dpms off";
-        resumeCommand = "${config.wayland.windowManager.hyprland.package}/bin/hyprctl dispatch dpms on";
-      }
+
+      (
+        if config.wayland.windowManager.sway.enable
+        then
+          {
+            timeout = 600;
+            command = "sway dispatch dpms off";
+            resumeCommand = "sway dispatch dpms on";
+          }
+        else
+          {
+            timeout = 600;
+            command = "${config.wayland.windowManager.hyprland.package}/bin/hyprctl dispatch dpms off";
+            resumeCommand = "${config.wayland.windowManager.hyprland.package}/bin/hyprctl dispatch dpms on";
+          }
+      )
       {
         timeout = 610;
         command = "${pkgs.systemd}/bin/loginctl lock-session";
