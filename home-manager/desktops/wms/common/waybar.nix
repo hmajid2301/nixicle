@@ -1,4 +1,4 @@
-{ config, ... }:
+{ pkgs, config, ... }:
 let
   inherit (config) colorscheme fontProfiles;
 in
@@ -16,11 +16,7 @@ in
         margin = "0 0 0 0";
         modules-left = [
           "custom/launcher"
-          (
-            if config.wayland.windowManager.sway.enable
-            then "sway/workspaces"
-            else "hyprland/workspaces"
-          )
+          "hyprland/workspaces"
           "custom/currentplayer"
           "custom/player"
           "custom/audio_idle_inhibitor"
@@ -86,7 +82,7 @@ in
         };
         "custom/audio_idle_inhibitor" = {
           format = "{icon}";
-          exec = "sway-audio-idle-inhibit --dry-print-both-waybar";
+          exec = "${pkgs.nur.repos."999eagle".swayaudioidleinhibit}/bin/sway-audio-idle-inhibit --dry-print-both-waybar";
           exec-if = "which sway-audio-idle-inhibit";
           return-type = "json";
           format-icons = {
@@ -266,12 +262,12 @@ in
         };
         "custom/power" = {
           format = " ⏻ ";
-          on-click = "rofi -show p -modi p:rofi-power-menu";
+          on-click = "${pkgs.rofi}/bin/rofi -show p -modi p:rofi-power-menu";
           tooltip = false;
         };
         "custom/launcher" = {
           format = "   ";
-          on-click = "rofi -show drun -modi drun";
+          on-click = "${pkgs.rofi}/bin/rofi -show drun -modi drun";
         };
       }
     ];
