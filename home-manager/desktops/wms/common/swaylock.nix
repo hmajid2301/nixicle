@@ -5,6 +5,7 @@
 }:
 let
   inherit (config.colorscheme) colors;
+  swayLoc = if config.my.settings.host == "curve" then "/usr/local/bin/swaylock" else "swaylock";
 in
 {
   home.packages = with pkgs; [
@@ -60,34 +61,22 @@ in
 
   services.swayidle = {
     enable = true;
-    systemdTarget = "sway.target";
     events = [
       {
         event = "before-sleep";
-        command = "swaylock -fF";
+        command = "${swayLoc} -fF";
       }
       {
         event = "lock";
-        command = "swaylock -fF";
+        command = "${swayLoc} -fF";
       }
     ];
     timeouts = [
-
-      (
-        if config.wayland.windowManager.sway.enable
-        then
-          {
-            timeout = 600;
-            command = "sway dispatch dpms off";
-            resumeCommand = "sway dispatch dpms on";
-          }
-        else
-          {
-            timeout = 600;
-            command = "${config.wayland.windowManager.hyprland.package}/bin/hyprctl dispatch dpms off";
-            resumeCommand = "${config.wayland.windowManager.hyprland.package}/bin/hyprctl dispatch dpms on";
-          }
-      )
+      {
+        timeout = 600;
+        command = "${config.wayland.windowManager.hyprland.package}/bin/hyprctl dispatch dpms off";
+        resumeCommand = "${config.wayland.windowManager.hyprland.package}/bin/hyprctl dispatch dpms on";
+      }
       {
         timeout = 610;
         command = "${pkgs.systemd}/bin/loginctl lock-session";

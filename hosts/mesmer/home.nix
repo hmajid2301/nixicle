@@ -34,9 +34,6 @@
 
       wms = {
         hyprland.enable = true;
-        # TODO: conflict notifications
-        notifications.swaync.enable = true;
-        launchers.rofi.enable = true;
       };
 
       terminals = {

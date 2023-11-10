@@ -1,10 +1,5 @@
 { pkgs, inputs, ... }: {
   imports = [
-    ./notifications/mako.nix
-    ./notifications/swaync.nix
-    ./launchers/rofi.nix
-    ./launchers/wofi.nix
-
     ./gtk.nix
     ./gammastep.nix
     ./kanshi.nix
@@ -14,6 +9,10 @@
     ./eww.nix
     ./scripts.nix
     ./xdg.nix
+
+    ./notifications/swaync.nix
+    ./launchers/rofi.nix
+
   ];
 
   home.sessionVariables = {

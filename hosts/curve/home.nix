@@ -50,9 +50,7 @@
       };
 
       wms = {
-        sway.enable = true;
-        notifications.swaync.enable = true;
-        launchers.rofi.enable = true;
+        hyprland.enable = true;
       };
 
       shells = {
@@ -90,9 +88,6 @@
       projects/**/**/flake.nix
       projects/**/**/flake.lock
     '';
-
-    # sway (swayfx) is installed via manually building binaries
-    wayland.windowManager.sway.package = lib.mkForce null;
 
     home.packages = with pkgs; [
       podman-compose

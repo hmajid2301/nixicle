@@ -17,11 +17,6 @@ let
         fi
     fi
   '';
-
-  notification = (if config.modules.wms.notifications.swaync.enable then "swaync &" else "mako &" fi);
-  launcher = (if config.modules.wms.launchers.rofi.enable then "rofi -show drun -modi drun" else "wofi --show drun" fi);
-  launcher_show_window = (if config.modules.wms.launchers.rofi.enable then "rofi -show window" else "wofi --show window" fi);
-
   cfg = config.modules.wms.hyprland;
 in
 {
@@ -44,6 +39,9 @@ in
       enable = true;
       # TODO: move to https://github.com/spikespaz/hyprland-nix
       extraConfig = ''
+        source = ~/.config/hypr/monitors.conf
+        env PATH, $PATH:$HOME/.nix-profile/bin
+
         # ASCII Art from https://fsymbols.com/generators/carty/
         input {
         	kb_layout = gb
@@ -75,9 +73,8 @@ in
         # ▄█ █▀█ █▄█ █▀▄ ░█░ █▄▄ █▄█ ░█░ ▄█
         bind = SUPER, Return, exec, ${config.my.settings.default.terminal}
         bind = SUPER, b, exec, ${config.my.settings.default.browser}
-        bind = SUPER, a, exec, ${launcher}
-        bind = SUPER, Tab, exec, ${launcher_show_window}
-        bind = SUPER, w, exec, makoctl dismiss
+        bind = SUPER, a, exec, ${pkgs.rofi}/bin/rofi -show drun -mode drun
+        bind = SUPER, Tab, exec, ${pkgs.rofi}/bin/rofi -show window
 
         # █▀▀ ▀▄▀ █▀▀ █▀▀ █▀█ ▀█▀ █ █▀█ █▄░█ █▀
         # ██▄ █░█ █▄▄ ██▄ █▀▀ ░█░ █ █▄█ █░▀█ ▄█
@@ -87,14 +84,14 @@ in
 
         # ▄▀█ █░█ ▀█▀ █▀█   █▀ ▀█▀ ▄▀█ █▀█ ▀█▀
         # █▀█ █▄█ ░█░ █▄█   ▄█ ░█░ █▀█ █▀▄ ░█░
-        exec-once = ${notification}
-        exec-once = kanshi &
-        exec-once = sway-audio-idle-inhibit -w &
-        exec-once = waybar &
-        exec-once = gammastep-indicator &
+        exec-once = ${pkgs.swaynotificationcenter}/bin/swaync
+        exec-once = ${pkgs.kanshi}/bin/kanshi &
+        exec-once = ${pkgs.nur.repos."999eagle".swayaudioidleinhibit}/bin/sway-audio-idle-inhibit -w &
+        exec-once = ${pkgs.waybar}/bin/waybar &
+        exec-once = ${pkgs.gammastep}/bin/gammastep-indicator &
         exec-once = mullvad-gui &
-        exec-once = tailscale-systray &
-        exec-once = swaybg -i ${config.my.settings.wallpaper} --mode fill &
+        exec-once = ${pkgs.tailscale-systray}/bin/tailscale-systray &
+        exec-once = ${pkgs.swaybg}/bin/swaybg -i ${config.my.settings.wallpaper} --mode fill &
 
         # █▀ █▀▀ █▀█ █ █▀█ ▀█▀ █▀
         # ▄█ █▄▄ █▀▄ █ █▀▀ ░█░ ▄█
@@ -125,8 +122,8 @@ in
         # █░█ ██▄ ░█░ █▄█ █▄█ █▀█ █▀▄ █▄▀   █▄▄ █▄█ █░▀█ ░█░ █▀▄ █▄█ █▄▄ ▄█
         bind=,XF86MonBrightnessUp,exec, brightness --inc
         bind=,XF86MonBrightnessDown,exec, brightness --dec
-        bind=,XF86AudioRaiseVolume,exec, volume --inc
-        bind=,XF86AudioLowerVolume,exec, volume --dec
+        bind=,XF86AudioRaiseVolume,exec,~/.nix-profile/bin/volume --inc
+        bind=,XF86AudioLowerVolume,exec,~/.nix-profile/bin/volume --dec
         bind=,XF86AudioMute,exec, volume --toggle
         bind=,XF86AudioMicMute,exec, volume --toggle-mic
         bind=,XF86AudioNext,exec,playerctl next
