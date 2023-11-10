@@ -20,32 +20,32 @@ in
     programs.fish = {
       enable = true;
       interactiveShellInit =
-        # Open command buffer in vim when alt+e is pressed
         ''
-          bind \ee edit_command_buffer
-        ''
+          		''
         +
-        # Source scripts
+        # fish
         ''
+          if test -e ~/.nix-profile/etc/profile.d/nix.sh
+          	bass source ~/.nix-profile/etc/profile.d/nix.sh
+          end
+
+          # Open command buffer in vim when alt+e is pressed
+          bind \ee edit_command_buffer
           nix-your-shell fish | source
           fish_add_path --path --append ~/go/bin/
           set -x GOPATH $HOME/go
-        ''
-        +
-        # fifc setup
-        ''
+
+          # fifc setup
           set -Ux fifc_editor nvim
           set -U fifc_keybinding \cx
           bind \cx _fifc
           bind -M insert \cx _fifc
-        ''
-        +
-        # FZF
-        ''
+
+          # FZF
           export FZF_DEFAULT_OPTS="
-          --color=bg+:#${colors.base02},bg:#${colors.base00},spinner:#${colors.base06},hl:#${colors.base08}
-          --color=fg:#${colors.base05},header:#${colors.base08},info:#${colors.base0E},pointer:#${colors.base06}
-          --color=marker:#${colors.base06},fg+:#${colors.base05},prompt:#${colors.base0E},hl+:#${colors.base08}
+          	--color=bg+:#${colors.base02},bg:#${colors.base00},spinner:#${colors.base06},hl:#${colors.base08}
+          	--color=fg:#${colors.base05},header:#${colors.base08},info:#${colors.base0E},pointer:#${colors.base06}
+          	--color=marker:#${colors.base06},fg+:#${colors.base05},prompt:#${colors.base0E},hl+:#${colors.base08}
           "
           bind \cr _fzf_search_history
           bind -M insert \cr _fzf_search_history
