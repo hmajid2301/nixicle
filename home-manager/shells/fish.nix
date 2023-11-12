@@ -49,8 +49,7 @@ in
           "
           bind \cr _fzf_search_history
           bind -M insert \cr _fzf_search_history
-        ''
-        + ''
+
           set -g fish_color_normal ${colors.base05}
           set -g fish_color_command ${colors.base0D}
           set -g fish_color_param ${colors.base0F}
@@ -77,10 +76,7 @@ in
           set -g fish_pager_color_prefix f4b8e4
           set -g fish_pager_color_completion ${colors.base05}
           set -g fish_pager_color_description 737994
-        ''
-        +
-        # Use vim bindings and cursors
-        ''
+
           fish_vi_key_bindings
           set fish_cursor_default     block      blink
           set fish_cursor_insert      line       blink

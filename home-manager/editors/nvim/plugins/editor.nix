@@ -156,6 +156,7 @@
       oil = {
         enable = true;
         deleteToTrash = true;
+        useDefaultKeymaps = true;
       };
 
       flash = {
@@ -243,24 +244,25 @@
     # TODO: look at combing refactor and code actions ? 
     extraConfigLua =
       ''
-        				require("tabout").setup()
+        vim.keymap.set("n", "-", "<CMD>Oil<CR>", { desc = "Open parent directory" })
+        require("tabout").setup()
 
-                require("spectre").setup()
+        require("spectre").setup()
 
-                -- yanky
-                require("telescope").load_extension("yank_history")
-                require("yanky").setup({
-                	highlight = { timer = 250 },
-                	ring = { storage = "sqlite" },
-                })
+        -- yanky
+        require("telescope").load_extension("yank_history")
+        require("yanky").setup({
+            highlight = { timer = 250 },
+            ring = { storage = "sqlite" },
+        })
 
-                -- TODO: move to keymaps
-                vim.keymap.set({"n","x"}, "p", "<Plug>(YankyPutAfter)")
-                vim.keymap.set({"n","x"}, "P", "<Plug>(YankyPutBefore)")
-                vim.keymap.set({"n","x"}, "gp", "<Plug>(YankyGPutAfter)")
-                vim.keymap.set({"n","x"}, "gP", "<Plug>(YankyGPutBefore)")
-                vim.keymap.set("n", "<c-n>", "<Plug>(YankyCycleForward)")
-                vim.keymap.set("n", "<c-p>", "<Plug>(YankyCycleBackward)")
+        -- TODO: move to keymaps
+        vim.keymap.set({"n","x"}, "p", "<Plug>(YankyPutAfter)")
+        vim.keymap.set({"n","x"}, "P", "<Plug>(YankyPutBefore)")
+        vim.keymap.set({"n","x"}, "gp", "<Plug>(YankyGPutAfter)")
+        vim.keymap.set({"n","x"}, "gP", "<Plug>(YankyGPutBefore)")
+        vim.keymap.set("n", "<c-n>", "<Plug>(YankyCycleForward)")
+        vim.keymap.set("n", "<c-p>", "<Plug>(YankyCycleBackward)")
       '';
   };
 }

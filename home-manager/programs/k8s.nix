@@ -3,7 +3,6 @@
     k9s = {
       enable = true;
       skin = {
-        # TODO: change to nix colors
         k9s = {
           body = {
             fgColor = "#${config.colorscheme.colors.base05}";
@@ -124,5 +123,6 @@
     kubectx
     kubelogin
     stern
+    kubernetes-helm
   ];
 }
