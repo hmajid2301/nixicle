@@ -19,6 +19,7 @@
     ./file_managers/yazi.nix
     ./photos.nix
     ./starship.nix
+    ./spotify.nix
     ./zoxide.nix
   ];
 

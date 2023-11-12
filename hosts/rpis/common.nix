@@ -3,6 +3,7 @@
     kernelPackages = pkgs.linuxKernel.packages.linux_rpi4;
     kernelParams = [
       "cgroup_memory=1"
+      "cgroup_enable=cpuset"
       "cgroup_enable=memory"
     ];
 
@@ -13,13 +14,32 @@
     };
   };
 
+  fileSystems = {
+    "/" = {
+      device = "/dev/disk/by-label/NIXOS_SD";
+      fsType = "ext4";
+      options = [ "noatime" ];
+    };
+
+    # "/data" = {
+    #   device = "/dev/sda";
+    #   fsType = "ext4";
+    #   options = [ "noatime" ];
+    # };
+  };
+
   networking.firewall = {
     allowedTCPPorts = [
       22
       6443
+      6444
+      9000
     ];
     enable = true;
   };
+
+  programs.fish.enable = true;
+  users.users.root.hashedPassword = "!";
 
   environment.systemPackages = with pkgs; [
     git
@@ -27,6 +47,7 @@
     wget
     curl
     k3s
+    gnupg
   ];
 
   sops.secrets.k3s_token = {
