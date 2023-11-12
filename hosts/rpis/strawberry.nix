@@ -4,31 +4,16 @@ let
   hostname = "strawberry";
 in
 {
-  fileSystems = {
-    "/" = {
-      device = "/dev/disk/by-label/NIXOS_SD";
-      fsType = "ext4";
-      options = [ "noatime" ];
-    };
-
-    "/data" = {
-      device = "/dev/sda";
-      fsType = "ext4";
-      options = [ "noatime" ];
-    };
-  };
-
   networking = {
     hostName = hostname;
   };
 
   nix.settings.trusted-users = [ hostname ];
 
-  services.k3s.extraFlags = "--bind-address 100.74.189.156";
-
   users = {
     users."${hostname}" = {
       isNormalUser = true;
+      shell = pkgs.fish;
       extraGroups = [ "wheel" ];
       password = hostname;
       openssh.authorizedKeys.keys = [

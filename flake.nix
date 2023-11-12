@@ -33,6 +33,8 @@
     nixneovimplugins.url = "github:jooooscha/nixpkgs-vim-extra-plugins";
 
     comma.url = "github:nix-community/comma";
+    attic.url = "github:zhaofengli/attic";
+    nwg-displays.url = "github:nwg-piotr/nwg-displays/master";
 
     grub-theme = {
       url = "github:catppuccin/grub";
@@ -50,9 +52,9 @@
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.flake-parts.follows = "flake-parts";
     };
-    attic.url = "github:zhaofengli/attic";
-    nwg-displays.url = "github:nwg-piotr/nwg-displays/master";
+
     colmena.url = "github:zhaofengli/colmena";
+    kubenix.url = "github:hall/kubenix";
   };
 
   outputs =
@@ -158,25 +160,27 @@
 
           nixpkgs.system = "aarch64-linux";
           deployment = {
+            buildOnTarget = true;
             targetHost = "strawberry";
             targetUser = "strawberry";
-            tags = [ "infra" "rpi" ];
+            tags = [ "rpi" ];
           };
         };
 
-        # TODO: figure out why this crashes
-        # orange = {
-        #   imports = [
-        #     ./hosts/rpis/orange.nix
-        #   ];
-        #
-        #   nixpkgs.system = "aarch64-linux";
-        #   deployment = {
-        #     targetHost = "orange";
-        #     targetUser = "orange";
-        #     tags = [ "infra" "rpi" ];
-        #   };
-        # };
+        # TODO: fix SSD issues
+        orange = {
+          imports = [
+            ./hosts/rpis/orange.nix
+          ];
+
+          nixpkgs.system = "aarch64-linux";
+          deployment = {
+            buildOnTarget = true;
+            targetHost = "orange.local";
+            targetUser = "orange";
+            tags = [ "infra" "rpi" ];
+          };
+        };
 
         guava = {
           imports = [
@@ -185,9 +189,10 @@
 
           nixpkgs.system = "aarch64-linux";
           deployment = {
+            buildOnTarget = true;
             targetHost = "guava";
             targetUser = "guava";
-            tags = [ "infra" "rpi" ];
+            tags = [ "rpi" ];
           };
         };
 

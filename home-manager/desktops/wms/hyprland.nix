@@ -39,7 +39,7 @@ in
       enable = true;
       # TODO: move to https://github.com/spikespaz/hyprland-nix
       extraConfig = ''
-        source = ~/.config/hypr/monitors.conf
+        #source = ~/.config/hypr/monitors.conf
         env PATH, $PATH:$HOME/.nix-profile/bin
 
         # ASCII Art from https://fsymbols.com/generators/carty/
@@ -63,8 +63,8 @@ in
         }
 
         misc {
-         vrr = 2
-         disable_hyprland_logo = 1;
+        	vrr = 2
+        	disable_hyprland_logo = 1;
         }
 
         $notifycmd = notify-send -h string:x-canonical-private-synchronous:hypr-cfg -u low
