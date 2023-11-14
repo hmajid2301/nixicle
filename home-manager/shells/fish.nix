@@ -25,14 +25,11 @@ in
         +
         # fish
         ''
-          if test -e ~/.nix-profile/etc/profile.d/nix.sh
-          	bass source ~/.nix-profile/etc/profile.d/nix.sh
-          end
-
           # Open command buffer in vim when alt+e is pressed
           bind \ee edit_command_buffer
           nix-your-shell fish | source
           fish_add_path --path --append ~/go/bin/
+          fish_add_path --path --prepend /usr/local/bin /usr/bin
           set -x GOPATH $HOME/go
 
           # fifc setup

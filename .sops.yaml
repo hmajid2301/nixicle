@@ -9,7 +9,7 @@ keys:
     - &strawberry age1qng4kav7deqtjmxeqz2vnyxywaqplf8k2lu3q347r2rz4zxdsynq0sf4um
     - &orange age187eesfqwv04gpd2dnfwsjgleevr57v6xvrwujjy8ehhf0ehl338qdnlqlf
     - &guava age10qsd50v2qmvn4vy4l8cjxvjxjuvedkxjc0a72ap9laap9mz6rctqmp3efl
-    - &mango age1ejs74qzgcn3j9enjq5dup3u7mpgyplulhhxh6adgn4clx3e9ss9s9hgjsm
+    - &mango age16tskx6gle6v4v0hzhm5fvj0yd29mmn0s47d8q0h3tgcj9wej53uquv98cn
 
 creation_rules:
   - path_regex: hosts/framework/secrets.ya?ml$

@@ -4,27 +4,13 @@ let
   hostname = "mango";
 in
 {
-  fileSystems = {
-    "/" = {
-      device = "/dev/disk/by-label/NIXOS_SD";
-      fsType = "ext4";
-      options = [ "noatime" ];
-    };
-
-    "/data" = {
-      device = "/dev/sda";
-      fsType = "ext4";
-      options = [ "noatime" ];
-    };
-  };
-
   networking = {
     hostName = hostname;
   };
 
   nix.settings.trusted-users = [ hostname ];
-  # services.k3s.role = "agent";
-  # services.k3s.serverAddr = "strawberry";
+  services.k3s.role = "agent";
+  services.k3s.serverAddr = "https://strawberry:6443";
 
   users = {
     #mutableUsers = false;
@@ -33,8 +19,10 @@ in
       shell = pkgs.fish;
       extraGroups = [ "wheel" ];
       password = hostname;
-      openssh.authorizedKeys.keys = [ "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMxe8kDCJa6xcAM9WE8c5amGG+2secXmnof7vlmAq1Da hello@haseebmajid.dev" ];
+      openssh.authorizedKeys.keys = [
+        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMxe8kDCJa6xcAM9WE8c5amGG+2secXmnof7vlmAq1Da hello@haseebmajid.dev"
+        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHiXSCUnfGG1lxQW470+XBiDgjyYOy5PdHdXsmpraRei haseeb.majid@imaginecurve.com"
+      ];
     };
   };
-
 }

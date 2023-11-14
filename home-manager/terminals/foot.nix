@@ -38,7 +38,7 @@ in
         };
 
         main = {
-          term = "xterm-256color";
+          term = "foot";
           font = "${config.fontProfiles.monospace.family}:size=14";
           shell = "${config.my.settings.default.shell}";
           pad = "30x30";

@@ -20,6 +20,7 @@ in
           local act = wezterm.action
           return {
           	color_scheme = "Catppuccin Mocha",
+          	default_prog = { "${config.my.settings.default.shell}" },
           	font = wezterm.font "${config.fontProfiles.monospace.family}",
           	font_size = 14.0,
           	enable_tab_bar = false,

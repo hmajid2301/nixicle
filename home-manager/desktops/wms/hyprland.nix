@@ -18,6 +18,7 @@ let
     fi
   '';
   cfg = config.modules.wms.hyprland;
+  swayLoc = if config.my.settings.host == "curve" then "/usr/local/bin/swaylock" else "${pkgs.swaylock-effects}/bin/swaylock";
 in
 {
   options.modules.wms.hyprland = {
@@ -87,7 +88,7 @@ in
         exec-once = ${pkgs.swaynotificationcenter}/bin/swaync
         exec-once = ${pkgs.kanshi}/bin/kanshi &
         exec-once = ${pkgs.nur.repos."999eagle".swayaudioidleinhibit}/bin/sway-audio-idle-inhibit -w &
-        exec-once = ${pkgs.waybar}/bin/waybar &
+        exec-once = waybar
         exec-once = ${pkgs.gammastep}/bin/gammastep-indicator &
         exec-once = mullvad-gui &
         exec-once = ${pkgs.tailscale-systray}/bin/tailscale-systray &
@@ -95,13 +96,13 @@ in
 
         # █▀ █▀▀ █▀█ █ █▀█ ▀█▀ █▀
         # ▄█ █▄▄ █▀▄ █ █▀▀ ░█░ ▄█
-        bindl=,switch:Lid Switch, exec, ${laptop_lid_switch}
+        # bindl=,switch:Lid Switch, exec, ${laptop_lid_switch}/bin/laptop_lid_switch
 
         # █░░ █▀█ █▀▀ █▄▀   █▀ █▀▀ █▀█ █▀▀ █▀▀ █▄░█
         # █▄▄ █▄█ █▄▄ █░█   ▄█ █▄▄ █▀▄ ██▄ ██▄ █░▀█
-        bind=,XF86Launch5,exec,swaylock -S
-        bind=,XF86Launch4,exec,swaylock -S
-        bind=SUPER,backspace,exec,swaylock -S
+        bind=,XF86Launch5,exec,${swayLoc} -S
+        bind=,XF86Launch4,exec,${swayLoc} -S
+        bind=SUPER,backspace,exec,${swayLoc} -S
 
         # █▀ █▀▀ █▀█ ▄▀█ ▀█▀ █▀▀ █░█ █▀█ ▄▀█ █▀▄
         # ▄█ █▄▄ █▀▄ █▀█ ░█░ █▄▄ █▀█ █▀▀ █▀█ █▄▀
@@ -122,8 +123,8 @@ in
         # █░█ ██▄ ░█░ █▄█ █▄█ █▀█ █▀▄ █▄▀   █▄▄ █▄█ █░▀█ ░█░ █▀▄ █▄█ █▄▄ ▄█
         bind=,XF86MonBrightnessUp,exec, brightness --inc
         bind=,XF86MonBrightnessDown,exec, brightness --dec
-        bind=,XF86AudioRaiseVolume,exec,~/.nix-profile/bin/volume --inc
-        bind=,XF86AudioLowerVolume,exec,~/.nix-profile/bin/volume --dec
+        bind=,XF86AudioRaiseVolume,exec, volume --inc
+        bind=,XF86AudioLowerVolume,exec, volume --dec
         bind=,XF86AudioMute,exec, volume --toggle
         bind=,XF86AudioMicMute,exec, volume --toggle-mic
         bind=,XF86AudioNext,exec,playerctl next

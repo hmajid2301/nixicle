@@ -15,7 +15,6 @@
     ./kafka.nix
     ./gaming.nix
     ./kdeconnect.nix
-    ./file_managers/lf.nix
     ./file_managers/yazi.nix
     ./photos.nix
     ./starship.nix
@@ -41,8 +40,7 @@
     #tmp
     cargo
     rustc
-    #go
-    tudu
+    dooit
 
     nix-init
     nix-update
