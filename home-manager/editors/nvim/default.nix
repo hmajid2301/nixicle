@@ -54,6 +54,7 @@ in
       programs.nixvim = {
         enable = true;
         extraPlugins = with pkgs.vimPlugins; [ plenary-nvim ];
+        package = pkgs.neovim-nightly;
       };
     };
 }
