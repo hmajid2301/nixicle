@@ -34,7 +34,7 @@ in
       indicator-thickness = 7;
 
       # Blur background
-      effect-blur = "7x5";
+      effect-blur = "25x20";
       effect-vignette = "0.5:0.5";
       fade-in = 0.2;
 

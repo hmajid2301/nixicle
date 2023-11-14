@@ -28,7 +28,10 @@
 
     hyprland.url = "github:hyprwm/Hyprland";
     hypr-contrib.url = "github:hyprwm/contrib";
+    nixgl.url = "github:nix-community/nixGL";
     nix-colors.url = "github:misterio77/nix-colors";
+
+    neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
     nixvim.url = "github:pta2002/nixvim";
     nixneovimplugins.url = "github:jooooscha/nixpkgs-vim-extra-plugins";
 
@@ -176,7 +179,7 @@
           nixpkgs.system = "aarch64-linux";
           deployment = {
             buildOnTarget = true;
-            targetHost = "orange.local";
+            targetHost = "orange";
             targetUser = "orange";
             tags = [ "infra" "rpi" ];
           };
@@ -203,7 +206,7 @@
 
           nixpkgs.system = "aarch64-linux";
           deployment = {
-            targetHost = "mango";
+            targetHost = "mango.local";
             targetUser = "mango";
             tags = [ "infra" "rpi" ];
           };

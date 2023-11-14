@@ -149,7 +149,7 @@
         			experimental = {
         				test_table = true,
         			},
-        			args = { "-tags=integration,!integration" }
+        			args = { "-tags=unit,integration,e2e" }
         		},
         	},
         })

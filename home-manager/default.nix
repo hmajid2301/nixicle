@@ -26,8 +26,6 @@
       ./desktops/wms/hyprland.nix
 
       ./desktops/wms/common
-      ./desktops/wms/common/notifications/mako.nix
-      ./desktops/wms/common/notifications/swaync.nix
 
       ./shells/fish.nix
       ./shells/zsh.nix
@@ -51,6 +49,8 @@
       inputs.nixneovimplugins.overlays.default
       inputs.nur.overlay
       inputs.attic.overlays.default
+      inputs.neovim-nightly-overlay.overlay
+      inputs.nixgl.overlay
     ];
 
     config = {
@@ -59,17 +59,21 @@
     };
   };
 
+  home.packages = [ pkgs.nixgl.nixGLIntel ];
+
   nix = {
     package = lib.mkDefault pkgs.nix;
     settings = {
       substituters = [
         "https://majiy00-nix-binary-cache.fly.dev/prod"
         "https://cache.nixos.org"
+        "https://nix-community.cachix.org"
       ];
 
       trusted-public-keys = [
         "prod:fjP15qp9O3/x2WTb1LiQ2bhjxkBBip3uhjlDyqywz3I="
         "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
+        "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
       ];
 
       experimental-features = [ "nix-command" "flakes" "repl-flake" ];
