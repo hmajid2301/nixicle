@@ -6,15 +6,8 @@
 
     keymaps = [
       {
-        action =
-          # lua
-          ''
-            function()
-              require("neotest").run.run(vim.fn.expand("%"))
-            end
-          '';
+        action = "<cmd>lua require('neotest').run.run(vim.fn.expand('%'))<cr>";
         key = "<leader>tt";
-        lua = true;
         options = {
           desc = "Run file";
         };
@@ -23,15 +16,8 @@
         ];
       }
       {
-        action =
-          # lua
-          ''
-            function()
-              require("neotest").run.run(vim.loop.cwd())
-            end
-          '';
+        action = ''<cmd>lua require("neotest").run.run(vim.loop.cwd())<cr>'';
         key = "<leader>tT";
-        lua = true;
         options = {
           desc = "Run all test file(s)";
         };
@@ -40,15 +26,8 @@
         ];
       }
       {
-        action =
-          # lua
-          ''
-            function()
-              require("neotest").stop()
-            end
-          '';
+        action = ''<cmd>lua require("neotest").stop()<cr>'';
         key = "<leader>tS";
-        lua = true;
         options = {
           desc = "Stop Tests";
         };
@@ -57,15 +36,8 @@
         ];
       }
       {
-        action =
-          # lua
-          ''
-            function()
-              require("neotest").run().run()
-            end
-          '';
+        action = ''<cmd>lua require("neotest").run().run()<cr>'';
         key = "<leader>tr";
-        lua = true;
         options = {
           desc = "Run Nearest";
         };
@@ -74,15 +46,8 @@
         ];
       }
       {
-        action =
-          # lua
-          ''
-            function()
-              require("neotest").summary().toggle()
-            end
-          '';
+        action = ''<cmd>lua require("neotest").summary().toggle()<cr>'';
         key = "<leader>ts";
-        lua = true;
         options = {
           desc = "Toggle Summary";
         };
@@ -91,15 +56,8 @@
         ];
       }
       {
-        action =
-          # lua
-          ''
-            function()
-            	require("neotest").output.open({ enter = true, auto_close = true })
-            end
-          '';
+        action = ''<cmd>lua require("neotest").output.open({ enter = true, auto_close = true })<cr>'';
         key = "<leader>to";
-        lua = true;
         options = {
           desc = "Show Output";
         };
@@ -108,15 +66,8 @@
         ];
       }
       {
-        action =
-          # lua
-          ''
-            function()
-              require("neotest").output_panel.toggle()
-            end
-          '';
+        action = ''<cmd>lua require("neotest").output_panel.toggle()<cr>'';
         key = "<leader>tO";
-        lua = true;
         options = {
           desc = "Toggle Output";
         };

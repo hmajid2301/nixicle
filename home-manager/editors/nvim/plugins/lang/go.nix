@@ -22,40 +22,38 @@
       }
     ];
 
-    extraPlugins = with pkgs.vimPlugins; [
-      go-nvim
-    ];
-
-    extraConfigLua = ''
-      require("go").setup({
-      	icons = false,
-      })
-
-      require('lint').linters_by_ft = {
-      	go = {'golangcilint'}
-      }
-
-      require("conform").setup({
-      	formatters_by_ft = {
-      		go = { "goimports" },
-      	},
-      	formatters = {
-      		goimports = {
-      			command = "${pkgs.gotools}/bin/goimports",
-      		},
-      	},
-      })
-
-      require('lint').linters.golangcilint = {
-      	cmd = "${pkgs.golangci-lint}/bin/golangci-lint",
-      }
-    '';
-
     plugins = {
       dap.extensions.dap-go.enable = true;
+      conform-nvim = {
+        formattersByFt = {
+          go = [ "goimports" ];
+        };
+
+        formatters = {
+          goimports = {
+            command = "${pkgs.gotools}/bin/goimports";
+            args = [
+              "-local"
+              "gitlab.com/majiy00,gitlab.com/hmajid2301"
+            ];
+          };
+        };
+      };
+
+      lint = {
+        lintersByFt = {
+          go = [ "golangcilint" ];
+        };
+        # linters = {
+        #   golangcilint = {
+        #     cmd = "${pkgs.golangci-lint}/bin/golangci-lint";
+        #   };
+        # };
+      };
 
       lsp.servers.gopls = {
         enable = true;
+
         extraOptions.settings = {
           gopls = {
             buildFlags = [ "-tags=unit,integration,e2e" ];
@@ -73,17 +71,24 @@
               vendor = true;
             };
             hints = {
-              assignVariableTypes = true;
-              compositeLiteralFields = true;
-              compositeLiteralTypes = true;
+              assignVariableTypes = false;
+              compositeLiteralFields = false;
+              compositeLiteralTypes = false;
               constantValues = true;
               functionTypeParameters = true;
               parameterNames = true;
-              rangeVariableTypes = true;
+              rangeVariableTypes = false;
             };
             analyses = {
+              assign = true;
+              bools = true;
+              defers = true;
+              deprecated = true;
               fieldalignment = true;
+              tests = true;
               nilness = true;
+              httpresponse = true;
+              unmarshal = true;
               unusedparams = true;
               unusedwrite = true;
               useany = true;
