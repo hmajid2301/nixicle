@@ -13,9 +13,11 @@
   nix.settings = {
     extra-substituters = [
       "https://majiy00-nix-binary-cache.fly.dev"
+      "https://staging.attic.rs/attic-ci"
     ];
     extra-trusted-public-keys = [
       "prod:fjP15qp9O3/x2WTb1LiQ2bhjxkBBip3uhjlDyqywz3I="
+      "attic-ci:U5Sey4mUxwBXM3iFapmP0/ogODXywKLRNgRPQpEXxbo="
     ];
   };
 
