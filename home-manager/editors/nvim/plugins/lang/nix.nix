@@ -12,6 +12,23 @@
       hmts.enable = true;
       nix-develop.enable = true;
 
+      conform-nvim = {
+        formattersByFt = {
+          nix = [ "nixpkgs_fmt" ];
+        };
+      };
+
+      lint = {
+        lintersByFt = {
+          nix = [ "deadnix" ];
+        };
+        # linters = {
+        #   deadnix = {
+        #     cmd = "${pkgs.deadnix}/bin/deadnix";
+        #   };
+        # };
+      };
+
       treesitter = {
         grammarPackages = with config.programs.nixvim.plugins.treesitter.package.builtGrammars; [
           nix
@@ -25,18 +42,6 @@
 
     extraConfigLua = ''
       require'lspconfig'.nixd.setup{}
-      require("conform").setup({
-      	formatters_by_ft = {
-      		nix = { "nixpkgs_fmt" },
-      	},
-      })
-
-      require('lint').linters_by_ft = {
-      	nix = {'deadnix'}
-      }
-      require('lint').linters.deadnix = {
-      	cmd = "${pkgs.deadnix}/bin/deadnix",
-      }
     '';
   };
 }

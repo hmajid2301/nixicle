@@ -11,58 +11,53 @@
       }
     ];
 
-    plugins.which-key.registrations = {
-      "<leader>c" = "+code";
-      "g" = "+goto";
-      "]" = "+next";
-      "[" = "+prev";
-    };
+    plugins = {
+      which-key.registrations = {
+        "<leader>c" = "+code";
+        "g" = "+goto";
+        "]" = "+next";
+        "[" = "+prev";
+      };
 
-    plugins.lsp = {
-      enable = true;
-      keymaps = {
-        diagnostic = {
-          "]d" = "goto_next";
-          "[d" = "goto_prev";
+      lsp = {
+        enable = true;
+
+        keymaps = {
+          diagnostic = {
+            "]d" = "goto_next";
+            "[d" = "goto_prev";
+          };
+          lspBuf = {
+            K = "hover";
+            gD = "declaration";
+            gr = "references";
+            gd = "definition";
+            gi = "implementation";
+            gt = "type_definition";
+            "<leader>cr" = { action = "rename"; desc = "Rename"; };
+            "<leader>ca" = { action = "code_action"; desc = "Show Code Actions"; };
+          };
         };
-        lspBuf = {
-          K = "hover";
-          gD = "declaration";
-          gr = "references";
-          gd = "definition";
-          gi = "implementation";
-          gt = "type_definition";
-          "<leader>cr" = { action = "rename"; desc = "Rename"; };
-          "<leader>ca" = { action = "code_action"; desc = "Show Code Actions"; };
+      };
+
+      conform-nvim = {
+        enable = true;
+        formatOnSave = {
+          lspFallback = true;
+          timeoutMs = 500;
         };
+      };
+
+      lint = {
+        enable = true;
       };
     };
 
-    extraPlugins = with pkgs.vimPlugins; [
-      conform-nvim
-      nvim-lint
-    ];
-
     extraConfigLua =
+      # lua
       ''
-        local lsp = vim.lsp
-        lsp.handlers["textDocument/hover"] = lsp.with(vim.lsp.handlers.hover, {
+        vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, {
         	border = "rounded",
-        })
-
-        require("conform").setup({
-        	 format_on_save = {
-        		-- These options will be passed to conform.format()
-        		timeout_ms = 500,
-        		lsp_fallback = true,
-        	},
-        })
-
-        vim.api.nvim_create_autocmd("BufWritePre", {
-        	pattern = "*",
-        	callback = function(args)
-        		require("conform").format({ bufnr = args.buf })
-        	end,
         })
 
         vim.api.nvim_create_autocmd({ "BufWritePost" }, {
