@@ -1,13 +1,11 @@
 { pkgs
 , config
 , ...
-}: {
-  home.packages = with pkgs; [
-    golangci-lint-langserver
-    delve
-    gopls
-  ];
-
+}:
+let
+  buildFlags = "-tags=unit,integration,e2e";
+in
+{
   programs.nixvim = {
     keymaps = [
       {
@@ -23,7 +21,14 @@
     ];
 
     plugins = {
-      dap.extensions.dap-go.enable = true;
+      dap.extensions.dap-go = {
+        enable = true;
+        delve = {
+          path = "${pkgs.delve}/bin/dlv";
+          buildFlags = buildFlags;
+        };
+      };
+
       conform-nvim = {
         formattersByFt = {
           go = [ "goimports" ];
@@ -44,11 +49,11 @@
         lintersByFt = {
           go = [ "golangcilint" ];
         };
-        # linters = {
-        #   golangcilint = {
-        #     cmd = "${pkgs.golangci-lint}/bin/golangci-lint";
-        #   };
-        # };
+        linters = {
+          golangcilint = {
+            cmd = "${pkgs.golangci-lint}/bin/golangci-lint";
+          };
+        };
       };
 
       lsp.servers.gopls = {
@@ -56,7 +61,7 @@
 
         extraOptions.settings = {
           gopls = {
-            buildFlags = [ "-tags=unit,integration,e2e" ];
+            buildFlags = [ buildFlags ];
             staticcheck = true;
             directoryFilters = [ "-.git" "-.vscode" "-.idea" "-.vscode-test" "-node_modules" ];
             semanticTokens = true;

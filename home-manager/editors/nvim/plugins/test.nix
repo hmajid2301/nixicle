@@ -36,7 +36,7 @@
         ];
       }
       {
-        action = ''<cmd>lua require("neotest").run().run()<cr>'';
+        action = ''<cmd>lua require("neotest").run.run()<cr>'';
         key = "<leader>tr";
         options = {
           desc = "Run Nearest";
@@ -46,7 +46,7 @@
         ];
       }
       {
-        action = ''<cmd>lua require("neotest").summary().toggle()<cr>'';
+        action = ''<cmd>lua require("neotest").summary.toggle()<cr>'';
         key = "<leader>ts";
         options = {
           desc = "Toggle Summary";
