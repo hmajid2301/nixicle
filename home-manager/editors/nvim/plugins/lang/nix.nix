@@ -19,9 +19,9 @@
       };
 
       lint = {
-        lintersByFt = {
-          nix = [ "deadnix" ];
-        };
+        # lintersByFt = {
+        #   nix = [ "deadnix" ];
+        # };
         # linters = {
         #   deadnix = {
         #     cmd = "${pkgs.deadnix}/bin/deadnix";
