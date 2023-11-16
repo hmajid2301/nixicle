@@ -19,6 +19,7 @@ let
   '';
   cfg = config.modules.wms.hyprland;
   swayLoc = if config.my.settings.host == "curve" then "/usr/local/bin/swaylock" else "${pkgs.swaylock-effects}/bin/swaylock";
+  geoClue = if config.my.settings.host == "curve" then "exec-once = /usr/libexec/geoclue-2.0/demos/agent" else "";
 in
 {
   options.modules.wms.hyprland = {
@@ -40,9 +41,6 @@ in
       enable = true;
       # TODO: move to https://github.com/spikespaz/hyprland-nix
       extraConfig = ''
-        #source = ~/.config/hypr/monitors.conf
-        env PATH, $PATH:$HOME/.nix-profile/bin
-
         # ASCII Art from https://fsymbols.com/generators/carty/
         input {
         	kb_layout = gb
@@ -88,11 +86,12 @@ in
         exec-once = ${pkgs.swaynotificationcenter}/bin/swaync
         exec-once = ${pkgs.kanshi}/bin/kanshi &
         exec-once = ${pkgs.nur.repos."999eagle".swayaudioidleinhibit}/bin/sway-audio-idle-inhibit -w &
-        exec-once = waybar
+        exec-once = ${pkgs.waybar}/bin/waybar &
         exec-once = ${pkgs.gammastep}/bin/gammastep-indicator &
         exec-once = mullvad-gui &
         exec-once = ${pkgs.tailscale-systray}/bin/tailscale-systray &
         exec-once = ${pkgs.swaybg}/bin/swaybg -i ${config.my.settings.wallpaper} --mode fill &
+        ${geoClue}
 
         # █▀ █▀▀ █▀█ █ █▀█ ▀█▀ █▀
         # ▄█ █▄▄ █▀▄ █ █▀▀ ░█░ ▄█
