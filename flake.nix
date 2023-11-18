@@ -6,7 +6,6 @@
     substituters = [
       "https://cache.nixos.org/"
     ];
-
     extra-substituters = [
       "https://nix-community.cachix.org"
     ];
@@ -36,26 +35,13 @@
     nixneovimplugins.url = "github:jooooscha/nixpkgs-vim-extra-plugins";
     codeium.url = "github:Exafunction/codeium.nvim";
 
+    nwg-displays.url = "github:nwg-piotr/nwg-displays";
     comma.url = "github:nix-community/comma";
     attic.url = "github:zhaofengli/attic";
-    nwg-displays.url = "github:nwg-piotr/nwg-displays/master";
-
 
     grub-theme = {
       url = "github:catppuccin/grub";
       flake = false;
-    };
-
-    fufexan.url = "github:fufexan/dotfiles";
-    flake-parts = {
-      url = "github:hercules-ci/flake-parts";
-      inputs.nixpkgs-lib.follows = "nixpkgs";
-    };
-
-    gross = {
-      url = "github:fufexan/gross";
-      inputs.nixpkgs.follows = "nixpkgs";
-      inputs.flake-parts.follows = "flake-parts";
     };
 
     colmena.url = "github:zhaofengli/colmena";
@@ -67,6 +53,7 @@
     , nixpkgs
     , home-manager
     , colmena
+    , kubenix
     , ...
     } @ inputs:
     let
@@ -83,6 +70,12 @@
       overlays = import ./overlays { inherit inputs outputs; };
       packages = forEachSystem (pkgs: import ./pkgs { inherit pkgs; });
       devShells = forEachSystem (pkgs: import ./shell.nix { inherit pkgs inputs; });
+
+      colmena = import ./hosts/self-hosted/colmena.nix { inherit nixpkgs inputs; };
+      kubenix = inputs.kubenix.packages."x86_64-linux".default.override {
+        module = import ./hosts/self-hosted/k8s;
+        specialArgs = { inherit inputs outputs kubenix; };
+      };
 
       nixosConfigurations = {
         iso = lib.nixosSystem {
@@ -139,79 +132,6 @@
           modules = [ ./hosts/staging/home.nix ];
           pkgs = nixpkgs.legacyPackages.x86_64-linux;
           extraSpecialArgs = { inherit inputs outputs; };
-        };
-      };
-
-      colmena = {
-        meta = {
-          nixpkgs = import nixpkgs {
-            system = "x86_64-linux";
-          };
-          specialArgs = inputs;
-        };
-
-        defaults = { pkgs, ... }: {
-          imports = [
-            inputs.hardware.nixosModules.raspberry-pi-4
-            inputs.sops-nix.nixosModules.sops
-            ./hosts/rpis/common.nix
-          ];
-        };
-
-        strawberry = {
-          imports = [
-            ./hosts/rpis/strawberry.nix
-          ];
-
-          nixpkgs.system = "aarch64-linux";
-          deployment = {
-            buildOnTarget = true;
-            targetHost = "strawberry";
-            targetUser = "strawberry";
-            tags = [ "rpi" ];
-          };
-        };
-
-        # TODO: fix SSD issues
-        orange = {
-          imports = [
-            ./hosts/rpis/orange.nix
-          ];
-
-          nixpkgs.system = "aarch64-linux";
-          deployment = {
-            buildOnTarget = true;
-            targetHost = "orange";
-            targetUser = "orange";
-            tags = [ "infra" "rpi" ];
-          };
-        };
-
-        guava = {
-          imports = [
-            ./hosts/rpis/guava.nix
-          ];
-
-          nixpkgs.system = "aarch64-linux";
-          deployment = {
-            buildOnTarget = true;
-            targetHost = "guava";
-            targetUser = "guava";
-            tags = [ "rpi" ];
-          };
-        };
-
-        mango = {
-          imports = [
-            ./hosts/rpis/mango.nix
-          ];
-
-          nixpkgs.system = "aarch64-linux";
-          deployment = {
-            targetHost = "mango.local";
-            targetUser = "mango";
-            tags = [ "infra" "rpi" ];
-          };
         };
       };
     };
