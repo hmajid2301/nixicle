@@ -2,13 +2,13 @@
   imports = [
     ./ui/statusline.nix
     ./ui/file-explorer.nix
-    # ./ui/bufferline.nix
   ];
 
   programs.nixvim = {
     plugins.barbecue.enable = true;
     plugins.which-key.registrations = {
       "<C-w>" = "+windows";
+      "b" = "+buffers";
     };
 
     keymaps = [
@@ -43,10 +43,30 @@
         ];
       }
       {
-        action = "<cmd>WindowsEqualize";
+        action = "<cmd>WindowsEqualize<cr>";
         key = "<C-w>=";
         options = {
           desc = "Maximise window equalise";
+        };
+        mode = [
+          "n"
+        ];
+      }
+      {
+        action = "<cmd>bufdo bd<cr>";
+        key = "<leader>ba";
+        options = {
+          desc = "Close all buffers";
+        };
+        mode = [
+          "n"
+        ];
+      }
+      {
+        action = "<cmd>Bdelete<cr>";
+        key = "<leader>bd";
+        options = {
+          desc = "Close current buffer";
         };
         mode = [
           "n"
@@ -58,9 +78,6 @@
       vimPlugins.nui-nvim
       vimPlugins.nvim-web-devicons
       vimPlugins.dressing-nvim
-
-      # for go.nvim
-      vimExtraPlugins.guihua-lua
 
       # for window-nvim plugin
       vimExtraPlugins.windows-nvim

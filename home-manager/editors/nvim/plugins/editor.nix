@@ -61,6 +61,36 @@
         ];
       }
       {
+        action = "<cmd>lua require('spectre').open_visual({select_word=true})<cr>";
+        key = "<leader>sw";
+        options = {
+          desc = "Replace current word";
+        };
+        mode = [
+          "n"
+        ];
+      }
+      {
+        action = "<cmd>lua require('spectre').open_visual()<cr>";
+        key = "<leader>sw";
+        options = {
+          desc = "Replace current word";
+        };
+        mode = [
+          "v"
+        ];
+      }
+      {
+        action = "<cmd>lua require('spectre').open_file_search({select_word=true})<cr>";
+        key = "<leader>sp";
+        options = {
+          desc = "Replace in current buffer";
+        };
+        mode = [
+          "n"
+        ];
+      }
+      {
         action = "<cmd>Refactor extract<cr>";
         key = "<leader>re";
         options = {
@@ -131,15 +161,19 @@
           "n"
         ];
       }
+      {
+        action = "<cmd>lua require('telescope').load_extension('harpoon')<cr>";
+        key = "<leader>hf";
+        options = {
+          desc = "Open harpoon marks in telescope";
+        };
+        mode = [
+          "n"
+        ];
+      }
     ];
 
     plugins = {
-      # auto-save = {
-      #   enable = true;
-      #   writeAllBuffers = true;
-      #   triggerEvents = [ ];
-      # };
-
       better-escape = {
         enable = true;
       };
@@ -234,35 +268,13 @@
 
     extraPlugins = with pkgs; [
       vimPlugins.nvim-spectre
-      vimPlugins.tabout-nvim
-
-      # for yanky
-      vimPlugins.sqlite-lua
-      vimExtraPlugins.yanky-nvim
     ];
 
-    # TODO: look at combing refactor and code actions ? 
     extraConfigLua =
       ''
         vim.keymap.set("n", "-", "<CMD>Oil<CR>", { desc = "Open parent directory" })
-        require("tabout").setup()
 
         require("spectre").setup()
-
-        -- yanky
-        require("telescope").load_extension("yank_history")
-        require("yanky").setup({
-            highlight = { timer = 250 },
-            ring = { storage = "sqlite" },
-        })
-
-        -- TODO: move to keymaps
-        vim.keymap.set({"n","x"}, "p", "<Plug>(YankyPutAfter)")
-        vim.keymap.set({"n","x"}, "P", "<Plug>(YankyPutBefore)")
-        vim.keymap.set({"n","x"}, "gp", "<Plug>(YankyGPutAfter)")
-        vim.keymap.set({"n","x"}, "gP", "<Plug>(YankyGPutBefore)")
-        vim.keymap.set("n", "<c-n>", "<Plug>(YankyCycleForward)")
-        vim.keymap.set("n", "<c-p>", "<Plug>(YankyCycleBackward)")
       '';
   };
 }

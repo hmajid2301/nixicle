@@ -80,7 +80,7 @@
                 }
                 {
                   id = "console";
-                  size = 0.5;
+                  size = 0;
                 }
               ];
               position = "bottom";

@@ -102,7 +102,6 @@ in
         };
       };
 
-
       treesitter = {
         grammarPackages = with config.programs.nixvim.plugins.treesitter.package.builtGrammars; [
           go
