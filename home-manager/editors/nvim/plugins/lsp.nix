@@ -2,9 +2,9 @@
   programs.nixvim = {
     keymaps = [
       {
-        action = "vim.lsp.buf.code_action";
+        action = "<cmd>lua vim.lsp.buf.code_action()<CR>";
         key = "<leader>ca";
-        mode = [ "v" ];
+        mode = [ "n" "v" ];
         options = {
           desc = "Code Actions";
         };
@@ -35,7 +35,6 @@
             gi = "implementation";
             gt = "type_definition";
             "<leader>cr" = { action = "rename"; desc = "Rename"; };
-            "<leader>ca" = { action = "code_action"; desc = "Show Code Actions"; };
           };
         };
       };

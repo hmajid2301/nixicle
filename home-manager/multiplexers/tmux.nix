@@ -154,6 +154,8 @@ in
 
         # Quicker escape in neovim
         set -sg escape-time 0
+        set-option -g set-titles on
+        set-option -g set-titles-string "#S / #W"
 
         # Change splits to match nvim and easier to remember
         # Open new split at cwd of current split
