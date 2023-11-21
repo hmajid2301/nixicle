@@ -45,5 +45,6 @@
 
     networkmanagerapplet
     inputs.nwg-displays.packages."${pkgs.system}".default
+    nwg-look
   ];
 }
