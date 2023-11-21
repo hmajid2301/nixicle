@@ -1,6 +1,6 @@
 { pkgs, config, ... }:
 let
-  inherit (config) colorscheme fontProfiles;
+  inherit (config) colorscheme;
 in
 {
   programs.waybar = {
@@ -290,7 +290,7 @@ in
          color: @lavender;
          border: 0;
          padding: 0 0;
-         font-family: ${fontProfiles.monospace.family};
+         font-family: ${config.my.settings.fonts.monospace};
          font-size: 18px;
          font-weight: bold;
         }
@@ -442,7 +442,6 @@ in
         }
 
         #custom-notification {
-        	font-family: ${fontProfiles.monospace.family};
         	border-radius: 10px 0 0 10px;
         	margin-left: 10px;
         	color: @lavender;

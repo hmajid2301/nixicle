@@ -75,7 +75,7 @@ with lib.hm.gvariant; {
       font-hinting = "slight";
       gtk-theme = "adw-gtk3-dark";
       icon-theme = "Papirus-Dark";
-      monospace-font-name = config.fontProfiles.monospace.family;
+      monospace-font-name = config.my.settings.fonts.monospace;
       show-battery-percentage = true;
       toolkit-accessibility = false;
     };

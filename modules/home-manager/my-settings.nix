@@ -13,7 +13,7 @@ in
       };
 
       terminal = mkOption {
-        type = types.nullOr (types.enum [ "alacritty" "${pkgs.foot}/bin/foot" ]);
+        type = types.nullOr (types.enum [ "alacritty" "${pkgs.foot}/bin/foot" "wezterm" ]);
         description = "The default terminal to use";
         default = "${pkgs.foot}/bin/foot";
       };
@@ -43,6 +43,20 @@ in
       description = ''
         Wallpaper path
       '';
+    };
+
+    fonts = {
+      regular = mkOption {
+        type = types.str;
+        description = "The font for regular text";
+        default = "Fira Sans";
+      };
+
+      monospace = mkOption {
+        type = types.str;
+        description = "The font for monospace text";
+        default = "MonoLisa Nerd Font";
+      };
     };
 
     host = mkOption {

@@ -12,7 +12,6 @@
       inputs.nur.hmModules.nur
       inputs.impermanence.nixosModules.home-manager.impermanence
 
-      ./fonts.nix
       ./programs
 
       ./browsers/firefox.nix
@@ -24,7 +23,6 @@
 
       ./desktops/wms/sway.nix
       ./desktops/wms/hyprland.nix
-
       ./desktops/wms/common
 
       ./shells/fish.nix
@@ -33,6 +31,9 @@
       ./terminals/alacritty.nix
       ./terminals/foot.nix
       ./terminals/wezterm.nix
+
+      ./security/sops.nix
+      ./security/yubikey.nix
     ]
     ++ builtins.attrValues outputs.homeManagerModules;
 

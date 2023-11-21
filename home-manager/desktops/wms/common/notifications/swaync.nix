@@ -11,7 +11,7 @@
         * {
         	all: unset;
         	font-size: 14px;
-        	font-family: ${config.fontProfiles.monospace.family};
+        	font-family: ${config.my.settings.fonts.monospace};
         	transition: 200ms;
         }
 

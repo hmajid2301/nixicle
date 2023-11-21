@@ -8,6 +8,7 @@
     ./direnv.nix
     ./eza.nix
     ./foliate.nix
+    ./fonts.nix
     ./fzf.nix
     ./git.nix
     ./gpg.nix
@@ -45,6 +46,7 @@
     nix-init
     nix-update
     nix-your-shell
+    nwg-look
 
     # sourcegraph
     src-cli

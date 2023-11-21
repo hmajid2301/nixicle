@@ -10,7 +10,7 @@ in
   gtk = {
     enable = true;
     font = {
-      name = config.fontProfiles.regular.family;
+      name = config.my.settings.fonts.regular;
       size = 12;
     };
 
