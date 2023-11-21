@@ -21,7 +21,7 @@ in
           return {
           	color_scheme = "Catppuccin Mocha",
           	default_prog = { "${config.my.settings.default.shell}" },
-          	font = wezterm.font "${config.fontProfiles.monospace.family}",
+          	font = wezterm.font "${config.my.settings.fonts.monospace}",
           	font_size = 14.0,
           	enable_tab_bar = false,
           	leader = { key = "a", mods = "CTRL", timeout_milliseconds = 1000 },

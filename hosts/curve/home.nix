@@ -6,15 +6,7 @@
 }: {
   imports = [
     ../../home-manager
-    ../../home-manager/desktops/wms/sway.nix
-    ../../home-manager/fonts.nix
-
-    ../../home-manager/programs
-
-    ../../home-manager/security/sops.nix
-    ../../home-manager/security/yubikey.nix
   ];
-
 
   config = {
     my.settings = {

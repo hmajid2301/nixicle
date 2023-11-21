@@ -25,7 +25,7 @@
       display-window = " 﩯  Window";
       display-Network = " 󰤨  Network";
       sidebar-mode = true;
-      #font = config.fontProfiles.monospace.family;
+      #font = config.my.settings.fonts.monospace;
     };
     theme =
       let
