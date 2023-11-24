@@ -16,7 +16,7 @@ in
     ./plugins/editor.nix
     ./plugins/git.nix
     ./plugins/startup.nix
-    ./plugins/test.nix
+    #./plugins/test.nix
 
     ./plugins/lsp.nix
     ./plugins/treesitter.nix

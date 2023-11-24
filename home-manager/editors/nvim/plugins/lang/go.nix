@@ -3,7 +3,7 @@
 , ...
 }:
 let
-  buildFlags = "-tags=unit,integration,e2e";
+  buildFlags = "-tags=unit,integration,e2e,bdd";
 in
 {
   programs.nixvim = {

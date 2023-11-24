@@ -31,6 +31,7 @@ in
           fish_add_path --path --append ~/go/bin/
           fish_add_path --path --prepend /usr/local/bin /usr/bin
           set -x GOPATH $HOME/go
+          set -x GOPRIVATE "git.curve.tools,gitlab.com/imaginecurve"
 
           # fifc setup
           set -Ux fifc_editor nvim
