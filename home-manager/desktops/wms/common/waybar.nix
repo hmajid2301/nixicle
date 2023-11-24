@@ -12,7 +12,7 @@ in
       {
         layer = "top";
         position = "top";
-        height = 40;
+        height = 60;
         margin = "0 0 0 0";
         modules-left = [
           "custom/launcher"
@@ -112,12 +112,10 @@ in
           format-icons = {
             "No player active" = " ";
             "Celluloid" = " ";
-            "spotify" = " 阮";
-            "ncspot" = " 阮";
+            "spotify" = " 󰓇";
             "qutebrowser" = "爵";
             "firefox" = " ";
-            "discord" = " ﭮ ";
-            "sublimemusic" = " ";
+            "discord" = " 󰙯";
             "kdeconnect" = " ";
           };
           on-click = "playerctld shift";
@@ -131,9 +129,9 @@ in
           max-length = 30;
           format = "{icon} {}";
           format-icons = {
-            "Playing" = "契";
-            "Paused" = " ";
-            "Stopped" = "栗";
+            "Playing" = "";
+            "Paused" = "󰏤 ";
+            "Stopped" = "󰓛";
           };
           on-click = "playerctl play-pause";
         };
@@ -173,7 +171,7 @@ in
           interval = 1;
           format-wifi = "  {essid} {signalStrength}%";
           tooltip-format-wifi = "IP = {ipaddr}\nSSID = {essid}";
-          format-ethernet = "";
+          format-ethernet = "󰈀";
           tooltip-format-ethernet = "IP = {ipaddr}";
           format-disconnected = "Disconnected ⚠";
           tooltip-format = ''
@@ -196,6 +194,7 @@ in
             headset = "";
             default = [ "" "" ];
           };
+          "on-click" = "pypr toggle pavucontrol && hyprctl dispatch bringactivetotop";
         };
         clock = {
           format = "  {:%a %d %b  %I:%M %p}";
@@ -245,13 +244,13 @@ in
           format = "{} {icon}";
           "format-icons" = {
             notification = " <span foreground='red'><sup> </sup></span>";
-            none = "  ";
-            "dnd-notification" = "   <span foreground='red'><sup> </sup></span>";
-            "dnd-none" = "   ";
-            "inhibited-notification" = "  <span foreground='red'><sup> </sup></span>";
-            "inhibited-none" = "  ";
-            "dnd-inhibited-notification" = "  <span foreground='red'><sup> </sup></span>";
-            "dnd-inhibited-none" = "   ";
+            none = "";
+            "dnd-notification" = "  <span foreground='red'><sup> </sup></span>";
+            "dnd-none" = " ";
+            "inhibited-notification" = " <span foreground='red'><sup> </sup></span>";
+            "inhibited-none" = "";
+            "dnd-inhibited-notification" = " <span foreground='red'><sup> </sup></span>";
+            "dnd-inhibited-none" = " ";
           };
           "return-type" = "json";
           "exec-if" = "which swaync-client";
