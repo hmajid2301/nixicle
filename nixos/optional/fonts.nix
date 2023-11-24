@@ -6,6 +6,7 @@
     liberation_ttf
     fira-code
     fira-code-symbols
+    fira-code-nerdfont
     roboto
     ubuntu_font_family
     oxygenfonts

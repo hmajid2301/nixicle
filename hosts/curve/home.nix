@@ -10,11 +10,11 @@
 
   config = {
     my.settings = {
-      wallpaper = "~/dotfiles/home-manager/wallpapers/nixppuccin.png";
+      wallpaper = "~/Pictures/wallpapers/nixppuccin.png";
       host = "curve";
       default = {
         shell = "${pkgs.fish}/bin/fish";
-        terminal = "${pkgs.foot}/bin/foot";
+        terminal = "wezterm";
         browser = "firefox";
         editor = "nvim";
       };
@@ -73,12 +73,22 @@
 
     # Work Laptop different email
     programs.git.userEmail = lib.mkForce "haseeb.majid@imaginecurve.com";
-    programs.git.extraConfig."url \"git@git.curve.tools:\"" = { insteadOf = "https://git.curve.tools/"; };
-    programs.git.extraConfig."url \"git@gitlab.com:imaginecurve/\"" = { insteadOf = "https://gitlab.com/imaginecurve"; };
+    programs.git.extraConfig."url \"git@git.curve.tools:\"" = { insteadOf = https://git.curve.tools/; };
+    programs.git.extraConfig."url \"git@gitlab.com:imaginecurve/\"" = { insteadOf = https://gitlab.com/imaginecurve/; };
+    programs.git.extraConfig."url \"git@gitlab.com:\"" = { insteadOf = https://gitlab.com/; };
     programs.git.extraConfig.core.excludesfile = "~/.config/git/ignore";
     xdg.configFile."git/ignore".text = ''
       projects/**/**/flake.nix
       projects/**/**/flake.lock
+    '';
+
+    wayland.windowManager.hyprland.extraConfig = lib.mkAfter ''
+      exec-once = /usr/libexec/geoclue-2.0/demos/agent
+      exec-once = warp-taskbar
+
+      bind=,XF86Launch5,exec,/usr/local/bin/swaylock -S
+      bind=,XF86Launch4,exec,/usr/local/bin/swaylock -S
+      bind=SUPER,backspace,exec,/usr/local/bin/swaylock -S
     '';
 
     home.packages = with pkgs; [
