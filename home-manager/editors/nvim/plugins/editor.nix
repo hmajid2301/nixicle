@@ -1,6 +1,5 @@
 { pkgs, ... }: {
   imports = [
-    ./editor/notes.nix
     ./editor/telescope.nix
     ./editor/trouble.nix
   ];
