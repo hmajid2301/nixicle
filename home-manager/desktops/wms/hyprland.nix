@@ -10,11 +10,13 @@ let
     #!/usr/bin/env bash
 
     if grep open /proc/acpi/button/lid/LID0/state; then
-        hyprctl keyword monitor "eDP-1, 2256x1504@60, 0x0, 1"
+    		hyprctl keyword monitor "eDP-1, 2256x1504@60, 0x0, 1"
     else
-        if [[ `hyprctl monitors | grep "Monitor" | wc -l` != 1 ]]; then
-            hyprctl keyword monitor "eDP-1, disable"
-        fi
+    		if [[ `hyprctl monitors | grep "Monitor" | wc -l` != 1 ]]; then
+    				hyprctl keyword monitor "eDP-1, disable"
+    		else
+    				systemctl suspend
+    		fi
     fi
   '';
   cfg = config.modules.wms.hyprland;
@@ -43,8 +45,9 @@ in
       	},
       	"scratchpads": {
       		"term": {
-      			"command": "wezterm",
-      			"margin": 50
+      			"command": "wezterm --class scratchpad",
+      			"margin": 50,
+      			"unfocus": "hide",
       		},
       		"pavucontrol": {
       			"command": "pavucontrol",
@@ -53,7 +56,7 @@ in
       			"animation": "fromTop"
       		},
       		"yazi": {
-      			"command": "wezterm start -- yazi",
+      			"command": "wezterm start --class scratchpad -- yazi",
       			"margin": 50
       		}
       	}
@@ -66,30 +69,32 @@ in
       extraConfig = ''
          # ASCII Art from https://fsymbols.com/generators/carty/
          input {
-         	kb_layout = gb
-         	touchpad {
-         		disable_while_typing=false
-         	}
+        	kb_layout = gb
+        	touchpad {
+        		disable_while_typing=false
+        	}
          }
 
          general {
-         	gaps_in = 3
-         	gaps_out = 5
-         	border_size = 3
-         	col.active_border=0xff${config.colorscheme.colors.base07}
-         	col.inactive_border=0xff${config.colorscheme.colors.base02}
+        	gaps_in = 3
+        	gaps_out = 5
+        	border_size = 3
+        	col.active_border=0xff${config.colorscheme.colors.base07}
+        	col.inactive_border=0xff${config.colorscheme.colors.base02}
          }
 
          decoration {
-         	rounding=5
+        	rounding=5
          }
 
          misc {
-         	vrr = 2
-         	disable_hyprland_logo = 1;
+        	vrr = 2
+        	disable_hyprland_logo = 1;
          }
 
          $notifycmd = notify-send -h string:x-canonical-private-synchronous:hypr-cfg -u low
+         env = QT_QPA_PLATFORM,wayland
+         env = QT_QPA_PLATFORMTHEME,qt5ct
 
          # █▀ █░█ █▀█ █▀█ ▀█▀ █▀▀ █░█ ▀█▀ █▀
          # ▄█ █▀█ █▄█ █▀▄ ░█░ █▄▄ █▄█ ░█░ ▄█
@@ -241,7 +246,7 @@ in
 
         bind=CTRL_SUPER,F,exec,pypr toggle yazi && hyprctl dispatch bringactivetotop
         bind=CTRL_SUPER,Z,exec,pypr toggle term && hyprctl dispatch bringactivetotop
-        bind=CTRL_SUPER,code:172,exec,pypr toggle pavucontrol && hyprctl dispatch bringactivetotop
+        bind=CTRL_SUPER,P,exec,pypr toggle pavucontrol && hyprctl dispatch bringactivetotop
         $scratchpadsize = size 80% 85%
 
         $scratchpad = class:^(scratchpad)$

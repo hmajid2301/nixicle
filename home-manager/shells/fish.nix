@@ -29,7 +29,7 @@ in
           bind \ee edit_command_buffer
           nix-your-shell fish | source
           fish_add_path --path --append ~/go/bin/
-          fish_add_path --path --prepend /usr/local/bin /usr/bin
+          fish_add_path --path --prepend /usr/local/bin /usr/bin ~/.local/bin
           set -x GOPATH $HOME/go
           set -x GOPRIVATE "git.curve.tools,gitlab.com/imaginecurve"
 
