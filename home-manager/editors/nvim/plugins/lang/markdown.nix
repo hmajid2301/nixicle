@@ -4,6 +4,7 @@
 }: {
   home.packages = with pkgs;  [
     zk
+    marksman
   ];
 
   sops.secrets.languagetool_username = {

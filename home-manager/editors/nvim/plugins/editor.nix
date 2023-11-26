@@ -5,7 +5,11 @@
   ];
 
   programs.nixvim = {
-    clipboard.providers.wl-copy.enable = true;
+    clipboard = {
+      providers.wl-copy.enable = true;
+      register = "unnamedplus";
+    };
+
     keymaps = [
       {
         action = "<cmd>lua require('flash').jump()<cr>";
