@@ -3,7 +3,6 @@
     extraConfigLua =
       # lua
       ''
-        				set clipboard+=unnamedplus
                 function reload_config()
                 	RELOAD = require("plenary.reload").reload_module
                 	RELOAD(os.getenv("MYVIMRC"))
