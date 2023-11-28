@@ -48,7 +48,6 @@
     };
 
     colmena.url = "github:zhaofengli/colmena";
-    kubenix.url = "github:hall/kubenix";
   };
 
   outputs =
@@ -56,7 +55,6 @@
     , nixpkgs
     , home-manager
     , colmena
-    , kubenix
     , ...
     } @ inputs:
     let
@@ -75,11 +73,6 @@
       devShells = forEachSystem (pkgs: import ./shell.nix { inherit pkgs inputs; });
 
       colmena = import ./hosts/self-hosted/colmena.nix { inherit nixpkgs inputs; };
-      kubenix = inputs.kubenix.packages."x86_64-linux".default.override {
-        module = import ./hosts/self-hosted/k8s;
-        specialArgs = { inherit inputs outputs kubenix; };
-      };
-
       nixosConfigurations = {
         iso = lib.nixosSystem {
           modules = [
