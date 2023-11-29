@@ -112,7 +112,6 @@ in
          # ▄▀█ █░█ ▀█▀ █▀█   █▀ ▀█▀ ▄▀█ █▀█ ▀█▀
          # █▀█ █▄█ ░█░ █▄█   ▄█ ░█░ █▀█ █▀▄ ░█░
          exec-once=dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
-         exec-once = pypr
          exec-once = ${pkgs.swaynotificationcenter}/bin/swaync
          exec-once = ${pkgs.kanshi}/bin/kanshi &
          exec-once = ${pkgs.nur.repos."999eagle".swayaudioidleinhibit}/bin/sway-audio-idle-inhibit -w &
@@ -121,6 +120,7 @@ in
          exec-once = mullvad-gui &
          exec-once = ${pkgs.tailscale-systray}/bin/tailscale-systray &
          exec-once = ${pkgs.swaybg}/bin/swaybg -i ${config.my.settings.wallpaper} --mode fill &
+         exec-once = pypr
 
          # █▀ █▀▀ █▀█ █ █▀█ ▀█▀ █▀
          # ▄█ █▄▄ █▀▄ █ █▀▀ ░█░ ▄█

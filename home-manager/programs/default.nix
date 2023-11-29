@@ -51,7 +51,6 @@
     # sourcegraph
     src-cli
 
-    lookatme
     tailscale-systray
 
     (lib.hiPrio parallel)
