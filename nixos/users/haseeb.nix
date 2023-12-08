@@ -28,6 +28,7 @@ in
       "wireshark"
       "i2c"
       "tss"
+      "plugdev"
     ];
 
     #hashedPasswordFile = config.sops.secrets.haseeb-password.path;
