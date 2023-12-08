@@ -25,10 +25,11 @@ in
         "x-scheme-handler/unknown" = browser;
 
         "audio/*" = [ "mpv.desktop" ];
-        "video/*" = [ "Totem.dekstop" ];
-        "image/*" = [ "eog.desktop" ];
+        "video/*" = [ "org.gnome.Totem.dekstop" ];
+        "image/*" = [ "org.gnome.eog.desktop" ];
         "application/json" = [ "gnome-text-editor.desktop" ];
         "application/pdf" = browser;
+        "application/x-gnome-saved-search" = [ "org.gnome.Nautilus.desktop" ];
         "x-scheme-handler/discord" = [ "discord.desktop" ];
         "x-scheme-handler/spotify" = [ "spotify.desktop" ];
         "x-scheme-handler/tg" = [ "telegramdesktop.desktop" ];

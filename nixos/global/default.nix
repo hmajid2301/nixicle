@@ -22,6 +22,7 @@
 
   home-manager.extraSpecialArgs = { inherit inputs outputs; };
 
+  hardware.keyboard.zsa.enable = true;
   services.pcscd.enable = true;
   services.udev.packages = with pkgs; [ yubikey-personalization ];
   services.gvfs.enable = true;

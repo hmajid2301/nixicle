@@ -122,6 +122,7 @@
     kubectl
     kubectx
     kubelogin
+    kubelogin-oidc
     stern
     kubernetes-helm
   ];
