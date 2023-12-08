@@ -16,7 +16,7 @@
     ./kafka.nix
     ./gaming.nix
     ./kdeconnect.nix
-    ./file_managers/yazi.nix
+    ./yazi.nix
     ./photos.nix
     ./starship.nix
     ./spotify.nix
@@ -38,6 +38,7 @@
   # };
 
   home.packages = with pkgs; [
+    keymapp
     #tmp
     cargo
     rustc

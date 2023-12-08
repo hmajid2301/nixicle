@@ -51,7 +51,29 @@
 
     extraConfigLua =
       ''
-        	require'lspconfig'.marksman.setup{}
+        require'lspconfig'.marksman.setup{}
+        local function markdown_sugar()
+        local augroup = vim.api.nvim_create_augroup('markdown', {})
+        vim.api.nvim_create_autocmd('BufEnter', {
+        	pattern = '*.md',
+        	group = augroup,
+        	callback = function()
+        		vim.api.nvim_set_hl(0, 'Conceal', { bg = 'NONE', fg = '#00cf37' })
+        		vim.api.nvim_set_hl(0, 'todoCheckbox', { link = 'Todo' })
+        		vim.bo.conceallevel = 1
+
+        		vim.cmd [[
+        			syn match todoCheckbox '\v(\s+)?(-|\*)\s\[\s\]'hs=e-4 conceal cchar=
+        			syn match todoCheckbox '\v(\s+)?(-|\*)\s\[x\]'hs=e-4 conceal cchar=
+        			syn match todoCheckbox '\v(\s+)?(-|\*)\s\[-\]'hs=e-4 conceal cchar=󰅘
+        			syn match todoCheckbox '\v(\s+)?(-|\*)\s\[\.\]'hs=e-4 conceal cchar=⊡
+        			syn match todoCheckbox '\v(\s+)?(-|\*)\s\[o\]'hs=e-4 conceal cchar=⬕
+        		]]
+        	end
+        })
+        end
+
+        markdown_sugar()
       '';
 
     plugins.treesitter = {

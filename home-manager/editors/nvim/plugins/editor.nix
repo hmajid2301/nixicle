@@ -13,7 +13,7 @@
     keymaps = [
       {
         action = "<cmd>lua require('flash').jump()<cr>";
-        key = "<leader>gls";
+        key = "<leader>ls";
         options = {
           desc = "Run flash";
         };
@@ -24,7 +24,7 @@
       }
       {
         action = "<cmd>lua require('flash').treesitter()<cr>";
-        key = "<leader>glt";
+        key = "<leader>lt";
         options = {
           desc = "Run flash treesitter";
         };
@@ -211,16 +211,16 @@
         statusText.enabled = true;
       };
 
-      harpoon = {
-        enable = true;
-        enableTelescope = true;
-        keymaps = {
-          addFile = "<leader>ha";
-          toggleQuickMenu = "<leader>ht";
-          navNext = "<leader>hn";
-          navPrev = "<leader>hp";
-        };
-      };
+      # harpoon = {
+      #   enable = true;
+      #   enableTelescope = true;
+      #   keymaps = {
+      #     addFile = "<leader>ha";
+      #     toggleQuickMenu = "<leader>ht";
+      #     navNext = "<leader>hn";
+      #     navPrev = "<leader>hp";
+      #   };
+      # };
 
       nvim-colorizer = {
         enable = true;
