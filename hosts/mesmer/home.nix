@@ -26,6 +26,7 @@
 
       multiplexers = {
         tmux.enable = true;
+        zellij.enable = true;
       };
 
       shells = {

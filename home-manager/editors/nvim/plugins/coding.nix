@@ -25,7 +25,7 @@
         enable = true;
         modules = {
           surround = { };
-          comments = { };
+          comment = { };
         };
 
       };

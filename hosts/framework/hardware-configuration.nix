@@ -12,7 +12,7 @@
 
   boot.initrd.availableKernelModules = [ "xhci_pci" "thunderbolt" "nvme" "uas" "usb_storage" "sd_mod" ];
   boot.initrd.kernelModules = [ "dm-snapshot" "amdgpu" ];
-  boot.kernelModules = [ "kvm-intel" ];
+  boot.kernelModules = [ "kvm-amd" ];
   boot.kernelParams = [ "boot.debug1devices" ];
   boot.extraModulePackages = [ ];
 

@@ -47,6 +47,7 @@
         browser = "firefox";
         editor = "nvim";
       };
+      fonts.monospace = "FiraCode Nerd Font";
     };
 
     colorscheme = inputs.nix-colors.colorSchemes.catppuccin-mocha;
