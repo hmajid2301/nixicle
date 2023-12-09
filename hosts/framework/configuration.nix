@@ -1,9 +1,6 @@
-{ inputs, ... }: {
+{ inputs, pkgs, lib, ... }: {
   imports = [
-    inputs.hardware.nixosModules.framework-12th-gen-intel
-    inputs.hyprland.nixosModules.default
-    inputs.disko.nixosModules.disko
-
+    inputs.hardware.nixosModules.framework-13-7040-amd
     ./hardware-configuration.nix
     ./disks.nix
 
@@ -13,21 +10,44 @@
     ../../nixos/optional/auto-upgrade.nix
     ../../nixos/optional/avahi.nix
     ../../nixos/optional/backup.nix
-    ../../nixos/optional/fingerprint.nix
     ../../nixos/optional/docker.nix
     ../../nixos/optional/fonts.nix
-    ../../nixos/optional/pipewire.nix
     ../../nixos/optional/greetd.nix
+    ../../nixos/optional/gaming.nix
     ../../nixos/optional/quietboot.nix
+    ../../nixos/optional/pipewire.nix
+    ../../nixos/optional/tailscale.nix
     ../../nixos/optional/vfio.nix
     ../../nixos/optional/vpn.nix
-    ../../nixos/optional/pam.nix
-    ../../nixos/optional/grub.nix
   ];
 
   networking = {
     hostName = "framework";
   };
 
-  system.stateVersion = "23.05";
+  environment.systemPackages = [
+    pkgs.headsetcontrol2
+    pkgs.headset-charge-indicator
+  ];
+  services.udev.packages = [ pkgs.headsetcontrol2 ];
+  hardware.framework.amd-7040.preventWakeOnAC = true;
+
+  programs.hyprland = {
+    enable = true;
+    package = inputs.hyprland.packages.${pkgs.system}.hyprland;
+  };
+
+  boot = {
+    kernelPackages = pkgs.linuxPackages_latest;
+    loader = {
+      systemd-boot.enable = true;
+      efi.canTouchEfiVariables = true;
+    };
+    # lanzaboote = {
+    #   enable = true;
+    #   pkiBundle = "/etc/secureboot";
+    # };
+  };
+
+  system.stateVersion = "23.11";
 }

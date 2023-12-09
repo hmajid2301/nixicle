@@ -37,16 +37,11 @@
     nixvim.url = "github:pta2002/nixvim";
     nixneovimplugins.url = "github:jooooscha/nixpkgs-vim-extra-plugins";
     codeium.url = "github:Exafunction/codeium.nvim";
+    zjstatus.url = "github:dj95/zjstatus";
 
     nwg-displays.url = "github:nwg-piotr/nwg-displays";
     comma.url = "github:nix-community/comma";
     attic.url = "github:zhaofengli/attic";
-
-    grub-theme = {
-      url = "github:catppuccin/grub";
-      flake = false;
-    };
-
     colmena.url = "github:zhaofengli/colmena";
   };
 
