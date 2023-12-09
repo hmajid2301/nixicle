@@ -6,12 +6,8 @@
 }: {
   imports = [
     ../../home-manager
-    ../../home-manager/desktops/wms/hyprland.nix
 
     ../../home-manager/games
-
-    ../../home-manager/security/sops.nix
-    ../../home-manager/security/yubikey.nix
   ];
 
   config = {
@@ -26,6 +22,7 @@
 
       multiplexers = {
         tmux.enable = true;
+        zellij.enable = true;
       };
 
       shells = {
@@ -33,10 +30,7 @@
       };
 
       wms = {
-        sway.enable = true;
-        # TODO: conflict notifications
-        notifications.swaync.enable = true;
-        launchers.wofi.enable = true;
+        hyprland.enable = true;
       };
 
       terminals = {
@@ -46,7 +40,7 @@
     };
 
     my.settings = {
-      wallpaper = "~/dotfiles/home-manager/wallpapers/rainbow-nix.jpg";
+      wallpaper = "~/Pictures/wallpapers/nixppuccin.png";
       host = "framework";
       default = {
         shell = "${pkgs.fish}/bin/fish";
@@ -61,7 +55,7 @@
     home = {
       username = lib.mkDefault "haseeb";
       homeDirectory = lib.mkDefault "/home/${config.home.username}";
-      stateVersion = lib.mkDefault "23.05";
+      stateVersion = lib.mkDefault "23.11";
     };
   };
 }

@@ -6,6 +6,7 @@
 
     options = {
       sessionoptions = "blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal,localoptions";
+      switchbuf = "useopen,uselast";
       termguicolors = true;
       scrolloff = 8;
       swapfile = false;
