@@ -14,7 +14,7 @@
     ../../nixos/optional/fonts.nix
     ../../nixos/optional/greetd.nix
     ../../nixos/optional/gaming.nix
-    ../../nixos/optional/quietboot.nix
+    #../../nixos/optional/quietboot.nix
     ../../nixos/optional/pipewire.nix
     ../../nixos/optional/tailscale.nix
     ../../nixos/optional/vfio.nix
@@ -31,6 +31,7 @@
   ];
   services.udev.packages = [ pkgs.headsetcontrol2 ];
   hardware.framework.amd-7040.preventWakeOnAC = true;
+  boot.bootspec.enable = true;
 
   programs.hyprland = {
     enable = true;
@@ -43,10 +44,10 @@
       systemd-boot.enable = true;
       efi.canTouchEfiVariables = true;
     };
-    # lanzaboote = {
-    #   enable = true;
-    #   pkiBundle = "/etc/secureboot";
-    # };
+    lanzaboote = {
+      enable = true;
+      pkiBundle = "/etc/secureboot";
+    };
   };
 
   system.stateVersion = "23.11";
