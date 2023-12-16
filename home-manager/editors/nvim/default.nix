@@ -26,6 +26,7 @@ in
 
     ./plugins/ai.nix
     ./plugins/training.nix
+    ./plugins/notes.nix
 
     ./plugins/lang/go.nix
     ./plugins/lang/lua.nix

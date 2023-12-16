@@ -29,6 +29,10 @@
         "<leader>g" = "+git";
         "<leader>gh" = "+hunks";
       };
+      neogit = {
+        enable = true;
+      };
+
       gitsigns = {
         enable = true;
         currentLineBlame = false;
