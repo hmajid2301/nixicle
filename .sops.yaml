@@ -12,37 +12,6 @@ keys:
     - &mango age16tskx6gle6v4v0hzhm5fvj0yd29mmn0s47d8q0h3tgcj9wej53uquv98cn
 
 creation_rules:
-  - path_regex: hosts/framework/secrets.ya?ml$
-    key_groups:
-    - age:
-      - *framework
-      pgp:
-      - *haseeb
-
-  - path_regex: hosts/mesmer/secrets.ya?ml$
-    key_groups:
-    - age:
-      - *mesmer
-      pgp:
-      - *haseeb
-
-  - path_regex: hosts/curve/secrets.ya?ml$
-    key_groups:
-    - age:
-      - *curve
-      pgp:
-      - *haseebmajid
-
-  - path_regex: hosts/iso/secrets.ya?ml$
-    key_groups:
-    - age:
-      - *framework
-      - *mesmer
-      - *curve
-      pgp:
-      - *haseeb
-      - *haseebmajid
-
   - path_regex: nixos/secrets.ya?ml$
     key_groups:
     - age:

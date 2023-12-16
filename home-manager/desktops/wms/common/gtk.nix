@@ -22,10 +22,11 @@ in
     iconTheme = {
       package = pkgs.catppuccin-papirus-folders.override {
         flavor = "mocha";
-        accent = "blue";
+        accent = "lavender";
       };
       name = "Papirus-Dark";
     };
+
     gtk3.extraConfig.gtk-application-prefer-dark-theme = 1;
     gtk4.extraConfig.gtk-application-prefer-dark-theme = 1;
   };
@@ -33,7 +34,6 @@ in
     enable = true;
     platformTheme = "qtct";
   };
-
 
   home.sessionVariables.GTK_THEME = "${config.colorscheme.slug}";
   home.pointerCursor = {

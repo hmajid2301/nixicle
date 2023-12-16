@@ -1,9 +1,10 @@
 {
   security = {
-    tpm = {
+    protectKernelImage = false;
+    tpm2 = {
       enable = true;
       pkcs11.enable = true;
-      tpm2.tctiEnvironment.enable = true;
+      tctiEnvironment.enable = true;
     };
   };
 }

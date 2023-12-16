@@ -39,7 +39,7 @@ in
 
         main = {
           term = "foot";
-          font = "${config.my.settings.fonts.monospace}:size=14";
+          font = "${config.my.settings.fonts.monospace}:size=14, JoyPixels:size=14";
           shell = "${config.my.settings.default.shell}";
           pad = "30x30";
           selection-target = "clipboard";

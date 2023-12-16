@@ -25,8 +25,11 @@ in
         "x-scheme-handler/unknown" = browser;
 
         "audio/*" = [ "mpv.desktop" ];
-        "video/*" = [ "org.gnome.Totem.dekstop" ];
+        "video/*" = [ "Totem.dekstop" ];
+        "video/mp4" = [ "Totem.dekstop" ];
         "image/*" = [ "org.gnome.eog.desktop" ];
+        "image/png" = [ "org.gnome.eog.desktop" ];
+        "image/jpg" = [ "org.gnome.eog.desktop" ];
         "application/json" = [ "gnome-text-editor.desktop" ];
         "application/pdf" = browser;
         "application/x-gnome-saved-search" = [ "org.gnome.Nautilus.desktop" ];

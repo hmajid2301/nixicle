@@ -39,10 +39,11 @@
 
   home.packages = with pkgs; [
     keymapp
+    powertop
+
     #tmp
     cargo
     rustc
-    dooit
 
     nix-init
     nix-update
@@ -69,8 +70,6 @@
     betterdiscord-installer
     discord
     showmethekey
-    fontforge
-    thunderbird-unwrapped
 
     # modern "unix" tools
     broot

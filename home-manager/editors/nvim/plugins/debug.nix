@@ -183,23 +183,6 @@
           # lua
           ''
             function()
-              require('dap').pause()
-            end
-          '';
-        key = "<leader>dp";
-        lua = true;
-        options = {
-          desc = "Pause";
-        };
-        mode = [
-          "n"
-        ];
-      }
-      {
-        action =
-          # lua
-          ''
-            function()
               require('dap').toggle_breakpoint()
             end
           '';

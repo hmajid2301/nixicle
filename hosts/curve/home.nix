@@ -95,5 +95,9 @@
       podman-compose
       podman-tui
     ];
+    gtk.iconTheme = lib.mkForce {
+      package = pkgs.gnome.adwaita-icon-theme;
+      name = "Adwaita";
+    };
   };
 }

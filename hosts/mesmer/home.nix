@@ -6,12 +6,8 @@
 }: {
   imports = [
     ../../home-manager
-    ../../home-manager/desktops/wms/hyprland.nix
 
     ../../home-manager/games
-
-    ../../home-manager/security/sops.nix
-    ../../home-manager/security/yubikey.nix
   ];
 
   config = {

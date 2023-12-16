@@ -21,15 +21,6 @@
                 ];
               };
             };
-            swap = {
-              label = "swap";
-              size = "32G";
-              content = {
-                type = "swap";
-                resumeDevice = true;
-                randomEncryption = true;
-              };
-            };
             luks = {
               size = "100%";
               label = "luks";
@@ -67,6 +58,10 @@
                       mountpoint = "/var/log";
                       mountOptions = [ "subvol=log" "compress=zstd" "noatime" ];
                     };
+                    "/swap" = {
+                      mountpoint = "/swap";
+                      swap.swapfile.size = "32G";
+                    };
                   };
                 };
               };
@@ -76,6 +71,7 @@
       };
     };
   };
+
 
   fileSystems."/persist".neededForBoot = true;
   fileSystems."/var/log".neededForBoot = true;
