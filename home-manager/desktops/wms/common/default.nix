@@ -23,28 +23,23 @@
 
   home.packages = with pkgs; [
     mplayer
-    celluloid
-    via
     mtpfs
     jmtpfs
     brightnessctl
     xdg-utils
-    gnome.nautilus-python
     gnome.sushi
     gnome.nautilus
     gnome.gnome-disk-utility
     gnome.totem
-    gnome.eog
+    loupe
     gnome.gvfs
     gnome-text-editor
     wl-clipboard
     pamixer
     playerctl
     sway-contrib.grimshot
-    swaybg
 
     networkmanagerapplet
     inputs.nwg-displays.packages."${pkgs.system}".default
-    nwg-look
   ];
 }

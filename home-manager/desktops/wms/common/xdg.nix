@@ -27,15 +27,17 @@ in
         "audio/*" = [ "mpv.desktop" ];
         "video/*" = [ "Totem.dekstop" ];
         "video/mp4" = [ "Totem.dekstop" ];
-        "image/*" = [ "org.gnome.eog.desktop" ];
-        "image/png" = [ "org.gnome.eog.desktop" ];
-        "image/jpg" = [ "org.gnome.eog.desktop" ];
+        "image/*" = [ "org.gnome.loupe.desktop" ];
+        "image/png" = [ "org.gnome.loupe.desktop" ];
+        "image/jpg" = [ "org.gnome.loupe.desktop" ];
         "application/json" = [ "gnome-text-editor.desktop" ];
         "application/pdf" = browser;
         "application/x-gnome-saved-search" = [ "org.gnome.Nautilus.desktop" ];
         "x-scheme-handler/discord" = [ "discord.desktop" ];
         "x-scheme-handler/spotify" = [ "spotify.desktop" ];
         "x-scheme-handler/tg" = [ "telegramdesktop.desktop" ];
+        "application/toml" = "org.gnome.TextEditor.desktop";
+        "text/plain" = "org.gnome.TextEditor.desktop";
       };
     };
 

@@ -189,6 +189,22 @@
         "type": "github"
       }
     },
+    "firefox-gnome-theme": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1702138393,
+        "narHash": "sha256-2jRm1yzX+gKpSCtdpYt1olIgWVEkJnS7FeK00o9X1ko=",
+        "owner": "rafaelmardojai",
+        "repo": "firefox-gnome-theme",
+        "rev": "d2e6cfdd63651ae8168e5905d94138f406580dd6",
+        "type": "github"
+      },
+      "original": {
+        "owner": "rafaelmardojai",
+        "repo": "firefox-gnome-theme",
+        "type": "github"
+      }
+    },
     "flake-compat": {
       "flake": false,
       "locked": {
@@ -1381,6 +1397,7 @@
         "colmena": "colmena",
         "comma": "comma",
         "disko": "disko",
+        "firefox-gnome-theme": "firefox-gnome-theme",
         "hardware": "hardware",
         "home-manager": "home-manager",
         "hypr-contrib": "hypr-contrib",

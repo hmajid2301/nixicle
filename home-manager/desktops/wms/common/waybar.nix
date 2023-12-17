@@ -285,7 +285,7 @@ in
         @define-color mauve     #${colorscheme.colors.base0E};
         @define-color flamingo  #${colorscheme.colors.base0F};
 
-        * {
+        * { 
          color: @lavender;
          border: 0;
          padding: 0 0;

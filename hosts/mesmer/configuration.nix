@@ -18,7 +18,6 @@
     ../../nixos/optional/tailscale.nix
 
     ../../nixos/optional/backup.nix
-    #../nixos/optional/grub.nix
   ];
 
   environment.systemPackages = [

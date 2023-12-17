@@ -68,63 +68,63 @@ in
       enable = true;
       # TODO: move to https://github.com/spikespaz/hyprland-nix
       extraConfig = ''
-                         # ASCII Art from https://fsymbols.com/generators/carty/
-                         input {
-                        	kb_layout = gb
-                        	touchpad {
-                        		disable_while_typing=false
-                        	}
-                         }
+         # ASCII Art from https://fsymbols.com/generators/carty/
+         input {
+        	kb_layout = gb
+        	touchpad {
+        		disable_while_typing=false
+        	}
+         }
 
-                         general {
-                        	gaps_in = 3
-                        	gaps_out = 5
-                        	border_size = 3
-                        	col.active_border=0xff${config.colorscheme.colors.base07}
-                        	col.inactive_border=0xff${config.colorscheme.colors.base02}
-                         }
+         general {
+        	gaps_in = 3
+        	gaps_out = 5
+        	border_size = 3
+        	col.active_border=0xff${config.colorscheme.colors.base07}
+        	col.inactive_border=0xff${config.colorscheme.colors.base02}
+         }
 
-                         decoration {
-                        	rounding=5
-                         }
+         decoration {
+        	rounding=5
+         }
 
-                         misc {
-                        	vrr = 2
-                        	disable_hyprland_logo = 1;
-                         }
+         misc {
+        	vrr = 2
+        	disable_hyprland_logo = 1;
+         }
 
-                         $notifycmd = notify-send -h string:x-canonical-private-synchronous:hypr-cfg -u low
-                         env = QT_QPA_PLATFORM,wayland
-                         env = QT_QPA_PLATFORMTHEME,qt5ct
+         $notifycmd = notify-send -h string:x-canonical-private-synchronous:hypr-cfg -u low
+         env = QT_QPA_PLATFORM,wayland
+         env = QT_QPA_PLATFORMTHEME,qt5ct
 
-                         # █▀ █░█ █▀█ █▀█ ▀█▀ █▀▀ █░█ ▀█▀ █▀
-                         # ▄█ █▀█ █▄█ █▀▄ ░█░ █▄▄ █▄█ ░█░ ▄█
-                         bind = SUPER, Return, exec, ${config.my.settings.default.terminal}
-                         bind = SUPER, b, exec, ${config.my.settings.default.browser}
-                         bind = SUPER, a, exec, ${pkgs.rofi}/bin/rofi -show drun -mode drun
-                         bind = SUPER, Tab, exec, ${pkgs.rofi}/bin/rofi -show window
+         # █▀ █░█ █▀█ █▀█ ▀█▀ █▀▀ █░█ ▀█▀ █▀
+         # ▄█ █▀█ █▄█ █▀▄ ░█░ █▄▄ █▄█ ░█░ ▄█
+         bind = SUPER, Return, exec, ${config.my.settings.default.terminal}
+         bind = SUPER, b, exec, ${config.my.settings.default.browser}
+         bind = SUPER, a, exec, ${pkgs.rofi}/bin/rofi -show drun -mode drun
+         bind = SUPER, Tab, exec, ${pkgs.rofi}/bin/rofi -show window
 
-                         # █▀▀ ▀▄▀ █▀▀ █▀▀ █▀█ ▀█▀ █ █▀█ █▄░█ █▀
-                         # ██▄ █░█ █▄▄ ██▄ █▀▀ ░█░ █ █▄█ █░▀█ ▄█
-                         windowrule = fullscreen, title:^(Guild Wars 2)$
-                         windowrulev2 = idleinhibit focus, class:^(mpv)$
-                         windowrulev2 = idleinhibit fullscreen, class:^(firefox)$
+         # █▀▀ ▀▄▀ █▀▀ █▀▀ █▀█ ▀█▀ █ █▀█ █▄░█ █▀
+         # ██▄ █░█ █▄▄ ██▄ █▀▀ ░█░ █ █▄█ █░▀█ ▄█
+         windowrule = fullscreen, title:^(Guild Wars 2)$
+         windowrulev2 = idleinhibit focus, class:^(mpv)$
+         windowrulev2 = idleinhibit fullscreen, class:^(firefox)$
 
-                         # ▄▀█ █░█ ▀█▀ █▀█   █▀ ▀█▀ ▄▀█ █▀█ ▀█▀
-                         # █▀█ █▄█ ░█░ █▄█   ▄█ ░█░ █▀█ █▀▄ ░█░
-                         exec-once=dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
-                         exec-once = ${pkgs.swaynotificationcenter}/bin/swaync
-                         exec-once = ${pkgs.kanshi}/bin/kanshi &
-                         exec-once = ${pkgs.nur.repos."999eagle".swayaudioidleinhibit}/bin/sway-audio-idle-inhibit -w &
-                         exec-once = ${pkgs.waybar}/bin/waybar &
-                         exec-once = ${pkgs.gammastep}/bin/gammastep-indicator &
-                         exec-once = mullvad-gui &
-                         exec-once = ${pkgs.tailscale-systray}/bin/tailscale-systray &
-                         exec-once = ${pkgs.swaybg}/bin/swaybg -i ${config.my.settings.wallpaper} --mode fill &
-                				 # exec-once = pypr
+         # ▄▀█ █░█ ▀█▀ █▀█   █▀ ▀█▀ ▄▀█ █▀█ ▀█▀
+         # █▀█ █▄█ ░█░ █▄█   ▄█ ░█░ █▀█ █▀▄ ░█░
+         exec-once=dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
+         exec-once = ${pkgs.swaynotificationcenter}/bin/swaync
+         exec-once = ${pkgs.kanshi}/bin/kanshi &
+         exec-once = ${pkgs.nur.repos."999eagle".swayaudioidleinhibit}/bin/sway-audio-idle-inhibit -w &
+         exec-once = ${pkgs.waybar}/bin/waybar &
+         exec-once = ${pkgs.gammastep}/bin/gammastep-indicator &
+         exec-once = mullvad-gui &
+         exec-once = ${pkgs.tailscale-systray}/bin/tailscale-systray &
+         exec-once = ${pkgs.swaybg}/bin/swaybg -i ${config.my.settings.wallpaper} --mode fill &
+         # exec-once = pypr
 
-                         # █▀ █▀▀ █▀█ █ █▀█ ▀█▀ █▀
-                         # ▄█ █▄▄ █▀▄ █ █▀▀ ░█░ ▄█
+         # █▀ █▀▀ █▀█ █ █▀█ ▀█▀ █▀
+         # ▄█ █▄▄ █▀▄ █ █▀▀ ░█░ ▄█
          bindl=,switch:Lid Switch, exec, ${laptop_lid_switch}/bin/laptop_lid_switch
 
          # █░░ █▀█ █▀▀ █▄▀   █▀ █▀▀ █▀█ █▀▀ █▀▀ █▄░█
