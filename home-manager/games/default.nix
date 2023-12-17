@@ -7,5 +7,7 @@
   home.packages = with pkgs; [
     protontricks
     protonup-qt
+    cartridges
+    bottles
   ];
 }
