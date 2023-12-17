@@ -4,10 +4,9 @@
     ./atuin.nix
     ./bat.nix
     ./bottom.nix
-    ./calcure.nix
     ./direnv.nix
+    ./discord.nix
     ./eza.nix
-    ./foliate.nix
     ./fonts.nix
     ./fzf.nix
     ./git.nix
@@ -41,6 +40,10 @@
     keymapp
     powertop
 
+    # gnome
+    impression
+    raider
+
     #tmp
     cargo
     rustc
@@ -48,12 +51,9 @@
     nix-init
     nix-update
     nix-your-shell
-    nwg-look
 
     # sourcegraph
     src-cli
-
-    tailscale-systray
 
     (lib.hiPrio parallel)
     moreutils
@@ -67,8 +67,6 @@
 
     # other
     brotab
-    betterdiscord-installer
-    discord
     showmethekey
 
     # modern "unix" tools

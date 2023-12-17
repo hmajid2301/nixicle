@@ -1,7 +1,4 @@
 { pkgs, config, ... }:
-let
-  hz = if config.my.settings.host == "curve" then "60" else "144hz";
-in
 {
   home.packages = with pkgs; [
     kanshi
@@ -31,7 +28,7 @@ in
           {
             criteria = "Dell Inc. DELL G3223Q 82X70P3";
             position = "0,0";
-            mode = "3840x2160@${hz}";
+            mode = "3840x2160@144Hz";
           }
           {
             criteria = "eDP-1";

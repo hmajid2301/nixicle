@@ -43,6 +43,11 @@
     comma.url = "github:nix-community/comma";
     attic.url = "github:zhaofengli/attic";
     colmena.url = "github:zhaofengli/colmena";
+
+    firefox-gnome-theme = {
+      url = "github:rafaelmardojai/firefox-gnome-theme";
+      flake = false;
+    };
   };
 
   outputs =
