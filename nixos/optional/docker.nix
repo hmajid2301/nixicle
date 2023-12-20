@@ -11,8 +11,8 @@
 
   environment.systemPackages = with pkgs; [
     podman-compose
-    docker-compose
     podman-tui
+    podman-desktop
   ];
 
   # environment.persistence = {

@@ -8,12 +8,6 @@
       "kvm-intel"
       "amdgpu"
     ];
-
-    kernelParams = [
-      # enable IOMMU
-      "intel_iommu=on"
-      "vfio-pci.ids=10de:2208,10de:1aef"
-    ];
   };
 
   # VM Packages

@@ -94,7 +94,9 @@
     home.packages = with pkgs; [
       podman-compose
       podman-tui
+      docker-compose
     ];
+
     gtk.iconTheme = lib.mkForce {
       package = pkgs.gnome.adwaita-icon-theme;
       name = "Adwaita";

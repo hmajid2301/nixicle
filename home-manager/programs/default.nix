@@ -40,10 +40,6 @@
     keymapp
     powertop
 
-    # gnome
-    impression
-    raider
-
     #tmp
     cargo
     rustc

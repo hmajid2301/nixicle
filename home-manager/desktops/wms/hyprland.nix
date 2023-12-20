@@ -117,7 +117,7 @@ in
          exec-once = ${pkgs.kanshi}/bin/kanshi &
          exec-once = ${pkgs.nur.repos."999eagle".swayaudioidleinhibit}/bin/sway-audio-idle-inhibit -w &
          exec-once = ${pkgs.waybar}/bin/waybar &
-         exec-once = ${pkgs.gammastep}/bin/gammastep-indicator &
+         exec-once = ${pkgs.gammastep}/bin/gammastep &
          exec-once = mullvad-gui &
          exec-once = ${pkgs.tailscale-systray}/bin/tailscale-systray &
          exec-once = ${pkgs.swaybg}/bin/swaybg -i ${config.my.settings.wallpaper} --mode fill &

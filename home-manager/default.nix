@@ -21,7 +21,6 @@
       ./multiplexers/tmux.nix
       ./multiplexers/zellij.nix
 
-      ./desktops/wms/sway.nix
       ./desktops/wms/hyprland.nix
       ./desktops/wms/common
 

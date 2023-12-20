@@ -41,7 +41,7 @@
 
 
     my.settings = {
-      wallpaper = "~/Pictures/wallpapers/nixppuccin.png";
+      wallpaper = "~/Pictures/wallpapers/windows-error.jpg";
       host = "framework";
       default = {
         shell = "${pkgs.fish}/bin/fish";

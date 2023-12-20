@@ -27,17 +27,25 @@
     jmtpfs
     brightnessctl
     xdg-utils
-    gnome.sushi
-    gnome.nautilus
-    gnome.gnome-disk-utility
-    gnome.totem
-    loupe
-    gnome.gvfs
-    gnome-text-editor
     wl-clipboard
     pamixer
     playerctl
     sway-contrib.grimshot
+
+    # gnome
+    impression
+    raider
+    helvum
+    gnome.gnome-font-viewer
+    gnome.gnome-characters
+    gnome.sushi
+    gnome.nautilus
+    gnome.gnome-disk-utility
+    gnome.totem
+    gnome.gucharmap
+    gnome.gvfs
+    loupe
+    gnome-text-editor
 
     networkmanagerapplet
     inputs.nwg-displays.packages."${pkgs.system}".default
