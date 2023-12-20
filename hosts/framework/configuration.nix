@@ -50,6 +50,7 @@
       "btusb.enable_autosuspend=n"
       "i915.enable_psr=0"
       "resume_offset=533760"
+      "amdgpu.sg_display=0"
     ];
     blacklistedKernelModules = [ "hid-sensor-hub" ];
     supportedFilesystems = lib.mkForce [ "btrfs" ];
