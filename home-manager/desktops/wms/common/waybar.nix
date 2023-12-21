@@ -16,6 +16,7 @@ in
         margin = "0 0 0 0";
         modules-left = [
           "hyprland/workspaces"
+          "tray"
         ];
         modules-center = [
           "custom/notification"
@@ -25,15 +26,11 @@ in
         modules-right = [
           "backlight"
           "battery"
-
           "temperature"
           "cpu"
           "memory"
-
           "wireplumber"
           "network"
-
-          "tray"
         ];
         "hyprland/workspaces" = {
           format = "{icon}";
@@ -115,6 +112,16 @@ in
           format-plugged = "";
           format-icons = [ "󰁻 " "󰁽 " "󰁿 " "󰂁 " "󰂂 " ];
         };
+        temperature = {
+          interval = 1;
+          tooltip = false;
+          thermal-zone = 1;
+          critical-threshold = 80;
+          format = "{icon} {temperatureC}°C";
+          format-critical = "{icon} {temperatureC}°C";
+          format-icons = [ "" "" "" "" "" ];
+        };
+
         cpu = {
           interval = 1;
           format = " {usage}%";
@@ -154,180 +161,197 @@ in
     style =
       # css
       ''
-                                                        @define-color base      #${colorscheme.colors.base00};
-                                                        @define-color blue      #${colorscheme.colors.base0D};
-                                                        @define-color rosewater #${colorscheme.colors.base06};
-                                                        @define-color lavender  #${colorscheme.colors.base07};
-                                                        @define-color teal      #${colorscheme.colors.base0C};
-                                                        @define-color yellow    #${colorscheme.colors.base0A};
-                                                        @define-color green     #${colorscheme.colors.base0B};
-                                                        @define-color red       #${colorscheme.colors.base08};
-                                                        @define-color mauve     #${colorscheme.colors.base0E};
-                                                        @define-color flamingo  #${colorscheme.colors.base0F};
+        @define-color base      #${colorscheme.colors.base00};
+        @define-color blue      #${colorscheme.colors.base0D};
+        @define-color rosewater #${colorscheme.colors.base06};
+        @define-color lavender  #${colorscheme.colors.base07};
+        @define-color teal      #${colorscheme.colors.base0C};
+        @define-color yellow    #${colorscheme.colors.base0A};
+        @define-color green     #${colorscheme.colors.base0B};
+        @define-color red       #${colorscheme.colors.base08};
+        @define-color mauve     #${colorscheme.colors.base0E};
+        @define-color flamingo  #${colorscheme.colors.base0F};
 
-                                                        * { 
-                                                        	border: 0;
-                                                        	padding: 0 0;
-                                                        	font-family: ${config.my.settings.fonts.monospace};
-                                                        	font-size: 18px;
-                                                        	color: white;
-                                                        }
+        * { 
+        	border: 0;
+        	padding: 0 0;
+        	font-family: ${config.my.settings.fonts.monospace};
+        	font-size: 18px;
+        	color: white;
+        }
 
-                                                        window#waybar {
-                                                        	border: 0px solid rgba(0, 0, 0, 0);
-                                                        	background-color: rgba(0, 0, 0, 0);
-                                                        }
+        window#waybar {
+        	border: 0px solid rgba(0, 0, 0, 0);
+        	background-color: rgba(0, 0, 0, 0);
+        }
 
-                                                        #workspaces {
-                                                        	background-color: #11111b;
-                                                        	border-radius: 5px;
-                                                        	margin: 8px;
-                                                        }
+        #workspaces {
+        	background-color: #11111b;
+        	border-radius: 5px;
+        	margin: 8px;
+        }
 
-                                                        #workspaces button {
-                                                        	color: @base;
-                                                        	border-radius: 5px;
-                                                        	padding-right: 5px;
-                                                        	margin: 2px 4px;
-                                                        }
+        #workspaces button {
+        	color: @base;
+        	border-radius: 5px;
+        	padding-right: 5px;
+        	margin: 2px 4px;
+        }
 
-                                                        #workspaces button:hover {
-                                                        	color: @lavender;
-                                                        } 
+        #workspaces button:hover {
+        	background-color: @lavender;
+        } 
 
-                                                        #workspaces button.active * {
-                                                        	border-radius: 7px;
-                                                        	background-color: @lavender;
-                                                        } 
+        #workspaces button.active * {
+        	border-radius: 7px;
+        	background-color: @lavender;
+        } 
 
-                                                        #workspaces button.visible {
-                                                        	background-color: @lavender;
-                                                        }
+        #workspaces button.visible {
+        	background-color: @lavender;
+        }
 
-                                                        #workspaces button.visible * {
-                                                        	color: @base;
-                                                        } 
+        #workspaces button.visible * {
+        	color: @base;
+        } 
 
-                                                        #clock,
-                                                        #battery,
-                                                        #cpu,
-                                                        #memory,
-                                                        #temperature,
-                                                        #backlight,
-                                                        #network,
-                                                        #wireplumber,
-                                                        #mode,
-                                                        #tray,
-                                                        #idle_inhibitor,
-                                                        #custom-notification {
-                                                        	border-style: solid;
-                                                        	background-color: shade(@base, 1);
-                                                        	margin: 8px 0;
-                                                        	padding: 5px 0;
-                                                        } 
+        #clock,
+        #battery,
+        #cpu,
+        #memory,
+        #temperature,
+        #backlight,
+        #network,
+        #wireplumber,
+        #mode,
+        #tray,
+        #idle_inhibitor,
+        #custom-notification {
+        	border-style: solid;
+        	background-color: #11111b;
+        	margin: 8px 0;
+        	padding: 5px 0;
+        } 
 
-                                                        #custom-notification {
-                                                        	margin-left: 10px;
-                                                        	padding: 0 20px 0 20px;
-                                                        	border-radius: 10px 0 0 10px;
-                                                        	color: @lavender;
-                                                        }
+        #custom-notification {
+        	margin-left: 10px;
+        	padding: 0 20px 0 20px;
+        	border-radius: 10px 0 0 10px;
+        	color: @lavender;
+        }
 
-                                                        #clock {
-                                                					border-radius: 0; 
-                                                        	padding: 0 20px 0 20px;
-                                                        	font-weight: bold;
-                                                        	color: @lavender;
-                                                        } 
+        #clock {
+        	border-radius: 0; 
+        	padding: 0 20px 0 20px;
+        	font-weight: bold;
+        	color: @lavender;
+        } 
 
-                                                        #idle_inhibitor.deactivated {
-                                                        	border-radius: 0 10px 10px 0;
-                                                        	color: @lavender;
-                                                        }
+        #idle_inhibitor.deactivated {
+        	border-radius: 0 10px 10px 0;
+        	color: @lavender;
+        }
 
-                                                        #idle_inhibitor.activated {
-                                                        	border-radius: 0 10px 10px 0;
-                                                        	 color: @green;
-                                                        }
+        #idle_inhibitor.activated {
+        	border-radius: 0 10px 10px 0;
+        	 color: @green;
+        }
 
-                                                        #tray {
-                                                        	border-radius: 5px;
-                                                 /*        	padding: 0 10px; */
-                                        									/* margin: 0 10px;  */
-                                                        }
+        #tray {
+        	border-radius: 10px;
+        	padding: 0 10px 0 10px;
+        	margin-left: 10px;
+        }
+        #tray menu {
+        	padding: 10px;
+        }
 
-                                                        #backlight {
-                                                        	color: @yellow;
-                                                        	padding: 0 10px 0 20px;
-                                                        	border-radius: 10px 0 0 10px;
-                                                        	margin-left: 10px;
-                                                        } 
+        #tray menu * {
+        	background-color: #11111b;
+        color: @lavender;
+        }
+        #tray menu *:hover {
+        	background-color: @green;
+        	color: @green;
+        }
 
-                                                        #battery {
-                                                        	color: @lavender;
-                                                        	padding: 0 20px 0 10px;
-                                                        	border-radius: 0 10px 10px 0;
-                                                        	margin-right: 10px;
-                                                        }
 
-                                                        #battery.critical:not(.charging) {
-                                                        	color: @red;
-                                                        	animation-name: blink;
-                                                        	animation-duration: 0.5s;
-                                                        	animation-timing-function: linear;
-                                                        	animation-iteration-count: infinite;
-                                                        	animation-direction: alternate;
-                                                        }
+        #backlight {
+        	color: @lavender;
+        	padding: 0 10px 0 20px;
+        	border-radius: 10px 0 0 10px;
+        	margin-left: 10px;
+        } 
 
-                                                        #battery.charging {
-                                                        color: @green;
-                                                        }
+        #battery {
+        	color: @lavender;
+        	padding: 0 20px 0 10px;
+        	border-radius: 0 10px 10px 0;
+        	margin-right: 10px;
+        }
 
-                                                        @keyframes blink {
-                                                        	to {
-                                                        		 color: @red;
-                                                        	}
-                                                        }
+        #battery.critical:not(.charging) {
+        	color: @red;
+        	animation-name: blink;
+        	animation-duration: 0.5s;
+        	animation-timing-function: linear;
+        	animation-iteration-count: infinite;
+        	animation-direction: alternate;
+        }
 
-                																			#temperature {
-                																				 color: @teal;
-                																				 border-radius: 10px 0 0 10px;
-                																			}
+        #battery.charging {
+        color: @green;
+        }
 
-                																			#temperature.critical {
-                																				 color: @red;
-                																			}
+        @keyframes blink {
+        	to {
+        		 color: @red;
+        	}
+        }
 
-                																			#cpu {
-                																				 color: @blue;
-                																			}
+        #temperature {
+        padding: 10px;
+        border-radius: 10px 0 0 10px;
+        color: @lavender;
+        margin-left: 10px;
+        }
 
-                																			#memory {
-                																				 color: @flamingo;
-                																				 border-radius: 0 10px 10px 0;
-                																				 margin-right: 5px;
-                																			}
+        #temperature.critical {
+         color: @red;
+        }
 
-        																							#network {
-        																							 color: @lavender;
-        																							 border-radius: 0 10px 10px 0;
-        																							 margin-right: 10px;
-        																							}
+        #cpu {
+        padding: 10px;
+        color: @lavender;
+        }
 
-        																							#network.disconnected {
-        																							 color: @red;
-        																							}
-        																							
-        																							#wireplumber {
-        																							 color: @lavender;
-        																							 border-radius: 10px 0 0 10px;
-        																							 margin-right: 10px;
-        																							}
+        #memory {
+        padding: 10px;
+        border-radius: 0 10px 10px 0;
+        color: @lavender;
+        margin-right: 10px;
+        }
 
-        																							#wireplumber.muted {
-        																							 color: @red;
-        																							}
+        #network {
+        color: @lavender;
+        border-radius: 0 10px 10px 0;
+        margin-right: 10px;
+        padding: 10px;
+        }
 
+        #network.disconnected {
+        color: @red;
+        }
+
+        #wireplumber {
+        color: @lavender;
+        border-radius: 10px 0 0 10px;
+        padding: 10px;
+        }
+
+        #wireplumber.muted {
+        color: @red;
+        }
       '';
   };
 }
