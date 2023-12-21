@@ -3,7 +3,7 @@ let
   volume = pkgs.writeShellScriptBin "volume" ''
     		#!/usr/bin/env bash
 
-    		iDIR="$HOME/.icons/"
+    		iDIR="$XDG_DATA_HOME/.icons/"
 
     		# Get Volume
     		get_volume() {
@@ -112,7 +112,7 @@ let
 
   brightness = pkgs.writeShellScriptBin "brightness" ''
     #!/usr/bin/env bash
-    iDIR="$HOME/.icons/"
+    iDIR="$XDG_DATA_HOME/.icons/"
     brightnessctl = ${pkgs.brightnessctl}/bin/brightnessctl
 
     # Get brightness
@@ -164,7 +164,7 @@ let
   '';
 in
 {
-  home.file.".icons" = {
+  xdg.dataFile.".icons" = {
     source = ./icons;
     recursive = true;
   };
@@ -172,5 +172,6 @@ in
   home.packages = [
     volume
     brightness
+    pkgs.libnotify
   ];
 }

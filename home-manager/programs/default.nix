@@ -13,7 +13,6 @@
     ./gpg.nix
     ./k8s.nix
     ./kafka.nix
-    ./gaming.nix
     ./kdeconnect.nix
     ./yazi.nix
     ./photos.nix
