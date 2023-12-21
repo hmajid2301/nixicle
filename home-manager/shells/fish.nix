@@ -30,7 +30,7 @@ in
           nix-your-shell fish | source
           fish_add_path --path --append ~/go/bin/
           fish_add_path --path --prepend /usr/local/bin /usr/bin ~/.local/bin
-          set -x GOPATH $HOME/go
+          set -x GOPATH $XDG_DATA_HOME/go
           set -x GOPRIVATE "git.curve.tools,gitlab.com/imaginecurve"
 
           # fifc setup
@@ -84,6 +84,7 @@ in
         '';
       shellAliases = {
         l = "eza --group --header --group-directories-first --long --git --all --binary --all --icons";
+        wget = "wget --hsts-file=\"$XDG_DATA_HOME/wget-hsts\"";
       };
       shellAbbrs = {
         # abbr existing commands

@@ -1,4 +1,4 @@
-{
+{ pkgs, ... }: {
   programs.gamemode.enable = true;
   programs.gamescope.enable = true;
   programs.steam = {
@@ -6,4 +6,11 @@
     dedicatedServer.openFirewall = true;
     remotePlay.openFirewall = true;
   };
+
+  environment.systemPackages = with pkgs; [
+    wineWowPackages.stable
+    wineWowPackages.staging
+    winetricks
+    wineWowPackages.waylandFull
+  ];
 }

@@ -1,4 +1,4 @@
-{ pkgs, inputs, ... }: {
+{ pkgs, config, inputs, lib, ... }: {
   imports = [
     ./gtk.nix
     ./gammastep.nix
@@ -15,10 +15,15 @@
 
   ];
 
-  home.sessionVariables = {
+  home.sessionVariables = rec {
     MOZ_ENABLE_WAYLAND = 1;
     QT_QPA_PLATFORM = "wayland";
     LIBSEAT_BACKEND = "logind";
+
+    # TODO: move to xdg file maybe
+    HISTFILE = lib.mkForce "$XDG_STATE_HOME/bash/history";
+    GNUPGHOME = lib.mkForce "$XDG_DATA_HOME/gnupg";
+    GTK2_RC_FILES = lib.mkForce "$XDG_CONFIG_HOME/gtk-2.0/gtkrc";
   };
 
   home.packages = with pkgs; [

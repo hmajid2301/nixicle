@@ -46,18 +46,12 @@ in
       	},
       	"scratchpads": {
       		"term": {
-      			"command": "wezterm --class scratchpad",
+      			"command": "foot --title scratchpad",
       			"margin": 50,
-      			"unfocus": "hide",
-      		},
-      		"pavucontrol": {
-      			"command": "pavucontrol",
-      			"margin": 50,
-      			"unfocus": "hide",
-      			"animation": "fromTop"
+      			"unfocus": "hide"
       		},
       		"yazi": {
-      			"command": "wezterm start --class scratchpad -- yazi",
+      			"command": "foot --title scratchpad -m fish -c yazi",
       			"margin": 50
       		}
       	}
@@ -91,6 +85,7 @@ in
          misc {
         	vrr = 2
         	disable_hyprland_logo = 1;
+        	disable_splash_rendering = 1;
          }
 
          $notifycmd = notify-send -h string:x-canonical-private-synchronous:hypr-cfg -u low
@@ -121,7 +116,7 @@ in
          exec-once = mullvad-gui &
          exec-once = ${pkgs.tailscale-systray}/bin/tailscale-systray &
          exec-once = ${pkgs.swaybg}/bin/swaybg -i ${config.my.settings.wallpaper} --mode fill &
-         # exec-once = pypr
+         exec-once = pypr
 
          # █▀ █▀▀ █▀█ █ █▀█ ▀█▀ █▀
          # ▄█ █▄▄ █▀▄ █ █▀▀ ░█░ ▄█
@@ -150,19 +145,19 @@ in
 
          # █▄▀ █▀▀ █▄█ █▄▄ █▀█ ▄▀█ █▀█ █▀▄   █▀▀ █▀█ █▄░█ ▀█▀ █▀█ █▀█ █░░ █▀
          # █░█ ██▄ ░█░ █▄█ █▄█ █▀█ █▀▄ █▄▀   █▄▄ █▄█ █░▀█ ░█░ █▀▄ █▄█ █▄▄ ▄█
-         bind=,XF86MonBrightnessUp,exec, brightness --inc
-         bind=,XF86MonBrightnessDown,exec, brightness --dec
-         bind=,XF86AudioRaiseVolume,exec, volume --inc
-         bind=,XF86AudioLowerVolume,exec, volume --dec
-         bind=,XF86AudioMute,exec, volume --toggle
-         bind=,XF86AudioMicMute,exec, volume --toggle-mic
-         bind=,XF86AudioNext,exec,playerctl next
-         bind=,XF86AudioPrev,exec,playerctl previous
-         bind=,XF86AudioPlay,exec,playerctl play-pause
-         bind=,XF86AudioStop,exec,playerctl stop
-         bind=ALT,XF86AudioNext,exec,playerctld shift
-         bind=ALT,XF86AudioPrev,exec,playerctld unshift
-         bind=ALT,XF86AudioPlay,exec,systemctl --user restart playerctld
+         bindi=,XF86MonBrightnessUp,exec, brightness --inc
+         bindi=,XF86MonBrightnessDown,exec, brightness --dec
+         bindi=,XF86AudioRaiseVolume,exec, volume --inc
+         bindi=,XF86AudioLowerVolume,exec, volume --dec
+         bindi=,XF86AudioMute,exec, volume --toggle
+         bindi=,XF86AudioMicMute,exec, volume --toggle-mic
+         bindi=,XF86AudioNext,exec,playerctl next
+         bindi=,XF86AudioPrev,exec,playerctl previous
+         bindi=,XF86AudioPlay,exec,playerctl play-pause
+         bindi=,XF86AudioStop,exec,playerctl stop
+         bindi=ALT,XF86AudioNext,exec,playerctld shift
+         bindi=ALT,XF86AudioPrev,exec,playerctld unshift
+         bindi=ALT,XF86AudioPlay,exec,systemctl --user restart playerctld
 
          # █▀▀ █▀█ █▀▀ █░█ █▀
          # █▀░ █▄█ █▄▄ █▄█ ▄█
@@ -245,23 +240,15 @@ in
          binde = SUPERALT, k, resizeactive, 0 -20
          binde = SUPERALT, j, resizeactive, 0 20
 
-        # bind=CTRL_SUPER,F,exec,pypr toggle yazi && hyprctl dispatch bringactivetotop
-        # bind=CTRL_SUPER,Z,exec,pypr toggle term && hyprctl dispatch bringactivetotop
-        # bind=CTRL_SUPER,P,exec,pypr toggle pavucontrol && hyprctl dispatch bringactivetotop
-        # $scratchpadsize = size 80% 85%
-        #
-        # $scratchpad = class:^(scratchpad)$
-        # windowrulev2 = float,$scratchpad
-        # windowrulev2 = $scratchpadsize,$scratchpad
-        # windowrulev2 = workspace special silent,$scratchpad
-        # windowrulev2 = center,$scratchpad
-        #
-        # $pavucontrol = class:^(pavucontrol)$
-        # windowrulev2 = float,$pavucontrol
-        # windowrulev2 = size 86% 40%,$pavucontrol
-        # windowrulev2 = move 50% 6%,$pavucontrol
-        # windowrulev2 = workspace special silent,$pavucontrol
-        # windowrulev2 = opacity 0.80,$pavucontrol
+        bind=CTRL_SUPER,F,exec,pypr toggle yazi && hyprctl dispatch bringactivetotop
+        bind=CTRL_SUPER,Z,exec,pypr toggle term && hyprctl dispatch bringactivetotop
+        $scratchpadsize = size 80% 85%
+
+        $scratchpad = class:^(scratchpad)$
+        windowrulev2 = float,$scratchpad
+        windowrulev2 = $scratchpadsize,$scratchpad
+        windowrulev2 = workspace special silent,$scratchpad
+        windowrulev2 = center,$scratchpad
       '';
     };
   };

@@ -26,7 +26,6 @@ in
   };
 
 
-
   programs =
     let
       fixGpg = ''
@@ -64,4 +63,3 @@ in
     };
   };
 }
-# vim: filetype=nix
