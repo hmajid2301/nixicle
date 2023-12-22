@@ -28,13 +28,14 @@ in
     ./plugins/training.nix
     ./plugins/notes.nix
 
+    ./plugins/lang/css.nix
+    # ./plugins/lang/docker.nix
     ./plugins/lang/go.nix
     ./plugins/lang/lua.nix
-    ./plugins/lang/nix.nix
     ./plugins/lang/html.nix
+    ./plugins/lang/nix.nix
     ./plugins/lang/markdown.nix
     ./plugins/lang/python.nix
-    ./plugins/lang/css.nix
     ./plugins/lang/yaml.nix
 
     ./plugins/tmux.nix

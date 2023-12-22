@@ -140,12 +140,16 @@
             Down: {bandwidthDownBits}
           '';
         };
-        wireplumber = {
+        pulseaudio = {
           scroll-step = 2;
           format = "{icon} {volume}%";
+          format-bluetooth = " {icon} {volume}%";
           format-muted = "";
-          format-icons = [ "" "" ];
-          "on-click" = "helvum";
+          format-icons = {
+            headphone = "";
+            headset = "";
+            default = [ "" "" ];
+          };
         };
         tray = {
           icon-size = 16;

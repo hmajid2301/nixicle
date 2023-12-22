@@ -100,7 +100,6 @@ in
         ping = "gping";
         ls = "eza";
         sl = "eza";
-        cava = "TERM=st-256color cava";
         tree = "eza --tree";
 
         # nix

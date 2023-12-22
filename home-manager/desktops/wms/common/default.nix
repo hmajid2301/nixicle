@@ -37,7 +37,6 @@
     playerctl
     sway-contrib.grimshot
 
-    # gnome
     impression
     raider
     helvum
@@ -51,6 +50,7 @@
     gnome.gvfs
     loupe
     gnome-text-editor
+    pavucontrol
 
     networkmanagerapplet
     inputs.nwg-displays.packages."${pkgs.system}".default

@@ -46,6 +46,10 @@
                       mountpoint = "/home";
                       mountOptions = [ "subvol=home" "compress=zstd" "noatime" ];
                     };
+                    "/games" = {
+                      mountpoint = "/home/games";
+                      mountOptions = [ "subvol=games" "compress=zstd" "noatime" ];
+                    };
                     "/nix" = {
                       mountpoint = "/nix";
                       mountOptions = [ "subvol=nix" "compress=zstd" "noatime" ];

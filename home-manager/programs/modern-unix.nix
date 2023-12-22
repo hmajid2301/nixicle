@@ -1,4 +1,4 @@
-{ inputs, pkgs, lib, ... }: {
+{ pkgs, ... }: {
   home.packages = with pkgs; [
     choose
     curlie

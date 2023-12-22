@@ -4,7 +4,7 @@
     ./atuin.nix
     ./bat.nix
     ./bottom.nix
-    ./cheat-sheet.nix
+    ./cheat-sheets.nix
     ./direnv.nix
     ./discord.nix
     ./eza.nix
@@ -13,6 +13,7 @@
     ./git.nix
     ./gpg.nix
     ./k8s.nix
+    ./modern-unix.nix
     ./kafka.nix
     ./kdeconnect.nix
     ./modern-unix.nix
@@ -43,15 +44,8 @@
     htop
     ctpv
     unzip
-    pavucontrol
     gnupg
 
     showmethekey
-
-    # cheat sheets
-    cheat
-    cht-sh
-    navi
-    tealdeer
   ];
 }
