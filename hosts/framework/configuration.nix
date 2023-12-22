@@ -34,8 +34,6 @@
     pkgs.headset-charge-indicator
   ];
   services.udev.packages = [ pkgs.headsetcontrol2 ];
-  hardware.framework.amd-7040.preventWakeOnAC = true;
-  boot.bootspec.enable = true;
 
   programs.hyprland = {
     enable = true;
