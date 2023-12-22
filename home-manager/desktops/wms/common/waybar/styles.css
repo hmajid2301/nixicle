@@ -1,186 +1,185 @@
-        @define-color base      #1e1e2e;
-        @define-color blue      #89b4fa;
-        @define-color lavender  #b4befe;
-        @define-color green     #a6e3a1;
-        @define-color red       #f38ba8;
+@define-color base      #1e1e2e;
+@define-color blue      #89b4fa;
+@define-color lavender  #b4befe;
+@define-color green     #a6e3a1;
+@define-color red       #f38ba8;
 
-        * { 
-        	border: 0;
-        	padding: 0 0;
-        	font-family: "FiraCode Nerd Font";
-        	font-size: 18px;
-        	color: white;
-        }
+* {
+  border: 0;
+  padding: 0 0;
+  font-family: "FiraCode Nerd Font";
+  font-size: 18px;
+  color: white;
+}
 
-        window#waybar {
-        	border: 0px solid rgba(0, 0, 0, 0);
-        	background-color: rgba(0, 0, 0, 0);
-        }
+window#waybar {
+  border: 0px solid rgba(0, 0, 0, 0);
+  background-color: rgba(0, 0, 0, 0);
+}
 
-        #workspaces {
-        	background-color: #11111b;
-        	border-radius: 5px;
-        	margin: 8px;
-        }
+#workspaces {
+  background-color: #11111b;
+  border-radius: 5px;
+  margin: 8px;
+}
 
-        #workspaces button {
-        	color: @base;
-        	border-radius: 5px;
-        	padding-right: 5px;
-        	margin: 2px 4px;
-        }
+#workspaces button {
+  color: @base;
+  border-radius: 5px;
+  padding-right: 5px;
+  margin: 2px 4px;
+}
 
-        #workspaces button:hover {
-        	background-color: @lavender;
-        } 
+#workspaces button:hover {
+  background-color: @lavender;
+}
 
-        #workspaces button.active * {
-        	border-radius: 7px;
-        	background-color: @lavender;
-        } 
+#workspaces button.active * {
+  border-radius: 7px;
+  background-color: @lavender;
+}
 
-        #workspaces button.visible {
-        	background-color: @lavender;
-        }
+#workspaces button.visible {
+  background-color: @lavender;
+}
 
-        #workspaces button.visible * {
-        	color: @base;
-        } 
+#workspaces button.visible * {
+  color: @base;
+}
 
-        #clock,
-        #battery,
-        #cpu,
-        #memory,
-        #temperature,
-        #backlight,
-        #network,
-        #wireplumber,
-        #mode,
-        #tray,
-        #idle_inhibitor,
-        #custom-notification {
-        	border-style: solid;
-        	background-color: #11111b;
-        	margin: 8px 0;
-        	padding: 5px 0;
-        } 
+#clock,
+#battery,
+#cpu,
+#memory,
+#temperature,
+#backlight,
+#network,
+#pulseaudio,
+#mode,
+#tray,
+#idle_inhibitor,
+#custom-notification {
+  border-style: solid;
+  background-color: #11111b;
+  margin: 8px 0;
+  padding: 5px 0;
+}
 
-        #custom-notification {
-        	margin-left: 10px;
-        	padding: 0 20px 0 20px;
-        	border-radius: 10px 0 0 10px;
-        	color: @lavender;
-        }
+#custom-notification {
+  margin-left: 10px;
+  padding: 0 20px 0 20px;
+  border-radius: 10px 0 0 10px;
+  color: @lavender;
+}
 
-        #clock {
-        	border-radius: 0; 
-        	padding: 0 20px 0 20px;
-        	font-weight: bold;
-        	color: @lavender;
-        } 
+#clock {
+  border-radius: 0;
+  padding: 0 20px 0 20px;
+  font-weight: bold;
+  color: @lavender;
+}
 
-        #idle_inhibitor.deactivated {
-        	border-radius: 0 10px 10px 0;
-        	color: @lavender;
-        }
+#idle_inhibitor.deactivated {
+  border-radius: 0 10px 10px 0;
+  color: @lavender;
+}
 
-        #idle_inhibitor.activated {
-        	border-radius: 0 10px 10px 0;
-        	 color: @green;
-        }
+#idle_inhibitor.activated {
+  border-radius: 0 10px 10px 0;
+  color: @green;
+}
 
-        #tray {
-        	border-radius: 10px;
-        	padding: 0 10px 0 10px;
-        	margin-left: 10px;
-        }
-        #tray menu {
-        	padding: 10px;
-        }
+#tray {
+  border-radius: 10px;
+  padding: 0 10px 0 10px;
+  margin-left: 10px;
+}
+#tray menu {
+  padding: 10px;
+}
 
-        #tray menu * {
-        	background-color: #11111b;
-        color: @lavender;
-        }
-        #tray menu *:hover {
-        	background-color: @green;
-        	color: @green;
-        }
+#tray menu * {
+  background-color: #11111b;
+  color: @lavender;
+}
+#tray menu *:hover {
+  background-color: @green;
+  color: @green;
+}
 
+#backlight {
+  color: @lavender;
+  padding: 0 10px 0 20px;
+  border-radius: 10px 0 0 10px;
+  margin-left: 10px;
+}
 
-        #backlight {
-        	color: @lavender;
-        	padding: 0 10px 0 20px;
-        	border-radius: 10px 0 0 10px;
-        	margin-left: 10px;
-        } 
+#battery {
+  color: @lavender;
+  padding: 0 20px 0 10px;
+  border-radius: 0 10px 10px 0;
+  margin-right: 10px;
+}
 
-        #battery {
-        	color: @lavender;
-        	padding: 0 20px 0 10px;
-        	border-radius: 0 10px 10px 0;
-        	margin-right: 10px;
-        }
+#battery.critical:not(.charging) {
+  color: @red;
+  animation-name: blink;
+  animation-duration: 0.5s;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+}
 
-        #battery.critical:not(.charging) {
-        	color: @red;
-        	animation-name: blink;
-        	animation-duration: 0.5s;
-        	animation-timing-function: linear;
-        	animation-iteration-count: infinite;
-        	animation-direction: alternate;
-        }
+#battery.charging {
+  color: @green;
+}
 
-        #battery.charging {
-        color: @green;
-        }
+@keyframes blink {
+  to {
+    color: @red;
+  }
+}
 
-        @keyframes blink {
-        	to {
-        		 color: @red;
-        	}
-        }
+#temperature {
+  padding: 10px;
+  border-radius: 10px 0 0 10px;
+  color: @lavender;
+  margin-left: 10px;
+}
 
-        #temperature {
-        padding: 10px;
-        border-radius: 10px 0 0 10px;
-        color: @lavender;
-        margin-left: 10px;
-        }
+#temperature.critical {
+  color: @red;
+}
 
-        #temperature.critical {
-         color: @red;
-        }
+#cpu {
+  padding: 10px;
+  color: @lavender;
+}
 
-        #cpu {
-        padding: 10px;
-        color: @lavender;
-        }
+#memory {
+  padding: 10px;
+  border-radius: 0 10px 10px 0;
+  color: @lavender;
+  margin-right: 10px;
+}
 
-        #memory {
-        padding: 10px;
-        border-radius: 0 10px 10px 0;
-        color: @lavender;
-        margin-right: 10px;
-        }
+#network {
+  color: @lavender;
+  border-radius: 0 10px 10px 0;
+  margin-right: 10px;
+  padding: 10px;
+}
 
-        #network {
-        color: @lavender;
-        border-radius: 0 10px 10px 0;
-        margin-right: 10px;
-        padding: 10px;
-        }
+#network.disconnected {
+  color: @red;
+}
 
-        #network.disconnected {
-        color: @red;
-        }
+#pulseaudio {
+  color: @lavender;
+  border-radius: 10px 0 0 10px;
+  padding: 10px;
+}
 
-        #wireplumber {
-        color: @lavender;
-        border-radius: 10px 0 0 10px;
-        padding: 10px;
-        }
-
-        #wireplumber.muted {
-        color: @red;
-        }
+#pulseaudio.muted {
+  color: @red;
+}
