@@ -163,11 +163,6 @@ in
               --bind "?:toggle-preview" \
               --preview-window hidden,60%
         '';
-
-        fish_greeting = {
-          description = "Greeting to show when starting a fish shell";
-          body = "fortune | lolcat -f | chara say -c kitten";
-        };
       };
       plugins = [
         {

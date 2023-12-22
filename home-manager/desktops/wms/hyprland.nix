@@ -45,11 +45,6 @@ in
       		"plugins": ["scratchpads"]
       	},
       	"scratchpads": {
-      		"term": {
-      			"command": "foot --title scratchpad",
-      			"margin": 50,
-      			"unfocus": "hide"
-      		},
       		"yazi": {
       			"command": "foot --title scratchpad -m fish -c yazi",
       			"margin": 50
@@ -241,7 +236,6 @@ in
          binde = SUPERALT, j, resizeactive, 0 20
 
         bind=CTRL_SUPER,F,exec,pypr toggle yazi && hyprctl dispatch bringactivetotop
-        bind=CTRL_SUPER,Z,exec,pypr toggle term && hyprctl dispatch bringactivetotop
         $scratchpadsize = size 80% 85%
 
         $scratchpad = class:^(scratchpad)$
