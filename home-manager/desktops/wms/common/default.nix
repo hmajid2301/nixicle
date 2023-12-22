@@ -4,7 +4,7 @@
     ./gammastep.nix
     ./kanshi.nix
     ./swaylock.nix
-    ./waybar.nix
+    ./waybar
     ./wlogout.nix
     ./eww.nix
     ./scripts.nix
