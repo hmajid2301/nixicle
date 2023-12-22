@@ -10,7 +10,7 @@
     ./scripts.nix
     ./xdg.nix
 
-    ./notifications/swaync.nix
+    ./notifications/swaync
     ./launchers/rofi.nix
 
   ];

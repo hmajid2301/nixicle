@@ -26,7 +26,7 @@
           "temperature"
           "cpu"
           "memory"
-          "wireplumber"
+          "pulseaudio"
           "network"
         ];
         "hyprland/workspaces" = {

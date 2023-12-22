@@ -12,13 +12,6 @@
         ];
       }
     ];
-    extraPlugins = with pkgs.vimPlugins; [ telescope-media-files-nvim ];
-
-    extraConfigLua =
-      # lua
-      ''
-        			require('telescope').load_extension('media_files')
-        			'';
 
     plugins.telescope = {
       enable = true;

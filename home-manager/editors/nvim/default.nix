@@ -29,9 +29,10 @@ in
     ./plugins/notes.nix
 
     ./plugins/lang/css.nix
-    # ./plugins/lang/docker.nix
+    ./plugins/lang/docker.nix
     ./plugins/lang/go.nix
     ./plugins/lang/lua.nix
+    ./plugins/lang/json.nix
     ./plugins/lang/html.nix
     ./plugins/lang/nix.nix
     ./plugins/lang/markdown.nix
