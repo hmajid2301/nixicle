@@ -3,6 +3,8 @@
     docker-compose-language-service
   ];
 
+
+
   programs.nixvim = {
     extraConfigLua = ''
       require("lspconfig")["docker_compose_language_service"].setup({})
@@ -23,7 +25,7 @@
         };
       };
 
-      plugins.treesitter = {
+      treesitter = {
         grammarPackages = with config.programs.nixvim.plugins.treesitter.package.builtGrammars; [
           dockerfile
         ];

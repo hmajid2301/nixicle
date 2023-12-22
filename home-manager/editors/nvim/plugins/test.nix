@@ -86,10 +86,6 @@
     # TODO: workout how to move neotest to specific language files
     extraConfigLua =
       ''
-        require("which-key").register({
-        	["<leader>t"] = { name = "+test" },
-        })
-
         local neotest = require('neotest')
         neotest.setup({
         	status = { virtual_text = true },

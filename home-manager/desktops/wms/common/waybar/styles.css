@@ -32,6 +32,7 @@ window#waybar {
 
 #workspaces button:hover {
   background-color: @lavender;
+  color: white;
 }
 
 #workspaces button.active * {

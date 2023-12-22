@@ -1,16 +1,15 @@
 { pkgs, config, lib, ... }:
 with lib;
 let
-  # TODO: move to official trepo
-  t-smart-manager = pkgs.tmuxPlugins.mkTmuxPlugin {
+  t-smart-manager = pkgs.tmuxPlugins.mkTmuxPlugin rec {
     pluginName = "t-smart-tmux-session-manager";
-    version = "unstable-2023-09-20";
+    version = "v2.8.0";
     rtpFilePath = "t-smart-tmux-session-manager.tmux";
     src = pkgs.fetchFromGitHub {
       owner = "joshmedeski";
       repo = "t-smart-tmux-session-manager";
-      rev = "63360755451a1d536f5847b3a3dc41bb3050b10c";
-      sha256 = "00051slyy55qdxf0l41kfw6sr46nm2br31hdkwpy879ia5acligi";
+      rev = version;
+      sha256 = "sha256-EMDEEIWJ+XFOk0WsQPAwj9BFBVDNwFUCyd1ScceqKpc=";
     };
   };
   cfg = config.modules.multiplexers.tmux;
@@ -65,21 +64,6 @@ in
           };
           extraConfig = ''
             set -g @super-fingers-key f
-          '';
-        }
-        {
-          plugin = mkTmuxPlugin {
-            pluginName = "tmux-browser";
-            version = "unstable-2022-10-24";
-            src = pkgs.fetchFromGitHub {
-              owner = "ofirgall";
-              repo = "tmux-browser";
-              rev = "c3e115f9ebc5ec6646d563abccc6cf89a0feadb8";
-              sha256 = "08hwzsry7z22lrfdg9j367zqxqfsha7s9fi3sdg876z36l7ij1ly";
-            };
-          };
-          extraConfig = ''
-            set -g @browser_close_on_deattach '1'
           '';
         }
         {

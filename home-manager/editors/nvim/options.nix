@@ -43,6 +43,10 @@
       foldlevel = 99;
       foldlevelstart = 99;
       foldenable = true;
+
+      winwidth = 10;
+      winminwidth = 10;
+      equalalways = false;
     };
   };
 }
