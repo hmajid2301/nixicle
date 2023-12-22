@@ -122,6 +122,7 @@ in
          bind=,XF86Launch5,exec,swaylock -S
          bind=,XF86Launch4,exec,swaylock -S
          bind=SUPER,backspace,exec,swaylock -S
+         bind=CTRL_SUPER,backspace,exec,wlogout
 
          # █▀ █▀▀ █▀█ ▄▀█ ▀█▀ █▀▀ █░█ █▀█ ▄▀█ █▀▄
          # ▄█ █▄▄ █▀▄ █▀█ ░█░ █▄▄ █▀█ █▀▀ █▀█ █▄▀
