@@ -1,4 +1,4 @@
-{ config, ... }: {
+{ inputs, pkgs, config, ... }: {
   services.greetd = {
     enable = true;
     settings = rec {
@@ -10,8 +10,12 @@
     };
   };
 
-  # TODO: use config here
+  programs.hyprland = {
+    enable = true;
+    package = inputs.hyprland.packages.${pkgs.system}.hyprland;
+  };
+
   environment.etc."greetd/environments".text = ''
-    		Hyprland
+    Hyprland
   '';
 }

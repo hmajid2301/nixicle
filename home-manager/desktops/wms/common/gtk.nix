@@ -226,7 +226,8 @@
   qt = {
     enable = true;
     platformTheme = "gtk";
-    style.name = "Adwaita-dark";
+    style.name = "adwaita-dark";
+    style.package = pkgs.adwaita-qt;
   };
 
   home.sessionVariables.GTK_THEME = "Adwaita-dark";

@@ -12,16 +12,18 @@
     ../../nixos/optional/avahi.nix
     ../../nixos/optional/backup.nix
     ../../nixos/optional/docker.nix
+    ../../nixos/optional/egpu.nix
+    ../../nixos/optional/hardening.nix
     ../../nixos/optional/fonts.nix
     ../../nixos/optional/fingerprint.nix
     ../../nixos/optional/greetd.nix
     ../../nixos/optional/gaming.nix
-    ../../nixos/optional/quietboot.nix
+    ../../nixos/optional/plymouth.nix
     ../../nixos/optional/pipewire.nix
     ../../nixos/optional/tailscale.nix
     ../../nixos/optional/tpm.nix
     ../../nixos/optional/tlp.nix
-    ../../nixos/optional/vfio.nix
+    ../../nixos/optional/virtualisation.nix
     ../../nixos/optional/vpn.nix
   ];
 
@@ -35,20 +37,16 @@
   ];
   services.udev.packages = [ pkgs.headsetcontrol2 ];
 
-  programs.hyprland = {
-    enable = true;
-    package = inputs.hyprland.packages.${pkgs.system}.hyprland;
-  };
-
   swapDevices = [{ device = "/swap/swapfile"; }];
   boot = {
     kernelParams = [
-      "mem_sleep_default=deep"
-      "nvme.noacpi=1"
-      "btusb.enable_autosuspend=n"
-      "i915.enable_psr=0"
-      "resume_offset=533760"
+      "quiet"
+      "amd_pstate=active"
       "amdgpu.sg_display=0"
+      "pcie_aspm=force"
+      "pc"
+      "ie_aspm.policy=powersupersave"
+      "resume_offset=533760"
     ];
     blacklistedKernelModules = [ "hid-sensor-hub" ];
     supportedFilesystems = lib.mkForce [ "btrfs" ];
@@ -66,3 +64,5 @@
 
   system.stateVersion = "23.11";
 }
+
+
