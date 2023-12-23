@@ -1,4 +1,3 @@
-# This file (and the global directory) holds config that i use on all hosts
 { pkgs
 , inputs
 , outputs
@@ -15,6 +14,8 @@
       ./nix.nix
       ./openssh.nix
       ./opengl.nix
+      ./hardware.nix
+      ./fonts.nix
       ./pam.nix
       ./sops.nix
     ]
@@ -22,15 +23,17 @@
 
   home-manager.extraSpecialArgs = { inherit inputs outputs; };
 
-  hardware.keyboard.zsa.enable = true;
   services.pcscd.enable = true;
   services.udev.packages = with pkgs; [ yubikey-personalization ];
   services.gvfs.enable = true;
   services.udisks2.enable = true;
   services.fwupd.enable = true;
-  services.hardware.bolt.enable = true;
-  networking.firewall.enable = true;
-  services.printing.enable = true;
+  networking.firewall = {
+    enable = true;
+    allowedTCPPortRanges = [{ from = 1714; to = 1764; }];
+    allowedUDPPortRanges = [{ from = 1714; to = 1764; }];
+  };
+
   services.dbus.enable = true;
   services.geoclue2.enable = true;
   environment.pathsToLink = [
@@ -45,43 +48,6 @@
     overlays = builtins.attrValues outputs.overlays;
     config = {
       allowUnfree = true;
-    };
-  };
-  nixpkgs.config.joypixels.acceptLicense = true;
-  fonts = {
-    # Enable a basic set of fonts providing several font styles and families and reasonable coverage of Unicode.
-    enableDefaultPackages = false;
-    fontDir.enable = true;
-    packages = with pkgs; [
-      (nerdfonts.override { fonts = [ "FiraCode" "SourceCodePro" "UbuntuMono" ]; })
-      fira
-      fira-go
-      joypixels
-      liberation_ttf
-      noto-fonts-emoji
-      source-serif
-      ubuntu_font_family
-      work-sans
-    ];
-
-    fontconfig = {
-      antialias = true;
-      defaultFonts = {
-        serif = [ "Source Serif" ];
-        sansSerif = [ "Work Sans" "Fira Sans" "FiraGO" ];
-        monospace = [ "FiraCode Nerd Font Mono" "SauceCodePro Nerd Font Mono" ];
-        emoji = [ "Joypixels" "Noto Color Emoji" ];
-      };
-      enable = true;
-      hinting = {
-        autohint = false;
-        enable = true;
-        style = "slight";
-      };
-      subpixel = {
-        rgba = "rgb";
-        lcdfilter = "light";
-      };
     };
   };
 }

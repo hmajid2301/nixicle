@@ -46,10 +46,11 @@
                       mountpoint = "/home";
                       mountOptions = [ "subvol=home" "compress=zstd" "noatime" ];
                     };
-                    "/games" = {
-                      mountpoint = "/home/games";
-                      mountOptions = [ "subvol=games" "compress=zstd" "noatime" ];
-                    };
+                    # TODO: how to update this file
+                    # "/games" = {
+                    #   mountpoint = "/home";
+                    #   mountOptions = [ "subvol=home" "compress=zstd" "noatime" ];
+                    # };
                     "/nix" = {
                       mountpoint = "/nix";
                       mountOptions = [ "subvol=nix" "compress=zstd" "noatime" ];
