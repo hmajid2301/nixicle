@@ -24,17 +24,10 @@
     ./zoxide.nix
   ];
 
-  programs.nix-index = {
-    enable = true;
-    enableFishIntegration = true;
-  };
-
   home.packages = with pkgs; [
     keymapp
     powertop
 
-    nix-init
-    nix-update
     nix-your-shell
     src-cli
 

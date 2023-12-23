@@ -85,7 +85,6 @@ in
 
          $notifycmd = notify-send -h string:x-canonical-private-synchronous:hypr-cfg -u low
          env = QT_QPA_PLATFORM,wayland
-         env = QT_QPA_PLATFORMTHEME,qt5ct
 
          # █▀ █░█ █▀█ █▀█ ▀█▀ █▀▀ █░█ ▀█▀ █▀
          # ▄█ █▀█ █▄█ █▀▄ ░█░ █▄▄ █▄█ ░█░ ▄█

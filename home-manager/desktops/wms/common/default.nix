@@ -48,6 +48,7 @@
     gnome.totem
     gnome.gucharmap
     gnome.gvfs
+    gnome.gnome-logs
     loupe
     gnome-text-editor
     pavucontrol
