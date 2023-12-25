@@ -4,10 +4,10 @@
     userName = "Haseeb Majid";
     userEmail = "hello@haseebmajid.dev";
 
-    # signing = {
-    #   signByDefault = true;
-    #   key = "D528 BD50 F4E9 F031 AACB  1F7A 9833 E49C 848D 6C90";
-    # };
+    signing = {
+      signByDefault = true;
+      key = "D528 BD50 F4E9 F031 AACB 1F7A 9833 E49C 848D 6C90";
+    };
 
     extraConfig = {
       core = {
