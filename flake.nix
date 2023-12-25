@@ -28,11 +28,11 @@
     impermanence.url = "github:nix-community/impermanence";
     lanzaboote.url = "github:nix-community/lanzaboote";
 
-    hyprland.url = "github:hyprwm/Hyprland";
-    hypr-contrib.url = "github:hyprwm/contrib";
     nixgl.url = "github:nix-community/nixGL";
     nix-colors.url = "github:misterio77/nix-colors";
 
+    hypr-contrib.url = "github:hyprwm/contrib";
+    hyprland-nix.url = "github:spikespaz/hyprland-nix";
     neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
     nixvim.url = "github:pta2002/nixvim";
     nixneovimplugins.url = "github:jooooscha/nixpkgs-vim-extra-plugins";

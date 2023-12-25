@@ -3,20 +3,25 @@
 , ...
 }:
 {
-  home.packages = [ pkgs.pinentry-gnome pkgs.gcr ];
+  home.packages = [
+    pkgs.pinentry-gnome
+    pkgs.gcr
+    pkgs.gnome.seahorse
+  ];
+
+  services.gnome-keyring.enable = true;
 
   services.gpg-agent = {
     enable = true;
     enableSshSupport = true;
     enableExtraSocket = true;
-    sshKeys = [ "F04F743A24CD81B628A20667CD20E7373D83B71C" ];
+    sshKeys = [ "D528D50F4E9F031AACB1F7A9833E49C848D6C90" ];
     pinentryFlavor = "gnome3";
   };
 
   programs = {
     gpg = {
       enable = true;
-      publicKeys = [{ source = ../security/public.gpg; }];
     };
   };
 }

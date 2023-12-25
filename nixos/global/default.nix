@@ -6,7 +6,6 @@
   imports =
     [
       inputs.home-manager.nixosModules.home-manager
-      inputs.hyprland.nixosModules.default
       inputs.disko.nixosModules.disko
       inputs.lanzaboote.nixosModules.lanzaboote
 

@@ -91,7 +91,6 @@
           format-icons = {
             activated = "  ";
             deactivated = "  ";
-
           };
         };
         backlight = {
@@ -113,6 +112,7 @@
           tooltip = false;
           thermal-zone = 1;
           critical-threshold = 80;
+          hwmon-path = "/sys/class/hwmon/hwmon5/temp1_input";
           format = "{icon} {temperatureC}°C";
           format-critical = "{icon} {temperatureC}°C";
           format-icons = [ "" "" "" "" "" ];
