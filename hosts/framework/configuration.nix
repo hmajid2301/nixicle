@@ -40,7 +40,6 @@
   swapDevices = [{ device = "/swap/swapfile"; }];
   boot = {
     kernelParams = [
-      "quiet"
       "amd_pstate=active"
       "amdgpu.sg_display=0"
       "pcie_aspm=force"

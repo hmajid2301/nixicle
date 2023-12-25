@@ -21,7 +21,7 @@
       home_office_laptop_docked = {
         outputs = [
           {
-            criteria = "GIGA-BYTE TECHNOLOGY CO., LTD. Gigabyte M32U 21351B000087";
+            criteria = "GIGA-BYTE TECHNOLOGY CO. LTD. Gigabyte M32U";
             position = "3840,0";
             mode = "3840x2160@144Hz";
           }
@@ -39,7 +39,7 @@
       home_office = {
         outputs = [
           {
-            criteria = "GIGA-BYTE TECHNOLOGY CO., LTD. Gigabyte M32U 21351B000087";
+            criteria = "GIGA-BYTE TECHNOLOGY CO. LTD. Gigabyte M32U";
             position = "3840,0";
             mode = "3840x2160@144Hz";
           }
@@ -48,6 +48,7 @@
             position = "0,0";
             mode = "3840x2160@144Hz";
           }
+
         ];
       };
     };
