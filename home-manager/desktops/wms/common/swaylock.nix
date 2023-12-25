@@ -5,7 +5,6 @@
 }:
 let
   inherit (config.colorscheme) colors;
-  swayLoc = if config.my.settings.host == "curve" then "/usr/local/bin/swaylock" else "${pkgs.swaylock-effects}/bin/swaylock";
 in
 {
   home.packages = with pkgs; [
@@ -19,18 +18,16 @@ in
       show-failed-attempts = true;
       screenshots = true;
       clock = true;
-      timestr = "%I:%M:%S %p";
-      datestr = "%A %d %B %Y";
 
       indicator = true;
-      indicator-idle-visible = true;
-      indicator-radius = 450;
+      indicator-radius = 350;
       indicator-thickness = 5;
 
-      effect-blur = "25x20";
+      effect-blur = "7x5";
       effect-vignette = "0.5:0.5";
       fade-in = 0.2;
 
+      font = "${config.my.settings.fonts.monospace}";
       ring-color = "${colors.base02}";
       inside-wrong-color = "${colors.base08}";
       ring-wrong-color = "${colors.base08}";
@@ -54,14 +51,15 @@ in
 
   services.swayidle = {
     enable = true;
+    systemdTarget = "hyprland-session.target";
     events = [
       {
         event = "before-sleep";
-        command = "${swayLoc} -fF";
+        command = "${pkgs.swaylock-effects}/bin/swaylock -fF";
       }
       {
         event = "lock";
-        command = "${swayLoc} -fF";
+        command = "${pkgs.swaylock-effects}/bin/swaylock -fF";
       }
     ];
     timeouts = [
