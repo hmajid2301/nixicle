@@ -21,8 +21,7 @@
       ./multiplexers/tmux.nix
       ./multiplexers/zellij.nix
 
-      ./desktops/wms/hyprland.nix
-      ./desktops/wms/common
+      ./desktops/hyprland
 
       ./shells/fish.nix
       ./shells/zsh.nix

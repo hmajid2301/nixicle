@@ -31,8 +31,8 @@ in
         "x-scheme-handler/unknown" = browser;
 
         "audio/*" = [ "mpv.desktop" ];
-        "video/*" = [ "Totem.dekstop" ];
-        "video/mp4" = [ "Totem.dekstop" ];
+        "video/*" = [ "org.gnome.Totem.dekstop" ];
+        "video/mp4" = [ "org.gnome.Totem.dekstop" ];
         "image/*" = [ "org.gnome.loupe.desktop" ];
         "image/png" = [ "org.gnome.loupe.desktop" ];
         "image/jpg" = [ "org.gnome.loupe.desktop" ];
