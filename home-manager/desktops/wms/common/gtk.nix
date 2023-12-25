@@ -25,6 +25,7 @@
 
     gtk3.extraCss =
       ''
+        @define-color theme_unfocused_base_color rgb(30, 30, 46);
         @define-color accent_color rgb(116, 199, 236);
         @define-color accent_bg_color rgb(137, 180, 250);
         @define-color accent_fg_color rgb(17, 17, 27);
@@ -135,8 +136,11 @@
       gtk-error-bell = 0;
       gtk-application-prefer-dark-theme = true;
     };
+
     gtk4.extraCss = ''
-      		@define-color accent_color rgb(116, 199, 236);
+      @define-color theme_unfocused_base_color rgb(30, 30, 46);
+      @define-color theme_unfocused_bg_color rgb(30, 30, 46);
+      @define-color accent_color rgb(116, 199, 236);
       @define-color accent_bg_color rgb(137, 180, 250);
       @define-color accent_fg_color rgb(17, 17, 27);
       @define-color destructive_color rgb(238, 153, 160);

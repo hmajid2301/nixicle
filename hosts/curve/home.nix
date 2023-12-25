@@ -101,5 +101,33 @@
       package = pkgs.gnome.adwaita-icon-theme;
       name = "Adwaita";
     };
+
+    programs.swaylock.settings.effect-blur = lib.mkForce "25x20";
+    programs.swaylock.settings.effect-vignette = lib.mkForce "0.5x0.5";
+
+    services.swayidle = lib.mkForce {
+      enable = true;
+      events = [
+        {
+          event = "before-sleep";
+          command = "/usr/local/bin/swaylock -fF";
+        }
+        {
+          event = "lock";
+          command = "/usr/local/bin/swaylock -fF";
+        }
+      ];
+      timeouts = [
+        {
+          timeout = 600;
+          command = "${config.wayland.windowManager.hyprland.package}/bin/hyprctl dispatch dpms off";
+          resumeCommand = "${config.wayland.windowManager.hyprland.package}/bin/hyprctl dispatch dpms on";
+        }
+        {
+          timeout = 610;
+          command = "${pkgs.systemd}/bin/loginctl lock-session";
+        }
+      ];
+    };
   };
 }

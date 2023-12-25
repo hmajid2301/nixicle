@@ -7,7 +7,6 @@
     ./waybar
     ./wlogout.nix
     ./eww.nix
-    ./scripts.nix
     ./xdg.nix
 
     ./notifications/swaync
@@ -19,11 +18,6 @@
     MOZ_ENABLE_WAYLAND = 1;
     QT_QPA_PLATFORM = "wayland";
     LIBSEAT_BACKEND = "logind";
-
-    # TODO: move to xdg file maybe
-    HISTFILE = lib.mkForce "$XDG_STATE_HOME/bash/history";
-    GNUPGHOME = lib.mkForce "$XDG_DATA_HOME/gnupg";
-    GTK2_RC_FILES = lib.mkForce "$XDG_CONFIG_HOME/gtk-2.0/gtkrc";
   };
 
   home.packages = with pkgs; [
@@ -53,7 +47,6 @@
     gnome-text-editor
     pavucontrol
 
-    networkmanagerapplet
     inputs.nwg-displays.packages."${pkgs.system}".default
   ];
 }
