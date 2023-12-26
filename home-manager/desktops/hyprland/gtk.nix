@@ -229,9 +229,17 @@
 
   qt = {
     enable = true;
-    platformTheme = "gtk";
-    style.name = "adwaita-dark";
-    style.package = pkgs.adwaita-qt;
+    platformTheme = "qtct";
+    style.name = "kvantum";
+  };
+
+  xdg.configFile = {
+    "Kvantum/kvantum.kvconfig".text = ''
+      [General]
+      theme=GraphiteNordDark
+    '';
+
+    "Kvantum/GraphiteNord".source = "${pkgs.graphite-kde-theme}/share/Kvantum/GraphiteNord";
   };
 
   home.sessionVariables.GTK_THEME = "Adwaita-dark";

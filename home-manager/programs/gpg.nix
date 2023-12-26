@@ -5,7 +5,6 @@
 {
   home.packages = [
     pkgs.pinentry-gnome
-    pkgs.gcr
     pkgs.gnome.seahorse
   ];
 
