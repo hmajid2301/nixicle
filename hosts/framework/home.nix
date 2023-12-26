@@ -6,8 +6,6 @@
 }: {
   imports = [
     ../../home-manager
-
-    ../../home-manager/games
   ];
 
   config = {
