@@ -15,6 +15,7 @@
   };
 
   services.dbus.enable = true;
+  services.dbus.packages = [ pkgs.gcr ];
   services.geoclue2.enable = true;
   environment.pathsToLink = [
     "/share/fish"
