@@ -5,7 +5,7 @@ in
 {
   home.sessionVariables = {
     HISTFIL = lib.mkForce "${config.xdg.stateHome}/bash/history";
-    GNUPGHOME = lib.mkForce "${config.xdg.dataHome}/gnupg";
+    # GNUPGHOME = lib.mkForce "${config.xdg.dataHome}/gnupg";
     GTK2_RC_FILES = lib.mkForce "${config.xdg.configHome}/gtk-2.0/gtkrc";
   };
 

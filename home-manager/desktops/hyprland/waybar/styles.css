@@ -97,7 +97,7 @@ window#waybar {
   margin-left: 10px;
 }
 #tray menu {
-  padding: 10px;
+  background-color: #111111;
 }
 
 #tray menu * {

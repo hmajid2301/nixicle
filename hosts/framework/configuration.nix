@@ -8,7 +8,6 @@
     ../../nixos/users/haseeb.nix
 
     ../../nixos/optional/auto-upgrade.nix
-    ../../nixos/optional/auto-hibernate.nix
     ../../nixos/optional/avahi.nix
     ../../nixos/optional/backup.nix
     ../../nixos/optional/docker.nix
@@ -40,11 +39,7 @@
   swapDevices = [{ device = "/swap/swapfile"; }];
   boot = {
     kernelParams = [
-      "amd_pstate=active"
       "amdgpu.sg_display=0"
-      "pcie_aspm=force"
-      "pc"
-      "ie_aspm.policy=powersupersave"
       "resume_offset=533760"
     ];
     blacklistedKernelModules = [ "hid-sensor-hub" ];

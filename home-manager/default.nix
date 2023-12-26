@@ -31,7 +31,6 @@
       ./terminals/wezterm.nix
 
       ./security/sops.nix
-      ./security/yubikey.nix
     ]
     ++ builtins.attrValues outputs.homeManagerModules;
 
@@ -40,6 +39,7 @@
   programs = {
     home-manager.enable = true;
   };
+
 
   home.sessionVariables.EDITOR = config.my.settings.default.editor;
 
@@ -80,5 +80,11 @@
       warn-dirty = false;
       netrc-file = "$HOME/.config/nix/netrc";
     };
+  };
+
+  news = {
+    display = "silent";
+    json = lib.mkForce { };
+    entries = lib.mkForce [ ];
   };
 }

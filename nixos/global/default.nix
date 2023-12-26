@@ -27,22 +27,9 @@
   services.gvfs.enable = true;
   services.udisks2.enable = true;
   services.fwupd.enable = true;
-  networking.firewall = {
-    enable = true;
-    allowedTCPPortRanges = [{ from = 1714; to = 1764; }];
-    allowedUDPPortRanges = [{ from = 1714; to = 1764; }];
-  };
-
-  services.dbus.enable = true;
-  services.geoclue2.enable = true;
-  environment.pathsToLink = [
-    "/share/fish"
-    "/share/zsh"
-    "/share/bash"
-  ];
-
   networking.networkmanager.enable = true;
 
+  services.dbus.packages = [ pkgs.gcr ];
   nixpkgs = {
     overlays = builtins.attrValues outputs.overlays;
     config = {
