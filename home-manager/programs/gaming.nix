@@ -1,9 +1,4 @@
 { pkgs, ... }: {
-  imports = [
-    ./lutris.nix
-    ./steam.nix
-  ];
-
   programs.mangohud = {
     enable = true;
     enableSessionWide = true;
@@ -16,6 +11,7 @@
 
 
   home.packages = with pkgs; [
+    lutris
     cartridges
     bottles
   ];

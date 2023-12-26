@@ -28,7 +28,7 @@
 
       ./terminals/alacritty.nix
       ./terminals/foot.nix
-      ./terminals/wezterm.nix
+      ./terminals/wezterm
 
       ./security/sops.nix
     ]

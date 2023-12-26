@@ -15,6 +15,9 @@ in
 
     mimeApps = {
       enable = true;
+      associations.added = {
+        "video/mp4" = [ "org.gnome.Totem.desktop" ];
+      };
       defaultApplications = {
         "application/x-extension-htm" = browser;
         "application/x-extension-html" = browser;

@@ -15,7 +15,7 @@
       OnUnitActiveSec = "1d";
     };
     exclude = [
-      "/home/haseeb/Games"
+      "/home/haseeb/games"
       "~/.config/gtk"
       "~/.local/steam"
     ];

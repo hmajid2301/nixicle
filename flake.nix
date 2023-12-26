@@ -43,6 +43,7 @@
     comma.url = "github:nix-community/comma";
     attic.url = "github:zhaofengli/attic";
     colmena.url = "github:zhaofengli/colmena";
+    nix-gaming.url = "github:fufexan/nix-gaming";
 
     firefox-gnome-theme = {
       url = "github:rafaelmardojai/firefox-gnome-theme";

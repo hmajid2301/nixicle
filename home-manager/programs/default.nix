@@ -10,6 +10,7 @@
     ./eza.nix
     ./fonts.nix
     ./fzf.nix
+    ./gaming.nix
     ./git.nix
     ./gpg.nix
     ./k8s.nix

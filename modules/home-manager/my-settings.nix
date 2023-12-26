@@ -4,7 +4,6 @@ let
 in
 {
   options.my.settings = {
-
     default = {
       shell = mkOption {
         type = types.nullOr (types.enum [ "${pkgs.fish}/bin/fish" "${pkgs.zsh}/bin/zsh" ]);
