@@ -14,6 +14,17 @@
     allowedUDPPortRanges = [{ from = 1714; to = 1764; }];
   };
 
+  environment.systemPackages = with pkgs;[
+    headsetcontrol2
+    headset-charge-indicator
+    solaar
+  ];
+
+  services.udev.packages = with pkgs; [
+    headsetcontrol2
+    solaar
+  ];
+
   services.dbus.enable = true;
   services.dbus.packages = [ pkgs.gcr ];
   services.geoclue2.enable = true;
