@@ -43,7 +43,7 @@
       host = "framework";
       default = {
         shell = "${pkgs.fish}/bin/fish";
-        terminal = "${pkgs.foot}/bin/foot";
+        terminal = "wezterm";
         browser = "firefox";
         editor = "nvim";
       };
