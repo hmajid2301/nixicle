@@ -6,16 +6,15 @@ in
 {
   imports = [
     ./config
-    ./gtk.nix
     ./gammastep.nix
     ./kanshi.nix
+    ./rofi.nix
+    ./swaync
     ./swaylock.nix
+    ./theme
     ./waybar
     ./wlogout.nix
-    ./eww.nix
     ./xdg.nix
-    ./swaync
-    ./rofi.nix
 
     inputs.hyprland-nix.homeManagerModules.default
   ];
@@ -29,6 +28,12 @@ in
       MOZ_ENABLE_WAYLAND = 1;
       QT_QPA_PLATFORM = "wayland";
       LIBSEAT_BACKEND = "logind";
+    };
+
+    dconf.settings = {
+      "org/gnome/desktop/privacy" = {
+        remember-recent-files = false;
+      };
     };
 
     home.packages = with pkgs; [
