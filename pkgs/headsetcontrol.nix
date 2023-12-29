@@ -1,9 +1,15 @@
-{ stdenv, lib, fetchFromGitHub, pkg-config, cmake, hidapi }:
-
+{
+  stdenv,
+  lib,
+  fetchFromGitHub,
+  pkg-config,
+  cmake,
+  hidapi,
+}:
 stdenv.mkDerivation rec {
   name = "headsetcontrol";
 
-  nativeBuildInputs = [ pkg-config cmake hidapi ];
+  nativeBuildInputs = [pkg-config cmake hidapi];
 
   src = fetchFromGitHub {
     owner = "Sapd";

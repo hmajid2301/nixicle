@@ -1,9 +1,11 @@
-{ config, pkgs, ... }: {
+{
+  config,
+  pkgs,
+  ...
+}: {
   home.packages = with pkgs; [
     docker-compose-language-service
   ];
-
-
 
   programs.nixvim = {
     extraConfigLua = ''
@@ -15,7 +17,7 @@
 
       lint = {
         lintersByFt = {
-          docker = [ "hadolint" ];
+          docker = ["hadolint"];
         };
 
         linters = {

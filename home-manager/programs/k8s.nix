@@ -1,4 +1,8 @@
-{ pkgs, config, ... }: {
+{
+  pkgs,
+  config,
+  ...
+}: {
   programs = {
     k9s = {
       enable = true;
@@ -66,11 +70,11 @@
               bgColor = "#${config.colorscheme.colors.base00}";
               chartBgColor = "#${config.colorscheme.colors.base00}";
               dialBgColor = "#${config.colorscheme.colors.base00}";
-              defaultDialColors = [ "#${config.colorscheme.colors.base0B}" "#${config.colorscheme.colors.base08}" ];
-              defaultChartColors = [ "#${config.colorscheme.colors.base0B}" "#${config.colorscheme.colors.base08}" ];
+              defaultDialColors = ["#${config.colorscheme.colors.base0B}" "#${config.colorscheme.colors.base08}"];
+              defaultChartColors = ["#${config.colorscheme.colors.base0B}" "#${config.colorscheme.colors.base08}"];
               resourceColors = {
-                cpu = [ "#${config.colorscheme.colors.base0E}" "#${config.colorscheme.colors.base0D}" ];
-                mem = [ "#${config.colorscheme.colors.base0A}" "#${config.colorscheme.colors.base09}" ];
+                cpu = ["#${config.colorscheme.colors.base0E}" "#${config.colorscheme.colors.base0D}"];
+                mem = ["#${config.colorscheme.colors.base0A}" "#${config.colorscheme.colors.base09}"];
               };
             };
             table = {

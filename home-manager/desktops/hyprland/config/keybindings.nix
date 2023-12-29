@@ -1,5 +1,10 @@
-{ pkgs, config, inputs, lib, ... }:
-let
+{
+  pkgs,
+  config,
+  inputs,
+  lib,
+  ...
+}: let
   laptop_lid_switch = pkgs.writeShellScriptBin "laptop_lid_switch" ''
     #!/usr/bin/env bash
 
@@ -13,8 +18,7 @@ let
     		fi
     fi
   '';
-in
-{
+in {
   wayland.windowManager.hyprland.keyBinds = {
     bind = {
       "SUPER, Return" = "exec, ${config.my.settings.default.terminal}";
@@ -101,9 +105,6 @@ in
       ",XF86AudioPrev" = "exec,playerctl previous";
       ",XF86AudioPlay" = "exec,playerctl play-pause";
       ",XF86AudioStop" = "exec,playerctl stop";
-      "ALT,XF86AudioNext" = "exec,playerctld shift";
-      "ALT,XF86AudioPrev" = "exec,playerctld unshift";
-      "ALT,XF86AudioPlay" = "exec,systemctl --user restart playerctld";
     };
     bindl = {
       ",switch:Lid Switch" = "exec, ${laptop_lid_switch}/bin/laptop_lid_switch";

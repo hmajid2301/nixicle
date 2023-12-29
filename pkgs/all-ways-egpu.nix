@@ -1,13 +1,13 @@
-{ lib
-, stdenv
-, fetchFromGitHub
-, pciutils
-, gawk
-, gnugrep
-, mount
-, umount
+{
+  lib,
+  stdenv,
+  fetchFromGitHub,
+  pciutils,
+  gawk,
+  gnugrep,
+  mount,
+  umount,
 }:
-
 stdenv.mkDerivation rec {
   pname = "all-ways-egpu";
   version = "0.51.1";
@@ -38,9 +38,8 @@ stdenv.mkDerivation rec {
     description = "Configure eGPU as primary under Linux Wayland desktops";
     homepage = "https://github.com/ewagner12/all-ways-egpu/tree/main";
     license = licenses.mit;
-    maintainers = with maintainers; [ ];
+    maintainers = with maintainers; [];
     mainProgram = "all-ways-egpu";
     platforms = platforms.all;
   };
 }
-

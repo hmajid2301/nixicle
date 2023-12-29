@@ -1,7 +1,8 @@
-{ config
-, pkgs
-, inputs
-, ...
+{
+  config,
+  pkgs,
+  inputs,
+  ...
 }: {
   gtk = {
     enable = true;
@@ -56,7 +57,6 @@
 
     gtk4.extraCss = builtins.readFile ./gtk.css;
   };
-
 
   home.sessionVariables.GTK_THEME = "Adwaita-dark";
   home.pointerCursor = {

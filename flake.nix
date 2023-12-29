@@ -2,7 +2,7 @@
   description = "My Nix Config";
 
   nixConfig = {
-    experimental-features = [ "nix-command" "flakes" ];
+    experimental-features = ["nix-command" "flakes"];
     substituters = [
       "https://cache.nixos.org/"
     ];
@@ -51,59 +51,57 @@
     };
   };
 
-  outputs =
-    { self
-    , nixpkgs
-    , home-manager
-    , colmena
-    , ...
-    } @ inputs:
-    let
-      inherit (self) outputs;
-      lib = nixpkgs.lib // home-manager.lib;
-      systems = [ "x86_64-linux" "aarch64-linux" ];
-      forEachSystem = f: lib.genAttrs systems (sys: f pkgsFor.${sys});
-      pkgsFor = nixpkgs.legacyPackages;
-    in
-    {
-      inherit lib;
-      nixosModules = import ./modules/nixos;
-      homeManagerModules = import ./modules/home-manager;
-      overlays = import ./overlays { inherit inputs outputs; };
-      packages = forEachSystem (pkgs: import ./pkgs { inherit pkgs; });
-      devShells = forEachSystem (pkgs: import ./shell.nix { inherit pkgs inputs; });
+  outputs = {
+    self,
+    nixpkgs,
+    home-manager,
+    colmena,
+    ...
+  } @ inputs: let
+    inherit (self) outputs;
+    lib = nixpkgs.lib // home-manager.lib;
+    systems = ["x86_64-linux" "aarch64-linux"];
+    forEachSystem = f: lib.genAttrs systems (sys: f pkgsFor.${sys});
+    pkgsFor = nixpkgs.legacyPackages;
+  in {
+    inherit lib;
+    nixosModules = import ./modules/nixos;
+    homeManagerModules = import ./modules/home-manager;
+    overlays = import ./overlays {inherit inputs outputs;};
+    packages = forEachSystem (pkgs: import ./pkgs {inherit pkgs;});
+    devShells = forEachSystem (pkgs: import ./shell.nix {inherit pkgs inputs;});
 
-      colmena = import ./hosts/self-hosted/colmena.nix { inherit nixpkgs inputs; };
-      nixosConfigurations = {
-        iso = lib.nixosSystem {
-          modules = [
-            "${nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-graphical-gnome.nix"
-            "${nixpkgs}/nixos/modules/installer/cd-dvd/channel.nix"
-            ./hosts/iso/configuration.nix
-          ];
-          specialArgs = { inherit inputs outputs; };
-        };
-
-        # Laptops
-        framework = lib.nixosSystem {
-          modules = [ ./hosts/framework/configuration.nix ];
-          specialArgs = { inherit inputs outputs; };
-        };
+    colmena = import ./hosts/self-hosted/colmena.nix {inherit nixpkgs inputs;};
+    nixosConfigurations = {
+      iso = lib.nixosSystem {
+        modules = [
+          "${nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-graphical-gnome.nix"
+          "${nixpkgs}/nixos/modules/installer/cd-dvd/channel.nix"
+          ./hosts/iso/configuration.nix
+        ];
+        specialArgs = {inherit inputs outputs;};
       };
 
-      homeConfigurations = {
-        # Laptops
-        framework = lib.homeManagerConfiguration {
-          modules = [ ./hosts/framework/home.nix ];
-          pkgs = nixpkgs.legacyPackages.x86_64-linux;
-          extraSpecialArgs = { inherit inputs outputs; };
-        };
-
-        curve = lib.homeManagerConfiguration {
-          modules = [ ./hosts/curve/home.nix ];
-          pkgs = nixpkgs.legacyPackages.x86_64-linux;
-          extraSpecialArgs = { inherit inputs outputs; };
-        };
+      # Laptops
+      framework = lib.nixosSystem {
+        modules = [./hosts/framework/configuration.nix];
+        specialArgs = {inherit inputs outputs;};
       };
     };
+
+    homeConfigurations = {
+      # Laptops
+      framework = lib.homeManagerConfiguration {
+        modules = [./hosts/framework/home.nix];
+        pkgs = nixpkgs.legacyPackages.x86_64-linux;
+        extraSpecialArgs = {inherit inputs outputs;};
+      };
+
+      curve = lib.homeManagerConfiguration {
+        modules = [./hosts/curve/home.nix];
+        pkgs = nixpkgs.legacyPackages.x86_64-linux;
+        extraSpecialArgs = {inherit inputs outputs;};
+      };
+    };
+  };
 }

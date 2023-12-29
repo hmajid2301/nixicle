@@ -1,9 +1,13 @@
-{ config, pkgs, ... }: {
+{
+  config,
+  pkgs,
+  ...
+}: {
   programs.nixvim = {
     plugins = {
       conform-nvim = {
         formattersByFt = {
-          css = [ "prettierd" ];
+          css = ["prettierd"];
         };
 
         formatters = {
@@ -15,7 +19,7 @@
 
       lint = {
         lintersByFt = {
-          css = [ "stylelint" ];
+          css = ["stylelint"];
         };
         linters = {
           stylelint = {

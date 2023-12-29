@@ -1,16 +1,17 @@
-{ inputs, lib, config, ... }:
-
-with lib;
-let
-  cfg = config.modules.browsers.firefox;
-in
 {
+  inputs,
+  lib,
+  config,
+  ...
+}:
+with lib; let
+  cfg = config.modules.browsers.firefox;
+in {
   options.modules.browsers.firefox = {
     enable = mkEnableOption "enable firefox browser";
   };
 
   config = mkIf cfg.enable {
-
     # home = {
     #   persistence = {
     #     # Not persisting is safer

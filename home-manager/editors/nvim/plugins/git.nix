@@ -1,4 +1,4 @@
-{ pkgs, ... }: {
+{pkgs, ...}: {
   programs.nixvim = {
     extraPlugins = with pkgs.vimPlugins; [
       git-worktree-nvim
@@ -18,11 +18,10 @@
       }
     ];
 
-    extraConfigLua =
-      ''
-        require("git-worktree").setup()
-        require("telescope").load_extension("git_worktree")
-      '';
+    extraConfigLua = ''
+      require("git-worktree").setup()
+      require("telescope").load_extension("git_worktree")
+    '';
 
     plugins = {
       which-key.registrations = {
@@ -37,12 +36,12 @@
         enable = true;
         currentLineBlame = false;
         signs = {
-          add = { text = "│"; };
-          change = { text = "│"; };
-          delete = { text = "󰍵"; };
-          topdelete = { text = "‾"; };
-          changedelete = { text = "~"; };
-          untracked = { text = "│"; };
+          add = {text = "│";};
+          change = {text = "│";};
+          delete = {text = "󰍵";};
+          topdelete = {text = "‾";};
+          changedelete = {text = "~";};
+          untracked = {text = "│";};
         };
 
         onAttach.function =

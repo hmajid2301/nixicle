@@ -1,10 +1,10 @@
-{ pkgs, ... }: {
+{pkgs, ...}: {
   programs.nixvim = {
     keymaps = [
       {
         action = "<cmd>lua vim.lsp.buf.code_action()<CR>";
         key = "<leader>ca";
-        mode = [ "n" "v" ];
+        mode = ["n" "v"];
         options = {
           desc = "Code Actions";
         };
@@ -34,7 +34,10 @@
             gd = "definition";
             gi = "implementation";
             gt = "type_definition";
-            "<leader>cr" = { action = "rename"; desc = "Rename"; };
+            "<leader>cr" = {
+              action = "rename";
+              desc = "Rename";
+            };
           };
         };
       };

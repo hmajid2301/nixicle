@@ -1,8 +1,10 @@
-{ config, lib, ... }:
-let
-  browser = config.my.settings.default.browser;
-in
 {
+  config,
+  lib,
+  ...
+}: let
+  browser = config.my.settings.default.browser;
+in {
   home.sessionVariables = {
     HISTFIL = lib.mkForce "${config.xdg.stateHome}/bash/history";
     # GNUPGHOME = lib.mkForce "${config.xdg.dataHome}/gnupg";
@@ -16,7 +18,7 @@ in
     mimeApps = {
       enable = true;
       associations.added = {
-        "video/mp4" = [ "org.gnome.Totem.desktop" ];
+        "video/mp4" = ["org.gnome.Totem.desktop"];
       };
       defaultApplications = {
         "application/x-extension-htm" = browser;
@@ -27,24 +29,24 @@ in
         "application/xhtml+xml" = browser;
         "text/html" = browser;
         "x-scheme-handler/about" = browser;
-        "x-scheme-handler/chrome" = [ "chromium-browser.desktop" ];
+        "x-scheme-handler/chrome" = ["chromium-browser.desktop"];
         "x-scheme-handler/ftp" = browser;
         "x-scheme-handler/http" = browser;
         "x-scheme-handler/https" = browser;
         "x-scheme-handler/unknown" = browser;
 
-        "audio/*" = [ "mpv.desktop" ];
-        "video/*" = [ "org.gnome.Totem.dekstop" ];
-        "video/mp4" = [ "org.gnome.Totem.dekstop" ];
-        "image/*" = [ "org.gnome.loupe.desktop" ];
-        "image/png" = [ "org.gnome.loupe.desktop" ];
-        "image/jpg" = [ "org.gnome.loupe.desktop" ];
-        "application/json" = [ "gnome-text-editor.desktop" ];
+        "audio/*" = ["mpv.desktop"];
+        "video/*" = ["org.gnome.Totem.dekstop"];
+        "video/mp4" = ["org.gnome.Totem.dekstop"];
+        "image/*" = ["org.gnome.loupe.desktop"];
+        "image/png" = ["org.gnome.loupe.desktop"];
+        "image/jpg" = ["org.gnome.loupe.desktop"];
+        "application/json" = ["gnome-text-editor.desktop"];
         "application/pdf" = browser;
-        "application/x-gnome-saved-search" = [ "org.gnome.Nautilus.desktop" ];
-        "x-scheme-handler/discord" = [ "discord.desktop" ];
-        "x-scheme-handler/spotify" = [ "spotify.desktop" ];
-        "x-scheme-handler/tg" = [ "telegramdesktop.desktop" ];
+        "application/x-gnome-saved-search" = ["org.gnome.Nautilus.desktop"];
+        "x-scheme-handler/discord" = ["discord.desktop"];
+        "x-scheme-handler/spotify" = ["spotify.desktop"];
+        "x-scheme-handler/tg" = ["telegramdesktop.desktop"];
         "application/toml" = "org.gnome.TextEditor.desktop";
         "text/plain" = "org.gnome.TextEditor.desktop";
       };

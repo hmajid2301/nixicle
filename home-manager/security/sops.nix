@@ -1,7 +1,8 @@
-{ inputs
-, pkgs
-, config
-, ...
+{
+  inputs,
+  pkgs,
+  config,
+  ...
 }: {
   imports = [
     inputs.sops-nix.homeManagerModules.sops
@@ -10,7 +11,7 @@
   sops = {
     gnupg = {
       home = "~/.gnupg";
-      sshKeyPaths = [ ];
+      sshKeyPaths = [];
     };
     defaultSymlinkPath = "/run/user/1000/secrets";
     defaultSecretsMountPoint = "/run/user/1000/secrets.d";
