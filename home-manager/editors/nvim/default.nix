@@ -1,10 +1,12 @@
-{ pkgs, lib, config, ... }:
-
-with lib;
-let
-  cfg = config.modules.editors.nvim;
-in
 {
+  pkgs,
+  lib,
+  config,
+  ...
+}:
+with lib; let
+  cfg = config.modules.editors.nvim;
+in {
   imports = [
     ./keymaps.nix
     ./options.nix
@@ -46,7 +48,8 @@ in
     enable = mkEnableOption "enable neovim editor";
   };
 
-  config = mkIf
+  config =
+    mkIf
     cfg.enable
     {
       home.file."./.config/nvim" = {
@@ -56,7 +59,7 @@ in
 
       programs.nixvim = {
         enable = true;
-        extraPlugins = with pkgs.vimPlugins; [ plenary-nvim ];
+        extraPlugins = with pkgs.vimPlugins; [plenary-nvim];
         package = pkgs.neovim-nightly;
       };
     };

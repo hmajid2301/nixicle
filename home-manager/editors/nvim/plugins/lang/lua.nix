@@ -1,11 +1,15 @@
-{ config, pkgs, ... }: {
+{
+  config,
+  pkgs,
+  ...
+}: {
   programs.nixvim = {
     plugins = {
       lsp.servers.lua-ls.enable = true;
 
       conform-nvim = {
         formattersByFt = {
-          lua = [ "stylua" ];
+          lua = ["stylua"];
         };
 
         formatters = {
@@ -17,7 +21,7 @@
 
       lint = {
         lintersByFt = {
-          lua = [ "luacheck" ];
+          lua = ["luacheck"];
         };
         linters = {
           luacheck = {

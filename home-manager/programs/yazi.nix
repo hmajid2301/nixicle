@@ -1,8 +1,8 @@
-{ pkgs, ... }: {
+{pkgs, ...}: {
   programs.yazi = {
     enable = true;
     enableFishIntegration = true;
-    settings = { };
+    settings = {};
     theme = {
       #   filetype = {
       #     rules = [

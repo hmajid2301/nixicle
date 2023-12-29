@@ -1,37 +1,33 @@
-{ pkgs
-, lib
-, config
-, ...
+{
+  pkgs,
+  lib,
+  config,
+  ...
 }:
-with lib;
-let
+with lib; let
   inherit (config) my colorscheme;
   inherit (my.settings) host;
   inherit (colorscheme) colors;
   cfg = config.modules.shells.fish;
-in
-{
+in {
   options.modules.shells.fish = {
     enable = mkEnableOption "enable fish shell";
   };
 
   config = mkIf cfg.enable {
-    home.packages = [ pkgs.comma pkgs.gum ];
+    home.packages = [pkgs.comma pkgs.gum];
     programs.fish = {
       enable = true;
       interactiveShellInit =
-        ''
-          		''
-        +
         # fish
         ''
           # Open command buffer in vim when alt+e is pressed
           bind \ee edit_command_buffer
           nix-your-shell fish | source
-          fish_add_path --path --append ~/go/bin/
           fish_add_path --path --prepend /usr/local/bin /usr/bin ~/.local/bin
           set -x GOPATH $XDG_DATA_HOME/go
           set -x GOPRIVATE "git.curve.tools,gitlab.com/imaginecurve"
+          fish_add_path --path --append $XDG_DATA_HOME/go/bin/
 
           # fifc setup
           set -Ux fifc_editor nvim
@@ -83,7 +79,6 @@ in
           bind --mode insert --sets-mode default jk repaint
         '';
       shellAliases = {
-        l = "eza --group --header --group-directories-first --long --git --all --binary --all --icons";
         wget = "wget --hsts-file=\"$XDG_DATA_HOME/wget-hsts\"";
       };
       shellAbbrs = {
@@ -100,6 +95,7 @@ in
         ping = "gping";
         ls = "eza";
         sl = "eza";
+        l = "eza --group --header --group-directories-first --long --git --all --binary --all --icons";
         tree = "eza --tree";
 
         # nix
@@ -147,21 +143,6 @@ in
             __fish_default_command_not_found_handler $argv
           end
         '';
-
-        chtshfzf = ''
-          curl --silent "cheat.sh/$(__fzf_cheat_selector)?style=rtt" | bat --style=plain
-        '';
-
-        __fzf_cheat_selector = ''
-          curl --silent "cheat.sh/:list" \
-              | fzf-tmux \
-              -p 70%,60% \
-              --layout=reverse --multi \
-              --preview \
-              "curl --silent cheat.sh/{}\?style=rtt" \
-              --bind "?:toggle-preview" \
-              --preview-window hidden,60%
-        '';
       };
       plugins = [
         {
@@ -197,15 +178,6 @@ in
             repo = "fish-git-abbr";
             rev = "dc590a5b9d9d2095f95f7d90608b48e55bea0b0e";
             sha256 = "1gciqw4gypszqzrc1q6psc5qmkb8k10fjaaiqlwzy23wdfpxcggb";
-          };
-        }
-        {
-          name = "tmux-abbr";
-          src = pkgs.fetchFromGitHub {
-            owner = "lewisacidic";
-            repo = "fish-tmux-abbr";
-            rev = "47d633a36bec3fe0ed150473e93bdb54000a5216";
-            sha256 = "1y1ypbw05hsnmgmzv7aab08iv5mx2y1l24nsryjf7sj67q23xnkz";
           };
         }
       ];

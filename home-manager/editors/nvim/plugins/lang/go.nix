@@ -1,11 +1,10 @@
-{ pkgs
-, config
-, ...
-}:
-let
-  buildFlags = "-tags=unit,integration,e2e,bdd";
-in
 {
+  pkgs,
+  config,
+  ...
+}: let
+  buildFlags = "-tags=unit,integration,e2e,bdd";
+in {
   programs.nixvim = {
     keymaps = [
       {
@@ -31,7 +30,7 @@ in
 
       conform-nvim = {
         formattersByFt = {
-          go = [ "goimports" ];
+          go = ["goimports"];
         };
 
         formatters = {
@@ -47,7 +46,7 @@ in
 
       lint = {
         lintersByFt = {
-          go = [ "golangcilint" ];
+          go = ["golangcilint"];
         };
         linters = {
           golangcilint = {
@@ -61,9 +60,9 @@ in
 
         extraOptions.settings = {
           gopls = {
-            buildFlags = [ buildFlags ];
+            buildFlags = [buildFlags];
             staticcheck = true;
-            directoryFilters = [ "-.git" "-.vscode" "-.idea" "-.vscode-test" "-node_modules" ];
+            directoryFilters = ["-.git" "-.vscode" "-.idea" "-.vscode-test" "-node_modules"];
             semanticTokens = true;
             codelenses = {
               gc_details = false;
@@ -113,4 +112,3 @@ in
     };
   };
 }
-

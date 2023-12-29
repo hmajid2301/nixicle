@@ -1,4 +1,8 @@
-{ config, pkgs, ... }: {
+{
+  config,
+  pkgs,
+  ...
+}: {
   boot = {
     kernelPackages = pkgs.linuxKernel.packages.linux_rpi4;
     kernelParams = [
@@ -7,7 +11,7 @@
       "cgroup_enable=memory"
     ];
 
-    initrd.availableKernelModules = [ "xhci_pci" "usbhid" "usb_storage" ];
+    initrd.availableKernelModules = ["xhci_pci" "usbhid" "usb_storage"];
     loader = {
       grub.enable = false;
       generic-extlinux-compatible.enable = true;
@@ -18,7 +22,7 @@
     "/" = {
       device = "/dev/disk/by-label/NIXOS_SD";
       fsType = "ext4";
-      options = [ "noatime" ];
+      options = ["noatime"];
     };
 
     # "/data" = {
@@ -57,7 +61,7 @@
   services.k3s.tokenFile = config.sops.secrets.k3s_token.path;
 
   sops = {
-    age.sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
+    age.sshKeyPaths = ["/etc/ssh/ssh_host_ed25519_key"];
   };
 
   services.tailscale.enable = true;
@@ -85,4 +89,3 @@
   hardware.enableRedistributableFirmware = true;
   system.stateVersion = "23.11";
 }
-

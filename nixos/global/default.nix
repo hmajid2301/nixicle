@@ -1,7 +1,8 @@
-{ pkgs
-, inputs
-, outputs
-, ...
+{
+  pkgs,
+  inputs,
+  outputs,
+  ...
 }: {
   imports =
     [
@@ -20,16 +21,16 @@
     ]
     ++ (builtins.attrValues outputs.nixosModules);
 
-  home-manager.extraSpecialArgs = { inherit inputs outputs; };
+  home-manager.extraSpecialArgs = {inherit inputs outputs;};
 
   services.pcscd.enable = true;
-  services.udev.packages = with pkgs; [ yubikey-personalization ];
+  services.udev.packages = with pkgs; [yubikey-personalization];
   services.gvfs.enable = true;
   services.udisks2.enable = true;
   services.fwupd.enable = true;
   networking.networkmanager.enable = true;
 
-  services.dbus.packages = [ pkgs.gcr ];
+  services.dbus.packages = [pkgs.gcr];
   nixpkgs = {
     overlays = builtins.attrValues outputs.overlays;
     config = {

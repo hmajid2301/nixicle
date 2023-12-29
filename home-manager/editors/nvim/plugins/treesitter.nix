@@ -1,6 +1,7 @@
-{ config
-, pkgs
-, ...
+{
+  config,
+  pkgs,
+  ...
 }: {
   programs.nixvim = {
     plugins = {
@@ -87,7 +88,6 @@
         };
       };
     };
-
 
     extraConfigLua = ''
       local ts_repeat_move = require("nvim-treesitter.textobjects.repeatable_move")

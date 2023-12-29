@@ -1,11 +1,10 @@
-{ outputs
-, lib
-, ...
-}:
-let
-  hostnames = builtins.attrNames outputs.nixosConfigurations;
-in
 {
+  outputs,
+  lib,
+  ...
+}: let
+  hostnames = builtins.attrNames outputs.nixosConfigurations;
+in {
   programs.ssh = {
     enable = true;
     matchBlocks = {
@@ -19,7 +18,7 @@ in
           }
         ];
       };
-      trusted = lib.hm.dag.entryBefore [ "net" ] {
+      trusted = lib.hm.dag.entryBefore ["net"] {
         host = "m7.rs *.m7.rs *.ts.m7.rs";
         forwardAgent = true;
       };

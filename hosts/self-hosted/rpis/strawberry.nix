@@ -1,20 +1,22 @@
-{ config, pkgs, lib, ... }:
-
-let
-  hostname = "strawberry";
-in
 {
+  config,
+  pkgs,
+  lib,
+  ...
+}: let
+  hostname = "strawberry";
+in {
   networking = {
     hostName = hostname;
   };
 
-  nix.settings.trusted-users = [ hostname ];
+  nix.settings.trusted-users = [hostname];
 
   users = {
     users."${hostname}" = {
       isNormalUser = true;
       shell = pkgs.fish;
-      extraGroups = [ "wheel" ];
+      extraGroups = ["wheel"];
       password = hostname;
       openssh.authorizedKeys.keys = [
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMxe8kDCJa6xcAM9WE8c5amGG+2secXmnof7vlmAq1Da hello@haseebmajid.dev"
@@ -22,5 +24,4 @@ in
       ];
     };
   };
-
 }

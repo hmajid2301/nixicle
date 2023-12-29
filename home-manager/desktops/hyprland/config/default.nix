@@ -1,6 +1,10 @@
-{ pkgs, config, inputs, lib, ... }:
 {
-
+  pkgs,
+  config,
+  inputs,
+  lib,
+  ...
+}: {
   imports = [
     ./keybindings.nix
     ./windowrules.nix
@@ -35,17 +39,17 @@
         rounding = 5;
       };
 
-      misc =
-        let FULLSCREEN_ONLY = 2;
-        in {
-          vrr = 2;
-          disable_hyprland_logo = true;
-          disable_splash_rendering = true;
-          force_default_wallpaper = 0;
-          variable_framerate = true;
-          variable_refresh = FULLSCREEN_ONLY;
-          disable_autoreload = true;
-        };
+      misc = let
+        FULLSCREEN_ONLY = 2;
+      in {
+        vrr = 2;
+        disable_hyprland_logo = true;
+        disable_splash_rendering = true;
+        force_default_wallpaper = 0;
+        variable_framerate = true;
+        variable_refresh = FULLSCREEN_ONLY;
+        disable_autoreload = true;
+      };
 
       exec_once = [
         "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"

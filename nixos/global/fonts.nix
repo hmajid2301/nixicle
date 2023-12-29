@@ -1,10 +1,10 @@
-{ pkgs, ... }: {
+{pkgs, ...}: {
   nixpkgs.config.joypixels.acceptLicense = true;
   fonts = {
     enableDefaultPackages = false;
     fontDir.enable = true;
     packages = with pkgs; [
-      (nerdfonts.override { fonts = [ "FiraCode" "SourceCodePro" "UbuntuMono" ]; })
+      (nerdfonts.override {fonts = ["FiraCode" "SourceCodePro" "UbuntuMono"];})
       fira
       fira-go
       joypixels
@@ -18,10 +18,10 @@
     fontconfig = {
       antialias = true;
       defaultFonts = {
-        serif = [ "Source Serif" ];
-        sansSerif = [ "Work Sans" "Fira Sans" "FiraGO" ];
-        monospace = [ "FiraCode Nerd Font Mono" "SauceCodePro Nerd Font Mono" ];
-        emoji = [ "Joypixels" "Noto Color Emoji" ];
+        serif = ["Source Serif"];
+        sansSerif = ["Work Sans" "Fira Sans" "FiraGO"];
+        monospace = ["FiraCode Nerd Font Mono" "SauceCodePro Nerd Font Mono"];
+        emoji = ["Joypixels" "Noto Color Emoji"];
       };
       enable = true;
       hinting = {

@@ -1,4 +1,4 @@
-{ pkgs, ... }: {
+{pkgs, ...}: {
   imports = [
     ./ui/statusline.nix
     ./ui/file-explorer.nix
@@ -85,9 +85,8 @@
       vimExtraPlugins.animation-nvim
     ];
 
-    extraConfigLua =
-      ''
-        require('windows').setup()
-      '';
+    extraConfigLua = ''
+      require('windows').setup()
+    '';
   };
 }

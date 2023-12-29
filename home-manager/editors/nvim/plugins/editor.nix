@@ -1,4 +1,4 @@
-{ pkgs, ... }: {
+{pkgs, ...}: {
   imports = [
     ./editor/telescope.nix
     ./editor/trouble.nix
@@ -233,7 +233,7 @@
       indent-blankline = {
         enable = true;
         whitespace = {
-          highlight = [ "IndentBlanklineSpaceChar" "IndentBlanklineSpaceCharBlankline" ];
+          highlight = ["IndentBlanklineSpaceChar" "IndentBlanklineSpaceCharBlankline"];
         };
         scope = {
           showStart = false;
@@ -273,11 +273,10 @@
       vimPlugins.nvim-spectre
     ];
 
-    extraConfigLua =
-      ''
-        vim.keymap.set("n", "-", "<CMD>Oil<CR>", { desc = "Open parent directory" })
+    extraConfigLua = ''
+      vim.keymap.set("n", "-", "<CMD>Oil<CR>", { desc = "Open parent directory" })
 
-        require("spectre").setup()
-      '';
+      require("spectre").setup()
+    '';
   };
 }

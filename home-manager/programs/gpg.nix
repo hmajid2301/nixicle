@@ -1,8 +1,8 @@
-{ pkgs
-, config
-, ...
-}:
 {
+  pkgs,
+  config,
+  ...
+}: {
   home.packages = [
     pkgs.pinentry-gnome
     pkgs.gnome.seahorse
@@ -14,7 +14,7 @@
     enable = true;
     enableSshSupport = true;
     enableExtraSocket = true;
-    sshKeys = [ "D528D50F4E9F031AACB1F7A9833E49C848D6C90" ];
+    sshKeys = ["D528D50F4E9F031AACB1F7A9833E49C848D6C90"];
     pinentryFlavor = "gnome3";
   };
 
