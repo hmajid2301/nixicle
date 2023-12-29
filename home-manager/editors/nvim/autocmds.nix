@@ -7,13 +7,13 @@
 
     autoCmd = [
       {
-        event = [ "TextYankPost" ];
+        event = ["TextYankPost"];
         group = "highlight_yank";
         desc = "Highlight yanked content";
-        callback = { __raw = "function() vim.highlight.on_yank() end"; };
+        callback = {__raw = "function() vim.highlight.on_yank() end";};
       }
       {
-        event = [ "FileType" ];
+        event = ["FileType"];
         group = "close_with_q";
         desc = "Close some panes with q";
         pattern = [
@@ -32,11 +32,11 @@
         ];
         callback = {
           __raw =
-            # lua 
+            # lua
             ''
-              function() 
+              function()
               	vim.bo[event.buf].buflisted = false
-              	vim.keymap.set("n", "q", "<cmd>close<cr>", { buffer = event.buf, silent = true }) 
+              	vim.keymap.set("n", "q", "<cmd>close<cr>", { buffer = event.buf, silent = true })
               end
             '';
         };

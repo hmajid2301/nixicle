@@ -1,8 +1,8 @@
-{ pkgs
-, config
-, ...
-}:
 {
+  pkgs,
+  config,
+  ...
+}: {
   programs.nixvim = {
     keymaps = [
       {
@@ -47,4 +47,3 @@
     };
   };
 }
-

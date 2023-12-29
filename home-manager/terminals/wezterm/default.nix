@@ -1,10 +1,12 @@
-{ config, lib, pkgs, ... }:
-
-with lib;
-let
-  cfg = config.modules.terminals.wezterm;
-in
 {
+  config,
+  lib,
+  pkgs,
+  ...
+}:
+with lib; let
+  cfg = config.modules.terminals.wezterm;
+in {
   options.modules.terminals.wezterm = {
     enable = mkEnableOption "enable wezterm terminal emulator";
   };
@@ -13,7 +15,7 @@ in
     programs.wezterm = {
       enable = true;
       package = pkgs.wezterm-nightly;
-      colorSchemes = { };
+      colorSchemes = {};
       extraConfig = builtins.readFile ./config.lua;
     };
   };

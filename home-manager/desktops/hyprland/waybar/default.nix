@@ -1,5 +1,8 @@
-{ pkgs, config, ... }:
 {
+  pkgs,
+  config,
+  ...
+}: {
   programs.waybar = {
     enable = true;
     systemd = {
@@ -105,7 +108,7 @@
           format = "{icon} {capacity}%";
           format-alt = "{time}";
           format-charging = "  {capacity}%";
-          format-icons = [ "󰁻 " "󰁽 " "󰁿 " "󰂁 " "󰂂 " ];
+          format-icons = ["󰁻 " "󰁽 " "󰁿 " "󰂁 " "󰂂 "];
         };
         temperature = {
           interval = 1;
@@ -115,7 +118,7 @@
           hwmon-path = "/sys/class/hwmon/hwmon5/temp1_input";
           format = "{icon} {temperatureC}°C";
           format-critical = "{icon} {temperatureC}°C";
-          format-icons = [ "" "" "" "" "" ];
+          format-icons = ["" "" "" "" ""];
         };
 
         cpu = {
@@ -148,7 +151,7 @@
           format-icons = {
             headphone = "";
             headset = "";
-            default = [ "" "" ];
+            default = ["" ""];
           };
         };
         tray = {
@@ -158,6 +161,6 @@
       }
     ];
 
-    style = (builtins.readFile ./styles.css);
+    style = builtins.readFile ./styles.css;
   };
 }

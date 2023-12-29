@@ -1,16 +1,20 @@
-{ inputs, pkgs, lib, config, ... }:
-with lib;
-let
+{
+  inputs,
+  pkgs,
+  lib,
+  config,
+  ...
+}:
+with lib; let
   cfg = config.modules.multiplexers.zellij;
   inherit (config.colorscheme) colors;
-in
-{
+in {
   options.modules.multiplexers.zellij = {
     enable = mkEnableOption "enable zellij multiplexer";
   };
 
   config = mkIf cfg.enable {
-    home.packages = [ inputs.zjstatus.packages.${pkgs.system}.default ];
+    home.packages = [inputs.zjstatus.packages.${pkgs.system}.default];
     # xdg.configFile = {
     #   "zellij/layouts/default.kdl".text = ''
     #     layout {

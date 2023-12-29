@@ -1,5 +1,9 @@
-{ config, pkgs, ... }: {
-  home.packages = [ pkgs.atuin-export-fish ];
+{
+  config,
+  pkgs,
+  ...
+}: {
+  home.packages = [pkgs.atuin-export-fish];
 
   programs.atuin = {
     enable = true;

@@ -1,4 +1,9 @@
-{ inputs, pkgs, config, ... }: {
+{
+  inputs,
+  pkgs,
+  config,
+  ...
+}: {
   services.greetd = {
     enable = true;
     settings = rec {

@@ -1,10 +1,11 @@
-{ config, lib, ... }:
-
-with lib;
-let
-  cfg = config.modules.terminals.alacritty;
-in
 {
+  config,
+  lib,
+  ...
+}:
+with lib; let
+  cfg = config.modules.terminals.alacritty;
+in {
   options.modules.terminals.alacritty = {
     enable = mkEnableOption "enable alacritty terminal emulator";
   };
@@ -143,5 +144,4 @@ in
       };
     };
   };
-
 }

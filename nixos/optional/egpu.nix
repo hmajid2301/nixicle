@@ -1,5 +1,5 @@
-{ pkgs, ... }: {
-  boot.kernelModules = [ "kvm-amd" ];
+{pkgs, ...}: {
+  boot.kernelModules = ["kvm-amd"];
 
   systemd.services."all-ways-egpu" = {
     unitConfig = {
@@ -11,7 +11,7 @@
       Type = "oneshot";
       ExecStart = "${pkgs.all-ways-egpu}/bin/all-ways-egpu boot";
     };
-    wantedBy = [ "graphical.target" ];
+    wantedBy = ["graphical.target"];
   };
 
   systemd.services."all-ways-egpu-shutdown" = {
@@ -24,7 +24,7 @@
       Type = "oneshot";
       ExecStart = "${pkgs.all-ways-egpu}/bin/all-ways-egpu set-boot-vga internal";
     };
-    wantedBy = [ "halt.target" "shutdown.target" "reboot.target" ];
+    wantedBy = ["halt.target" "shutdown.target" "reboot.target"];
   };
 
   systemd.services."all-ways-egpu-boot-vga" = {
@@ -36,12 +36,10 @@
       Type = "oneshot";
       ExecStart = "${pkgs.all-ways-egpu}/bin/all-ways-egpu set-boot-vga egpu";
     };
-    wantedBy = [ "graphical.target" ];
+    wantedBy = ["graphical.target"];
   };
 
   environment.systemPackages = [
     pkgs.all-ways-egpu
   ];
 }
-
-

@@ -1,6 +1,4 @@
-{ config
-, ...
-}: {
+{config, ...}: {
   programs.nixvim = {
     plugins = {
       lsp.servers.html = {

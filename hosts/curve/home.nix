@@ -1,8 +1,9 @@
-{ pkgs
-, inputs
-, lib
-, config
-, ...
+{
+  pkgs,
+  inputs,
+  lib,
+  config,
+  ...
 }: {
   imports = [
     ../../home-manager
@@ -59,23 +60,23 @@
     # To show nix installed apps in Gnome
     targets.genericLinux.enable = true;
     xdg.mime.enable = true;
-    xdg.systemDirs.data = [ "${config.home.homeDirectory}/.nix-profile/share/applications" ];
+    xdg.systemDirs.data = ["${config.home.homeDirectory}/.nix-profile/share/applications"];
 
     xdg.configFile."autostart/tailscale.desktop".text = ''
-      	[Desktop Entry]
-      	Type=Application
-      	Exec=tailscale-systray
-      	Hidden=false
-      	NoDisplay=false
-      	X-GNOME-Autostart-enabled=true
-      	Comment[en_NG]=Start Tailscale Systray
+      [Desktop Entry]
+      Type=Application
+      Exec=tailscale-systray
+      Hidden=false
+      NoDisplay=false
+      X-GNOME-Autostart-enabled=true
+      Comment[en_NG]=Start Tailscale Systray
     '';
 
     # Work Laptop different email
     programs.git.userEmail = lib.mkForce "haseeb.majid@imaginecurve.com";
-    programs.git.extraConfig."url \"git@git.curve.tools:\"" = { insteadOf = https://git.curve.tools/; };
-    programs.git.extraConfig."url \"git@gitlab.com:imaginecurve/\"" = { insteadOf = https://gitlab.com/imaginecurve/; };
-    programs.git.extraConfig."url \"git@gitlab.com:\"" = { insteadOf = https://gitlab.com/; };
+    programs.git.extraConfig."url \"git@git.curve.tools:\"" = {insteadOf = https://git.curve.tools/;};
+    programs.git.extraConfig."url \"git@gitlab.com:imaginecurve/\"" = {insteadOf = https://gitlab.com/imaginecurve/;};
+    programs.git.extraConfig."url \"git@gitlab.com:\"" = {insteadOf = https://gitlab.com/;};
     programs.git.extraConfig.core.excludesfile = "~/.config/git/ignore";
     xdg.configFile."git/ignore".text = ''
       projects/**/**/flake.nix

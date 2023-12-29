@@ -1,4 +1,4 @@
-{ pkgs, ... }: {
+{pkgs, ...}: {
   programs.nixvim = {
     keymaps = [
       {
@@ -17,7 +17,6 @@
       enable = true;
       extensions.fzf-native.enable = true;
       extensions.undo.enable = true;
-
 
       keymaps = {
         "<leader>ff" = {
@@ -85,7 +84,7 @@
           "╯"
           "╰"
         ];
-        border = { };
+        border = {};
         layout_strategy = "horizontal";
         layout_config = {
           horizontal = {

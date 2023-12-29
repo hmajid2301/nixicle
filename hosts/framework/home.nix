@@ -1,8 +1,9 @@
-{ inputs
-, pkgs
-, lib
-, config
-, ...
+{
+  inputs,
+  pkgs,
+  lib,
+  config,
+  ...
 }: {
   imports = [
     ../../home-manager
@@ -19,12 +20,12 @@
       };
 
       multiplexers = {
-        tmux.enable = true;
         zellij.enable = true;
       };
 
       shells = {
         fish.enable = true;
+        nushell.enable = true;
       };
 
       wms = {
@@ -32,11 +33,9 @@
       };
 
       terminals = {
-        foot.enable = true;
         wezterm.enable = true;
       };
     };
-
 
     my.settings = {
       wallpaper = "~/Pictures/wallpapers/windows-error.jpg";

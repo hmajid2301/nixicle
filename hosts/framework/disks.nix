@@ -33,31 +33,31 @@
                   "--perf-no_write_workqueue"
                 ];
                 # https://0pointer.net/blog/unlocking-luks2-volumes-with-tpm2-fido2-pkcs11-security-hardware-on-systemd-248.html
-                settings = { crypttabExtraOpts = [ "fido2-device=auto" "token-timeout=10" ]; };
+                settings = {crypttabExtraOpts = ["fido2-device=auto" "token-timeout=10"];};
                 content = {
                   type = "btrfs";
-                  extraArgs = [ "-L" "nixos" "-f" ];
+                  extraArgs = ["-L" "nixos" "-f"];
                   subvolumes = {
                     "/root" = {
                       mountpoint = "/";
-                      mountOptions = [ "subvol=root" "compress=zstd" "noatime" ];
+                      mountOptions = ["subvol=root" "compress=zstd" "noatime"];
                     };
                     "/home" = {
                       mountpoint = "/home";
-                      mountOptions = [ "subvol=home" "compress=zstd" "noatime" ];
+                      mountOptions = ["subvol=home" "compress=zstd" "noatime"];
                     };
-                    "/home/games" = { };
+                    "/home/games" = {};
                     "/nix" = {
                       mountpoint = "/nix";
-                      mountOptions = [ "subvol=nix" "compress=zstd" "noatime" ];
+                      mountOptions = ["subvol=nix" "compress=zstd" "noatime"];
                     };
                     "/persist" = {
                       mountpoint = "/persist";
-                      mountOptions = [ "subvol=persist" "compress=zstd" "noatime" ];
+                      mountOptions = ["subvol=persist" "compress=zstd" "noatime"];
                     };
                     "/log" = {
                       mountpoint = "/var/log";
-                      mountOptions = [ "subvol=log" "compress=zstd" "noatime" ];
+                      mountOptions = ["subvol=log" "compress=zstd" "noatime"];
                     };
                     "/swap" = {
                       mountpoint = "/swap";
@@ -72,7 +72,6 @@
       };
     };
   };
-
 
   fileSystems."/persist".neededForBoot = true;
   fileSystems."/var/log".neededForBoot = true;

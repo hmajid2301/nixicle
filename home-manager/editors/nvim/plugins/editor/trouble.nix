@@ -40,16 +40,16 @@
         action =
           # lua
           ''
-            	function()
-            		if require("trouble").is_open() then
-            			require("trouble").previous({ skip_groups = true, jump = true })
-            		else
-            			local ok, err = pcall(vim.cmd.cprev)
-            			if not ok then
-            				vim.notify(err, vim.log.levels.ERROR)
-            			end
+            function()
+            	if require("trouble").is_open() then
+            		require("trouble").previous({ skip_groups = true, jump = true })
+            	else
+            		local ok, err = pcall(vim.cmd.cprev)
+            		if not ok then
+            			vim.notify(err, vim.log.levels.ERROR)
             		end
             	end
+            end
           '';
         key = "[q";
         lua = true;

@@ -1,4 +1,4 @@
-{ pkgs, ... }: {
+{pkgs, ...}: {
   programs.mangohud = {
     enable = true;
     enableSessionWide = true;
@@ -8,7 +8,6 @@
       cpu_load_change = true;
     };
   };
-
 
   home.packages = with pkgs; [
     lutris

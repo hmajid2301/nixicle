@@ -1,4 +1,9 @@
-{ inputs, pkgs, lib, ... }: {
+{
+  inputs,
+  pkgs,
+  lib,
+  ...
+}: {
   imports = [
     inputs.hardware.nixosModules.framework-13-7040-amd
     ./hardware-configuration.nix
@@ -34,19 +39,19 @@
     pkgs.headsetcontrol2
     pkgs.headset-charge-indicator
   ];
-  services.udev.packages = [ pkgs.headsetcontrol2 ];
+  services.udev.packages = [pkgs.headsetcontrol2];
   environment.sessionVariables = {
     QT_QPA_PLATFORMTHEME = "qt5ct";
   };
 
-  swapDevices = [{ device = "/swap/swapfile"; }];
+  swapDevices = [{device = "/swap/swapfile";}];
   boot = {
     kernelParams = [
       "amdgpu.sg_display=0"
       "resume_offset=533760"
     ];
-    blacklistedKernelModules = [ "hid-sensor-hub" ];
-    supportedFilesystems = lib.mkForce [ "btrfs" ];
+    blacklistedKernelModules = ["hid-sensor-hub"];
+    supportedFilesystems = lib.mkForce ["btrfs"];
     kernelPackages = pkgs.linuxPackages_latest;
     loader = {
       systemd-boot.enable = true;
@@ -61,5 +66,3 @@
 
   system.stateVersion = "23.11";
 }
-
-

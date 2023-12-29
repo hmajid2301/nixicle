@@ -1,4 +1,8 @@
-{ nixpkgs, inputs, ... }: {
+{
+  nixpkgs,
+  inputs,
+  ...
+}: {
   meta = {
     nixpkgs = import nixpkgs {
       system = "x86_64-linux";
@@ -6,7 +10,7 @@
     specialArgs = inputs;
   };
 
-  defaults = { pkgs, ... }: {
+  defaults = {pkgs, ...}: {
     imports = [
       inputs.hardware.nixosModules.raspberry-pi-4
       inputs.sops-nix.nixosModules.sops
@@ -24,7 +28,7 @@
       buildOnTarget = true;
       targetHost = "strawberry";
       targetUser = "strawberry";
-      tags = [ "rpi" ];
+      tags = ["rpi"];
     };
   };
 
@@ -38,7 +42,7 @@
       buildOnTarget = true;
       targetHost = "orange";
       targetUser = "orange";
-      tags = [ "infra" "rpi" ];
+      tags = ["infra" "rpi"];
     };
   };
 
@@ -52,7 +56,7 @@
       buildOnTarget = true;
       targetHost = "guava";
       targetUser = "guava";
-      tags = [ "rpi" ];
+      tags = ["rpi"];
     };
   };
 
@@ -65,7 +69,7 @@
     deployment = {
       targetHost = "mango.local";
       targetUser = "mango";
-      tags = [ "infra" "rpi" ];
+      tags = ["infra" "rpi"];
     };
   };
 }

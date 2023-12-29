@@ -1,8 +1,9 @@
-{ inputs
-, lib
-, config
-, pkgs
-, ...
+{
+  inputs,
+  lib,
+  config,
+  pkgs,
+  ...
 }: {
   imports = [
     inputs.sops-nix.nixosModules.sops
@@ -11,8 +12,8 @@
   sops = {
     gnupg = {
       home = "~/.gnupg";
-      sshKeyPaths = [ ];
+      sshKeyPaths = [];
     };
-    age.sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
+    age.sshKeyPaths = ["/etc/ssh/ssh_host_ed25519_key"];
   };
 }

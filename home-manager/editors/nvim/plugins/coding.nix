@@ -1,4 +1,4 @@
-{ pkgs, ... }: {
+{pkgs, ...}: {
   imports = [
     ./coding/cmp.nix
   ];
@@ -19,7 +19,6 @@
         require("luasnip.loaders.from_vscode").lazy_load()
       '';
 
-
     plugins = {
       mini = {
         enable = true;
@@ -35,9 +34,8 @@
               update_n_lines = "gsn";
             };
           };
-          comment = { };
+          comment = {};
         };
-
       };
       luasnip = {
         enable = true;
@@ -45,7 +43,7 @@
 
       nvim-autopairs = {
         enable = true;
-        disabledFiletypes = [ "TelescopePrompt" "vim" ];
+        disabledFiletypes = ["TelescopePrompt" "vim"];
       };
 
       comment-nvim = {

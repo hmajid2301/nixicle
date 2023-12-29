@@ -1,9 +1,10 @@
-{ inputs
-, lib
-, pkgs
-, config
-, outputs
-, ...
+{
+  inputs,
+  lib,
+  pkgs,
+  config,
+  outputs,
+  ...
 }: {
   imports =
     [
@@ -24,6 +25,7 @@
       ./desktops/hyprland
 
       ./shells/fish.nix
+      ./shells/nushell.nix
       ./shells/zsh.nix
 
       ./terminals/alacritty.nix
@@ -40,18 +42,19 @@
     home-manager.enable = true;
   };
 
-
   home.sessionVariables.EDITOR = config.my.settings.default.editor;
 
   nixpkgs = {
-    overlays = builtins.attrValues outputs.overlays ++ [
-      inputs.nixneovimplugins.overlays.default
-      inputs.nur.overlay
-      inputs.attic.overlays.default
-      inputs.neovim-nightly-overlay.overlay
-      inputs.nixgl.overlay
-      inputs.codeium.overlays."x86_64-linux".default
-    ];
+    overlays =
+      builtins.attrValues outputs.overlays
+      ++ [
+        inputs.nixneovimplugins.overlays.default
+        inputs.nur.overlay
+        inputs.attic.overlays.default
+        inputs.neovim-nightly-overlay.overlay
+        inputs.nixgl.overlay
+        inputs.codeium.overlays."x86_64-linux".default
+      ];
 
     config = {
       allowUnfree = true;
@@ -59,7 +62,7 @@
     };
   };
 
-  home.packages = [ pkgs.nixgl.nixGLIntel ];
+  home.packages = [pkgs.nixgl.nixGLIntel];
 
   nix = {
     package = lib.mkDefault pkgs.nix;
@@ -76,7 +79,7 @@
         "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
       ];
 
-      experimental-features = [ "nix-command" "flakes" "repl-flake" ];
+      experimental-features = ["nix-command" "flakes" "repl-flake"];
       warn-dirty = false;
       netrc-file = "$HOME/.config/nix/netrc";
     };
@@ -84,7 +87,7 @@
 
   news = {
     display = "silent";
-    json = lib.mkForce { };
-    entries = lib.mkForce [ ];
+    json = lib.mkForce {};
+    entries = lib.mkForce [];
   };
 }

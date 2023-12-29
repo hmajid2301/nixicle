@@ -1,4 +1,9 @@
-{ inputs, pkgs, lib, ... }: {
+{
+  inputs,
+  pkgs,
+  lib,
+  ...
+}: {
   home.packages = with pkgs; [
     cheat
     cht-sh

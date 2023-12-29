@@ -1,8 +1,9 @@
-{ lib
-, pkgs
-, ...
+{
+  lib,
+  pkgs,
+  ...
 }: {
-  boot.initrd.postDeviceCommands = (pkgs.lib.mkBefore ''
+  boot.initrd.postDeviceCommands = pkgs.lib.mkBefore ''
     mkdir -p /mnt
 
     # We first mount the btrfs root to /mnt
@@ -39,5 +40,5 @@
     # Once we're done rolling back to a blank snapshot,
     # we can unmount /mnt and continue on the boot process.
     umount /mnt
-  '');
+  '';
 }

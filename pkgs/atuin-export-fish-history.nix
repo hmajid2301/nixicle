@@ -1,8 +1,8 @@
-{ lib
-, buildGoModule
-, fetchFromGitLab
+{
+  lib,
+  buildGoModule,
+  fetchFromGitLab,
 }:
-
 buildGoModule rec {
   pname = "atuin-export-fish-history";
   version = "0.1.0";
@@ -16,5 +16,5 @@ buildGoModule rec {
 
   vendorHash = "sha256-hLEmRq7Iw0hHEAla0Ehwk1EfmpBv6ddBuYtq12XdhVc=";
 
-  ldflags = [ "-s" "-w" ];
+  ldflags = ["-s" "-w"];
 }

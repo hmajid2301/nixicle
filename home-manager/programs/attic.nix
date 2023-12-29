@@ -1,5 +1,8 @@
-{ pkgs, config, ... }: {
-
+{
+  pkgs,
+  config,
+  ...
+}: {
   sops.secrets.attic_auth_token = {
     sopsFile = ../secrets.yaml;
   };
@@ -24,15 +27,15 @@
       Description = "Push nix store changes to attic binary cache.";
     };
     Install = {
-      WantedBy = [ "default.target" ];
+      WantedBy = ["default.target"];
     };
     Service = {
       ExecStart = "${pkgs.writeShellScript "watch-store" ''
-				#!/run/current-system/sw/bin/bash
-				ATTIC_TOKEN=$(cat ${config.sops.secrets.attic_auth_token.path})
-				${pkgs.attic}/bin/attic login prod https://majiy00-nix-binary-cache.fly.dev $ATTIC_TOKEN
-				${pkgs.attic}/bin/attic use prod
-				${pkgs.attic}/bin/attic watch-store prod:prod
+        #!/run/current-system/sw/bin/bash
+        ATTIC_TOKEN=$(cat ${config.sops.secrets.attic_auth_token.path})
+        ${pkgs.attic}/bin/attic login prod https://majiy00-nix-binary-cache.fly.dev $ATTIC_TOKEN
+        ${pkgs.attic}/bin/attic use prod
+        ${pkgs.attic}/bin/attic watch-store prod:prod
       ''}";
       MemoryHigh = "1.5G";
       MemoryMax = "2G";

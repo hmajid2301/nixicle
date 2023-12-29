@@ -1,11 +1,8 @@
-{ pkgs
-, config
-, ...
+{
+  pkgs,
+  config,
+  ...
 }: {
-  home.packages = with pkgs; [
-    nixd
-  ];
-
   programs.nixvim = {
     plugins = {
       nix.enable = true;
@@ -14,19 +11,28 @@
 
       conform-nvim = {
         formattersByFt = {
-          nix = [ "nixpkgs_fmt" ];
+          nix = ["alejandra"];
+        };
+        formatters = {
+          alejandra = {
+            command = "${pkgs.alejandra}/bin/alejandra";
+          };
         };
       };
 
       lint = {
-        # lintersByFt = {
-        #   nix = [ "deadnix" ];
-        # };
-        # linters = {
-        #   deadnix = {
-        #     cmd = "${pkgs.deadnix}/bin/deadnix";
-        #   };
-        # };
+        lintersByFt = {
+          nix = ["statix"];
+        };
+        linters = {
+          statix = {
+            cmd = "${pkgs.statix}/bin/statix";
+          };
+        };
+      };
+
+      lsp.servers.nil_ls = {
+        enable = true;
       };
 
       treesitter = {
@@ -38,10 +44,6 @@
 
     extraConfigVim = ''
       au BufRead,BufNewFile flake.lock setf json
-    '';
-
-    extraConfigLua = ''
-      require'lspconfig'.nixd.setup{}
     '';
   };
 }

@@ -1,9 +1,13 @@
-{ pkgs, config, inputs, lib, ... }:
-with lib;
-let
-  cfg = config.modules.wms.hyprland;
-in
 {
+  pkgs,
+  config,
+  inputs,
+  lib,
+  ...
+}:
+with lib; let
+  cfg = config.modules.wms.hyprland;
+in {
   imports = [
     ./config
     ./gammastep.nix
@@ -70,8 +74,8 @@ in
     ];
 
     nix.settings = {
-      substituters = [ "https://hyprland.cachix.org" ];
-      trusted-public-keys = [ "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc=" ];
+      substituters = ["https://hyprland.cachix.org"];
+      trusted-public-keys = ["hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="];
     };
   };
 }
