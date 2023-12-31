@@ -40,8 +40,6 @@ in {
     ./plugins/lang/markdown.nix
     ./plugins/lang/python.nix
     ./plugins/lang/yaml.nix
-
-    ./plugins/tmux.nix
   ];
 
   options.modules.editors.nvim = {

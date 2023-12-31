@@ -28,5 +28,6 @@
     ${pkgs.gnused}/bin/sed 's!Exec=.*!Exec=${wrapperScript}!g' ${pkgs.discord}/share/applications/discord.desktop > $out/share/applications/discord.desktop
   '';
 in {
+  xdg.configFile."BetterDiscord/data/stable/custom.css" = {source = ./custom.css;};
   home.packages = [wrappedDiscord];
 }

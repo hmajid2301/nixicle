@@ -40,9 +40,6 @@
     pkgs.headset-charge-indicator
   ];
   services.udev.packages = [pkgs.headsetcontrol2];
-  environment.sessionVariables = {
-    QT_QPA_PLATFORMTHEME = "qt5ct";
-  };
 
   swapDevices = [{device = "/swap/swapfile";}];
   boot = {

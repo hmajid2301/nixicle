@@ -1,5 +1,6 @@
 {pkgs, ...}: {
   home.packages = with pkgs; [
+    broot
     choose
     curlie
     chafa
@@ -15,7 +16,6 @@
     gping
     hyperfine
     hexyl
-    lazydocker
     ouch
     silver-searcher
     thefuck
