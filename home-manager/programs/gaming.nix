@@ -13,5 +13,6 @@
     lutris
     cartridges
     bottles
+    adwaita-for-steam
   ];
 }

@@ -10,7 +10,7 @@
     ./bottom.nix
     ./cheat-sheets.nix
     ./direnv.nix
-    ./discord.nix
+    ./discord
     ./eza.nix
     ./fonts.nix
     ./fzf.nix
@@ -40,7 +40,6 @@
     moreutils
     nvtop-amd
     htop
-    ctpv
     unzip
     gnupg
 
