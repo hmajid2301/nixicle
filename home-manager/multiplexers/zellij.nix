@@ -14,7 +14,10 @@ in {
   };
 
   config = mkIf cfg.enable {
-    home.packages = [inputs.zjstatus.packages.${pkgs.system}.default];
+    home.packages = [
+      pkgs.tmate
+      inputs.zjstatus.packages.${pkgs.system}.default
+    ];
     # xdg.configFile = {
     #   "zellij/layouts/default.kdl".text = ''
     #     layout {

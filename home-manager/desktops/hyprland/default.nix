@@ -28,7 +28,7 @@ in {
   };
 
   config = mkIf cfg.enable {
-    home.sessionVariables = rec {
+    home.sessionVariables = {
       MOZ_ENABLE_WAYLAND = 1;
       QT_QPA_PLATFORM = "wayland";
       LIBSEAT_BACKEND = "logind";
@@ -51,18 +51,18 @@ in {
       playerctl
       sway-contrib.grimshot
 
+      kooha
       impression
       raider
       helvum
+      gnome.gucharmap
       gnome.gnome-font-viewer
       gnome.gnome-characters
       gnome.sushi
       gnome.nautilus
       gnome.gnome-disk-utility
       gnome.totem
-      gnome.gucharmap
       gnome.gvfs
-      gnome.gnome-logs
       loupe
       gnome-text-editor
       pavucontrol

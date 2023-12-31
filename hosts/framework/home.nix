@@ -25,7 +25,6 @@
 
       shells = {
         fish.enable = true;
-        nushell.enable = true;
       };
 
       wms = {

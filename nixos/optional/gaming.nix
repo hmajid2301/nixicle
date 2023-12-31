@@ -20,7 +20,6 @@
     remotePlay.openFirewall = true;
     extraCompatPackages = [
       inputs.nix-gaming.packages.${pkgs.system}.proton-ge
-      inputs.nix-gaming.packages.${pkgs.system}.northstar-proton
     ];
   };
 
