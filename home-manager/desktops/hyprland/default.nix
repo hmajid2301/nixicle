@@ -52,6 +52,7 @@ in {
       sway-contrib.grimshot
 
       kooha
+      mission-center
       impression
       raider
       helvum
@@ -67,7 +68,7 @@ in {
       gnome-text-editor
       pavucontrol
 
-      inputs.nwg-displays.packages."${pkgs.system}".default
+      inputs.nwg-displays.packages.${pkgs.system}.default
       inputs.hypr-contrib.packages.${pkgs.system}.grimblast
       pkgs.xdg-desktop-portal-hyprland
       pkgs.satty
