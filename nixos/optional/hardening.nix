@@ -17,9 +17,9 @@
 
   #environment.memoryAllocator.provider = "scudo";
   systemd.coredump.enable = false;
-  services.clamav.daemon.enable = true;
-  services.clamav.updater.enable = true;
-  services.clamav.scanner.enable = true;
+  # services.clamav.daemon.enable = true;
+  # services.clamav.updater.enable = true;
+  # services.clamav.scanner.enable = true;
   services.opensnitch.enable = true;
 
   environment.systemPackages = [
