@@ -11,6 +11,7 @@
     ./cheat-sheets.nix
     ./direnv.nix
     ./discord
+    ./docker.nix
     ./eza.nix
     ./fonts.nix
     ./fzf.nix
