@@ -15,6 +15,7 @@
     ../../nixos/optional/auto-upgrade.nix
     ../../nixos/optional/avahi.nix
     ../../nixos/optional/backup.nix
+    ../../nixos/optional/bluetooth.nix
     ../../nixos/optional/docker.nix
     ../../nixos/optional/egpu.nix
     ../../nixos/optional/hardening.nix

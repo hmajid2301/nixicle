@@ -15,7 +15,6 @@ in {
     programs.wezterm = {
       enable = true;
       package = pkgs.wezterm-nightly;
-      colorSchemes = {};
       extraConfig = builtins.readFile ./config.lua;
     };
   };

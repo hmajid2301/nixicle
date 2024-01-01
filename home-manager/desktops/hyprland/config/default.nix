@@ -58,9 +58,11 @@
         "${pkgs.nur.repos."999eagle".swayaudioidleinhibit}/bin/sway-audio-idle-inhibit -w"
         "${pkgs.waybar}/bin/waybar"
         "${pkgs.gammastep}/bin/gammastep"
-        "mullvad-gui"
-        "${pkgs.tailscale-systray}/bin/tailscale-systray"
         "${pkgs.swaybg}/bin/swaybg -i ${config.my.settings.wallpaper} --mode fill"
+        "${pkgs.tailscale-systray}/bin/tailscale-systray"
+        "mullvad-gui"
+        "solaar -w hide"
+        "blueman-applet"
       ];
     };
   };
