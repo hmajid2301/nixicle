@@ -9,31 +9,27 @@
     ./hardware-configuration.nix
     ./disks.nix
 
-    ../../nixos/global
-    ../../nixos/users/haseeb.nix
-
-    ../../nixos/optional/auto-upgrade.nix
-    ../../nixos/optional/avahi.nix
-    ../../nixos/optional/backup.nix
-    ../../nixos/optional/bluetooth.nix
-    ../../nixos/optional/docker.nix
+    ../../nixos
     ../../nixos/optional/egpu.nix
-    ../../nixos/optional/hardening.nix
-    ../../nixos/optional/fonts.nix
-    ../../nixos/optional/fingerprint.nix
-    ../../nixos/optional/greetd.nix
-    ../../nixos/optional/gaming.nix
-    ../../nixos/optional/plymouth.nix
-    ../../nixos/optional/pipewire.nix
-    ../../nixos/optional/tailscale.nix
-    ../../nixos/optional/tpm.nix
-    ../../nixos/optional/tlp.nix
-    ../../nixos/optional/virtualisation.nix
-    ../../nixos/optional/vpn.nix
+    ../../nixos/users/haseeb.nix
   ];
 
   networking = {
     hostName = "framework";
+  };
+
+  modules.nixos = {
+    avahi.enable = true;
+    backup.enable = true;
+    bluetooth.enable = true;
+    docker.enable = true;
+    fingerprint.enable = true;
+    gaming.enable = true;
+    login.enable = true;
+    extraSecurity.enable = true;
+    power.enable = true;
+    virtualisation.enable = true;
+    vpn.enable = true;
   };
 
   environment.systemPackages = [
@@ -61,6 +57,13 @@
     #   pkiBundle = "/etc/secureboot";
     # };
   };
+
+  boot.plymouth = {
+    enable = true;
+    themePackages = [(pkgs.catppuccin-plymouth.override {variant = "mocha";})];
+    theme = "catppuccin-mocha";
+  };
+  boot.initrd.systemd.enable = true;
 
   system.stateVersion = "23.11";
 }
