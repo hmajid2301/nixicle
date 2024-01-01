@@ -1,19 +1,26 @@
-{pkgs, ...}: {
-  virtualisation = {
-    podman = {
-      enable = true;
-      dockerCompat = true;
-      defaultNetwork.settings = {
-        dns_enabled = true;
+{
+  config,
+  lib,
+  ...
+}:
+with lib; let
+  cfg = config.modules.nixos.docker;
+in {
+  options.modules.nixos.docker = {
+    enable = mkEnableOption "Enable docker daemon or equivalent";
+  };
+
+  config = mkIf cfg.enable {
+    virtualisation = {
+      podman = {
+        enable = true;
+        dockerCompat = true;
+        defaultNetwork.settings = {
+          dns_enabled = true;
+        };
       };
     };
   };
-
-  environment.systemPackages = with pkgs; [
-    podman-compose
-    podman-tui
-    lazydocker
-  ];
 
   # environment.persistence = {
   #   "/persist".directories = [
