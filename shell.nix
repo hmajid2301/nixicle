@@ -1,8 +1,4 @@
-{
-  pkgs,
-  inputs,
-  ...
-}: let
+{pkgs, ...}: let
   json2nix = pkgs.writeScriptBin "json2nix" ''
     ${pkgs.python3}/bin/python ${pkgs.fetchurl {
       url = "https://gitlab.com/-/snippets/3613708/raw/main/json2nix.py";
@@ -28,14 +24,12 @@ in {
       pkgs.statix
       pkgs.deadnix
       pkgs.alejandra
-      pkgs.update-nix-fetchgit
       pkgs.home-manager
       pkgs.git
       pkgs.sops
       pkgs.ssh-to-age
       pkgs.gnupg
       pkgs.age
-      inputs.colmena.packages.${pkgs.system}.colmena
     ];
   };
 }
