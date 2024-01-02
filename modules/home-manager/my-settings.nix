@@ -1,22 +1,18 @@
-{
-  lib,
-  pkgs,
-  ...
-}: let
+{lib, ...}: let
   inherit (lib) types mkOption;
 in {
   options.my.settings = {
     default = {
       shell = mkOption {
-        type = types.nullOr (types.enum ["${pkgs.fish}/bin/fish" "${pkgs.zsh}/bin/zsh"]);
+        type = types.nullOr (types.enum ["fish" "zsh"]);
         description = "The default shell to use";
-        default = "${pkgs.fish}/bin/fish";
+        default = "fish";
       };
 
       terminal = mkOption {
-        type = types.nullOr (types.enum ["alacritty" "${pkgs.foot}/bin/foot" "wezterm"]);
+        type = types.nullOr (types.enum ["alacritty" "foot" "wezterm"]);
         description = "The default terminal to use";
-        default = "${pkgs.foot}/bin/foot";
+        default = "wezterm";
       };
 
       browser = mkOption {

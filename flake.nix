@@ -40,7 +40,6 @@
     nwg-displays.url = "github:nwg-piotr/nwg-displays";
     comma.url = "github:nix-community/comma";
     attic.url = "github:zhaofengli/attic";
-    colmena.url = "github:zhaofengli/colmena";
     nix-gaming.url = "github:fufexan/nix-gaming";
 
     firefox-gnome-theme = {
@@ -53,7 +52,6 @@
     self,
     nixpkgs,
     home-manager,
-    colmena,
     ...
   } @ inputs: let
     inherit (self) outputs;
@@ -69,7 +67,6 @@
     packages = forEachSystem (pkgs: import ./pkgs {inherit pkgs;});
     devShells = forEachSystem (pkgs: import ./shell.nix {inherit pkgs inputs;});
 
-    colmena = import ./hosts/self-hosted/colmena.nix {inherit nixpkgs inputs;};
     nixosConfigurations = {
       iso = lib.nixosSystem {
         modules = [
@@ -80,7 +77,6 @@
         specialArgs = {inherit inputs outputs;};
       };
 
-      # Laptops
       framework = lib.nixosSystem {
         modules = [./hosts/framework/configuration.nix];
         specialArgs = {inherit inputs outputs;};
@@ -88,7 +84,6 @@
     };
 
     homeConfigurations = {
-      # Laptops
       framework = lib.homeManagerConfiguration {
         modules = [./hosts/framework/home.nix];
         pkgs = nixpkgs.legacyPackages.x86_64-linux;

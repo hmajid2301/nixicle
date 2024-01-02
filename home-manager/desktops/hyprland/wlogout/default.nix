@@ -39,5 +39,6 @@
         keybind = "r";
       }
     ];
+    style = builtins.readFile ./style.css;
   };
 }
