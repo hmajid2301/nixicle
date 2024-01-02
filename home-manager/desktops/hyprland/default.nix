@@ -17,7 +17,7 @@ in {
     ./swaylock.nix
     ./theme
     ./waybar
-    ./wlogout.nix
+    ./wlogout
     ./xdg.nix
 
     inputs.hyprland-nix.homeManagerModules.default

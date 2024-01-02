@@ -70,35 +70,35 @@ Add this in a file called `disks.nix`.
 
 If the host is running NixOS to manage the configuration for NixOS create a `configuration.nix` file.
 Add imports for all the hardware configuration and disko configuration alongisde the main nixos/global imports
-`../../nixos/global`.
+`../../nixos`.
 
 Then decide which optional parts you want such as using setting up docker, vpn or grub bootloader.
 
 ```nix
+{
   imports = [
-    inputs.hardware.nixosModules.framework-12th-gen-intel
-    inputs.hyprland.nixosModules.default
     inputs.disko.nixosModules.disko
-
     ./hardware-configuration.nix
-    ./users/haseeb
     ./disks.nix
 
-    ../../nixos/global
-    ../../nixos/optional/backup.nix
-    ../../nixos/optional/fingerprint.nix
-    ../../nixos/optional/opengl.nix
-    ../../nixos/optional/thunderbolt.nix
-    ../../nixos/optional/docker.nix
-    ../../nixos/optional/fonts.nix
-    ../../nixos/optional/pipewire.nix
-    ../../nixos/optional/greetd.nix
-    ../../nixos/optional/quietboot.nix
-    ../../nixos/optional/vfio.nix
-    ../../nixos/optional/vpn.nix
-    ../../nixos/optional/pam.nix
-    ../../nixos/optional/grub.nix
+    ../../nixos
+    ../../nixos/users/haseeb.nix
   ];
+
+  modules.nixos = {
+    avahi.enable = true;
+    backup.enable = true;
+    bluetooth.enable = true;
+    docker.enable = true;
+    fingerprint.enable = true;
+    gaming.enable = true;
+    login.enable = true;
+    extraSecurity.enable = true;
+    power.enable = true;
+    virtualisation.enable = true;
+    vpn.enable = true;
+ };
+}
 ```
 
 ##### home.nix
@@ -143,7 +143,7 @@ my.settings = {
   host = "framework";
   default = {
     shell = "${pkgs.fish}/bin/fish";
-    terminal = "${pkgs.foot}/bin/foot";
+    terminal = "wezterm";
     browser = "firefox";
     editor = "nvim";
   };
@@ -214,14 +214,10 @@ Some features of my dotfiles:
 ## 🏠 Structure
 
 - `flake.nix`: Entrypoint for hosts and home configurations
-- `nixos`: 
-  - `global`: Configurations that are globally applied to all my machines
-  - `optional`: Configurations that some of my machines use
+- `nixos`: Configuration applied 
 - `hosts`: NixOS Configurations, accessible via `nixos-rebuild --flake`.
-  - `framework`: Framework 12th gen laptop | Hyprland | eGPU 3080
+  - `framework`: Framework 13th gen laptop | NixOS Hyprland | eGPU 7800 XTX
   - `curve`: Framework 13th gen work laptop | Ubuntu Hyprland
-  - `mesmer`: Desktop AMD Ryzen 9 5950X  | Hyprland | GPU 7900 XTX
-  - `rpis`: My Raspberry pi cluster | k3s
 - `home-manager`: Most of my dotfiles configuration, home-manager modules
 
 ## 📱 Applications
@@ -230,35 +226,15 @@ Some features of my dotfiles:
 | :------------- | :----------: |
 | OS             | [NixOS](https://nixos.com/) |
 | Editor         | [NeoVim](https://neovim.io/) |
+| Multiplexer    | [Zellij](https://github.com/zellij-org/zellij) |
 | Prompt         | [Starship](https://starship.rs/) |
 | Launcher       | [Rofi](https://github.com/davatorium/rofi) |
 | Shell          | [Fish](https://fishshell.com/) |
 | Status Bar     | [Waybar](https://github.com/Alexays/Waybar) |
-| Terminal       | [Alacritty](https://github.com/alacritty/alacritty) |
+| Terminal       | [Wezterm](https://github.com/wez/wezterm) |
 | Window Manager | [Hyprland](https://hyprland.org/) |
 | Fonts          | [Mono Lisa](https://www.monolisa.dev/) |
 | Colorscheme    | [Catppuccin](https://github.com/catppuccin) |
-
-I basically just installed every package from [Modern Unix](https://github.com/ibraheemdev/modern-unix).
-
-### Tmux
-
-Some of the plugins I leverage with [tmux](./home-manager/multiplexers/tmux.nix) include:
-
-I manage my projects using tmux sessions with the [tmux smart session manager](https://github.com/joshmedeski/t-smart-tmux-session-manager).
-
-Where I create a new session for each project I'm working on and then jump between them.
-Where a project might be:
-
-- My Blog
-- My Dotfiles
-- Full stack application
-  - A window for each project i.e. GUI and API
-
-I also leverage [tmux-browser](https://github.com/ofirgall/tmux-browser), to keep different browser windows for different projects.
-
-Another set of plugins I use are the [tmux-resurrect/continuum](https://github.com/tmux-plugins/tmux-continuum)
-plugins to auto save and restore my sessions. Alongside neovim's auto-session we can restore almost everything.
 
 ### Neovim
 
@@ -289,9 +265,7 @@ Some of the main plugins used in my nvim setup include:
 ### Desktop
 
 ![terminal](images/terminal.png)
-![terminal full](./images/terminal-full.png)
-![tmux session](./images/tmux-session.png)
-![Side By Side](images/side-by-side.png)
+![swaync](images/swaync.png)
 ![wallpaper](images/wallpaper.png)
 ![monkeytype](images/monkeytype.png)
 
