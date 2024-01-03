@@ -19,6 +19,8 @@ in {
       enable = true;
       associations.added = {
         "video/mp4" = ["org.gnome.Totem.desktop"];
+        "image/png" = ["org.gnome.Loupe.desktop"];
+        "image/jpg" = ["org.gnome.Loupe.desktop"];
       };
       defaultApplications = {
         "application/x-extension-htm" = browser;

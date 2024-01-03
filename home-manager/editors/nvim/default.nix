@@ -34,6 +34,7 @@ in {
     ./plugins/lang/docker.nix
     ./plugins/lang/go.nix
     ./plugins/lang/lua.nix
+    ./plugins/lang/kdl.nix
     ./plugins/lang/json.nix
     ./plugins/lang/html.nix
     ./plugins/lang/nix.nix

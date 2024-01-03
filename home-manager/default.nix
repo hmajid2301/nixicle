@@ -20,7 +20,7 @@
       ./editors/nvim
 
       ./multiplexers/tmux.nix
-      ./multiplexers/zellij.nix
+      ./multiplexers/zellij
 
       ./desktops/hyprland
 
@@ -84,6 +84,8 @@
       netrc-file = "$HOME/.config/nix/netrc";
     };
   };
+
+  services.poweralertd.enable = true;
 
   news = {
     display = "silent";

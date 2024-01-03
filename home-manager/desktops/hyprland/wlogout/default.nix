@@ -18,13 +18,13 @@
         label = "logout";
         action = "${pkgs.systemd}/bin/loginctl terminate-user $USER";
         text = "Logout";
-        keybind = "K";
+        keybind = "L";
       }
       {
         label = "shutdown";
         action = "${pkgs.systemd}/bin/systemctl poweroff";
         text = "Shutdown";
-        keybind = "H";
+        keybind = "S";
       }
       {
         label = "suspend";
@@ -40,5 +40,10 @@
       }
     ];
     style = builtins.readFile ./style.css;
+  };
+
+  xdg.configFile."wlogout/icons" = {
+    recursive = true;
+    source = ./icons;
   };
 }
