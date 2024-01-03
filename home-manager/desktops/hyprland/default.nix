@@ -49,15 +49,13 @@ in {
       wl-clipboard
       pamixer
       playerctl
-      sway-contrib.grimshot
 
       kooha
       mission-center
       impression
       raider
       helvum
-      gnome.gucharmap
-      gnome.gnome-font-viewer
+      gnome.gnome-power-manager
       gnome.gnome-characters
       gnome.sushi
       gnome.nautilus
@@ -69,7 +67,9 @@ in {
       pavucontrol
 
       inputs.nwg-displays.packages.${pkgs.system}.default
-      inputs.hypr-contrib.packages.${pkgs.system}.grimblast
+      grimblast
+      slurp
+      sway-contrib.grimshot
       pkgs.xdg-desktop-portal-hyprland
       pkgs.satty
     ];
