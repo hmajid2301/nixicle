@@ -118,7 +118,10 @@ in {
       };
 
       functions = {
-        fish_greeting = "This shell is powered by 󰈺,  and ";
+        fish_greeting = ''
+          printf (set_color b4befe)"This shell is powered by  "\n
+        '';
+
         envsource = ''
           for line in (cat $argv | grep -v '^#')
             set item (string split -m 1 '=' $line)

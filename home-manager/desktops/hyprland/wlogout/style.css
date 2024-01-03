@@ -1,23 +1,63 @@
+@define-color background      #1E1E2E;
+@define-color background-alt1 #28283d;
+@define-color background-alt2 #32324d;
+@define-color foreground      #CDD6F4;
+@define-color selected        #89B4FA;
+@define-color black           #45475A;
+@define-color red             #F38BA8;
+@define-color green           #A6E3A1;
+@define-color yellow          #F9E2AF;
+@define-color blue            #89B4FA;
+@define-color magenta         #F5C2E7;
+@define-color cyan            #94E2D5;
+@define-color white           #BAC2DE;
+@define-color lavender        #b4befe;
 * {
-  font-family: monospace;
   font-size: 15px;
   font-weight: bold;
 }
 
 window {
-  background-color: #1e1e2e;
+  background-color: @background;
 }
 
 button {
-  background-size: 20%;
-  border: 2px solid #6c7086;
-  border-radius: 3rem;
-  background-color: #313244;
-  margin: 10px;
-  color: #cdd6f4;
+  background-color: @background-alt1;
+  color: @foreground;
+  border: 1px solid @background-alt2;
+  border-radius: 50px;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 30%;
 }
 
-button:hover,
-button:focus {
-  background-color: #89b4fa;
+button:focus,
+button:hover {
+  background-color: @lavender;
+  color: @background;
+  outline-style: none;
+}
+
+#lock {
+  background-image: image(url("icons/lock.png"));
+}
+
+#logout {
+  background-image: image(url("icons/logout.png"));
+}
+
+#suspend {
+  background-image: image(url("icons/suspend.png"));
+}
+
+#hibernate {
+  background-image: image(url("icons/hibernate.png"));
+}
+
+#shutdown {
+  background-image: image(url("icons/shutdown.png"));
+}
+
+#reboot {
+  background-image: image(url("icons/reboot.png"));
 }

@@ -1,0 +1,24 @@
+theme "catppuccin-mocha"
+default_layout "compact"
+mouse_mode true
+pane_frames true
+simplified_ui true
+default_shell "fish"
+
+keybinds {
+    unbind "Ctrl h"
+    normal {
+        bind "Alt n" { NewPane; }
+        bind "Alt h" { Resize "Left"; }
+        bind "Alt l" { Resize "Right"; }
+        bind "Alt j" { Resize "Down"; }
+        bind "Alt k" { Resize "Up"; }
+    }
+    shared {
+        bind "Ctrl f" { SwitchToMode "search"; }
+        bind "Ctrl h" { MoveFocusOrTab "Left"; }
+        bind "Ctrl l" { MoveFocusOrTab "Right"; }
+        bind "Ctrl j" { MoveFocus "Down"; }
+        bind "Ctrl k" { MoveFocus "Up"; }
+    }
+}

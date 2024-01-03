@@ -75,6 +75,13 @@
           context = "global";
           subprocess = true;
         }
+        {
+          key = "S";
+          command = "git commit -m '{{index .PromptResponses 0}}' --no-gpg-sign";
+          description = "commit without gpg signing";
+          context = "global";
+          subprocess = true;
+        }
       ];
     };
   };

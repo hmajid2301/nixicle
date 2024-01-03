@@ -5,6 +5,7 @@ return {
 	font = wezterm.font("MonoLisa Nerd Font"),
 	font_size = 14.0,
 	enable_tab_bar = false,
+	term = "wezterm",
 	keys = {
 		{
 			key = "t",

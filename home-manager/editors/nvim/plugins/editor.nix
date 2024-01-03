@@ -211,16 +211,16 @@
         statusText.enabled = true;
       };
 
-      # harpoon = {
-      #   enable = true;
-      #   enableTelescope = true;
-      #   keymaps = {
-      #     addFile = "<leader>ha";
-      #     toggleQuickMenu = "<leader>ht";
-      #     navNext = "<leader>hn";
-      #     navPrev = "<leader>hp";
-      #   };
-      # };
+      harpoon = {
+        enable = true;
+        enableTelescope = true;
+        keymaps = {
+          addFile = "<leader>ha";
+          toggleQuickMenu = "<leader>ht";
+          navNext = "<leader>hn";
+          navPrev = "<leader>hp";
+        };
+      };
 
       nvim-colorizer = {
         enable = true;
@@ -278,7 +278,9 @@
       vim.keymap.set("n", "-", "<CMD>Oil<CR>", { desc = "Open parent directory" })
 
       require("spectre").setup()
-      require("zellij").setup()
+      require("zellij").setup({
+      		vimTmuxNavigatorKeybinds = true,
+      })
     '';
   };
 }
