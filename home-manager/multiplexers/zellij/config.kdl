@@ -1,8 +1,6 @@
 theme "catppuccin-mocha"
-default_layout "compact"
-mouse_mode true
-pane_frames true
-simplified_ui true
+default_layout "zjstatus"
+pane_frames false
 default_shell "fish"
 
 keybinds {
@@ -16,6 +14,8 @@ keybinds {
     }
     shared {
         bind "Ctrl f" { SwitchToMode "search"; }
+        bind "Ctrl n" { SwitchToMode "move"; }
+        bind "Ctrl x" { SwitchToMode "session"; }
         bind "Ctrl h" { MoveFocusOrTab "Left"; }
         bind "Ctrl l" { MoveFocusOrTab "Right"; }
         bind "Ctrl j" { MoveFocus "Down"; }
