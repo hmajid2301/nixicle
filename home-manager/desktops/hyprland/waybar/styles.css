@@ -175,6 +175,8 @@ window#waybar {
 
 #network.disconnected {
   color: @red;
+  margin-right: 10px;
+  padding: 10px;
 }
 
 #pulseaudio {
