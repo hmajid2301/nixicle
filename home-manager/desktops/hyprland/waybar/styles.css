@@ -96,18 +96,30 @@ window#waybar {
   padding: 0 10px 0 10px;
   margin-left: 10px;
 }
+
 #tray menu {
-  background-color: #111111;
-}
-
-#tray menu * {
   background-color: @accent_fg_color;
-  color: @lavender;
 }
 
-#tray menu *:hover {
-  background-color: @green;
-  color: @green;
+#tray menuitem,
+#tray window {
+  background-color: transparent;
+}
+
+#tray menu menuitem:hover {
+  color: #000000;
+  background-color: @lavender;
+}
+
+#tray > .passive {
+  -gtk-icon-effect: dim;
+}
+
+#tray > .needs-attention {
+  -gtk-icon-effect: highlight;
+}
+
+#tray > .active {
 }
 
 #backlight {
