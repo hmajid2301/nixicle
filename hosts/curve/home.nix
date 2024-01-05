@@ -10,11 +10,13 @@
   ];
 
   config = {
+    wayland.windowManager.hyprland.keyBinds.bindi = lib.mkForce {};
+
     my.settings = {
       wallpaper = "~/Pictures/wallpapers/nixppuccin.png";
       host = "curve";
       default = {
-        shell = "${pkgs.fish}/bin/fish";
+        shell = "fish";
         terminal = "wezterm";
         browser = "firefox";
         editor = "nvim";
@@ -40,6 +42,7 @@
 
       multiplexers = {
         tmux.enable = true;
+        zellij.enable = true;
       };
 
       wms = {

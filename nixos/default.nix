@@ -21,6 +21,7 @@
       ./sops.nix
 
       ./optional/avahi.nix
+      ./optional/auto-hibernate.nix
       ./optional/backup.nix
       ./optional/bluetooth.nix
       ./optional/docker.nix

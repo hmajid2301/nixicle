@@ -13,7 +13,7 @@
 
   nix.settings = {
     extra-substituters = [
-      "https://majiy00-nix-binary-cache.fly.dev"
+      "https://majiy00-nix-binary-cache.fly.dev/prod"
       "https://staging.attic.rs/attic-ci"
     ];
     extra-trusted-public-keys = [
@@ -32,8 +32,8 @@
     Service = {
       ExecStart = "${pkgs.writeShellScript "watch-store" ''
         #!/run/current-system/sw/bin/bash
-        ATTIC_TOKEN=$(cat ${config.sops.secrets.attic_auth_token.path})
-        ${pkgs.attic}/bin/attic login prod https://majiy00-nix-binary-cache.fly.dev $ATTIC_TOKEN
+        # ATTIC_TOKEN=$(cat ${config.sops.secrets.attic_auth_token.path})
+        # ${pkgs.attic}/bin/attic login prod https://majiy00-nix-binary-cache.fly.dev $ATTIC_TOKEN
         ${pkgs.attic}/bin/attic use prod
         ${pkgs.attic}/bin/attic watch-store prod:prod
       ''}";

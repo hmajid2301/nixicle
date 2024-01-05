@@ -17,7 +17,7 @@
     ./fzf.nix
     ./gaming.nix
     ./git.nix
-    ./gpg.nix
+    ./gpg
     ./k8s.nix
     ./modern-unix.nix
     ./kafka.nix

@@ -81,6 +81,7 @@
 
       experimental-features = ["nix-command" "flakes" "repl-flake"];
       warn-dirty = false;
+      use-xdg-base-directories = true;
       netrc-file = "$HOME/.config/nix/netrc";
     };
   };
