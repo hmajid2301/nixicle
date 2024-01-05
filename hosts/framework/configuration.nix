@@ -20,6 +20,7 @@
 
   modules.nixos = {
     avahi.enable = true;
+    auto-hibernate.enable = true;
     backup.enable = true;
     bluetooth.enable = true;
     docker.enable = true;

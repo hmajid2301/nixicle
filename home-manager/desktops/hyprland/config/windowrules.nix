@@ -1,10 +1,4 @@
-{
-  pkgs,
-  config,
-  inputs,
-  lib,
-  ...
-}: let
+{lib, ...}: let
   rule = rules: attrs: attrs // {inherit rules;};
 in {
   wayland.windowManager.hyprland.windowRules = let

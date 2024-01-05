@@ -25,6 +25,6 @@
     ripgrep
     sd
     xcp
-    yq
+    yq-go
   ];
 }
