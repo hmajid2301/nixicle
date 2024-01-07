@@ -68,7 +68,7 @@
     xdg.configFile."autostart/tailscale.desktop".text = ''
       [Desktop Entry]
       Type=Application
-      Exec=tailscale-systray
+      Exec=trayscale
       Hidden=false
       NoDisplay=false
       X-GNOME-Autostart-enabled=true

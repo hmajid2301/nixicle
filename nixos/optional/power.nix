@@ -7,12 +7,11 @@ with lib; let
   cfg = config.modules.nixos.power;
 in {
   options.modules.nixos.power = {
-    enable = mkEnableOption "Enable battery power";
+    enable = mkEnableOption "Enable power management apps";
   };
 
   config = mkIf cfg.enable {
     services.upower.enable = true;
-    services.power-profiles-daemon.enable = false;
-    services.tlp.enable = true;
+    services.power-profiles-daemon.enable = true;
   };
 }

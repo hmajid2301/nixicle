@@ -1,14 +1,11 @@
 {
   inputs,
-  pkgs,
   lib,
   config,
   ...
 }: {
   imports = [
     ../../home-manager
-    ../../home-manager/programs
-    ../../home-manager/security/sops.nix
   ];
 
   config = {
@@ -42,8 +39,8 @@
     my.settings = {
       host = "iso";
       default = {
-        shell = "${pkgs.fish}/bin/fish";
-        terminal = "${pkgs.foot}/bin/foot";
+        shell = "fish";
+        terminal = "foot";
         browser = "firefox";
         editor = "nvim";
       };
