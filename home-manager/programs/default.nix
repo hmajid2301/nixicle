@@ -46,5 +46,4 @@
 
     showmethekey
   ];
-  services.poweralertd.enable = true;
 }

@@ -20,6 +20,8 @@ in {
     ./wlogout
     ./xdg.nix
 
+    ../../programs/gui.nix
+
     inputs.hyprland-nix.homeManagerModules.default
   ];
 
@@ -50,25 +52,10 @@ in {
       pamixer
       playerctl
 
-      kooha
-      mission-center
-      impression
-      raider
-      helvum
-      gnome.gnome-power-manager
-      gnome.gnome-characters
-      gnome.sushi
-      gnome.nautilus
-      gnome.gnome-disk-utility
-      gnome.totem
-      gnome.gvfs
-      loupe
-      gnome-text-editor
-      pavucontrol
-
       inputs.nwg-displays.packages.${pkgs.system}.default
       grimblast
       slurp
+      ffmpeg_5-full
       sway-contrib.grimshot
       pkgs.xdg-desktop-portal-hyprland
       pkgs.satty

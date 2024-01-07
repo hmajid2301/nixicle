@@ -2,6 +2,7 @@
   pkgs,
   inputs,
   outputs,
+  lib,
   ...
 }: {
   imports =
@@ -56,7 +57,7 @@
 
   sound.enable = true;
   security.rtkit.enable = true;
-  hardware.pulseaudio.enable = false;
+  hardware.pulseaudio.enable = lib.mkForce false;
   services.pipewire = {
     enable = true;
     alsa.enable = true;
