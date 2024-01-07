@@ -65,16 +65,6 @@
     xdg.mime.enable = true;
     xdg.systemDirs.data = ["${config.home.homeDirectory}/.nix-profile/share/applications"];
 
-    xdg.configFile."autostart/tailscale.desktop".text = ''
-      [Desktop Entry]
-      Type=Application
-      Exec=trayscale
-      Hidden=false
-      NoDisplay=false
-      X-GNOME-Autostart-enabled=true
-      Comment[en_NG]=Start Tailscale Systray
-    '';
-
     # Work Laptop different email
     programs.git.userEmail = lib.mkForce "haseeb.majid@imaginecurve.com";
     programs.git.extraConfig."url \"git@git.curve.tools:\"" = {insteadOf = https://git.curve.tools/;};
