@@ -15,7 +15,7 @@
       sync_frequency = "15m";
       dialect = "uk";
       enter_accept = false;
-      key_path = config.sops.secrets.atuin_key.path;
+      # key_path = config.sops.secrets.atuin_key.path;
     };
   };
 
