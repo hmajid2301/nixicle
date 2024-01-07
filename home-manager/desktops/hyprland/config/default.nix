@@ -59,7 +59,7 @@
         "${pkgs.waybar}/bin/waybar"
         "${pkgs.gammastep}/bin/gammastep"
         "${pkgs.swaybg}/bin/swaybg -i ${config.my.settings.wallpaper} --mode fill"
-        "${pkgs.tailscale-systray}/bin/tailscale-systray"
+        "${pkgs.trayscale}/bin/trayscale --hide-window"
         "mullvad-gui"
         "solaar -w hide"
         "blueman-applet"

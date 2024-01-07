@@ -4,6 +4,6 @@
   keymapp = pkgs.callPackage ./keymapp {};
   all-ways-egpu = pkgs.callPackage ./all-ways-egpu.nix {};
   wezterm-nightly = pkgs.callPackage ./wezterm-nightly {};
-  kvlidadwaita = pkgs.callPackage ./kvlidadwaita.nix {};
   adwaita-for-steam = pkgs.callPackage ./adwaita-for-steam {};
+  monolisa = pkgs.callPackage ./monolisa {};
 }

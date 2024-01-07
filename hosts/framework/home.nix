@@ -37,7 +37,7 @@
     };
 
     my.settings = {
-      wallpaper = "~/Pictures/wallpapers/windows-error.jpg";
+      wallpaper = "~/dotfiles/home-manager/wallpapers/windows-error.jpg";
       host = "framework";
       default = {
         shell = "${pkgs.fish}/bin/fish";
