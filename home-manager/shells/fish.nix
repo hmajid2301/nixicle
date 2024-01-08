@@ -18,66 +18,64 @@ in {
     home.packages = [pkgs.comma pkgs.gum];
     programs.fish = {
       enable = true;
-      interactiveShellInit =
-        # fish
-        ''
-          # Open command buffer in vim when alt+e is pressed
-          bind \ee edit_command_buffer
-          nix-your-shell fish | source
-          fish_add_path --path --prepend /usr/local/bin /usr/bin ~/.local/bin
-          set -x GOPATH $XDG_DATA_HOME/go
-          set -x GOPRIVATE "git.curve.tools,gitlab.com/imaginecurve"
-          fish_add_path --path --append $XDG_DATA_HOME/go/bin/
+      interactiveShellInit = ''
+        # Open command buffer in vim when alt+e is pressed
+        bind \ee edit_command_buffer
+        nix-your-shell fish | source
+        fish_add_path --path --prepend /usr/local/bin /usr/bin ~/.local/bin
+        set -x GOPATH $XDG_DATA_HOME/go
+        set -x GOPRIVATE "git.curve.tools,gitlab.com/imaginecurve"
+        fish_add_path --path --append $XDG_DATA_HOME/go/bin/
 
-          # fifc setup
-          set -Ux fifc_editor nvim
-          set -U fifc_keybinding \cx
-          bind \cx _fifc
-          bind -M insert \cx _fifc
+        # fifc setup
+        set -Ux fifc_editor nvim
+        set -U fifc_keybinding \cx
+        bind \cx _fifc
+        bind -M insert \cx _fifc
 
-          # FZF
-          export FZF_DEFAULT_OPTS="
-          	--color=bg+:#${colors.base02},bg:#${colors.base00},spinner:#${colors.base06},hl:#${colors.base08}
-          	--color=fg:#${colors.base05},header:#${colors.base08},info:#${colors.base0E},pointer:#${colors.base06}
-          	--color=marker:#${colors.base06},fg+:#${colors.base05},prompt:#${colors.base0E},hl+:#${colors.base08}
-          "
-          bind \cr _fzf_search_history
-          bind -M insert \cr _fzf_search_history
+        # FZF
+        export FZF_DEFAULT_OPTS="
+        	--color=bg+:#${colors.base02},bg:#${colors.base00},spinner:#${colors.base06},hl:#${colors.base08}
+        	--color=fg:#${colors.base05},header:#${colors.base08},info:#${colors.base0E},pointer:#${colors.base06}
+        	--color=marker:#${colors.base06},fg+:#${colors.base05},prompt:#${colors.base0E},hl+:#${colors.base08}
+        "
+        bind \cr _fzf_search_history
+        bind -M insert \cr _fzf_search_history
 
-          set -g fish_color_normal ${colors.base05}
-          set -g fish_color_command ${colors.base0D}
-          set -g fish_color_param ${colors.base0F}
-          set -g fish_color_keyword ${colors.base08}
-          set -g fish_color_quote ${colors.base0B}
-          set -g fish_color_redirection f4b8e4
-          set -g fish_color_end ${colors.base09}
-          set -g fish_color_comment 838ba7
-          set -g fish_color_error ${colors.base08}
-          set -g fish_color_gray 737994
-          set -g fish_color_selection --background=${colors.base02}
-          set -g fish_color_search_match --background=${colors.base02}
-          set -g fish_color_option ${colors.base0B}
-          set -g fish_color_operator f4b8e4
-          set -g fish_color_escape ea999c
-          set -g fish_color_autosuggestion 737994
-          set -g fish_color_cancel ${colors.base08}
-          set -g fish_color_cwd ${colors.base0A}
-          set -g fish_color_user ${colors.base0C}
-          set -g fish_color_host ${colors.base0D}
-          set -g fish_color_host_remote ${colors.base0B}
-          set -g fish_color_status ${colors.base08}
-          set -g fish_pager_color_progress 737994
-          set -g fish_pager_color_prefix f4b8e4
-          set -g fish_pager_color_completion ${colors.base05}
-          set -g fish_pager_color_description 737994
+        set -g fish_color_normal ${colors.base05}
+        set -g fish_color_command ${colors.base0D}
+        set -g fish_color_param ${colors.base0F}
+        set -g fish_color_keyword ${colors.base08}
+        set -g fish_color_quote ${colors.base0B}
+        set -g fish_color_redirection f4b8e4
+        set -g fish_color_end ${colors.base09}
+        set -g fish_color_comment 838ba7
+        set -g fish_color_error ${colors.base08}
+        set -g fish_color_gray 737994
+        set -g fish_color_selection --background=${colors.base02}
+        set -g fish_color_search_match --background=${colors.base02}
+        set -g fish_color_option ${colors.base0B}
+        set -g fish_color_operator f4b8e4
+        set -g fish_color_escape ea999c
+        set -g fish_color_autosuggestion 737994
+        set -g fish_color_cancel ${colors.base08}
+        set -g fish_color_cwd ${colors.base0A}
+        set -g fish_color_user ${colors.base0C}
+        set -g fish_color_host ${colors.base0D}
+        set -g fish_color_host_remote ${colors.base0B}
+        set -g fish_color_status ${colors.base08}
+        set -g fish_pager_color_progress 737994
+        set -g fish_pager_color_prefix f4b8e4
+        set -g fish_pager_color_completion ${colors.base05}
+        set -g fish_pager_color_description 737994
 
-          fish_vi_key_bindings
-          set fish_cursor_default     block      blink
-          set fish_cursor_insert      line       blink
-          set fish_cursor_replace_one underscore blink
-          set fish_cursor_visual      block
-          bind --mode insert --sets-mode default jk repaint
-        '';
+        fish_vi_key_bindings
+        set fish_cursor_default     block      blink
+        set fish_cursor_insert      line       blink
+        set fish_cursor_replace_one underscore blink
+        set fish_cursor_visual      block
+        bind --mode insert --sets-mode default jk repaint
+      '';
       shellAliases = {
         wget = "wget --hsts-file=\"$XDG_DATA_HOME/wget-hsts\"";
       };
@@ -118,9 +116,7 @@ in {
       };
 
       functions = {
-        fish_greeting = ''
-          printf (set_color b4befe)"This shell is powered by  "\n
-        '';
+        fish_greeting = '''';
 
         envsource = ''
           for line in (cat $argv | grep -v '^#')
@@ -149,6 +145,10 @@ in {
         '';
       };
       plugins = [
+        {
+          name = "forgit";
+          inherit (pkgs.fishPlugins.forgit) src;
+        }
         {
           name = "bass";
           inherit (pkgs.fishPlugins.bass) src;
