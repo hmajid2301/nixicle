@@ -1,6 +1,8 @@
 theme "catppuccin-mocha"
-default_layout "zjstatus"
+#default_layout "zjstatus"
+default_layout "compact"
 pane_frames false
+simplified_ui true
 default_shell "fish"
 
 keybinds {

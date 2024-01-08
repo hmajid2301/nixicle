@@ -7,6 +7,7 @@
     pavucontrol
     pika-backup
 
+    fragments
     baobab
     gnome.gnome-power-manager
     gnome.sushi
@@ -18,4 +19,20 @@
     gnome-text-editor
     gnome-firmware
   ];
+
+  xdg.configFile."com.github.johnfactotum.Foliate/themes/mocha.json".text = ''
+    {
+        "label": "Mocha",
+        "light": {
+        	"fg": "#999999",
+        	"bg": "#cccccc",
+        	"link": "#666666"
+        },
+        "dark": {
+        	"fg": "#cdd6f4",
+        	"bg": "#1e1e2e",
+        	"link": "#E0DCF5"
+        }
+    }
+  '';
 }
