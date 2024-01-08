@@ -17,9 +17,9 @@
  <p></p>
 <img src="https://builtwithnix.org/badge.svg">
  <p></p>
-<img src="./images/go.png"></img>
+<img src="./images/terminal.png"></img>
 <p>
-  Screenshot updated: 2023-11-04
+  Screenshot updated: 2024-01-08
 </p>
 <h4>
   :warning: This config repo is constantly changing, 
@@ -266,6 +266,7 @@ Some of the main plugins used in my nvim setup include:
 
 ![terminal](images/terminal.png)
 ![swaync](images/swaync.png)
+![games](images/games.png)
 ![wallpaper](images/wallpaper.png)
 ![monkeytype](images/monkeytype.png)
 
