@@ -14,6 +14,7 @@
       inputs.impermanence.nixosModules.home-manager.impermanence
 
       ./programs
+      ./scripts.nix
 
       ./browsers/firefox.nix
 
