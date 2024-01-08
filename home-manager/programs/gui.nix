@@ -6,6 +6,7 @@
     helvum
     pavucontrol
     pika-backup
+    read-it-later
 
     fragments
     baobab
