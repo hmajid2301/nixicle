@@ -7,6 +7,7 @@
     pavucontrol
     pika-backup
     read-it-later
+    trayscale
 
     fragments
     baobab
@@ -18,6 +19,7 @@
     gnome.gvfs
     loupe
     gnome-text-editor
+    gnome-network-displays
     gnome-firmware
   ];
 

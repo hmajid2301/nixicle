@@ -6,7 +6,7 @@
   programs = {
     k9s = {
       enable = true;
-      skin = {
+      skins.skin = {
         k9s = {
           body = {
             fgColor = "#${config.colorscheme.colors.base05}";

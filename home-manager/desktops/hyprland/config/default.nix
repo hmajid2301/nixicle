@@ -51,6 +51,10 @@
         disable_autoreload = true;
       };
 
+      env = [
+        "WLR_DRM_DEVICES,/dev/dri/card1:/dev/dri/card0"
+      ];
+
       exec_once = [
         "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
         "${pkgs.swaynotificationcenter}/bin/swaync"
