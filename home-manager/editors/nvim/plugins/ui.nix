@@ -80,13 +80,14 @@
       vimPlugins.dressing-nvim
 
       # for window-nvim plugin
-      vimExtraPlugins.windows-nvim
+      {
+        plugin = vimExtraPlugins.windows-nvim;
+        config = ''
+          lua require('windows').setup()
+        '';
+      }
       vimExtraPlugins.middleclass
       vimExtraPlugins.animation-nvim
     ];
-
-    extraConfigLua = ''
-      require('windows').setup()
-    '';
   };
 }

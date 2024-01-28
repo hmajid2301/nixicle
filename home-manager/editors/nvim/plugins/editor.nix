@@ -253,6 +253,10 @@
         };
       };
 
+      undotree = {
+        enable = true;
+      };
+
       refactoring = {
         enable = true;
       };
