@@ -20,6 +20,7 @@ in {
       associations.added = {
         "video/mp4" = ["org.gnome.Totem.desktop"];
         "video/quicktime" = ["org.gnome.Totem.desktop"];
+        "video/webm" = ["org.gnome.Totem.desktop"];
         "image/png" = ["org.gnome.Loupe.desktop"];
         "image/jpg" = ["org.gnome.Loupe.desktop"];
         "image/jpeg" = ["org.gnome.Loupe.desktop"];
