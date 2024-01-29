@@ -77,26 +77,13 @@
       };
       sectionSeparators = {
         right = "";
-        left = " ";
-        #left = "▊ ";
+        left = "▊ ";
       };
       componentSeparators = {
         left = "";
         right = "";
       };
-      # winbar = {
-      #   lualine_c = [
-      #     {
-      #       name = "navic";
-      #       extraConfig = {
-      #         draw_empty = true;
-      #         color_correction = "dynamic";
-      #       };
-      #     }
-      #   ];
-      # };
-      # TODO: Add dap debugger
-      # https://www.lazyvim.org/plugins/ui#lualinenvim
+
       sections = {
         lualine_a = [
           {
@@ -109,7 +96,7 @@
                 # lua
                 ''
                   function(str)
-                            return " " .. str
+                    return " " .. str
                   end
                 '';
             };
@@ -158,23 +145,6 @@
               };
             };
           }
-          # {
-          #   name.__raw =
-          #     # lua
-          #     ''
-          #       function()
-          #       	vim.g.gitblame_display_virtual_text = 0 -- Disable virtual text
-          #       	vim.g.gitblame_date_format = "%r"
-          #       	local git_blame = require('gitblame')
-          #
-          #       	local blame = git_blame.is_blame_text_available()
-          #       	if blame then
-          #       		return git_blame.get_current_blame_text()
-          #       	end
-          #       	return ""
-          #       end
-          #     '';
-          # }
         ];
         lualine_x = [
           {
@@ -195,6 +165,29 @@
               };
             };
           }
+          # {
+          #   name.__raw =
+          #     # lua
+          #     ''
+          #       function() return "  " .. require("dap").status() end
+          #     '';
+          #
+          #   cond.__raw =
+          #     # lua
+          #     ''
+          #       function ()
+          #         return package.loaded["dap"] and require("dap").status() ~= ""
+          #       end
+          #     '';
+          #   color = {
+          #     fg = "#2d2c3c";
+          #     bg = "#CBA6F7";
+          #     gui = "bold";
+          #   };
+          #   separator = {
+          #     left = "";
+          #   };
+          # }
           {
             name.__raw =
               # lua

@@ -22,18 +22,22 @@ in {
       trusted-public-keys = ["nix-gaming.cachix.org-1:nbjlureqMbRAxR1gJ/f3hxemL9svXaZF/Ees8vCUUs4="];
     };
 
-    hardware.xone.enable = true;
     hardware.xpadneo.enable = true;
-    programs.gamemode.enable = true;
-    programs.gamescope.enable = true;
-    programs.steam = {
-      enable = true;
-      dedicatedServer.openFirewall = true;
-      remotePlay.openFirewall = true;
-      gamescopeSession.enable = true;
-      extraCompatPackages = [
-        inputs.nix-gaming.packages.${pkgs.system}.proton-ge
-      ];
+    hardware.xone.enable = true;
+    services.ratbagd.enable = true;
+
+    programs = {
+      gamemode.enable = true;
+      gamescope.enable = true;
+      steam = {
+        enable = true;
+        dedicatedServer.openFirewall = true;
+        remotePlay.openFirewall = true;
+        gamescopeSession.enable = true;
+        extraCompatPackages = [
+          inputs.nix-gaming.packages.${pkgs.system}.proton-ge
+        ];
+      };
     };
 
     environment.systemPackages = with pkgs; [
