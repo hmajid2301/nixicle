@@ -1,4 +1,8 @@
-{pkgs, ...}: {
+{
+  pkgs,
+  lib,
+  ...
+}: {
   home.packages = with pkgs; [
     kooha
     mission-center
@@ -8,12 +12,12 @@
     pika-backup
     read-it-later
     trayscale
+    piper
 
     fragments
     baobab
     gnome.gnome-power-manager
     gnome.sushi
-    gnome.nautilus
     gnome.gnome-disk-utility
     gnome.totem
     gnome.gvfs
@@ -21,7 +25,20 @@
     gnome-text-editor
     gnome-network-displays
     gnome-firmware
+
+    gnome.nautilus
+    ffmpegthumbnailer # thumbnails
+    gnome.nautilus-python # enable plugins
+    gst_all_1.gst-libav # thumbnails
+    nautilus-open-any-terminal # terminal-context-entry
   ];
+
+  home.sessionVariables.GST_PLUGIN_SYSTEM_PATH_1_0 = lib.makeSearchPathOutput "lib" "lib/gstreamer-1.0" (with pkgs.gst_all_1; [
+    gst-plugins-good
+    gst-plugins-bad
+    gst-plugins-ugly
+    gst-libav
+  ]);
 
   xdg.configFile."com.github.johnfactotum.Foliate/themes/mocha.json".text = ''
     {

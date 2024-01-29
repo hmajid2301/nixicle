@@ -5,10 +5,6 @@ keys:
   - &hosts:
     - &framework age1kzxen8ynw28h935jnjc9t8cx4p8mv6angk5suvkp6ntu4am9pe4smfw22z
     - &curve age1f44n6uklwmhfxthpq8k9ztq7q60k6g0u89ratdy3gurc0pqhhqjsx2x75g
-    - &strawberry age1qng4kav7deqtjmxeqz2vnyxywaqplf8k2lu3q347r2rz4zxdsynq0sf4um
-    - &orange age187eesfqwv04gpd2dnfwsjgleevr57v6xvrwujjy8ehhf0ehl338qdnlqlf
-    - &guava age10qsd50v2qmvn4vy4l8cjxvjxjuvedkxjc0a72ap9laap9mz6rctqmp3efl
-    - &mango age16tskx6gle6v4v0hzhm5fvj0yd29mmn0s47d8q0h3tgcj9wej53uquv98cn
 
 creation_rules:
   - path_regex: nixos/secrets.ya?ml$
@@ -36,15 +32,3 @@ creation_rules:
       - *haseeb
       - *haseebmajid
 
-  - path_regex: hosts/rpis/secrets.ya?ml$
-    key_groups:
-    - age:
-      - *framework
-      - *curve
-      - *strawberry
-      - *orange
-      - *guava
-      - *mango
-      pgp:
-      - *haseeb
-      - *haseebmajid

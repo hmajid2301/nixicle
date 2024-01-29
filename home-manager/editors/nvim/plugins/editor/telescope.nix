@@ -27,7 +27,6 @@
       enable = true;
       extensions.fzf-native.enable = true;
       extensions.undo.enable = true;
-      extensions.media_files.enable = true;
       extensions.frecency.enable = true;
 
       keymaps = {

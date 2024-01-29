@@ -55,7 +55,6 @@ in {
       inputs.nwg-displays.packages.${pkgs.system}.default
       grimblast
       slurp
-      ffmpeg_5-full
       sway-contrib.grimshot
       pkgs.xdg-desktop-portal-hyprland
       pkgs.satty

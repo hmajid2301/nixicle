@@ -22,6 +22,7 @@
     procs
     psensor
     trash-cli
+    gtrash
     ripgrep
     sd
     xcp

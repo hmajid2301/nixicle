@@ -40,6 +40,7 @@ in {
     ./plugins/lang/nix.nix
     ./plugins/lang/markdown.nix
     ./plugins/lang/python.nix
+    ./plugins/lang/sql.nix
     ./plugins/lang/yaml.nix
   ];
 
