@@ -33,6 +33,7 @@ in {
     ./plugins/lang/css.nix
     ./plugins/lang/docker.nix
     ./plugins/lang/go.nix
+    ./plugins/lang/helm.nix
     ./plugins/lang/lua.nix
     ./plugins/lang/kdl.nix
     ./plugins/lang/json.nix
@@ -41,6 +42,7 @@ in {
     ./plugins/lang/markdown.nix
     ./plugins/lang/python.nix
     ./plugins/lang/sql.nix
+    ./plugins/lang/terraform.nix
     ./plugins/lang/yaml.nix
   ];
 
