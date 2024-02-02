@@ -7,6 +7,7 @@
 }: {
   imports = [
     ../../home-manager
+    ../../home-manager/programs/gaming.nix
   ];
 
   config = {
