@@ -4,7 +4,6 @@
   ...
 }: {
   imports = [
-    ./attic.nix
     ./atuin.nix
     ./bat.nix
     ./bottom.nix
