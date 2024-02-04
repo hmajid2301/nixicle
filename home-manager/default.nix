@@ -51,7 +51,6 @@
       ++ [
         inputs.nixneovimplugins.overlays.default
         inputs.nur.overlay
-        inputs.attic.overlays.default
         inputs.neovim-nightly-overlay.overlay
         inputs.nixgl.overlay
         inputs.codeium.overlays."x86_64-linux".default
@@ -69,7 +68,6 @@
     package = lib.mkDefault pkgs.nix;
     settings = {
       substituters = [
-        "https://majiy00-nix-binary-cache.fly.dev/prod"
         "https://cache.nixos.org"
         "https://nix-community.cachix.org"
       ];

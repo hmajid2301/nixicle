@@ -28,7 +28,6 @@
 
     nwg-displays.url = "github:nwg-piotr/nwg-displays";
     comma.url = "github:nix-community/comma";
-    attic.url = "github:zhaofengli/attic";
     nix-gaming.url = "github:fufexan/nix-gaming";
 
     firefox-gnome-theme = {

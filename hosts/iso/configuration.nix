@@ -1,6 +1,5 @@
 {
   pkgs,
-  config,
   lib,
   ...
 }: {
@@ -8,38 +7,45 @@
     ../../nixos
   ];
 
-  nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
-  nix.settings.experimental-features = ["nix-command" "flakes"];
-  nixpkgs.config.allowUnfree = true;
+  nixpkgs = {
+    hostPlatform = lib.mkDefault "x86_64-linux";
+    config.allowUnfree = true;
+  };
 
-  nix.extraOptions = "experimental-features = nix-command flakes";
+  nix = {
+    settings.experimental-features = ["nix-command" "flakes"];
+    extraOptions = "experimental-features = nix-command flakes";
+  };
 
-  boot.kernelPackages = pkgs.linuxPackages_latest;
-  boot.supportedFilesystems = lib.mkForce ["btrfs" "reiserfs" "vfat" "f2fs" "xfs" "ntfs" "cifs"];
+  services = {
+    qemuGuest.enable = true;
+    openssh.settings.PermitRootLogin = lib.mkForce "yes";
+  };
+
+  boot = {
+    kernelPackages = pkgs.linuxPackages_latest;
+    supportedFilesystems = lib.mkForce ["btrfs" "reiserfs" "vfat" "f2fs" "xfs" "ntfs" "cifs"];
+  };
 
   networking = {
     hostName = "iso";
   };
 
-  systemd.services.sshd.wantedBy = pkgs.lib.mkForce ["multi-user.target"];
+  # TODO: gnome power settings do not turn off screen
+  systemd = {
+    services.sshd.wantedBy = pkgs.lib.mkForce ["multi-user.target"];
+    targets = {
+      sleep.enable = false;
+      suspend.enable = false;
+      hibernate.enable = false;
+      hybrid-sleep.enable = false;
+    };
+  };
 
   home-manager.users.nixos = import ./home.nix;
   users.extraUsers.root.password = "nixos";
-  users.users.root.openssh.authorizedKeys.keys = [
-    "ssh-ed25519 AaAeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee username@host"
-  ];
-
-  # TODO: gnome power settings do not turn off screen
-  systemd.targets.sleep.enable = false;
-  systemd.targets.suspend.enable = false;
-  systemd.targets.hibernate.enable = false;
-  systemd.targets.hybrid-sleep.enable = false;
-
-  services.qemuGuest.enable = true;
-  services.openssh.settings.PermitRootLogin = lib.mkForce "yes";
 
   environment.systemPackages = with pkgs; [
-    sbctl
     git
     gum
     (
@@ -100,9 +106,6 @@
 
         #echo "Creating blank volume"
         #sudo btrfs subvolume snapshot -r /mnt/ /mnt/root-blank
-
-        #echo "Set up attic binary cache"
-        #attic use prod || true
 
         sudo nixos-install --flake "$HOME/dotfiles#$TARGET_HOST"
       ''
