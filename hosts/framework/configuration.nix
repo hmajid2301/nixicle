@@ -18,13 +18,6 @@
     hostName = "framework";
   };
 
-  environment.sessionVariables.GST_PLUGIN_SYSTEM_PATH_1_0 = lib.makeSearchPathOutput "lib" "lib/gstreamer-1.0" (with pkgs.gst_all_1; [
-    gst-plugins-good
-    gst-plugins-bad
-    gst-plugins-ugly
-    gst-libav
-  ]);
-
   modules.nixos = {
     avahi.enable = true;
     auto-hibernate.enable = false;
@@ -43,10 +36,6 @@
   environment.systemPackages = with pkgs; [
     headsetcontrol2
     headset-charge-indicator
-    ffmpegthumbnailer # thumbnails
-    gnome.nautilus-python # enable plugins
-    gst_all_1.gst-libav # thumbnails
-    nautilus-open-any-terminal # terminal-context-entry
   ];
   services.udev.packages = [pkgs.headsetcontrol2];
 

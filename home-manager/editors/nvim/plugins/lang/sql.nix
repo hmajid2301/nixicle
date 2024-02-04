@@ -7,12 +7,12 @@
     plugins = {
       conform-nvim = {
         formattersByFt = {
-          sql = ["sql_formatter"];
+          sql = ["sqlfluff"];
         };
 
         formatters = {
-          sql_formatter = {
-            command = "${pkgs.nodePackages_latest.sql-formatter}/bin/sql-formatter";
+          sqlfluff = {
+            command = "${pkgs.sqlfluff}/bin/sqlfluff";
           };
         };
       };
