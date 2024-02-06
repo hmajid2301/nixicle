@@ -43,6 +43,7 @@ in {
     ./plugins/lang/python.nix
     ./plugins/lang/sql.nix
     ./plugins/lang/terraform.nix
+    ./plugins/lang/typescript.nix
     ./plugins/lang/yaml.nix
   ];
 
