@@ -30,6 +30,7 @@
           {name = "nvim_lua";}
           {name = "path";}
           {name = "codeium";}
+          {name = "copilot";}
         ];
 
         formatting = {
