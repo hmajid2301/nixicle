@@ -38,7 +38,7 @@
     };
 
     my.settings = {
-      wallpaper = "~/dotfiles/home-manager/wallpapers/windows-error.jpg";
+      wallpaper = "~/dotfiles/home-manager/wallpapers/Kurzgesagt-Galaxy_3.png";
       host = "framework";
       default = {
         shell = "${pkgs.fish}/bin/fish";

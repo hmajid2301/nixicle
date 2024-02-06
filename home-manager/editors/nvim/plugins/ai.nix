@@ -1,17 +1,39 @@
-{pkgs, ...}: {
+{
+  config,
+  pkgs,
+  ...
+}: {
   programs.nixvim = {
+    plugins = {
+      codeium-nvim.enable = true;
+      copilot-lua = {
+        enable = true;
+        suggestion.enabled = false;
+        panel.enabled = false;
+      };
+
+      copilot-cmp = {
+        event = ["InsertEnter" "LspAttach"];
+        fixPairs = true;
+      };
+    };
+
     extraPlugins = with pkgs.vimPlugins; [
-      codeium-nvim
+      ChatGPT-nvim
+      {
+        plugin = ChatGPT-nvim;
+        config =
+          # lua
+          ''
+            require("chatgpt").setup({
+            	api_key_cmd = "cat ${config.sops.secrets.chatgpt_api_key.path}"
+            })
+          '';
+      }
     ];
+  };
 
-    extraConfigLua = ''
-      vim.g.codeium_disable_bindings = 1
-      require("codeium").setup()
-
-      vim.keymap.set('i', '<C-a>', function () return vim.fn['codeium#Accept']() end, { expr = true, desc = "Codeium Accept"})
-      vim.keymap.set('i', '<M-]>', function() return vim.fn['codeium#CycleCompletions'](1) end, { expr = true, desc = "Codeium Next Suggestion" })
-      vim.keymap.set('i', '<M-]>', function() return vim.fn['codeium#CycleCompletions'](-1) end, { expr = true, desc = "Codeium Prev Sugestion" })
-      vim.keymap.set('i', '<C-e>', function() return vim.fn['codeium#Clear']() end, { expr = true, desc ="Codeium clear suggestion" })
-    '';
+  sops.secrets.chatgpt_api_key = {
+    sopsFile = ../../../secrets.yaml;
   };
 }
