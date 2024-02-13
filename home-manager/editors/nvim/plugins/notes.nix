@@ -1,47 +1,28 @@
-{
-  pkgs,
-  config,
-  ...
-}: {
+{pkgs, ...}: {
   programs.nixvim = {
-    keymaps = [
-      {
-        action = "<cmd> lua require('dap-go').debug_test()<CR>";
-        key = "<leader>td";
-        options = {
-          desc = "Debug Nearest (Go)";
-        };
-        mode = [
-          "n"
-        ];
-      }
-    ];
-
     plugins = {
       neorg = {
         enable = true;
         lazyLoading = true;
         modules = {
-          "core.defaults" = {
-            __empty = null;
-          };
+          "core.defaults".__empty = null;
+          "core.concealer".__empty = null;
+          "core.summary".__empty = null;
+          "core.completion".config.engine = "nvim-cmp";
           "core.dirman".config = {
             workspaces = {
-              notes = "~/notes";
+              second_brain = "~/second-brain";
             };
-            default_workspace = "notes";
+            default_workspace = "second_brain";
           };
-          "core.integrations.telescope" = {
-            __empty = null;
-          };
-          "core.concealer".__empty = null;
-          "core.completion".config.engine = "nvim-cmp";
+          "core.integrations.telescope".__empty = null;
         };
       };
 
       treesitter = {
-        grammarPackages = with config.programs.nixvim.plugins.treesitter.package.builtGrammars; [
-          norg
+        grammarPackages = with pkgs.tree-sitter-grammars; [
+          tree-sitter-norg
+          tree-sitter-norg-meta
         ];
       };
     };

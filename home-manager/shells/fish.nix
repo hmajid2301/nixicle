@@ -95,6 +95,7 @@ in {
         sl = "eza";
         l = "eza --group --header --group-directories-first --long --git --all --binary --all --icons";
         tree = "eza --tree";
+        sudo = "sudo -E -s";
 
         # nix
         nd = "nix develop";
