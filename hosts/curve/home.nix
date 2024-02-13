@@ -13,7 +13,7 @@
     wayland.windowManager.hyprland.keyBinds.bindi = lib.mkForce {};
 
     my.settings = {
-      wallpaper = "~/Pictures/wallpapers/nixppuccin.png";
+      wallpaper = "~/dotfiles/home-manager/wallpapers/Kurzgesagt-Galaxy_3.png";
       host = "curve";
       default = {
         shell = "fish";

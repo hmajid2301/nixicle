@@ -20,20 +20,11 @@
 
     extraPlugins = with pkgs.vimPlugins; [
       ChatGPT-nvim
-      {
-        plugin = ChatGPT-nvim;
-        config =
-          # lua
-          ''
-            require("chatgpt").setup({
-            	api_key_cmd = "cat ${config.sops.secrets.chatgpt_api_key.path}"
-            })
-          '';
-      }
     ];
+    extraConfigLua = builtins.readFile ./chatgpt.lua;
   };
 
   sops.secrets.chatgpt_api_key = {
-    sopsFile = ../../../secrets.yaml;
+    sopsFile = ../../../../secrets.yaml;
   };
 }

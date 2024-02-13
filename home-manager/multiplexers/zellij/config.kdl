@@ -36,9 +36,9 @@ keybinds {
         bind "Alt j" "j" "Down" { MoveFocus "Down"; }
         bind "Alt k" "k" "Up" { MoveFocus "Up"; }
         bind "p" { SwitchFocus; }
-        bind "n" { NewPane "Right"; SwitchToMode "Normal"; }
+        bind "n" { SwitchToMode "Normal"; }
         bind "d" { NewPane "Down"; SwitchToMode "Normal"; }
-        // bind "r" { NewPane "Right"; SwitchToMode "Normal"; }
+        bind "r" { NewPane "Right"; SwitchToMode "Normal"; }
         bind "x" { CloseFocus; SwitchToMode "Normal"; }
         bind "f" { ToggleFocusFullscreen; SwitchToMode "Normal"; }
         bind "z" { TogglePaneFrames; SwitchToMode "Normal"; }
