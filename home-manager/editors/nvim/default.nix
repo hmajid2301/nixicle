@@ -26,7 +26,7 @@ in {
     ./plugins/colorscheme.nix
     ./plugins/ui.nix
 
-    ./plugins/ai.nix
+    ./plugins/ai
     ./plugins/training.nix
     ./plugins/notes.nix
 

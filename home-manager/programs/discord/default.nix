@@ -3,12 +3,7 @@
 #  - Pull the script from sersorrel directly
 #  - Use python3.withPackages > writePython3Bin
 #  - Copy + alter discord's .desktop file
-{
-  config,
-  pkgs,
-  lib,
-  ...
-}: let
+{pkgs, ...}: let
   patcher = pkgs.fetchurl {
     url = "https://raw.githubusercontent.com/sersorrel/sys/f7ff2fa325f786123a9b9e9a61b07be409dfb0b1/hm/discord/krisp-patcher.py";
     hash = "sha256-8AM6v+gR7VH0gXT0orqDSRyXaxv7eV4EnLum5FgW6Yk=";

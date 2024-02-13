@@ -165,7 +165,7 @@
         ];
       }
       {
-        action = "<cmd>lua require('telescope').load_extension('harpoon')<cr>";
+        action = "<cmd>Telescope harpoon marks<cr>";
         key = "<leader>hf";
         options = {
           desc = "Open harpoon marks in telescope";
