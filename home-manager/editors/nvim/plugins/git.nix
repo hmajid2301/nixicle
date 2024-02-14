@@ -39,7 +39,7 @@
 
     plugins = {
       which-key.registrations = {
-        "<leader>g" = "+git";
+        "<leader>g" = "git";
       };
 
       git-worktree = {
