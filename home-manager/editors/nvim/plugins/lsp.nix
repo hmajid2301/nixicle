@@ -9,14 +9,22 @@
           desc = "Code Actions";
         };
       }
+      {
+        action = "<cmd>Telescope lsp_references<CR>";
+        key = "<leader>gr";
+        mode = ["n"];
+        options = {
+          desc = "LSP References";
+        };
+      }
     ];
 
     plugins = {
       which-key.registrations = {
-        "<leader>c" = "+code";
-        "g" = "+goto";
-        "]" = "+next";
-        "[" = "+prev";
+        "<leader>c" = "code";
+        "g" = "goto";
+        "]" = "next";
+        "[" = "prev";
       };
 
       lsp = {
@@ -30,7 +38,7 @@
           lspBuf = {
             K = "hover";
             gD = "declaration";
-            gr = "references";
+            # gr = "references";
             gd = "definition";
             gi = "implementation";
             gt = "type_definition";
