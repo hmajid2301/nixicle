@@ -34,6 +34,7 @@
     else
     	# if not, create a new session
     	zellij attach -c "$SESSION_TITLE"
+    	z $ZOXIDE_RESULT
     fi
   '';
 in {
