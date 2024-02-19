@@ -84,6 +84,7 @@ in {
         vim = "nvim";
         n = "nvim";
         cd = "z";
+        cdi = "zi";
         cp = "xcp";
         grep = "rg";
         dig = "dog";

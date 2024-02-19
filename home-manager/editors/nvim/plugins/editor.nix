@@ -207,8 +207,6 @@
 
       nvim-lightbulb = {
         enable = true;
-        autocmd.enabled = true;
-        statusText.enabled = true;
       };
 
       harpoon = {

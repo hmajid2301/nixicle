@@ -9,7 +9,10 @@ return {
 	}),
 	font_size = 14.0,
 	enable_tab_bar = false,
-	term = "wezterm",
+	-- term = "wezterm",
+	-- set_environment_variables = {
+	-- 	TERMINFO_DIRS = "/home/haseebmajid/.nix-profile/share/terminfo",
+	-- },
 	hyperlink_rules = wezterm.default_hyperlink_rules(),
 	window_padding = {
 		left = 20,

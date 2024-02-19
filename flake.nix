@@ -23,7 +23,6 @@
     neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
     nixvim.url = "github:pta2002/nixvim";
     nixneovimplugins.url = "github:jooooscha/nixpkgs-vim-extra-plugins";
-    codeium.url = "github:Exafunction/codeium.nvim";
     zjstatus.url = "github:dj95/zjstatus";
 
     nwg-displays.url = "github:nwg-piotr/nwg-displays";
