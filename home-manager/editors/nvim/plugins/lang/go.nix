@@ -24,7 +24,7 @@ in {
         enable = true;
         delve = {
           path = "${pkgs.delve}/bin/dlv";
-          buildFlags = buildFlags;
+          inherit buildFlags;
         };
       };
 

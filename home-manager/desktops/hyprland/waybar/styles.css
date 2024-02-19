@@ -49,9 +49,6 @@ window#waybar {
 
 #clock,
 #battery,
-#cpu,
-#memory,
-#temperature,
 #backlight,
 #network,
 #pulseaudio,
@@ -153,29 +150,6 @@ window#waybar {
   to {
     color: @red;
   }
-}
-
-#temperature {
-  padding: 10px;
-  border-radius: 10px 0 0 10px;
-  color: @lavender;
-  margin-left: 10px;
-}
-
-#temperature.critical {
-  color: @red;
-}
-
-#cpu {
-  padding: 10px;
-  color: @lavender;
-}
-
-#memory {
-  padding: 10px;
-  border-radius: 0 10px 10px 0;
-  color: @lavender;
-  margin-right: 10px;
 }
 
 #network {

@@ -53,7 +53,6 @@
         inputs.nur.overlay
         inputs.neovim-nightly-overlay.overlay
         inputs.nixgl.overlay
-        inputs.codeium.overlays."x86_64-linux".default
       ];
 
     config = {
