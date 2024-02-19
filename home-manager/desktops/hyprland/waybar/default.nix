@@ -1,8 +1,4 @@
 {
-  pkgs,
-  config,
-  ...
-}: {
   programs.waybar = {
     enable = true;
     systemd = {
@@ -26,9 +22,6 @@
         modules-right = [
           "backlight"
           "battery"
-          "temperature"
-          "cpu"
-          "memory"
           "pulseaudio"
           "network"
         ];
@@ -109,26 +102,6 @@
           format-alt = "{time}";
           format-charging = "  {capacity}%";
           format-icons = ["󰁻 " "󰁽 " "󰁿 " "󰂁 " "󰂂 "];
-        };
-        temperature = {
-          interval = 1;
-          tooltip = false;
-          thermal-zone = 1;
-          critical-threshold = 80;
-          hwmon-path = "/sys/class/hwmon/hwmon5/temp1_input";
-          format = "{icon} {temperatureC}°C";
-          format-critical = "{icon} {temperatureC}°C";
-          format-icons = ["" "" "" "" ""];
-        };
-
-        cpu = {
-          interval = 1;
-          format = " {usage}%";
-        };
-        memory = {
-          interval = 30;
-          format = "󰍛 {used:0.1f}GiB";
-          tooltip-format = "{used = 0.1f}GiB/{avail = 0.1f}GiB";
         };
         network = {
           interval = 1;
