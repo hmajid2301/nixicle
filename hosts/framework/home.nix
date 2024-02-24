@@ -8,6 +8,7 @@
   imports = [
     ../../home-manager
     ../../home-manager/programs/gaming.nix
+    ../../home-manager/programs/discord
   ];
 
   config = {
