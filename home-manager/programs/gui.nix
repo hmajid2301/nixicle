@@ -16,6 +16,7 @@
 
     fragments
     baobab
+    thunderbird
     gnome.gnome-power-manager
     gnome.sushi
     gnome.gnome-disk-utility
