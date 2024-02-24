@@ -190,12 +190,6 @@
         };
       };
 
-      oil = {
-        enable = true;
-        deleteToTrash = true;
-        useDefaultKeymaps = true;
-      };
-
       flash = {
         enable = true;
       };
@@ -277,8 +271,6 @@
     ];
 
     extraConfigLua = ''
-      vim.keymap.set("n", "-", "<CMD>Oil<CR>", { desc = "Open parent directory" })
-
       require("spectre").setup()
       require("zellij").setup({
       		vimTmuxNavigatorKeybinds = true,

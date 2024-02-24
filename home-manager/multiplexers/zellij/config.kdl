@@ -1,7 +1,9 @@
 theme "catppuccin-mocha"
 pane_frames false
 simplified_ui true
+default_layout "compact"
 default_shell "fish"
+copy_on_select true
 
 // If you'd like to override the default keybindings completely, be sure to change "keybinds" to "keybinds clear-defaults=true"
 keybinds {
@@ -169,8 +171,7 @@ keybinds {
         bind "Alt u" { SwitchToMode "Locked"; }
 
         bind "Alt q" { Quit; }
-        bind "Alt n" { NewPane "Right" ; }
-        bind "Alt d" { NewPane "Down" ; }
+        bind "Alt n" { NewPane; }
         bind "Alt h" "Alt Left" { MoveFocusOrTab "Left"; }
         bind "Alt l" "Alt Right" { MoveFocusOrTab "Right"; }
         bind "Alt j" "Alt Down" { MoveFocus "Down"; }

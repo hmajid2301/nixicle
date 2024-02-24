@@ -72,9 +72,16 @@
       ];
 
       trusted-public-keys = [
-        "prod:fjP15qp9O3/x2WTb1LiQ2bhjxkBBip3uhjlDyqywz3I="
         "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
         "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
+      ];
+
+      extra-substituters = [
+        "https://cache.floxdev.com"
+      ];
+
+      extra-trusted-public-keys = [
+        "flox-store-public-0:8c/B+kjIaQ+BloCmNkRUKwaVPFWkriSAd0JJvuDu4F0="
       ];
 
       experimental-features = ["nix-command" "flakes" "repl-flake"];

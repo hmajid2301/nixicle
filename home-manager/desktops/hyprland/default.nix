@@ -32,7 +32,7 @@ in {
   config = mkIf cfg.enable {
     home.sessionVariables = {
       MOZ_ENABLE_WAYLAND = 1;
-      QT_QPA_PLATFORM = "wayland";
+      QT_QPA_PLATFORM = "wayland;xcb";
       LIBSEAT_BACKEND = "logind";
     };
 

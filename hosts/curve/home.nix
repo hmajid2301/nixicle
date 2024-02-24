@@ -41,7 +41,6 @@
       };
 
       multiplexers = {
-        tmux.enable = true;
         zellij.enable = true;
       };
 
@@ -59,22 +58,33 @@
       };
     };
 
-    # USE Gnome
     # To show nix installed apps in Gnome
+    xdg = {
+      mime.enable = true;
+      systemDirs.data = ["${config.home.homeDirectory}/.nix-profile/share/applications"];
+      configFile."git/ignore".text = ''
+        projects/**/**/flake.nix
+        projects/**/**/flake.lock
+      '';
+    };
     targets.genericLinux.enable = true;
-    xdg.mime.enable = true;
-    xdg.systemDirs.data = ["${config.home.homeDirectory}/.nix-profile/share/applications"];
 
     # Work Laptop different email
-    programs.git.userEmail = lib.mkForce "haseeb.majid@imaginecurve.com";
-    programs.git.extraConfig."url \"git@git.curve.tools:\"" = {insteadOf = https://git.curve.tools/;};
-    programs.git.extraConfig."url \"git@gitlab.com:imaginecurve/\"" = {insteadOf = https://gitlab.com/imaginecurve/;};
-    programs.git.extraConfig."url \"git@gitlab.com:\"" = {insteadOf = https://gitlab.com/;};
-    programs.git.extraConfig.core.excludesfile = "~/.config/git/ignore";
-    xdg.configFile."git/ignore".text = ''
-      projects/**/**/flake.nix
-      projects/**/**/flake.lock
-    '';
+    programs = {
+      git = {
+        userEmail = lib.mkForce "haseeb.majid@imaginecurve.com";
+        extraConfig = {
+          "url \"git@git.curve.tools:\"" = {insteadOf = "https://git.curve.tools/";};
+          "url \"git@gitlab.com:imaginecurve/\"" = {insteadOf = "https://gitlab.com/imaginecurve/";};
+          "url \"git@gitlab.com:\"" = {insteadOf = "https://gitlab.com/";};
+          core.excludesfile = "~/.config/git/ignore";
+        };
+      };
+      swaylock = {
+        settings.effect-blur = lib.mkForce "25x20";
+        settings.effect-vignette = lib.mkForce "0.5x0.5";
+      };
+    };
 
     wayland.windowManager.hyprland.extraConfig = lib.mkAfter ''
       exec-once = /usr/libexec/geoclue-2.0/demos/agent
@@ -83,6 +93,7 @@
       bind=,XF86Launch5,exec,/usr/local/bin/swaylock -S
       bind=,XF86Launch4,exec,/usr/local/bin/swaylock -S
       bind=SUPER,backspace,exec,/usr/local/bin/swaylock -S
+      bind=SUPER,return,exec,nixGL -- wezterm
     '';
 
     home.packages = with pkgs; [
@@ -95,9 +106,6 @@
       package = pkgs.gnome.adwaita-icon-theme;
       name = "Adwaita";
     };
-
-    programs.swaylock.settings.effect-blur = lib.mkForce "25x20";
-    programs.swaylock.settings.effect-vignette = lib.mkForce "0.5x0.5";
 
     services.swayidle = lib.mkForce {
       enable = true;
