@@ -1,15 +1,10 @@
 {
-  inputs,
   pkgs,
   config,
   ...
 }: let
   inherit (config.colorscheme) colors;
 in {
-  home.packages = with pkgs; [
-    nur.repos."999eagle".swayaudioidleinhibit
-  ];
-
   programs.swaylock = {
     enable = true;
     package = pkgs.swaylock-effects;

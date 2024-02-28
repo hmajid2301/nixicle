@@ -12,8 +12,7 @@
       };
 
       copilot-cmp = {
-        event = ["InsertEnter" "LspAttach"];
-        fixPairs = true;
+        enable = true;
       };
     };
 

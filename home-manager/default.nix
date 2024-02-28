@@ -10,7 +10,6 @@
     [
       inputs.nix-colors.homeManagerModule
       inputs.nixvim.homeManagerModules.nixvim
-      inputs.nur.hmModules.nur
       inputs.impermanence.nixosModules.home-manager.impermanence
 
       ./programs
@@ -50,7 +49,6 @@
       builtins.attrValues outputs.overlays
       ++ [
         inputs.nixneovimplugins.overlays.default
-        inputs.nur.overlay
         inputs.neovim-nightly-overlay.overlay
         inputs.nixgl.overlay
       ];

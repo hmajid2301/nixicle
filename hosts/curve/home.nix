@@ -94,6 +94,8 @@
       bind=,XF86Launch4,exec,/usr/local/bin/swaylock -S
       bind=SUPER,backspace,exec,/usr/local/bin/swaylock -S
       bind=SUPER,return,exec,nixGL -- wezterm
+      bind=,XF86AudioRaiseVolume,exec, ${pkgs.pamixer}/bin/pamixer -i 5
+      bind=,XF86AudioLowerVolume,exec, ${pkgs.pamixer}/bin/pamixer -d 5
     '';
 
     home.packages = with pkgs; [
