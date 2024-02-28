@@ -1,8 +1,6 @@
 {
   pkgs,
   config,
-  inputs,
-  lib,
   ...
 }: {
   imports = [
@@ -59,7 +57,6 @@
         "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
         "${pkgs.swaynotificationcenter}/bin/swaync"
         "${pkgs.kanshi}/bin/kanshi"
-        "${pkgs.nur.repos."999eagle".swayaudioidleinhibit}/bin/sway-audio-idle-inhibit -w"
         "${pkgs.waybar}/bin/waybar"
         "${pkgs.gammastep}/bin/gammastep"
         "${pkgs.swaybg}/bin/swaybg -i ${config.my.settings.wallpaper} --mode fill"

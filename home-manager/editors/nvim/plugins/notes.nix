@@ -1,5 +1,20 @@
-{pkgs, ...}: {
+{pkgs, ...}: let
+  neorg-templates = pkgs.vimUtils.buildVimPlugin rec {
+    version = "2.0.3";
+    pname = "neorg-templates";
+    src = pkgs.fetchFromGitHub {
+      owner = "pysan3";
+      repo = pname;
+      rev = "v${version}";
+      sha256 = "sha256-nZOAxXSHTUDBpUBS/Esq5HHwEaTB01dI7x5CQFB3pcw=";
+    };
+  };
+in {
   programs.nixvim = {
+    extraPlugins = [
+      neorg-templates
+    ];
+
     plugins = {
       neorg = {
         enable = true;
