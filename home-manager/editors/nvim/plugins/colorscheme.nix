@@ -14,7 +14,6 @@
     colorschemes.catppuccin = {
       enable = true;
       flavour = "macchiato";
-      # TODO: use nix-colors here
       colorOverrides = {
         all = {
           white = "#D9E0EE";

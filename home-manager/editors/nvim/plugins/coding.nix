@@ -35,6 +35,7 @@
             };
           };
           comment = {};
+          files = {};
         };
       };
       luasnip = {

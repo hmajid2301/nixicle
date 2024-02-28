@@ -2,10 +2,10 @@
   programs.nixvim = {
     keymaps = [
       {
-        action = "<cmd> Neotree toggle <CR>";
+        action = "<cmd>lua MiniFiles.open()<cr>";
         key = "<leader>e";
         options = {
-          desc = "Toggle Tree";
+          desc = "Open File Tree";
         };
         mode = [
           "n"
@@ -32,47 +32,13 @@
         enable = true;
         deleteToTrash = true;
         useDefaultKeymaps = true;
-        # lspRenameAutosave = true;
-        # bufOptions = {
-        #   buflisted = true;
-        #   bufhidden = "hide";
-        # };
+        lspRenameAutosave = true;
+        bufOptions = {
+          buflisted = true;
+          bufhidden = "hide";
+        };
         viewOptions = {
           showHidden = true;
-        };
-      };
-
-      neo-tree = {
-        enable = true;
-        filesystem = {
-          followCurrentFile = {
-            enabled = true;
-          };
-
-          filteredItems = {
-            visible = true;
-            hideDotfiles = false;
-            hideByName = [
-              ".git"
-              "node_modules"
-            ];
-          };
-        };
-
-        defaultComponentConfigs = {
-          gitStatus = {
-            symbols = {
-              untracked = "★";
-              ignored = "◌";
-              unstaged = "✗";
-              staged = "✓";
-            };
-          };
-          indent = {
-            expanderCollapsed = "";
-            expanderExpanded = "";
-            withExpanders = true;
-          };
         };
       };
     };

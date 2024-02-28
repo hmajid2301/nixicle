@@ -33,8 +33,9 @@
     	zellij attach "$SESSION_TITLE"
     else
     	# if not, create a new session
+    	echo "Creating new session $SESSION_TITLE and CD $ZOXIDE_RESULT"
+    	cd $ZOXIDE_RESULT
     	zellij attach -c "$SESSION_TITLE"
-    	z $ZOXIDE_RESULT
     fi
   '';
 in {

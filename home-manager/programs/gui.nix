@@ -13,6 +13,7 @@
     read-it-later
     trayscale
     piper
+    celeste
 
     fragments
     baobab
