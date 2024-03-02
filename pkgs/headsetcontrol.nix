@@ -6,7 +6,7 @@
   cmake,
   hidapi,
 }:
-stdenv.mkDerivation rec {
+stdenv.mkDerivation {
   name = "headsetcontrol";
 
   nativeBuildInputs = [pkg-config cmake hidapi];
@@ -14,8 +14,8 @@ stdenv.mkDerivation rec {
   src = fetchFromGitHub {
     owner = "Sapd";
     repo = "HeadsetControl";
-    rev = "1194d6003599b7874d8f576554fa3b698090f5a2";
-    sha256 = "sha256-oaRBsi/PEkpojejShAorHZOuiqzFcYkcIZdEuh8Pda0=";
+    rev = "a95a015b7aa094f5369c861ded094ecb7eb3a45b";
+    sha256 = "06ms9ca86vdf0zi3x8r15rw5dgybc7cazrqqkxp42hqrfl7wwvja";
   };
 
   installPhase = ''

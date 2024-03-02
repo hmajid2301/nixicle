@@ -14,6 +14,7 @@
     trayscale
     piper
     celeste
+    obsidian
 
     fragments
     baobab
