@@ -2,7 +2,18 @@
   config,
   pkgs,
   ...
-}: {
+}: let
+  copilotchat-nvim = pkgs.vimUtils.buildVimPlugin rec {
+    version = "1.9.0";
+    pname = "CopilotChat.nvim";
+    src = pkgs.fetchFromGitHub {
+      owner = "CopilotC-Nvim";
+      repo = pname;
+      rev = "v${version}";
+      sha256 = "sha256-Q0j1maM7cvRoHu18KGMw7vYkZBQv8H7jcurxgLHl3Lg=";
+    };
+  };
+in {
   programs.nixvim = {
     plugins = {
       copilot-lua = {
@@ -16,8 +27,8 @@
       };
     };
 
-    extraPlugins = with pkgs; [
-      vimPlugins.ChatGPT-nvim
+    extraPlugins = [
+      pkgs.vimPlugins.ChatGPT-nvim
       copilotchat-nvim
     ];
 
@@ -35,7 +46,7 @@
         require("CopilotChat").setup({
         	show_help = "yes", -- Show help text for CopilotChatInPlace, default: yes
         	debug = false, -- Enable or disable debug mode, the log file will be in ~/.local/state/nvim/CopilotChat.nvim.log
-        	python_path = "${pkgs.copilotchat-nvim}/bin/python3"
+        	python_path = "${copilotchat-nvim}/bin/python3"
         })
 
         require("chatgpt").setup({

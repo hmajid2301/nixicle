@@ -6,7 +6,7 @@
 
   programs.nixvim = {
     plugins.barbecue.enable = true;
-    plugins.noice.enable = true;
+    # plugins.noice.enable = true;
     plugins.which-key.registrations = {
       "<C-w>" = "+windows";
       "b" = "+buffers";

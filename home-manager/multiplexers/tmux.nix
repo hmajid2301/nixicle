@@ -5,15 +5,15 @@
   ...
 }:
 with lib; let
-  t-smart-manager = pkgs.tmuxPlugins.mkTmuxPlugin rec {
+  t-smart-manager = pkgs.tmuxPlugins.mkTmuxPlugin {
     pluginName = "t-smart-tmux-session-manager";
-    version = "v2.8.0";
+    version = "unstable-2024-01-18";
     rtpFilePath = "t-smart-tmux-session-manager.tmux";
     src = pkgs.fetchFromGitHub {
       owner = "joshmedeski";
       repo = "t-smart-tmux-session-manager";
-      rev = version;
-      sha256 = "sha256-EMDEEIWJ+XFOk0WsQPAwj9BFBVDNwFUCyd1ScceqKpc=";
+      rev = "3726950525ac9966412ea3f2093bf2ffe06aa023";
+      sha256 = "0pnr1d582znbypclqc724lsfzmzz7s4sc468qgsi7dfmf6iriiq0";
     };
   };
   cfg = config.modules.multiplexers.tmux;
@@ -57,12 +57,12 @@ in {
         {
           plugin = mkTmuxPlugin {
             pluginName = "tmux-super-fingers";
-            version = "unstable-2023-09-04";
+            version = "unstable-2023-10-03";
             src = pkgs.fetchFromGitHub {
               owner = "artemave";
               repo = "tmux_super_fingers";
-              rev = "19945b066ecea03165231d45a73ec0862a1e5e03";
-              sha256 = "0vgh1nc2l5lsp2gwl0kbd9bxr3acj5g647p9522f5yzlhw7sbr33";
+              rev = "518044ef78efa1cf3c64f2e693fef569ae570ddd";
+              sha256 = "1710pqvjwis0ki2c3mdrp2zia3y3i8g4rl6v42pg9nk4igsz39w8";
             };
           };
           extraConfig = ''
@@ -72,12 +72,12 @@ in {
         {
           plugin = mkTmuxPlugin {
             pluginName = "tmux.nvim";
-            version = "unstable-2023-09-06";
+            version = "unstable-2024-02-12";
             src = pkgs.fetchFromGitHub {
               owner = "aserowy";
               repo = "tmux.nvim";
-              rev = "673782b74a6055d430d3f5148a033edd99e5519f";
-              sha256 = "0q3942mzp54jjkv3f1aazbnlwmqz3jxvd1jlfgfbk2jpk008r5xg";
+              rev = "9c02adf16ff2f18c8e236deba91e9cf4356a02d2";
+              sha256 = "0lg3zcyd76qfbz90i01jwhxfglsnmggynh6v48lnbz0kj1prik4y";
             };
           };
         }

@@ -13,7 +13,8 @@
 
     colorschemes.catppuccin = {
       enable = true;
-      flavour = "macchiato";
+      flavour = "mocha";
+      # TODO: use nix-colors here
       colorOverrides = {
         all = {
           white = "#D9E0EE";
@@ -397,41 +398,41 @@
           CmpItemKindTypeParameter = { fg = c.base08, bg = 'NONE' },
 
           -- nvim-dap
-          DapBreakpoint = { fg = C.red },
-          DapBreakpointCondition = { fg = C.yellow },
-          DapLogPoint = { fg = C.sky },
-          DapStopped = { bg = C.grey },
+          DapBreakpoint = { fg = c.red },
+          DapBreakpointCondition = { fg = c.yellow },
+          DapLogPoint = { fg = c.sky },
+          DapStopped = { bg = c.grey },
 
           -- nvim-dap-ui
-          DAPUIScope = { fg = C.sky },
-          DAPUIType = { fg = C.mauve },
-          DAPUIValue = { fg = C.sky },
-          DAPUIVariable = { fg = C.text },
-          DapUIModifiedValue = { fg = C.peach },
-          DapUIDecoration = { fg = C.sky },
-          DapUIThread = { fg = C.green },
-          DapUIStoppedThread = { fg = C.sky },
-          DapUISource = { fg = C.lavender },
-          DapUILineNumber = { fg = C.sky },
-          DapUIFloatBorder = { fg = C.sky },
+          DAPUIScope = { fg = c.sky },
+          DAPUIType = { fg = c.mauve },
+          DAPUIValue = { fg = c.sky },
+          DAPUIVariable = { fg = c.text },
+          DapUIModifiedValue = { fg = c.peach },
+          DapUIDecoration = { fg = c.sky },
+          DapUIThread = { fg = c.green },
+          DapUIStoppedThread = { fg = c.sky },
+          DapUISource = { fg = c.lavender },
+          DapUILineNumber = { fg = c.sky },
+          DapUIFloatBorder = { fg = c.sky },
 
-          DapUIWatchesEmpty = { fg = C.maroon },
-          DapUIWatchesValue = { fg = C.green },
-          DapUIWatchesError = { fg = C.maroon },
+          DapUIWatchesEmpty = { fg = c.maroon },
+          DapUIWatchesValue = { fg = c.green },
+          DapUIWatchesError = { fg = c.maroon },
 
-          DapUIBreakpointsPath = { fg = C.sky },
-          DapUIBreakpointsInfo = { fg = C.green },
-          DapUIBreakpointsCurrentLine = { fg = C.green, style = { "bold" } },
-          DapUIBreakpointsDisabledLine = { fg = C.surface2 },
+          DapUIBreakpointsPath = { fg = c.sky },
+          DapUIBreakpointsInfo = { fg = c.green },
+          DapUIBreakpointsCurrentLine = { fg = c.green, style = { "bold" } },
+          DapUIBreakpointsDisabledLine = { fg = c.surface2 },
 
-          DapUIStepOver = { fg = C.blue },
-          DapUIStepInto = { fg = C.blue },
-          DapUIStepBack = { fg = C.blue },
-          DapUIStepOut = { fg = C.blue },
-          DapUIStop = { fg = C.red },
-          DapUIPlayPause = { fg = C.green },
-          DapUIRestart = { fg = C.green },
-          DapUIUnavailable = { fg = C.surface1 },
+          DapUIStepOver = { fg = c.blue },
+          DapUIStepInto = { fg = c.blue },
+          DapUIStepBack = { fg = c.blue },
+          DapUIStepOut = { fg = c.blue },
+          DapUIStop = { fg = c.red },
+          DapUIPlayPause = { fg = c.green },
+          DapUIRestart = { fg = c.green },
+          DapUIUnavailable = { fg = c.surface1 },
           IlluminatedWordText = { fg = 'NONE', bg = c.base03, },
           IlluminatedWordRead = { fg = 'NONE', bg = c.base03, },
           IlluminatedWordWrite = { fg = 'NONE', bg = c.base03, },
