@@ -16,6 +16,29 @@ in {
     ];
 
     plugins = {
+      obsidian = {
+        enable = true;
+        workspaces = [
+          {
+            name = "second-brain";
+            path = "~/second-brain";
+          }
+        ];
+        #notesSubdir = "notes";
+        dailyNotes = {
+          folder = "notes/dailies";
+          dateFormat = "%Y-%m-%d";
+          aliasFormat = "%B %-d, %Y";
+          #template = "daily.md";
+        };
+        templates = {
+          subdir = "templates";
+          dateFormat = "%Y-%m-%d";
+          timeFormat = "%H:%M";
+          substitutions = {};
+        };
+      };
+
       neorg = {
         enable = true;
         lazyLoading = true;
@@ -31,6 +54,7 @@ in {
             default_workspace = "second_brain";
           };
           "core.integrations.telescope".__empty = null;
+          "external.templates".__empty = null;
         };
       };
 
