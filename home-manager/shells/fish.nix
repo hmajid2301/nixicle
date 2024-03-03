@@ -173,8 +173,8 @@ in {
           src = pkgs.fetchFromGitHub {
             owner = "gazorby";
             repo = "fifc";
-            rev = "2ee5beec7dfd28101026357633616a211fe240ae";
-            sha256 = "00f6vklsknnav09abrsfy2m577r30m0pphy0hr86b1w0nnvspdin";
+            rev = "v0.1.1";
+            sha256 = "sha256-p5E4Mx6j8hcM1bDbeftikyhfHxQ+qPDanuM1wNqGm6E=";
           };
         }
         {

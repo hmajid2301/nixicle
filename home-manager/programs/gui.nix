@@ -23,6 +23,8 @@
     gnome.sushi
     gnome.gnome-disk-utility
     gnome.totem
+    celluloid
+    clapper
     gnome.gvfs
     loupe
     gnome-text-editor
