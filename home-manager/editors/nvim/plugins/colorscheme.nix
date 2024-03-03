@@ -1,5 +1,86 @@
-{
+let
+  colors = {
+    white = "#D9E0EE";
+    darker_black = "#191828";
+    black = "#1E1D2D";
+    black2 = "#252434";
+    one_bg = "#2d2c3c";
+    one_bg2 = "#363545";
+    one_bg3 = "#3e3d4d";
+    grey = "#474656";
+    grey_fg = "#4e4d5d";
+    grey_fg2 = "#555464";
+    light_grey = "#605f6f";
+    red = "#F38BA8";
+    maroon = "#eba0ac";
+    baby_pink = "#ffa5c3";
+    pink = "#F5C2E7";
+    line = "#383747";
+    green = "#ABE9B3";
+    vibrant_green = "#b6f4be";
+    nord_blue = "#8bc2f0";
+    mauve = "#cba6f7";
+    blue = "#89B4FA";
+    yellow = "#FAE3B0";
+    sun = "#ffe9b6";
+    purple = "#d0a9e5";
+    dark_purple = "#c7a0dc";
+    teal = "#B5E8E0";
+    peach = "#fab387";
+    orange = "#F8BD96";
+    cyan = "#89DCEB";
+    sky = "#89DCEB";
+    statusline_bg = "#232232";
+    lightbg = "#2f2e3e";
+    pmenu_bg = "#ABE9B3";
+    folder_bg = "#89B4FA";
+    lavender = "#c7d1ff";
+    text = "#cdd6f4";
+    surface2 = "#585b70";
+    surface1 = "#45475a";
+    surface0 = "#313244";
+
+    base00 = "#1E1D2D";
+    base01 = "#282737";
+    base02 = "#2f2e3e";
+    base03 = "#383747";
+    base04 = "#414050";
+    base05 = "#bfc6d4";
+    base06 = "#ccd3e1";
+    base07 = "#D9E0EE";
+    base08 = "#F38BA8";
+    base09 = "#F8BD96";
+    base0A = "#FAE3B0";
+    base0B = "#ABE9B3";
+    base0C = "#89DCEB";
+    base0D = "#89B4FA";
+    base0E = "#CBA6F7";
+    base0F = "#F38BA8";
+  };
+in {
   programs.nixvim = {
+    colorschemes.catppuccin = {
+      enable = true;
+      flavour = "mocha";
+      colorOverrides.all = colors;
+      integrations = {
+        alpha = true;
+        cmp = true;
+        dashboard = true;
+        dap = {
+          enable_ui = true;
+          enabled = true;
+        };
+        gitsigns = true;
+        illuminate.enabled = true;
+        flash = true;
+        indent_blankline.enabled = true;
+        mini.enabled = true;
+        navic.enabled = true;
+        telescope.enabled = true;
+      };
+    };
+
     extraConfigLua = ''
       require("dap")
 
@@ -11,434 +92,1324 @@
       sign('DapStopped', { text='', texthl='DapStopped', linehl='DapStopped', numhl= 'DapStopped' })
     '';
 
-    colorschemes.catppuccin = {
-      enable = true;
-      flavour = "mocha";
-      # TODO: use nix-colors here
-      colorOverrides = {
-        all = {
-          white = "#D9E0EE";
-          darker_black = "#191828";
-          black = "#1E1D2D";
-          black2 = "#252434";
-          one_bg = "#2d2c3c";
-          one_bg2 = "#363545";
-          one_bg3 = "#3e3d4d";
-          grey = "#474656";
-          grey_fg = "#4e4d5d";
-          grey_fg2 = "#555464";
-          light_grey = "#605f6f";
-          red = "#F38BA8";
-          baby_pink = "#ffa5c3";
-          pink = "#F5C2E7";
-          line = "#383747";
-          green = "#ABE9B3";
-          vibrant_green = "#b6f4be";
-          nord_blue = "#8bc2f0";
-          blue = "#89B4FA";
-          yellow = "#FAE3B0";
-          sun = "#ffe9b6";
-          purple = "#d0a9e5";
-          dark_purple = "#c7a0dc";
-          teal = "#B5E8E0";
-          orange = "#F8BD96";
-          cyan = "#89DCEB";
-          statusline_bg = "#232232";
-          lightbg = "#2f2e3e";
-          pmenu_bg = "#ABE9B3";
-          folder_bg = "#89B4FA";
-          lavender = "#c7d1ff";
+    highlight = with colors; {
+      IndentBlanklineContextChar = {
+        fg = grey;
+        bg = null;
+      };
+      IndentBlanklineContextStart = {
+        fg = null;
+        bg = one_bg2;
+      };
+      IndentBlanklineChar = {
+        fg = line;
+        bg = null;
+      };
+      IndentBlanklineSpaceChar = {
+        fg = line;
+        bg = null;
+      };
+      IndentBlanklineSpaceCharBlankline = {
+        fg = sun;
+        bg = null;
+      };
+      IlluminatedWordText = {
+        fg = null;
+        bg = base03;
+      };
+      IlluminatedWordRead = {
+        fg = null;
+        bg = base03;
+      };
+      IlluminatedWordWrite = {
+        fg = null;
+        bg = base03;
+      };
+    };
 
-          base00 = "#1E1D2D";
-          base01 = "#282737";
-          base02 = "#2f2e3e";
-          base03 = "#383747";
-          base04 = "#414050";
-          base05 = "#bfc6d4";
-          base06 = "#ccd3e1";
-          base07 = "#D9E0EE";
-          base08 = "#F38BA8";
-          base09 = "#F8BD96";
-          base0A = "#FAE3B0";
-          base0B = "#ABE9B3";
-          base0C = "#89DCEB";
-          base0D = "#89B4FA";
-          base0E = "#CBA6F7";
-          base0F = "#F38BA8";
-        };
+    highlightOverride = with colors; {
+      Normal = {
+        fg = base05;
+        bg = base00;
+      };
+      SignColumn = {
+        fg = base03;
+        bg = null;
+        sp = null;
+      };
+      MsgArea = {
+        fg = base05;
+        bg = base00;
+      };
+      ModeMsg = {
+        fg = base0B;
+        bg = null;
+      };
+      MsgSeparator = {
+        fg = base05;
+        bg = base00;
+      };
+      SpellBad = {
+        fg = null;
+        bg = null;
+        sp = base08;
+        undercurl = true;
+      };
+      SpellCap = {
+        fg = null;
+        bg = null;
+        sp = base0D;
+        undercurl = true;
+      };
+      SpellLocal = {
+        fg = null;
+        bg = null;
+        sp = base0C;
+        undercurl = true;
+      };
+      SpellRare = {
+        fg = null;
+        bg = null;
+        sp = base0D;
+        undercurl = true;
+      };
+      NormalNC = {
+        fg = base05;
+        bg = base00;
+      };
+      Pmenu = {
+        fg = null;
+        bg = one_bg;
+      };
+      PmenuSel = {
+        fg = black;
+        bg = pmenu_bg;
+      };
+      WildMenu = {
+        fg = base08;
+        bg = base0A;
+      };
+      CursorLineNr = {fg = white;};
+      Comment = {
+        fg = grey_fg;
+        bg = null;
+      };
+      Folded = {
+        fg = base03;
+        bg = base01;
+      };
+      FoldColumn = {
+        fg = base0C;
+        bg = base01;
+      };
+      LineNr = {
+        fg = grey;
+        bg = null;
+      };
+      FloatBorder = {
+        fg = blue;
+        bg = null;
+      };
+      VertSplit = {
+        fg = line;
+        bg = null;
+      };
+      CursorLine = {
+        fg = null;
+        bg = black2;
+      };
+      CursorColumn = {
+        fg = null;
+        bg = black2;
+      };
+      ColorColumn = {
+        fg = null;
+        bg = black2;
+      };
+      NormalFloat = {
+        fg = null;
+        bg = darker_black;
+      };
+      Visual = {
+        fg = null;
+        bg = base02;
+      };
+      VisualNOS = {
+        fg = base08;
+        bg = null;
+      };
+      WarningMsg = {
+        fg = base08;
+        bg = null;
+      };
+      DiffAdd = {
+        fg = vibrant_green;
+        bg = null;
+      };
+      DiffChange = {
+        fg = blue;
+        bg = null;
+      };
+      DiffDelete = {
+        fg = red;
+        bg = null;
+      };
+      QuickFixLine = {
+        fg = null;
+        bg = base01;
+        sp = null;
+      };
+      PmenuSbar = {
+        fg = null;
+        bg = one_bg;
+      };
+      PmenuThumb = {
+        fg = null;
+        bg = grey;
+      };
+      MatchWord = {
+        fg = white;
+        bg = grey;
+      };
+      MatchParen = {link = "MatchWord";};
+      Cursor = {
+        fg = base00;
+        bg = base05;
+      };
+      Conceal = {
+        fg = null;
+        bg = null;
+      };
+      Directory = {
+        fg = base0D;
+        bg = null;
+      };
+      SpecialKey = {
+        fg = base03;
+        bg = null;
+      };
+      Title = {
+        fg = base0D;
+        bg = null;
+        sp = null;
+      };
+      ErrorMsg = {
+        fg = base08;
+        bg = base00;
+      };
+      Search = {
+        fg = base01;
+        bg = base0A;
+      };
+      IncSearch = {
+        fg = base01;
+        bg = base09;
+      };
+      Substitute = {
+        fg = base01;
+        bg = base0A;
+        sp = null;
+      };
+      MoreMsg = {
+        fg = base0B;
+        bg = null;
+      };
+      Question = {
+        fg = base0D;
+        bg = null;
+      };
+      NonText = {
+        fg = base03;
+        bg = null;
+      };
+      Variable = {
+        fg = base05;
+        bg = null;
+      };
+      String = {
+        fg = base0B;
+        bg = null;
+      };
+      Character = {
+        fg = base08;
+        bg = null;
+      };
+      Constant = {
+        fg = base08;
+        bg = null;
+      };
+      Number = {
+        fg = base09;
+        bg = null;
+      };
+      Boolean = {
+        fg = base09;
+        bg = null;
+      };
+      Float = {
+        fg = base09;
+        bg = null;
+      };
+      Identifier = {
+        fg = base08;
+        bg = null;
+        sp = null;
+      };
+      Function = {
+        fg = base0D;
+        bg = null;
+      };
+      Operator = {
+        fg = base05;
+        bg = null;
+        sp = null;
+      };
+      Type = {
+        fg = base0A;
+        bg = null;
+        sp = null;
+      };
+      StorageClass = {
+        fg = base0A;
+        bg = null;
+      };
+      Structure = {
+        fg = base0E;
+        bg = null;
+      };
+      Typedef = {
+        fg = base0A;
+        bg = null;
+      };
+      Keyword = {
+        fg = base0E;
+        bg = null;
+      };
+      Statement = {
+        fg = base08;
+        bg = null;
+      };
+      Conditional = {
+        fg = base0E;
+        bg = null;
+      };
+      Repeat = {
+        fg = base0A;
+        bg = null;
+      };
+      Label = {
+        fg = base0A;
+        bg = null;
+      };
+      Exception = {
+        fg = base08;
+        bg = null;
+      };
+      Include = {
+        fg = base0D;
+        bg = null;
+      };
+      PreProc = {
+        fg = base0A;
+        bg = null;
+      };
+      Define = {
+        fg = base0E;
+        bg = null;
+        sp = null;
+      };
+      Macro = {
+        fg = base08;
+        bg = null;
+      };
+      Special = {
+        fg = base0C;
+        bg = null;
+      };
+      SpecialChar = {
+        fg = base0F;
+        bg = null;
+      };
+      Tag = {
+        fg = base0A;
+        bg = null;
+      };
+      Debug = {
+        fg = base08;
+        bg = null;
+      };
+      Underlined = {
+        fg = base0B;
+        bg = null;
+      };
+      Bold = {
+        fg = null;
+        bg = null;
+        bold = true;
+      };
+      Italic = {
+        fg = null;
+        bg = null;
+        italic = true;
+      };
+      Ignore = {
+        fg = cyan;
+        bg = base00;
+        bold = true;
+      };
+      Todo = {
+        fg = base0A;
+        bg = base01;
+      };
+      Error = {
+        fg = base00;
+        bg = base08;
+      };
+      TabLine = {
+        fg = light_grey;
+        bg = line;
+      };
+      TabLineSel = {
+        fg = white;
+        bg = line;
+      };
+      TabLineFill = {
+        fg = line;
+        bg = line;
       };
 
-      customHighlights =
-        # lua
-        ''
-          function(c)
-          return {
-          Normal = { fg = c.base05, bg = c.base00 },
-          SignColumn = { fg = c.base03, bg = 'NONE', sp = 'NONE',  },
-          MsgArea = { fg = c.base05, bg = c.base00 },
-          ModeMsg = { fg = c.base0B, bg = 'NONE' },
-          MsgSeparator = { fg = c.base05, bg = c.base00 },
-          SpellBad = { fg = 'NONE', bg = 'NONE', sp = c.base08, undercurl=true, },
-          SpellCap = { fg = 'NONE', bg = 'NONE', sp = c.base0D, undercurl=true, },
-          SpellLocal = { fg = 'NONE', bg = 'NONE', sp = c.base0C, undercurl=true, },
-          SpellRare = { fg = 'NONE', bg = 'NONE', sp = c.base0D, undercurl=true, },
-          NormalNC = { fg = c.base05, bg = c.base00 },
-          Pmenu = { fg = 'NONE', bg = c.one_bg },
-          PmenuSel = { fg = c.black, bg = c.pmenu_bg },
-          WildMenu = { fg = c.base08, bg = c.base0A },
-          CursorLineNr = { fg = c.white },
-          Comment = { fg = c.grey_fg, bg = 'NONE' },
-          Folded = { fg = c.base03, bg = c.base01 },
-          FoldColumn = { fg = c.base0C, bg = c.base01 },
-          LineNr = { fg = c.grey, bg = 'NONE' },
-          FloatBorder = { fg = c.blue, bg = 'NONE' },
-          VertSplit = { fg = c.line, bg = 'NONE' },
-          CursorLine = { fg = 'NONE', bg = c.black2 },
-          CursorColumn = { fg = 'NONE', bg = c.black2 },
-          ColorColumn = { fg = 'NONE', bg = c.black2 },
-          NormalFloat = { fg = 'NONE', bg = c.darker_black },
-          Visual = { fg = 'NONE', bg = c.base02 },
-          VisualNOS = { fg = c.base08, bg = 'NONE' },
-          WarningMsg = { fg = c.base08, bg = 'NONE' },
-          DiffAdd = { fg = c.vibrant_green, bg = 'NONE' },
-          DiffChange = { fg = c.blue, bg = 'NONE' },
-          DiffDelete = { fg = c.red, bg = 'NONE' },
-          QuickFixLine = { fg = 'NONE', bg = c.base01, sp = 'NONE',  },
-          PmenuSbar = { fg = 'NONE', bg = c.one_bg },
-          PmenuThumb = { fg = 'NONE', bg = c.grey },
-          MatchWord = { fg = c.white, bg = c.grey },
-          MatchParen = { link = 'MatchWord' },
-          Cursor = { fg = c.base00, bg = c.base05 },
-          Conceal = { fg = 'NONE', bg = 'NONE' },
-          Directory = { fg = c.base0D, bg = 'NONE' },
-          SpecialKey = { fg = c.base03, bg = 'NONE' },
-          Title = { fg = c.base0D, bg = 'NONE', sp = 'NONE',  },
-          ErrorMsg = { fg = c.base08, bg = c.base00 },
-          Search = { fg = c.base01, bg = c.base0A },
-          IncSearch = { fg = c.base01, bg = c.base09 },
-          Substitute = { fg = c.base01, bg = c.base0A, sp = 'NONE',  },
-          MoreMsg = { fg = c.base0B, bg = 'NONE' },
-          Question = { fg = c.base0D, bg = 'NONE' },
-          NonText = { fg = c.base03, bg = 'NONE' },
-          Variable = { fg = c.base05, bg = 'NONE' },
-          String = { fg = c.base0B, bg = 'NONE' },
-          Character = { fg = c.base08, bg = 'NONE' },
-          Constant = { fg = c.base08, bg = 'NONE' },
-          Number = { fg = c.base09, bg = 'NONE' },
-          Boolean = { fg = c.base09, bg = 'NONE' },
-          Float = { fg = c.base09, bg = 'NONE' },
-          Identifier = { fg = c.base08, bg = 'NONE', sp = 'NONE',  },
-          Function = { fg = c.base0D, bg = 'NONE' },
-          Operator = { fg = c.base05, bg = 'NONE', sp = 'NONE',  },
-          Type = { fg = c.base0A, bg = 'NONE', sp = 'NONE',  },
-          StorageClass = { fg = c.base0A, bg = 'NONE' },
-          Structure = { fg = c.base0E, bg = 'NONE' },
-          Typedef = { fg = c.base0A, bg = 'NONE' },
-          Keyword = { fg = c.base0E, bg = 'NONE' },
-          Statement = { fg = c.base08, bg = 'NONE' },
-          Conditional = { fg = c.base0E, bg = 'NONE' },
-          Repeat = { fg = c.base0A, bg = 'NONE' },
-          Label = { fg = c.base0A, bg = 'NONE' },
-          Exception = { fg = c.base08, bg = 'NONE' },
-          Include = { fg = c.base0D, bg = 'NONE' },
-          PreProc = { fg = c.base0A, bg = 'NONE' },
-          Define = { fg = c.base0E, bg = 'NONE', sp = 'NONE',  },
-          Macro = { fg = c.base08, bg = 'NONE' },
-          Special = { fg = c.base0C, bg = 'NONE' },
-          SpecialChar = { fg = c.base0F, bg = 'NONE' },
-          Tag = { fg = c.base0A, bg = 'NONE' },
-          Debug = { fg = c.base08, bg = 'NONE' },
-          Underlined = { fg = c.base0B, bg = 'NONE' },
-          Bold = { fg = 'NONE', bg = 'NONE', bold=true, },
-          Italic = { fg = 'NONE', bg = 'NONE', italic=true, },
-          Ignore = { fg = c.cyan, bg = c.base00, bold=true, },
-          Todo = { fg = c.base0A, bg = c.base01 },
-          Error = { fg = c.base00, bg = c.base08 },
-          TabLine = { fg = c.light_grey, bg = c.line },
-          TabLineSel = { fg = c.white, bg = c.line },
-          TabLineFill = { fg = c.line, bg = c.line },
+      "@annotation" = {
+        fg = base0F;
+        bg = null;
+      };
+      "@attribute" = {
+        fg = base0A;
+        bg = null;
+      };
+      "@constructor" = {
+        fg = base0C;
+        bg = null;
+      };
+      "@type.builtin" = {
+        fg = base0A;
+        bg = null;
+      };
+      "@conditional" = {link = "Conditional";};
+      "@exception" = {
+        fg = base08;
+        bg = null;
+      };
+      "@include" = {link = "Include";};
+      "@keyword.return" = {
+        fg = base0E;
+        bg = null;
+      };
+      "@keyword" = {
+        fg = base0E;
+        bg = null;
+      };
+      "@keyword.function" = {
+        fg = base0E;
+        bg = null;
+      };
+      "@namespace" = {
+        fg = base08;
+        bg = null;
+      };
+      "@constant.builtin" = {
+        fg = base09;
+        bg = null;
+      };
+      "@float" = {
+        fg = base09;
+        bg = null;
+      };
+      "@character" = {
+        fg = base08;
+        bg = null;
+      };
+      "@error" = {
+        fg = base08;
+        bg = null;
+      };
+      "@function" = {
+        fg = base0D;
+        bg = null;
+      };
+      "@function.builtin" = {
+        fg = base0D;
+        bg = null;
+      };
+      "@method" = {
+        fg = base0D;
+        bg = null;
+      };
+      "@constant.macro" = {
+        fg = base08;
+        bg = null;
+      };
+      "@function.macro" = {
+        fg = base08;
+        bg = null;
+      };
+      "@variable" = {
+        fg = base05;
+        bg = null;
+      };
+      "@variable.builtin" = {
+        fg = base09;
+        bg = null;
+      };
+      "@property" = {
+        fg = base08;
+        bg = null;
+      };
+      "@field" = {
+        fg = base0D;
+        bg = null;
+      };
+      "@parameter" = {
+        fg = base08;
+        bg = null;
+      };
+      "@parameter.reference" = {
+        fg = base05;
+        bg = null;
+      };
+      "@symbol" = {
+        fg = base0B;
+        bg = null;
+      };
+      "@text" = {
+        fg = base05;
+        bg = null;
+      };
+      "@punctuation.delimiter" = {
+        fg = base0F;
+        bg = null;
+      };
+      "@tag.delimiter" = {
+        fg = base0F;
+        bg = null;
+      };
+      "@tag.attribute" = {link = "@Property";};
+      "@punctuation.bracket" = {
+        fg = base0F;
+        bg = null;
+      };
+      "@punctuation.special" = {
+        fg = base08;
+        bg = null;
+      };
+      "@string.regex" = {
+        fg = base0C;
+        bg = null;
+      };
+      "@string.escape" = {
+        fg = base0C;
+        bg = null;
+      };
+      "@emphasis" = {
+        fg = base09;
+        bg = null;
+      };
+      "@literal" = {
+        fg = base09;
+        bg = null;
+      };
+      "@text.uri" = {
+        fg = base09;
+        bg = null;
+      };
+      "@keyword.operator" = {
+        fg = base0E;
+        bg = null;
+      };
+      "@strong" = {
+        fg = null;
+        bg = null;
+        bold = true;
+      };
+      "@scope" = {
+        fg = null;
+        bg = null;
+        bold = true;
+      };
+      TreesitterContext = {link = "CursorLine";};
 
-          ["@annotation"] = { fg = c.base0F, bg = 'NONE' },
-          ["@attribute"] = { fg = c.base0A, bg = 'NONE' },
-          ["@constructor"] = { fg = c.base0C, bg = 'NONE' },
-          ["@type.builtin"]= { fg = c.base0A, bg = 'NONE' },
-          ["@conditional"] = { link = 'Conditional' },
-          ["@exception"] = { fg = c.base08, bg = 'NONE' },
-          ["@include"] = { link = 'Include' },
-          ["@keyword.return"] = { fg = c.base0E, bg = 'NONE' },
-          ["@keyword"] = { fg = c.base0E, bg = 'NONE' },
-          ["@keyword.function"] = { fg = c.base0E, bg = 'NONE' },
-          ["@namespace"] = { fg = c.base08, bg = 'NONE' },
-          ["@constant.builtin"] = { fg = c.base09, bg = 'NONE' },
-          ["@float"] = { fg = c.base09, bg = 'NONE' },
-          ["@character"] = { fg = c.base08, bg = 'NONE' },
-          ["@error"] = { fg = c.base08, bg = 'NONE' },
-          ["@function"] = { fg = c.base0D, bg = 'NONE' },
-          ["@function.builtin"] = { fg = c.base0D, bg = 'NONE' },
-          ["@method"] = { fg = c.base0D, bg = 'NONE' },
-          ["@constant.macro"] = { fg = c.base08, bg = 'NONE' },
-          ["@function.macro"] = { fg = c.base08, bg = 'NONE' },
-          ["@variable"] = { fg = c.base05, bg = 'NONE' },
-          ["@variable.builtin"] = { fg = c.base09, bg = 'NONE' },
-          ["@property"] = { fg = c.base08, bg = 'NONE' },
-          ["@field"] = { fg = c.base0D, bg = 'NONE' },
-          ["@parameter"] = { fg = c.base08, bg = 'NONE' },
-          ["@parameter.reference"] = { fg = c.base05, bg = 'NONE' },
-          ["@symbol"] = { fg = c.base0B, bg = 'NONE' },
-          ["@text"] = { fg = c.base05, bg = 'NONE' },
-          ["@punctuation.delimiter"] = { fg = c.base0F, bg = 'NONE' },
-          ["@tag.delimiter"] = { fg = c.base0F, bg = 'NONE' },
-          ["@tag.attribute"] = { link = '@Property' },
-          ["@punctuation.bracket"] = { fg = c.base0F, bg = 'NONE' },
-          ["@punctuation.special"] = { fg = c.base08, bg = 'NONE' },
-          ["@string.regex"] = { fg = c.base0C, bg = 'NONE' },
-          ["@string.escape"] = { fg = c.base0C, bg = 'NONE' },
-          ["@emphasis"] = { fg = c.base09, bg = 'NONE' },
-          ["@literal"] = { fg = c.base09, bg = 'NONE' },
-          ["@text.uri"] = { fg = c.base09, bg = 'NONE' },
-          ["@keyword.operator"] = { fg = c.base0E, bg = 'NONE' },
-          ["@strong"] = { fg = 'NONE', bg = 'NONE', bold=true, },
-          ["@scope"] = { fg = 'NONE', bg = 'NONE', bold=true, },
-          TreesitterContext = { link = 'CursorLine' },
+      markdownBlockquote = {
+        fg = green;
+        bg = null;
+      };
+      markdownCode = {
+        fg = orange;
+        bg = null;
+      };
+      markdownCodeBlock = {
+        fg = orange;
+        bg = null;
+      };
+      markdownCodeDelimiter = {
+        fg = orange;
+        bg = null;
+      };
+      markdownH1 = {
+        fg = blue;
+        bg = null;
+      };
+      markdownH2 = {
+        fg = blue;
+        bg = null;
+      };
+      markdownH3 = {
+        fg = blue;
+        bg = null;
+      };
+      markdownH4 = {
+        fg = blue;
+        bg = null;
+      };
+      markdownH5 = {
+        fg = blue;
+        bg = null;
+      };
+      markdownH6 = {
+        fg = blue;
+        bg = null;
+      };
+      markdownHeadingDelimiter = {
+        fg = blue;
+        bg = null;
+      };
+      markdownHeadingRule = {
+        fg = base05;
+        bg = null;
+        bold = true;
+      };
+      markdownId = {
+        fg = purple;
+        bg = null;
+      };
+      markdownIdDeclaration = {
+        fg = blue;
+        bg = null;
+      };
+      markdownIdDelimiter = {
+        fg = light_grey;
+        bg = null;
+      };
+      markdownLinkDelimiter = {
+        fg = light_grey;
+        bg = null;
+      };
+      markdownBold = {
+        fg = blue;
+        bg = null;
+        bold = true;
+      };
+      markdownItalic = {
+        fg = null;
+        bg = null;
+        italic = true;
+      };
+      markdownBoldItalic = {
+        fg = yellow;
+        bg = null;
+        bold = true;
+        italic = true;
+      };
+      markdownListMarker = {
+        fg = blue;
+        bg = null;
+      };
+      markdownOrderedListMarker = {
+        fg = blue;
+        bg = null;
+      };
+      markdownRule = {
+        fg = base01;
+        bg = null;
+      };
+      markdownUrl = {
+        fg = cyan;
+        bg = null;
+        underline = true;
+      };
+      markdownLinkText = {
+        fg = blue;
+        bg = null;
+      };
+      markdownFootnote = {
+        fg = orange;
+        bg = null;
+      };
+      markdownFootnoteDefinition = {
+        fg = orange;
+        bg = null;
+      };
+      markdownEscape = {
+        fg = yellow;
+        bg = null;
+      };
 
-          markdownBlockquote = { fg = c.green, bg = 'NONE' },
-          markdownCode = { fg = c.orange, bg = 'NONE' },
-          markdownCodeBlock = { fg = c.orange, bg = 'NONE' },
-          markdownCodeDelimiter = { fg = c.orange, bg = 'NONE' },
-          markdownH1 = { fg = c.blue, bg = 'NONE' },
-          markdownH2 = { fg = c.blue, bg = 'NONE' },
-          markdownH3 = { fg = c.blue, bg = 'NONE' },
-          markdownH4 = { fg = c.blue, bg = 'NONE' },
-          markdownH5 = { fg = c.blue, bg = 'NONE' },
-          markdownH6 = { fg = c.blue, bg = 'NONE' },
-          markdownHeadingDelimiter = { fg = c.blue, bg = 'NONE' },
-          markdownHeadingRule = { fg = c.base05, bg = 'NONE', bold=true, },
-          markdownId = { fg = c.purple, bg = 'NONE' },
-          markdownIdDeclaration = { fg = c.blue, bg = 'NONE' },
-          markdownIdDelimiter = { fg = c.light_grey, bg = 'NONE' },
-          markdownLinkDelimiter = { fg = c.light_grey, bg = 'NONE' },
-          markdownBold = { fg = c.blue, bg = 'NONE', bold=true, },
-          markdownItalic = { fg = 'NONE', bg = 'NONE', italic=true, },
-          markdownBoldItalic = { fg = c.yellow, bg = 'NONE', bold=true, italic=true, },
-          markdownListMarker = { fg = c.blue, bg = 'NONE' },
-          markdownOrderedListMarker = { fg = c.blue, bg = 'NONE' },
-          markdownRule = { fg = c.base01, bg = 'NONE' },
-          markdownUrl = { fg = c.cyan, bg = 'NONE', underline=true, },
-          markdownLinkText = { fg = c.blue, bg = 'NONE' },
-          markdownFootnote = { fg = c.orange, bg = 'NONE' },
-          markdownFootnoteDefinition = { fg = c.orange, bg = 'NONE' },
-          markdownEscape = { fg = c.yellow, bg = 'NONE' },
+      WhichKey = {
+        fg = blue;
+        bg = null;
+      };
+      WhichKeySeperator = {
+        fg = light_grey;
+        bg = null;
+      };
+      WhichKeyDesc = {
+        fg = red;
+        bg = null;
+      };
+      WhichKeyGroup = {
+        fg = green;
+        bg = null;
+      };
+      WhichKeyValue = {
+        fg = green;
+        bg = null;
+      };
+      WhichKeyFloat = {link = "NormalFloat";};
 
-          WhichKey = { fg = c.blue, bg = 'NONE' },
-          WhichKeySeperator = { fg = c.light_grey, bg = 'NONE' },
-          WhichKeyDesc = { fg = c.red, bg = 'NONE' },
-          WhichKeyGroup = { fg = c.green, bg = 'NONE' },
-          WhichKeyValue = { fg = c.green, bg = 'NONE' },
-          WhichKeyFloat = { link = 'NormalFloat' },
+      SignAdd = {
+        fg = green;
+        bg = null;
+      };
+      SignChange = {
+        fg = blue;
+        bg = null;
+      };
+      SignDelete = {
+        fg = red;
+        bg = null;
+      };
+      GitSignsAdd = {
+        fg = green;
+        bg = null;
+      };
+      GitSignsChange = {
+        fg = blue;
+        bg = null;
+      };
+      GitSignsDelete = {
+        fg = red;
+        bg = null;
+      };
 
-          SignAdd = { fg = c.green, bg = 'NONE' },
-          SignChange = { fg = c.blue, bg = 'NONE' },
-          SignDelete = { fg = c.red, bg = 'NONE' },
-          GitSignsAdd = { fg = c.green, bg = 'NONE' },
-          GitSignsChange = { fg = c.blue, bg = 'NONE' },
-          GitSignsDelete = { fg = c.red, bg = 'NONE' },
+      DiagnosticError = {
+        fg = base08;
+        bg = null;
+      };
+      DiagnosticWarning = {
+        fg = base09;
+        bg = null;
+      };
+      DiagnosticHint = {
+        fg = purple;
+        bg = null;
+      };
+      DiagnosticWarn = {
+        fg = yellow;
+        bg = null;
+      };
+      DiagnosticInfo = {
+        fg = green;
+        bg = null;
+      };
+      LspDiagnosticsDefaultError = {
+        fg = base08;
+        bg = null;
+      };
+      LspDiagnosticsDefaultWarning = {
+        fg = base09;
+        bg = null;
+      };
+      LspDiagnosticsDefaultInformation = {
+        fg = sun;
+        bg = null;
+      };
+      LspDiagnosticsDefaultInfo = {
+        fg = sun;
+        bg = null;
+      };
+      LspDiagnosticsDefaultHint = {
+        fg = purple;
+        bg = null;
+      };
+      LspDiagnosticsVirtualTextError = {
+        fg = base08;
+        bg = null;
+      };
+      LspDiagnosticsVirtualTextWarning = {
+        fg = base09;
+        bg = null;
+      };
+      LspDiagnosticsVirtualTextInformation = {
+        fg = sun;
+        bg = null;
+      };
+      LspDiagnosticsVirtualTextInfo = {
+        fg = sun;
+        bg = null;
+      };
+      LspDiagnosticsVirtualTextHint = {
+        fg = purple;
+        bg = null;
+      };
+      LspDiagnosticsFloatingError = {
+        fg = base08;
+        bg = null;
+      };
+      LspDiagnosticsFloatingWarning = {
+        fg = base09;
+        bg = null;
+      };
+      LspDiagnosticsFloatingInformation = {
+        fg = sun;
+        bg = null;
+      };
+      LspDiagnosticsFloatingInfo = {
+        fg = sun;
+        bg = null;
+      };
+      LspDiagnosticsFloatingHint = {
+        fg = purple;
+        bg = null;
+      };
+      DiagnosticSignError = {
+        fg = base08;
+        bg = null;
+      };
+      DiagnosticSignWarning = {
+        fg = base09;
+        bg = null;
+      };
+      DiagnosticSignInformation = {
+        fg = sun;
+        bg = null;
+      };
+      DiagnosticSignInfo = {
+        fg = sun;
+        bg = null;
+      };
+      DiagnosticSignHint = {
+        fg = purple;
+        bg = null;
+      };
+      LspDiagnosticsSignError = {
+        fg = base08;
+        bg = null;
+      };
+      LspDiagnosticsSignWarning = {
+        fg = base09;
+        bg = null;
+      };
+      LspDiagnosticsSignInformation = {
+        fg = sun;
+        bg = null;
+      };
+      LspDiagnosticsSignInfo = {
+        fg = sun;
+        bg = null;
+      };
+      LspDiagnosticsSignHint = {
+        fg = purple;
+        bg = null;
+      };
+      LspDiagnosticsError = {
+        fg = base08;
+        bg = null;
+      };
+      LspDiagnosticsWarning = {
+        fg = base09;
+        bg = null;
+      };
+      LspDiagnosticsInformation = {
+        fg = sun;
+        bg = null;
+      };
+      LspDiagnosticsInfo = {
+        fg = sun;
+        bg = null;
+      };
+      LspDiagnosticsHint = {
+        fg = purple;
+        bg = null;
+      };
+      LspDiagnosticsUnderlineError = {
+        fg = null;
+        bg = null;
+        underline = true;
+      };
+      LspDiagnosticsUnderlineWarning = {
+        fg = null;
+        bg = null;
+        underline = true;
+      };
+      LspDiagnosticsUnderlineInformation = {
+        fg = null;
+        bg = null;
+        underline = true;
+      };
+      LspDiagnosticsUnderlineInfo = {
+        fg = null;
+        bg = null;
+        underline = true;
+      };
+      LspDiagnosticsUnderlineHint = {
+        fg = null;
+        bg = null;
+        underline = true;
+      };
+      LspReferenceRead = {
+        fg = null;
+        bg = "#2e303b";
+      };
+      LspReferenceText = {
+        fg = null;
+        bg = "#2e303b";
+      };
+      LspReferenceWrite = {
+        fg = null;
+        bg = "#2e303b";
+      };
+      LspCodeLens = {
+        fg = base04;
+        bg = null;
+        italic = true;
+      };
+      LspCodeLensSeparator = {
+        fg = base04;
+        bg = null;
+        italic = true;
+      };
 
-          DiagnosticError = { fg = c.base08, bg = 'NONE' },
-          DiagnosticWarning = { fg = c.base09, bg = 'NONE' },
-          DiagnosticHint = { fg = c.purple, bg = 'NONE' },
-          DiagnosticWarn = { fg = c.yellow, bg = 'NONE' },
-          DiagnosticInfo = { fg = c.green, bg = 'NONE' },
-          LspDiagnosticsDefaultError = { fg = c.base08, bg = 'NONE' },
-          LspDiagnosticsDefaultWarning = { fg = c.base09, bg = 'NONE' },
-          LspDiagnosticsDefaultInformation = { fg = c.sun, bg = 'NONE' },
-          LspDiagnosticsDefaultInfo = { fg = c.sun, bg = 'NONE' },
-          LspDiagnosticsDefaultHint = { fg = c.purple, bg = 'NONE' },
-          LspDiagnosticsVirtualTextError = { fg = c.base08, bg = 'NONE' },
-          LspDiagnosticsVirtualTextWarning = { fg = c.base09, bg = 'NONE' },
-          LspDiagnosticsVirtualTextInformation = { fg = c.sun, bg = 'NONE' },
-          LspDiagnosticsVirtualTextInfo = { fg = c.sun, bg = 'NONE' },
-          LspDiagnosticsVirtualTextHint = { fg = c.purple, bg = 'NONE' },
-          LspDiagnosticsFloatingError = { fg = c.base08, bg = 'NONE' },
-          LspDiagnosticsFloatingWarning = { fg = c.base09, bg = 'NONE' },
-          LspDiagnosticsFloatingInformation = { fg = c.sun, bg = 'NONE' },
-          LspDiagnosticsFloatingInfo = { fg = c.sun, bg = 'NONE' },
-          LspDiagnosticsFloatingHint = { fg = c.purple, bg = 'NONE' },
-          DiagnosticSignError = { fg = c.base08, bg = 'NONE' },
-          DiagnosticSignWarning = { fg = c.base09, bg = 'NONE' },
-          DiagnosticSignInformation = { fg = c.sun, bg = 'NONE' },
-          DiagnosticSignInfo = { fg = c.sun, bg = 'NONE' },
-          DiagnosticSignHint = { fg = c.purple, bg = 'NONE' },
-          LspDiagnosticsSignError = { fg = c.base08, bg = 'NONE' },
-          LspDiagnosticsSignWarning = { fg = c.base09, bg = 'NONE' },
-          LspDiagnosticsSignInformation = { fg = c.sun, bg = 'NONE' },
-          LspDiagnosticsSignInfo = { fg = c.sun, bg = 'NONE' },
-          LspDiagnosticsSignHint = { fg = c.purple, bg = 'NONE' },
-          LspDiagnosticsError = { fg = c.base08, bg = 'NONE' },
-          LspDiagnosticsWarning = { fg = c.base09, bg = 'NONE' },
-          LspDiagnosticsInformation = { fg = c.sun, bg = 'NONE' },
-          LspDiagnosticsInfo = { fg = c.sun, bg = 'NONE' },
-          LspDiagnosticsHint = { fg = c.purple, bg = 'NONE' },
-          LspDiagnosticsUnderlineError = { fg = 'NONE', bg = 'NONE', underline=true, },
-          LspDiagnosticsUnderlineWarning = { fg = 'NONE', bg = 'NONE', underline=true, },
-          LspDiagnosticsUnderlineInformation = { fg = 'NONE', bg = 'NONE', underline=true, },
-          LspDiagnosticsUnderlineInfo = { fg = 'NONE', bg = 'NONE', underline=true, },
-          LspDiagnosticsUnderlineHint = { fg = 'NONE', bg = 'NONE', underline=true, },
-          LspReferenceRead = { fg = 'NONE', bg = '#2e303b' },
-          LspReferenceText = { fg = 'NONE', bg = '#2e303b' },
-          LspReferenceWrite = { fg = 'NONE', bg = '#2e303b' },
-          LspCodeLens = { fg = c.base04, bg = 'NONE', italic=true, },
-          LspCodeLensSeparator = { fg = c.base04, bg = 'NONE', italic=true, },
+      TelescopeNormal = {
+        fg = null;
+        bg = darker_black;
+      };
+      TelescopePreviewTitle = {
+        fg = black;
+        bg = green;
+        bold = true;
+      };
+      TelescopePromptTitle = {
+        fg = black;
+        bg = red;
+        bold = true;
+      };
+      TelescopeResultsTitle = {
+        fg = darker_black;
+        bg = darker_black;
+        bold = true;
+      };
+      TelescopeSelection = {
+        fg = white;
+        bg = black2;
+      };
+      TelescopeBorder = {
+        fg = darker_black;
+        bg = darker_black;
+      };
+      TelescopePromptBorder = {
+        fg = black2;
+        bg = black2;
+      };
+      TelescopePromptNormal = {
+        fg = white;
+        bg = black2;
+      };
+      TelescopePromptPrefix = {
+        fg = red;
+        bg = black2;
+      };
+      TelescopeResultsDiffAdd = {
+        fg = green;
+        bg = null;
+      };
+      TelescopeResultsDiffChange = {
+        fg = blue;
+        bg = null;
+      };
+      TelescopeResultsDiffDelete = {
+        fg = red;
+        bg = null;
+      };
 
-          TelescopeNormal = { fg = 'NONE', bg = c.darker_black },
-          TelescopePreviewTitle = { fg = c.black, bg = c.green, bold=true, },
-          TelescopePromptTitle = { fg = c.black, bg = c.red, bold=true, },
-          TelescopeResultsTitle = { fg = c.darker_black, bg = c.darker_black, bold=true, },
-          TelescopeSelection = { fg = c.white, bg = c.black2 },
-          TelescopeBorder = { fg = c.darker_black, bg = c.darker_black },
-          TelescopePromptBorder = { fg = c.black2, bg = c.black2 },
-          TelescopePromptNormal = { fg = c.white, bg = c.black2 },
-          TelescopePromptPrefix = { fg = c.red, bg = c.black2 },
-          TelescopeResultsDiffAdd = { fg = c.green, bg = 'NONE' },
-          TelescopeResultsDiffChange = { fg = c.blue, bg = 'NONE' },
-          TelescopeResultsDiffDelete = { fg = c.red, bg = 'NONE' },
+      NvimTreeFolderIcon = {
+        fg = blue;
+        bg = null;
+      };
+      NvimTreeIndentMarker = {
+        fg = grey_fg;
+        bg = null;
+      };
+      NvimTreeNormal = {
+        fg = null;
+        bg = darker_black;
+      };
+      NvimTreeVertSplit = {
+        fg = darker_black;
+        bg = darker_black;
+      };
+      NvimTreeFolderName = {
+        fg = blue;
+        bg = null;
+      };
+      NvimTreeOpenedFolderName = {
+        fg = blue;
+        bg = null;
+        bold = true;
+        italic = true;
+      };
+      NvimTreeEmptyFolderName = {
+        fg = grey;
+        bg = null;
+        italic = true;
+      };
+      NvimTreeGitIgnored = {
+        fg = grey;
+        bg = null;
+        italic = true;
+      };
+      NvimTreeImageFile = {
+        fg = light_grey;
+        bg = null;
+      };
+      NvimTreeSpecialFile = {
+        fg = orange;
+        bg = null;
+      };
+      NvimTreeEndOfBuffer = {
+        fg = darker_black;
+        bg = null;
+      };
+      NvimTreeCursorLine = {
+        fg = null;
+        bg = "#282b37";
+      };
+      NvimTreeGitignoreIcon = {
+        fg = red;
+        bg = null;
+      };
+      NvimTreeGitStaged = {
+        fg = vibrant_green;
+        bg = null;
+      };
+      NvimTreeGitNew = {
+        fg = vibrant_green;
+        bg = null;
+      };
+      NvimTreeGitRenamed = {
+        fg = vibrant_green;
+        bg = null;
+      };
+      NvimTreeGitDeleted = {
+        fg = red;
+        bg = null;
+      };
+      NvimTreeGitMerge = {
+        fg = blue;
+        bg = null;
+      };
+      NvimTreeGitDirty = {
+        fg = blue;
+        bg = null;
+      };
+      NvimTreeSymlink = {
+        fg = cyan;
+        bg = null;
+      };
+      NvimTreeRootFolder = {
+        fg = base05;
+        bg = null;
+        bold = true;
+      };
+      NvimTreeExecFile = {
+        fg = green;
+        bg = null;
+      };
 
-          NvimTreeFolderIcon = { fg = c.blue, bg = 'NONE' },
-          NvimTreeIndentMarker = { fg = c.grey_fg, bg = 'NONE' },
-          NvimTreeNormal = { fg = 'NONE', bg = c.darker_black },
-          NvimTreeVertSplit = { fg = c.darker_black, bg = c.darker_black },
-          NvimTreeFolderName = { fg = c.blue, bg = 'NONE' },
-          NvimTreeOpenedFolderName = { fg = c.blue, bg = 'NONE', bold=true, italic=true, },
-          NvimTreeEmptyFolderName = { fg = c.grey, bg = 'NONE', italic=true, },
-          NvimTreeGitIgnored = { fg = c.grey, bg = 'NONE', italic=true, },
-          NvimTreeImageFile = { fg = c.light_grey, bg = 'NONE' },
-          NvimTreeSpecialFile = { fg = c.orange, bg = 'NONE' },
-          NvimTreeEndOfBuffer = { fg = c.darker_black, bg = 'NONE' },
-          NvimTreeCursorLine = { fg = 'NONE', bg = '#282b37' },
-          NvimTreeGitignoreIcon = { fg = c.red, bg = 'NONE' },
-          NvimTreeGitStaged = { fg = c.vibrant_green, bg = 'NONE' },
-          NvimTreeGitNew = { fg = c.vibrant_green, bg = 'NONE' },
-          NvimTreeGitRenamed = { fg = c.vibrant_green, bg = 'NONE' },
-          NvimTreeGitDeleted = { fg = c.red, bg = 'NONE' },
-          NvimTreeGitMerge = { fg = c.blue, bg = 'NONE' },
-          NvimTreeGitDirty = { fg = c.blue, bg = 'NONE' },
-          NvimTreeSymlink = { fg = c.cyan, bg = 'NONE' },
-          NvimTreeRootFolder = { fg = c.base05, bg = 'NONE', bold=true, },
-          NvimTreeExecFile = { fg = c.green, bg = 'NONE' },
+      BufferCurrent = {
+        fg = base05;
+        bg = base00;
+      };
+      BufferCurrentIndex = {
+        fg = base05;
+        bg = base00;
+      };
+      BufferCurrentMod = {
+        fg = sun;
+        bg = base00;
+      };
+      BufferCurrentSign = {
+        fg = purple;
+        bg = base00;
+      };
+      BufferCurrentTarget = {
+        fg = red;
+        bg = base00;
+        bold = true;
+      };
+      BufferVisible = {
+        fg = base05;
+        bg = base00;
+      };
+      BufferVisibleIndex = {
+        fg = base05;
+        bg = base00;
+      };
+      BufferVisibleMod = {
+        fg = sun;
+        bg = base00;
+      };
+      BufferVisibleSign = {
+        fg = grey;
+        bg = base00;
+      };
+      BufferVisibleTarget = {
+        fg = red;
+        bg = base00;
+        bold = true;
+      };
+      BufferInactive = {
+        fg = grey;
+        bg = darker_black;
+      };
+      BufferInactiveIndex = {
+        fg = grey;
+        bg = darker_black;
+      };
+      BufferInactiveMod = {
+        fg = sun;
+        bg = darker_black;
+      };
+      BufferInactiveSign = {
+        fg = grey;
+        bg = darker_black;
+      };
+      BufferInactiveTarget = {
+        fg = red;
+        bg = darker_black;
+        bold = true;
+      };
 
-          BufferCurrent = { fg = c.base05, bg = c.base00 },
-          BufferCurrentIndex = { fg = c.base05, bg = c.base00 },
-          BufferCurrentMod = { fg = c.sun, bg = c.base00 },
-          BufferCurrentSign = { fg = c.purple, bg = c.base00 },
-          BufferCurrentTarget = { fg = c.red, bg = c.base00, bold=true, },
-          BufferVisible = { fg = c.base05, bg = c.base00 },
-          BufferVisibleIndex = { fg = c.base05, bg = c.base00 },
-          BufferVisibleMod = { fg = c.sun, bg = c.base00 },
-          BufferVisibleSign = { fg = c.grey, bg = c.base00 },
-          BufferVisibleTarget = { fg = c.red, bg = c.base00, bold=true, },
-          BufferInactive = { fg = c.grey, bg = c.darker_black },
-          BufferInactiveIndex = { fg = c.grey, bg = c.darker_black },
-          BufferInactiveMod = { fg = c.sun, bg = c.darker_black },
-          BufferInactiveSign = { fg = c.grey, bg = c.darker_black },
-          BufferInactiveTarget = { fg = c.red, bg = c.darker_black, bold=true, },
+      StatusLine = {
+        fg = line;
+        bg = statusline_bg;
+      };
+      StatusLineNC = {
+        fg = null;
+        bg = statusline_bg;
+      };
+      StatusLineSeparator = {
+        fg = line;
+        bg = null;
+      };
+      StatusLineTerm = {
+        fg = line;
+        bg = null;
+      };
+      StatusLineTermNC = {
+        fg = line;
+        bg = null;
+      };
 
-          StatusLine = { fg = c.line, bg = c.statusline_bg },
-          StatusLineNC = { fg = 'NONE', bg = c.statusline_bg },
-          StatusLineSeparator = { fg = c.line, bg = 'NONE' },
-          StatusLineTerm = { fg = c.line, bg = 'NONE' },
-          StatusLineTermNC = { fg = c.line, bg = 'NONE' },
+      DashboardHeader = {
+        fg = blue;
+        bg = null;
+      };
+      DashboardCenter = {
+        fg = purple;
+        bg = null;
+      };
+      DashboardFooter = {
+        fg = cyan;
+        bg = null;
+      };
 
-          IndentBlanklineContextChar = { fg = c.grey, bg = 'NONE' },
-          IndentBlanklineContextStart = { fg = 'NONE', bg = c.one_bg2 },
-          IndentBlanklineChar = { fg = c.line, bg = 'NONE' },
-          IndentBlanklineSpaceChar = { fg = c.line, bg = 'NONE' },
-          IndentBlanklineSpaceCharBlankline = { fg = c.sun, bg = 'NONE' },
+      AlphaHeader = {
+        fg = blue;
+        bg = null;
+      };
+      AlphaButtons = {
+        fg = purple;
+        bg = null;
+      };
+      AlphaFooter = {
+        fg = cyan;
+        bg = null;
+      };
 
-          DashboardHeader = { fg = c.blue, bg = 'NONE' },
-          DashboardCenter = { fg = c.purple, bg = 'NONE' },
-          DashboardFooter = { fg = c.cyan, bg = 'NONE' },
+      CmpItemAbbr = {fg = white;};
+      CmpDoc = {bg = darker_black;};
+      CmpBorder = {fg = grey_fg;};
+      CmpDocBorder = {
+        fg = darker_black;
+        bg = darker_black;
+      };
+      CmpPmenu = {bg = black;};
+      CmpSel = {
+        link = "PmenuSel";
+        bold = true;
+      };
+      CmpItemAbbrDeprecated = {
+        fg = grey;
+        bg = null;
+        strikethrough = true;
+      };
+      CmpItemAbbrMatch = {
+        fg = blue;
+        bold = true;
+        bg = null;
+      };
+      CmpItemAbbrMatchFuzzy = {
+        fg = blue;
+        bg = null;
+      };
+      CmpItemKindFunction = {
+        fg = blue;
+        bg = null;
+      };
+      CmpItemKindMethod = {
+        fg = blue;
+        bg = null;
+      };
+      CmpItemKindConstructor = {
+        fg = cyan;
+        bg = null;
+      };
+      CmpItemKindClass = {
+        fg = cyan;
+        bg = null;
+      };
+      CmpItemKindEnum = {
+        fg = cyan;
+        bg = null;
+      };
+      CmpItemKindEvent = {
+        fg = yellow;
+        bg = null;
+      };
+      CmpItemKindInterface = {
+        fg = cyan;
+        bg = null;
+      };
+      CmpItemKindStruct = {
+        fg = cyan;
+        bg = null;
+      };
+      CmpItemKindVariable = {
+        fg = red;
+        bg = null;
+      };
+      CmpItemKindField = {
+        fg = red;
+        bg = null;
+      };
+      CmpItemKindProperty = {
+        fg = red;
+        bg = null;
+      };
+      CmpItemKindEnumMember = {
+        fg = orange;
+        bg = null;
+      };
+      CmpItemKindConstant = {
+        fg = orange;
+        bg = null;
+      };
+      CmpItemKindKeyword = {
+        fg = purple;
+        bg = null;
+      };
+      CmpItemKindModule = {
+        fg = cyan;
+        bg = null;
+      };
+      CmpItemKindValue = {
+        fg = cyan;
+        bg = null;
+      };
+      CmpItemKindUnit = {
+        fg = base0E;
+        bg = null;
+      };
+      CmpItemKindText = {
+        fg = base0B;
+        bg = null;
+      };
+      CmpItemKindSnippet = {
+        fg = yellow;
+        bg = null;
+      };
+      CmpItemKindFile = {
+        fg = base07;
+        bg = null;
+      };
+      CmpItemKindFolder = {
+        fg = base07;
+        bg = null;
+      };
+      CmpItemKindColor = {
+        fg = white;
+        bg = null;
+      };
+      CmpItemKindReference = {
+        fg = base05;
+        bg = null;
+      };
+      CmpItemKindOperator = {
+        fg = base05;
+        bg = null;
+      };
+      CmpItemKindTypeParameter = {
+        fg = base08;
+        bg = null;
+      };
 
-          AlphaHeader = { fg = c.blue, bg = 'NONE' },
-          AlphaButtons = { fg = c.purple, bg = 'NONE' },
-          AlphaFooter = { fg = c.cyan, bg = 'NONE' },
+      # nvim-dap
+      DapBreakpoint = {fg = red;};
+      DapBreakpointCondition = {fg = yellow;};
+      DapLogPoint = {fg = sky;};
+      DapStopped = {bg = grey;};
 
-          CmpItemAbbr = { fg = c.white },
-          CmpItemAbbrMatch = { fg = c.blue, bold = true },
-          CmpDoc = { bg = c.darker_black },
-          CmpBorder = { fg = c.grey_fg },
-          CmpDocBorder = { fg = c.darker_black, bg = c.darker_black },
-          CmpPmenu = { bg = c.black },
-          CmpSel = { link = "PmenuSel", bold = true },
-          CmpItemAbbrDeprecated = { fg = c.grey, bg = 'NONE', strikethrough=true, },
-          CmpItemAbbrMatch = { fg = c.blue, bg = 'NONE' },
-          CmpItemAbbrMatchFuzzy = { fg = c.blue, bg = 'NONE' },
-          CmpItemKindFunction = { fg = c.blue, bg = 'NONE' },
-          CmpItemKindMethod = { fg = c.blue, bg = 'NONE' },
-          CmpItemKindConstructor = { fg = c.cyan, bg = 'NONE' },
-          CmpItemKindClass = { fg = c.cyan, bg = 'NONE' },
-          CmpItemKindEnum = { fg = c.cyan, bg = 'NONE' },
-          CmpItemKindEvent = { fg = c.yellow, bg = 'NONE' },
-          CmpItemKindInterface = { fg = c.cyan, bg = 'NONE' },
-          CmpItemKindStruct = { fg = c.cyan, bg = 'NONE' },
-          CmpItemKindVariable = { fg = c.red, bg = 'NONE' },
-          CmpItemKindField = { fg = c.red, bg = 'NONE' },
-          CmpItemKindProperty = { fg = c.red, bg = 'NONE' },
-          CmpItemKindEnumMember = { fg = c.orange, bg = 'NONE' },
-          CmpItemKindConstant = { fg = c.orange, bg = 'NONE' },
-          CmpItemKindKeyword = { fg = c.purple, bg = 'NONE' },
-          CmpItemKindModule = { fg = c.cyan, bg = 'NONE' },
-          CmpItemKindValue = { fg = c.cyan, bg = 'NONE' },
-          CmpItemKindUnit = { fg = c.base0E, bg = 'NONE' },
-          CmpItemKindText = { fg = c.base0B, bg = 'NONE' },
-          CmpItemKindSnippet = { fg = c.yellow, bg = 'NONE' },
-          CmpItemKindFile = { fg = c.base07, bg = 'NONE' },
-          CmpItemKindFolder = { fg = c.base07, bg = 'NONE' },
-          CmpItemKindColor = { fg = c.white, bg = 'NONE' },
-          CmpItemKindReference = { fg = c.base05, bg = 'NONE' },
-          CmpItemKindOperator = { fg = c.base05, bg = 'NONE' },
-          CmpItemKindTypeParameter = { fg = c.base08, bg = 'NONE' },
+      # nvim-dap-ui
+      DAPUIScope = {fg = sky;};
+      DAPUIType = {fg = mauve;};
+      DAPUIValue = {fg = sky;};
+      DAPUIVariable = {fg = text;};
+      DapUIModifiedValue = {fg = peach;};
+      DapUIDecoration = {fg = sky;};
+      DapUIThread = {fg = green;};
+      DapUIStoppedThread = {fg = sky;};
+      DapUISource = {fg = lavender;};
+      DapUILineNumber = {fg = sky;};
+      DapUIFloatBorder = {fg = sky;};
 
-          -- nvim-dap
-          DapBreakpoint = { fg = c.red },
-          DapBreakpointCondition = { fg = c.yellow },
-          DapLogPoint = { fg = c.sky },
-          DapStopped = { bg = c.grey },
+      DapUIWatchesEmpty = {fg = maroon;};
+      DapUIWatchesValue = {fg = green;};
+      DapUIWatchesError = {fg = maroon;};
 
-          -- nvim-dap-ui
-          DAPUIScope = { fg = c.sky },
-          DAPUIType = { fg = c.mauve },
-          DAPUIValue = { fg = c.sky },
-          DAPUIVariable = { fg = c.text },
-          DapUIModifiedValue = { fg = c.peach },
-          DapUIDecoration = { fg = c.sky },
-          DapUIThread = { fg = c.green },
-          DapUIStoppedThread = { fg = c.sky },
-          DapUISource = { fg = c.lavender },
-          DapUILineNumber = { fg = c.sky },
-          DapUIFloatBorder = { fg = c.sky },
+      DapUIBreakpointsPath = {fg = sky;};
+      DapUIBreakpointsInfo = {fg = green;};
+      DapUIBreakpointsCurrentLine = {
+        fg = green;
+        bold = true;
+      };
+      DapUIBreakpointsDisabledLine = {fg = surface2;};
 
-          DapUIWatchesEmpty = { fg = c.maroon },
-          DapUIWatchesValue = { fg = c.green },
-          DapUIWatchesError = { fg = c.maroon },
-
-          DapUIBreakpointsPath = { fg = c.sky },
-          DapUIBreakpointsInfo = { fg = c.green },
-          DapUIBreakpointsCurrentLine = { fg = c.green, style = { "bold" } },
-          DapUIBreakpointsDisabledLine = { fg = c.surface2 },
-
-          DapUIStepOver = { fg = c.blue },
-          DapUIStepInto = { fg = c.blue },
-          DapUIStepBack = { fg = c.blue },
-          DapUIStepOut = { fg = c.blue },
-          DapUIStop = { fg = c.red },
-          DapUIPlayPause = { fg = c.green },
-          DapUIRestart = { fg = c.green },
-          DapUIUnavailable = { fg = c.surface1 },
-          IlluminatedWordText = { fg = 'NONE', bg = c.base03, },
-          IlluminatedWordRead = { fg = 'NONE', bg = c.base03, },
-          IlluminatedWordWrite = { fg = 'NONE', bg = c.base03, },
-          }
-          end
-        '';
+      DapUIStepOver = {fg = blue;};
+      DapUIStepInto = {fg = blue;};
+      DapUIStepBack = {fg = blue;};
+      DapUIStepOut = {fg = blue;};
+      DapUIStop = {fg = red;};
+      DapUIPlayPause = {fg = green;};
+      DapUIRestart = {fg = green;};
+      DapUIUnavailable = {fg = surface1;};
     };
   };
 }

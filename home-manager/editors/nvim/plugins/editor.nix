@@ -2,6 +2,7 @@
   imports = [
     ./editor/telescope.nix
     ./editor/trouble.nix
+    ./editor/focus.nix
   ];
 
   programs.nixvim = {

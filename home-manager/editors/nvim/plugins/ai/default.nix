@@ -22,6 +22,10 @@ in {
         panel.enabled = false;
       };
 
+      codeium-nvim = {
+        enable = true;
+      };
+
       copilot-cmp = {
         enable = true;
       };

@@ -2,18 +2,7 @@
   config,
   pkgs,
   ...
-}: let
-  pastify = pkgs.vimUtils.buildVimPlugin rec {
-    version = "47317b9bb7bf5fb7dfd994a6eb9bec8f00628dc0";
-    pname = "pastify.nvim";
-    src = pkgs.fetchFromGitHub {
-      owner = "TobinPalmer";
-      repo = pname;
-      rev = "${version}";
-      sha256 = "sha256-qNayJtPJe90KkPbVyqvenWovFOx5pwmx6wqQDa3fgJQ=";
-    };
-  };
-in {
+}: {
   home.packages = with pkgs; [
     marksman
   ];
@@ -27,20 +16,6 @@ in {
   };
 
   programs.nixvim = {
-    extraPlugins = [
-      pastify
-    ];
-    extraConfigLua = ''
-      require("pastify").setup {
-        opts = {
-          local_path = '/images/',
-        },
-      }
-    '';
-    extraPython3Packages = p: [
-      p.pillow
-    ];
-
     plugins = {
       image = {
         enable = true;
