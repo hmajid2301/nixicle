@@ -2,8 +2,24 @@
   config,
   pkgs,
   ...
-}: {
-  home.packages = [pkgs.atuin-export-fish];
+}: let
+  atuin-export-fish = pkgs.buildGoModule rec {
+    pname = "atuin-export-fish-history";
+    version = "0.1.0";
+
+    src = pkgs.fetchFromGitLab {
+      owner = "hmajid2301";
+      repo = pname;
+      rev = "v${version}";
+      sha256 = "sha256-2egZYLnaekcYm2IzPdWAluAZogdi4Nf/oXWLw8+AnMk=";
+    };
+
+    vendorHash = "sha256-hLEmRq7Iw0hHEAla0Ehwk1EfmpBv6ddBuYtq12XdhVc=";
+
+    ldflags = ["-s" "-w"];
+  };
+in {
+  home.packages = [atuin-export-fish];
 
   programs.atuin = {
     enable = true;
