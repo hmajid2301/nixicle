@@ -65,12 +65,12 @@ in {
       colorOverrides.all = colors;
       integrations = {
         alpha = true;
-        cmp = true;
+        # cmp = true;
         dashboard = true;
-        dap = {
-          enable_ui = true;
-          enabled = true;
-        };
+        # dap = {
+        #   enable_ui = true;
+        #   enabled = true;
+        # };
         gitsigns = true;
         illuminate.enabled = true;
         flash = true;
