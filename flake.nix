@@ -63,6 +63,11 @@
         specialArgs = {inherit inputs outputs;};
       };
 
+      desktop = lib.nixosSystem {
+        modules = [./hosts/desktop/configuration.nix];
+        specialArgs = {inherit inputs outputs;};
+      };
+
       framework = lib.nixosSystem {
         modules = [./hosts/framework/configuration.nix];
         specialArgs = {inherit inputs outputs;};
@@ -70,6 +75,12 @@
     };
 
     homeConfigurations = {
+      desktop = lib.homeManagerConfiguration {
+        modules = [./hosts/desktop/home.nix];
+        pkgs = nixpkgs.legacyPackages.x86_64-linux;
+        extraSpecialArgs = {inherit inputs outputs;};
+      };
+
       framework = lib.homeManagerConfiguration {
         modules = [./hosts/framework/home.nix];
         pkgs = nixpkgs.legacyPackages.x86_64-linux;

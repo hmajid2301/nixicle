@@ -50,7 +50,7 @@
       };
 
       env = [
-        "WLR_DRM_DEVICES,/dev/dri/card1:/dev/dri/card0"
+        "WLR_DRM_DEVICES,/dev/dri/card0"
       ];
 
       exec_once = [
@@ -58,9 +58,9 @@
         "${pkgs.swaynotificationcenter}/bin/swaync"
         "${pkgs.kanshi}/bin/kanshi"
         "${pkgs.waybar}/bin/waybar"
-        "${pkgs.gammastep}/bin/gammastep"
         "${pkgs.swaybg}/bin/swaybg -i ${config.my.settings.wallpaper} --mode fill"
         "${pkgs.trayscale}/bin/trayscale --hide-window"
+        "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1"
         "mullvad-gui"
         "solaar -w hide"
         "blueman-applet"

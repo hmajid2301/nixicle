@@ -1,6 +1,6 @@
 theme "catppuccin-mocha"
 pane_frames false
-simplified_ui true
+simplified_ui false
 default_layout "mine"
 default_shell "fish"
 copy_on_select true
