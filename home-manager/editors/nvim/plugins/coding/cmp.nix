@@ -23,8 +23,25 @@
 
       cmp = {
         enable = true;
+        autoEnableSources = false;
 
         settings = {
+          sources = {
+            __raw = ''
+              cmp.config.sources({
+                { name = 'nvim_lsp' },
+                { name = 'luasnip' },
+                { name = 'path' },
+                { name = 'copilot' },
+                { name = 'codeium' },
+                -- { name = 'ultisnips' },
+                -- { name = 'snippy' },
+                -- { name = 'vsnip' },
+              }, {
+                { name = 'buffer' },
+              })
+            '';
+          };
           formatting = {
             fields = ["abbr" "kind" "menu"];
             format =
