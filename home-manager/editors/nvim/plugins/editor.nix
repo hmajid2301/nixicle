@@ -1,4 +1,16 @@
-{pkgs, ...}: {
+{pkgs, ...}: let
+  zellij-nvim = pkgs.vimUtils.buildVimPlugin {
+    pname = "zellij.nvim";
+    version = "2023-12-03";
+    src = pkgs.fetchFromGitHub {
+      owner = "Lilja";
+      repo = "zellij.nvim";
+      rev = "483c855ab7a3aba60e522971991481807ea3a47b";
+      sha256 = "17lapf7lznlw557k00dpvx04j5pkgdqk95aw5js3aamydnhi976g";
+    };
+    meta.homepage = "https://github.com/Lilja/zellij.nvim/";
+  };
+in {
   imports = [
     ./editor/telescope.nix
     ./editor/trouble.nix
@@ -266,9 +278,10 @@
       };
     };
 
-    extraPlugins = with pkgs; [
-      vimPlugins.nvim-spectre
-      vimExtraPlugins.zellij-nvim
+    extraPlugins = [
+      pkgs.vimPlugins.nvim-spectre
+      # TODO: Remove this once the plugin is in nixpkgs
+      zellij-nvim
     ];
 
     extraConfigLua = ''
