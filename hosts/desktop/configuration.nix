@@ -34,9 +34,21 @@
     headsetcontrol2
     headset-charge-indicator
   ];
-  services.udev.packages = [pkgs.headsetcontrol2];
 
   swapDevices = [{device = "/swap/swapfile";}];
+  # TODO: move
+  services.udev.extraRules = ''
+      # Your rule goes here
+    KERNEL=="event*", NAME="input/%k", MODE="660", GROUP="input"
+  '';
+
+  environment.sessionVariables.GST_PLUGIN_SYSTEM_PATH_1_0 = lib.makeSearchPathOutput "lib" "lib/gstreamer-1.0" (with pkgs.gst_all_1; [
+    gst-plugins-good
+    gst-plugins-bad
+    gst-plugins-ugly
+    gst-libav
+  ]);
+
   boot = {
     kernelParams = [
       "amdgpu.sg_display=0"

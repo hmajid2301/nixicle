@@ -48,8 +48,6 @@
     overlays =
       builtins.attrValues outputs.overlays
       ++ [
-        inputs.nixneovimplugins.overlays.default
-        inputs.neovim-nightly-overlay.overlay
         inputs.nixgl.overlay
       ];
 

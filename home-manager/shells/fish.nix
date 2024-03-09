@@ -102,13 +102,13 @@ in {
         nd = "nix develop";
         nfu = "nix flake update";
         hms = "home-manager switch --flake ~/dotfiles#${host}";
+        hmr = "home-manager generations | fzf --tac | awk '{print $7}' | xargs -I{} bash {}/activate";
         nrs = "sudo nixos-rebuild switch --flake ~/dotfiles#${host}";
         niso = "nix build .#nixosConfigurations.iso.config.system.build.isoImage";
 
         # new commads
-        kp = "ps -ef | sed 1d | eval \"fzf $FZF_DEFAULT_OPTS -m --header=\'[kill:process]\'\" | awk \'{print $2}\'";
         weather = "curl wttr.in/London";
-        cbr = "git branch --sort=-committerdate | fzf --color=always --header \"Checkout Recent Branch\" --preview \"git diff {1}\" | xargs git checkout'";
+
         gdub = "git fetch -p && git branch -vv | grep ': gone]' | awk '{print }' | xargs git branch -D $argv;";
         tldrf = "tldr --list | fzf --preview \"tldr {1} --color=always\" --preview-window=right,70% | xargs tldr";
         dk = "docker kill (docker ps -q)";
