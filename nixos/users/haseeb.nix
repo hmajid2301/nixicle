@@ -28,6 +28,7 @@ in {
         "kvm"
         "docker"
         "podman"
+        "input"
         "git"
         "network"
         "wireshark"

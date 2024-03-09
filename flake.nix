@@ -19,9 +19,7 @@
 
     hypr-contrib.url = "github:hyprwm/contrib";
     hyprland-nix.url = "github:spikespaz/hyprland-nix";
-    neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
     nixvim.url = "github:pta2002/nixvim";
-    nixneovimplugins.url = "github:jooooscha/nixpkgs-vim-extra-plugins";
     zjstatus.url = "github:dj95/zjstatus";
 
     nwg-displays.url = "github:nwg-piotr/nwg-displays";

@@ -79,16 +79,6 @@
       vimPlugins.nui-nvim
       vimPlugins.nvim-web-devicons
       vimPlugins.dressing-nvim
-
-      # for window-nvim plugin
-      {
-        plugin = vimExtraPlugins.windows-nvim;
-        config = ''
-          lua require('windows').setup()
-        '';
-      }
-      vimExtraPlugins.middleclass
-      vimExtraPlugins.animation-nvim
     ];
   };
 }
