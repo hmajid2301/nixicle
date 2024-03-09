@@ -10,7 +10,7 @@ with lib; let
 in {
   imports = [
     ./config
-    #./wlsunset.nix
+    ./night-light/wlsunset.nix
     ./kanshi.nix
     ./rofi.nix
     ./swaync

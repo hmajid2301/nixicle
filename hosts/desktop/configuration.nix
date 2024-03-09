@@ -21,7 +21,6 @@
     backup.enable = true;
     bluetooth.enable = true;
     docker.enable = true;
-    fingerprint.enable = true;
     gaming.enable = true;
     login.enable = true;
     extraSecurity.enable = true;
@@ -36,11 +35,6 @@
   ];
 
   swapDevices = [{device = "/swap/swapfile";}];
-  # TODO: move
-  services.udev.extraRules = ''
-      # Your rule goes here
-    KERNEL=="event*", NAME="input/%k", MODE="660", GROUP="input"
-  '';
 
   environment.sessionVariables.GST_PLUGIN_SYSTEM_PATH_1_0 = lib.makeSearchPathOutput "lib" "lib/gstreamer-1.0" (with pkgs.gst_all_1; [
     gst-plugins-good
@@ -51,10 +45,8 @@
 
   boot = {
     kernelParams = [
-      "amdgpu.sg_display=0"
       "resume_offset=533760"
     ];
-    blacklistedKernelModules = ["hid-sensor-hub"];
     supportedFilesystems = lib.mkForce ["btrfs"];
     kernelPackages = pkgs.linuxPackages_latest;
     loader = {
@@ -68,11 +60,11 @@
     # };
   };
 
-  boot.plymouth = {
-    enable = true;
-    themePackages = [(pkgs.catppuccin-plymouth.override {variant = "mocha";})];
-    theme = "catppuccin-mocha";
-  };
+  # boot.plymouth = {
+  #   enable = true;
+  #   themePackages = [(pkgs.catppuccin-plymouth.override {variant = "mocha";})];
+  #   theme = "catppuccin-mocha";
+  # };
   boot.initrd.systemd.enable = true;
 
   system.stateVersion = "23.11";

@@ -11,22 +11,19 @@ in {
     enable = mkEnableOption "Enable virtualisation";
   };
 
+  # Based on this https://gist.github.com/CRTified/43b7ce84cd238673f7f24652c85980b3
   config = mkIf cfg.enable {
-    boot = {
-      initrd.kernelModules = [
-        "vfio_pci"
-        "vfio"
-        "vfio_iommu_type1"
-        "kvm-amd"
-        "amdgpu"
-      ];
-
-      kernelParams = [
-        "amd_iommu=on"
-        "iommu=pt"
-        "vfio-pci.ids=10de:2208,10de:1aef"
-      ];
-    };
+    #   systemd.user.services.scream-ivshmem = {
+    #   enable = true;
+    #   description = "Scream IVSHMEM";
+    #   serviceConfig = {
+    #     ExecStart =
+    #       "${pkgs.scream}/bin/scream-ivshmem-pulse /dev/shm/scream";
+    #     Restart = "always";
+    #   };
+    #   wantedBy = [ "multi-user.target" ];
+    #   requires = [ "pulseaudio.service" ];
+    # };
 
     environment.systemPackages = with pkgs; [
       libguestfs
@@ -37,9 +34,35 @@ in {
       virtiofsd
       looking-glass-client
     ];
-    programs.dconf.enable = true;
 
     virtualisation = {
+      sharedMemoryFiles = {
+        # scream = {
+        #   user = "haseeb";
+        #   group = "qemu-libvirtd";
+        #   mode = "666";
+        # };
+        looking-glass = {
+          user = "haseeb";
+          group = "qemu-libvirtd";
+          mode = "666";
+        };
+      };
+
+      vfio = {
+        enable = true;
+        IOMMUType = "amd";
+        devices = ["10de:2208" "10de:1aef"];
+        blacklistNvidia = true;
+      };
+
+      hugepages = {
+        enable = true;
+        defaultPageSize = "1G";
+        pageSize = "1G";
+        numPages = 16;
+      };
+
       kvmgt.enable = true;
       spiceUSBRedirection.enable = true;
       libvirtd = {
@@ -50,26 +73,28 @@ in {
         ];
         onBoot = "ignore";
         onShutdown = "shutdown";
+        clearEmulationCapabilities = false;
+        deviceACL = [
+          "/dev/input/by-id/usb-Logitech_USB_Receiver-event-mouse"
+          "/dev/input/by-id/usb-ZSA_Technology_Labs_Voyager-event-kbd"
+          "/dev/vfio/vfio"
+          "/dev/vfio/2"
+          "/dev/vfio/6"
+          "dev/null"
+          "/dev/full"
+          "/dev/zero"
+          "/dev/random"
+          "/dev/urandom"
+          "/dev/ptmx"
+          "/dev/kvm"
+          "/dev/kqemu"
+          "/dev/rtc"
+          "/dev/hpet"
+          "/dev/kvm"
+          "/dev/shm/looking-glass"
+        ];
         qemu = {
-          verbatimConfig = ''
-                user = "haseeb"
-                  group = "kvm"
-            namespaces = []
-                       					cgroup_device_acl = [
-                        "dev/null", "/dev/full", "/dev/zero",
-                        "/dev/random", "/dev/urandom",
-                        "/dev/ptmx", "/dev/kvm", "/dev/kqemu",
-                        "/dev/rtc","/dev/hpet",
-                             "/dev/input/by-id/usb-Logitech_USB_Receiver-event-mouse",
-                             "/dev/input/by-id/usb-ZSA_Technology_Labs_Voyager-event-kbd",
-                             "/dev/vfio/vfio",
-                             "/dev/vfio/2",
-                             "/dev/vfio/6",
-                             "/dev/kvm",
-                             "/dev/shm/scream",
-                             "/dev/shm/looking-glass",
-                       ]
-          '';
+          runAsRoot = false;
           swtpm.enable = true;
           ovmf = {
             enable = true;
