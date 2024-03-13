@@ -70,6 +70,11 @@
         modules = [./hosts/framework/configuration.nix];
         specialArgs = {inherit inputs outputs;};
       };
+
+      vm = lib.nixosSystem {
+        modules = [./hosts/vm/configuration.nix];
+        specialArgs = {inherit inputs outputs;};
+      };
     };
 
     homeConfigurations = {
@@ -87,6 +92,12 @@
 
       curve = lib.homeManagerConfiguration {
         modules = [./hosts/curve/home.nix];
+        pkgs = nixpkgs.legacyPackages.x86_64-linux;
+        extraSpecialArgs = {inherit inputs outputs;};
+      };
+
+      vm = lib.homeManagerConfiguration {
+        modules = [./hosts/vm/home.nix];
         pkgs = nixpkgs.legacyPackages.x86_64-linux;
         extraSpecialArgs = {inherit inputs outputs;};
       };
