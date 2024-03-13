@@ -31,10 +31,11 @@ in {
   };
 
   # Add qemu-libvirtd to the input group if required
-  config.users.users."qemu-libvirtd" = {
-    extraGroups = optionals (!cfg.qemu.runAsRoot) ["kvm" "input"];
-    isSystemUser = true;
-  };
+  # config.users.users."qemu-libvirtd" = {
+  #   group = "qemu-libvirtd";
+  #   extraGroups = optionals (!cfg.qemu.runAsRoot) ["kvm" "input"];
+  #   isSystemUser = true;
+  # };
 
   config.virtualisation.libvirtd.qemu.verbatimConfig = ''
     clear_emulation_capabilities = ${

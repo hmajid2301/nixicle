@@ -44,7 +44,7 @@ in {
         # };
         looking-glass = {
           user = "haseeb";
-          group = "qemu-libvirtd";
+          group = "haseeb";
           mode = "666";
         };
       };
