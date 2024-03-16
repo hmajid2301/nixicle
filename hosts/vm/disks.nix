@@ -22,16 +22,6 @@
               };
             };
 
-            swap = {
-              label = "swap";
-              size = "32G";
-              content = {
-                type = "swap";
-                resumeDevice = true;
-                randomEncryption = true;
-              };
-            };
-
             luks = {
               size = "100%";
               label = "luks";
