@@ -4,7 +4,7 @@
   ...
 }: {
   home.packages = [
-    pkgs.pinentry-gnome
+    pkgs.pinentry-gnome3
     pkgs.gnome.seahorse
   ];
 
