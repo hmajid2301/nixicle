@@ -31,6 +31,7 @@
 
   boot.initrd.systemd.enable = true;
   boot = {
+    supportedFilesystems = lib.mkForce ["btrfs"];
     kernelPackages = pkgs.linuxPackages_latest;
     loader = {
       systemd-boot.enable = true;
