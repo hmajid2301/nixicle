@@ -8,10 +8,6 @@
 with lib; let
   cfg = config.modules.nixos.gaming;
 in {
-  imports = [
-    inputs.nix-gaming.nixosModules.steamCompat
-  ];
-
   options.modules.nixos.gaming = {
     enable = mkEnableOption "Enable gaming features";
   };
