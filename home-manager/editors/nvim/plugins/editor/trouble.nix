@@ -3,7 +3,6 @@
     plugins = {
       trouble = {
         enable = true;
-        auto_close = true;
       };
     };
 
