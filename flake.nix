@@ -1,5 +1,5 @@
 {
-  description = "My Nix Config";
+  description = "Haseeb's Nix/NixOS Config";
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
@@ -8,99 +8,94 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    snowfall-lib = {
+      url = "github:snowfallorg/lib";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     disko.url = "github:nix-community/disko";
     hardware.url = "github:nixos/nixos-hardware";
     sops-nix.url = "github:mic92/sops-nix";
+
     impermanence.url = "github:nix-community/impermanence";
     lanzaboote.url = "github:nix-community/lanzaboote";
 
     nixgl.url = "github:nix-community/nixGL";
     nix-colors.url = "github:misterio77/nix-colors";
+    nix-ld.url = "github:Mic92/nix-ld";
+    nix-index-database.url = "github:nix-community/nix-index-database";
+    comma.url = "github:nix-community/comma";
 
     hypr-contrib.url = "github:hyprwm/contrib";
-    hyprland-nix.url = "github:spikespaz/hyprland-nix";
-    nixvim.url = "github:pta2002/nixvim";
-    zjstatus.url = "github:dj95/zjstatus";
+    hypridle.url = "github:hyprwm/Hypridle";
+    hyprlock.url = "github:hyprwm/Hyprlock";
+    hyprpaper.url = "github:hyprwm/hyprpaper";
 
-    nwg-displays.url = "github:nwg-piotr/nwg-displays";
-    comma.url = "github:nix-community/comma";
-    nix-gaming.url = "github:fufexan/nix-gaming";
+    hyprland-git.url = "github:hyprwm/hyprland";
+    hyprland-xdph-git.url = "github:hyprwm/xdg-desktop-portal-hyprland";
+    hyprland-protocols-git.url = "github:hyprwm/xdg-desktop-portal-hyprland";
+    hyprland-nix.url = "github:spikespaz/hyprland-nix";
+    hyprland-nix.inputs = {
+      hyprland.follows = "hyprland-git";
+      hyprland-xdph.follows = "hyprland-xdph-git";
+      hyprland-protocols.follows = "hyprland-protocols-git";
+    };
+
+    nixvim.url = "github:pta2002/nixvim";
 
     firefox-gnome-theme = {
       url = "github:rafaelmardojai/firefox-gnome-theme";
       flake = false;
     };
-  };
 
-  outputs = {
-    self,
-    nixpkgs,
-    home-manager,
-    ...
-  } @ inputs: let
-    inherit (self) outputs;
-    lib = nixpkgs.lib // home-manager.lib;
-    systems = ["x86_64-linux" "aarch64-linux"];
-    forEachSystem = f: lib.genAttrs systems (sys: f pkgsFor.${sys});
-    pkgsFor = nixpkgs.legacyPackages;
-  in {
-    inherit lib;
-    nixosModules = import ./modules/nixos;
-    homeManagerModules = import ./modules/home-manager;
-    overlays = import ./overlays {inherit inputs outputs;};
-    packages = forEachSystem (pkgs: import ./pkgs {inherit pkgs;});
-    devShells = forEachSystem (pkgs: import ./shell.nix {inherit pkgs inputs;});
-
-    nixosConfigurations = {
-      iso = lib.nixosSystem {
-        modules = [
-          "${nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-graphical-gnome.nix"
-          "${nixpkgs}/nixos/modules/installer/cd-dvd/channel.nix"
-          ./hosts/iso/configuration.nix
-        ];
-        specialArgs = {inherit inputs outputs;};
-      };
-
-      desktop = lib.nixosSystem {
-        modules = [./hosts/desktop/configuration.nix];
-        specialArgs = {inherit inputs outputs;};
-      };
-
-      framework = lib.nixosSystem {
-        modules = [./hosts/framework/configuration.nix];
-        specialArgs = {inherit inputs outputs;};
-      };
-
-      vm = lib.nixosSystem {
-        modules = [./hosts/vm/configuration.nix];
-        specialArgs = {inherit inputs outputs;};
-      };
+    copilotchat-nvim = {
+      url = "github:copilotc-nvim/copilotchat.nvim";
+      flake = false;
     };
 
-    homeConfigurations = {
-      desktop = lib.homeManagerConfiguration {
-        modules = [./hosts/desktop/home.nix];
-        pkgs = nixpkgs.legacyPackages.x86_64-linux;
-        extraSpecialArgs = {inherit inputs outputs;};
-      };
-
-      framework = lib.homeManagerConfiguration {
-        modules = [./hosts/framework/home.nix];
-        pkgs = nixpkgs.legacyPackages.x86_64-linux;
-        extraSpecialArgs = {inherit inputs outputs;};
-      };
-
-      curve = lib.homeManagerConfiguration {
-        modules = [./hosts/curve/home.nix];
-        pkgs = nixpkgs.legacyPackages.x86_64-linux;
-        extraSpecialArgs = {inherit inputs outputs;};
-      };
-
-      vm = lib.homeManagerConfiguration {
-        modules = [./hosts/vm/home.nix];
-        pkgs = nixpkgs.legacyPackages.x86_64-linux;
-        extraSpecialArgs = {inherit inputs outputs;};
-      };
+    neorg-templates = {
+      url = "github:pysan3/neorg-templates";
+      flake = false;
     };
   };
+
+  outputs = inputs:
+    inputs.snowfall-lib.mkFlake {
+      inherit inputs;
+      src = ./.;
+      snowfall = {
+        metadata = "nixicle";
+        namespace = "nixicle";
+        meta = {
+          name = "nixicle";
+          title = "Haseeb's Nix Flake";
+        };
+      };
+
+      channels-config = {
+        allowUnfree = true;
+      };
+
+      systems.modules.nixos = with inputs; [
+        home-manager.nixosModules.home-manager
+        disko.nixosModules.disko
+        lanzaboote.nixosModules.lanzaboote
+        impermanence.nixosModules.impermanence
+        sops-nix.nixosModules.sops
+        nix-ld.nixosModules.nix-ld
+      ];
+
+      systems.hosts.framework.modules = with inputs; [
+        hardware.nixosModules.framework-13-7040-amd
+      ];
+
+      # TODO: move to relevant files
+      # homes.modules = with inputs; [
+      #   impermanence.nixosModules.home-manager.impermanence
+      # ];
+
+      overlays = with inputs; [
+        nixgl.overlay
+      ];
+    };
 }
