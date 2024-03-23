@@ -11,19 +11,15 @@
 
       dontUnpack = true;
 
-      installPhase =
-        /*
-        bash
-        */
-        ''
-          cp $src $out
-        '';
+      installPhase = ''
+        cp $src $out
+      '';
 
       passthru = {inherit fileName;};
     };
   in
     pkg;
-  names = builtins.map lib.snowfall.path.get-file-name-without-extension images;
+  names = builtins.map (lib.snowfall.path.get-file-name-without-extension) images;
   wallpapers =
     lib.foldl
     (acc: image: let
@@ -37,19 +33,22 @@
     {}
     images;
   installTarget = "$out/share/wallpapers";
+  installWallpapers =
+    builtins.mapAttrs
+    (name: wallpaper: ''
+      cp ${wallpaper} ${installTarget}/${wallpaper.fileName}
+    '')
+    wallpapers;
 in
   pkgs.stdenvNoCC.mkDerivation {
+    name = "wallpapers";
     src = ./wallpapers;
 
-    installPhase =
-      /*
-      bash
-      */
-      ''
-        mkdir -p ${installTarget}
+    installPhase = ''
+      mkdir -p ${installTarget}
 
-        find * -type f -mindepth 0 -maxdepth 0 -exec cp ./{} ${installTarget}/{} ';'
-      '';
+      find * -type f -mindepth 0 -maxdepth 0 -exec cp ./{} ${installTarget}/{} ';'
+    '';
 
     passthru = {inherit names;} // wallpapers;
   }

@@ -34,6 +34,8 @@ in {
       waybar.enable = true;
       wlogout.enable = true;
       wlsunset.enable = true;
+
+      #hyprpaper.enable = true;
     };
   };
 }
