@@ -34,6 +34,13 @@ in {
       gamescope.enable = true;
       steam = {
         enable = true;
+        package = pkgs.steam.override {
+          extraPkgs = p:
+            with p; [
+              mangohud
+              gamemode
+            ];
+        };
         dedicatedServer.openFirewall = true;
         remotePlay.openFirewall = true;
         gamescopeSession.enable = true;
