@@ -1,18 +1,13 @@
 {
+  inputs,
   pkgs,
   lib,
   ...
 }: let
-  zellij-nvim = pkgs.vimUtils.buildVimPlugin {
-    pname = "zellij.nvim";
-    version = "2023-12-03";
-    src = pkgs.fetchFromGitHub {
-      owner = "Lilja";
-      repo = "zellij.nvim";
-      rev = "483c855ab7a3aba60e522971991481807ea3a47b";
-      sha256 = "17lapf7lznlw557k00dpvx04j5pkgdqk95aw5js3aamydnhi976g";
-    };
-    meta.homepage = "https://github.com/Lilja/zellij.nvim/";
+  arrow-nvim = pkgs.vimUtils.buildVimPlugin {
+    version = "latest";
+    pname = "arrow.nvim";
+    src = inputs.arrow-nvim;
   };
 in {
   imports = lib.snowfall.fs.get-non-default-nix-files ./.;
@@ -177,16 +172,16 @@ in {
           "n"
         ];
       }
-      {
-        action = "<cmd>Telescope harpoon marks<cr>";
-        key = "<leader>hf";
-        options = {
-          desc = "Open harpoon marks in telescope";
-        };
-        mode = [
-          "n"
-        ];
-      }
+      # {
+      #   action = "<cmd>Telescope harpoon marks<cr>";
+      #   key = "<leader>hf";
+      #   options = {
+      #     desc = "Open harpoon marks in telescope";
+      #   };
+      #   mode = [
+      #     "n"
+      #   ];
+      # }
     ];
 
     plugins = {
@@ -216,16 +211,16 @@ in {
         enable = true;
       };
 
-      harpoon = {
-        enable = true;
-        enableTelescope = true;
-        keymaps = {
-          addFile = "<leader>ha";
-          toggleQuickMenu = "<leader>ht";
-          navNext = "<leader>hn";
-          navPrev = "<leader>hp";
-        };
-      };
+      # harpoon = {
+      #   enable = true;
+      #   enableTelescope = true;
+      #   keymaps = {
+      #     addFile = "<leader>ha";
+      #     toggleQuickMenu = "<leader>ht";
+      #     navNext = "<leader>hn";
+      #     navPrev = "<leader>hp";
+      #   };
+      # };
 
       nvim-colorizer = {
         enable = true;
@@ -276,18 +271,24 @@ in {
           "<leader>r" = "+refactor";
         };
       };
+      zellij = {
+        enable = true;
+        settings = {
+          vimTmuxNavigatorKeybinds = true;
+        };
+      };
     };
 
     extraPlugins = [
       pkgs.vimPlugins.nvim-spectre
-      # TODO: Remove this once the plugin is in nixpkgs
-      zellij-nvim
+      arrow-nvim
     ];
 
     extraConfigLua = ''
       require("spectre").setup()
-      require("zellij").setup({
-      		vimTmuxNavigatorKeybinds = true,
+      require("arrow").setup({
+        show_icons = true,
+        leader_key = "<leader>h",
       })
     '';
   };

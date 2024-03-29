@@ -25,9 +25,9 @@ in {
       mimeApps = {
         enable = true;
         associations.added = {
-          "video/mp4" = ["org.gnome.Totem.desktop"];
-          "video/quicktime" = ["org.gnome.Totem.desktop"];
-          "video/webm" = ["org.gnome.Totem.desktop"];
+          "video/mp4" = ["io.github.celluloid_player.Celluloid.desktop"];
+          "video/quicktime" = ["io.github.celluloid_player.Celluloid.desktop"];
+          "video/webm" = ["io.github.celluloid_player.Celluloid.desktop"];
           "image/png" = ["org.gnome.Loupe.desktop"];
           "image/jpg" = ["org.gnome.Loupe.desktop"];
           "image/jpeg" = ["org.gnome.Loupe.desktop"];

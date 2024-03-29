@@ -100,8 +100,8 @@ in {
         # nix
         nd = "nix develop";
         nfu = "nix flake update";
-        hms = "home-manager switch --flake ~/dotfiles#${host}";
-        hmr = "home-manager generations | fzf --tac | awk '{print $7}' | xargs -I{} bash {}/activate";
+        hms = "home-manager switch --flake ~/dotfiles#${config.nixicle.user.name}@${host}";
+        hmr = "home-manager generations | fzf --tac --no-sort | awk '{print $7}' | xargs -I{} bash {}/activate";
         nrs = "sudo nixos-rebuild switch --flake ~/dotfiles#${host}";
         niso = "nix build .#nixosConfigurations.iso.config.system.build.isoImage";
 
@@ -178,7 +178,7 @@ in {
             owner = "lewisacidic";
             repo = "fish-git-abbr";
             rev = "dc590a5b9d9d2095f95f7d90608b48e55bea0b0e";
-            sha256 = "1gciqw4gypszqzrc1q6psc5qmkb8k10fjaaiqlwzy23wdfpxcggb";
+            sha256 = "sha256-6z3Wr2t8CP85xVEp6UCYaM2KC9PX4MDyx19f/wjHkb0=";
           };
         }
       ];

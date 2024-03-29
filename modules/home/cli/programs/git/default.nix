@@ -1,5 +1,4 @@
 {
-  pkgs,
   config,
   lib,
   ...
@@ -8,57 +7,68 @@ with lib;
 with lib.nixicle; let
   cfg = config.cli.programs.git;
   inherit (config.colorScheme) palette;
+
+  rewriteURL =
+    lib.mapAttrs' (key: value: {
+      name = "url.${key}";
+      value = {insteadOf = value;};
+    })
+    cfg.urlRewrites;
 in {
   options.cli.programs.git = with types; {
-    enable = mkBoolOpt false "Whether or not to enable git";
+    enable = mkBoolOpt false "Whether or not to enable git.";
+    email = mkOpt (nullOr str) "hello@haseebmajid.dev" "The email to use with git.";
+    urlRewrites = mkOpt (attrsOf str) {} "url we need to rewrite i.e. ssh to http";
   };
 
   config = mkIf cfg.enable {
     programs.git = {
       enable = true;
       userName = "Haseeb Majid";
-      userEmail = "hello@haseebmajid.dev";
+      userEmail = cfg.email;
 
       signing = {
         signByDefault = true;
         key = "D528 BD50 F4E9 F031 AACB 1F7A 9833 E49C 848D 6C90";
       };
 
-      extraConfig = {
-        core = {
-          editor = "nvim";
-          pager = "delta";
-        };
+      extraConfig =
+        {
+          core = {
+            editor = "nvim";
+            pager = "delta";
+          };
 
-        color = {
-          ui = true;
-        };
+          color = {
+            ui = true;
+          };
 
-        interactive = {
-          diffFitler = "delta --color-only";
-        };
+          interactive = {
+            diffFitler = "delta --color-only";
+          };
 
-        delta = {
-          enable = true;
-          navigate = true;
-          light = false;
-          side-by-side = false;
-          options.syntax-theme = "catppuccin";
-        };
+          delta = {
+            enable = true;
+            navigate = true;
+            light = false;
+            side-by-side = false;
+            options.syntax-theme = "catppuccin";
+          };
 
-        pull = {
-          ff = "only";
-        };
+          pull = {
+            ff = "only";
+          };
 
-        push = {
-          default = "current";
-          autoSetupRemote = true;
-        };
+          push = {
+            default = "current";
+            autoSetupRemote = true;
+          };
 
-        init = {
-          defaultBranch = "init";
-        };
-      };
+          init = {
+            defaultBranch = "init";
+          };
+        }
+        // rewriteURL;
     };
 
     programs.lazygit = {

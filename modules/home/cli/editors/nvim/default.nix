@@ -24,9 +24,18 @@ in {
     mkIf
     cfg.enable
     {
+      programs.neovim = {
+        viAlias = true;
+        vimAlias = true;
+        defaultEditor = true;
+      };
+
       programs.nixvim = {
         enable = true;
         extraPlugins = with pkgs.vimPlugins; [plenary-nvim];
+        defaultEditor = true;
+        viAlias = true;
+        vimAlias = true;
       };
     };
 }

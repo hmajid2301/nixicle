@@ -13,17 +13,17 @@ in
   pkgs.mkShell {
     NIX_CONFIG = "extra-experimental-features = nix-command flakes repl-flake";
 
-    packages = [
+    packages = with pkgs; [
       yaml2nix
       json2nix
-      pkgs.statix
-      pkgs.deadnix
-      pkgs.alejandra
-      pkgs.home-manager
-      pkgs.git
-      pkgs.sops
-      pkgs.ssh-to-age
-      pkgs.gnupg
-      pkgs.age
+      statix
+      deadnix
+      alejandra
+      home-manager
+      git
+      sops
+      ssh-to-age
+      gnupg
+      age
     ];
   }

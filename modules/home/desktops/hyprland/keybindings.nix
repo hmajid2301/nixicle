@@ -69,9 +69,9 @@ in {
         "SUPER, Space" = "togglefloating,";
 
         # Lock Screen
-        ",XF86Launch5" = "exec,swaylock -S";
-        ",XF86Launch4" = "exec,swaylock -S";
-        "SUPER,backspace" = "exec,swaylock -S";
+        ",XF86Launch5" = "exec,${config.desktops.addons.swaylock.binary} -S";
+        ",XF86Launch4" = "exec,${config.desktops.addons.swaylock.binary} -S";
+        "SUPER,backspace" = "exec,${config.desktops.addons.swaylock.binary} -S";
         "CTRL_SUPER,backspace" = "exec,wlogout --column-spacing 50 --row-spacing 50";
 
         # Screenshot

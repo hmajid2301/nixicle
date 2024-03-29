@@ -28,7 +28,7 @@ return {
 	default_prog = { "fish" },
 	font = wezterm.font_with_fallback({
 		"MonoLisa Nerd Font",
-		"Joypixels",
+		"Fira Code",
 		"Noto Color Emoji",
 	}),
 	font_size = 14.0,

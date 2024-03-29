@@ -52,9 +52,12 @@
       url = "github:copilotc-nvim/copilotchat.nvim";
       flake = false;
     };
-
     neorg-templates = {
       url = "github:pysan3/neorg-templates";
+      flake = false;
+    };
+    arrow-nvim = {
+      url = "github:otavioschwanck/arrow.nvim";
       flake = false;
     };
   };
