@@ -24,6 +24,8 @@ in {
       trusted-public-keys = ["hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="];
     };
 
+    # xdg.configFile."hypr".recursive = true;
+
     desktops.addons = {
       gtk.enable = true;
       qt.enable = true;
@@ -35,7 +37,7 @@ in {
       wlogout.enable = true;
       wlsunset.enable = true;
 
-      #hyprpaper.enable = true;
+      # hyprpaper.enable = true;
     };
   };
 }

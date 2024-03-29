@@ -1,10 +1,4 @@
 {
-  inputs,
-  pkgs,
-  lib,
-  config,
-  ...
-}: {
   suites = {
     desktop.enable = true;
     gaming.enable = true;

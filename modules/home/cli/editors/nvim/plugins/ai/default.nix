@@ -12,6 +12,10 @@
 in {
   programs.nixvim = {
     plugins = {
+      ollama = {
+        enable = true;
+      };
+
       copilot-lua = {
         enable = true;
         suggestion.enabled = false;
@@ -44,14 +48,13 @@ in {
       # lua
       ''
         require("CopilotChat").setup({
-        	show_help = "yes", -- Show help text for CopilotChatInPlace, default: yes
-        	debug = false, -- Enable or disable debug mode, the log file will be in ~/.local/state/nvim/CopilotChat.nvim.log
+        	show_help = "yes",
         	python_path = "${inputs.copilotchat-nvim}/bin/python3"
         })
 
         require("chatgpt").setup({
         	api_key_cmd = "cat ${config.sops.secrets.chatgpt_api_key.path}",
-        	actions_paths = { "~/dotfiles/home-manager/editors/nvim/plugins/ai/chatgpt-actions.json" },
+        	actions_paths = { "~/dotfiles/home/cli/editors/nvim/plugins/ai/chatgpt-actions.json" },
         	chat = {
         		sessions_window = {
         			active_sign = "  ",

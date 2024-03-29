@@ -57,14 +57,16 @@
 
       gitsigns = {
         enable = true;
-        currentLineBlame = false;
-        signs = {
-          add = {text = "│";};
-          change = {text = "│";};
-          delete = {text = "󰍵";};
-          topdelete = {text = "‾";};
-          changedelete = {text = "~";};
-          untracked = {text = "│";};
+        settings = {
+          currentLineBlame = false;
+          signs = {
+            add = {text = "│";};
+            change = {text = "│";};
+            delete = {text = "󰍵";};
+            topdelete = {text = "‾";};
+            changedelete = {text = "~";};
+            untracked = {text = "│";};
+          };
         };
       };
     };

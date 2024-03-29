@@ -20,6 +20,7 @@
           comment = {};
           files = {};
           pairs = {};
+          trailspace = {};
         };
       };
 

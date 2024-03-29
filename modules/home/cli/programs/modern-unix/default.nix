@@ -30,6 +30,7 @@ in {
       gping
       hyperfine
       hexyl
+      jqp
       ouch
       silver-searcher
       procs
