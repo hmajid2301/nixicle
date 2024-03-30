@@ -3,6 +3,7 @@
     desktop.enable = true;
   };
 
+  desktops.hyprland.enable = true;
   desktops.addons = {
     gnome.enable = true;
 
@@ -32,7 +33,7 @@
     };
   };
 
-  wayland.windowManager.hyprland.keyBinds.bind."SUPER, Return" = "exec,nixGL -- wezterm";
+  wayland.windowManager.hyprland.keyBinds.bind."SUPER, Return" = lib.mkForce "exec,nixGL -- wezterm";
   wayland.windowManager.hyprland.keyBinds.bindi = lib.mkForce {};
 
   nixicle.user = {
