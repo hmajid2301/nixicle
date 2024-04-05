@@ -1,4 +1,9 @@
-{lib, ...}: {
+{
+  lib,
+  inputs,
+  pkgs,
+  ...
+}: {
   suites = {
     desktop.enable = true;
   };
@@ -33,7 +38,7 @@
     };
   };
 
-  wayland.windowManager.hyprland.keyBinds.bind."SUPER, Return" = lib.mkForce "exec,nixGL -- wezterm";
+  programs.waybar.package = inputs.waybar.packages."${pkgs.system}".waybar;
   wayland.windowManager.hyprland.keyBinds.bindi = lib.mkForce {};
 
   nixicle.user = {

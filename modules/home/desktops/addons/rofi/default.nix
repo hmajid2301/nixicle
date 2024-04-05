@@ -4,18 +4,20 @@
   lib,
   ...
 }:
-with lib; let
+with lib;
+with lib.nixicle; let
   cfg = config.desktops.addons.rofi;
   inherit (config.colorScheme) palette;
 in {
   options.desktops.addons.rofi = {
     enable = mkEnableOption "Enable rofi app manager";
+    package = mkPackageOpt pkgs.rofi-wayland "Package to use for rofi";
   };
 
   config = mkIf cfg.enable {
     programs.rofi = {
       enable = true;
-      package = pkgs.rofi-wayland;
+      package = cfg.package;
       extraConfig = {
         modi = "run,drun,window";
         show-icons = true;

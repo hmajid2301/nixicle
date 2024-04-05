@@ -20,10 +20,10 @@
  <p></p>
 <img src="./images/terminal.png"></img>
 <p>
-  Screenshot updated: 2024-01-08
+  Screenshot updated: 2024-04-05
 </p>
 <h4>
-  :warning: This config repo is constantly changing, 
+  :warning: This config repo is constantly changing,
   Let me know if you see something that can be improved or done better :smile: .</h4>
 </div>
 

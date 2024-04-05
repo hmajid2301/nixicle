@@ -13,14 +13,11 @@ in {
   config = mkIf cfg.enable {
     programs.waybar = {
       enable = true;
-      systemd = {
-        enable = false;
-      };
+      systemd.enable = false;
       settings = [
         {
           layer = "top";
           position = "top";
-          height = 60;
           margin = "0 0 0 0";
           modules-left = [
             "hyprland/workspaces"

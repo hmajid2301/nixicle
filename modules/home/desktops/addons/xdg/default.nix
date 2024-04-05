@@ -28,6 +28,7 @@ in {
           "video/mp4" = ["io.github.celluloid_player.Celluloid.desktop"];
           "video/quicktime" = ["io.github.celluloid_player.Celluloid.desktop"];
           "video/webm" = ["io.github.celluloid_player.Celluloid.desktop"];
+          "image/gif" = ["org.gnome.Loupe.desktop"];
           "image/png" = ["org.gnome.Loupe.desktop"];
           "image/jpg" = ["org.gnome.Loupe.desktop"];
           "image/jpeg" = ["org.gnome.Loupe.desktop"];

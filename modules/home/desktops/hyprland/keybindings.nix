@@ -61,8 +61,8 @@ in {
   config = mkIf cfg.enable {
     wayland.windowManager.hyprland.keyBinds = {
       bind = {
-        "SUPER, Return" = "exec, wezterm";
-        "SUPER, a" = "exec, ${pkgs.rofi}/bin/rofi -show drun -mode drun";
+        "SUPER, Return" = "exec, foot";
+        "SUPER, B" = "exec, ${config.desktops.addons.rofi.package}/bin/rofi -show drun -mode drun";
         "SUPER, Q" = "killactive,";
         "SUPER, F" = "Fullscreen,0";
         "SUPER, R" = "exec, ${resize}/bin/resize";
