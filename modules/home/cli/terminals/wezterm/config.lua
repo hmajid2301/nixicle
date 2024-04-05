@@ -26,6 +26,7 @@ end)
 return {
 	color_scheme = "Catppuccin Mocha",
 	default_prog = { "fish" },
+	window_decorations = "NONE",
 	font = wezterm.font_with_fallback({
 		"MonoLisa Nerd Font",
 		"Fira Code",

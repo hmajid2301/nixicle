@@ -1,7 +1,7 @@
 {
-  options,
   config,
   lib,
+  pkgs,
   ...
 }:
 with lib;
@@ -13,14 +13,22 @@ in {
   };
 
   config = mkIf cfg.enable {
+    suites.desktop.addons.nautilus.enable = true;
+
     services = {
       xserver = {
         enable = true;
         displayManager.gdm.enable = true;
-        desktopManager.gnome.enable = true;
+        desktopManager.gnome = {
+          enable = true;
+          extraGSettingsOverridePackages = [
+            pkgs.nautilus-open-any-terminal
+          ];
+        };
       };
-      qemuGuest.enable = true;
-      spice-vdagentd.enable = true;
     };
+
+    services.udev.packages = with pkgs; [gnome.gnome-settings-daemon];
+    programs.dconf.enable = true;
   };
 }

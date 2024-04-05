@@ -11,6 +11,7 @@
   services = {
     vpn.enable = lib.mkForce false;
     virtualisation.kvm.enable = true;
+    virtualisation.podman.enable = true;
   };
 
   suites = {
@@ -18,7 +19,6 @@
     desktop = {
       enable = true;
       addons = {
-        gnome.enable = true;
         hyprland.enable = true;
       };
     };

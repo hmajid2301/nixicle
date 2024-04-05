@@ -26,7 +26,7 @@ in {
     };
 
     cli = {
-      terminals.wezterm.enable = true;
+      terminals.foot.enable = true;
       shells.fish.enable = true;
     };
 

@@ -17,7 +17,7 @@ in {
       layout = [
         {
           label = "lock";
-          action = "${pkgs.swaylock-effects}/bin/swaylock --screenshots --clock --indicator --effect-pixelate 4 --effect-blur 4x4";
+          action = "${pkgs.hyprlock}/bin/hyprlock";
           text = "Lock";
           keybind = "l";
         }

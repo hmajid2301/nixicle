@@ -1,8 +1,4 @@
-{
-  config,
-  pkgs,
-  ...
-}: {
+{config, ...}: {
   programs.nixvim = {
     plugins = {
       treesitter = {
@@ -27,6 +23,7 @@
 
           vim
           vimdoc
+          vhs
 
           json
           toml

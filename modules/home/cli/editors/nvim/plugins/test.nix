@@ -1,4 +1,4 @@
-{
+{pkgs, ...}: {
   programs.nixvim = {
     plugins.which-key.registrations = {
       "<leader>t" = "+test";
@@ -75,6 +75,10 @@
           "n"
         ];
       }
+    ];
+
+    extraPlugins = with pkgs.lua51Packages; [
+      nvim-nio
     ];
 
     plugins.neotest = {

@@ -37,6 +37,24 @@ with lib; rec {
   #@ Type -> Any -> String
   mkBoolOpt' = mkOpt' types.bool;
 
+  ## Create a package NixOS module option.
+  ##
+  ## ```nix
+  ## lib.mkPackageOpt pkgs.rofi-wayland "Description of my option."
+  ## ```
+  ##
+  #@ Type -> Any -> String
+  mkPackageOpt = mkOpt types.package;
+
+  ## Create a package NixOS module option without a description.
+  ##
+  ## ```nix
+  ## lib.mkPackageOpt' pkgs.rofi-wayland
+  ## ```
+  ##
+  #@ Type -> Any -> String
+  mkPackageOpt' = mkOpt types.package;
+
   enabled = {
     ## Quickly enable an option.
     ##

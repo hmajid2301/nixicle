@@ -20,6 +20,7 @@ in {
     '';
 
     plugins = {
+      # headlines.enable = true;
       neorg = {
         enable = true;
         lazyLoading = true;
