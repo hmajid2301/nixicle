@@ -52,7 +52,7 @@ in {
         ];
       }
       {
-        action = "<cmd>UndoTreeToggle<cr>";
+        action = "<cmd>UndotreeToggle<cr>";
         key = "<leader>ut";
         options = {
           desc = "Show undo tree";
@@ -182,16 +182,6 @@ in {
           "n"
         ];
       }
-      # {
-      #   action = "<cmd>Telescope harpoon marks<cr>";
-      #   key = "<leader>hf";
-      #   options = {
-      #     desc = "Open harpoon marks in telescope";
-      #   };
-      #   mode = [
-      #     "n"
-      #   ];
-      # }
     ];
 
     plugins = {
@@ -210,6 +200,11 @@ in {
 
       flash = {
         enable = true;
+        modes = {
+          char = {
+            jumpLabels = true;
+          };
+        };
       };
 
       navbuddy = {
@@ -221,17 +216,6 @@ in {
         enable = true;
       };
 
-      # harpoon = {
-      #   enable = true;
-      #   enableTelescope = true;
-      #   keymaps = {
-      #     addFile = "<leader>ha";
-      #     toggleQuickMenu = "<leader>ht";
-      #     navNext = "<leader>hn";
-      #     navPrev = "<leader>hp";
-      #   };
-      # };
-
       nvim-colorizer = {
         enable = true;
       };
@@ -242,24 +226,26 @@ in {
 
       indent-blankline = {
         enable = true;
-        whitespace = {
-          highlight = ["IndentBlanklineSpaceChar" "IndentBlanklineSpaceCharBlankline"];
-        };
-        scope = {
-          showStart = false;
-          showEnd = false;
-        };
-        exclude = {
-          filetypes = [
-            "help"
-            "terminal"
-            "lazy"
-            "lspinfo"
-            "TelescopePrompt"
-            "TelescopeResults"
-            "Alpha"
-            ""
-          ];
+        settings = {
+          whitespace = {
+            highlight = ["IndentBlanklineSpaceChar" "IndentBlanklineSpaceCharBlankline"];
+          };
+          scope = {
+            show_start = false;
+            show_end = false;
+          };
+          exclude = {
+            filetypes = [
+              "help"
+              "terminal"
+              "lazy"
+              "lspinfo"
+              "TelescopePrompt"
+              "TelescopeResults"
+              "Alpha"
+              ""
+            ];
+          };
         };
       };
 

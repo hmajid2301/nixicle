@@ -127,23 +127,23 @@ in {
           end
         '';
 
-        # fish_command_not_found = ''
-        #   # If you run the command with comma, running the same command
-        #   # will not prompt for confirmation for the rest of the session
-        #   if contains $argv[1] $__command_not_found_confirmed_commands
-        #     or gum confirm --selected.background=2 "Run using comma?"
-        #
-        #     # Not bothering with capturing the status of the command, just run it again
-        #     if not contains $argv[1] $__command_not_found_confirmed_commands
-        #       set -ga __fish_run_with_comma_commands $argv[1]
-        #     end
-        #
-        #     comma -- $argv
-        #     return 0
-        #   else
-        #     __fish_default_command_not_found_handler $argv
-        #   end
-        # '';
+        fish_command_not_found = ''
+          # If you run the command with comma, running the same command
+          # will not prompt for confirmation for the rest of the session
+          if contains $argv[1] $__command_not_found_confirmed_commands
+            or ${pkgs.gum}/bin/gum confirm --selected.background=2 "Run using comma?"
+
+            # Not bothering with capturing the status of the command, just run it again
+            if not contains $argv[1] $__command_not_found_confirmed_commands
+              set -ga __fish_run_with_comma_commands $argv[1]
+            end
+
+            comma -- $argv
+            return 0
+          else
+            __fish_default_command_not_found_handler $argv
+          end
+        '';
       };
       plugins = [
         {
@@ -164,8 +164,8 @@ in {
           src = pkgs.fetchFromGitHub {
             owner = "Animeshz";
             repo = "nix.fish";
-            rev = "ad57d970841ae4a24521b5b1a68121cf385ba71e";
-            sha256 = "sha256-GMV0GyORJ8Tt2S9wTCo2lkkLtetYv0rc19aA5KJbo48=";
+            rev = "a3256cf49846ee4de072c3a9af7a58aad4021693";
+            sha256 = "sha256-3M0dU30SrdjInp6MWEC0q7MTInrZNtY6Z9mhBw43PKs=";
           };
         }
         {

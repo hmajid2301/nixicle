@@ -110,13 +110,7 @@
             "<S-Tab>" = "cmp.mapping(cmp.mapping.select_prev_item(), {'i', 's'})";
             "<Tab>" = "cmp.mapping(cmp.mapping.select_next_item(), {'i', 's'})";
           };
-          snippet = {
-            expand = ''
-              function(args)
-                require('luasnip').lsp_expand(args.body)
-              end
-            '';
-          };
+          snippet.expand = "luasnip";
 
           window = {
             completion = {

@@ -16,10 +16,14 @@ in {
       guildWars = {
         title = ["Guild Wars 2"];
       };
+      bitwarden = {
+        title = [".*Bitwarden.*"];
+      };
     in
       lib.concatLists [
         (map (rule ["idleinhibit fullscreen"]) [firefoxVideo])
         (map (rule ["fullscreen"]) [guildWars])
+        (map (rule ["float"]) [bitwarden])
       ];
   };
 }

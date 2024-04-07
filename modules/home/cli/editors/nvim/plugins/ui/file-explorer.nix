@@ -30,15 +30,17 @@
 
       oil = {
         enable = true;
-        deleteToTrash = true;
-        useDefaultKeymaps = true;
-        lspRenameAutosave = true;
-        bufOptions = {
-          buflisted = true;
-          bufhidden = "hide";
-        };
-        viewOptions = {
-          showHidden = true;
+        settings = {
+          delete_to_trash = true;
+          use_default_keymaps = true;
+          lsp_file_method.autosave_changes = true;
+          buf_options = {
+            buflisted = true;
+            bufhidden = "hide";
+          };
+          view_options = {
+            show_hidden = true;
+          };
         };
       };
     };

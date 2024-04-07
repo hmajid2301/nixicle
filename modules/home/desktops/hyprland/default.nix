@@ -35,6 +35,7 @@ in {
       wlogout.enable = true;
       wlsunset.enable = true;
 
+      pyprland.enable = true;
       hyprpaper.enable = true;
       hyprlock.enable = true;
       hypridle.enable = true;
