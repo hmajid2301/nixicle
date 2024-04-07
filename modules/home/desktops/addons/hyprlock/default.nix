@@ -9,6 +9,7 @@ with lib;
 with lib.nixicle; let
   cfg = config.desktops.addons.hyprlock;
   inherit (inputs) hyprlock;
+  inherit (config.colorScheme) palette;
 in {
   imports = [hyprlock.homeManagerModules.default];
 
@@ -20,32 +21,68 @@ in {
     programs.hyprlock = {
       enable = true;
 
+      general = {
+        disable_loading_bar = true;
+        hide_cursor = true;
+      };
+
       input-fields = [
         {
-          outer_color = "rgb(24, 25, 38)";
-          inner_color = "rgb(91, 96, 120)";
-          font_color = "rgb(202, 211, 245)";
+          size = {
+            width = 300;
+            height = 60;
+          };
+          outline_thickness = 4;
+          dots_size = 0.2;
+          dots_spacing = 0.2;
+          dots_center = true;
+          outer_color = "${palette.base0E}";
+          inner_color = "${palette.base02}";
+          font_color = "${palette.base05}";
+          fade_on_empty = false;
+          placeholder_text = ''<span foreground="##cdd6f4"><i>󰌾 Logged in as </i><span foreground="##cba6f7">$USER</span></span>'';
+          hide_input = false;
+          check_color = "${palette.base0E}";
+          fail_color = "${palette.base08}";
+          fail_text = "<i>$FAIL <b>($ATTEMPTS)</b></i>";
+          capslock_color = "${palette.base0A}";
+          position = {
+            x = -0;
+            y = -35;
+          };
           halign = "center";
           valign = "center";
-          size.width = 300;
-          size.height = 40;
         }
       ];
 
       labels = [
         {
-          text = "$TIME, $USER";
-          color = "rgb(237, 135, 150)";
-          font_family = "FiraCode";
-          font_size = 72;
-          halign = "center";
-          valign = "center";
+          text = ''cmd[update:43200000] echo "$(date +"%A, %d %B %Y")"'';
+          color = "${palette.base05}";
+          font_size = 25;
+          position = {
+            x = -30;
+            y = -150;
+          };
+          halign = "right";
+          valign = "top";
+        }
+        {
+          text = ''cmd[update:30000] echo "$(date +"%R")"'';
+          color = "${palette.base05}";
+          font_size = 90;
+          position = {
+            x = -30;
+            y = 0;
+          };
+          halign = "right";
+          valign = "top";
         }
       ];
 
       backgrounds = [
         {
-          path = "${pkgs.nixicle.wallpapers.cat-sound}";
+          path = "${pkgs.nixicle.wallpapers.Kurzgesagt-Galaxies}";
         }
       ];
     };

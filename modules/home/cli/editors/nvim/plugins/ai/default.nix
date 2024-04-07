@@ -36,20 +36,11 @@ in {
       copilotchat-nvim
     ];
 
-    # For copilot-chat
-    extraPython3Packages = p: [
-      p.python-dotenv
-      p.requests
-      p.prompt-toolkit
-      p.tiktoken
-    ];
-
     extraConfigLua =
       # lua
       ''
         require("CopilotChat").setup({
         	show_help = "yes",
-        	python_path = "${inputs.copilotchat-nvim}/bin/python3"
         })
 
         require("chatgpt").setup({

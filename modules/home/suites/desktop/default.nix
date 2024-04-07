@@ -42,13 +42,13 @@ in {
       brightnessctl
       xdg-utils
       wl-clipboard
+      clipse
       pamixer
       playerctl
 
       grimblast
       slurp
       sway-contrib.grimshot
-      pkgs.xdg-desktop-portal-hyprland
       pkgs.satty
     ];
   };

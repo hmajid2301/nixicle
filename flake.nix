@@ -24,13 +24,41 @@
     nix-colors.url = "github:misterio77/nix-colors";
     nix-ld.url = "github:Mic92/nix-ld";
     nix-index-database.url = "github:nix-community/nix-index-database";
-    comma.url = "github:nix-community/comma";
-    comma.inputs.nixpkgs.follows = "nixpkgs";
 
-    hypr-contrib.url = "github:hyprwm/contrib";
-    hypridle.url = "github:hyprwm/Hypridle";
-    hyprlock.url = "github:hyprwm/Hyprlock";
-    hyprpaper.url = "github:hyprwm/hyprpaper";
+    comma = {
+      url = "github:nix-community/comma";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    hypr-contrib = {
+      url = "github:hyprwm/Hyprcursor";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    hyprcursor = {
+      url = "github:hyprwm/Hyprcursor";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    hypridle = {
+      url = "github:hyprwm/Hypridle";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    hyprlock = {
+      url = "github:hyprwm/Hyprlock";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    hyprpaper = {
+      url = "github:hyprwm/hyprpaper";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    pyprland = {
+      url = "github:hyprland-community/pyprland";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     hyprland-git.url = "github:hyprwm/hyprland";
     hyprland-xdph-git.url = "github:hyprwm/xdg-desktop-portal-hyprland";
@@ -42,8 +70,10 @@
       hyprland-protocols.follows = "hyprland-protocols-git";
     };
 
-    nixvim.url = "github:pta2002/nixvim";
-    nixvim.inputs.nixpkgs.follows = "nixpkgs";
+    nixvim = {
+      url = "github:pta2002/nixvim";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     waybar.url = "github:Alexays/Waybar?rev=32eac3ccb738691974121b77b4af0c47d1cbe524";
 
     firefox-gnome-theme = {

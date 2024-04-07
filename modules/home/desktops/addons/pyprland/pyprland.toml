@@ -1,0 +1,14 @@
+[pyprland]
+plugins = ["scratchpads"]
+
+[scratchpads.pavucontrol]
+animation = "fromTop"
+command = "pavucontrol"
+class = "pavucontrol"
+size = "50% 80%"
+
+[scratchpads.term]
+animation = "fromTop"
+command = "kitty --class kitty-dropterm -e yazi"
+class = "kitty-dropterm"
+size = "75% 60%"

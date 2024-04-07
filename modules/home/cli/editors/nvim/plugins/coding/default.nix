@@ -6,20 +6,15 @@
       mini = {
         enable = true;
         modules = {
-          surround = {
-            mappings = {
-              add = "gsa";
-              delete = "gsd";
-              find = "gsf";
-              find_left = "gsF";
-              highlight = "gsh";
-              replace = "gsr";
-              update_n_lines = "gsn";
-            };
-          };
+          surround = {};
           comment = {};
           files = {};
-          pairs = {};
+          pairs = {
+            mappings = {
+              "\"" = {neigh_pattern = "[^\\][%s%)%]}]";};
+              "'" = {neigh_pattern = "[^\\][%s%)%]}]";};
+            };
+          };
           trailspace = {};
         };
       };
@@ -30,6 +25,11 @@
 
       luasnip = {
         enable = true;
+        fromLua = [
+          {
+            paths = ./snippets;
+          }
+        ];
       };
     };
   };

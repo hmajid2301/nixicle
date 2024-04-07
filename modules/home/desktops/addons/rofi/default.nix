@@ -30,7 +30,7 @@ in {
         display-window = " 﩯  Window";
         display-Network = " 󰤨  Network";
         sidebar-mode = true;
-        #font = config.my.settings.fonts.monospace;
+        font = "MonoLisa Nerd Font 12";
       };
       theme = let
         inherit (config.lib.formats.rasi) mkLiteral;

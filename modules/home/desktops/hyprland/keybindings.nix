@@ -67,11 +67,13 @@ in {
         "SUPER, F" = "Fullscreen,0";
         "SUPER, R" = "exec, ${resize}/bin/resize";
         "SUPER, Space" = "togglefloating,";
+        "SUPER, V" = "exec, ${pkgs.pyprland}/bin/pypr toggle pavucontrol";
+        "SUPER_SHIFT, T" = "exec, ${pkgs.pyprland}/bin/pypr toggle term";
 
         # Lock Screen
-        ",XF86Launch5" = "exec,${config.desktops.addons.swaylock.binary} -S";
-        ",XF86Launch4" = "exec,${config.desktops.addons.swaylock.binary} -S";
-        "SUPER,backspace" = "exec,${config.desktops.addons.swaylock.binary} -S";
+        ",XF86Launch5" = "exec,${pkgs.hyprlock}/bin/hyprlock";
+        ",XF86Launch4" = "exec,${pkgs.hyprlock}/bin/hyprlock";
+        "SUPER,backspace" = "exec,${pkgs.hyprlock}/bin/hyprlock";
         "CTRL_SUPER,backspace" = "exec,wlogout --column-spacing 50 --row-spacing 50";
 
         # Screenshot
