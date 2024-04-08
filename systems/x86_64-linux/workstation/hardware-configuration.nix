@@ -22,6 +22,8 @@
     fsType = "ext4";
   };
 
+  swapDevices = [{device = "/swap/swapfile";}];
+
   boot.initrd.availableKernelModules = ["nvme" "xhci_pci" "ahci" "usbhid"];
   boot.initrd.kernelModules = [];
   boot.kernelModules = ["kvm-amd"];

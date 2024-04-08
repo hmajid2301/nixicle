@@ -25,6 +25,11 @@
     nix-ld.url = "github:Mic92/nix-ld";
     nix-index-database.url = "github:nix-community/nix-index-database";
 
+    nixos-generators = {
+      url = "github:nix-community/nixos-generators";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     comma = {
       url = "github:nix-community/comma";
       inputs.nixpkgs.follows = "nixpkgs";
