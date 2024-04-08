@@ -28,6 +28,7 @@ in {
     };
 
     system = {
+      boot.enable = true;
       fonts.enable = true;
       locale.enable = true;
     };
