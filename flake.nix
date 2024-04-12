@@ -3,6 +3,7 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -79,6 +80,8 @@
       url = "github:pta2002/nixvim";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    # For waiting for updates
     waybar.url = "github:Alexays/Waybar?rev=32eac3ccb738691974121b77b4af0c47d1cbe524";
 
     firefox-gnome-theme = {
@@ -92,6 +95,10 @@
     };
     neorg-templates = {
       url = "github:pysan3/neorg-templates";
+      flake = false;
+    };
+    neorg = {
+      url = "github:nvim-neorg/neorg?rev=4cbedbbdd4ccb6f45a2045477f5658a1311dffa3";
       flake = false;
     };
     arrow-nvim = {

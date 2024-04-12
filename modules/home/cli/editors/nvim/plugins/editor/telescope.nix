@@ -21,35 +21,52 @@
       keymaps = {
         "<leader>ff" = {
           action = "find_files";
-          desc = "Find files";
+          options = {
+            desc = "Find files";
+          };
         };
         "<leader>fz" = {
           action = "current_buffer_fuzzy_find";
-          desc = "Find in current buffer";
+
+          options = {
+            desc = "Find in current buffer";
+          };
         };
         "<leader>fr" = {
           action = "oldfiles";
-          desc = "Recent files";
+
+          options = {
+            desc = "Recent files";
+          };
         };
         "<leader>fg" = {
           action = "live_grep";
-          desc = "Grep";
+          options = {
+            desc = "Grep";
+          };
         };
         "<leader>fw" = {
           action = "grep_string";
-          desc = "Search word under cursor";
+          options = {
+            desc = "Search word under cursor";
+          };
         };
         "<leader>fb" = {
           action = "buffers";
-          desc = "Find buffer";
+          options = {
+            desc = "Find buffer";
+          };
         };
         "<leader>fc" = {
           action = "command_history";
-          desc = "Search in command history";
+
+          options = {
+            desc = "Search in command history";
+          };
         };
       };
 
-      defaults = {
+      settings = {
         vimgrep_arguments = [
           "${pkgs.ripgrep}/bin/rg"
           "-L"

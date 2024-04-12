@@ -3,6 +3,11 @@
   inputs,
   ...
 }: let
+  neorg = pkgs.vimUtils.buildVimPlugin {
+    version = "latest";
+    pname = "neorg";
+    src = inputs.neorg;
+  };
   neorg-templates = pkgs.vimUtils.buildVimPlugin {
     version = "latest";
     pname = "neorg-templates";
@@ -12,17 +17,13 @@ in {
   programs.nixvim = {
     extraPlugins = [
       neorg-templates
-      pkgs.vimPlugins.headlines-nvim
     ];
 
-    extraConfigLua = ''
-      require("headlines").setup()
-    '';
-
     plugins = {
-      # headlines.enable = true;
+      headlines.enable = true;
       neorg = {
         enable = true;
+        package = neorg;
         lazyLoading = true;
         modules = {
           "core.defaults".__empty = null;
