@@ -77,10 +77,6 @@
       }
     ];
 
-    extraPlugins = with pkgs.lua51Packages; [
-      nvim-nio
-    ];
-
     plugins.neotest = {
       enable = true;
       settings = {

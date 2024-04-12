@@ -9,7 +9,6 @@
   ];
 
   services = {
-    vpn.enable = lib.mkForce false;
     virtualisation.kvm.enable = true;
     virtualisation.podman.enable = true;
     hardware.openrgb.enable = true;
