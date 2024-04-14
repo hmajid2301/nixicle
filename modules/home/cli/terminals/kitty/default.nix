@@ -14,8 +14,7 @@ in {
   config = mkIf cfg.enable {
     programs.kitty = {
       enable = true;
-
-      theme = "Catppuccin-Mocha";
+      catppuccin.enable = true;
       font = {
         name = "MonoLisa Nerd Font";
         size = 14;

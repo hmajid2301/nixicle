@@ -13,8 +13,8 @@ with lib;
 with lib.nixicle; let
   cfg = config.programs.discord;
   patcher = pkgs.fetchurl {
-    url = "https://raw.githubusercontent.com/sersorrel/sys/f7ff2fa325f786123a9b9e9a61b07be409dfb0b1/hm/discord/krisp-patcher.py";
-    hash = "sha256-8AM6v+gR7VH0gXT0orqDSRyXaxv7eV4EnLum5FgW6Yk=";
+    url = "https://raw.githubusercontent.com/sersorrel/sys/ace315ff3d2dabbd03270c2d9936595e0bf375b2/hm/discord/krisp-patcher.py";
+    hash = "sha256-87VlZKw6QoXgQwEgxT3XeFY8gGoTDWIopGLOEdXkkjE=";
   };
 
   python = pkgs.python3.withPackages (ps: [ps.pyelftools ps.capstone]);

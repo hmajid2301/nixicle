@@ -1,5 +1,4 @@
 {
-  pkgs,
   config,
   lib,
   ...
@@ -16,6 +15,7 @@ in {
     programs.fzf = {
       enable = true;
       enableFishIntegration = false;
+      #catppuccin.enable = true;
     };
   };
 }
