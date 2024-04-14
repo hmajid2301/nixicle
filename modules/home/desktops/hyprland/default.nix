@@ -17,6 +17,11 @@ in {
     enable = mkEnableOption "enable hyprland window manager";
   };
 
+  # FIX: this hack to use nix catppuccin module: https://github.com/catppuccin/nix/issues/102
+  options.wayland.windowManager.hyprland = {
+    settings = mkEnableOption "enable hyprland window manager";
+  };
+
   config = mkIf cfg.enable {
     nix.settings = {
       trusted-substituters = ["https://hyprland.cachix.org"];

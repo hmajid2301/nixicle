@@ -6,7 +6,6 @@
 with lib;
 with lib.nixicle; let
   cfg = config.cli.programs.git;
-  inherit (config.colorScheme) palette;
 
   rewriteURL =
     lib.mapAttrs' (key: value: {
@@ -73,6 +72,7 @@ in {
 
     programs.lazygit = {
       enable = true;
+      catppuccin.enable = true;
       settings = {
         git = {
           paging = {
@@ -80,17 +80,6 @@ in {
             pager = "delta --color-only --dark --paging=never";
             useConfig = false;
           };
-        };
-        gui.theme = {
-          lightTheme = false;
-          activeBorderColor = ["#${palette.base0B}" "bold"];
-          inactiveBorderColor = ["#${palette.base05}"];
-          optionsTextColor = ["#${palette.base0D}"];
-          selectedLineBgColor = ["#${palette.base02}"];
-          selectedRangeBgColor = ["#${palette.base02}"];
-          cherryPickedCommitBgColor = ["#${palette.base0C}"];
-          cherryPickedCommitFgColor = ["#${palette.base0D}"];
-          unstagedChangesColor = ["#${palette.base08}"];
         };
         customCommands = [
           {

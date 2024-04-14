@@ -23,6 +23,7 @@
 
     nixgl.url = "github:nix-community/nixGL";
     nix-colors.url = "github:misterio77/nix-colors";
+    catppuccin.url = "github:catppuccin/nix";
     nix-ld.url = "github:Mic92/nix-ld";
     nix-index-database.url = "github:nix-community/nix-index-database";
 
@@ -131,13 +132,13 @@
         impermanence.nixosModules.impermanence
         sops-nix.nixosModules.sops
         nix-ld.nixosModules.nix-ld
+        catppuccin.nixosModules.catppuccin
       ];
 
       systems.hosts.framework.modules = with inputs; [
         hardware.nixosModules.framework-13-7040-amd
       ];
 
-      # TODO: move to relevant files
       # homes.modules = with inputs; [
       #   impermanence.nixosModules.home-manager.impermanence
       # ];

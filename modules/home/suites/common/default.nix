@@ -9,7 +9,10 @@ with lib;
 with inputs; let
   cfg = config.suites.common;
 in {
-  imports = [nix-colors.homeManagerModule];
+  imports = [
+    catppuccin.homeManagerModules.catppuccin
+    nix-colors.homeManagerModule
+  ];
 
   options.suites.common = {
     enable = mkEnableOption "Enable common configuration";
@@ -17,6 +20,7 @@ in {
 
   config = mkIf cfg.enable {
     colorscheme = nix-colors.colorSchemes.catppuccin-mocha;
+    catppuccin.flavour = "mocha";
 
     browsers.firefox.enable = true;
 
