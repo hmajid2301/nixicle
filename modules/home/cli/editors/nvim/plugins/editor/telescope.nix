@@ -67,56 +67,60 @@
       };
 
       settings = {
-        vimgrep_arguments = [
-          "${pkgs.ripgrep}/bin/rg"
-          "-L"
-          "--color=never"
-          "--no-heading"
-          "--with-filename"
-          "--line-number"
-          "--column"
-          "--smart-case"
-          "--fixed-strings"
-        ];
-        file_ignore_patterns = [
-          "^node_modules/"
-          "^.devenv/"
-          "^.direnv/"
-          "^.git/"
-        ];
-        prompt_prefix = "   ";
-        selection_caret = "  ";
-        entry_prefix = "  ";
-        color_devicons = true;
-        initial_mode = "insert";
-        selection_strategy = "reset";
-        sorting_strategy = "ascending";
-        borderchars = [
-          "─"
-          "│"
-          "─"
-          "│"
-          "╭"
-          "╮"
-          "╯"
-          "╰"
-        ];
-        border = {};
-        layout_strategy = "horizontal";
-        layout_config = {
-          horizontal = {
-            prompt_position = "top";
-            preview_width = 0.55;
-            results_width = 0.8;
+        defaults = {
+          layout_config = {
+            horizontal = {
+              prompt_position = "top";
+              preview_width = 0.55;
+              results_width = 0.8;
+            };
+            vertical = {
+              mirror = false;
+            };
+            width = 0.87;
+            height = 0.80;
+            preview_cutoff = 120;
           };
-          vertical = {
-            mirror = false;
-          };
-          width = 0.87;
-          height = 0.80;
-          preview_cutoff = 120;
+          set_env.COLORTERM = "truecolor";
+          prompt_prefix = "   ";
+          selection_caret = "  ";
+          entry_prefix = "  ";
+          color_devicons = true;
+          initial_mode = "insert";
+          selection_strategy = "reset";
+          sorting_strategy = "ascending";
+
+          file_ignore_patterns = [
+            "^node_modules/"
+            "^.devenv/"
+            "^.direnv/"
+            "^.git/"
+          ];
+          borderchars = [
+            "─"
+            "│"
+            "─"
+            "│"
+            "╭"
+            "╮"
+            "╯"
+            "╰"
+          ];
+          border = {};
+          layout_strategy = "horizontal";
+
+          vimgrep_arguments = [
+            "${pkgs.ripgrep}/bin/rg"
+            "-L"
+            "--color=never"
+            "--no-heading"
+            "--with-filename"
+            "--line-number"
+            "--column"
+            "--smart-case"
+            "--fixed-strings"
+          ];
         };
-        set_env.COLORTERM = "truecolor";
       };
     };
   };

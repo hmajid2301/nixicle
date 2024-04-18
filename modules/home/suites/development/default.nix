@@ -19,6 +19,7 @@ in {
       scripts.enable = true;
 
       programs = {
+        attic.enable = true;
         atuin.enable = true;
         bat.enable = true;
         bottom.enable = true;

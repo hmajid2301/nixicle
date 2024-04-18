@@ -61,23 +61,25 @@ in {
   programs.nixvim = {
     colorschemes.catppuccin = {
       enable = true;
-      flavour = "mocha";
-      colorOverrides.all = colors;
-      integrations = {
-        alpha = true;
-        # cmp = true;
-        dashboard = true;
-        # dap = {
-        #   enable_ui = true;
-        #   enabled = true;
-        # };
-        gitsigns = true;
-        illuminate.enabled = true;
-        flash = true;
-        indent_blankline.enabled = true;
-        mini.enabled = true;
-        navic.enabled = true;
-        telescope.enabled = true;
+      settings = {
+        flavour = "mocha";
+        color_overrides.all = colors;
+        integrations = {
+          alpha = true;
+          # cmp = true;
+          dashboard = true;
+          # dap = {
+          #   enable_ui = true;
+          #   enabled = true;
+          # };
+          gitsigns = true;
+          illuminate.enabled = true;
+          flash = true;
+          indent_blankline.enabled = true;
+          mini.enabled = true;
+          navic.enabled = true;
+          telescope.enabled = true;
+        };
       };
     };
 

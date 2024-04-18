@@ -8,6 +8,10 @@
     desktop.enable = true;
   };
 
+  home.sessionVariables = {
+    FLAKE = "/home/haseebmajid/dotfiles";
+  };
+
   desktops.hyprland.enable = true;
   desktops.addons = {
     gnome.enable = true;
@@ -40,6 +44,7 @@
 
   programs.waybar.package = inputs.waybar.packages."${pkgs.system}".waybar;
   wayland.windowManager.hyprland.keyBinds.bindi = lib.mkForce {};
+  home.packages = with pkgs; [nh];
 
   nixicle.user = {
     enable = true;

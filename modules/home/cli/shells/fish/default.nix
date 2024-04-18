@@ -32,10 +32,6 @@ in {
         bind \cx _fifc
         bind -M insert \cx _fifc
 
-        bind \cr _fzf_search_history
-        bind -M insert \cr _fzf_search_history
-        fzf_configure_bindings --history=
-
         fish_vi_key_bindings
         set fish_cursor_default     block      blink
         set fish_cursor_insert      line       blink
