@@ -20,12 +20,20 @@ in {
       };
     };
 
-    home.packages = [pkgs.nixgl.nixGLIntel];
+    home.packages = with pkgs; [
+      nixgl.nixGLIntel
+      nix-output-monitor
+      nvd
+    ];
 
     systemd.user.startServices = "sd-switch";
 
     programs = {
       home-manager.enable = true;
+    };
+
+    home.sessionVariables = {
+      FLAKE = "/home/${config.nixicle.user.name}/dotfiles";
     };
 
     nix = {

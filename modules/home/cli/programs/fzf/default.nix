@@ -15,7 +15,7 @@ in {
     programs.fzf = {
       enable = true;
       enableFishIntegration = false;
-      #catppuccin.enable = true;
+      catppuccin.enable = true;
     };
   };
 }
