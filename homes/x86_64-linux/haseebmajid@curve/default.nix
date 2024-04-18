@@ -8,10 +8,6 @@
     desktop.enable = true;
   };
 
-  home.sessionVariables = {
-    FLAKE = "/home/haseebmajid/dotfiles";
-  };
-
   desktops.hyprland.enable = true;
   desktops.addons = {
     gnome.enable = true;

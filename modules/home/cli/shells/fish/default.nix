@@ -62,6 +62,10 @@ in {
         sudo = "sudo -E -s";
 
         # nix
+        nhh = "nh home switch";
+        nho = "nh os switch";
+        nhu = "nh os --update";
+
         nd = "nix develop";
         nfu = "nix flake update";
         hms = "home-manager switch --flake ~/dotfiles#${config.nixicle.user.name}@${host}";
