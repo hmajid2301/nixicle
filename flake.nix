@@ -82,6 +82,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    attic = {
+      url = "github:zhaofengli/attic";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # For waiting for updates
     waybar.url = "github:Alexays/Waybar?rev=32eac3ccb738691974121b77b4af0c47d1cbe524";
 

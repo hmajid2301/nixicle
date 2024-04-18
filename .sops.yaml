@@ -22,3 +22,12 @@ creation_rules:
       pgp:
       - *haseeb
       - *haseebmajid
+
+  - path_regex: modules/home/cli/programs/attic/secrets.yaml
+    key_groups:
+    - age:
+      - *framework
+      - *curve
+      pgp:
+      - *haseeb
+      - *haseebmajid
