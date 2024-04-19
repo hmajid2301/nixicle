@@ -49,7 +49,6 @@ in {
       keymapp
       powertop
 
-      nix-your-shell
       src-cli
 
       (lib.hiPrio parallel)

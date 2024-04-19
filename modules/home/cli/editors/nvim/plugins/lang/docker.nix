@@ -3,17 +3,10 @@
   pkgs,
   ...
 }: {
-  home.packages = with pkgs; [
-    docker-compose-language-service
-  ];
-
   programs.nixvim = {
-    extraConfigLua = ''
-      require("lspconfig")["docker_compose_language_service"].setup({})
-    '';
-
     plugins = {
       lsp.servers.dockerls.enable = true;
+      lsp.servers.docker-compose-language-service.enable = true;
 
       lint = {
         lintersByFt = {

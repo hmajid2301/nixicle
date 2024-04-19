@@ -20,23 +20,13 @@ in {
       fontDir.enable = true;
       packages = with pkgs;
         [
-          (nerdfonts.override {fonts = ["FiraCode" "SourceCodePro" "UbuntuMono"];})
           fira
           fira-go
+          fira-code-nerdfont
           noto-fonts-emoji
           source-serif
           ubuntu_font_family
-          noto-fonts
-          noto-fonts-cjk
-          noto-fonts-emoji
-          liberation_ttf
-          fira-code
-          fira-code-symbols
-          fira-code-nerdfont
-          roboto
-          ubuntu_font_family
-          oxygenfonts
-          cantarell-fonts
+          jetbrains-mono
           open-sans
         ]
         ++ cfg.fonts;

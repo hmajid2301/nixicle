@@ -18,6 +18,8 @@ in {
       enable = true;
       package = cfg.package;
       catppuccin.enable = true;
+      font = "MonoLisa Nerd Font 12";
+      terminal = "${pkgs.foot}/bin/foot";
       extraConfig = {
         modi = "run,drun,window";
         show-icons = true;
@@ -30,7 +32,6 @@ in {
         display-window = " 﩯  Window";
         display-Network = " 󰤨  Network";
         sidebar-mode = true;
-        font = "MonoLisa Nerd Font 12";
       };
     };
   };
