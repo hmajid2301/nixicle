@@ -71,13 +71,13 @@ in {
         hms = "home-manager switch --flake ~/dotfiles#${config.nixicle.user.name}@${host}";
         hmr = "home-manager generations | fzf --tac --no-sort | awk '{print $7}' | xargs -I{} bash {}/activate";
         nrs = "sudo nixos-rebuild switch --flake ~/dotfiles#${host}";
-        niso = "nix build .#nixosConfigurations.iso.config.system.build.isoImage";
 
         # new commads
         weather = "curl wttr.in/London";
 
+        pfile = "fzf --preview 'bat --style=numbers --color=always --line-range :500 {}'";
         gdub = "git fetch -p && git branch -vv | grep ': gone]' | awk '{print }' | xargs git branch -D $argv;";
-        tldrf = "tldr --list | fzf --preview \"tldr {1} --color=always\" --preview-window=right,70% | xargs tldr";
+        tldrf = "${pkgs.tldr}/bin/tldr --list | fzf --preview \"tldr {1} --color=always\" --preview-window=right,70% | xargs tldr";
         dk = "docker kill (docker ps -q)";
         ds = "docker stop (docker ps -a -q)";
         drm = "docker rm (docker ps -a -q)";
@@ -93,6 +93,32 @@ in {
             set -gx $item[1] $item[2]
             echo "Exported key $item[1]"
           end
+        '';
+
+        gcrb = ''
+            set result (git branch -a --color=always | grep -v '/HEAD\s' | sort |
+              fzf --height 50% --border --ansi --tac --preview-window right:70% \
+                --preview 'git log --oneline --graph --date=short --pretty="format:%C(auto)%cd %h%d %s" (string sub -s 3 (string split ' ' {})[1]) | head -'$LINES |
+              string sub -s 3 | string split ' ' -m 1)[1]
+
+            if test -n "$result"
+              if string match -r "^remotes/.*" $result > /dev/null
+                git checkout --track (string replace -r "^remotes/" "" $result)
+              else
+                git checkout $result
+              end
+            end
+          end
+        '';
+
+        rgvim = ''
+          rg --color=always --line-number --no-heading --smart-case "\''${*:-}" |
+            fzf --ansi \
+                --color "hl:-1:underline,hl+:-1:underline:reverse" \
+                --delimiter : \
+                --preview 'bat --color=always {1} --highlight-line {2}' \
+                --preview-window 'up,60%,border-bottom,+{2}+3/3,~3' \
+                --bind 'enter:become(nvim {1} +{2})'
         '';
 
         fish_command_not_found = ''

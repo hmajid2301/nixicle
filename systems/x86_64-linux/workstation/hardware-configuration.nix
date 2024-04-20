@@ -4,7 +4,6 @@
 {
   config,
   lib,
-  pkgs,
   modulesPath,
   ...
 }: {
@@ -12,12 +11,7 @@
     (modulesPath + "/installer/scan/not-detected.nix")
   ];
 
-  fileSystems."/run/media/haseeb/Windows VM" = {
-    device = "/dev/disk/by-uuid/7bde7dd3-fa08-4d17-b8ea-66da10d1bc74";
-    fsType = "ext4";
-  };
-
-  fileSystems."/run/media/haseeb/ Games" = {
+  fileSystems."/run/media/haseeb/Games" = {
     device = "/dev/disk/by-uuid/a85dfa14-38bf-4cb8-af7e-d1a977a3df0c";
     fsType = "ext4";
   };
