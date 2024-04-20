@@ -48,7 +48,7 @@
                 section = "";
               }
             ];
-            footer = "I use Neovim btw";
+            footer = "I use Neovim btw!";
           };
         };
       };

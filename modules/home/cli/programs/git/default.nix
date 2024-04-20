@@ -18,21 +18,24 @@ in {
     enable = mkBoolOpt false "Whether or not to enable git.";
     email = mkOpt (nullOr str) "hello@haseebmajid.dev" "The email to use with git.";
     urlRewrites = mkOpt (attrsOf str) {} "url we need to rewrite i.e. ssh to http";
+    allowedSigners = mkOpt str "" "The public key used for signing commits";
   };
 
   config = mkIf cfg.enable {
+    home.file.".ssh/allowed_signers".text = "* ${cfg.allowedSigners}";
+
     programs.git = {
       enable = true;
       userName = "Haseeb Majid";
       userEmail = cfg.email;
 
-      signing = {
-        signByDefault = true;
-        key = "D528 BD50 F4E9 F031 AACB 1F7A 9833 E49C 848D 6C90";
-      };
-
       extraConfig =
         {
+          gpg.format = "ssh";
+          gpg.ssh.allowedSignersFile = "~/.ssh/allowed_signers";
+          commit.gpgsign = true;
+          user.signingkey = "~/.ssh/id_ed25519.pub";
+
           core = {
             editor = "nvim";
             pager = "delta";

@@ -37,9 +37,15 @@ in {
   };
 
   config = mkIf cfg.enable {
+    programs.keychain = {
+      enable = true;
+      keys = ["id_ed25519"];
+      agents = ["gpg" "ssh"];
+    };
+
     programs.ssh = {
       enable = true;
-
+      addKeysToAgent = "yes";
       matchBlocks = cfg.extraHosts;
     };
   };

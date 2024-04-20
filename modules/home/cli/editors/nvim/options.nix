@@ -32,7 +32,7 @@
       undolevels = 10000;
 
       signcolumn = "yes";
-      cmdheight = 0;
+      cmdheight = 1;
       cot = ["menu" "menuone" "noselect"];
       colorcolumn = "120";
 

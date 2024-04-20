@@ -32,7 +32,10 @@
 <details>
   <summary>Install</summary>
 
-To install NixOS on any of my devices I create my own ISO live media image. You can build the ISO by doing the following:
+To install NixOS on any of my devices I now use [nixos-anywhere](https://github.com/nix-community/nixos-anywhere/blob/main/docs/howtos/no-os.md).
+You will need to be able to SSH to the target machine from where this command will be run. Load nix installer ISO if
+no OS on the device. You need to copy ssh keys onto the target machine
+`curl https://github.com/hmajid2301.keys > ~/.ssh/authorized_keys` in my case I can copy them from GitHub.
 
 ```bash
 git clone git@github.com:hmajid2301/dotfiles.git ~/dotfiles/
@@ -40,8 +43,7 @@ cd dotfiles
 
 nix develop
 
-# To build ISO
-sudo nix build .#nixosConfigurations.iso.config.system.build.isoImage
+nix run github:nix-community/nixos-anywhere -- --flake '.#workstation' nixos@192.168.1.8 # Replace with your IP
 ```
 
 After building it you can copy the ISO from the `result` folder to your USB.
@@ -73,7 +75,7 @@ Some features of my dotfiles:
 - Structured to allow multiple **NixOS configurations**, including **desktop**, **laptop**
 - **Declarative** config including **themes**, **wallpapers** and **nix-colors**
 - **Opt-in persistance** through impermanence + blank snapshot
-- **Encrypted btrfs partition** 
+- **Encrypted btrfs partition**
 - **sops-nix** for secrets management
 - Different environments like **hyprland**
 - Custom live media **ISO**, with an **"automated" install** script
