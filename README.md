@@ -82,13 +82,23 @@ Some features of my dotfiles:
 - Custom **neovim** setup declaratively using **nixvim**
 - Supports **vfio** for playing games on windows
 
-## 🏠 Hosts
+## 🏠 Configurations
 
-- `workstation`: Self built PC using Ryzen | NixOS Hyprland | 7800 XTX
-- `framework`: Framework 13th gen personal laptop | NixOS Hyprland | eGPU 7800 XTX
-- `curve`: Framework 13th gen work laptop | Ubuntu Hyprland
-- `vm`: Qemu VM for testing | NixOS Gnome
-- `iso`: Builds custom installer ISO
+
+|   Hostname   |            Board                      |               CPU               |  RAM  |         Primary GPU                   |  Role | OS  | State |
+| :---------:  | :-------------------------:           | :----------------------------:  | :---: | :-------------------------:           |  :--: | :-: | :---: |
+| `workstation`| [X671E AORUS PRO X]                   | [AMD Ryzen 9 7950X]             | 64GB  | [AMD Spectral White 7900 XTX]         | 🖥️     | ❄️   | ✅    |
+| `framework`  | [Framework 13th Gen AMD]              | [AMD Ryzen™ 7 7840U]            | 32GB  | [AMD Radeon™ 780M]                    | 💻️    | ❄️   | ✅    |
+| `curve`      | [Framework 13th Gen Intel]            | [AMD Ryzen™ 7 7840U]            | 32GB  | [Intel Iris Pro Graphics]             | 💻️    | 🐧  | ✅    |
+| `VM`         | [QEMU]                                | -                               | -     | [VirGL]                               |  🐄   | ❄️   | ✅    |
+
+**Key**
+
+- 🖥️ : Desktop
+- 💻️ : Laptop
+- 🎮️ : Games Machine
+- 🐄 : Virtual Machine
+- ☁️ : Server
 
 ## 📱 Applications
 
