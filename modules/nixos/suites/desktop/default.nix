@@ -25,10 +25,6 @@ in {
       zsa.enable = true;
     };
 
-    virtualisation = {
-      podman.enable = true;
-    };
-
     services = {
       nixicle.avahi.enable = true;
       backup.enable = true;
