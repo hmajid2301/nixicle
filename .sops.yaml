@@ -1,33 +1,37 @@
+# Make a user key
+# mkdir -p ~/.config/sops/age
+# age-keygen -o ~/.config/sops/age/keys.txt
+# chmod 600 ~/.config/sops/age/keys.txt
+
+# Display the user public key:
+# age-keygen -y ~/.config/sops/age/keys.txt
+
+# Make a host public key:
+# ssh-to-age -i /etc/ssh/ssh_host_ed25519_key.pub
+
+# Add secrets
+# sops secrets/secrets.yaml
+
+# Rekey secrets.yaml after editing recipients in .sops.yaml:
+# sops updatekeys secrets/secrets.yaml
 keys:
   - &users:
-    - &haseeb F04F743A24CD81B628A20667CD20E7373D83B71C
-    - &haseebmajid F04F743A24CD81B628A20667CD20E7373D83B71C
+    - &haseeb_workstation age1emuknmcdwt5letup4eatvjxrrllkd06uqhslvzhwr0jkjj9f8ewquz9xur
+    - &haseebmajid_curve age1f44n6uklwmhfxthpq8k9ztq7q60k6g0u89ratdy3gurc0pqhhqjsx2x75g
   - &hosts:
     - &framework age1kzxen8ynw28h935jnjc9t8cx4p8mv6angk5suvkp6ntu4am9pe4smfw22z
-    - &curve age1f44n6uklwmhfxthpq8k9ztq7q60k6g0u89ratdy3gurc0pqhhqjsx2x75g
+    - &workstation age1fy626vylmpya4t4gyqx6kw4ggn7j79upjgt4jka2gq6lysluhd0s8ytqls
 
 creation_rules:
   - path_regex: modules/nixos/secrets.ya?ml$
     key_groups:
     - age:
       - *framework
-      pgp:
-      - *haseeb
+      - *workstation
 
   - path_regex: modules/home/secrets.ya?ml$
     key_groups:
     - age:
+      - *haseeb_workstation
       - *framework
-      - *curve
-      pgp:
-      - *haseeb
-      - *haseebmajid
-
-  - path_regex: modules/home/cli/programs/attic/secrets.yaml
-    key_groups:
-    - age:
-      - *framework
-      - *curve
-      pgp:
-      - *haseeb
-      - *haseebmajid
+      - *haseebmajid_curve

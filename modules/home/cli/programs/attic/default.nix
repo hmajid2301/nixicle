@@ -14,7 +14,7 @@ in {
 
   config = mkIf cfg.enable {
     sops.secrets.netrc = {
-      sopsFile = ./secrets.yaml;
+      sopsFile = ../../../secrets.yaml;
     };
 
     home.packages = with pkgs; [
@@ -28,7 +28,7 @@ in {
       ];
       trusted-public-keys = [
         "attic-ci:U5Sey4mUxwBXM3iFapmP0/ogODXywKLRNgRPQpEXxbo="
-        "system:fjP15qp9O3/x2WTb1LiQ2bhjxkBBip3uhjlDyqywz3I="
+        "system:DdaMnHcRKtgaov3GCR8mlrFuX90ShC2LkHv6kC7nluo="
       ];
       netrc-file = config.sops.secrets."netrc".path;
     };
