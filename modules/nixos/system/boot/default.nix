@@ -26,7 +26,10 @@ in {
       ++ lib.optionals cfg.secureBoot [sbctl];
 
     boot = {
-      kernelParams = lib.optionals cfg.plymouth ["quiet"];
+      # TODO: if plymouth on
+      kernelParams = lib.optionals cfg.plymouth ["quiet" "splash" "loglevel=3" "udev.log_level=0"];
+      initrd.verbose = lib.optionals cfg.plymouth false;
+      consoleLogLevel = lib.optionals cfg.plymouth 0;
 
       lanzaboote = mkIf cfg.secureBoot {
         enable = true;
@@ -48,7 +51,7 @@ in {
       plymouth = {
         enable = cfg.plymouth;
         theme = "catppuccin-mocha";
-        themePackages = [pkgs.catppuccin-plymouth];
+        themePackages = [(pkgs.catppuccin-plymouth.override {variant = "mocha";})];
       };
     };
 
