@@ -1,4 +1,8 @@
-{pkgs, ...}: let
+{
+  pkgs,
+  inputs,
+  ...
+}: let
   json2nix = pkgs.writeScriptBin "json2nix" ''
     ${pkgs.python3}/bin/python ${pkgs.fetchurl {
       url = "https://gitlab.com/-/snippets/3613708/raw/main/json2nix.py";
@@ -14,6 +18,7 @@ in
     NIX_CONFIG = "extra-experimental-features = nix-command flakes repl-flake";
 
     packages = with pkgs; [
+      inputs.nixos-anywhere.packages.${pkgs.system}.nixos-anywhere
       yaml2nix
       json2nix
       statix

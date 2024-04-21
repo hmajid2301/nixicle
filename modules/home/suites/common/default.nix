@@ -34,8 +34,10 @@ in {
       terminals.kitty.enable = true;
       shells.fish.enable = true;
     };
-
-    suites.guis.enable = true;
+    programs = {
+      guis.enable = true;
+      tuis.enable = true;
+    };
 
     security = {
       sops.enable = true;
