@@ -5,10 +5,10 @@
   ...
 }:
 with lib; let
-  cfg = config.suites.guis;
+  cfg = config.programs.guis;
 in {
-  options.suites.guis = {
-    enable = mkEnableOption "Enable gnome adwaita gui applications";
+  options.programs.guis = {
+    enable = mkEnableOption "Enable gnome adwaita GUI applications";
   };
 
   config = mkIf cfg.enable {

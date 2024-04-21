@@ -14,7 +14,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    disko.url = "github:nix-community/disko";
     hardware.url = "github:nixos/nixos-hardware";
     sops-nix.url = "github:mic92/sops-nix";
 
@@ -26,6 +25,17 @@
     catppuccin.url = "github:catppuccin/nix";
     nix-ld.url = "github:Mic92/nix-ld";
     nix-index-database.url = "github:nix-community/nix-index-database";
+
+    disko = {
+      url = "github:nix-community/disko";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    nixos-anywhere = {
+      url = "github:numtide/nixos-anywhere";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.disko.follows = "disko";
+    };
 
     nixos-generators = {
       url = "github:nix-community/nixos-generators";
@@ -109,6 +119,10 @@
     };
     arrow-nvim = {
       url = "github:otavioschwanck/arrow.nvim";
+      flake = false;
+    };
+    img-clip-nvim = {
+      url = "github:HakonHarnes/img-clip.nvim";
       flake = false;
     };
   };

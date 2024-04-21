@@ -12,7 +12,6 @@
           pairs = {
             mappings = {
               "\"" = {neigh_pattern = "[^\\][%s%)%]}]";};
-              "'" = {neigh_pattern = "[^\\][%s%)%]}]";};
             };
           };
           trailspace = {};

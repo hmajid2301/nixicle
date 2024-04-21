@@ -1,5 +1,24 @@
-{config, ...}: {
+{
+  config,
+  pkgs,
+  inputs,
+  ...
+}: let
+  img-clip-nvim = pkgs.vimUtils.buildVimPlugin {
+    version = "latest";
+    pname = "img-clip.nvim";
+    src = inputs.img-clip-nvim;
+  };
+in {
   programs.nixvim = {
+    extraPlugins = [
+      img-clip-nvim
+    ];
+
+    extraConfigLua = ''
+      require("img-clip").setup()
+    '';
+
     plugins = {
       image = {
         enable = true;

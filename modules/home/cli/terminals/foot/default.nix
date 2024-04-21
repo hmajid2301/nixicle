@@ -19,9 +19,9 @@ in {
       settings = {
         main = {
           term = "foot";
-          font = "MonoLisa Nerd Font:size=14; Noto Color Emoji:size=20";
+          font = "MonoLisa Nerd Font:size=14, JoyPixels:size=14";
           shell = "fish";
-          pad = "30x30";
+          pad = "15x15";
           selection-target = "clipboard";
         };
 
