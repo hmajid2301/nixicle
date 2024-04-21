@@ -14,6 +14,7 @@ in {
 
   config = mkIf cfg.enable {
     home.packages = with pkgs; [
+      (nerdfonts.override {fonts = ["JetBrainsMono"];})
       fontconfig
       fira-code-nerdfont
       noto-fonts-color-emoji
