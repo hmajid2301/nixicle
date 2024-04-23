@@ -1,5 +1,4 @@
 {
-  options,
   config,
   lib,
   ...
@@ -29,8 +28,8 @@ in {
       ];
     };
     networking.networkmanager.enable = true;
-    environment.persist.directories = [
-      "/etc/NetworkManager"
-    ];
+    # environment.persistence."/persist".directories = [
+    #   "/etc/NetworkManager"
+    # ];
   };
 }

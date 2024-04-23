@@ -18,21 +18,20 @@ in {
 
       copilot-lua = {
         enable = true;
-        suggestion.enabled = false;
+        suggestion = {
+          enabled = true;
+          autoTrigger = true;
+        };
         panel.enabled = false;
       };
 
       codeium-nvim = {
         enable = true;
       };
-
-      copilot-cmp = {
-        enable = true;
-      };
     };
 
-    extraPlugins = [
-      pkgs.vimPlugins.ChatGPT-nvim
+    extraPlugins = with pkgs.vimPlugins; [
+      ChatGPT-nvim
       copilotchat-nvim
     ];
 

@@ -9,6 +9,12 @@
     pname = "arrow.nvim";
     src = inputs.arrow-nvim;
   };
+
+  gx-nvim = pkgs.vimUtils.buildVimPlugin {
+    version = "latest";
+    pname = "gx.nvim";
+    src = inputs.gx-nvim;
+  };
 in {
   imports = lib.snowfall.fs.get-non-default-nix-files ./.;
 
@@ -112,74 +118,14 @@ in {
         ];
       }
       {
-        action = "<cmd>Refactor extract<cr>";
-        key = "<leader>re";
+        action = "<cmd>Browse<cr>";
+        key = "gx";
         options = {
-          desc = "Refactor extract";
-        };
-        mode = [
-          "x"
-        ];
-      }
-      {
-        action = "<cmd>Refactor extract_to_file<cr>";
-        key = "<leader>rf";
-        options = {
-          desc = "Refactor extract to file";
-        };
-        mode = [
-          "x"
-        ];
-      }
-      {
-        action = "<cmd>Refactor extract_var<cr>";
-        key = "<leader>rv";
-        options = {
-          desc = "Refactor variable";
-        };
-        mode = [
-          "x"
-        ];
-      }
-      {
-        action = "<cmd>Refactor inline_var<cr>";
-        key = "<leader>ri";
-        options = {
-          desc = "Refactor inline variable";
-        };
-        mode = [
-          "x"
-          "n"
-        ];
-      }
-      {
-        action = "<cmd>Refactor inline_func<cr>";
-        key = "<leader>rI";
-        options = {
-          desc = "Refactor inline function";
+          desc = "Open link in Browser";
         };
         mode = [
           "n"
-        ];
-      }
-      {
-        action = "<cmd>Refactor extract_block<cr>";
-        key = "<leader>rb";
-        options = {
-          desc = "Refactor extract block";
-        };
-        mode = [
-          "n"
-        ];
-      }
-      {
-        action = "<cmd>Refactor extract_block_to_file<cr>";
-        key = "<leader>rbf";
-        options = {
-          desc = "Refactor extract block to file";
-        };
-        mode = [
-          "n"
+          "x"
         ];
       }
     ];
@@ -253,10 +199,6 @@ in {
         enable = true;
       };
 
-      refactoring = {
-        enable = true;
-      };
-
       which-key = {
         enable = true;
 
@@ -264,9 +206,9 @@ in {
           "<leader>f" = "+file/find";
           "<leader>h" = "+harpoon";
           "<leader>s" = "+spectre";
-          "<leader>r" = "+refactor";
         };
       };
+
       zellij = {
         enable = true;
         settings = {
@@ -278,10 +220,12 @@ in {
     extraPlugins = [
       pkgs.vimPlugins.nvim-spectre
       arrow-nvim
+      gx-nvim
     ];
 
     extraConfigLua = ''
       require("spectre").setup()
+      require("gx").setup()
       require("arrow").setup({
         show_icons = true,
         leader_key = "<leader>h",
