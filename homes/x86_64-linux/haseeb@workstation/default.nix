@@ -3,6 +3,7 @@
 
   suites = {
     desktop.enable = true;
+    social.enable = true;
     gaming.enable = true;
     streaming.enable = true;
   };

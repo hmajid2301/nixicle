@@ -112,7 +112,7 @@ in {
         '';
 
         rgvim = ''
-          rg --color=always --line-number --no-heading --smart-case "\''${*:-}" |
+          rg --color=always --line-number --no-heading --smart-case |
             fzf --ansi \
                 --color "hl:-1:underline,hl+:-1:underline:reverse" \
                 --delimiter : \

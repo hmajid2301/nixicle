@@ -125,6 +125,10 @@
       url = "github:HakonHarnes/img-clip.nvim";
       flake = false;
     };
+    gx-nvim = {
+      url = "github:chrishrb/gx.nvim";
+      flake = false;
+    };
   };
 
   outputs = inputs:

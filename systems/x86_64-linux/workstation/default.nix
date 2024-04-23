@@ -28,11 +28,18 @@
   boot = {
     kernelParams = [
       "resume_offset=533760"
+      "mem_sleep_default=deep"
     ];
     supportedFilesystems = lib.mkForce ["btrfs"];
     kernelPackages = pkgs.linuxPackages_latest;
     resumeDevice = "/dev/disk/by-label/nixos";
   };
+
+  systemd.sleep.extraConfig = ''
+    [Sleep]
+    HibernateMode=shutdown
+    SuspendState=mem # suspend2idle is buggy :(
+  '';
 
   system.stateVersion = "23.11";
 }

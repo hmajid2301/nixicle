@@ -29,7 +29,7 @@ in {
         group = "users";
 
         extraGroups =
-          ["wheel" "audio" "sound" "video" "networkmanager" "input" "tty"]
+          ["wheel" "audio" "sound" "video" "networkmanager" "input" "tty" "podman"]
           ++ cfg.extraGroups;
       }
       // cfg.extraOptions;

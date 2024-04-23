@@ -23,11 +23,6 @@ in {
     };
     desktops.addons.xdg.enable = true;
 
-    programs = {
-      discord.enable = true;
-      shotwell.enable = true;
-    };
-
     home.sessionVariables = {
       MOZ_ENABLE_WAYLAND = 1;
       QT_QPA_PLATFORM = "wayland;xcb";
