@@ -58,7 +58,7 @@
       gitsigns = {
         enable = true;
         settings = {
-          currentLineBlame = false;
+          current_line_blame = false;
           signs = {
             add = {text = "│";};
             change = {text = "│";};

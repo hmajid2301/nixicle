@@ -38,7 +38,6 @@ in {
       ffmpegthumbnailer # thumbnails
       gnome.nautilus-python # enable plugins
       gst_all_1.gst-libav # thumbnails
-      nautilus-open-any-terminal # terminal-context-entry
     ];
 
     xdg.configFile."com.github.johnfactotum.Foliate/themes/mocha.json".text = ''

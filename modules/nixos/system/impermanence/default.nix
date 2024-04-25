@@ -12,6 +12,11 @@ in {
   };
 
   config = mkIf cfg.enable {
+    security.sudo.extraConfig = ''
+      # rollback results in sudo lectures after each reboot
+      Defaults lecture = never
+    '';
+
     # This script does the actual wipe of the system
     # So if it doesn't run, the btrfs system effectively acts like a normal system
     boot.initrd.systemd.services.rollback = mkIf cfg.enable {
@@ -25,11 +30,12 @@ in {
       unitConfig.DefaultDependencies = "no";
       serviceConfig.Type = "oneshot";
       script = ''
-        mkdir -p /mnt/root-blank
+        mkdir -p /mnt
 
         # We first mount the btrfs root to /mnt
         # so we can manipulate btrfs subvolumes.
-        mount -o subvol=/ /dev/mapper/cryptroot /mnt
+        mount -o subvol=/ /dev/mapper/enc /mnt
+        btrfs subvolume list -o /mnt/root
 
         # While we're tempted to just delete /root and create
         # a new snapshot from /root-blank, /root is already
@@ -42,17 +48,16 @@ in {
         # - /root/var/lib/machines
 
         btrfs subvolume list -o /mnt/root |
-          cut -f9 -d' ' |
-          while read subvolume; do
-            echo "deleting /$subvolume subvolume..."
-            btrfs subvolume delete "/mnt/$subvolume"
-          done &&
-          echo "deleting /root subvolume..." &&
-          btrfs subvolume delete /mnt/root
+        cut -f9 -d' ' |
+        while read subvolume; do
+          echo "deleting /$subvolume subvolume..."
+          btrfs subvolume delete "/mnt/$subvolume"
+        done &&
+        echo "deleting /root subvolume..." &&
+        btrfs subvolume delete /mnt/root
 
         echo "restoring blank /root subvolume..."
         btrfs subvolume snapshot /mnt/root-blank /mnt/root
-
 
         # Once we're done rolling back to a blank snapshot,
         # we can unmount /mnt and continue on the boot process.
@@ -63,24 +68,51 @@ in {
     environment.persistence."/persist" = {
       hideMounts = true;
       directories = [
-        "/home/haseeb"
+        "/srv"
         "/.cache/nix/"
         "/etc/NetworkManager/system-connections"
-        "/etc/ssh" # I need to persist ssh keys, this persists a bit more, persising only keys broke permissions
         "/var/cache/"
-        "/var/lib/bluetooth"
-        "/var/lib/cups"
-        "/var/lib/docker" # TODO: do not persist docker on server
-        "/var/lib/flatpak"
-        "/var/lib/fprint"
-        "/var/lib/libvirt"
+        "/var/db/sudo/"
+        "/var/lib/"
       ];
       files = [
         "/etc/machine-id"
-        "/var/lib/NetworkManager/secret_key"
-        "/var/lib/NetworkManager/seen-bssids"
-        "/var/lib/NetworkManager/timestamps"
+        "/etc/ssh/ssh_host_ed25519_key"
+        "/etc/ssh/ssh_host_ed25519_key.pub"
+        "/etc/ssh/ssh_host_rsa_key"
+        "/etc/ssh/ssh_host_rsa_key.pub"
       ];
+
+      users.haseeb = {
+        directories = [
+          "Downloads"
+          "Music"
+          "Pictures"
+          "Documents"
+          "Videos"
+          "dotfiles"
+          ".local"
+          ".config"
+          ".cache"
+          ".mozilla"
+          ".nix-defexpr"
+          {
+            directory = ".gnupg";
+            mode = "0700";
+          }
+          {
+            directory = ".ssh";
+            mode = "0700";
+          }
+          {
+            directory = ".local/share/keyrings";
+            mode = "0700";
+          }
+          ".local/share/direnv"
+        ];
+        files = [
+        ];
+      };
     };
   };
 }

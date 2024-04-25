@@ -1,7 +1,5 @@
 {
-  inputs,
   config,
-  pkgs,
   lib,
   ...
 }:
@@ -21,15 +19,32 @@ in {
   };
 
   config = {
+    users.users.root.hashedPasswordFile = "$n725gxaOsIWfxShrM06TkWD7MpTd9Ai6x25IRmcrIvB4FxOfhyIdJx5W967S3uISn2iZdEKpWFryd3dAW6KN51";
+    users.mutableUsers = false;
     users.users.haseeb =
       {
         isNormalUser = true;
-        inherit (cfg) name initialPassword;
+        inherit (cfg) name;
+        hashedPassword = "$6$y5esF/udtz4xFe7n$n725gxaOsIWfxShrM06TkWD7MpTd9Ai6x25IRmcrIvB4FxOfhyIdJx5W967S3uISn2iZdEKpWFryd3dAW6KN51";
         home = "/home/haseeb";
         group = "users";
 
+        # TODO: set in modules
         extraGroups =
-          ["wheel" "audio" "sound" "video" "networkmanager" "input" "tty" "podman"]
+          [
+            "wheel"
+            "audio"
+            "sound"
+            "video"
+            "networkmanager"
+            "input"
+            "tty"
+            "podman"
+            "kvm"
+            "libvirtd"
+            "libvirt"
+            "libvirt-qemu"
+          ]
           ++ cfg.extraGroups;
       }
       // cfg.extraOptions;
