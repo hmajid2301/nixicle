@@ -13,7 +13,7 @@
     hardware.openrgb.enable = true;
   };
 
-  suites = {
+  roles = {
     gaming.enable = true;
     desktop = {
       enable = true;
@@ -35,6 +35,7 @@
     resumeDevice = "/dev/disk/by-label/nixos";
   };
 
+  programs.coolercontrol.enable = true;
   systemd.sleep.extraConfig = ''
     [Sleep]
     HibernateMode=shutdown

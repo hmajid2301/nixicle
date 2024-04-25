@@ -4,7 +4,7 @@
   pkgs,
   ...
 }: {
-  suites = {
+  roles = {
     desktop.enable = true;
   };
 

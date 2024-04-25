@@ -21,6 +21,7 @@ in {
         suggestion = {
           enabled = true;
           autoTrigger = true;
+          keymap.accept = "<M-;>";
         };
         panel.enabled = false;
       };

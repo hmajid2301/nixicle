@@ -27,7 +27,7 @@
               label = "luks";
               content = {
                 type = "luks";
-                name = "cryptroot";
+                name = "enc";
                 extraOpenArgs = [
                   "--allow-discards"
                   "--perf-no_read_workqueue"
@@ -36,6 +36,11 @@
                 content = {
                   type = "btrfs";
                   extraArgs = ["-L" "nixos" "-f"];
+                  postCreateHook = ''
+                    mount -t btrfs /dev/disk/by-label/nixos /mnt
+                    btrfs subvolume snapshot -r /mnt /mnt/root-blank
+                    umount /mnt
+                  '';
                   subvolumes = {
                     "/root" = {
                       mountpoint = "/";

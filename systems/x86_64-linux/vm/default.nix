@@ -11,7 +11,7 @@
   networking.hostName = "vm";
 
   system.impermanence.enable = true;
-  suites = {
+  roles = {
     desktop.enable = true;
     desktop.addons.gnome.enable = true;
   };

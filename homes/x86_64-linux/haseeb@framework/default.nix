@@ -1,5 +1,5 @@
 {
-  suites = {
+  roles = {
     desktop.enable = true;
   };
 

@@ -1,5 +1,4 @@
 {
-  inputs,
   pkgs,
   lib,
   ...
@@ -14,7 +13,7 @@
     virtualisation.podman.enable = true;
   };
 
-  suites = {
+  roles = {
     gaming.enable = true;
     desktop = {
       enable = true;
