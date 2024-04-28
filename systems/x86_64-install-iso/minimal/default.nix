@@ -16,7 +16,7 @@
   };
 
   user = {
-    name = "haseeb";
+    name = "nixos";
     initialPassword = "1";
   };
 
