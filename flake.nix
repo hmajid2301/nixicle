@@ -137,6 +137,10 @@
       url = "github:declancm/maximize.nvim";
       flake = false;
     };
+    go-nvim = {
+      url = "github:ray-x/go.nvim";
+      flake = false;
+    };
   };
 
   outputs = inputs:
