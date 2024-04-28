@@ -46,6 +46,7 @@ in {
         # abbr existing commands
         vim = "nvim";
         n = "nvim";
+        ss = "zellij -l welcome";
         cd = "z";
         cdi = "zi";
         cp = "xcp";
@@ -57,7 +58,7 @@ in {
         ping = "gping";
         ls = "eza";
         sl = "eza";
-        l = "eza --group --header --group-directories-first --long --git --all --binary --all --icons";
+        l = "eza --group --header --group-directories-first --long --git --all --binary --all --icons always";
         tree = "eza --tree";
         sudo = "sudo -E -s";
 
@@ -69,7 +70,6 @@ in {
         nd = "nix develop";
         nfu = "nix flake update";
         hms = "home-manager switch --flake ~/dotfiles#${config.nixicle.user.name}@${host}";
-        hmr = "home-manager generations | fzf --tac --no-sort | awk '{print $7}' | xargs -I{} bash {}/activate";
         nrs = "sudo nixos-rebuild switch --flake ~/dotfiles#${host}";
 
         # new commads
@@ -111,8 +111,13 @@ in {
           end
         '';
 
+        hmg = ''
+          set current_gen (home-manager generations | head -n 1 | awk '{print $7}')
+          home-manager generations | awk '{print $7}' | tac | fzf --preview "echo {} | xargs -I % sh -c 'nvd --color=always diff $current_gen %' | xargs -I{} bash {}/activate""
+        '';
+
         rgvim = ''
-          rg --color=always --line-number --no-heading --smart-case |
+          rg --color=always --line-number --no-heading --smart-case "$argv" |
             fzf --ansi \
                 --color "hl:-1:underline,hl+:-1:underline:reverse" \
                 --delimiter : \

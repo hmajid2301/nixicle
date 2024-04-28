@@ -66,6 +66,9 @@ sudo nixos-rebuild switch --flake .#framework
 
 # To build user configuration
 home-manager switch --flake .#haseeb@framework
+
+# Build ISO in result/ folder
+nix build .#install-isoConfigurations.graphical
 ```
 
 ## 🚀 Features
@@ -74,6 +77,7 @@ Some features of my dotfiles:
 
 - Structured to allow multiple **NixOS configurations**, including **desktop**, **laptop**
 - **Declarative** config including **themes**, **wallpapers** and **nix-colors**
+- **Custom** live ISO for installing NixOS
 - **Opt-in persistance** through impermanence + blank snapshot
 - **Encrypted BTRFS partition**
 - **sops-nix** for secrets management

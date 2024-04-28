@@ -6,6 +6,16 @@
   buildFlags = "-tags=unit,integration,e2e,bdd";
 in {
   programs.nixvim = {
+    files = {
+      "ftplugin/go.lua" = {
+        opts = {
+          expandtab = true;
+          shiftwidth = 4;
+          tabstop = 4;
+        };
+      };
+    };
+
     keymaps = [
       {
         action = "<cmd> lua require('dap-go').debug_test()<CR>";

@@ -9,11 +9,10 @@ with lib.nixicle; let
   cfg = config.hardware.audio;
 in {
   options.hardware.audio = with types; {
-    enable = mkBoolOpt false "Enable or disable pipewire";
+    enable = mkBoolOpt false "Enable or disable hardware audio support";
   };
 
   config = mkIf cfg.enable {
-    # Enable sound with pipewire.
     hardware.pulseaudio.enable = false;
     security.rtkit.enable = true;
     services.pipewire = {
@@ -27,12 +26,11 @@ in {
     programs.noisetorch.enable = true;
 
     services.udev.packages = with pkgs; [
-      # headsetcontrol2
+      headsetcontrol
     ];
 
-    # TODO: add headset as a package
     environment.systemPackages = with pkgs; [
-      # headsetcontrol2
+      headsetcontrol
       headset-charge-indicator
       pulsemixer
     ];

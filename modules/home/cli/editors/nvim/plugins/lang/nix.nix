@@ -4,6 +4,16 @@
   ...
 }: {
   programs.nixvim = {
+    files = {
+      "ftplugin/nix.lua" = {
+        opts = {
+          expandtab = true;
+          shiftwidth = 2;
+          tabstop = 2;
+        };
+      };
+    };
+
     plugins = {
       nix.enable = true;
       hmts.enable = true;

@@ -4,6 +4,16 @@
   ...
 }: {
   programs.nixvim = {
+    files = {
+      "ftplugin/lua.lua" = {
+        opts = {
+          expandtab = true;
+          shiftwidth = 4;
+          tabstop = 4;
+        };
+      };
+    };
+
     plugins = {
       lsp.servers.lua-ls.enable = true;
 

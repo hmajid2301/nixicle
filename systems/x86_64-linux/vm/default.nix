@@ -9,6 +9,7 @@
   ];
 
   networking.hostName = "vm";
+  system.boot.plymouth = lib.mkForce false;
 
   system.impermanence.enable = true;
   roles = {

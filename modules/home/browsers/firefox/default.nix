@@ -1,11 +1,14 @@
 {
   inputs,
   lib,
+  host,
+  pkgs,
   config,
   ...
 }:
 with lib; let
   cfg = config.browsers.firefox;
+  buildFirefoxXpiAddon = pkgs.nur.repos.rycee.firefox-addons.buildFirefoxXpiAddon;
 in {
   options.browsers.firefox = {
     enable = mkEnableOption "enable firefox browser";
@@ -13,6 +16,13 @@ in {
 
   config = mkIf cfg.enable {
     home.file.".mozilla/firefox/default/chrome/firefox-gnome-theme".source = inputs.firefox-gnome-theme;
+
+    xdg.mimeApps.defaultApplications = {
+      "text/html" = ["firefox.desktop"];
+      "text/xml" = ["firefox.desktop"];
+      "x-scheme-handler/http" = ["firefox.desktop"];
+      "x-scheme-handler/https" = ["firefox.desktop"];
+    };
 
     programs.firefox = {
       enable = true;
@@ -22,6 +32,40 @@ in {
           ${builtins.readFile "${inputs.firefox-gnome-theme}/configuration/user.js"}
         '';
 
+        extensions = with pkgs.nur.repos.rycee.firefox-addons; [
+          bitwarden
+          enhancer-for-youtube
+          languagetool
+          old-reddit-redirect
+          private-relay
+          return-youtube-dislikes
+          reddit-enhancement-suite
+          tab-stash
+          stylus
+          ublock-origin
+          vimium
+          (
+            buildFirefoxXpiAddon {
+              pname = "better-history-ng";
+              version = "1.0.2";
+              addonId = "{058af685-fc17-47a4-991a-bab91a89533d}";
+              url = "https://github.com/Christoph-Wagner/firefox-better-history-ng/releases/download/v1.0.2/2c2e37a17c4a4d558bd0-1.0.2.xpi";
+              sha256 = "sha256-ryl34Z8pRJhrBgvksqnx678pLKV0YOau61tnJGvk4K8=";
+              meta = {};
+            }
+          )
+          (
+            buildFirefoxXpiAddon {
+              pname = "detach-tab";
+              version = "3.0.0";
+              addonId = "{058af685-fc17-47a4-991a-bab91a89533d}";
+              url = "https://github.com/Claymont/detach-tab/raw/master/Detach%20Tab%203.0.0.xpi";
+              sha256 = "";
+              meta = {};
+            }
+          )
+        ];
+
         settings = {
           "browser.uidensity" = 0;
           "gnomeTheme.activeTabContrast" = true;
@@ -30,6 +74,149 @@ in {
           "gnomeTheme.systemIcons" = true;
           "gnomeTheme.spinner" = true;
           "layers.acceleration.force-enabled" = true;
+          "identity.fxaccounts.account.device.name" = host;
+          "browser.urlbar.oneOffSearches" = false;
+        };
+        search = {
+          force = true;
+          default = "Kagi";
+          order = ["Kagi" "Youtube" "NixOS Options" "Nix Packages" "GitHub" "HackerNews"];
+
+          engines = {
+            "Bing".metaData.hidden = true;
+            "eBay".metaData.hidden = true;
+            "Wikipedia".metaData.hidden = true;
+            "DuckDuckGo".metaData.hidden = true;
+            "Amazon.com".metaData.hidden = true;
+
+            "Kagi" = {
+              urls = [
+                {
+                  template = "https://kagi.com/search";
+                  params = [
+                    {
+                      name = "q";
+                      value = "{searchTerms}";
+                    }
+                  ];
+                }
+              ];
+            };
+
+            "YouTube" = {
+              iconUpdateURL = "https://youtube.com/favicon.ico";
+              updateInterval = 24 * 60 * 60 * 1000;
+              definedAliases = ["@yt"];
+              urls = [
+                {
+                  template = "https://www.youtube.com/results";
+                  params = [
+                    {
+                      name = "search_query";
+                      value = "{searchTerms}";
+                    }
+                  ];
+                }
+              ];
+            };
+
+            "Nix Packages" = {
+              # icon = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
+              definedAliases = ["@np"];
+              urls = [
+                {
+                  template = "https://search.nixos.org/packages";
+                  params = [
+                    {
+                      name = "type";
+                      value = "packages";
+                    }
+                    {
+                      name = "query";
+                      value = "{searchTerms}";
+                    }
+                    {
+                      name = "query";
+                      value = "channel=unstable";
+                    }
+                  ];
+                }
+              ];
+            };
+
+            "NixOS Options" = {
+              # icon = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
+              definedAliases = ["@no"];
+              urls = [
+                {
+                  template = "https://search.nixos.org/options";
+                  params = [
+                    {
+                      name = "channel";
+                      value = "unstable";
+                    }
+                    {
+                      name = "query";
+                      value = "{searchTerms}";
+                    }
+                  ];
+                }
+              ];
+            };
+
+            "GitHub" = {
+              iconUpdateURL = "https://github.com/favicon.ico";
+              updateInterval = 24 * 60 * 60 * 1000;
+              definedAliases = ["@gh"];
+
+              urls = [
+                {
+                  template = "https://github.com/search";
+                  params = [
+                    {
+                      name = "q";
+                      value = "{searchTerms}";
+                    }
+                  ];
+                }
+              ];
+            };
+
+            "Home Manager" = {
+              # icon = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
+              definedAliases = ["@hm"];
+
+              url = [
+                {
+                  template = "https://mipmip.github.io/home-manager-option-search/";
+                  params = [
+                    {
+                      name = "query";
+                      value = "{searchTerms}";
+                    }
+                  ];
+                }
+              ];
+            };
+
+            "HackerNews" = {
+              iconUpdateURL = "https://hn.algolia.com/favicon.ico";
+              updateInterval = 24 * 60 * 60 * 1000;
+              definedAliases = ["@hn"];
+
+              url = [
+                {
+                  template = "https://hn.algolia.com/";
+                  params = [
+                    {
+                      name = "query";
+                      value = "{searchTerms}";
+                    }
+                  ];
+                }
+              ];
+            };
+          };
         };
 
         userChrome = ''
