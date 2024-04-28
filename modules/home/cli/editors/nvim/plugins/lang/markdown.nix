@@ -19,6 +19,16 @@ in {
       require("img-clip").setup()
     '';
 
+    files = {
+      "ftplugin/markdown.lua" = {
+        opts = {
+          expandtab = true;
+          shiftwidth = 2;
+          tabstop = 2;
+        };
+      };
+    };
+
     plugins = {
       image = {
         enable = true;

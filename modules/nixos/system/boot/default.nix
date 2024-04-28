@@ -28,8 +28,8 @@ in {
     boot = {
       # TODO: if plymouth on
       kernelParams = lib.optionals cfg.plymouth ["quiet" "splash" "loglevel=3" "udev.log_level=0"];
-      initrd.verbose = lib.optionals cfg.plymouth false;
-      consoleLogLevel = lib.optionals cfg.plymouth 0;
+      # initrd.verbose = lib.optionals cfg.plymouth false;
+      # consoleLogLevel = lib.optionals cfg.plymouth 0;
       initrd.systemd.enable = true;
 
       lanzaboote = mkIf cfg.secureBoot {

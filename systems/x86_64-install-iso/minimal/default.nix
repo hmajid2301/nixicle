@@ -5,10 +5,6 @@
   networking.wireless.enable = lib.mkForce false;
   networking.networkmanager.enable = true;
 
-  roles = {
-    desktop.addons.gnome.enable = true;
-  };
-
   nix.enable = true;
   services = {
     openssh.enable = true;

@@ -17,9 +17,12 @@ in {
       Defaults lecture = never
     '';
 
+    programs.fuse.userAllowOther = true;
+
     # This script does the actual wipe of the system
     # So if it doesn't run, the btrfs system effectively acts like a normal system
-    boot.initrd.systemd.services.rollback = mkIf cfg.enable {
+    # Taken from https://github.com/NotAShelf/nyx/blob/2a8273ed3f11a4b4ca027a68405d9eb35eba567b/modules/core/common/system/impermanence/default.nix
+    boot.initrd.systemd.services.rollback = {
       description = "Rollback BTRFS root subvolume to a pristine state";
       wantedBy = ["initrd.target"];
       # make sure it's done after encryption
@@ -51,13 +54,13 @@ in {
         cut -f9 -d' ' |
         while read subvolume; do
           echo "deleting /$subvolume subvolume..."
-          btrfs subvolume delete "/mnt/$subvolume"
+          # btrfs subvolume delete "/mnt/$subvolume"
         done &&
         echo "deleting /root subvolume..." &&
-        btrfs subvolume delete /mnt/root
+        # btrfs subvolume delete /mnt/root
 
         echo "restoring blank /root subvolume..."
-        btrfs subvolume snapshot /mnt/root-blank /mnt/root
+        # btrfs subvolume snapshot /mnt/root-blank /mnt/root
 
         # Once we're done rolling back to a blank snapshot,
         # we can unmount /mnt and continue on the boot process.
@@ -82,37 +85,6 @@ in {
         "/etc/ssh/ssh_host_rsa_key"
         "/etc/ssh/ssh_host_rsa_key.pub"
       ];
-
-      users.haseeb = {
-        directories = [
-          "Downloads"
-          "Music"
-          "Pictures"
-          "Documents"
-          "Videos"
-          "dotfiles"
-          ".local"
-          ".config"
-          ".cache"
-          ".mozilla"
-          ".nix-defexpr"
-          {
-            directory = ".gnupg";
-            mode = "0700";
-          }
-          {
-            directory = ".ssh";
-            mode = "0700";
-          }
-          {
-            directory = ".local/share/keyrings";
-            mode = "0700";
-          }
-          ".local/share/direnv"
-        ];
-        files = [
-        ];
-      };
     };
   };
 }

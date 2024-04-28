@@ -4,6 +4,23 @@
   ...
 }: {
   programs.nixvim = {
+    files = {
+      "ftplugin/js.lua" = {
+        opts = {
+          expandtab = true;
+          shiftwidth = 2;
+          tabstop = 2;
+        };
+      };
+      "ftplugin/ts.lua" = {
+        opts = {
+          expandtab = true;
+          shiftwidth = 2;
+          tabstop = 2;
+        };
+      };
+    };
+
     plugins = {
       conform-nvim = {
         formattersByFt = {

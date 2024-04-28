@@ -1874,6 +1874,22 @@
         "type": "github"
       }
     },
+    "maximize-nvim": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1712441949,
+        "narHash": "sha256-SJKpXYILz5C9iL5Ovz+aRll7sDw7Ujkp95rWx9H1VBk=",
+        "owner": "declancm",
+        "repo": "maximize.nvim",
+        "rev": "ae36230db6f5165aaeaed593e755994511699214",
+        "type": "github"
+      },
+      "original": {
+        "owner": "declancm",
+        "repo": "maximize.nvim",
+        "type": "github"
+      }
+    },
     "n2c": {
       "inputs": {
         "flake-utils": [
@@ -2969,6 +2985,21 @@
         "type": "github"
       }
     },
+    "nur": {
+      "locked": {
+        "lastModified": 1714284561,
+        "narHash": "sha256-yCGQClPaEubKgyXT4Czr2W6YaXYXScWJ2TqEF5jQSh0=",
+        "owner": "nix-community",
+        "repo": "NUR",
+        "rev": "247f1523290796095d5182c67c4ed86c0e09021a",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-community",
+        "repo": "NUR",
+        "type": "github"
+      }
+    },
     "old-ghc-nix": {
       "flake": false,
       "locked": {
@@ -3113,6 +3144,7 @@
         "img-clip-nvim": "img-clip-nvim",
         "impermanence": "impermanence",
         "lanzaboote": "lanzaboote",
+        "maximize-nvim": "maximize-nvim",
         "neorg": "neorg",
         "neorg-templates": "neorg-templates",
         "nix-colors": "nix-colors",
@@ -3123,6 +3155,7 @@
         "nixos-generators": "nixos-generators",
         "nixpkgs": "nixpkgs_18",
         "nixvim": "nixvim",
+        "nur": "nur",
         "pyprland": "pyprland",
         "snowfall-lib": "snowfall-lib",
         "sops-nix": "sops-nix",

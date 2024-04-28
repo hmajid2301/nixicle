@@ -9,6 +9,10 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    nur = {
+      url = "github:nix-community/NUR";
+    };
+
     snowfall-lib = {
       url = "github:snowfallorg/lib";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -129,6 +133,10 @@
       url = "github:chrishrb/gx.nvim";
       flake = false;
     };
+    maximize-nvim = {
+      url = "github:declancm/maximize.nvim";
+      flake = false;
+    };
   };
 
   outputs = inputs:
@@ -168,6 +176,7 @@
 
       overlays = with inputs; [
         nixgl.overlay
+        nur.overlay
       ];
     };
 }
