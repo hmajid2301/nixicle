@@ -1,10 +1,13 @@
 {
+  inputs,
   pkgs,
   config,
   ...
 }: let
   buildFlags = "-tags=unit,integration,e2e,bdd";
 in {
+  xdg.configFile."nvim/queries/go/injections.scm".text = builtins.readFile "${inputs.go-nvim}/after/queries/go/injections.scm";
+
   programs.nixvim = {
     files = {
       "ftplugin/go.lua" = {

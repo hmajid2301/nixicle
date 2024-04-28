@@ -1007,6 +1007,22 @@
         "type": "github"
       }
     },
+    "go-nvim": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1713761737,
+        "narHash": "sha256-HofSwImbwJDVdRRX56vAJb+2t54sKjcXhUCGlnQEULw=",
+        "owner": "ray-x",
+        "repo": "go.nvim",
+        "rev": "ae078b8da431f264ab488d6d4e14201761dbfdbc",
+        "type": "github"
+      },
+      "original": {
+        "owner": "ray-x",
+        "repo": "go.nvim",
+        "type": "github"
+      }
+    },
     "gomod2nix": {
       "inputs": {
         "nixpkgs": "nixpkgs_6",
@@ -3129,6 +3145,7 @@
         "copilotchat-nvim": "copilotchat-nvim",
         "disko": "disko",
         "firefox-gnome-theme": "firefox-gnome-theme",
+        "go-nvim": "go-nvim",
         "gx-nvim": "gx-nvim",
         "hardware": "hardware",
         "home-manager": "home-manager",
