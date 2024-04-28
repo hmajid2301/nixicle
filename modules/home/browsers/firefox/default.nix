@@ -8,7 +8,7 @@
 }:
 with lib; let
   cfg = config.browsers.firefox;
-  buildFirefoxXpiAddon = pkgs.nur.repos.rycee.firefox-addons.buildFirefoxXpiAddon;
+  inherit (pkgs.nur.repos.rycee.firefox-addons) buildFirefoxXpiAddon;
 in {
   options.browsers.firefox = {
     enable = mkEnableOption "enable firefox browser";
@@ -51,16 +51,6 @@ in {
               addonId = "{058af685-fc17-47a4-991a-bab91a89533d}";
               url = "https://github.com/Christoph-Wagner/firefox-better-history-ng/releases/download/v1.0.2/2c2e37a17c4a4d558bd0-1.0.2.xpi";
               sha256 = "sha256-ryl34Z8pRJhrBgvksqnx678pLKV0YOau61tnJGvk4K8=";
-              meta = {};
-            }
-          )
-          (
-            buildFirefoxXpiAddon {
-              pname = "detach-tab";
-              version = "3.0.0";
-              addonId = "{058af685-fc17-47a4-991a-bab91a89533d}";
-              url = "https://github.com/Claymont/detach-tab/raw/master/Detach%20Tab%203.0.0.xpi";
-              sha256 = "";
               meta = {};
             }
           )
@@ -121,7 +111,7 @@ in {
             };
 
             "Nix Packages" = {
-              # icon = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
+              icon = "https://nixos.org/_astro/flake-blue.Bf2X2kC4_Z1yqDoT.svg";
               definedAliases = ["@np"];
               urls = [
                 {
@@ -145,7 +135,7 @@ in {
             };
 
             "NixOS Options" = {
-              # icon = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
+              icon = "https://nixos.org/_astro/flake-blue.Bf2X2kC4_Z1yqDoT.svg";
               definedAliases = ["@no"];
               urls = [
                 {
@@ -157,6 +147,23 @@ in {
                     }
                     {
                       name = "query";
+                      value = "{searchTerms}";
+                    }
+                  ];
+                }
+              ];
+            };
+
+            "SourceGraph" = {
+              iconUpdateURL = "https://sourcegraph.com/.assets/img/sourcegraph-mark.svg";
+              definedAliases = ["@sg"];
+
+              urls = [
+                {
+                  template = "https://sourcegraph.com/search";
+                  params = [
+                    {
+                      name = "q";
                       value = "{searchTerms}";
                     }
                   ];
@@ -183,7 +190,7 @@ in {
             };
 
             "Home Manager" = {
-              # icon = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
+              icon = "https://nixos.org/_astro/flake-blue.Bf2X2kC4_Z1yqDoT.svg";
               definedAliases = ["@hm"];
 
               url = [

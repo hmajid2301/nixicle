@@ -34,7 +34,6 @@ in {
         onBoot = "ignore";
         onShutdown = "shutdown";
         qemu = {
-          runAsRoot = false;
           swtpm.enable = true;
           ovmf = {
             enable = true;
