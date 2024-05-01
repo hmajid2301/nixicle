@@ -7,7 +7,6 @@
 with lib;
 with lib.nixicle; let
   cfg = config.cli.multiplexers.zellij;
-  inherit (config.colorscheme) colors;
 
   sesh = pkgs.writeScriptBin "sesh" ''
     #! /usr/bin/env sh
@@ -62,6 +61,7 @@ in {
 
     programs.zellij = {
       enable = true;
+      catppuccin.enable = true;
     };
   };
 }

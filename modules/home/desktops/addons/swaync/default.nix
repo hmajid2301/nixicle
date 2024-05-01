@@ -1,7 +1,6 @@
 {
   config,
   lib,
-  pkgs,
   ...
 }:
 with lib; let
@@ -12,11 +11,10 @@ in {
   };
 
   config = mkIf cfg.enable {
-    home.packages = with pkgs; [
-      swaynotificationcenter
-    ];
-
-    xdg.configFile."swaync/style.css".source = ./swaync.css;
-    xdg.configFile."swaync/config.json".source = ./swaync.json;
+    services.swaync = {
+      enable = true;
+      settings = {};
+      style = builtins.readFile ./swaync.css;
+    };
   };
 }

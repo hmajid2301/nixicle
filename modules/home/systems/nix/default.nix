@@ -50,7 +50,7 @@ in {
           "numtide.cachix.org-1:2ps1kLBUWjxIneOy1Ik6cQjb41X0iXVXeHigGmycPPE="
         ];
 
-        experimental-features = ["nix-command" "flakes" "repl-flake"];
+        experimental-features = ["nix-command" "flakes"];
         warn-dirty = false;
         use-xdg-base-directories = true;
       };

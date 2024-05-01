@@ -8,15 +8,17 @@
     desktop.enable = true;
   };
 
-  desktops.hyprland.enable = true;
-  desktops.addons = {
+  desktops = {
+    hyprland.enable = true;
     gnome.enable = true;
 
-    swaylock = {
-      enable = true;
-      blur = "25x20";
-      vignette = "0.5x0.5";
-      binary = "/usr/local/bin/swaylock";
+    addons = {
+      swaylock = {
+        enable = true;
+        blur = "25x20";
+        vignette = "0.5x0.5";
+        binary = "/usr/local/bin/swaylock";
+      };
     };
   };
 
@@ -25,7 +27,7 @@
       email = "haseeb.majid@imaginecurve.com";
       urlRewrites = {
         "git@gitlab.com:imaginecurve/" = "https://gitlab.com/imaginecurve/";
-        "git@gitlab.com:" = "https://gitlab.com/";
+        "git@gitlab.com:" = "https://gitlab.com";
       };
     };
     ssh = {
