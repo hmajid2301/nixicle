@@ -5,7 +5,7 @@
     desktop.enable = true;
     social.enable = true;
     gaming.enable = true;
-    streaming.enable = true;
+    video.enable = true;
   };
 
   desktops.hyprland.enable = true;

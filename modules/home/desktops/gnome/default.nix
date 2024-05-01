@@ -17,7 +17,6 @@ in {
     services.nixicle.kdeconnect.enable = lib.mkForce false;
 
     home.packages = with pkgs; [
-      nixicle.gradience
       gnome.gnome-tweaks
 
       gnomeExtensions.user-themes
@@ -39,12 +38,12 @@ in {
 
     dconf.settings = {
       "org/gnome/desktop/applications/terminal" = {
-        exec = "${pkgs.wezterm}/bin/wezterm";
+        exec = "${pkgs.foot}/bin/foot";
       };
 
       "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0" = {
         binding = "<Super>Return";
-        command = "wezterm";
+        command = "foot";
         name = "Open Terminal";
       };
 
@@ -95,9 +94,9 @@ in {
       #   picture-uri-dark = "file:///${pkgs.nixicle.wallpapers.Kurzgesagt-Galaxy_2}";
       # };
 
-      # "org/gnome/shell/extensions/search-light" = {
-      #   shortcut-search = ["<Super>a"];
-      # };
+      "org/gnome/shell/extensions/search-light" = {
+        shortcut-search = ["<Super>b"];
+      };
     };
   };
 }

@@ -18,7 +18,7 @@ in {
         trusted-users = ["root" "@wheel"];
         auto-optimise-store = lib.mkDefault true;
         use-xdg-base-directories = true;
-        experimental-features = ["nix-command" "flakes" "repl-flake"];
+        experimental-features = ["nix-command" "flakes"];
         warn-dirty = false;
         system-features = ["kvm" "big-parallel" "nixos-test"];
       };

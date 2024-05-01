@@ -195,6 +195,10 @@ in {
         };
       };
 
+      spectre = {
+        enable = true;
+      };
+
       undotree = {
         enable = true;
       };
@@ -218,13 +222,11 @@ in {
     };
 
     extraPlugins = [
-      pkgs.vimPlugins.nvim-spectre
       arrow-nvim
       gx-nvim
     ];
 
     extraConfigLua = ''
-      require("spectre").setup()
       require("gx").setup()
       require("arrow").setup({
         show_icons = true,
