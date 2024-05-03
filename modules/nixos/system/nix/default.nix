@@ -1,6 +1,5 @@
 {
   config,
-  pkgs,
   lib,
   ...
 }:
@@ -15,7 +14,7 @@ in {
   config = mkIf cfg.enable {
     nix = {
       settings = {
-        trusted-users = ["root" "@wheel"];
+        trusted-users = ["@wheel" "root"];
         auto-optimise-store = lib.mkDefault true;
         use-xdg-base-directories = true;
         experimental-features = ["nix-command" "flakes"];
@@ -27,6 +26,7 @@ in {
         dates = "weekly";
         options = "--delete-older-than 7d";
       };
+
       # flake-utils-plus
       generateRegistryFromInputs = true;
       generateNixPathFromInputs = true;

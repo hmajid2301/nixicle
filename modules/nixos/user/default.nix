@@ -42,7 +42,6 @@ in {
             "podman"
             "kvm"
             "libvirtd"
-            "qemu-libvirtd"
           ]
           ++ cfg.extraGroups;
       }
