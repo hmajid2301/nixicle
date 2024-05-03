@@ -22,6 +22,10 @@
     };
 
     plugins = {
+      ts-autotag = {
+        enable = true;
+      };
+
       conform-nvim = {
         formattersByFt = {
           typescript = ["prettierd"];

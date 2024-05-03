@@ -7,6 +7,22 @@
 with lib;
 with lib.nixicle; let
   cfg = config.cli.programs.modern-unix;
+
+  viddy = pkgs.buildGoModule rec {
+    pname = "viddy";
+    version = "0.4.0";
+
+    src = pkgs.fetchFromGitHub {
+      owner = "sachaos";
+      repo = pname;
+      rev = "v${version}";
+      sha256 = "sha256-iF5b5e3HPT3GJLRDxz9wN1U5rO9Ey51Cpw4p2zjffTI=";
+    };
+
+    vendorHash = "sha256-/lx2D2FIByRnK/097M4SQKRlmqtPTvbFo1dwbThJ5Fs=";
+
+    ldflags = ["-s" "-w"];
+  };
 in {
   options.cli.programs.modern-unix = with types; {
     enable = mkBoolOpt false "Whether or not to enable modern unix tools";
@@ -14,6 +30,9 @@ in {
 
   config = mkIf cfg.enable {
     home.packages = with pkgs; [
+      viddy
+
+      bandwhich
       broot
       choose
       curlie
@@ -28,13 +47,16 @@ in {
       fd
       gdu
       gping
+      grex
       hyperfine
       hexyl
       jqp
+      lnav
       ouch
       silver-searcher
       procs
       psensor
+      tokei
       trash-cli
       gtrash
       ripgrep

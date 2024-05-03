@@ -11,15 +11,6 @@
   desktops = {
     hyprland.enable = true;
     gnome.enable = true;
-
-    addons = {
-      swaylock = {
-        enable = true;
-        blur = "25x20";
-        vignette = "0.5x0.5";
-        binary = "/usr/local/bin/swaylock";
-      };
-    };
   };
 
   cli.programs = {
