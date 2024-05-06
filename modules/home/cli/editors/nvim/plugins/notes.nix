@@ -30,9 +30,8 @@ in {
               path = "~/second-brain";
             }
           ];
-          #notesSubdir = "notes";
           dailyNotes = {
-            folder = "notes/dailies";
+            folder = "journal/dailies";
             dateFormat = "%Y-%m-%d";
             aliasFormat = "%B %-d, %Y";
             #template = "daily.md";

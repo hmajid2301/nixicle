@@ -21,8 +21,29 @@ keys:
   - &hosts:
     - &framework age1kzxen8ynw28h935jnjc9t8cx4p8mv6angk5suvkp6ntu4am9pe4smfw22z
     - &workstation age1fy626vylmpya4t4gyqx6kw4ggn7j79upjgt4jka2gq6lysluhd0s8ytqls
+    - &one age1zltskppjlt279n90lnrtdl640xhj9zd9v0gvu7dyv02s7sq0uc0sxvdjgm
+    - &two age1xs98vjqzgh56awftj8y4g0d3ewzpf6n2rzmfgxrzszzgcfn4avwq97sxah
+    - &three age1wn4j6g25t5vv6cs8ke426sqw5459j0x5hvfpfcy8fd0exp7zjpfqzrf0ju
+    - &four age1e7kmhzlu4ev6dagu5upuchh6v3c7wqv6mn96gqfcxdlnqazm8aeq8d37m6
 
 creation_rules:
+  - path_regex: modules/nixos/home-lab/secrets.ya?ml$
+    key_groups:
+    - age:
+      - *workstation
+      - *framework
+      - *haseebmajid_curve
+      - *one
+      - *two
+      - *three
+      - *four
+
+  - path_regex: modules/nixos/secrets.ya?ml$
+    key_groups:
+    - age:
+      - *framework
+      - *workstation
+
   - path_regex: modules/nixos/secrets.ya?ml$
     key_groups:
     - age:
