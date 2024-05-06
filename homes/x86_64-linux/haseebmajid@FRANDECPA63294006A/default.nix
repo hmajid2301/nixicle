@@ -27,6 +27,10 @@
           hostname = "gitlab.com";
           identityFile = "~/.ssh/id_ed25519_personal";
         };
+        "gitlab.com" = {
+          hostname = "gitlab.com";
+          identityFile = "~/.ssh/id_ed25519";
+        };
       };
     };
   };
