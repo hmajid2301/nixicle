@@ -18,8 +18,17 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    hardware.url = "github:nixos/nixos-hardware";
-    sops-nix.url = "github:mic92/sops-nix";
+    colmena = {
+      url = "github:zhaofengli/colmena";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    hardware = {
+      url = "github:nixos/nixos-hardware";
+    };
+    sops-nix = {
+      url = "github:mic92/sops-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     impermanence.url = "github:nix-community/impermanence";
     lanzaboote.url = "github:nix-community/lanzaboote";
@@ -52,7 +61,7 @@
     };
 
     hypr-contrib = {
-      url = "github:hyprwm/Hyprcursor";
+      url = "github:hyprwm/contrib";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -147,10 +156,11 @@
     };
   };
 
-  outputs = inputs:
-    inputs.snowfall-lib.mkFlake {
+  outputs = inputs: let
+    lib = inputs.snowfall-lib.mkLib {
       inherit inputs;
       src = ./.;
+
       snowfall = {
         metadata = "nixicle";
         namespace = "nixicle";
@@ -159,7 +169,9 @@
           title = "Haseeb's Nix Flake";
         };
       };
-
+    };
+  in
+    lib.mkFlake {
       channels-config = {
         allowUnfree = true;
       };
@@ -186,5 +198,14 @@
         nixgl.overlay
         nur.overlay
       ];
+      colmena = import ./hosts/colmena.nix {inherit (inputs) self;};
+
+      # deploy = lib.mkDeploy {inherit (inputs) self;};
+      #
+      # checks =
+      #   builtins.mapAttrs
+      #   (system: deploy-lib:
+      #     deploy-lib.deployChecks inputs.self.deploy)
+      #   inputs.deploy-rs.lib;
     };
 }
