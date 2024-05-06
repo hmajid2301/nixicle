@@ -53,9 +53,9 @@ in {
           "gnomeTheme.systemIcons" = true;
           "gnomeTheme.spinner" = true;
           "layers.acceleration.force-enabled" = true;
-          "identity.fxaccounts.account.device.name" = host;
+          "identity.fxaccounts.account.device.name" = "${config.nixicle.user.name}@${host}";
           "browser.urlbar.oneOffSearches" = false;
-          "browser.search.hiddenOneOffs" = "Google,Yahoo,Bing,Amazon.com,Twitter";
+          "browser.search.hiddenOneOffs" = "Google,Yahoo,Bing,Amazon.com,Twitter,Wikipedia (en),YouTube,eBay";
           "extensions.pocket.enabled" = false;
           "browser.urlbar.suggest.engines" = false;
           "browser.urlbar.suggest.openpage" = false;
@@ -72,9 +72,16 @@ in {
           engines = {
             "Bing".metaData.hidden = true;
             "eBay".metaData.hidden = true;
-            "Wikipedia".metaData.hidden = true;
             "DuckDuckGo".metaData.hidden = true;
             "Amazon.com".metaData.hidden = true;
+            "Wikipedia (en)".metaData.hidden = true;
+            "YouTube".metaata.hidden = true;
+            # "Kagi".metaData.hidden = true;
+            # "Nix Packages".metaData.hidden = true;
+            # "NixOS Options".metaData.hidden = true;
+            # "Home Manager".metaData.hidden = true;
+            # "SourceGraph".metaData.hidden = true;
+            # "GitHub".metaData.hidden = true;
 
             "Kagi" = {
               urls = [

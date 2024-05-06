@@ -51,13 +51,13 @@ in {
       hyperfine
       hexyl
       jqp
-      lnav
       ouch
       silver-searcher
       procs
       psensor
       tokei
       trash-cli
+      tailspin
       gtrash
       ripgrep
       sd
