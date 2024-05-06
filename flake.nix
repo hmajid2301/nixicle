@@ -141,6 +141,10 @@
       url = "github:ray-x/go.nvim";
       flake = false;
     };
+    advanced-git-search-nvim = {
+      url = "github:aaronhallaert/advanced-git-search.nvim";
+      flake = false;
+    };
   };
 
   outputs = inputs:

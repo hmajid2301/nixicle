@@ -13,6 +13,8 @@ in {
 
   config = mkIf cfg.enable {
     home.packages = with pkgs; [
+      obsidian
+
       kooha
       mission-center
       foliate

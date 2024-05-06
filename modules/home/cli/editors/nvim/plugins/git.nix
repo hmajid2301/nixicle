@@ -1,8 +1,27 @@
-{pkgs, ...}: {
+{
+  pkgs,
+  inputs,
+  ...
+}: let
+  advanced-git-search-nvim = pkgs.vimUtils.buildVimPlugin {
+    version = "latest";
+    pname = "advanced-git-search.nvim";
+    src = inputs.advanced-git-search-nvim;
+  };
+in {
   programs.nixvim = {
     extraPlugins = with pkgs.vimPlugins; [
+      advanced-git-search-nvim
       lazygit-nvim
     ];
+
+    extraConfigLua = ''
+      require("advanced_git_search.fzf").setup{}
+      require("telescope").load_extension("advanced_git_search")
+
+      local set = vim.opt -- set options
+      set.fillchars = set.fillchars + 'diff:╱'
+    '';
 
     keymaps = [
       {
@@ -48,6 +67,10 @@
       };
 
       diffview = {
+        enable = true;
+      };
+
+      fzf-lua = {
         enable = true;
       };
 

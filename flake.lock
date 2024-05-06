@@ -16,6 +16,22 @@
         "type": "github"
       }
     },
+    "advanced-git-search-nvim": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1712908840,
+        "narHash": "sha256-Deeu0Y/9aAWCgiRdteuAuhse7YA15wSgH5cPR0yHKrc=",
+        "owner": "aaronhallaert",
+        "repo": "advanced-git-search.nvim",
+        "rev": "4cf50d2e5e3eb9b801689958be60c6dcf7cdeb84",
+        "type": "github"
+      },
+      "original": {
+        "owner": "aaronhallaert",
+        "repo": "advanced-git-search.nvim",
+        "type": "github"
+      }
+    },
     "arrow-nvim": {
       "flake": false,
       "locked": {
@@ -3155,6 +3171,7 @@
     },
     "root": {
       "inputs": {
+        "advanced-git-search-nvim": "advanced-git-search-nvim",
         "arrow-nvim": "arrow-nvim",
         "attic": "attic",
         "catppuccin": "catppuccin",
