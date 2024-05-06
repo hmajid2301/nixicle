@@ -21,6 +21,31 @@ in {
 
     plugins = {
       headlines.enable = true;
+      obsidian = {
+        enable = true;
+        settings = {
+          workspaces = [
+            {
+              name = "second-brain";
+              path = "~/second-brain";
+            }
+          ];
+          #notesSubdir = "notes";
+          dailyNotes = {
+            folder = "notes/dailies";
+            dateFormat = "%Y-%m-%d";
+            aliasFormat = "%B %-d, %Y";
+            #template = "daily.md";
+          };
+          templates = {
+            subdir = "templates";
+            dateFormat = "%Y-%m-%d";
+            timeFormat = "%H:%M";
+            substitutions = {};
+          };
+        };
+      };
+
       neorg = {
         enable = true;
         package = neorg;

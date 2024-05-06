@@ -17,6 +17,7 @@ in {
       (nerdfonts.override {fonts = ["JetBrainsMono"];})
       fontconfig
       fira-code-nerdfont
+      noto-fonts
       noto-fonts-color-emoji
       google-fonts
       twitter-color-emoji
