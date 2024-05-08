@@ -122,20 +122,12 @@
       url = "github:copilotc-nvim/copilotchat.nvim";
       flake = false;
     };
-    neorg-templates = {
-      url = "github:pysan3/neorg-templates";
-      flake = false;
-    };
-    neorg = {
-      url = "github:nvim-neorg/neorg?rev=4cbedbbdd4ccb6f45a2045477f5658a1311dffa3";
+    kanban-nvim = {
+      url = "github:arakkkkk/kanban.nvim";
       flake = false;
     };
     arrow-nvim = {
       url = "github:otavioschwanck/arrow.nvim";
-      flake = false;
-    };
-    img-clip-nvim = {
-      url = "github:HakonHarnes/img-clip.nvim";
       flake = false;
     };
     gx-nvim = {

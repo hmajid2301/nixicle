@@ -1819,22 +1819,6 @@
         "type": "github"
       }
     },
-    "img-clip-nvim": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1712141440,
-        "narHash": "sha256-fMoQ0gpdw7rN7flEAiQvdlqWLHOARVEriyMXX5UfrBQ=",
-        "owner": "HakonHarnes",
-        "repo": "img-clip.nvim",
-        "rev": "fc30500c35663aa1762697f5aba31d43b86028f0",
-        "type": "github"
-      },
-      "original": {
-        "owner": "HakonHarnes",
-        "repo": "img-clip.nvim",
-        "type": "github"
-      }
-    },
     "impermanence": {
       "locked": {
         "lastModified": 1708968331,
@@ -1891,6 +1875,22 @@
         "ref": "hkm/remote-iserv",
         "type": "git",
         "url": "https://gitlab.haskell.org/hamishmack/iserv-proxy.git"
+      }
+    },
+    "kanban-nvim": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1702102342,
+        "narHash": "sha256-QuRAp9CZYFyXlSo+1oZ8Ti1MHaHgN/8ixuMjTScz3G8=",
+        "owner": "arakkkkk",
+        "repo": "kanban.nvim",
+        "rev": "640962c9b06709e4701cf2e063b43a3fd89db39c",
+        "type": "github"
+      },
+      "original": {
+        "owner": "arakkkkk",
+        "repo": "kanban.nvim",
+        "type": "github"
       }
     },
     "lanzaboote": {
@@ -2019,39 +2019,6 @@
         "owner": "nix-community",
         "ref": "master",
         "repo": "naersk",
-        "type": "github"
-      }
-    },
-    "neorg": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1703783667,
-        "narHash": "sha256-Q5V3ru+fgPYS3OxN5jDMh+4Vi9eJOuq5cC/kJ6neJ3I=",
-        "owner": "nvim-neorg",
-        "repo": "neorg",
-        "rev": "4cbedbbdd4ccb6f45a2045477f5658a1311dffa3",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nvim-neorg",
-        "repo": "neorg",
-        "rev": "4cbedbbdd4ccb6f45a2045477f5658a1311dffa3",
-        "type": "github"
-      }
-    },
-    "neorg-templates": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1707616388,
-        "narHash": "sha256-nZOAxXSHTUDBpUBS/Esq5HHwEaTB01dI7x5CQFB3pcw=",
-        "owner": "pysan3",
-        "repo": "neorg-templates",
-        "rev": "2808ec9796e0ba89377e1eeb73bd25af3d10ef7f",
-        "type": "github"
-      },
-      "original": {
-        "owner": "pysan3",
-        "repo": "neorg-templates",
         "type": "github"
       }
     },
@@ -3204,12 +3171,10 @@
         "hyprland-xdph-git": "hyprland-xdph-git",
         "hyprlock": "hyprlock",
         "hyprpaper": "hyprpaper",
-        "img-clip-nvim": "img-clip-nvim",
         "impermanence": "impermanence",
+        "kanban-nvim": "kanban-nvim",
         "lanzaboote": "lanzaboote",
         "maximize-nvim": "maximize-nvim",
-        "neorg": "neorg",
-        "neorg-templates": "neorg-templates",
         "nix-colors": "nix-colors",
         "nix-index-database": "nix-index-database",
         "nix-ld": "nix-ld",

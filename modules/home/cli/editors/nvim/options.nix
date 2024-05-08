@@ -44,6 +44,8 @@
       foldlevelstart = 99;
       foldenable = true;
 
+      conceallevel = 1;
+
       winwidth = 10;
       winminwidth = 10;
       equalalways = false;
