@@ -16,6 +16,7 @@
     snowfall-lib = {
       url = "github:snowfallorg/lib";
       inputs.nixpkgs.follows = "nixpkgs";
+      inputs.flake-utils-plus.url = "github:fl42v/flake-utils-plus";
     };
 
     colmena = {
@@ -67,11 +68,6 @@
 
     hyprcursor = {
       url = "github:hyprwm/Hyprcursor";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    hypridle = {
-      url = "github:hyprwm/Hypridle";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 

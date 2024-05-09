@@ -1,24 +1,5 @@
-{
-  config,
-  pkgs,
-  inputs,
-  ...
-}: let
-  img-clip-nvim = pkgs.vimUtils.buildVimPlugin {
-    version = "latest";
-    pname = "img-clip.nvim";
-    src = inputs.img-clip-nvim;
-  };
-in {
+{config, ...}: {
   programs.nixvim = {
-    extraPlugins = [
-      img-clip-nvim
-    ];
-
-    extraConfigLua = ''
-      require("img-clip").setup()
-    '';
-
     files = {
       "ftplugin/markdown.lua" = {
         opts = {

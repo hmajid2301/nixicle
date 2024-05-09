@@ -1,20 +1,12 @@
 {
-  inputs,
   config,
   lib,
-  pkgs,
   ...
 }:
 with lib;
 with lib.nixicle; let
   cfg = config.desktops.addons.hypridle;
-  inherit (inputs) hypridle;
-  hyprlock = "${pkgs.hyprlock}/bin/hyprlock";
-  hyprctl = "${pkgs.hyprland}/bin/hyprctl";
-  loginctl = "${pkgs.systemd}/bin/loginctl";
 in {
-  imports = [hypridle.homeManagerModules.default];
-
   options.desktops.addons.hypridle = with types; {
     enable = mkBoolOpt false "Whether to enable the hypridle";
   };
@@ -22,21 +14,26 @@ in {
   config = mkIf cfg.enable {
     services.hypridle = {
       enable = true;
+      settings = {
+        general = {
+          before_sleep_cmd = "hyprctl dispatch dpms off";
+          after_sleep_cmd = "hyprctl dispatch dpms on";
+          ignore_dbus_inhibit = false;
+          lock_cmd = "hyprlock";
+        };
 
-      lockCmd = "pidof hyprlock || ${hyprlock}";
-      beforeSleepCmd = "${hyprctl} dispatch dpms off";
-      afterSleepCmd = "${hyprctl} dispatch dpms on && ${loginctl} lock-session";
-      listeners = [
-        {
-          timeout = 300;
-          onTimeout = "${loginctl} lock-session";
-        }
-        {
-          timeout = 360;
-          onTimeout = "${hyprctl} dispatch dpms off";
-          onResume = "${hyprctl} dispatch dpms on";
-        }
-      ];
+        listeners = [
+          {
+            timeout = 300;
+            on-timeout = "hyprlock";
+          }
+          {
+            timeout = 900;
+            on-timeout = "hyprctl dispatch dpms off";
+            on-resume = "hyprctl dispatch dpms on";
+          }
+        ];
+      };
     };
   };
 }
