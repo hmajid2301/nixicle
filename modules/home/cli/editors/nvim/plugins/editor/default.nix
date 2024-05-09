@@ -48,16 +48,6 @@ in {
         ];
       }
       {
-        action = "<cmd>Telescope undo<cr>";
-        key = "<leader>uu";
-        options = {
-          desc = "Show undo telescope";
-        };
-        mode = [
-          "n"
-        ];
-      }
-      {
         action = "<cmd>UndotreeToggle<cr>";
         key = "<leader>ut";
         options = {
