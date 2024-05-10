@@ -61,14 +61,17 @@ cd dotfiles
 
 nix develop
 
-# To build system configuration
-sudo nixos-rebuild switch --flake .#framework
+# To build system configuration (uses hostname to build flake)
+nh os switch
 
-# To build user configuration
-home-manager switch --flake .#haseeb@framework
+# To build user configuration (uses hostname and username to build flake)
+nh home switch
 
 # Build ISO in result/ folder
 nix build .#install-isoConfigurations.graphical
+
+# Deploy my PI cluster (using SSH)
+colmena apply switch --build-on-target
 ```
 
 ## 🚀 Features

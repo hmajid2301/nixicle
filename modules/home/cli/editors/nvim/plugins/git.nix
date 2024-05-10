@@ -10,9 +10,8 @@
   };
 in {
   programs.nixvim = {
-    extraPlugins = with pkgs.vimPlugins; [
+    extraPlugins = [
       advanced-git-search-nvim
-      lazygit-nvim
     ];
 
     extraConfigLua = ''
@@ -75,6 +74,10 @@ in {
       };
 
       fugitive = {
+        enable = true;
+      };
+
+      lazygit = {
         enable = true;
       };
 
