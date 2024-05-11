@@ -3,6 +3,7 @@
     files = {
       "ftplugin/markdown.lua" = {
         opts = {
+          conceallevel = 1;
           expandtab = true;
           shiftwidth = 2;
           tabstop = 2;

@@ -4,12 +4,6 @@
   lib,
   ...
 }: let
-  arrow-nvim = pkgs.vimUtils.buildVimPlugin {
-    version = "latest";
-    pname = "arrow.nvim";
-    src = inputs.arrow-nvim;
-  };
-
   gx-nvim = pkgs.vimUtils.buildVimPlugin {
     version = "latest";
     pname = "gx.nvim";
@@ -211,7 +205,7 @@ in {
       };
     };
 
-    extraPlugins = [
+    extraPlugins = with pkgs.vimPlugins; [
       arrow-nvim
       gx-nvim
     ];

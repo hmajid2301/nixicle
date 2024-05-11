@@ -71,16 +71,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    hyprlock = {
-      url = "github:hyprwm/Hyprlock";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    hyprpaper = {
-      url = "github:hyprwm/hyprpaper";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     pyprland = {
       url = "github:hyprland-community/pyprland";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -120,10 +110,6 @@
     };
     kanban-nvim = {
       url = "github:arakkkkk/kanban.nvim";
-      flake = false;
-    };
-    arrow-nvim = {
-      url = "github:otavioschwanck/arrow.nvim";
       flake = false;
     };
     gx-nvim = {
