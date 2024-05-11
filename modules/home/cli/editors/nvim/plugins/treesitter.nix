@@ -20,6 +20,7 @@
           css
           bash
           fish
+          diff
 
           vim
           vimdoc
