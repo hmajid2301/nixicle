@@ -72,6 +72,7 @@ in {
         adapters.go = {
           enable = true;
           settings = {
+            recursive_run = true;
             experimental = {
               test_table = true;
             };
