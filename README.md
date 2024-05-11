@@ -90,16 +90,17 @@ Some features of my dotfiles:
 ## 🏠 Configurations
 
 
-|   Hostname                |            Board                                 |               CPU                                    |  RAM    |         Primary GPU                                    |  Role | OS  | State |
-| :---------:               | :-------------------------:                      | :----------------------------:                       | :---:   | :-------------------------:                            |  :--: | :-: | :---: |
-| `workstation`             | X671E AORUS PRO X                                | AMD Ryzen 9 7950X                                    | 64GB    | AMD Spectral White 7900 XTX                            | 🖥️     | ❄️   | ✅    |
-| `framework`               | Framework 13th Gen AMD                           | AMD Ryzen™ 7 7840U                                   | 32GB    | AMD Radeon™ 780M                                       | 💻️    | ❄️   | ✅    |
-| `FRANDECPA63294006A`      | Framework 13th Gen Intel                         | AMD Ryzen™ 7 7840U                                   | 32GB    | Intel Iris Graphics                                    | 💻️    | 🐧  | ✅    |
-| `VM`                      | QEMU                                             | -                                                    | -       | VirGL                                                  |  🐄   | ❄️   | ✅    |
-| `one`                     | Rapsberry Pi 4B                                  |  Quad core Cortex-A72                                | 4GB     | VideoCore VI @ 500 MHz                                 |  ☁️    | ❄️   | ✅    |
-| `two`                     | Rapsberry Pi 4B                                  |  Quad core Cortex-A72                                | 4GB     | VideoCore VI @ 500 MHz                                 |  ☁️    | ❄️   | ✅    |
-| `three`                   | Rapsberry Pi 4B                                  |  Quad core Cortex-A72                                | 8GB     | VideoCore VI @ 500 MHz                                 |  ☁️    | ❄️   | ✅    |
-| `four`                    | Rapsberry Pi 4B                                  |  Quad core Cortex-A72                                | 8GB     | VideoCore VI @ 500 MHz                                 |  ☁️    | ❄️   | ✅    |
+|   Hostname                       |            Board                                 |               CPU                                    |  RAM       |         Primary GPU                                    |  Role | OS  | State |
+| :---------:                      | :-------------------------:                      | :----------------------------:                       | :---:      | :-------------------------:                            |  :--: | :-: | :---: |
+| `workstation`                    | X671E AORUS PRO X                                | AMD Ryzen 9 7950X                                    | 64GB       | AMD Spectral White 7900 XTX                            | 🖥️     | ❄️   | ✅    |
+| `framework`                      | Framework 13th Gen AMD                           | AMD Ryzen™ 7 7840U                                   | 32GB       | AMD Radeon™ 780M                                       | 💻️    | ❄️   | ✅    |
+| `FRANDECPA63294006A`             | Framework 13th Gen Intel                         | AMD Ryzen™ 7 7840U                                   | 32GB       | Intel Iris Graphics                                    | 💻️    | 🐧  | ✅    |
+| `VM`                             | QEMU                                             | -                                                    | -          | VirGL                                                  |  🐄   | ❄️   | ✅    |
+| `steamdeck`                      | -                                                | Zen 2                                                | 16GB       | 8 RDNA 2 CUs                                           |  🎮️   | 🐧  | ✅    |
+| `one`                            | Rapsberry Pi 4B                                  |  Quad core Cortex-A72                                | 4GB        | VideoCore VI @ 500 MHz                                 |  ☁️    | ❄️   | ✅    |
+| `two`                            | Rapsberry Pi 4B                                  |  Quad core Cortex-A72                                | 4GB        | VideoCore VI @ 500 MHz                                 |  ☁️    | ❄️   | ✅    |
+| `three`                          | Rapsberry Pi 4B                                  |  Quad core Cortex-A72                                | 8GB        | VideoCore VI @ 500 MHz                                 |  ☁️    | ❄️   | ✅    |
+| `four`                           | Rapsberry Pi 4B                                  |  Quad core Cortex-A72                                | 8GB        | VideoCore VI @ 500 MHz                                 |  ☁️    | ❄️   | ✅    |
 
 **Key**
 
