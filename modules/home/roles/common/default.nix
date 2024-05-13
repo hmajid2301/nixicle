@@ -47,6 +47,7 @@ in {
     home.packages = with pkgs;
     with pkgs.nixicle; [
       monolisa
+      lisa
 
       keymapp
       powertop
