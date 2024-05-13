@@ -1,5 +1,4 @@
 {
-  options,
   config,
   pkgs,
   lib,
@@ -28,6 +27,7 @@ in {
           ubuntu_font_family
           jetbrains-mono
           open-sans
+          (joypixels.override {acceptLicense = true;})
         ]
         ++ cfg.fonts;
 
@@ -36,8 +36,8 @@ in {
         defaultFonts = {
           serif = ["Source Serif"];
           sansSerif = ["Fira Sans" "FiraGO"];
-          monospace = ["FiraCode Nerd Font Mono" "SauceCodePro Nerd Font Mono"];
-          emoji = ["Noto Color Emoji"];
+          monospace = ["MonoLisa Nerd Font" "FiraCode Nerd Font Mono" "SauceCodePro Nerd Font Mono" "Noto Color Emoji"];
+          emoji = ["Joypixels" "Noto Color Emoji"];
         };
         enable = true;
         hinting = {

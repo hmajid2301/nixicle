@@ -21,6 +21,8 @@ in {
     };
 
     hardware = {
+      audio.enable = true;
+      bluetooth.enable = true;
       logitechMouse.enable = true;
       zsa.enable = true;
     };
@@ -30,6 +32,10 @@ in {
       backup.enable = true;
       vpn.enable = true;
       virtualisation.podman.enable = true;
+    };
+
+    system = {
+      boot.plymouth = true;
     };
 
     cli.programs = {
