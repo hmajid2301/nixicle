@@ -1,23 +1,5 @@
 {
-  inputs,
-  pkgs,
-  ...
-}: let
-  kanban-nvim = pkgs.vimUtils.buildVimPlugin {
-    version = "latest";
-    pname = "kanban.nvim";
-    src = inputs.kanban-nvim;
-  };
-in {
   programs.nixvim = {
-    extraPlugins = [
-      kanban-nvim
-    ];
-
-    extraConfigLua = ''
-      require("kanban").setup()
-    '';
-
     plugins = {
       headlines.enable = true;
       obsidian = {

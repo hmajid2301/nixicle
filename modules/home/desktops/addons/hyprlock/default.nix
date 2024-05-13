@@ -22,7 +22,7 @@ in {
           hide_cursor = true;
         };
 
-        input-fields = [
+        input-field = [
           {
             size = {
               width = 300;
@@ -51,7 +51,7 @@ in {
           }
         ];
 
-        labels = [
+        label = [
           {
             text = ''cmd[update:43200000] echo "$(date +"%A, %d %B %Y")"'';
             color = "${palette.base05}";
@@ -76,7 +76,7 @@ in {
           }
         ];
 
-        backgrounds = [
+        background = [
           {
             path = "${pkgs.nixicle.wallpapers.Kurzgesagt-Galaxies}";
           }

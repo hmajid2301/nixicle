@@ -1747,22 +1747,6 @@
         "url": "https://gitlab.haskell.org/hamishmack/iserv-proxy.git"
       }
     },
-    "kanban-nvim": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1702102342,
-        "narHash": "sha256-QuRAp9CZYFyXlSo+1oZ8Ti1MHaHgN/8ixuMjTScz3G8=",
-        "owner": "arakkkkk",
-        "repo": "kanban.nvim",
-        "rev": "640962c9b06709e4701cf2e063b43a3fd89db39c",
-        "type": "github"
-      },
-      "original": {
-        "owner": "arakkkkk",
-        "repo": "kanban.nvim",
-        "type": "github"
-      }
-    },
     "lanzaboote": {
       "inputs": {
         "crane": "crane_2",
@@ -3024,7 +3008,6 @@
         "hyprland-protocols-git": "hyprland-protocols-git",
         "hyprland-xdph-git": "hyprland-xdph-git",
         "impermanence": "impermanence",
-        "kanban-nvim": "kanban-nvim",
         "lanzaboote": "lanzaboote",
         "maximize-nvim": "maximize-nvim",
         "nix-colors": "nix-colors",
