@@ -12,8 +12,6 @@ in {
 
   config = mkIf cfg.enable {
     hardware = {
-      audio.enable = true;
-      bluetooth.enable = true;
       networking.enable = true;
     };
 
@@ -31,7 +29,6 @@ in {
 
       boot = {
         enable = true;
-        plymouth = true;
       };
 
       fonts.enable = true;
