@@ -162,6 +162,10 @@
         hardware.nixosModules.framework-13-7040-amd
       ];
 
+      systems.hosts.server-1.modules = with inputs; [
+        hardware.nixosModules.raspberry-pi-4
+      ];
+
       # homes.modules = with inputs; [
       #   impermanence.nixosModules.home-manager.impermanence
       # ];
