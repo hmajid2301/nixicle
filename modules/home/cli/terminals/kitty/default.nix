@@ -16,7 +16,7 @@ in {
       enable = true;
       catppuccin.enable = true;
       font = {
-        name = "MonoLisa Nerd Font";
+        name = "MonoLisa";
         size = 14;
       };
 

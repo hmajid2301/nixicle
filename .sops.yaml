@@ -27,7 +27,7 @@ keys:
     - &four age1e7kmhzlu4ev6dagu5upuchh6v3c7wqv6mn96gqfcxdlnqazm8aeq8d37m6
 
 creation_rules:
-  - path_regex: modules/nixos/home-lab/secrets.ya?ml$
+  - path_regex: deploy/secrets.ya?ml$
     key_groups:
     - age:
       - *workstation

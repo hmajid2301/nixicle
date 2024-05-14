@@ -52,7 +52,7 @@ keybinds {
 
     move clear-defaults=true {
         bind "Alt m" "Esc" "Ctrl {" { SwitchToMode "Normal"; }
-        
+
         bind "n" "Tab" { MovePane; }
         bind "p" { MovePaneBackwards; }
         bind "h" "Left" { MovePane "Left"; }

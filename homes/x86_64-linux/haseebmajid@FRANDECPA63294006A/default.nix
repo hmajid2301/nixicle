@@ -15,6 +15,7 @@
 
   cli.programs = {
     git = {
+      allowedSigners = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHiXSCUnfGG1lxQW470+XBiDgjyYOy5PdHdXsmpraRei haseeb.majid@imaginecurve.com";
       email = "haseeb.majid@imaginecurve.com";
       urlRewrites = {
         "git@gitlab.com:imaginecurve/" = "https://gitlab.com/imaginecurve/";
