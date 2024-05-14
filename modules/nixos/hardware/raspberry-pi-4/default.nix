@@ -2,7 +2,6 @@
   pkgs,
   config,
   lib,
-  inputs,
   ...
 }:
 with lib;
@@ -12,10 +11,6 @@ in {
   options.hardware.raspberry-pi-4 = {
     enable = mkEnableOption "Enable The raspberry-pi-4 config";
   };
-
-  imports = with inputs; [
-    hardware.nixosModules.raspberry-pi-4
-  ];
 
   config = mkIf cfg.enable {
     boot = {
@@ -39,10 +34,6 @@ in {
         "usbhid"
         "uas"
       ];
-      loader = {
-        grub.enable = false;
-        generic-extlinux-compatible.enable = true;
-      };
     };
 
     hardware.enableRedistributableFirmware = true;

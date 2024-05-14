@@ -35,12 +35,5 @@
     resumeDevice = "/dev/disk/by-label/nixos";
   };
 
-  programs.coolercontrol.enable = true;
-  systemd.sleep.extraConfig = ''
-    [Sleep]
-    HibernateMode=shutdown
-    SuspendState=mem # suspend2idle is buggy :(
-  '';
-
   system.stateVersion = "23.11";
 }
