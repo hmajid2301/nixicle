@@ -19,13 +19,15 @@
       inputs.flake-utils-plus.url = "github:fl42v/flake-utils-plus";
     };
 
-    colmena = {
-      url = "github:zhaofengli/colmena";
+    deploy-rs = {
+      url = "github:serokell/deploy-rs";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
     hardware = {
       url = "github:nixos/nixos-hardware";
     };
+
     sops-nix = {
       url = "github:mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -168,14 +170,13 @@
         nixgl.overlay
         nur.overlay
       ];
-      colmena = import ./hosts/colmena.nix {inherit (inputs) self;};
 
-      # deploy = lib.mkDeploy {inherit (inputs) self;};
-      #
-      # checks =
-      #   builtins.mapAttrs
-      #   (system: deploy-lib:
-      #     deploy-lib.deployChecks inputs.self.deploy)
-      #   inputs.deploy-rs.lib;
+      deploy = lib.mkDeploy {inherit (inputs) self;};
+
+      checks =
+        builtins.mapAttrs
+        (system: deploy-lib:
+          deploy-lib.deployChecks inputs.self.deploy)
+        inputs.deploy-rs.lib;
     };
 }

@@ -9,7 +9,7 @@ pkgs.mkShell {
   packages = with pkgs; [
     nh
     inputs.nixos-anywhere.packages.${pkgs.system}.nixos-anywhere
-    inputs.colmena.packages.${pkgs.system}.colmena
+    deploy-rs
 
     statix
     deadnix
