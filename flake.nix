@@ -24,7 +24,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    hardware = {
+    nixos-hardware = {
       url = "github:nixos/nixos-hardware";
     };
 
@@ -159,11 +159,11 @@
       ];
 
       systems.hosts.framework.modules = with inputs; [
-        hardware.nixosModules.framework-13-7040-amd
+        nixos-hardware.nixosModules.framework-13-7040-amd
       ];
 
       systems.hosts.server-1.modules = with inputs; [
-        hardware.nixosModules.raspberry-pi-4
+        nixos-hardware.nixosModules.raspberry-pi-4
       ];
 
       # homes.modules = with inputs; [

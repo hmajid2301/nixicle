@@ -23,12 +23,14 @@
     };
   };
 
+  # TODO: move when working
+  boot.binfmt.emulatedSystems = ["aarch64-linux"];
+
   networking.hostName = "workstation";
 
   boot = {
     kernelParams = [
       "resume_offset=533760"
-      "mem_sleep_default=deep"
     ];
     supportedFilesystems = lib.mkForce ["btrfs"];
     kernelPackages = pkgs.linuxPackages_latest;

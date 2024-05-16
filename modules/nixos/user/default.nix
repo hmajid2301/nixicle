@@ -20,11 +20,11 @@ in {
 
   config = {
     users.mutableUsers = false;
-    users.users.haseeb =
+    users.users.${cfg.name} =
       {
         isNormalUser = true;
         inherit (cfg) name initialPassword;
-        home = "/home/haseeb";
+        home = "/home/${cfg.name}";
         group = "users";
 
         # TODO: set in modules

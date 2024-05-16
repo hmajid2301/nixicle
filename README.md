@@ -70,8 +70,8 @@ nh home switch
 # Build ISO in result/ folder
 nix build .#install-isoConfigurations.graphical
 
-# Deploy my PI cluster (using SSH)
-colmena apply switch --build-on-target
+# Deploy my to remote server i.e. PI cluster (using SSH)
+deploy .#primary --hostname primary.local --ssh-user nixos --skip-checks --interactive-sudo true
 ```
 
 ## 🚀 Features
@@ -97,7 +97,7 @@ Some features of my dotfiles:
 | `FRANDECPA63294006A`                 | Framework 13th Gen Intel                                  | AMD Ryzen™ 7 7840U                                   | 32GB        | Intel Iris Graphics                                    | 💻️    | 🐧  | ✅    |
 | `VM`                                 | QEMU                                                      | -                                                    | -           | VirGL                                                  |  🐄   | ❄️   | ✅    |
 | `steamdeck`                          | -                                                         | Zen 2                                                | 16GB        | 8 RDNA 2 CUs                                           |  🎮️   | 🐧  | ✅    |
-| `primary`                            | Framework 12th Gen Intel                                  |  i7-1280P                                            | 32GB        | Intel Iris Graphics                                    |  ☁️    | ❄️   | ✅    |
+| `FrameworkedUp`                            | Framework 12th Gen Intel                                  |  i7-1280P                                            | 32GB        | Intel Iris Graphics                                    |  ☁️    | ❄️   | ✅    |
 | `one`                                | Rapsberry Pi 4B                                           |  Quad core Cortex-A72                                | 4GB         | VideoCore VI @ 500 MHz                                 |  ☁️    | ❄️   | ✅    |
 | `two`                                | Rapsberry Pi 4B                                           |  Quad core Cortex-A72                                | 4GB         | VideoCore VI @ 500 MHz                                 |  ☁️    | ❄️   | ✅    |
 | `three`                              | Rapsberry Pi 4B                                           |  Quad core Cortex-A72                                | 8GB         | VideoCore VI @ 500 MHz                                 |  ☁️    | ❄️   | ✅    |

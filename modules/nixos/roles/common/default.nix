@@ -16,7 +16,7 @@ in {
     };
 
     services = {
-      openssh.enable = true;
+      ssh.enable = true;
     };
 
     security = {
@@ -26,11 +26,7 @@ in {
 
     system = {
       nix.enable = true;
-
-      boot = {
-        enable = true;
-      };
-
+      boot.enable = true;
       fonts.enable = true;
       locale.enable = true;
     };

@@ -9,15 +9,11 @@
   ];
 
   roles = {
-    server.enable = true;
+    kubernetes.enable = true;
   };
 
-  networking.hostName = "primary";
-
+  security.sudo.wheelNeedsPassword = false;
   boot = {
-    kernelParams = [
-      "resume_offset=533760"
-    ];
     supportedFilesystems = lib.mkForce ["btrfs"];
     kernelPackages = pkgs.linuxPackages_latest;
     resumeDevice = "/dev/disk/by-label/nixos";

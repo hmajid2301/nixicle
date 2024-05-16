@@ -1,11 +1,12 @@
 {lib, ...}: {
   imports = [
     ./hardware-configuration.nix
-    ./disks.nix
+    # TODO: Get this work with Disko
+    # ./disks.nix
   ];
 
   roles = {
-    kubernetes.enable = true;
+    server.enable = true;
   };
 
   system.boot.enable = lib.mkForce false;
