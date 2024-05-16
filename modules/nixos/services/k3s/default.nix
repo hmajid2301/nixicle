@@ -13,14 +13,14 @@ in {
   };
 
   config = mkIf cfg.enable {
-    sops.secrets.k3s_token = {
-      sopsFile = ../../roles/kubernetes/secrets.yaml;
-    };
+    # sops.secrets.k3s_token = {
+    #   sopsFile = ../../roles/kubernetes/secrets.yaml;
+    # };
 
     services = {
       k3s = {
         enable = true;
-        tokenFile = config.sops.secrets.k3s_token.path;
+        # tokenFile = config.sops.secrets.k3s_token.path;
 
         role = mkIf (cfg.role == "agent") "agent";
         # TODO: how can we set this programmatically
