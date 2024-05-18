@@ -1,19 +1,19 @@
 {
   programs.nixvim = {
-    extraConfigLua =
-      # lua
-      ''
-        local dap, dapui = require("dap"),require("dapui")
-        dap.listeners.after.event_initialized["dapui_config"]=function()
-        	dapui.open()
-        end
-        dap.listeners.before.event_terminated["dapui_config"]=function()
-        	dapui.close()
-        end
-        dap.listeners.before.event_exited["dapui_config"] = function()
-        	dapui.close()
-        end
-      '';
+    extraConfigLua = ''
+      local dap, dapui = require("dap"),require("dapui")
+      dap.listeners.after.event_initialized["dapui_config"]=function()
+      	dapui.open(1)
+      	dapui.close(2)
+      	dapui.close(3)
+      end
+      dap.listeners.before.event_terminated["dapui_config"]=function()
+      	dapui.close()
+      end
+      dap.listeners.before.event_exited["dapui_config"] = function()
+      	dapui.close()
+      end
+    '';
 
     plugins.which-key.registrations = {
       "<leader>d" = "+debug";
@@ -52,39 +52,27 @@
           layouts = [
             {
               elements = [
-                {
-                  id = "scopes";
-                  size = 0.25;
-                }
-                {
-                  id = "breakpoints";
-                  size = 0.25;
-                }
-                {
-                  id = "stacks";
-                  size = 0.25;
-                }
-                {
-                  id = "watches";
-                  size = 0.25;
-                }
+                "stacks"
+                "scopes"
               ];
-              position = "left";
-              size = 40;
+              position = "bottom";
+              size = 20;
             }
             {
               elements = [
-                {
-                  id = "repl";
-                  size = 0.5;
-                }
-                {
-                  id = "console";
-                  size = 0;
-                }
+                "breakpoints"
+                "watches"
               ];
               position = "bottom";
-              size = 10;
+              size = 20;
+            }
+            {
+              elements = [
+                "repl"
+                "console"
+              ];
+              position = "bottom";
+              size = 20;
             }
           ];
         };
@@ -98,6 +86,63 @@
           # lua
           ''
             function()
+              require('dapui').open(1)
+              require('dapui').close(2)
+              require('dapui').close(3)
+            end
+          '';
+        key = "<leader>du1";
+        lua = true;
+        options = {
+          desc = "Debug layout 1; Stacks, Scopes";
+        };
+        mode = [
+          "n"
+        ];
+      }
+      {
+        action =
+          # lua
+          ''
+            function()
+              require('dapui').open(2)
+              require('dapui').close(1)
+              require('dapui').close(3)
+            end
+          '';
+        key = "<leader>du2";
+        lua = true;
+        options = {
+          desc = "Debug layout 2; breakpoints, watches";
+        };
+        mode = [
+          "n"
+        ];
+      }
+      {
+        action =
+          # lua
+          ''
+            function()
+              require('dapui').open(3)
+              require('dapui').close(1)
+              require('dapui').close(2)
+            end
+          '';
+        key = "<leader>du3";
+        lua = true;
+        options = {
+          desc = "Debug layout 3; repl, console";
+        };
+        mode = [
+          "n"
+        ];
+      }
+      {
+        action =
+          # lua
+          ''
+            function()
               require('dap').continue()
             end
           '';
@@ -105,6 +150,25 @@
         lua = true;
         options = {
           desc = "Continue";
+        };
+        mode = [
+          "n"
+        ];
+      }
+      {
+        action =
+          # lua
+          ''
+            function()
+              local render = require("dapui.config").render
+              render.max_type_length = (render.max_type_length == nil) and 0 or nil
+              require("dapui").update_render(render)
+            end
+          '';
+        key = "<leader>dut";
+        lua = true;
+        options = {
+          desc = " toggle types";
         };
         mode = [
           "n"
@@ -257,7 +321,7 @@
               require('dap').run_last()
             end
           '';
-        key = "<leader>dr";
+        key = "<leader>dl";
         lua = true;
         options = {
           desc = "Run Last";
@@ -312,6 +376,40 @@
         lua = true;
         options = {
           desc = "Hover Widget";
+        };
+        mode = [
+          "n"
+        ];
+      }
+      {
+        action =
+          # lua
+          ''
+            function()
+              require('dap').run_to_cursor()
+            end
+          '';
+        key = "<leader>dC";
+        lua = true;
+        options = {
+          desc = "Run all lines up to cursor";
+        };
+        mode = [
+          "n"
+        ];
+      }
+      {
+        action =
+          # lua
+          ''
+            function()
+              require('dapui').eval(nil, { enter = true })
+            end
+          '';
+        key = "<leader>?";
+        lua = true;
+        options = {
+          desc = "Evaluate value under cursor";
         };
         mode = [
           "n"
