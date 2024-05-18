@@ -76,7 +76,7 @@ in {
             experimental = {
               test_table = true;
             };
-            args = buildFlags;
+            args = [buildFlags];
           };
         };
       };

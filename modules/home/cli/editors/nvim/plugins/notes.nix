@@ -1,7 +1,14 @@
-{
+{pkgs, ...}: {
   programs.nixvim = {
+    extraPlugins = with pkgs.vimPlugins; [
+      vim-pencil
+    ];
+
     plugins = {
+      twilight.enable = true;
+      zen-mode.enable = true;
       headlines.enable = true;
+
       obsidian = {
         enable = true;
         settings = {

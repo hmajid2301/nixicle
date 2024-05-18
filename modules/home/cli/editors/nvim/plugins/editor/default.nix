@@ -115,6 +115,10 @@ in {
     ];
 
     plugins = {
+      arrow = {
+        enable = true;
+      };
+
       better-escape = {
         enable = true;
       };
@@ -205,17 +209,12 @@ in {
       };
     };
 
-    extraPlugins = with pkgs.vimPlugins; [
-      arrow-nvim
+    extraPlugins = [
       gx-nvim
     ];
 
     extraConfigLua = ''
       require("gx").setup()
-      require("arrow").setup({
-        show_icons = true,
-        leader_key = "<leader>h",
-      })
     '';
   };
 }
