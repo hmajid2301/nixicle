@@ -30,8 +30,6 @@ creation_rules:
       - *workstation
       - *framework
       - *frameworkedup
-      - *haseebmajid_curve
-      - *haseeb_workstation
 
   - path_regex: modules/nixos/secrets.ya?ml$
     key_groups:
@@ -39,12 +37,11 @@ creation_rules:
       - *framework
       - *frameworkedup
       - *workstation
-      - *haseeb_workstation
 
   - path_regex: modules/home/secrets.ya?ml$
     key_groups:
     - age:
-      - *haseeb_workstation
       - *framework
       - *frameworkedup
+      - *haseeb_workstation
       - *haseebmajid_curve

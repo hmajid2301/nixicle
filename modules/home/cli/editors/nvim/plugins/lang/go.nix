@@ -8,6 +8,10 @@
 in {
   xdg.configFile."nvim/queries/go/injections.scm".text = builtins.readFile "${inputs.go-nvim}/after/queries/go/injections.scm";
 
+  home.packages = with pkgs; [
+    delve
+  ];
+
   programs.nixvim = {
     files = {
       "ftplugin/go.lua" = {
@@ -36,9 +40,18 @@ in {
       dap.extensions.dap-go = {
         enable = true;
         delve = {
-          path = "${pkgs.delve}/bin/dlv";
+          port = "38697";
+          path = "dlv";
           inherit buildFlags;
         };
+        dapConfigurations = [
+          {
+            type = "go";
+            name = "Attach remote";
+            mode = "remote";
+            request = "attach";
+          }
+        ];
       };
 
       conform-nvim = {
