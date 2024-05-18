@@ -52,8 +52,14 @@
           layouts = [
             {
               elements = [
-                "stacks"
-                "scopes"
+                {
+                  id = "stacks";
+                  size = 0.20;
+                }
+                {
+                  id = "scopes";
+                  size = 0.80;
+                }
               ];
               position = "bottom";
               size = 20;
