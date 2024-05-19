@@ -37,6 +37,7 @@ creation_rules:
       - *framework
       - *frameworkedup
       - *workstation
+      - *haseeb_workstation
 
   - path_regex: modules/home/secrets.ya?ml$
     key_groups:
