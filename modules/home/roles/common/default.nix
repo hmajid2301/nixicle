@@ -20,7 +20,10 @@ in {
 
   config = mkIf cfg.enable {
     colorscheme = nix-colors.colorSchemes.catppuccin-mocha;
-    catppuccin.flavour = "mocha";
+    catppuccin = {
+      enable = true;
+      flavor = "mocha";
+    };
 
     browsers.firefox.enable = true;
 

@@ -98,14 +98,15 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # For waiting for updates
-    waybar.url = "github:Alexays/Waybar?rev=32eac3ccb738691974121b77b4af0c47d1cbe524";
-
     firefox-gnome-theme = {
       url = "github:rafaelmardojai/firefox-gnome-theme";
       flake = false;
     };
 
+    precognition-nvim = {
+      url = "github:tris203/precognition.nvim";
+      flake = false;
+    };
     copilotchat-nvim = {
       url = "github:copilotc-nvim/copilotchat.nvim";
       flake = false;

@@ -12,7 +12,7 @@ in {
   };
 
   config = mkIf cfg.enable {
-    gtk = {
+    gtk = lib.mkForce {
       enable = true;
       font = {
         name = "Fira Sans";
@@ -30,6 +30,12 @@ in {
           accent = "lavender";
         };
         name = "Papirus-Dark";
+      };
+
+      cursorTheme = {
+        name = "Bibata-Modern-Classic";
+        package = pkgs.bibata-cursors;
+        size = 24;
       };
 
       gtk3.extraCss = config.gtk.gtk4.extraCss;
@@ -67,7 +73,7 @@ in {
     };
 
     home.sessionVariables.GTK_THEME = "Adwaita-dark";
-    home.pointerCursor = {
+    home.pointerCursor = lib.mkForce {
       name = "Bibata-Modern-Classic";
       package = pkgs.bibata-cursors;
       size = 24;
