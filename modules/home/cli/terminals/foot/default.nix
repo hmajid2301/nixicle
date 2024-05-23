@@ -14,7 +14,6 @@ in {
   config = mkIf cfg.enable {
     programs.foot = {
       enable = true;
-      catppuccin.enable = true;
 
       settings = {
         main = {

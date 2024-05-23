@@ -16,7 +16,6 @@ in {
   config = mkIf cfg.enable {
     programs.fish = {
       enable = true;
-      catppuccin.enable = true;
       interactiveShellInit = ''
         # Open command buffer in vim when alt+e is pressed
         bind \ee edit_command_buffer

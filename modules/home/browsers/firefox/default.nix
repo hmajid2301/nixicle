@@ -31,19 +31,19 @@ in {
           ${builtins.readFile "${inputs.firefox-gnome-theme}/configuration/user.js"}
         '';
 
-        # extensions = with pkgs.nur.repos.rycee.firefox-addons; [
-        #   bitwarden
-        #   enhancer-for-youtube
-        #   languagetool
-        #   old-reddit-redirect
-        #   private-relay
-        #   return-youtube-dislikes
-        #   reddit-enhancement-suite
-        #   tab-stash
-        #   stylus
-        #   ublock-origin
-        #   vimium
-        # ];
+        extensions = with pkgs.nur.repos.rycee.firefox-addons; [
+          bitwarden
+          enhancer-for-youtube
+          languagetool
+          old-reddit-redirect
+          private-relay
+          return-youtube-dislikes
+          reddit-enhancement-suite
+          tab-stash
+          stylus
+          ublock-origin
+          vimium
+        ];
 
         settings = {
           "browser.uidensity" = 0;
