@@ -8,6 +8,10 @@
     gnome.enable = true;
   };
 
+  xdg.configFile."environments.d/envvars.conf".text = ''
+    PATH="$PATH:/home/haseebmajid/.nix-profile/bin"
+  '';
+
   cli.programs = {
     git = {
       allowedSigners = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGOEtfQ0znAH8QyB4Z5FzRPa9iKkBhuriEpqyfoEkiv+ haseeb.majid@imaginecurve.com";
