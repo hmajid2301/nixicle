@@ -16,6 +16,7 @@ in {
 
   config = mkIf cfg.enable {
     programs.rofi = {
+      catppuccin.enable = false;
       enable = true;
       package = cfg.package;
       terminal = "${pkgs.foot}/bin/foot";
