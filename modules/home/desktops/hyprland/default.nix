@@ -4,7 +4,9 @@
   lib,
   ...
 }:
-with lib; let
+with lib;
+with lib.nixicle;
+with types; let
   cfg = config.desktops.hyprland;
 in {
   imports = with inputs;

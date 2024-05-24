@@ -35,6 +35,7 @@
     ];
     blacklistedKernelModules = [
       "ath12k_pci"
+      "ath12k"
     ];
 
     supportedFilesystems = lib.mkForce ["btrfs"];
