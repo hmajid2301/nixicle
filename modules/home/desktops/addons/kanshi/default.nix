@@ -20,18 +20,18 @@ in {
       enable = true;
       package = pkgs.kanshi;
       systemdTarget = "";
-      profiles = {
-        undocked = {
-          outputs = [
+      settings = [
+        {
+          profile.name = "undocked";
+          profile.outputs = [
             {
               criteria = "eDP-1";
-              scale = 1.0;
-              status = "enable";
             }
           ];
-        };
-        home_office_laptop_docked = {
-          outputs = [
+        }
+        {
+          profile.name = "home_office_laptop_docked";
+          profile.outputs = [
             {
               criteria = "GIGA-BYTE TECHNOLOGY CO. LTD. Gigabyte M32U  (DP-5 via HDMI)";
               position = "3840,0";
@@ -47,9 +47,10 @@ in {
               status = "disable";
             }
           ];
-        };
-        home_office = {
-          outputs = [
+        }
+        {
+          profile.name = "home_office";
+          profile.outputs = [
             {
               criteria = "GIGA-BYTE TECHNOLOGY CO. LTD. Gigabyte M32U  (DP-5 via HDMI)";
               position = "3840,0";
@@ -61,10 +62,10 @@ in {
               mode = "3840x2160@60Hz";
             }
           ];
-        };
-
-        desktop = {
-          outputs = [
+        }
+        {
+          profile.name = "desktop";
+          profile.outputs = [
             {
               criteria = "GIGA-BYTE TECHNOLOGY CO., LTD. Gigabyte M32U 21351B000087";
               position = "3840,0";
@@ -76,26 +77,8 @@ in {
               mode = "3840x2160@60Hz";
             }
           ];
-        };
-        home_office_alt = {
-          outputs = [
-            {
-              criteria = "eDP-1";
-              status = "disable";
-            }
-            {
-              criteria = "DP-5";
-              position = "3840,0";
-              mode = "3840x2160@143.85600Hz";
-            }
-            {
-              criteria = "DP-4";
-              position = "0,0";
-              mode = "3840x2160@60Hz";
-            }
-          ];
-        };
-      };
+        }
+      ];
     };
   };
 }

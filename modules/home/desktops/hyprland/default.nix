@@ -15,6 +15,7 @@ in {
 
   options.desktops.hyprland = {
     enable = mkEnableOption "enable hyprland window manager";
+    execOnceExtras = mkOpt (listOf str) [] "Extra programs to exec once";
   };
 
   # FIX: this hack to use nix catppuccin module: https://github.com/catppuccin/nix/issues/102
