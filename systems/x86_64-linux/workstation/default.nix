@@ -30,8 +30,13 @@
 
   boot = {
     kernelParams = [
+      "mem_sleep_default=deep"
       "resume_offset=533760"
     ];
+    blacklistedKernelModules = [
+      "ath12k_pci"
+    ];
+
     supportedFilesystems = lib.mkForce ["btrfs"];
     kernelPackages = pkgs.linuxPackages_latest;
     resumeDevice = "/dev/disk/by-label/nixos";

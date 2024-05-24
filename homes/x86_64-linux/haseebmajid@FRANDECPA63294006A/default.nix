@@ -1,14 +1,20 @@
-{...}: {
+{
   roles = {
     desktop.enable = true;
   };
 
   desktops = {
-    hyprland.enable = true;
+    hyprland = {
+      enable = true;
+      execOnceExtras = [
+        "warp-taskbar"
+      ];
+    };
+
     gnome.enable = true;
   };
 
-  xdg.configFile."environments.d/envvars.conf".text = ''
+  xdg.configFile."environment.d/envvars.conf".text = ''
     PATH="$PATH:/home/haseebmajid/.nix-profile/bin"
   '';
 

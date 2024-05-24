@@ -12,6 +12,7 @@
     kubernetes.enable = true;
   };
 
+  services.nixicle.jellyfin.enable = true;
   security.sudo.wheelNeedsPassword = false;
   boot = {
     supportedFilesystems = lib.mkForce ["btrfs"];
