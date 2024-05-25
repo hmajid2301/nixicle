@@ -16,12 +16,12 @@ in {
 
   config = mkIf cfg.enable {
     programs.rofi = {
+      # INFO: Cannot overwrite font atm.
       catppuccin.enable = false;
+
       enable = true;
       package = cfg.package;
       terminal = "${pkgs.foot}/bin/foot";
-      # INFO: Cannot overwrite font atm.
-      # catppuccin.enable = true;
       font = "MonoLisa Nerd Font 12";
       extraConfig = {
         modi = "run,drun,window";
