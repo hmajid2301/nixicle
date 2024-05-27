@@ -12,6 +12,7 @@
     kubernetes.enable = true;
   };
 
+  systemd.services.NetworkManager-wait-online.enable = false;
   services.nixicle.jellyfin.enable = true;
   security.sudo.wheelNeedsPassword = false;
   boot = {
