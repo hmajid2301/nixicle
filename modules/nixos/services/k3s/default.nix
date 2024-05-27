@@ -21,10 +21,9 @@ in {
       k3s = {
         enable = true;
         # tokenFile = config.sops.secrets.k3s_token.path;
-
         role = mkIf (cfg.role == "agent") "agent";
         # TODO: how can we set this programmatically
-        serverAddr = mkIf (cfg.role == "agent") "https://primary:6443";
+        serverAddr = mkIf (cfg.role == "agent") "https://frameworkedup:6443";
       };
     };
   };
