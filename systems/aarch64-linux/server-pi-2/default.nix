@@ -6,7 +6,10 @@
   ];
 
   roles = {
-    kubernetes.enable = true;
+    kubernetes = {
+      enable = true;
+      role = "agent";
+    };
   };
 
   system.boot.enable = lib.mkForce false;
