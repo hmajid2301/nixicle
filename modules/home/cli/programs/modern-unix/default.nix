@@ -45,6 +45,7 @@ in {
       entr
       erdtree
       fd
+      go-task
       gdu
       gping
       grex
