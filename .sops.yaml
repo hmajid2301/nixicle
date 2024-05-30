@@ -21,7 +21,8 @@ keys:
   - &hosts:
     - &framework age1kzxen8ynw28h935jnjc9t8cx4p8mv6angk5suvkp6ntu4am9pe4smfw22z
     - &workstation age1fy626vylmpya4t4gyqx6kw4ggn7j79upjgt4jka2gq6lysluhd0s8ytqls
-    - &frameworkedup age1zzqx780edy889yp2em52l2phwflukrkreecyyuqmslaawzds54fs04vczp
+    - &mainboard age1zzqx780edy889yp2em52l2phwflukrkreecyyuqmslaawzds54fs04vczp
+    - &um790 age1wtkcl8gwwumvzf78ttqy4gh2pwzz724glugs5wah2fcudgfh5pxq3urkpg
 
 creation_rules:
   - path_regex: modules/nixos/roles/kubernetes/secrets.ya?ml$
@@ -29,20 +30,20 @@ creation_rules:
     - age:
       - *workstation
       - *framework
-      - *frameworkedup
+      - *mainboard
+      - *um790
 
   - path_regex: modules/nixos/secrets.ya?ml$
     key_groups:
     - age:
       - *framework
-      - *frameworkedup
+      - *mainboard
       - *workstation
-      - *haseeb_workstation
+      - *um790
 
   - path_regex: modules/home/secrets.ya?ml$
     key_groups:
     - age:
       - *framework
-      - *frameworkedup
       - *haseeb_workstation
       - *haseebmajid_curve
