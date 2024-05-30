@@ -60,7 +60,8 @@ in {
             "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1"
             "${pkgs.pyprland}/bin/pypr"
             "${pkgs.clipse}/bin/clipse -listen"
-            "solaar -w hide"
+            "${pkgs.kdePackages.kdeconnect-kde}/bin/kdeconnect-indicator"
+            "${pkgs.solaar}/bin/solaar -w hide"
           ]
           ++ cfg.execOnceExtras;
       };
