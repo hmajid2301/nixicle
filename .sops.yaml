@@ -21,7 +21,7 @@ keys:
   - &hosts:
     - &framework age1kzxen8ynw28h935jnjc9t8cx4p8mv6angk5suvkp6ntu4am9pe4smfw22z
     - &workstation age1fy626vylmpya4t4gyqx6kw4ggn7j79upjgt4jka2gq6lysluhd0s8ytqls
-    - &mainboard age1zzqx780edy889yp2em52l2phwflukrkreecyyuqmslaawzds54fs04vczp
+    - &mainboard age1rpqz5vl9tkgje46h43sjgthmqjcltwgm8fm9xdm9yk2ugemuqqrs6jpr43
     - &um790 age1wtkcl8gwwumvzf78ttqy4gh2pwzz724glugs5wah2fcudgfh5pxq3urkpg
 
 creation_rules:
@@ -32,14 +32,14 @@ creation_rules:
       - *framework
       - *mainboard
       - *um790
+      - *haseeb_workstation
 
   - path_regex: modules/nixos/secrets.ya?ml$
     key_groups:
     - age:
-      - *framework
-      - *mainboard
       - *workstation
-      - *um790
+      - *framework
+      - *haseeb_workstation
 
   - path_regex: modules/home/secrets.ya?ml$
     key_groups:
