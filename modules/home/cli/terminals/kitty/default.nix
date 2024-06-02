@@ -28,6 +28,7 @@ in {
         enable_audio_bell = false;
         url_style = "none";
         underline_hyperlinks = "never";
+        copy_on_select = "clipboard";
       };
     };
   };

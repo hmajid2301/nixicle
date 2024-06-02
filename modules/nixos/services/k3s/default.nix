@@ -21,9 +21,10 @@ in {
       k3s = {
         enable = true;
         tokenFile = config.sops.secrets.k3s_token.path;
+        extraFlags = ''--kubelet-arg "node-ip=0.0.0.0"'';
         role = mkIf (cfg.role == "agent") "agent";
         # TODO: how can we set this programmatically
-        serverAddr = mkIf (cfg.role == "agent") "https://frameworkedup:6443";
+        serverAddr = mkIf (cfg.role == "agent") "https://um790:6443";
       };
     };
   };
