@@ -11,12 +11,11 @@
   roles = {
     kubernetes = {
       enable = true;
-      role = "agent";
+      role = "server";
     };
   };
 
-  systemd.services.NetworkManager-wait-online.enable = false;
-  security.sudo.wheelNeedsPassword = false;
+  services.nixicle.jellyfin.enable = true;
 
   boot = {
     supportedFilesystems = lib.mkForce ["btrfs"];

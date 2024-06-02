@@ -22,6 +22,11 @@ in {
       getty.autologinUser = "nixos";
     };
 
+    networking.interfaces.tailscale0.wakeOnLan.enable = true;
+
+    systemd.services.NetworkManager-wait-online.enable = false;
+    security.sudo.wheelNeedsPassword = false;
+
     user = {
       name = "nixos";
       initialPassword = "1";
