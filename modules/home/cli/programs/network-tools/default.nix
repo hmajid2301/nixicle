@@ -14,7 +14,6 @@ in {
 
   config = mkIf cfg.enable {
     home.packages = with pkgs; [
-      # wireshark
       tshark
       termshark
       kubeshark

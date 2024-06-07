@@ -24,16 +24,6 @@ in {
 
     keymaps = [
       {
-        action = "<cmd>LazyGit<cr>";
-        key = "<leader>gg";
-        options = {
-          desc = "Open LazyGit";
-        };
-        mode = [
-          "n"
-        ];
-      }
-      {
         action = ''<cmd>lua function() require("telescope").extensions.git_worktree.git_worktrees() end<cr>'';
         key = "<leader>gt";
         options = {
@@ -77,7 +67,7 @@ in {
         enable = true;
       };
 
-      lazygit = {
+      neogit = {
         enable = true;
       };
 

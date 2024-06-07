@@ -13,10 +13,6 @@ in {
   };
 
   config = mkIf cfg.enable {
-    programs.fish.shellInit = ''
-      fish_add_path ${t-smart-manager}/share/tmux-plugins/t-smart-tmux-session-manager/bin/
-    '';
-
     home.packages = with pkgs; [
       lsof
       # for tmux super fingers
@@ -37,13 +33,6 @@ in {
         better-mouse-mode
         yank
         tmux-thumbs
-        {
-          plugin = t-smart-manager-tmux-session-manager;
-          extraConfig = ''
-            set -g @t-fzf-prompt '  '
-            set -g @t-bind "T"
-          '';
-        }
         {
           plugin = mkTmuxPlugin {
             pluginName = "tmux-super-fingers";

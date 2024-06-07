@@ -16,6 +16,7 @@
     plugins.telescope = {
       enable = true;
       extensions.fzf-native.enable = true;
+      extensions.media-files.enable = true;
 
       keymaps = {
         "<leader>ff" = {

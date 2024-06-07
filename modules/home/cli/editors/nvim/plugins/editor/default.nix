@@ -117,6 +117,9 @@ in {
     plugins = {
       arrow = {
         enable = true;
+        settings = {
+          leader_key = "<Space>h";
+        };
       };
 
       better-escape = {
@@ -195,9 +198,8 @@ in {
         enable = true;
 
         registrations = {
-          "<leader>f" = "+file/find";
-          "<leader>h" = "+harpoon";
-          "<leader>s" = "+spectre";
+          "<leader>f" = "file/find";
+          "<leader>s" = "spectre";
         };
       };
 
@@ -209,12 +211,18 @@ in {
       };
     };
 
-    extraPlugins = [
+    extraPlugins = with pkgs.vimPlugins; [
+      aerial-nvim
+      outline-nvim
       gx-nvim
     ];
 
-    extraConfigLua = ''
-      require("gx").setup()
-    '';
+    extraConfigLua =
+      # lua
+      ''
+        require("outline").setup()
+        require("aerial").setup()
+        require("gx").setup()
+      '';
   };
 }
