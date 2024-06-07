@@ -25,6 +25,16 @@
           "n"
         ];
       }
+      {
+        action = "<cmd> ObsidianToggleCheckbox <CR>";
+        key = "<leader>oc";
+        options = {
+          desc = "Toggle checkbox";
+        };
+        mode = [
+          "n"
+        ];
+      }
     ];
 
     plugins = {

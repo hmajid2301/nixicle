@@ -56,7 +56,6 @@ in {
             "systemctl --user import-environment QT_QPA_PLATFORMTHEME"
             "${pkgs.swaynotificationcenter}/bin/swaync"
             "${pkgs.kanshi}/bin/kanshi"
-            "${pkgs.waybar}/bin/waybar"
             "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1"
             "${pkgs.pyprland}/bin/pypr"
             "${pkgs.clipse}/bin/clipse -listen"

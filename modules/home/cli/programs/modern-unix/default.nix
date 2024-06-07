@@ -52,6 +52,7 @@ in {
       hyperfine
       hexyl
       jqp
+      jnv
       ouch
       silver-searcher
       procs

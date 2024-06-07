@@ -12,7 +12,7 @@
 
     keymaps = [
       {
-        action =
+        action.__raw =
           # lua
           ''
             function()
@@ -27,7 +27,6 @@
             end
           '';
         key = "]q";
-        lua = true;
         options = {
           desc = "Next quickfix item";
         };
@@ -36,7 +35,7 @@
         ];
       }
       {
-        action =
+        action.__raw =
           # lua
           ''
             function()
@@ -51,7 +50,6 @@
             end
           '';
         key = "[q";
-        lua = true;
         options = {
           desc = "Previous quickfix item";
         };
@@ -84,16 +82,6 @@
         key = "<leader>xL";
         options = {
           desc = "Location list";
-        };
-        mode = [
-          "n"
-        ];
-      }
-      {
-        action = "<cmd>TroubleToggle quickfix<cr>";
-        key = "<leader>xQ";
-        options = {
-          desc = "Quickfix list";
         };
         mode = [
           "n"
