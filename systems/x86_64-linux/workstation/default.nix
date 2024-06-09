@@ -23,6 +23,8 @@
     };
   };
 
+  services.home-assistant.enable = true;
+  services.home-assistant.config = {};
   environment.systemPackages = with pkgs;
   with pkgs.nixicle; [
     it87
