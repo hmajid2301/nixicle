@@ -23,8 +23,6 @@ in {
       getty.autologinUser = "nixos";
     };
 
-    networking.interfaces.tailscale0.wakeOnLan.enable = true;
-
     systemd.services.NetworkManager-wait-online.enable = false;
     systemd.network.wait-online.enable = false;
 
