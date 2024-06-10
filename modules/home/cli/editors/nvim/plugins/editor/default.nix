@@ -215,6 +215,7 @@ in {
       aerial-nvim
       outline-nvim
       gx-nvim
+      tmux-nvim
     ];
 
     extraConfigLua =
@@ -223,6 +224,7 @@ in {
         require("outline").setup()
         require("aerial").setup()
         require("gx").setup()
+        require("tmux").setup()
       '';
   };
 }

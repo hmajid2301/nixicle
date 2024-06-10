@@ -46,7 +46,7 @@ in {
           remember-recent-files = false;
         };
         "com/github/stunkymonkey/nautilus-open-any-terminal" = {
-          terminal = "foot";
+          terminal = "kitty";
         };
       };
     };

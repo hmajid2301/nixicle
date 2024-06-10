@@ -15,7 +15,6 @@
     };
   };
 
-  services.nixicle.jellyfin.enable = true;
   networking.interfaces.enp1s0.wakeOnLan.enable = true;
 
   boot = {
