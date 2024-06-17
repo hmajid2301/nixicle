@@ -20,6 +20,76 @@ in {
 
     keymaps = [
       {
+        action = "<cmd>ToggleTermToggleAll<cr>";
+        key = "<leader>gg";
+        mode = ["n"];
+      }
+      {
+        action = "<cmd>lua require('smart-splits').resize_left()<cr>";
+        key = "<A-h>";
+        mode = ["n"];
+      }
+      {
+        action = "<cmd>lua require('smart-splits').resize_down()<cr>";
+        key = "<A-j>";
+        mode = ["n"];
+      }
+      {
+        action = "<cmd>lua require('smart-splits').resize_up()<cr>";
+        key = "<A-k>";
+        mode = ["n"];
+      }
+      {
+        action = "<cmd>lua require('smart-splits').resize_right()<cr>";
+        key = "<A-l>";
+        mode = ["n"];
+      }
+      {
+        action = "<cmd>lua require('smart-splits').move_cursor_left()<cr>";
+        key = "<C-h>";
+        mode = ["n"];
+      }
+      {
+        action = "<cmd>lua require('smart-splits').move_cursor_down()<cr>";
+        key = "<C-j>";
+        mode = ["n"];
+      }
+      {
+        action = "<cmd>lua require('smart-splits').move_cursor_up()<cr>";
+        key = "<C-k>";
+        mode = ["n"];
+      }
+      {
+        action = "<cmd>lua require('smart-splits').move_cursor_right()<cr>";
+        key = "<C-l>";
+        mode = ["n"];
+      }
+      {
+        action = "<cmd>lua require('smart-splits').move_cursor_previous()<cr>";
+        key = "<C-\\>";
+        mode = ["n"];
+      }
+      {
+        action = "<cmd>lua require('smart-splits').swap_buf_left()<cr>";
+        key = "<leader><leader>h";
+        mode = ["n"];
+      }
+      {
+        action = "<cmd>lua require('smart-splits').swap_buf_down()<cr>";
+        key = "<leader><leader>j";
+        mode = ["n"];
+      }
+      {
+        action = "<cmd>lua require('smart-splits').swap_buf_up()<cr>";
+        key = "<leader><leader>k";
+        mode = ["n"];
+      }
+      {
+        action = "<cmd>lua require('smart-splits').swap_buf_right()<cr>";
+        key = "<leader><leader>l";
+        mode = ["n"];
+      }
+      {
         action = "<cmd>lua require('flash').jump()<cr>";
         key = "<leader>ls";
         options = {
@@ -190,6 +260,10 @@ in {
         enable = true;
       };
 
+      smart-splits = {
+        enable = true;
+      };
+
       undotree = {
         enable = true;
       };
@@ -203,10 +277,11 @@ in {
         };
       };
 
-      zellij = {
+      toggleterm = {
         enable = true;
         settings = {
-          vimTmuxNavigatorKeybinds = true;
+          shell = "fish";
+          direction = "float";
         };
       };
     };
@@ -224,7 +299,22 @@ in {
         require("outline").setup()
         require("aerial").setup()
         require("gx").setup()
-        require("tmux").setup()
+        -- TODO: check if smart-splits yanks from tmux
+        -- require("tmux").setup()
+
+        -- function _G.set_terminal_keymaps()
+        --   local opts = {buffer = 0}
+        --   vim.keymap.set('t', '<esc>', [[<C-\><C-n>]], opts)
+        --   vim.keymap.set('t', 'jk', [[<C-\><C-n>]], opts)
+        --   vim.keymap.set('t', '<C-h>', [[<Cmd>wincmd h<CR>]], opts)
+        --   vim.keymap.set('t', '<C-j>', [[<Cmd>wincmd j<CR>]], opts)
+        --   vim.keymap.set('t', '<C-k>', [[<Cmd>wincmd k<CR>]], opts)
+        --   vim.keymap.set('t', '<C-l>', [[<Cmd>wincmd l<CR>]], opts)
+        --   vim.keymap.set('t', '<C-w>', [[<C-\><C-n><C-w>]], opts)
+        -- end
+
+        -- if you only want these mappings for toggle term use term://*toggleterm#* instead
+        vim.cmd('autocmd! TermOpen term://* lua set_terminal_keymaps()')
       '';
   };
 }

@@ -21,7 +21,6 @@ in {
 
       settings = {
         shell = "fish";
-        background_opacity = "0.9";
         window_padding_width = 10;
         scrollback_lines = 10000;
         show_hyperlink_targets = "yes";

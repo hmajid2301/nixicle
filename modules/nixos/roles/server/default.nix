@@ -25,11 +25,20 @@ in {
 
     systemd.services.NetworkManager-wait-online.enable = false;
     systemd.network.wait-online.enable = false;
+    systemd.tmpfiles.rules = [
+      "L+ /usr/local/bin - - - - /run/current-system/sw/bin/"
+    ];
+
+    services.openiscsi = {
+      enable = true;
+      name = "<some-name>";
+    };
 
     environment =
       {
-        # List packages installed in system profile.
-        systemPackages = map lib.lowPrio [
+        systemPackages = [
+          pkgs.nfs-utils
+          pkgs.openiscsi
           pkgs.dnsutils
           pkgs.tmux
         ];

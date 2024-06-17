@@ -1,4 +1,8 @@
-{pkgs, ...}: let
+{
+  pkgs,
+  lib,
+  ...
+}: let
   screensharing = pkgs.writeScriptBin "screensharing" ''
     #!/usr/bin/env bash
     sleep 1
@@ -12,6 +16,10 @@
 in {
   roles = {
     desktop.enable = true;
+  };
+
+  wayland.windowManager.hyprland.keyBinds = {
+    bind."SUPER, Return" = lib.mkForce "exec, nixGLIntel kitty";
   };
 
   desktops = {
