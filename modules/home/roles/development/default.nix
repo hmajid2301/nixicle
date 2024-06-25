@@ -13,7 +13,6 @@ in {
   config = mkIf cfg.enable {
     cli = {
       editors.nvim.enable = true;
-      multiplexers.tmux.enable = true;
       multiplexers.zellij.enable = true;
 
       programs = {
