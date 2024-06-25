@@ -21,17 +21,10 @@ in {
       nixicle.avahi.enable = true;
       nixicle.tailscale.enable = true;
       getty.autologinUser = "nixos";
-    };
-
-    systemd.services.NetworkManager-wait-online.enable = false;
-    systemd.network.wait-online.enable = false;
-    systemd.tmpfiles.rules = [
-      "L+ /usr/local/bin - - - - /run/current-system/sw/bin/"
-    ];
-
-    services.openiscsi = {
-      enable = true;
-      name = "<some-name>";
+      openiscsi = {
+        enable = true;
+        name = "<some-name>";
+      };
     };
 
     environment =
@@ -51,19 +44,25 @@ in {
         stub-ld.enable = lib.mkDefault false;
       };
 
-    security.sudo.wheelNeedsPassword = false;
-    # Only allow members of the wheel group to execute sudo by setting the executable’s permissions accordingly. This prevents users that are not members of wheel from exploiting vulnerabilities in sudo such as CVE-2021-3156.
-    security.sudo.execWheelOnly = true;
-    # Don't lecture the user. Less mutable state.
-    security.sudo.extraConfig = ''
-      Defaults lecture = never
-    '';
+    security = {
+      sudo = {
+        wheelNeedsPassword = false;
+        # Only allow members of the wheel group to execute sudo by setting the executable’s permissions accordingly. This prevents users that are not members of wheel from exploiting vulnerabilities in sudo such as CVE-2021-3156.
+        execWheelOnly = true;
+        # Don't lecture the user. Less mutable state.
+        extraConfig = ''
+          Defaults lecture = never
+        '';
+      };
+    };
 
     # Notice this also disables --help for some commands such es nixos-rebuild
-    documentation.enable = lib.mkDefault false;
-    documentation.info.enable = lib.mkDefault false;
-    documentation.man.enable = lib.mkDefault false;
-    documentation.nixos.enable = lib.mkDefault false;
+    documentation = {
+      enable = lib.mkDefault false;
+      info.enable = lib.mkDefault false;
+      man.enable = lib.mkDefault false;
+      nixos.enable = lib.mkDefault false;
+    };
 
     # No need for fonts on a server
     fonts.fontconfig.enable = lib.mkDefault false;
@@ -80,6 +79,12 @@ in {
     users.mutableUsers = false;
 
     systemd = {
+      services.NetworkManager-wait-online.enable = false;
+      network.wait-online.enable = false;
+      tmpfiles.rules = [
+        "L+ /usr/local/bin - - - - /run/current-system/sw/bin/"
+      ];
+
       # Given that our systems are headless, emergency mode is useless.
       # We prefer the system to attempt to continue booting so
       # that we can hopefully still access it remotely.

@@ -7,6 +7,7 @@
 # age-keygen -y ~/.config/sops/age/keys.txt
 
 # Make a host public key:
+# nix-shell -p ssh-to-age
 # ssh-to-age -i /etc/ssh/ssh_host_ed25519_key.pub
 
 # Add secrets
@@ -24,6 +25,7 @@ keys:
     - &mainboard age1rpqz5vl9tkgje46h43sjgthmqjcltwgm8fm9xdm9yk2ugemuqqrs6jpr43
     - &um790 age1wtkcl8gwwumvzf78ttqy4gh2pwzz724glugs5wah2fcudgfh5pxq3urkpg
     - &ms01 age1uswlqzs3pf99r6e8qq5d3eh44sufe5tdczmfqygeam7vfr96fugqa0pps7
+    - &s100 age19pl6jt7ekljfjww4g9anzafdxj0e52mnfnsyd26u5xdemfksqpwsnfwrs5
 
 creation_rules:
   - path_regex: modules/nixos/roles/kubernetes/secrets.ya?ml$
@@ -34,6 +36,7 @@ creation_rules:
       - *mainboard
       - *um790
       - *ms01
+      - *s100
       - *haseeb_workstation
 
   - path_regex: modules/nixos/secrets.ya?ml$
