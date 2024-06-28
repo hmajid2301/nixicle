@@ -1,4 +1,8 @@
-{config, ...}: {
+{
+  config,
+  pkgs,
+  ...
+}: {
   programs.nixvim = {
     files = {
       "ftplugin/markdown.lua" = {
@@ -42,13 +46,24 @@
           };
         };
       };
-    };
 
-    plugins.treesitter = {
-      grammarPackages = with config.programs.nixvim.plugins.treesitter.package.builtGrammars; [
-        markdown
-        markdown_inline
-      ];
+      lint = {
+        lintersByFt = {
+          md = ["markdownlint-cli2"];
+        };
+        linters = {
+          markdownlint-cli2 = {
+            cmd = "${pkgs.markdownlint-cli2}/bin/markdownlint-cli2";
+          };
+        };
+      };
+
+      treesitter = {
+        grammarPackages = with config.programs.nixvim.plugins.treesitter.package.builtGrammars; [
+          markdown
+          markdown_inline
+        ];
+      };
     };
   };
 }

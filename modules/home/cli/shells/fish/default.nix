@@ -23,6 +23,7 @@ in {
         set -x GOPATH $XDG_DATA_HOME/go
         set -x GOPRIVATE "git.curve.tools,go.curve.tools,gitlab.com/imaginecurve"
         # set -x GONOSUMDB "git.curve.tools,go.curve.tools,gitlab.com/imaginecurve"
+        set -gx PATH $PATH $HOME/.krew/bin
         fish_add_path --path --append $GOPATH/bin/
         fish_add_path --path --append /usr/local/bin /usr/bin ~/.local/bin
 

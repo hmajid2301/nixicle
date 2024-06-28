@@ -12,7 +12,7 @@ in {
   programs.nixvim = {
     keymaps = [
       {
-        action = "<cmd>require('maximize').toggle()<cr>";
+        action = "<cmd>Maximize<cr>";
         key = "<leader>z";
         options = {
           desc = "Toggle maximize window";

@@ -9,6 +9,11 @@
     pname = "gx.nvim";
     src = inputs.gx-nvim;
   };
+  vim-zellij-navigator = pkgs.vimUtils.buildVimPlugin {
+    version = "latest";
+    pname = "vim-zellij-navigator.nvim";
+    src = inputs.vim-zellij-navigator;
+  };
 in {
   imports = lib.snowfall.fs.get-non-default-nix-files ./.;
 
@@ -20,23 +25,8 @@ in {
 
     keymaps = [
       {
-        action = "<cmd>lua require('smart-splits').resize_left()<cr>";
-        key = "<A-h>";
-        mode = ["n"];
-      }
-      {
-        action = "<cmd>lua require('smart-splits').resize_down()<cr>";
-        key = "<A-j>";
-        mode = ["n"];
-      }
-      {
-        action = "<cmd>lua require('smart-splits').resize_up()<cr>";
-        key = "<A-k>";
-        mode = ["n"];
-      }
-      {
-        action = "<cmd>lua require('smart-splits').resize_right()<cr>";
-        key = "<A-l>";
+        action = "<cmd>lua require('smart-splits').start_resize_mode()<cr>";
+        key = "<leader>mr";
         mode = ["n"];
       }
       {
@@ -271,23 +261,18 @@ in {
           "<leader>s" = "spectre";
         };
       };
-
-      zellij = {
-        enable = true;
-        settings = {
-          vimTmuxNavigatorKeybinds = true;
-        };
-      };
     };
 
     extraPlugins = [
       gx-nvim
+      vim-zellij-navigator
     ];
 
     extraConfigLua =
       # lua
       ''
         require("gx").setup()
+        require('vim-zellij-navigator').setup()
       '';
   };
 }

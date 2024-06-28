@@ -115,6 +115,10 @@
       url = "github:chrishrb/gx.nvim";
       flake = false;
     };
+    vim-zellij-navigator = {
+      url = "github:hiasr/vim-zellij-navigator.nvim";
+      flake = false;
+    };
     maximize-nvim = {
       url = "github:declancm/maximize.nvim";
       flake = false;
