@@ -1,4 +1,8 @@
-{config, ...}: {
+{
+  config,
+  pkgs,
+  ...
+}: {
   programs.nixvim = {
     files = {
       "ftplugin/yaml.lua" = {
@@ -10,24 +14,39 @@
       };
     };
 
-    plugins.lsp.servers.yamlls = {
-      enable = true;
-      extraOptions = {
-        capabilities = {
-          textDocument = {
-            foldingRange = {
-              dynamicRegistration = false;
-              lineFoldingOnly = true;
+    plugins = {
+      lsp.servers.yamlls = {
+        enable = true;
+        extraOptions = {
+          capabilities = {
+            textDocument = {
+              foldingRange = {
+                dynamicRegistration = false;
+                lineFoldingOnly = true;
+              };
             };
           };
         };
       };
-    };
 
-    plugins.treesitter = {
-      grammarPackages = with config.programs.nixvim.plugins.treesitter.package.builtGrammars; [
-        yaml
-      ];
+      lint = {
+        lintersByFt = {
+          yml = ["yamllint"];
+          yaml = ["yamllint"];
+        };
+        linters = {
+          yamllint = {
+            cmd = "${pkgs.yamllint}/bin/yamllint";
+            args = ["-formatter" "retain_line_breaks=true"];
+          };
+        };
+      };
+
+      treesitter = {
+        grammarPackages = with config.programs.nixvim.plugins.treesitter.package.builtGrammars; [
+          yaml
+        ];
+      };
     };
   };
 }

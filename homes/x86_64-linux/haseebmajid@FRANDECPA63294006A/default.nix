@@ -29,6 +29,7 @@ in {
         "warp-taskbar"
         "blueman-applet"
         "${screensharing}/bin/screensharing"
+        "nm-applet"
       ];
     };
 

@@ -13,20 +13,10 @@ in {
   programs.nixvim = {
     keymaps = [
       {
-        action = "<cmd>CopilotChat<CR>";
-        key = "<leader>as";
-        options = {
-          desc = "Show Coilot chat";
-        };
-        mode = [
-          "n"
-        ];
-      }
-      {
-        action = "<cmd>CopilotChatClose<CR>";
+        action = "<cmd>CopilotChatToggle<CR>";
         key = "<leader>ac";
         options = {
-          desc = "Close Copilot chat";
+          desc = "Toggle Coilot chat";
         };
         mode = [
           "n"
@@ -36,7 +26,7 @@ in {
         action = "<cmd>ChatGPT<CR>";
         key = "<leader>ag";
         options = {
-          desc = "Show ChatGPT";
+          desc = "Toggle ChatGPT";
         };
         mode = [
           "n"

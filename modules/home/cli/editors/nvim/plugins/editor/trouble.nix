@@ -58,7 +58,7 @@
         ];
       }
       {
-        action = "<cmd>TroubleToggle document_diagnostics<cr>";
+        action = "<cmd>Trouble diagnostics toggle filter.buf=0<cr>";
         key = "<leader>xx";
         options = {
           desc = "Document diagnostics";
@@ -68,7 +68,7 @@
         ];
       }
       {
-        action = "<cmd>TroubleToggle workspace_diagnostics<cr>";
+        action = "<cmd>Trouble diagnostics toggle<cr>";
         key = "<leader>xX";
         options = {
           desc = "Workplace diagnostics";
@@ -78,7 +78,7 @@
         ];
       }
       {
-        action = "<cmd>TroubleToggle loclist<cr>";
+        action = "<cmd>Trouble loclist toggle<cr>";
         key = "<leader>xL";
         options = {
           desc = "Location list";
@@ -88,7 +88,7 @@
         ];
       }
       {
-        action = "<cmd>TroubleToggle quickfix<cr>";
+        action = "<cmd>Trouble qflist toggle<cr>";
         key = "<leader>xQ";
         options = {
           desc = "Quickfix list";
