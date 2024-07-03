@@ -131,6 +131,9 @@
       url = "github:aaronhallaert/advanced-git-search.nvim";
       flake = false;
     };
+    zjstatus = {
+      url = "github:dj95/zjstatus";
+    };
   };
 
   outputs = inputs: let

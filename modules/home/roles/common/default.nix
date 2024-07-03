@@ -34,7 +34,6 @@ in {
 
     cli = {
       terminals.foot.enable = true;
-      terminals.kitty.enable = true;
       shells.fish.enable = true;
     };
     programs = {

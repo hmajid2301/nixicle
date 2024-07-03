@@ -21,7 +21,7 @@ in {
 
       enable = true;
       package = cfg.package;
-      terminal = "${pkgs.kitty}/bin/kitty";
+      terminal = "${pkgs.foot}/bin/foot";
       font = "MonoLisa Nerd Font 12";
       extraConfig = {
         modi = "run,drun,window";

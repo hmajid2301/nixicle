@@ -221,6 +221,9 @@
               left = 0;
               right = 0;
             };
+            separator = {
+              left = "";
+            };
             color = {
               fg = "#2d2c3c";
               bg = "#8bc2f0";
@@ -304,6 +307,9 @@
             padding = {
               left = 0;
               right = 0;
+            };
+            separator = {
+              left = "";
             };
             color = {
               fg = "#2d2c3c";

@@ -35,7 +35,7 @@ in {
 
     desktops.addons = {
       gtk.enable = true;
-      qt.enable = true;
+      # qt.enable = true;
       kanshi.enable = true;
       rofi.enable = true;
       swaync.enable = true;

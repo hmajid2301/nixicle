@@ -23,7 +23,6 @@ in {
 
     home.packages = with pkgs; [
       lutris
-      cartridges
       bottles
       adwsteamgtk
       steam

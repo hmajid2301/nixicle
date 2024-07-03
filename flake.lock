@@ -1880,7 +1880,8 @@
         "pyprland": "pyprland",
         "snowfall-lib": "snowfall-lib",
         "sops-nix": "sops-nix",
-        "vim-zellij-navigator": "vim-zellij-navigator"
+        "vim-zellij-navigator": "vim-zellij-navigator",
+        "zjstatus": "zjstatus"
       }
     },
     "rust-overlay": {
@@ -2333,6 +2334,22 @@
       "original": {
         "owner": "hyprwm",
         "repo": "xdg-desktop-portal-hyprland",
+        "type": "github"
+      }
+    },
+    "zjstatus": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1719650330,
+        "narHash": "sha256-spoLPg8Ty7LvypwM4JpuWA06B/TUcIzyjs+N1nzGha4=",
+        "owner": "dj95",
+        "repo": "zjstatus",
+        "rev": "f5fd92d8ebd3152b0db4c85c6ff7b638c6f52d14",
+        "type": "github"
+      },
+      "original": {
+        "owner": "dj95",
+        "repo": "zjstatus",
         "type": "github"
       }
     }
