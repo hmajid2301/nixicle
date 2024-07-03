@@ -18,7 +18,7 @@
 keys:
   - &users:
     - &haseeb_workstation age1emuknmcdwt5letup4eatvjxrrllkd06uqhslvzhwr0jkjj9f8ewquz9xur
-    - &haseebmajid_curve age1f44n6uklwmhfxthpq8k9ztq7q60k6g0u89ratdy3gurc0pqhhqjsx2x75g
+    - &haseebmajid_curve age1rc26esy506fa0kv2y97sjzfk4g2pr0ctv2rzkacewx5d8urns3zqhr7r7n
   - &hosts:
     - &framework age1kzxen8ynw28h935jnjc9t8cx4p8mv6angk5suvkp6ntu4am9pe4smfw22z
     - &workstation age1fy626vylmpya4t4gyqx6kw4ggn7j79upjgt4jka2gq6lysluhd0s8ytqls

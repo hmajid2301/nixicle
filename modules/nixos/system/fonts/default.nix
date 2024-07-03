@@ -27,7 +27,6 @@ in {
           ubuntu_font_family
           jetbrains-mono
           open-sans
-          (joypixels.override {acceptLicense = true;})
         ]
         ++ cfg.fonts;
 

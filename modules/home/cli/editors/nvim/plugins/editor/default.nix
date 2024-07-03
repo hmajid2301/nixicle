@@ -192,11 +192,6 @@ in {
 
       flash = {
         enable = true;
-        modes = {
-          char = {
-            jumpLabels = true;
-          };
-        };
       };
 
       navbuddy = {

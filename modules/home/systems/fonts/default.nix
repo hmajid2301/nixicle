@@ -18,7 +18,6 @@ in {
       fontconfig
       fira-code-nerdfont
       noto-fonts
-      (joypixels.override {acceptLicense = true;})
       noto-fonts-color-emoji
       twitter-color-emoji
       google-fonts

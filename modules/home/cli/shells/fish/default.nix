@@ -17,12 +17,9 @@ in {
     programs.fish = {
       enable = true;
       interactiveShellInit = ''
-        # Open command buffer in vim when alt+e is pressed
-        bind \ee edit_command_buffer
         ${pkgs.nix-your-shell}/bin/nix-your-shell --nom fish | source
         set -x GOPATH $XDG_DATA_HOME/go
         set -x GOPRIVATE "git.curve.tools,go.curve.tools,gitlab.com/imaginecurve"
-        # set -x GONOSUMDB "git.curve.tools,go.curve.tools,gitlab.com/imaginecurve"
         set -gx PATH $PATH $HOME/.krew/bin
         fish_add_path --path --append $GOPATH/bin/
         fish_add_path --path --append /usr/local/bin /usr/bin ~/.local/bin
@@ -78,7 +75,7 @@ in {
 
         pfile = "fzf --preview 'bat --style=numbers --color=always --line-range :500 {}'";
         gdub = "git fetch -p && git branch -vv | grep ': gone]' | awk '{print }' | xargs git branch -D $argv;";
-        tldrf = "${pkgs.tldr}/bin/tldr --list | fzf --preview \"${pkgs.tldr}/bin/tldr {1} --color=always\" --preview-window=right,70% | xargs tldr";
+        tldrf = "${pkgs.tldr}/bin/tldr --list | fzf --preview \"${pkgs.tldr}/bin/tldr {1} --color\" --preview-window=right,70% | xargs tldr";
         dk = "docker kill (docker ps -q)";
         ds = "docker stop (docker ps -a -q)";
         drm = "docker rm (docker ps -a -q)";
@@ -147,26 +144,12 @@ in {
       };
       plugins = [
         {
-          name = "forgit";
-          inherit (pkgs.fishPlugins.forgit) src;
-        }
-        {
           name = "bass";
           inherit (pkgs.fishPlugins.bass) src;
         }
         {
           name = "fzf-fish";
           inherit (pkgs.fishPlugins.fzf-fish) src;
-        }
-        {
-          # TODO: until MR is merged in
-          name = "nix.fish";
-          src = pkgs.fetchFromGitHub {
-            owner = "Animeshz";
-            repo = "nix.fish";
-            rev = "a3256cf49846ee4de072c3a9af7a58aad4021693";
-            sha256 = "sha256-3M0dU30SrdjInp6MWEC0q7MTInrZNtY6Z9mhBw43PKs=";
-          };
         }
         {
           name = "fifc";

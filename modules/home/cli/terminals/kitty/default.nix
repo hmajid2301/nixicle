@@ -15,7 +15,7 @@ in {
     programs.kitty = {
       enable = true;
       font = {
-        name = "MonoLisa";
+        name = "MonoLisa Nerd Font";
         size = 14;
       };
 
