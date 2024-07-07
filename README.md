@@ -20,7 +20,7 @@
  <p></p>
 <img src="./images/terminal.png"></img>
 <p>
-  Screenshot updated: 2024-04-05
+  Screenshot updated: 2024-07-07
 </p>
 <h4>
   :warning: This config repo is constantly changing,
@@ -145,7 +145,7 @@ Some of the main plugins used in my nvim setup include:
 - Winbar: barbecue & navic
 - File Explorer: mini.files and oil.nvim
 - LSP: lsp, nvim-cmp, luasnip, friendly-snippets
-- Git: gitsigns, lazygit
+- Git: gitsigns, neogit, diffview
 - ColourScheme: notkens12 base46 (nvchad catppuccin)
 - Other: telescope (ofc)
 
@@ -155,13 +155,11 @@ Some of the main plugins used in my nvim setup include:
 
 ![terminal](images/terminal.png)
 ![swaync](images/swaync.png)
-![games](images/games.png)
 ![wallpaper](images/wallpaper.png)
 ![monkeytype](images/monkeytype.png)
 
 ### Neovim
 
-![Alpha](images/nvim/alpha.png)
 ![Telescope](images/nvim/telescope.png)
 ![Editor](images/nvim/editor.png)
 ![Go Code](images/nvim/go-code.png)

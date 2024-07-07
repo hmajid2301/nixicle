@@ -10,6 +10,9 @@
       switchbuf = "useopen,uselast";
       termguicolors = true;
       scrolloff = 8;
+      ignorecase = true;
+      smartcase = true;
+
       swapfile = false;
       hlsearch = false;
       incsearch = true;
