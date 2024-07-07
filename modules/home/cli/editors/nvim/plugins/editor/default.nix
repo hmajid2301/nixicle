@@ -183,10 +183,6 @@ in {
         };
       };
 
-      better-escape = {
-        enable = true;
-      };
-
       illuminate = {
         enable = true;
         delay = 200;
