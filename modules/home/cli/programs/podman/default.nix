@@ -13,6 +13,7 @@ in {
   };
   config = mkIf cfg.enable {
     home.packages = with pkgs; [
+      podman
       podman-compose
       podman-tui
       amazon-ecr-credential-helper

@@ -22,7 +22,7 @@ in {
           fira
           fira-go
           fira-code-nerdfont
-          noto-fonts-emoji
+          noto-fonts-color-emoji
           source-serif
           ubuntu_font_family
           jetbrains-mono
@@ -33,10 +33,10 @@ in {
       fontconfig = {
         antialias = true;
         defaultFonts = {
-          serif = ["Source Serif"];
-          sansSerif = ["Fira Sans" "FiraGO"];
-          monospace = ["MonoLisa Nerd Font" "FiraCode Nerd Font Mono" "SauceCodePro Nerd Font Mono" "Noto Color Emoji"];
-          emoji = ["Joypixels" "Noto Color Emoji"];
+          serif = ["Source Serif" "Noto Color Emoji"];
+          sansSerif = ["Fira Sans" "FiraGO" "Noto Color Emoji"];
+          monospace = ["MonoLisa Nerd Font" "Noto Color Emoji"];
+          emoji = ["Noto Color Emoji"];
         };
         enable = true;
         hinting = {

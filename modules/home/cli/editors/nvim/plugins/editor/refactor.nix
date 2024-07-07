@@ -78,12 +78,6 @@
       refactoring = {
         enable = true;
       };
-
-      which-key = {
-        registrations = {
-          "<leader>r" = "+refactor";
-        };
-      };
     };
   };
 }

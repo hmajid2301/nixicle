@@ -46,10 +46,6 @@ in {
     ];
 
     plugins = {
-      which-key.registrations = {
-        "<leader>g" = "git";
-      };
-
       git-worktree = {
         enable = true;
         enableTelescope = true;

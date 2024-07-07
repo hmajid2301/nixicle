@@ -20,13 +20,6 @@
     ];
 
     plugins = {
-      which-key.registrations = {
-        "<leader>c" = "code";
-        "g" = "goto";
-        "]" = "next";
-        "[" = "prev";
-      };
-
       lsp = {
         enable = true;
 

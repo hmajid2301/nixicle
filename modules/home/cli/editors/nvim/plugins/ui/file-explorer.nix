@@ -24,10 +24,6 @@
     ];
 
     plugins = {
-      which-key.registrations = {
-        "<leader>e" = "+tree";
-      };
-
       oil = {
         enable = true;
         settings = {

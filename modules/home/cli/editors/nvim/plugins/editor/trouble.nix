@@ -6,10 +6,6 @@
       };
     };
 
-    plugins.which-key.registrations = {
-      "<leader>x" = "+quickfix";
-    };
-
     keymaps = [
       {
         action.__raw =

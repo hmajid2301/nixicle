@@ -25,6 +25,16 @@ in {
         enable = true;
         name = "<some-name>";
       };
+
+      cockpit = {
+        enable = true;
+        port = 9090;
+        settings = {
+          WebService = {
+            AllowUnencrypted = true;
+          };
+        };
+      };
     };
 
     environment =

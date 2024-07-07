@@ -9,11 +9,6 @@
     pname = "gx.nvim";
     src = inputs.gx-nvim;
   };
-  vim-zellij-navigator = pkgs.vimUtils.buildVimPlugin {
-    version = "latest";
-    pname = "vim-zellij-navigator.nvim";
-    src = inputs.vim-zellij-navigator;
-  };
 in {
   imports = lib.snowfall.fs.get-non-default-nix-files ./.;
 
@@ -167,6 +162,17 @@ in {
           "x"
         ];
       }
+      {
+        action = "<cmd>cclose<cr>";
+        key = "xq";
+        options = {
+          desc = "Close quicklist/loclist";
+        };
+        mode = [
+          "n"
+          "x"
+        ];
+      }
     ];
 
     plugins = {
@@ -247,27 +253,16 @@ in {
       undotree = {
         enable = true;
       };
-
-      which-key = {
-        enable = true;
-
-        registrations = {
-          "<leader>f" = "file/find";
-          "<leader>s" = "spectre";
-        };
-      };
     };
 
     extraPlugins = [
       gx-nvim
-      vim-zellij-navigator
     ];
 
     extraConfigLua =
       # lua
       ''
         require("gx").setup()
-        require('vim-zellij-navigator').setup()
       '';
   };
 }

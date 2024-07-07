@@ -37,6 +37,10 @@
           keymaps = {
             "aa" = "@parameter.outer";
             "ia" = "@parameter.inner";
+            "ah" = "@assignment.outer";
+            "ih" = "@assignment.inner";
+            "l=" = "@assignment.lhs";
+            "r=" = "@assignment.rhs";
             "af" = "@function.outer";
             "if" = "@function.inner";
             "ac" = "@class.outer";
@@ -45,8 +49,8 @@
             "ii" = "@conditional.inner";
             "al" = "@loop.outer";
             "il" = "@loop.inner";
-            "ak" = "@block.outer";
-            "ik" = "@block.inner";
+            "ab" = "@block.outer";
+            "ib" = "@block.inner";
             "is" = "@statement.inner";
             "as" = "@statement.outer";
             "ad" = "@comment.outer";
