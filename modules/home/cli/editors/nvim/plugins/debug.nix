@@ -15,10 +15,6 @@
       end
     '';
 
-    plugins.which-key.registrations = {
-      "<leader>d" = "debug";
-    };
-
     plugins.dap = {
       enable = true;
       signs = {

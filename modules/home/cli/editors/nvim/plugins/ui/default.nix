@@ -7,9 +7,6 @@
 
   programs.nixvim = {
     plugins.barbecue.enable = true;
-    plugins.which-key.registrations = {
-      "b" = "+buffers";
-    };
 
     keymaps = [
       {

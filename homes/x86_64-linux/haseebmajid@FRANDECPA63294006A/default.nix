@@ -1,8 +1,4 @@
-{
-  pkgs,
-  lib,
-  ...
-}: let
+{pkgs, ...}: let
   screensharing = pkgs.writeScriptBin "screensharing" ''
     #!/usr/bin/env bash
     sleep 1
@@ -23,6 +19,7 @@ in {
     genericName = "Browser";
     exec = "nixGLIntel firefox"; # this is the main fix and the rest is to conform with original
     icon = "firefox";
+    terminal = false;
     categories = [
       "Network"
       "WebBrowser"

@@ -1,9 +1,5 @@
 {pkgs, ...}: {
   programs.nixvim = {
-    plugins.which-key.registrations = {
-      "<leader>t" = "+test";
-    };
-
     keymaps = [
       {
         action = "<cmd>lua require('neotest').run.run(vim.fn.expand('%'))<cr>";
