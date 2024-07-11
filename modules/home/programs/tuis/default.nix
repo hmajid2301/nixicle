@@ -12,7 +12,8 @@ in {
   };
 
   config = mkIf cfg.enable {
-    home.packages = with pkgs; [
+    home.packages = with pkgs;
+    with pkgs.nixicle; [
       s-tui
     ];
   };
