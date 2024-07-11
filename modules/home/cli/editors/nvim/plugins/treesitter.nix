@@ -5,7 +5,6 @@
         enable = true;
         nixvimInjections = true;
         indent = false;
-
         incrementalSelection = {
           enable = true;
           keymaps = {
