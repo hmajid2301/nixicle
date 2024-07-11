@@ -25,12 +25,11 @@
 
   environment.systemPackages = with pkgs;
   with pkgs.nixicle; [
-    it87
     lm_sensors
   ];
 
   boot = {
-    kernelModules = ["it87" "k10temp"];
+    kernelModules = ["k10temp"];
     kernelParams = [
       "resume_offset=533760"
     ];
