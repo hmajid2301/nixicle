@@ -7,6 +7,7 @@
 with lib;
 with lib.nixicle; let
   cfg = config.cli.multiplexers.zellij;
+  inherit (config.lib.stylix) colors;
 
   # zellij-wrapped = pkgs.writeShellApplication {
   #   name = "zellij";
@@ -162,9 +163,9 @@ in {
           default_tab_template {
               pane size=2 borderless=true {
                   plugin location="file://${pkgs.zjstatus}/bin/zjstatus.wasm" {
-                      format_left   "{mode}#[bg=#181926] {tabs}"
+                      format_left   "{mode}#[bg=#${colors.base03}] {tabs}"
                       format_center ""
-                      format_right  "#[bg=#181926,fg=#89b4fa]#[bg=#89b4fa,fg=#1e2030,bold] #[bg=#363a4f,fg=#89b4fa,bold] {session} #[bg=#181926,fg=#363a4f,bold]"
+                      format_right  "#[bg=#${colors.base03},fg=#${colors.base0D}]#[bg=#${colors.base0D},fg=#2d2c3c,bold] #[bg=#2f2e3e,fg=#${colors.base05},bold] {session} #[bg=#${colors.base03},fg=#363a4f,bold]"
                       format_space  ""
                       format_hide_on_overlength "true"
                       format_precedence "crl"
@@ -174,33 +175,33 @@ in {
                       border_format   "#[fg=#6C7086]{char}"
                       border_position "top"
 
-                      mode_normal        "#[bg=#a6da95,fg=#181926,bold] NORMAL#[bg=#181926,fg=#a6da95]█"
-                      mode_locked        "#[bg=#6e738d,fg=#181926,bold] LOCKED #[bg=#181926,fg=#6e738d]█"
-                      mode_resize        "#[bg=#f38ba8,fg=#181926,bold] RESIZE#[bg=#181926,fg=#f38ba8]█"
-                      mode_pane          "#[bg=#89b4fa,fg=#181926,bold] PANE#[bg=#181926,fg=#89b4fa]█"
-                      mode_tab           "#[bg=#b4befe,fg=#181926,bold] TAB#[bg=#181926,fg=#b4befe]█"
-                      mode_scroll        "#[bg=#f9e2af,fg=#181926,bold] SCROLL#[bg=#181926,fg=#f9e2af]█"
-                      mode_enter_search  "#[bg=#8aadf4,fg=#181926,bold] ENT-SEARCH#[bg=#181926,fg=#8aadf4]█"
-                      mode_search        "#[bg=#8aadf4,fg=#181926,bold] SEARCHARCH#[bg=#181926,fg=#8aadf4]█"
-                      mode_rename_tab    "#[bg=#b4befe,fg=#181926,bold] RENAME-TAB#[bg=#181926,fg=#b4befe]█"
-                      mode_rename_pane   "#[bg=#89b4fa,fg=#181926,bold] RENAME-PANE#[bg=#181926,fg=#89b4fa]█"
-                      mode_session       "#[bg=#74c7ec,fg=#181926,bold] SESSION#[bg=#181926,fg=#74c7ec]█"
-                      mode_move          "#[bg=#f5c2e7,fg=#181926,bold] MOVE#[bg=#181926,fg=#f5c2e7]█"
-                      mode_prompt        "#[bg=#8aadf4,fg=#181926,bold] PROMPT#[bg=#181926,fg=#8aadf4]█"
-                      mode_tmux          "#[bg=#f5a97f,fg=#181926,bold] TMUX#[bg=#181926,fg=#f5a97f]█"
+                      mode_normal        "#[bg=#${colors.base0B},fg=#${colors.base03},bold] NORMAL#[bg=#${colors.base03},fg=#${colors.base0B}]█"
+                      mode_locked        "#[bg=#${colors.base04},fg=#${colors.base03},bold] LOCKED #[bg=#${colors.base03},fg=#${colors.base04}]█"
+                      mode_resize        "#[bg=#${colors.base08},fg=#${colors.base03},bold] RESIZE#[bg=#${colors.base03},fg=#${colors.base08}]█"
+                      mode_pane          "#[bg=#${colors.base0D},fg=#${colors.base03},bold] PANE#[bg=#${colors.base03},fg=#${colors.base0D}]█"
+                      mode_tab           "#[bg=#${colors.base07},fg=#${colors.base03},bold] TAB#[bg=#${colors.base03},fg=#${colors.base07}]█"
+                      mode_scroll        "#[bg=#${colors.base0A},fg=#${colors.base03},bold] SCROLL#[bg=#${colors.base03},fg=#${colors.base0A}]█"
+                      mode_enter_search  "#[bg=#${colors.base0D},fg=#${colors.base03},bold] ENT-SEARCH#[bg=#${colors.base03},fg=#${colors.base0D}]█"
+                      mode_search        "#[bg=#${colors.base0D},fg=#${colors.base03},bold] SEARCHARCH#[bg=#${colors.base03},fg=#${colors.base0D}]█"
+                      mode_rename_tab    "#[bg=#${colors.base07},fg=#${colors.base03},bold] RENAME-TAB#[bg=#${colors.base03},fg=#${colors.base07}]█"
+                      mode_rename_pane   "#[bg=#${colors.base0D},fg=#${colors.base03},bold] RENAME-PANE#[bg=#${colors.base03},fg=#${colors.base0D}]█"
+                      mode_session       "#[bg=#${colors.base0E},fg=#${colors.base03},bold] SESSION#[bg=#${colors.base03},fg=#${colors.base0E}]█"
+                      mode_move          "#[bg=#${colors.base0F},fg=#${colors.base03},bold] MOVE#[bg=#${colors.base03},fg=#${colors.base0F}]█"
+                      mode_prompt        "#[bg=#${colors.base0D},fg=#${colors.base03},bold] PROMPT#[bg=#${colors.base03},fg=#${colors.base0D}]█"
+                      mode_tmux          "#[bg=#${colors.base09},fg=#${colors.base03},bold] TMUX#[bg=#${colors.base03},fg=#${colors.base09}]█"
 
                       // formatting for inactive tabs
-                      tab_normal              "#[bg=#181926,fg=#89b4fa]█#[bg=#89b4fa,fg=#1e2030,bold]{index} #[bg=#363a4f,fg=#89b4fa,bold] {name}{floating_indicator}#[bg=#181926,fg=#363a4f,bold]█"
-                      tab_normal_fullscreen   "#[bg=#181926,fg=#89b4fa]█#[bg=#89b4fa,fg=#1e2030,bold]{index} #[bg=#363a4f,fg=#89b4fa,bold] {name}{fullscreen_indicator}#[bg=#181926,fg=#363a4f,bold]█"
-                      tab_normal_sync         "#[bg=#181926,fg=#89b4fa]█#[bg=#89b4fa,fg=#1e2030,bold]{index} #[bg=#363a4f,fg=#89b4fa,bold] {name}{sync_indicator}#[bg=#181926,fg=#363a4f,bold]█"
+                      tab_normal              "#[bg=#${colors.base03},fg=#${colors.base0D}]█#[bg=#${colors.base0D},fg=#1e2030,bold]{index} #[bg=#2f2e3e,fg=#${colors.base05},bold] {name}{floating_indicator}#[bg=#${colors.base03},fg=#363a4f,bold]█"
+                      tab_normal_fullscreen   "#[bg=#${colors.base03},fg=#${colors.base0D}]█#[bg=#${colors.base0D},fg=#1e2030,bold]{index} #[bg=#2f2e3e,fg=#${colors.base05},bold] {name}{fullscreen_indicator}#[bg=#${colors.base03},fg=#363a4f,bold]█"
+                      tab_normal_sync         "#[bg=#${colors.base03},fg=#${colors.base0D}]█#[bg=#${colors.base0D},fg=#1e2030,bold]{index} #[bg=#2f2e3e,fg=#${colors.base05},bold] {name}{sync_indicator}#[bg=#${colors.base03},fg=#363a4f,bold]█"
 
                       // formatting for the current active tab
-                      tab_active              "#[bg=#181926,fg=#fab387]█#[bg=#fab387,fg=#1e2030,bold]{index} #[bg=#363a4f,fg=#fab387,bold] {name}{floating_indicator}#[bg=#181926,fg=#363a4f,bold]█"
-                      tab_active_fullscreen   "#[bg=#181926,fg=#fab387]█#[bg=#fab387,fg=#1e2030,bold]{index} #[bg=#363a4f,fg=#fab387,bold] {name}{fullscreen_indicator}#[bg=#181926,fg=#363a4f,bold]█"
-                      tab_active_sync         "#[bg=#181926,fg=#fab387]█#[bg=#fab387,fg=#1e2030,bold]{index} #[bg=#363a4f,fg=#fab387,bold] {name}{sync_indicator}#[bg=#181926,fg=#363a4f,bold]█"
+                      tab_active              "#[bg=#${colors.base03},fg=#${colors.base09}]█#[bg=#${colors.base09},fg=#1e2030,bold]{index} #[bg=#2f2e3e,fg=#${colors.base05},bold] {name}{floating_indicator}#[bg=#${colors.base03},fg=#363a4f,bold]█"
+                      tab_active_fullscreen   "#[bg=#${colors.base03},fg=#${colors.base09}]█#[bg=#${colors.base09},fg=#1e2030,bold]{index} #[bg=#2f2e3e,fg=#${colors.base05},bold] {name}{fullscreen_indicator}#[bg=#${colors.base03},fg=#363a4f,bold]█"
+                      tab_active_sync         "#[bg=#${colors.base03},fg=#${colors.base09}]█#[bg=#${colors.base09},fg=#1e2030,bold]{index} #[bg=#2f2e3e,fg=#${colors.base05},bold] {name}{sync_indicator}#[bg=#${colors.base03},fg=#363a4f,bold]█"
 
                       // separator between the tabs
-                      tab_separator           "#[bg=#181926] "
+                      tab_separator           "#[bg=#${colors.base03}] "
 
                       // indicators
                       tab_sync_indicator       " "

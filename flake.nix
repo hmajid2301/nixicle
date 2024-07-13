@@ -37,7 +37,7 @@
     lanzaboote.url = "github:nix-community/lanzaboote";
 
     nixgl.url = "github:nix-community/nixGL";
-    nix-colors.url = "github:misterio77/nix-colors";
+    stylix.url = "github:danth/stylix";
     catppuccin.url = "github:catppuccin/nix";
     nix-ld.url = "github:Mic92/nix-ld";
     nix-index-database.url = "github:nix-community/nix-index-database";
@@ -131,6 +131,10 @@
       url = "github:aaronhallaert/advanced-git-search.nvim";
       flake = false;
     };
+    neotest-golang-nvim = {
+      url = "github:fredrikaverpil/neotest-golang";
+      flake = false;
+    };
     zjstatus = {
       url = "github:dj95/zjstatus";
     };
@@ -157,13 +161,13 @@
       };
 
       systems.modules.nixos = with inputs; [
+        # stylix.nixosModules.stylix
         home-manager.nixosModules.home-manager
         disko.nixosModules.disko
         lanzaboote.nixosModules.lanzaboote
         impermanence.nixosModules.impermanence
         sops-nix.nixosModules.sops
         nix-ld.nixosModules.nix-ld
-        catppuccin.nixosModules.catppuccin
       ];
 
       systems.hosts.framework.modules = with inputs; [

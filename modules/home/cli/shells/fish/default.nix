@@ -7,6 +7,7 @@
 }:
 with lib;
 with lib.nixicle; let
+  inherit (config.lib.stylix) colors;
   cfg = config.cli.shells.fish;
 in {
   options.cli.shells.fish = with types; {
@@ -14,6 +15,7 @@ in {
   };
 
   config = mkIf cfg.enable {
+    stylix.targets.fish.enable = false;
     programs.fish = {
       enable = true;
       interactiveShellInit = ''
@@ -29,6 +31,33 @@ in {
         set -U fifc_keybinding \cx
         bind \cx _fifc
         bind -M insert \cx _fifc
+
+        set -g fish_color_normal ${colors.base05}
+        set -g fish_color_command ${colors.base0D}
+        set -g fish_color_param ${colors.base0F}
+        set -g fish_color_keyword ${colors.base08}
+        set -g fish_color_quote ${colors.base0B}
+        set -g fish_color_redirection f4b8e4
+        set -g fish_color_end ${colors.base09}
+        set -g fish_color_comment 838ba7
+        set -g fish_color_error ${colors.base08}
+        set -g fish_color_gray 737994
+        set -g fish_color_selection --background=${colors.base02}
+        set -g fish_color_search_match --background=${colors.base02}
+        set -g fish_color_option ${colors.base0B}
+        set -g fish_color_operator f4b8e4
+        set -g fish_color_escape ea999c
+        set -g fish_color_autosuggestion 737994
+        set -g fish_color_cancel ${colors.base08}
+        set -g fish_color_cwd ${colors.base0A}
+        set -g fish_color_user ${colors.base0C}
+        set -g fish_color_host ${colors.base0D}
+        set -g fish_color_host_remote ${colors.base0B}
+        set -g fish_color_status ${colors.base08}
+        set -g fish_pager_color_progress 737994
+        set -g fish_pager_color_prefix f4b8e4
+        set -g fish_pager_color_completion ${colors.base05}
+        set -g fish_pager_color_description 737994
 
         fish_vi_key_bindings
         set fish_cursor_default     block      blink

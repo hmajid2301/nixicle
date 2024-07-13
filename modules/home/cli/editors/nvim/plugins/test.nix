@@ -62,6 +62,16 @@
         ];
       }
       {
+        action = ''<cmd>require("neotest").run.run({ suite = false, strategy = "dap" })<cr>'';
+        key = "<leader>td";
+        options = {
+          desc = "Debug nearest test";
+        };
+        mode = [
+          "n"
+        ];
+      }
+      {
         action = ''<cmd>lua require("neotest").output_panel.toggle()<cr>'';
         key = "<leader>tO";
         options = {
@@ -73,11 +83,14 @@
       }
     ];
 
-    plugins.neotest = {
-      enable = true;
-      settings = {
-        output.open_on_run = true;
-        status.virtual_text = true;
+    plugins = {
+      coverage.enable = true;
+      neotest = {
+        enable = true;
+        settings = {
+          output.open_on_run = true;
+          status.virtual_text = true;
+        };
       };
     };
   };

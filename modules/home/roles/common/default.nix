@@ -4,25 +4,59 @@
   config,
   inputs,
   ...
-}:
-with lib;
-with inputs; let
+}: let
   cfg = config.roles.common;
 in {
-  imports = [
+  imports = with inputs; [
+    stylix.homeManagerModules.stylix
     catppuccin.homeManagerModules.catppuccin
-    nix-colors.homeManagerModule
   ];
 
   options.roles.common = {
-    enable = mkEnableOption "Enable common configuration";
+    enable = lib.mkEnableOption "Enable common configuration";
   };
 
-  config = mkIf cfg.enable {
-    colorscheme = nix-colors.colorSchemes.catppuccin-mocha;
-    catppuccin = {
+  config = lib.mkIf cfg.enable {
+    stylix = {
       enable = true;
-      flavor = "mocha";
+      autoEnable = true;
+      base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-mocha.yaml";
+
+      image = pkgs.nixicle.wallpapers.Kurzgesagt-Galaxy_2;
+
+      cursor = {
+        name = "Bibata-Modern-Classic";
+        package = pkgs.bibata-cursors;
+        size = 24;
+      };
+
+      fonts = {
+        sizes = {
+          terminal = 14;
+          applications = 12;
+          popups = 12;
+        };
+
+        serif = {
+          package = pkgs.source-serif;
+          name = "Source Serif";
+        };
+
+        sansSerif = {
+          package = pkgs.fira;
+          name = "Fira Sans";
+        };
+
+        monospace = {
+          package = pkgs.nixicle.monolisa;
+          name = "MonoLisa Nerd Font";
+        };
+
+        emoji = {
+          package = pkgs.noto-fonts-emoji;
+          name = "Noto Color Emoji";
+        };
+      };
     };
 
     browsers.firefox.enable = true;
@@ -47,16 +81,12 @@ in {
 
     # TODO: move this to a separate module
     home.packages = with pkgs;
-    with pkgs.nixicle; [
-      monolisa
-      lisa
-
+    with nixicle; [
       keymapp
-      powertop
 
       src-cli
 
-      (lib.hiPrio parallel)
+      (hiPrio parallel)
       moreutils
       nvtopPackages.amd
       unzip

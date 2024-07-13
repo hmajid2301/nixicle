@@ -1,7 +1,6 @@
 {
   config,
   lib,
-  pkgs,
   ...
 }:
 with lib;
@@ -15,12 +14,6 @@ in {
   config = mkIf cfg.enable {
     services.hyprpaper = {
       enable = true;
-      settings = {
-        preload = [
-          "${pkgs.nixicle.wallpapers.Kurzgesagt-Galaxy_2}"
-        ];
-        wallpaper = [", ${pkgs.nixicle.wallpapers.Kurzgesagt-Galaxy_2}"];
-      };
     };
   };
 }
