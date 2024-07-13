@@ -2,7 +2,9 @@
   pkgs,
   config,
   ...
-}: {
+}: let
+  home = config.home.homeDirectory;
+in {
   programs.nixvim = {
     files = {
       "ftplugin/nix.lua" = {
@@ -41,8 +43,30 @@
         };
       };
 
-      lsp.servers.nil-ls = {
+      # lsp.servers.nil-ls = {
+      #   enable = true;
+      # };
+      #
+      lsp.servers.nixd = {
         enable = true;
+        extraOptions.settings = {
+          nixd = {
+            nixpkgs = {
+              expr = "import <nixpkgs> { }";
+            };
+            options = {
+              nixos = {
+                expr = ''(builtins.getFlake "${home}/dotfiles").nixosConfigurations.workstation.options'';
+              };
+              home_manager = {
+                expr = ''(builtins.getFlake "${home}/dotfiles").homeConfigurations."haseeb@workstation".options'';
+              };
+              flake_parts = {
+                expr = ''let flake = builtins.getFlake ("${home}/dotfiles"); in flake.debug.options // flake.currentSystem.options'';
+              };
+            };
+          };
+        };
       };
 
       treesitter = {

@@ -6,7 +6,6 @@
 }:
 with lib; let
   cfg = config.desktops.hyprland;
-  inherit (config.colorScheme) palette;
 in {
   config = mkIf cfg.enable {
     wayland.windowManager.hyprland = {
@@ -30,8 +29,6 @@ in {
           gaps_in = 3;
           gaps_out = 5;
           border_size = 3;
-          active_border_color = "0xff${palette.base07}";
-          inactive_border_color = "0xff${palette.base02}";
         };
 
         decoration = {
@@ -59,7 +56,6 @@ in {
             "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1"
             "${pkgs.pyprland}/bin/pypr"
             "${pkgs.clipse}/bin/clipse -listen"
-            "${pkgs.kdePackages.kdeconnect-kde}/bin/kdeconnect-indicator"
             "${pkgs.solaar}/bin/solaar -w hide"
           ]
           ++ cfg.execOnceExtras;

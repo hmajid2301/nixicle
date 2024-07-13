@@ -13,7 +13,6 @@ in {
 
   config = mkIf cfg.enable {
     gtk = lib.mkForce {
-      catppuccin.enable = false;
       enable = true;
       font = {
         name = "Fira Sans";

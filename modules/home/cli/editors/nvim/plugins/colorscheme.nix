@@ -555,11 +555,11 @@ in {
         bg = null;
       };
       "@variable" = {
-        fg = base05;
+        fg = lavender;
         bg = null;
       };
       "@variable.builtin" = {
-        fg = base09;
+        fg = red;
         bg = null;
       };
       "@property" = {

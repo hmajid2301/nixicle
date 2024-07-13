@@ -79,8 +79,8 @@ deploy .#primary --hostname primary.local --ssh-user nixos --skip-checks --inter
 Some features of my dotfiles:
 
 - Structured to allow multiple **NixOS configurations**, including **desktop**, **laptop**
-- **Declarative** config including **themes**, **wallpapers** and **nix-colors**
 - **Custom** live ISO for installing NixOS
+- **Styling** with stylix
 - **Opt-in persistance** through impermanence + blank snapshot
 - **Encrypted BTRFS partition**
 - **sops-nix** for secrets management

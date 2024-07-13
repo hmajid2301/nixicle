@@ -5,6 +5,12 @@
   ...
 }: let
   buildFlags = "-tags=unit,integration,e2e,bdd";
+
+  neotest-golang = pkgs.vimUtils.buildVimPlugin {
+    version = "latest";
+    pname = "neotest-golang.nvim";
+    src = inputs.neotest-golang-nvim;
+  };
 in {
   xdg.configFile."nvim/queries/go/injections.scm".text = builtins.readFile "${inputs.go-nvim}/after/queries/go/injections.scm";
 
@@ -23,18 +29,22 @@ in {
       };
     };
 
-    keymaps = [
-      {
-        action = "<cmd> lua require('dap-go').debug_test()<CR>";
-        key = "<leader>td";
-        options = {
-          desc = "Debug Nearest (Go)";
-        };
-        mode = [
-          "n"
-        ];
-      }
+    extraPlugins = [
+      neotest-golang
     ];
+
+    # keymaps = [
+    #   {
+    #     action = "<cmd> lua require('dap-go').debug_test()<CR>";
+    #     key = "<leader>td";
+    #     options = {
+    #       desc = "Debug Nearest (Go)";
+    #     };
+    #     mode = [
+    #       "n"
+    #     ];
+    #   }
+    # ];
 
     plugins = {
       dap.extensions.dap-go = {
@@ -64,7 +74,7 @@ in {
             command = "${pkgs.gotools}/bin/goimports";
             args = [
               "-local"
-              "gitlab.com/majiy00,gitlab.com/hmajid2301"
+              "gitlab.com/hmajid2301"
             ];
           };
         };
@@ -82,15 +92,30 @@ in {
       };
 
       neotest = {
-        adapters.go = {
-          enable = true;
-          settings = {
-            recursive_run = true;
-            experimental = {
-              test_table = true;
-            };
-            args = [buildFlags];
-          };
+        # adapters.go = {
+        #   enable = true;
+        #   settings = {
+        #     recursive_run = true;
+        #     experimental = {
+        #       test_table = true;
+        #     };
+        #     args = [buildFlags];
+        #   };
+        settings = {
+          adapters = [
+            # lua
+            ''
+              require("neotest-golang")({
+                go_test_args = {
+                  "-v",
+                  "-race",
+                  "-count=1",
+                  "-coverprofile=" .. vim.fn.getcwd() .. "/coverage.out",
+                },
+                dap_go_enabled = true
+              })
+            ''
+          ];
         };
       };
 
