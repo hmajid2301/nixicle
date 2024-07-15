@@ -15,6 +15,7 @@ in {
   config = mkIf cfg.enable {
     home.packages = with pkgs; [
       (nerdfonts.override {fonts = ["JetBrainsMono"];})
+      helvetica-neue-lt-std
       fontconfig
       fira-code-nerdfont
       noto-fonts

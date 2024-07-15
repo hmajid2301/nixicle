@@ -77,11 +77,6 @@ in {
     # No need for fonts on a server
     fonts.fontconfig.enable = lib.mkDefault false;
 
-    programs.vim.defaultEditor = lib.mkDefault true;
-
-    # If the user is in @wheel they are truste  # No need for sound on a server
-    sound.enable = false;
-
     # UTC everywhere!
     time.timeZone = lib.mkDefault "UTC";
 

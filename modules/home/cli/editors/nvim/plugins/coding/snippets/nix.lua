@@ -10,11 +10,11 @@ return {
 		"option",
 		fmt(
 			[[
-    {} = mkOption {{
-      description = "{}";
-      type = types.{};
-    }};
-  ]],
+                {} = mkOption {{
+                  description = "{}";
+                  type = types.{};
+                }};
+            ]],
 			{ i(1), i(2), i(3, "str") }
 		)
 	),
