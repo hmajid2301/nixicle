@@ -39,7 +39,6 @@
     nixgl.url = "github:nix-community/nixGL";
     stylix.url = "github:danth/stylix";
     catppuccin.url = "github:catppuccin/nix";
-    nix-ld.url = "github:Mic92/nix-ld";
     nix-index-database.url = "github:nix-community/nix-index-database";
 
     disko = {
@@ -167,7 +166,6 @@
         lanzaboote.nixosModules.lanzaboote
         impermanence.nixosModules.impermanence
         sops-nix.nixosModules.sops
-        nix-ld.nixosModules.nix-ld
       ];
 
       systems.hosts.framework.modules = with inputs; [

@@ -42,22 +42,6 @@ in {
         env = {
           TERM = "xterm-256color";
         };
-
-        font = {
-          normal = {
-            monospace = "MonoLisa Nerd Font";
-            style = "Regular";
-          };
-          bold = {
-            monospace = "MonoLisa Nerd Font";
-            style = "Bold";
-          };
-          italic = {
-            monospace = "MonoLisa Nerd Font";
-            style = "Italic";
-          };
-          size = 14.0;
-        };
       };
     };
   };

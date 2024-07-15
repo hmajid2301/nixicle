@@ -29,8 +29,6 @@ in {
     };
   };
 
-  cli.terminals.alacritty.enable = true;
-
   desktops = {
     hyprland = {
       enable = true;
