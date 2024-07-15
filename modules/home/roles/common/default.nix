@@ -22,7 +22,7 @@ in {
       autoEnable = true;
       base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-mocha.yaml";
 
-      image = pkgs.nixicle.wallpapers.Kurzgesagt-Galaxy_2;
+      image = pkgs.nixicle.wallpapers.earth;
 
       cursor = {
         name = "Bibata-Modern-Classic";
