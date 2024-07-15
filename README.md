@@ -20,7 +20,7 @@
  <p></p>
 <img src="./images/terminal.png"></img>
 <p>
-  Screenshot updated: 2024-07-07
+  Screenshot updated: 2024-07-15
 </p>
 <h4>
   :warning: This config repo is constantly changing,
