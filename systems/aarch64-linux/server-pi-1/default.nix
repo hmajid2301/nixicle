@@ -10,7 +10,7 @@
   };
 
   system.boot.enable = lib.mkForce false;
-  hardware.raspberry-pi-4.enable = true;
+  hardware.raspberry-pi-5.enable = true;
 
   system.stateVersion = "23.11";
 }

@@ -69,7 +69,7 @@ in {
 
         background = [
           {
-            path = "${pkgs.nixicle.wallpapers.Kurzgesagt-Galaxies}";
+            path = "${config.stylix.image}";
           }
         ];
       };

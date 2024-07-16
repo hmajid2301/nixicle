@@ -15,7 +15,7 @@ with lib.nixicle; {
 
   imports = with inputs.nixos-hardware.nixosModules; [
     (modulesPath + "/installer/scan/not-detected.nix")
-    raspberry-pi-4
+    raspberry-pi-5
   ];
 
   roles = {
@@ -24,7 +24,7 @@ with lib.nixicle; {
 
   sdImage.compressImage = false;
   system.boot.enable = lib.mkForce false;
-  hardware.raspberry-pi-4.enable = true;
+  hardware.raspberry-pi-5.enable = true;
 
   system.stateVersion = "23.11";
 }

@@ -9,13 +9,16 @@
   ];
 
   roles = {
-    kubernetes = {
-      enable = true;
-      role = "agent";
-    };
+    server.enable = true;
   };
 
-  # networking.interfaces.enp1s0.wakeOnLan.enable = true;
+  # TODO: move to module
+  networking.firewall.allowedTCPPorts = [
+    8123
+  ];
+
+  services.nixicle.traefik.enable = true;
+  services.nixicle.home-assistant.enable = true;
 
   boot = {
     supportedFilesystems = lib.mkForce ["btrfs"];

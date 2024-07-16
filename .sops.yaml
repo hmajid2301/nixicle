@@ -36,7 +36,6 @@ creation_rules:
       - *mainboard
       - *um790
       - *ms01
-      - *s100
       - *haseeb_workstation
 
   - path_regex: modules/nixos/secrets.ya?ml$
