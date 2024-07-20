@@ -1,9 +1,20 @@
-{
-  roles = {
-    desktop.enable = true;
+{pkgs, ...}: {
+  desktops = {
+    hyprland = {
+      enable = true;
+      execOnceExtras = [
+        "${pkgs.trayscale}/bin/trayscale"
+        "${pkgs.networkmanagerapplet}/bin/nm-applet"
+        "${pkgs.blueman}/bin/blueman-applet"
+      ];
+    };
   };
 
-  desktops.hyprland.enable = true;
+  roles = {
+    desktop.enable = true;
+    social.enable = true;
+    video.enable = true;
+  };
 
   nixicle.user = {
     enable = true;

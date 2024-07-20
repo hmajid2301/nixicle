@@ -12,13 +12,16 @@
     server.enable = true;
   };
 
-  # TODO: move to module
-  networking.firewall.allowedTCPPorts = [
-    8123
-  ];
+  # # TODO: move to module
+  # networking.firewall.allowedTCPPorts = [
+  #   8123
+  # ];
 
-  services.nixicle.traefik.enable = true;
-  services.nixicle.home-assistant.enable = true;
+  services.nixicle = {
+    traefik.enable = true;
+    home-assistant.enable = true;
+    adguard.enable = true;
+  };
 
   boot = {
     supportedFilesystems = lib.mkForce ["btrfs"];
