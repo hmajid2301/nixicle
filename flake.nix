@@ -160,7 +160,7 @@
       };
 
       systems.modules.nixos = with inputs; [
-        # stylix.nixosModules.stylix
+        stylix.nixosModules.stylix
         home-manager.nixosModules.home-manager
         disko.nixosModules.disko
         lanzaboote.nixosModules.lanzaboote
@@ -170,10 +170,6 @@
 
       systems.hosts.framework.modules = with inputs; [
         nixos-hardware.nixosModules.framework-13-7040-amd
-      ];
-
-      systems.hosts.server-1.modules = with inputs; [
-        nixos-hardware.nixosModules.raspberry-pi-4
       ];
 
       # homes.modules = with inputs; [

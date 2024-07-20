@@ -11,7 +11,7 @@ in {
   };
 
   config = mkIf cfg.enable {
-    traefik = {
+    services.traefik = {
       dynamicConfigOptions = {
         http = {
           services.homeAssistant.loadBalancer.servers = [
@@ -20,15 +20,10 @@ in {
             }
           ];
 
-          middlewares.homeAssistantWhitelist.ipWhiteList = {
-            sourceRange = ["127.0.0.1/32"];
-          };
-
           routers.homeAssistant = {
             entryPoints = ["websecure"];
-            rule = "Host(`s100.taila5caf.ts.net`) && Path(`/ha`)";
+            rule = "Host(`s100.taila5caf.ts.net`)";
             service = "homeAssistant";
-            middlewares = ["homeAssistantWhitelist"];
             tls.certResolver = "tailscale";
           };
         };
@@ -54,7 +49,7 @@ in {
         http = {
           server_port = 8123;
           use_x_forwarded_for = true;
-          trusted_proxies = ["127.0.0.1"];
+          trusted_proxies = ["127.0.0.1" "::1"];
         };
       };
     };
