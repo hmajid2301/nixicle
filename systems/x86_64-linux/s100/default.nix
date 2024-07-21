@@ -12,11 +12,6 @@
     server.enable = true;
   };
 
-  # # TODO: move to module
-  # networking.firewall.allowedTCPPorts = [
-  #   8123
-  # ];
-
   services.nixicle = {
     traefik.enable = true;
     home-assistant.enable = true;
