@@ -1,15 +1,8 @@
 {
   config,
   pkgs,
-  inputs,
   ...
-}: let
-  copilotchat-nvim = pkgs.vimUtils.buildVimPlugin {
-    version = "latest";
-    pname = "CopilotChat.nvim";
-    src = inputs.copilotchat-nvim;
-  };
-in {
+}: {
   programs.nixvim = {
     keymaps = [
       {
@@ -56,7 +49,7 @@ in {
 
     extraPlugins = with pkgs.vimPlugins; [
       ChatGPT-nvim
-      copilotchat-nvim
+      CopilotChat-nvim
     ];
 
     extraConfigLua =
