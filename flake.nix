@@ -102,20 +102,16 @@
       flake = false;
     };
 
+    zjstatus = {
+      url = "github:dj95/zjstatus";
+    };
+
     precognition-nvim = {
       url = "github:tris203/precognition.nvim";
       flake = false;
     };
-    copilotchat-nvim = {
-      url = "github:copilotc-nvim/copilotchat.nvim";
-      flake = false;
-    };
     gx-nvim = {
       url = "github:chrishrb/gx.nvim";
-      flake = false;
-    };
-    vim-zellij-navigator = {
-      url = "github:hiasr/vim-zellij-navigator.nvim";
       flake = false;
     };
     maximize-nvim = {
@@ -133,9 +129,6 @@
     neotest-golang-nvim = {
       url = "github:fredrikaverpil/neotest-golang";
       flake = false;
-    };
-    zjstatus = {
-      url = "github:dj95/zjstatus";
     };
   };
 

@@ -114,6 +114,9 @@ in {
         tree = "eza --tree";
         sudo = "sudo -E -s";
 
+        tsu = "tailscale up";
+        tsd = "tailscale down";
+
         # nix
         nhh = "nh home switch";
         nho = "nh os switch";
