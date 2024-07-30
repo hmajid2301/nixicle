@@ -42,6 +42,7 @@ in {
         dialect = "uk";
         enter_accept = false;
         records = true;
+        search_mode = "skim";
         # key_path = config.sops.secrets.atuin_key.path;
       };
     };
