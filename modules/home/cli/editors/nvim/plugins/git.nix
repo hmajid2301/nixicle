@@ -1,6 +1,16 @@
-{pkgs, ...}: {
+{
+  pkgs,
+  inputs,
+  ...
+}: let
+  advanced-git-search-nvim = pkgs.vimUtils.buildVimPlugin {
+    version = "latest";
+    pname = "advanced-git-search.nvim";
+    src = inputs.advanced-git-search-nvim;
+  };
+in {
   programs.nixvim = {
-    extraPlugins = with pkgs.vimPlugins; [
+    extraPlugins = [
       advanced-git-search-nvim
     ];
 

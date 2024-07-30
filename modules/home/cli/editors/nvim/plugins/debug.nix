@@ -3,9 +3,7 @@
     extraConfigLua = ''
       local dap, dapui = require("dap"),require("dapui")
       dap.listeners.after.event_initialized["dapui_config"]=function()
-      	dapui.open(1)
-      	dapui.close(2)
-      	dapui.close(3)
+      	dapui.open()
       end
       dap.listeners.before.event_terminated["dapui_config"]=function()
       	dapui.close()
@@ -45,113 +43,56 @@
       extensions = {
         dap-ui = {
           enable = true;
-          # layouts = [
-          #   {
-          #     elements = [
-          #       {
-          #         id = "stacks";
-          #         size = 0.20;
-          #       }
-          #       {
-          #         id = "scopes";
-          #         size = 0.80;
-          #       }
-          #     ];
-          #     position = "bottom";
-          #     size = 20;
-          #   }
-          #   {
-          #     elements = [
-          #       {
-          #         id = "repl";
-          #         size = 0.80;
-          #       }
-          #       {
-          #         id = "console";
-          #         size = 0.20;
-          #       }
-          #     ];
-          #     position = "bottom";
-          #     size = 20;
-          #   }
-          #   {
-          #     elements = [
-          #       {
-          #         id = "breakpoints";
-          #         size = 0.50;
-          #       }
-          #       {
-          #         id = "watches";
-          #         size = 0.50;
-          #       }
-          #     ];
-          #     position = "bottom";
-          #     size = 20;
-          #   }
-          # ];
+          expandLines = false;
+          layouts = [
+            {
+              elements = [
+                {
+                  id = "breakpoints";
+                  size = 0.25;
+                }
+                {
+                  id = "stacks";
+                  size = 0.25;
+                }
+                {
+                  id = "watches";
+                  size = 0.25;
+                }
+              ];
+              position = "bottom";
+              size = 10;
+            }
+            {
+              elements = [
+                {
+                  id = "scopes";
+                  size = 1;
+                }
+              ];
+              position = "bottom";
+              size = 10;
+            }
+            {
+              elements = [
+                {
+                  id = "repl";
+                  size = 1;
+                }
+              ];
+              position = "bottom";
+              size = 10;
+            }
+          ];
         };
         dap-virtual-text = {
-          enable = true;
+          enable = false;
           enabledCommands = true;
         };
       };
     };
 
     keymaps = [
-      # {
-      #   action.__raw =
-      #     # lua
-      #     ''
-      #       function()
-      #         require('dapui').open(1)
-      #         require('dapui').close(2)
-      #         require('dapui').close(3)
-      #       end
-      #     '';
-      #   key = "<leader>d1";
-      #   options = {
-      #     desc = "Debug layout 1; Stacks, Scopes";
-      #   };
-      #   mode = [
-      #     "n"
-      #   ];
-      # }
-      # {
-      #   action.__raw =
-      #     # lua
-      #     ''
-      #       function()
-      #         require('dapui').open(2)
-      #         require('dapui').close(1)
-      #         require('dapui').close(3)
-      #       end
-      #     '';
-      #   key = "<leader>d2";
-      #   options = {
-      #     desc = "Debug layout 2; breakpoints, watches";
-      #   };
-      #   mode = [
-      #     "n"
-      #   ];
-      # }
-      # {
-      #   action =
-      #     # lua
-      #     ''
-      #       function()
-      #         require('dapui').open(3)
-      #         require('dapui').close(1)
-      #         require('dapui').close(2)
-      #       end
-      #     '';
-      #   key = "<leader>d3";
-      #   options = {
-      #     desc = "Debug layout 3; repl, console";
-      #   };
-      #   mode = [
-      #     "n"
-      #   ];
-      # }
       {
         action.__raw =
           # lua
