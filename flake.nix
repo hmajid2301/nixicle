@@ -16,7 +16,6 @@
     snowfall-lib = {
       url = "github:snowfallorg/lib";
       inputs.nixpkgs.follows = "nixpkgs";
-      inputs.flake-utils-plus.url = "github:fl42v/flake-utils-plus";
     };
 
     deploy-rs = {
