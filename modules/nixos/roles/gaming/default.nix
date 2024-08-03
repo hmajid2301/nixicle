@@ -17,7 +17,7 @@ in {
       xpadneo.enable = true;
       xone.enable = true;
 
-      opengl = {
+      graphics = {
         enable = true;
         extraPackages = with pkgs; [
           mesa
