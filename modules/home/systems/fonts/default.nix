@@ -14,16 +14,7 @@ in {
 
   config = mkIf cfg.enable {
     home.packages = with pkgs; [
-      (nerdfonts.override {fonts = ["JetBrainsMono"];})
-      helvetica-neue-lt-std
-      fontconfig
-      fira-code-nerdfont
-      noto-fonts
-      noto-fonts-color-emoji
-      twitter-color-emoji
-      google-fonts
-      open-sans
-      zlib
+      (nerdfonts.override {fonts = ["NerdFontsSymbolsOnly"];})
     ];
 
     fonts.fontconfig.enable = lib.mkForce true;

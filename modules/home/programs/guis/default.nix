@@ -20,19 +20,18 @@ in {
       pavucontrol
 
       baobab
-      gnome.gnome-power-manager
-      gnome.sushi
-      gnome.gnome-disk-utility
-      gnome.totem
+      sushi
+      gnome-disk-utility
+      totem
       celluloid
-      gnome.gvfs
+      gvfs
       loupe
       gnome-text-editor
       gnome-firmware
 
-      gnome.nautilus
+      nautilus
       ffmpegthumbnailer # thumbnails
-      gnome.nautilus-python # enable plugins
+      nautilus-python # enable plugins
       gst_all_1.gst-libav # thumbnails
     ];
 
