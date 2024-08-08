@@ -65,6 +65,12 @@ in {
       sd
       xcp
       yq-go
+
+      # go
+      golangci-lint
+      air
+      templ
+      sqlc
     ];
   };
 }

@@ -1,16 +1,6 @@
-{
-  pkgs,
-  inputs,
-  ...
-}: let
-  precognition-nvim = pkgs.vimUtils.buildVimPlugin {
-    version = "latest";
-    pname = "precognition.nvim";
-    src = inputs.precognition-nvim;
-  };
-in {
+{pkgs, ...}: {
   programs.nixvim = {
-    extraPlugins = [
+    extraPlugins = with pkgs.vimPlugins; [
       precognition-nvim
     ];
 

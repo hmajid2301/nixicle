@@ -105,10 +105,6 @@
       url = "github:dj95/zjstatus";
     };
 
-    precognition-nvim = {
-      url = "github:tris203/precognition.nvim";
-      flake = false;
-    };
     gx-nvim = {
       url = "github:chrishrb/gx.nvim";
       flake = false;
@@ -117,16 +113,8 @@
       url = "github:declancm/maximize.nvim";
       flake = false;
     };
-    go-nvim = {
-      url = "github:ray-x/go.nvim";
-      flake = false;
-    };
     advanced-git-search-nvim = {
       url = "github:aaronhallaert/advanced-git-search.nvim";
-      flake = false;
-    };
-    neotest-golang-nvim = {
-      url = "github:fredrikaverpil/neotest-golang";
       flake = false;
     };
   };

@@ -15,8 +15,23 @@ in {
   config = mkIf cfg.enable {
     home.packages = with pkgs; [
       (nerdfonts.override {fonts = ["NerdFontsSymbolsOnly"];})
+      helvetica-neue-lt-std
+      fontconfig
+      fira-code-nerdfont
+      noto-fonts
+      noto-fonts-color-emoji
+      twitter-color-emoji
+      google-fonts
+      open-sans
+      zlib
     ];
 
     fonts.fontconfig.enable = lib.mkForce true;
+    fonts.fontconfig.defaultFonts = {
+      serif = ["Source Serif" "Noto Color Emoji"];
+      sansSerif = ["Fira Sans" "FiraGO" "Noto Color Emoji"];
+      monospace = ["MonoLisa Nerd Font" "Noto Color Emoji"];
+      emoji = ["Noto Color Emoji"];
+    };
   };
 }
