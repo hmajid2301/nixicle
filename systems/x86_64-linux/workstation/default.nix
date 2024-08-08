@@ -11,6 +11,7 @@
   services = {
     virtualisation.kvm.enable = true;
     hardware.openrgb.enable = true;
+    nixicle.ollama.enable = true;
   };
 
   roles = {
@@ -23,13 +24,7 @@
     };
   };
 
-  environment.systemPackages = with pkgs;
-  with pkgs.nixicle; [
-    lm_sensors
-  ];
-
   boot = {
-    kernelModules = ["k10temp"];
     kernelParams = [
       "resume_offset=533760"
     ];

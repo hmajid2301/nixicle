@@ -1,25 +1,24 @@
 {
-  inputs,
   pkgs,
   config,
   ...
 }: let
   buildFlags = "-tags=unit,integration,e2e,bdd";
-
-  neotest-golang = pkgs.vimUtils.buildVimPlugin {
-    version = "latest";
-    pname = "neotest-golang.nvim";
-    src = inputs.neotest-golang-nvim;
-  };
 in {
-  xdg.configFile."nvim/queries/go/injections.scm".text = builtins.readFile "${inputs.go-nvim}/after/queries/go/injections.scm";
+  xdg.configFile."nvim/queries/go/injections.scm".text = builtins.readFile ./lua/go/injections.scm;
 
-  home.packages = with pkgs; [
-    delve
-  ];
+  home.packages = with pkgs; [delve];
 
   programs.nixvim = {
     files = {
+      "ftplugin/templ.lua" = {
+        opts = {
+          expandtab = true;
+          shiftwidth = 4;
+          tabstop = 4;
+        };
+      };
+
       "ftplugin/go.lua" = {
         opts = {
           expandtab = true;
@@ -29,22 +28,9 @@ in {
       };
     };
 
-    extraPlugins = [
+    extraPlugins = with pkgs.vimPlugins; [
       neotest-golang
     ];
-
-    # keymaps = [
-    #   {
-    #     action = "<cmd> lua require('dap-go').debug_test()<CR>";
-    #     key = "<leader>td";
-    #     options = {
-    #       desc = "Debug Nearest (Go)";
-    #     };
-    #     mode = [
-    #       "n"
-    #     ];
-    #   }
-    # ];
 
     plugins = {
       dap.extensions.dap-go = {
@@ -92,15 +78,6 @@ in {
       };
 
       neotest = {
-        # adapters.go = {
-        #   enable = true;
-        #   settings = {
-        #     recursive_run = true;
-        #     experimental = {
-        #       test_table = true;
-        #     };
-        #     args = [buildFlags];
-        #   };
         settings = {
           adapters = [
             # lua

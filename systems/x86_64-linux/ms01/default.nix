@@ -8,6 +8,10 @@
     ./disks.nix
   ];
 
+  services = {
+    media-server.enable = true;
+  };
+
   roles = {
     kubernetes = {
       enable = true;

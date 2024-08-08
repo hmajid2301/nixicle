@@ -20,8 +20,35 @@ in {
       packages = with pkgs;
         [
           (nerdfonts.override {fonts = ["NerdFontsSymbolsOnly"];})
+          fira
+          fira-go
+          noto-fonts-color-emoji
+          source-serif
+          ubuntu_font_family
+          jetbrains-mono
+          open-sans
         ]
         ++ cfg.fonts;
+
+      fontconfig = {
+        antialias = true;
+        defaultFonts = {
+          serif = ["Source Serif" "Noto Color Emoji"];
+          sansSerif = ["Fira Sans" "FiraGO" "Noto Color Emoji"];
+          monospace = ["MonoLisa Nerd Font" "Noto Color Emoji"];
+          emoji = ["Noto Color Emoji"];
+        };
+        enable = true;
+        hinting = {
+          autohint = false;
+          enable = true;
+          style = "slight";
+        };
+        subpixel = {
+          rgba = "rgb";
+          lcdfilter = "light";
+        };
+      };
     };
   };
 }

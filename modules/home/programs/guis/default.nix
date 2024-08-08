@@ -23,7 +23,6 @@ in {
       sushi
       gnome-disk-utility
       totem
-      celluloid
       gvfs
       loupe
       gnome-text-editor

@@ -207,6 +207,7 @@ in {
 
       nvim-colorizer = {
         enable = true;
+        userDefaultOptions.tailwind = true;
       };
 
       todo-comments = {
