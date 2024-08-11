@@ -36,6 +36,7 @@ creation_rules:
       - *mainboard
       - *um790
       - *ms01
+      - *s100
       - *haseeb_workstation
 
   - path_regex: modules/nixos/secrets.ya?ml$
@@ -44,6 +45,16 @@ creation_rules:
       - *workstation
       - *framework
       - *haseeb_workstation
+
+  - path_regex: modules/nixos/services/secrets.ya?ml$
+    key_groups:
+    - age:
+      - *workstation
+      - *framework
+      - *haseeb_workstation
+      - *um790
+      - *ms01
+      - *s100
 
   - path_regex: modules/home/secrets.ya?ml$
     key_groups:

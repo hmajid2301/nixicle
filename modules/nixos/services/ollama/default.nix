@@ -15,9 +15,9 @@ in {
       enable = true;
     };
 
-    # services.open-webui = {
-    #   enable = true;
-    #   port = 8084;
-    # };
+    services.open-webui = {
+      enable = true;
+      port = 8085;
+    };
   };
 }

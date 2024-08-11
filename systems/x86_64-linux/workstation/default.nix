@@ -12,6 +12,7 @@
     virtualisation.kvm.enable = true;
     hardware.openrgb.enable = true;
     nixicle.ollama.enable = true;
+    nixicle.cockpit.enable = true;
   };
 
   roles = {
