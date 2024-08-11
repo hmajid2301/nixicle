@@ -18,8 +18,12 @@ in {
     };
 
     services = {
-      nixicle.avahi.enable = true;
-      nixicle.tailscale.enable = true;
+      nixicle = {
+        avahi.enable = true;
+        tailscale.enable = true;
+        cockpit.enable = true;
+      };
+
       getty.autologinUser = "nixos";
       openiscsi = {
         enable = true;
@@ -43,7 +47,6 @@ in {
           pkgs.nfs-utils
           pkgs.openiscsi
           pkgs.dnsutils
-          pkgs.tmux
         ];
         # Print the URL instead on servers
         variables.BROWSER = "echo";

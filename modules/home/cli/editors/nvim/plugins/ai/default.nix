@@ -1,4 +1,10 @@
-{config, ...}: {
+{
+  config,
+  pkgs,
+  ...
+}: {
+  home.packages = with pkgs; [ollama];
+
   programs.nixvim = {
     keymaps = [
       {

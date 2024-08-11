@@ -28,10 +28,6 @@ in {
       };
     };
 
-    extraPlugins = with pkgs.vimPlugins; [
-      neotest-golang
-    ];
-
     plugins = {
       dap.extensions.dap-go = {
         enable = true;
@@ -78,21 +74,12 @@ in {
       };
 
       neotest = {
-        settings = {
-          adapters = [
-            # lua
-            ''
-              require("neotest-golang")({
-                go_test_args = {
-                  "-v",
-                  "-race",
-                  "-count=1",
-                  "-coverprofile=" .. vim.fn.getcwd() .. "/coverage.out",
-                },
-                dap_go_enabled = true
-              })
-            ''
-          ];
+        adapters.golang = {
+          enable = true;
+          settings = {
+            dap_go_enabled = true;
+            args = buildFlags;
+          };
         };
       };
 

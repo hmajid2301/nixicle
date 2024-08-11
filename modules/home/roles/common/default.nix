@@ -34,12 +34,11 @@ in {
     styles.stylix.enable = true;
 
     # TODO: move this to a separate module
-    home.packages = with pkgs;
-    with nixicle; [
+    home.packages = with pkgs; [
       keymapp
 
       src-cli
-      optinix
+      nixicle.optinix
 
       (hiPrio parallel)
       moreutils

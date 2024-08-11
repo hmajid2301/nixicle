@@ -8,6 +8,10 @@
     ./disks.nix
   ];
 
+  services = {
+    virtualisation.podman.enable = true;
+  };
+
   roles = {
     kubernetes = {
       enable = true;
