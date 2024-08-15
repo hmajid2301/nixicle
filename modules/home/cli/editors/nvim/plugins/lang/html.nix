@@ -1,4 +1,8 @@
-{config, ...}: {
+{
+  config,
+  pkgs,
+  ...
+}: {
   programs.nixvim = {
     files = {
       "ftplugin/html.lua" = {
@@ -11,6 +15,18 @@
     };
 
     plugins = {
+      conform-nvim = {
+        formattersByFt = {
+          html = ["htmlbeautifier" "rustywind"];
+        };
+
+        formatters = {
+          htmlbeautifier = {
+            command = "${pkgs.rubyPackages.htmlbeautifier}/bin/htmlbeautifier";
+          };
+        };
+      };
+
       lsp.servers = {
         htmx = {
           enable = true;
@@ -18,17 +34,17 @@
 
         html = {
           enable = true;
-          extraOptions.settings = {
+          filetypes = ["html"];
+          settings = {
             html = {
-              # format = {
-              #   templating = true;
-              #   wrapLineLength = 120;
-              #   wrapAttributes = "auto";
-              # };
-              # hover = {
-              #   documentation = true;
-              #   references = true;
-              # };
+              format = {
+                wrapLineLength = 120;
+                wrapAttributes = "auto";
+              };
+              hover = {
+                documentation = true;
+                references = true;
+              };
             };
           };
         };

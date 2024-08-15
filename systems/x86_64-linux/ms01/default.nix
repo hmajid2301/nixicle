@@ -24,11 +24,6 @@
     };
   };
 
-  # fileSystems."/mnt/nfs" = {
-  #   device = "";
-  #   fsType = "nfs";
-  # };
-
   # networking.interfaces.enp1s0.wakeOnLan.enable = true;
 
   environment.systemPackages = with pkgs; [
@@ -41,7 +36,13 @@
     options = let
       # this line prevents hanging on network split
       automount_opts = "x-systemd.automount,noauto,x-systemd.idle-timeout=60,x-systemd.device-timeout=5s,x-systemd.mount-timeout=5s";
-    in ["${automount_opts},credentials=/etc/nixos/smb-secrets"];
+    in [
+      "${automount_opts},credentials=/etc/nixos/smb-secrets"
+      "uid=root"
+      "gid=media"
+      "file_mode=0664"
+      "dir_mode=0775"
+    ];
   };
 
   boot = {

@@ -62,7 +62,7 @@
         ];
       }
       {
-        action = ''<cmd>require("neotest").run.run({ suite = false, strategy = "dap" })<cr>'';
+        action = ''<cmd>lua require("neotest").run.run({ suite = false, strategy = "dap" })<cr>'';
         key = "<leader>td";
         options = {
           desc = "Debug nearest test";
