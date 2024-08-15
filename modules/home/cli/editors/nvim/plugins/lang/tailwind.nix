@@ -3,7 +3,7 @@
     plugins = {
       conform-nvim = {
         formattersByFt = {
-          html = ["rustywind"];
+          templ = ["rustywind"];
         };
 
         formatters = {

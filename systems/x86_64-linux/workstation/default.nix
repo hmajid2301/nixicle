@@ -14,6 +14,7 @@
     nixicle.ollama.enable = true;
     nixicle.cockpit.enable = true;
   };
+  programs.coolercontrol.enable = true;
 
   roles = {
     gaming.enable = true;
