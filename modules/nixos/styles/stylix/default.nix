@@ -39,7 +39,7 @@ in {
         };
 
         sansSerif = {
-          package = pkgs.fira;
+          package = pkgs.fira-sans;
           name = "Fira Sans";
         };
 
