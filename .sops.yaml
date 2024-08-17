@@ -45,6 +45,9 @@ creation_rules:
       - *workstation
       - *framework
       - *haseeb_workstation
+      - *um790
+      - *ms01
+      - *s100
 
   - path_regex: modules/nixos/services/secrets.ya?ml$
     key_groups:
