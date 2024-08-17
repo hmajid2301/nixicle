@@ -106,6 +106,11 @@
       url = "github:dj95/zjstatus";
     };
 
+    nix-topology = {
+      url = "github:oddlama/nix-topology";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     gx-nvim = {
       url = "github:chrishrb/gx.nvim";
       flake = false;
@@ -147,6 +152,7 @@
         lanzaboote.nixosModules.lanzaboote
         impermanence.nixosModules.impermanence
         sops-nix.nixosModules.sops
+        nix-topology.nixosModules.default
       ];
 
       systems.hosts.framework.modules = with inputs; [
@@ -160,6 +166,7 @@
       overlays = with inputs; [
         nixgl.overlay
         nur.overlay
+        nix-topology.overlays.default
       ];
 
       deploy = lib.mkDeploy {inherit (inputs) self;};
@@ -169,5 +176,18 @@
         (system: deploy-lib:
           deploy-lib.deployChecks inputs.self.deploy)
         inputs.deploy-rs.lib;
+
+      topology = with inputs; let
+        host = self.nixosConfigurations.${builtins.head (builtins.attrNames self.nixosConfigurations)};
+      in
+        import nix-topology {
+          inherit (host) pkgs; # Only this package set must include nix-topology.overlays.default
+          modules = [
+            (import ./topology {
+              inherit (host) config;
+            })
+            {inherit (self) nixosConfigurations;}
+          ];
+        };
     };
 }

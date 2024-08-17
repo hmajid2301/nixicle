@@ -18,6 +18,10 @@
     adguard.enable = true;
   };
 
+  topology.self = {
+    hardware.info = "S100";
+  };
+
   boot = {
     supportedFilesystems = lib.mkForce ["btrfs"];
     kernelPackages = pkgs.linuxPackages_latest;

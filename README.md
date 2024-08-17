@@ -149,6 +149,19 @@ Some of the main plugins used in my nvim setup include:
 - ColourScheme: notkens12 base46 (nvchad catppuccin)
 - Other: telescope (ofc)
 
+## 🖳  Homelab
+
+This nix config also contains some of the config for my homelab, mostly the bare metal management of the machine.
+All the kubernetes config can be found [here](https://gitlab.com/hmajid2301/homelab).
+
+<details>
+<summary>🕸️ HomeLab Diagram</summary>
+
+![image](./images/homelab/main.svg)
+![image](./images/homelab/network.svg)
+
+</details>
+
 ## 🖼️ Showcase
 
 ### Desktop
