@@ -32,7 +32,6 @@ in {
     home.packages = with pkgs; [
       viddy
 
-      bandwhich
       broot
       choose
       curlie
