@@ -6,11 +6,21 @@
   programs.nixvim = {
     files = {
       "ftplugin/markdown.lua" = {
+        extraConfigLua = ''
+          vim.opt.formatoptions:append('t')
+        '';
+        localOpts = {
+          textwidth = 120;
+        };
         opts = {
           conceallevel = 1;
           expandtab = true;
           shiftwidth = 2;
           tabstop = 2;
+          linebreak = true;
+          # textwidth = 120;
+          wrap = true;
+          wrapmargin = 0;
         };
       };
     };

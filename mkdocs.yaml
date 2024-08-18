@@ -1,0 +1,57 @@
+---
+site_name: Haseeb Majid | Home Cluster
+site_description: My home lab configuration
+site_author: Haseeb Majid
+site_url: https://second-brain.haseebmajid.dev
+
+repo_name: hmajid2301/second-brain
+repo_url: https://github.com/hmajid2301/second-brain
+edit_uri: "edit/main/"
+
+theme:
+  name: material
+  icon:
+    repo: fontawesome/brands/github-alt
+  language: en
+  features:
+    - navigation.sections
+    - navigation.tracking
+    - search.highlight
+    - search.share
+    - search.suggest
+  palette:
+    - scheme: default
+      primary: blue
+      accent: indigo
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+    - scheme: slate
+      primary: blue
+      accent: indigo
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to light mode
+
+docs_dir: ./docs
+
+plugins:
+  - search:
+      lang: en
+  - minify:
+      minify_html: true
+#   - macros:
+#       include_dir: docs/_snippets
+
+# Extensions
+markdown_extensions:
+  - admonition
+  - attr_list
+  - toc:
+      permalink: true
+  - pymdownx.emoji:
+      emoji_index: !!python/name:materialx.emoji.twemoji
+      emoji_generator: !!python/name:materialx.emoji.to_svg
+
+nav:
+  - Introduction: index.md
