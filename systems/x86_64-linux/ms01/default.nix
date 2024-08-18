@@ -9,12 +9,19 @@
   ];
 
   services = {
+    tandoor.enable = true;
     media-server.enable = true;
     vpn.enable = true;
     nixicle = {
+      # monitoring.enable = true;
+      netdata.enable = true;
+      gitlab-runner.enable = true;
+      gotify.enable = true;
       nfs.enable = true;
       n8n.enable = true;
-      gitlab-runner.enable = true;
+      # plausible.enable = true;
+      photoprism.enable = true;
+      syncthing.enable = true;
       traefik.enable = true;
     };
   };
@@ -36,6 +43,11 @@
     supportedFilesystems = lib.mkForce ["btrfs"];
     kernelPackages = pkgs.linuxPackages_latest;
     resumeDevice = "/dev/disk/by-label/nixos";
+
+    initrd = {
+      supportedFilesystems = ["nfs"];
+      kernelModules = ["nfs"];
+    };
   };
 
   system.stateVersion = "23.11";

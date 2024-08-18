@@ -70,15 +70,18 @@ nh home switch
 # Build ISO in result/ folder
 nix build .#install-isoConfigurations.graphical
 
-# Deploy my to remote server i.e. PI cluster (using SSH)
-deploy .#primary --hostname primary.local --ssh-user nixos --skip-checks --interactive-sudo true
+# Deploy my to remote server i.e. Home Lab (using SSH)
+deploy .#ms01 --hostname ms01 --ssh-user nixos --skip-checks
+
+# Build Home Lab diagram using nix-topology
+nix build .#topology.config.output
 ```
 
 ## 🚀 Features
 
 Some features of my dotfiles:
 
-- Structured to allow multiple **NixOS configurations**, including **desktop**, **laptop**
+- Structured to allow multiple **NixOS configurations**, including **desktop**, **laptop** and **homelab**
 - **Custom** live ISO for installing NixOS
 - **Styling** with stylix
 - **Opt-in persistance** through impermanence + blank snapshot
@@ -93,15 +96,13 @@ Some features of my dotfiles:
 |   Hostname                                   |            Board                                          |               CPU                                              |  RAM        |         Primary GPU                                    |  Role | OS  | State |
 | :---------:                                  | :-------------------------:                               | :----------------------------:                                 | :---:       | :-------------------------:                            |  :--: | :-: | :---: |
 | `workstation`                                | X671E AORUS PRO X                                         | AMD Ryzen 9 7950X                                              | 64GB        | AMD Spectral White 7900 XTX                            | 🖥️     | ❄️   | ✅    |
-| `framework`                                  | Framework 13th Gen AMD                                    | AMD Ryzen™ 7 7840U                                             | 32GB        | AMD Radeon™ 780M                                       | 💻️    | ❄️   | ✅    |
+| `framework`                                  | Framework 13th Gen AMD                                    | Intel® Core™ i7-1370P                                          | 32GB        | Intel Iris Graphics                                    | 💻️    | ❄️   | ✅    |
 | `frandecpa63294006a`                         | Framework 13th Gen Intel                                  | AMD Ryzen™ 7 7840U                                             | 32GB        | Intel Iris Graphics                                    | 💻️    | 🐧  | ✅    |
 | `vm`                                         | QEMU                                                      | -                                                              | -           | VirGL                                                  |  🐄   | ❄️   | ✅    |
 | `steamdeck`                                  | -                                                         | Zen 2                                                          | 16GB        | 8 RDNA 2 CUs                                           |  🎮️   | 🐧  | ✅    |
 | `um790`                                      |  UM790                                                    |  AMD Ryzen 9 7940HS                                            | 64GB        | AMD Radeon™ 780M                                       |  ☁️    | ❄️   | ✅    |
 | `ms01`                                       |  MS-01                                                    |  i9-13900H                                                     | 32GB        | Iris Xe Graphics                                       |  ☁️    | ❄️   | ✅    |
 | `s100`                                       |  S100                                                    |  N100                                                     | 8GB        | Iris Xe Graphics                                       |  ☁️    | ❄️   | ✅    |
-| `mainboard`                                  | Framework 12th Gen Intel                                  |  i7-1280P                                                      | 32GB        | Intel Iris Graphics                                    |  ☁️    | ❄️   | ⚠️     |
-| `pi-server-1`                                | Rapsberry Pi 4B                                           |  Quad core Cortex-A72                                          | 4GB         | VideoCore VI @ 500 MHz                                 |  ☁️    | ❄️   | ⚠️     |
 
 **Key**
 

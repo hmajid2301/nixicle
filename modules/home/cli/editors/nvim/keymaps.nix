@@ -22,8 +22,28 @@
         ];
       }
       {
-        action = "mzJ`z";
+        action = ":m ->+1<CR>gv=gv";
         key = "J";
+        options = {
+          desc = "Move selected lines up";
+        };
+        mode = [
+          "v"
+        ];
+      }
+      {
+        action = ":m <-2<CR>gv=gv";
+        key = "K";
+        options = {
+          desc = "Move selected lines up";
+        };
+        mode = [
+          "v"
+        ];
+      }
+      {
+        action = "mzJ`z";
+        key = "bJL";
         options = {
           desc = "Combine line into one";
         };
