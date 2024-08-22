@@ -33,6 +33,7 @@
 
   services.nixicle = {
     traefik.enable = true;
+    postgresql.enable = true;
     home-assistant.enable = true;
     adguard.enable = true;
   };

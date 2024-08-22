@@ -25,17 +25,25 @@ in {
       sonarr.enable = true;
       sonarr.group = "media";
 
+      flaresolverr.enable = true;
+      flaresolverr.openFirewall = true;
+
       prowlarr.enable = true;
 
       jellyseerr.enable = true;
       jellyfin.enable = true;
 
-      flaresolverr.enable = true;
-      flaresolverr.openFirewall = true;
+      deluge = {
+        enable = true;
+        web.enable = true;
+        group = "media";
+      };
 
-      deluge.enable = true;
-      deluge.web.enable = true;
-      deluge.group = "media";
+      audiobookshelf = {
+        enable = true;
+        port = 8555;
+        group = "media";
+      };
 
       traefik = {
         dynamicConfigOptions = {
@@ -84,6 +92,11 @@ in {
               deluge.loadBalancer.servers = [
                 {
                   url = "http://localhost:8112";
+                }
+              ];
+              audiobookshelf.loadBalancer.servers = [
+                {
+                  url = "http://localhost:8555";
                 }
               ];
             };
@@ -141,6 +154,12 @@ in {
                 entryPoints = ["websecure"];
                 rule = "Host(`deluge.bare.homelab.haseebmajid.dev`)";
                 service = "deluge";
+                tls.certResolver = "letsencrypt";
+              };
+              audiobookshelf = {
+                entryPoints = ["websecure"];
+                rule = "Host(`audiobookshelf.bare.homelab.haseebmajid.dev`)";
+                service = "audiobookshelf";
                 tls.certResolver = "letsencrypt";
               };
             };

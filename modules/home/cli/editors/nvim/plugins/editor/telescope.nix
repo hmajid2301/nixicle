@@ -25,6 +25,12 @@
             desc = "Find files";
           };
         };
+        "<leader>fm" = {
+          action = "keymaps";
+          options = {
+            desc = "Find keymaps";
+          };
+        };
         "<leader>fz" = {
           action = "current_buffer_fuzzy_find";
 

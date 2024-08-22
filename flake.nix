@@ -111,6 +111,12 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    poetry2nix.url = "github:nix-community/poetry2nix";
+    authentik-nix = {
+      url = "github:nix-community/authentik-nix";
+    };
+    authentik-nix.inputs.poetry2nix.follows = "poetry2nix";
+
     gx-nvim = {
       url = "github:chrishrb/gx.nvim";
       flake = false;
@@ -153,6 +159,7 @@
         impermanence.nixosModules.impermanence
         sops-nix.nixosModules.sops
         nix-topology.nixosModules.default
+        authentik-nix.nixosModules.default
       ];
 
       systems.hosts.framework.modules = with inputs; [

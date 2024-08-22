@@ -95,48 +95,49 @@ in {
         ];
       };
 
-      loki = {
-        enable = true;
-        configuration = {
-          server.http_listen_port = 3030;
-        };
-      };
+      # loki = {
+      #   enable = true;
+      #   configuration = {
+      #     server.http_listen_port = 3030;
+      #   };
+      # };
 
-      promtail = {
-        enable = true;
-        configuration = {
-          server = {
-            http_listen_port = 3031;
-            grpc_listen_port = 0;
-          };
-          positions = {
-            filename = "/tmp/positions.yaml";
-          };
-          clients = [
-            {
-              url = "http://127.0.0.1:${toString config.services.loki.configuration.server.http_listen_port}/loki/api/v1/push";
-            }
-          ];
-          scrape_configs = [
-            {
-              job_name = "journal";
-              journal = {
-                max_age = "12h";
-                labels = {
-                  job = "systemd-journal";
-                  host = "pihole";
-                };
-              };
-              relabel_configs = [
-                {
-                  source_labels = ["__journal__systemd_unit"];
-                  target_label = "unit";
-                }
-              ];
-            }
-          ];
-        };
-      };
+      # promtail = {
+      #   enable = true;
+      #   configuration = {
+      #     server = {
+      #       http_listen_port = 3031;
+      #       grpc_listen_port = 0;
+      #     };
+      #     positions = {
+      #       filename = "/tmp/positions.yaml";
+      #     };
+      #     clients = [
+      #       # {
+      #       #   url = "http://127.0.0.1:${toString config.services.loki.configuration.server.http_listen_port}/loki/api/v1/push";
+      #       # }
+      #     ];
+      #     scrape_configs = [
+      #       {
+      #         job_name = "journal";
+      #         journal = {
+      #           max_age = "12h";
+      #           labels = {
+      #             job = "systemd-journal";
+      #             host = "pihole";
+      #           };
+      #         };
+      #         relabel_configs = [
+      #           {
+      #             source_labels = ["__journal__systemd_unit"];
+      #             target_label = "unit";
+      #           }
+      #         ];
+      #       }
+      #     ];
+      #   };
+      # };
+
       grafana = {
         port = 3010;
         # WARNING: this should match nginx setup!
@@ -159,12 +160,12 @@ in {
                   access = "proxy";
                   url = "http://127.0.0.1:${toString config.services.prometheus.port}";
                 }
-                {
-                  name = "Loki";
-                  type = "loki";
-                  access = "proxy";
-                  url = "http://127.0.0.1:${toString config.services.loki.configuration.server.http_listen_port}";
-                }
+                # {
+                #   name = "Loki";
+                #   type = "loki";
+                #   access = "proxy";
+                #   url = "http://127.0.0.1:${toString config.services.loki.configuration.server.http_listen_port}";
+                # }
               ];
             };
           };
