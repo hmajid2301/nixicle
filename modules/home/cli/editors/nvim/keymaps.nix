@@ -22,10 +22,30 @@
         ];
       }
       {
-        action = ":m ->+1<CR>gv=gv";
-        key = "J";
+        action = ":m .+1<CR>==";
+        key = "<leader>mj";
+        options = {
+          desc = "Move selected lines down";
+        };
+        mode = [
+          "n"
+        ];
+      }
+      {
+        action = ":m .-2<CR>==";
+        key = "<leader>mk";
         options = {
           desc = "Move selected lines up";
+        };
+        mode = [
+          "n"
+        ];
+      }
+      {
+        action = ":m ->+1<CR>gv=gv";
+        key = "<leader>mj";
+        options = {
+          desc = "Move selected lines down in visual mode";
         };
         mode = [
           "v"
@@ -33,9 +53,9 @@
       }
       {
         action = ":m <-2<CR>gv=gv";
-        key = "K";
+        key = "<leader>mk";
         options = {
-          desc = "Move selected lines up";
+          desc = "Move selected lines up in visual mode";
         };
         mode = [
           "v"
@@ -43,7 +63,7 @@
       }
       {
         action = "mzJ`z";
-        key = "bJL";
+        key = "J";
         options = {
           desc = "Combine line into one";
         };

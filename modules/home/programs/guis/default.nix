@@ -19,6 +19,7 @@ in {
       foliate
       pavucontrol
 
+      fragments
       baobab
       sushi
       gnome-disk-utility
@@ -26,7 +27,6 @@ in {
       gvfs
       loupe
       gnome-text-editor
-      gnome-firmware
 
       nautilus
       ffmpegthumbnailer # thumbnails

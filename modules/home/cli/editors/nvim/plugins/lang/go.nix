@@ -48,15 +48,22 @@ in {
 
       conform-nvim = {
         formattersByFt = {
-          go = ["goimports"];
+          go = ["goimports" "golines"];
         };
 
         formatters = {
+          golines = {
+            command = "${pkgs.golines}/bin/golines";
+            args = [
+              "-m"
+              "120"
+            ];
+          };
           goimports = {
             command = "${pkgs.gotools}/bin/goimports";
             args = [
               "-local"
-              "gitlab.com/hmajid2301"
+              "gitlab.com/hmajid2301,git.curve.tools,go.curve.tools"
             ];
           };
         };

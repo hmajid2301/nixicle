@@ -38,13 +38,13 @@ in {
         };
 
         serif = {
-          package = pkgs.liberation_ttf;
-          name = "Liberation Serif";
+          name = "Noto Serif";
+          package = pkgs.noto-fonts;
         };
 
         sansSerif = {
-          package = pkgs.fira-sans;
-          name = "Fira Sans";
+          name = "Noto Sans";
+          package = pkgs.noto-fonts;
         };
 
         monospace = {

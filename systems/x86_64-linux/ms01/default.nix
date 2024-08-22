@@ -13,14 +13,17 @@
     media-server.enable = true;
     vpn.enable = true;
     nixicle = {
-      # monitoring.enable = true;
+      authentik.enable = true;
+      monitoring.enable = true;
       netdata.enable = true;
       gitlab-runner.enable = true;
       gotify.enable = true;
       nfs.enable = true;
       n8n.enable = true;
       # plausible.enable = true;
+      paperless.enable = true;
       photoprism.enable = true;
+      postgresql.enable = true;
       syncthing.enable = true;
       traefik.enable = true;
     };

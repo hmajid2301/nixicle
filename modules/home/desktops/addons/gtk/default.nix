@@ -14,11 +14,6 @@ in {
   config = mkIf cfg.enable {
     gtk = lib.mkForce {
       enable = true;
-      font = {
-        name = "Fira Sans";
-        size = 12;
-      };
-
       theme = {
         name = "adw-gtk3-dark";
         package = pkgs.adw-gtk3;
