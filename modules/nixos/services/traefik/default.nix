@@ -31,9 +31,58 @@ in {
 
       traefik = {
         enable = true;
+
+        # TODO: dynamically enable if enabled using host and port rather than hard coding it
+        dynamicConfigOptions = {
+          http = {
+            services = {
+              homeassistant.loadBalancer.servers = [
+                {
+                  url = "http://s100:8123";
+                }
+              ];
+            };
+
+            routers = {
+              homeassistant = {
+                entryPoints = ["websecure"];
+                rule = "Host(`home-assistant.bare.homelab.haseebmajid.dev`)";
+                service = "homeassistant";
+                tls.certResolver = "letsencrypt";
+              };
+            };
+          };
+        };
         staticConfigOptions = {
-          log.level = "INFO";
-          accessLog = {};
+          log = {
+            level = "INFO"; # Options: DEBUG, PANIC, FATAL, ERROR (Default), WARN, and INFO
+            filePath = "/var/log/traefik.log"; # Default is to STDOUT
+            # format = "json";  # Uses text format (common) by default
+            noColor = false; # Recommended to be true when using common
+            maxSize = 100; # In megabytes
+            compress = true;
+          };
+          accessLog = {
+            addInternals = true; # things like ping@internal
+            filePath = "/var/log/traefik-access.log"; # In the Common Log Format (CLF) by default
+            bufferingSize = 100; # Number of log lines
+            fields = {
+              names = {
+                StartUTC = "drop"; # Write logs in Container Local Time instead of UTC
+              };
+            };
+            filters = {
+              statusCodes = [
+                "204-299"
+                "400-499"
+                "500-599"
+              ];
+            };
+          };
+          api = {
+            insecure = true;
+            dashboard = true;
+          };
           certificatesResolvers = {
             tailscale.tailscale = {};
             letsencrypt = {

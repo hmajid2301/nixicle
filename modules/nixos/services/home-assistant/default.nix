@@ -35,7 +35,9 @@ in {
         "history"
         "history_stats"
       ];
-      customComponents = with pkgs.home-assistant-custom-components; [
+      customComponents = with pkgs.home-assistant-custom-components;
+      with pkgs.nixicle; [
+        octopus-energy
         auth-header
       ];
       extraPackages = python3Packages:
@@ -55,9 +57,14 @@ in {
           zigpy-zigate
         ];
       config = {
+        # TODO: waiting on this https://github.com/NixOS/nixpkgs/pull/328794/files
+        # auth_header = {
+        #   username_header = "X-authentik-username";
+        # };
         recorder.db_url = "postgresql://@/hass";
         history = {};
         default_config = {};
+        prometheus = {};
         http = {
           server_port = 8123;
           use_x_forwarded_for = true;
@@ -73,18 +80,18 @@ in {
       dynamicConfigOptions = {
         http = {
           services = {
-            home-assistant.loadBalancer.servers = [
+            homeassistant.loadBalancer.servers = [
               {
-                url = "http://localhost:8123";
+                url = "http://s100:8123";
               }
             ];
           };
 
           routers = {
-            home-assistant = {
+            homeassistant = {
               entryPoints = ["websecure"];
               rule = "Host(`home-assistant.bare.homelab.haseebmajid.dev`)";
-              service = "home-assistant";
+              service = "homeassistant";
               tls.certResolver = "letsencrypt";
             };
           };

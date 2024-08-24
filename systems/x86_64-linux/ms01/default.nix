@@ -19,9 +19,8 @@
       gitlab-runner.enable = true;
       gotify.enable = true;
       nfs.enable = true;
-      n8n.enable = true;
       # plausible.enable = true;
-      paperless.enable = true;
+      # paperless.enable = true;
       photoprism.enable = true;
       postgresql.enable = true;
       syncthing.enable = true;
