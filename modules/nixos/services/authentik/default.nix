@@ -38,6 +38,29 @@ in {
       traefik = {
         dynamicConfigOptions = {
           http = {
+            middlewares = {
+              authentik = {
+                forwardAuth = {
+                  tls.insecureSkipVerify = true;
+                  address = "https://localhost:9443/outpost.goauthentik.io/auth/traefik";
+                  trustForwardHeader = true;
+                  authResponseHeaders = [
+                    "X-authentik-username"
+                    "X-authentik-groups"
+                    "X-authentik-email"
+                    "X-authentik-name"
+                    "X-authentik-uid"
+                    "X-authentik-jwt"
+                    "X-authentik-meta-jwks"
+                    "X-authentik-meta-outpost"
+                    "X-authentik-meta-provider"
+                    "X-authentik-meta-app"
+                    "X-authentik-meta-version"
+                  ];
+                };
+              };
+            };
+
             services = {
               auth.loadBalancer.servers = [
                 {
@@ -49,7 +72,7 @@ in {
             routers = {
               auth = {
                 entryPoints = ["websecure"];
-                rule = "Host(`auth.bare.homelab.haseebmajid.dev`)";
+                rule = "Host(`auth.bare.homelab.haseebmajid.dev`) || HostRegexp(`{subdomain:[a-z0-9]+}.bare.homelab.haseebmajid.com`) && PathPrefix(`/outpost.goauthentik.io/`)";
                 service = "auth";
                 tls.certResolver = "letsencrypt";
               };

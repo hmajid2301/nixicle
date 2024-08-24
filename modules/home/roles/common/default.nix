@@ -38,7 +38,7 @@ in {
       keymapp
 
       src-cli
-      nixicle.optinix
+      optinix
 
       (hiPrio parallel)
       moreutils

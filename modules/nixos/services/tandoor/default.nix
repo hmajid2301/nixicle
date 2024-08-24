@@ -12,8 +12,14 @@ in {
   };
 
   config = mkIf cfg.enable {
-    sops.secrets.tandoor_postgres_password = {
+    sops.secrets.tandoor = {
       sopsFile = ../secrets.yaml;
+    };
+
+    systemd.services.tandoor-recipes = {
+      serviceConfig = {
+        EnvironmentFile = [config.sops.secrets.tandoor.path];
+      };
     };
 
     services = {
@@ -22,6 +28,10 @@ in {
         port = 8099;
         extraConfig = {
           # DATABASE_URL = "postgresql://tandoor@localhost/tandoor";
+          REMOTE_USER_AUTH = "1";
+          SOCIAL_DEFAULT_ACCESS = "1";
+          SOCIAL_DEFAULT_GROUP = "guest";
+          SOCIAL_PROVIDERS = "allauth.socialaccount.providers.openid_connect";
         };
       };
 

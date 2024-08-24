@@ -23,7 +23,7 @@ in {
             services = {
               syncthing.loadBalancer.servers = [
                 {
-                  url = "http://localhost:22067";
+                  url = "http://localhost:22000";
                 }
               ];
             };

@@ -23,7 +23,7 @@ in {
             services = {
               netdata.loadBalancer.servers = [
                 {
-                  url = "http://localhost:8384";
+                  url = "http://localhost:19999";
                 }
               ];
             };
@@ -34,6 +34,7 @@ in {
                 rule = "Host(`netdata.bare.homelab.haseebmajid.dev`)";
                 service = "netdata";
                 tls.certResolver = "letsencrypt";
+                middlewares = ["authentik"];
               };
             };
           };
