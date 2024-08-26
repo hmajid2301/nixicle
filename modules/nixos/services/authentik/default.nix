@@ -23,12 +23,12 @@ in {
         settings = {
           # TODO: fill this settings
           email = {
-            host = "smtp.example.com";
+            host = "smtp.mailgun.org";
             port = 587;
-            username = "authentik@example.com";
+            username = "postmaster@sandbox92beea2c073042199273861834e24d1f.mailgun.org";
             use_tls = true;
             use_ssl = false;
-            from = "auth@haseebmajid.dev";
+            from = "hello@haseebmajid.dev";
           };
           disable_startup_analytics = true;
           avatars = "initials";

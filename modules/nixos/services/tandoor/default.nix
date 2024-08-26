@@ -8,7 +8,7 @@ with lib.nixicle; let
   cfg = config.services.tandoor;
 in {
   options.services.tandoor = {
-    enable = mkEnableOption "Enable The recipe management service";
+    enable = mkEnableOption "Enable the tandoor recipe service";
   };
 
   config = mkIf cfg.enable {
@@ -20,6 +20,7 @@ in {
       serviceConfig = {
         EnvironmentFile = [config.sops.secrets.tandoor.path];
       };
+      after = ["postgresql.service"];
     };
 
     services = {
@@ -27,41 +28,38 @@ in {
         enable = true;
         port = 8099;
         extraConfig = {
-          # DATABASE_URL = "postgresql://tandoor@localhost/tandoor";
-          REMOTE_USER_AUTH = "1";
-          SOCIAL_DEFAULT_ACCESS = "1";
-          SOCIAL_DEFAULT_GROUP = "guest";
+          DB_ENGINE = "django.db.backends.postgresql";
+          POSTGRES_HOST = "/run/postgresql";
+          POSTGRES_USER = "tandoor_recipes";
+          POSTGRES_DB = "tandoor_recipes";
+          SOCIAL_DEFAULT_GROUP = "user";
           SOCIAL_PROVIDERS = "allauth.socialaccount.providers.openid_connect";
         };
       };
 
       postgresql = {
-        ensureDatabases = ["tandoor"];
+        ensureDatabases = ["tandoor_recipes"];
         ensureUsers = [
           {
-            name = "tandoor";
+            name = "tandoor_recipes";
             ensureDBOwnership = true;
           }
         ];
       };
 
-      traefik = {
-        dynamicConfigOptions = {
-          http = {
-            services = {
-              recipes.loadBalancer.servers = [
-                {
-                  url = "http://localhost:8099";
-                }
-              ];
-            };
-
-            routers = {
-              recipes = {
-                entryPoints = ["websecure"];
-                rule = "Host(`recipes.bare.homelab.haseebmajid.dev`)";
-                service = "recipes";
-                tls.certResolver = "letsencrypt";
+      nginx = {
+        enable = true;
+        virtualHosts = {
+          "recipes-media" = {
+            listen = [
+              {
+                addr = "localhost";
+                port = 8100;
+              }
+            ];
+            locations = {
+              "/media/" = {
+                alias = "/var/lib/tandoor-recipes/";
               };
             };
           };

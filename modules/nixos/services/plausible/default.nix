@@ -31,6 +31,7 @@ in {
         adminUser = {
           email = "hello@haseebmajid.dev";
           passwordFile = config.sops.secrets.plausible_admin_password.path;
+          activate = true;
         };
       };
 

@@ -36,9 +36,10 @@ in {
         dynamicConfigOptions = {
           http = {
             services = {
+              # TODO: how to do this over devices?
               homeassistant.loadBalancer.servers = [
                 {
-                  url = "http://s100:8123";
+                  url = "http://192.168.1.44:8123";
                 }
               ];
             };
@@ -50,21 +51,36 @@ in {
                 service = "homeassistant";
                 tls.certResolver = "letsencrypt";
               };
+
+              traefik-dashboard = {
+                entryPoints = ["websecure"];
+                rule = "Host(`traefik.bare.homelab.haseebmajid.dev`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))";
+                service = "api@internal";
+                tls.certResolver = "letsencrypt";
+                # middlewares = ["authentik"];
+              };
             };
           };
         };
         staticConfigOptions = {
           log = {
-            level = "INFO"; # Options: DEBUG, PANIC, FATAL, ERROR (Default), WARN, and INFO
-            filePath = "/var/log/traefik.log"; # Default is to STDOUT
+            level = "INFO";
+            filePath = "/var/log/traefik.log";
             # format = "json";  # Uses text format (common) by default
-            noColor = false; # Recommended to be true when using common
-            maxSize = 100; # In megabytes
+            noColor = false;
+            maxSize = 100;
             compress = true;
           };
+
+          metrics = {
+            prometheus = {};
+          };
+
+          # tracing = {};
+
           accessLog = {
-            addInternals = true; # things like ping@internal
-            filePath = "/var/log/traefik-access.log"; # In the Common Log Format (CLF) by default
+            addInternals = true;
+            filePath = "/var/log/traefik-access.log";
             bufferingSize = 100; # Number of log lines
             fields = {
               names = {
@@ -80,8 +96,8 @@ in {
             };
           };
           api = {
-            insecure = true;
             dashboard = true;
+            insecure = true;
           };
           certificatesResolvers = {
             tailscale.tailscale = {};
@@ -97,7 +113,7 @@ in {
           };
 
           entryPoints.web = {
-            address = "0.0.0.0:80";
+            address = ":80";
             http.redirections.entryPoint = {
               to = "websecure";
               scheme = "https";
@@ -105,7 +121,7 @@ in {
             };
           };
           entryPoints.websecure = {
-            address = "0.0.0.0:443";
+            address = ":443";
             http.tls = {
               certResolver = "letsencrypt";
               domains = [
