@@ -18,10 +18,12 @@ in {
 
     sops.secrets.grafana_oauth2_client_id = {
       sopsFile = ../secrets.yaml;
+      owner = "grafana";
     };
 
     sops.secrets.grafana_oauth2_client_secret = {
       sopsFile = ../secrets.yaml;
+      owner = "grafana";
     };
 
     services = {
@@ -32,11 +34,6 @@ in {
               prometheus.loadBalancer.servers = [
                 {
                   url = "http://localhost:3020";
-                }
-              ];
-              loki.loadBalancer.servers = [
-                {
-                  url = "http://localhost:3030";
                 }
               ];
               grafana.loadBalancer.servers = [
@@ -61,12 +58,6 @@ in {
                 entryPoints = ["websecure"];
                 rule = "Host(`prometheus.bare.homelab.haseebmajid.dev`)";
                 service = "prometheus";
-                tls.certResolver = "letsencrypt";
-              };
-              loki = {
-                entryPoints = ["websecure"];
-                rule = "Host(`loki.bare.homelab.haseebmajid.dev`)";
-                service = "loki";
                 tls.certResolver = "letsencrypt";
               };
               grafana = {
@@ -172,6 +163,7 @@ in {
                 kvstore = {
                   store = "inmemory";
                 };
+                replication_factor = 1;
               };
             };
             chunk_idle_period = "5m";
@@ -193,11 +185,11 @@ in {
           };
           storage_config = {
             boltdb_shipper = {
-              active_index_directory = "/var/loki/index";
-              cache_location = "/var/loki/cache";
+              active_index_directory = "/var/lib/loki/index";
+              cache_location = "/var/lib/loki/cache";
             };
             filesystem = {
-              directory = "/var/loki/chunks";
+              directory = "/var/lib/loki/chunks";
             };
           };
           limits_config = {
@@ -206,7 +198,7 @@ in {
             allow_structured_metadata = false;
           };
           compactor = {
-            working_directory = "/var/loki/compactor";
+            working_directory = "/var/lib/loki/compactor";
           };
         };
       };
@@ -233,7 +225,8 @@ in {
                 max_age = "12h";
                 labels = {
                   job = "systemd-journal";
-                  host = "pihole";
+                  # TODO: do not hardcode
+                  host = "ms01";
                 };
               };
               relabel_configs = [
@@ -247,17 +240,30 @@ in {
         };
       };
 
+      postgresql = {
+        ensureDatabases = ["grafana"];
+        ensureUsers = [
+          {
+            name = "grafana";
+            ensureDBOwnership = true;
+          }
+        ];
+      };
+
       grafana = {
         enable = true;
-        port = 3010;
-        protocol = "http";
-        addr = "127.0.0.1";
-        analytics.reporting.enable = false;
         settings = {
+          server = {
+            port = 3010;
+            protocol = "http";
+            addr = "127.0.0.1";
+          };
+
           "auth" = {
             signout_redirect_url = "https://auth.bare.homelab.haseebmajid.dev/application/o/grafana/end-session/";
             oauth_auto_login = true;
           };
+
           "auth.generic_oauth" = {
             enabled = true;
             client_id = "$__file{${config.sops.secrets.grafana_oauth2_client_id.path}}";
@@ -267,6 +273,12 @@ in {
             token_url = "https://auth.bare.homelab.haseebmajid.dev/application/o/token/";
             api_url = "https://auth.bare.homelab.haseebmajid.dev/application/o/userinfo/";
             role_attribute_path = "contains(groups, 'Grafana Admins') && 'Admin' || contains(groups, 'Grafana Editors') && 'Editor' || 'Viewer'";
+          };
+          database = {
+            host = "/run/postgresql";
+            user = "grafana";
+            name = "grafana";
+            type = "postgres";
           };
         };
 

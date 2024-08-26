@@ -21,7 +21,6 @@ in {
       nixicle = {
         avahi.enable = true;
         tailscale.enable = true;
-        cockpit.enable = true;
       };
 
       getty.autologinUser = "nixos";

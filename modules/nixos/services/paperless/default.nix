@@ -12,33 +12,42 @@ in {
   };
 
   config = mkIf cfg.enable {
+    users.users.${config.services.paperless.user}.extraGroups = ["media"];
+
+    sops.secrets.paperless_pass = {
+      sopsFile = ../secrets.yaml;
+    };
+
+    sops.secrets.paperless = {
+      sopsFile = ../secrets.yaml;
+    };
+
+    systemd.services.paperless-web = {
+      serviceConfig = {
+        EnvironmentFile = [config.sops.secrets.paperless.path];
+      };
+      after = ["postgresql.service"];
+    };
+
     services = {
       paperless = {
         enable = true;
         mediaDir = "/mnt/share/haseeb/homelab/paperless/media";
+        passwordFile = config.sops.secrets.paperless_pass.path;
+
+        settings = {
+          PAPERLESS_DBHOST = "/run/postgresql";
+        };
       };
 
-      traefik = {
-        dynamicConfigOptions = {
-          http = {
-            services = {
-              paperless.loadBalancer.servers = [
-                {
-                  url = "http://localhost:28981";
-                }
-              ];
-            };
-
-            routers = {
-              paperless = {
-                entryPoints = ["websecure"];
-                rule = "Host(`paperless.bare.homelab.haseebmajid.dev`)";
-                service = "paperless";
-                tls.certResolver = "letsencrypt";
-              };
-            };
-          };
-        };
+      postgresql = {
+        ensureDatabases = ["paperless"];
+        ensureUsers = [
+          {
+            name = "paperless";
+            ensureDBOwnership = true;
+          }
+        ];
       };
     };
   };

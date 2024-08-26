@@ -75,28 +75,5 @@ in {
         };
       };
     };
-
-    services.traefik = {
-      dynamicConfigOptions = {
-        http = {
-          services = {
-            homeassistant.loadBalancer.servers = [
-              {
-                url = "http://s100:8123";
-              }
-            ];
-          };
-
-          routers = {
-            homeassistant = {
-              entryPoints = ["websecure"];
-              rule = "Host(`home-assistant.bare.homelab.haseebmajid.dev`)";
-              service = "homeassistant";
-              tls.certResolver = "letsencrypt";
-            };
-          };
-        };
-      };
-    };
   };
 }

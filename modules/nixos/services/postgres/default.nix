@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  pkgs,
   ...
 }:
 with lib; let
@@ -13,6 +14,7 @@ in {
   config = mkIf cfg.enable {
     services.postgresql = {
       enable = true;
+      package = pkgs.postgresql_16_jit;
     };
   };
 }
