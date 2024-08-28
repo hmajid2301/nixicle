@@ -38,8 +38,8 @@ in {
         };
 
         serif = {
-          name = "Noto Serif";
-          package = pkgs.noto-fonts;
+          name = "Source Serif";
+          package = pkgs.source-serif;
         };
 
         sansSerif = {
