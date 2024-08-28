@@ -4,46 +4,43 @@
   ...
 }:
 with lib; let
-  cfg = config.services.media-server;
+  cfg = config.services.arr;
 in {
-  options.services.media-server = {
-    enable = mkEnableOption "Enable the media server";
+  options.services.arr = {
+    enable = mkEnableOption "Enable the arr";
   };
 
   config = mkIf cfg.enable {
     users.groups.media = {};
 
     services = {
-      bazarr.enable = true;
-      bazarr.group = "media";
-      lidarr.enable = true;
-      lidarr.group = "media";
-      readarr.enable = true;
-      readarr.group = "media";
-      radarr.enable = true;
-      radarr.group = "media";
-      sonarr.enable = true;
-      sonarr.group = "media";
-
-      flaresolverr.enable = true;
-      flaresolverr.openFirewall = true;
-
+      bazarr = {
+        enable = true;
+        group = "media";
+      };
+      lidarr = {
+        enable = true;
+        group = "media";
+      };
+      readarr = {
+        enable = true;
+        group = "media";
+      };
+      radarr = {
+        enable = true;
+        group = "media";
+      };
       prowlarr.enable = true;
+      sonarr = {
+        enable = true;
+        group = "media";
+      };
+      flaresolverr = {
+        enable = true;
+        openFirewall = true;
+      };
 
       jellyseerr.enable = true;
-      jellyfin.enable = true;
-
-      deluge = {
-        enable = true;
-        web.enable = true;
-        group = "media";
-      };
-
-      audiobookshelf = {
-        enable = true;
-        port = 8555;
-        group = "media";
-      };
 
       traefik = {
         dynamicConfigOptions = {
@@ -79,14 +76,9 @@ in {
                   url = "http://localhost:8989";
                 }
               ];
-              deluge.loadBalancer.servers = [
+              jellyseerr.loadBalancer.servers = [
                 {
-                  url = "http://localhost:8112";
-                }
-              ];
-              audiobookshelf.loadBalancer.servers = [
-                {
-                  url = "http://localhost:8555";
+                  url = "http://localhost:5055";
                 }
               ];
               jellyfin.loadBalancer.servers = [
@@ -97,12 +89,6 @@ in {
             };
 
             routers = {
-              jellyfin = {
-                entryPoints = ["websecure"];
-                rule = "Host(`jellyfin.bare.homelab.haseebmajid.dev`)";
-                service = "jellyfin";
-                tls.certResolver = "letsencrypt";
-              };
               bazarr = {
                 entryPoints = ["websecure"];
                 rule = "Host(`bazarr.bare.homelab.haseebmajid.dev`)";
@@ -145,16 +131,10 @@ in {
                 tls.certResolver = "letsencrypt";
                 middlewares = ["authentik"];
               };
-              deluge = {
+              jellyseerr = {
                 entryPoints = ["websecure"];
-                rule = "Host(`deluge.bare.homelab.haseebmajid.dev`)";
-                service = "deluge";
-                tls.certResolver = "letsencrypt";
-              };
-              audiobookshelf = {
-                entryPoints = ["websecure"];
-                rule = "Host(`audiobookshelf.bare.homelab.haseebmajid.dev`)";
-                service = "audiobookshelf";
+                rule = "Host(`jellyseerr.bare.homelab.haseebmajid.dev`)";
+                service = "jellyseerr";
                 tls.certResolver = "letsencrypt";
               };
             };
