@@ -21,19 +21,22 @@ with lib; let
   '';
 
   toggle-headphones = pkgs.writeScriptBin "toggle-headphones" ''
-    #!/usr/bin/env bash
+    #!/bin/sh
 
-    SOURCE1="alsa_card.usb-SteelSeries_Arctis_Nova_Pro_Wireless-00"
-    SOURCE2="alsa_card.usb-ACTIONS_Pebble_V3-00.pro-output-0"
+    # Define the sink names
+    SINK1="alsa_output.usb-SteelSeries_Arctis_Nova_Pro_Wireless-00.analog-stereo"
+    SINK2="alsa_output.usb-ACTIONS_Pebble_V3-00.analog-stereo"
 
-    CURRENT_SOURCE=$(${pkgs.pulseaudio}/bin/pactl info | grep "Default Sink" | awk '{print $3}')
+    # Get the current default sink
+    CURRENT_SINK=$(${pkgs.pulseaudio}/bin/pactl get-default-sink)
 
-    if [ "$CURRENT_SOURCE" = "$SOURCE1" ]; then
-        ${pkgs.pulseaudio}/bin/pactl set-default-sink "$SOURCE2"
-        echo "Switched to $SOURCE2"
+    # Toggle between the two sinks
+    if [ "$CURRENT_SINK" = "$SINK1" ]; then
+        ${pkgs.pulseaudio}/bin/pactl set-default-sink "$SINK2"
+        echo "Switched to Pebble V3"
     else
-        ${pkgs.pulseaudio}/bin/pactl set-default-sink "$SOURCE1"
-        echo "Switched to $SOURCE1"
+        ${pkgs.pulseaudio}/bin/pactl set-default-sink "$SINK1"
+        echo "Switched to Arctis Nova Pro Wireless"
     fi
   '';
 in {

@@ -12,7 +12,8 @@ in {
   };
 
   config = mkIf cfg.enable {
-    # home.packages = [pkgs.hyprpanel];
+    home.packages = [pkgs.hyprpanel];
+
     programs.waybar = {
       enable = true;
       systemd.enable = true;

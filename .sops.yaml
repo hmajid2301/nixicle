@@ -26,18 +26,19 @@ keys:
     - &um790 age1wtkcl8gwwumvzf78ttqy4gh2pwzz724glugs5wah2fcudgfh5pxq3urkpg
     - &ms01 age1uswlqzs3pf99r6e8qq5d3eh44sufe5tdczmfqygeam7vfr96fugqa0pps7
     - &s100 age19pl6jt7ekljfjww4g9anzafdxj0e52mnfnsyd26u5xdemfksqpwsnfwrs5
+    - &vps age1a2qndu0y7hwhtszt9sztqgccvq5lz84smyg96rnevayqvectvd3srt2f75
 
 creation_rules:
   - path_regex: modules/nixos/roles/kubernetes/secrets.ya?ml$
     key_groups:
     - age:
       - *workstation
+      - *haseeb_workstation
       - *framework
       - *mainboard
       - *um790
       - *ms01
       - *s100
-      - *haseeb_workstation
 
   - path_regex: modules/nixos/secrets.ya?ml$
     key_groups:
@@ -48,6 +49,7 @@ creation_rules:
       - *um790
       - *ms01
       - *s100
+      - *vps
 
   - path_regex: modules/nixos/services/secrets.ya?ml$
     key_groups:
@@ -58,6 +60,7 @@ creation_rules:
       - *um790
       - *ms01
       - *s100
+      - *vps
 
   - path_regex: modules/home/secrets.ya?ml$
     key_groups:

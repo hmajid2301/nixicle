@@ -29,6 +29,7 @@ in {
               "tandoor-recipes.haseebmajid.dev" = "http://localhost:8099";
               "authentik.haseebmajid.dev" = "http://localhost:9000";
               "paperless.haseebmajid.dev" = "http://localhost:28981";
+              "jellyseerr.haseebmajid.dev" = "http://localhost:5055";
             };
           };
         };
