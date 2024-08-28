@@ -13,7 +13,7 @@
 
   services = {
     tandoor.enable = true;
-    media-server.enable = true;
+    arr.enable = true;
     # vpn.enable = true;
     traefik = {
       dynamicConfigOptions = {
@@ -49,7 +49,11 @@
 
     nixicle = {
       authentik.enable = true;
+      audiobookshelf.enable = true;
       cloudflared.enable = true;
+      deluge.enable = true;
+      homepage.enable = true;
+      jellyfin.enable = true;
       monitoring.enable = true;
       netdata.enable = true;
       gitlab-runner.enable = true;

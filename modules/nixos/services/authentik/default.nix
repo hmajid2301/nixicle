@@ -72,7 +72,7 @@ in {
             routers = {
               auth = {
                 entryPoints = ["websecure"];
-                rule = "Host(`auth.bare.homelab.haseebmajid.dev`) || HostRegexp(`{subdomain:[a-z0-9]+}.bare.homelab.haseebmajid.com`) && PathPrefix(`/outpost.goauthentik.io/`)";
+                rule = "Host(`authentik.haseebmajid.dev`) || HostRegexp(`{subdomain:[a-z0-9]+}.haseebmajid.com`) && PathPrefix(`/outpost.goauthentik.io/`)";
                 service = "auth";
                 tls.certResolver = "letsencrypt";
               };
