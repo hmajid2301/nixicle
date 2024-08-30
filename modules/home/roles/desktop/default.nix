@@ -25,7 +25,7 @@ with lib; let
 
             alsa_output.usb-SteelSeries_Arctis_Nova_Pro_Wireless-00.analog-stereo
     SOURCE1="alsa_output.usb-SteelSeries_Arctis_Nova_Pro_Wireless-00.analog-stereo"
-    SOURCE2="alsa_card.usb-ACTIONS_Pebble_V3-00.pro-output-0"
+    SOURCE2="alsa_output.usb-ACTIONS_Pebble_V3-00.analog-stereo"
 
     # Get the current default sink
     CURRENT_SINK=$(${pkgs.pulseaudio}/bin/pactl get-default-sink)

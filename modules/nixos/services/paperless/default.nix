@@ -40,6 +40,17 @@ in {
         };
       };
 
+      cloudflared = {
+        enable = true;
+        tunnels = {
+          "ec0b6af0-a823-4616-a08b-b871fd2c7f58" = {
+            ingress = {
+              "paperless.haseebmajid.dev" = "http://localhost:28981";
+            };
+          };
+        };
+      };
+
       postgresql = {
         ensureDatabases = ["paperless"];
         ensureUsers = [

@@ -18,6 +18,7 @@ in {
       helvetica-neue-lt-std
       fontconfig
       fira-code-nerdfont
+      fira-sans
       noto-fonts
       noto-fonts-color-emoji
       twitter-color-emoji

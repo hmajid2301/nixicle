@@ -34,6 +34,7 @@ creation_rules:
     - age:
       - *workstation
       - *haseeb_workstation
+      - *haseebmajid_curve
       - *framework
       - *mainboard
       - *um790
@@ -46,6 +47,7 @@ creation_rules:
       - *workstation
       - *framework
       - *haseeb_workstation
+      - *haseebmajid_curve
       - *um790
       - *ms01
       - *s100
@@ -57,6 +59,7 @@ creation_rules:
       - *workstation
       - *framework
       - *haseeb_workstation
+      - *haseebmajid_curve
       - *um790
       - *ms01
       - *s100

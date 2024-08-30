@@ -168,7 +168,7 @@ in {
 
         hmg = ''
           set current_gen (home-manager generations | head -n 1 | awk '{print $7}')
-          home-manager generations | awk '{print $7}' | tac | fzf --preview "echo {} | xargs -I % sh -c 'nvd --color=always diff $current_gen %' | xargs -I{} bash {}/activate""
+          home-manager generations | awk '{print $7}' | tac | fzf --preview "echo {} | xargs -I % sh -c 'nvd --color=always diff $current_gen %' | xargs -I{} bash {}/activate"
         '';
 
         rgvim = ''
@@ -223,12 +223,7 @@ in {
         }
         {
           name = "git-abbr";
-          src = pkgs.fetchFromGitHub {
-            owner = "lewisacidic";
-            repo = "fish-git-abbr";
-            rev = "dc590a5b9d9d2095f95f7d90608b48e55bea0b0e";
-            sha256 = "sha256-6z3Wr2t8CP85xVEp6UCYaM2KC9PX4MDyx19f/wjHkb0=";
-          };
+          inherit (pkgs.fishPlugins.git-abbr) src;
         }
       ];
     };
