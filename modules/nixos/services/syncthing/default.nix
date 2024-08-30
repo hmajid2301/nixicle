@@ -17,6 +17,7 @@ in {
         enable = true;
         guiAddress = "0.0.0.0:8384";
         dataDir = "/mnt/share/haseeb/homelab/syncthing";
+        group = "media";
       };
 
       traefik = {

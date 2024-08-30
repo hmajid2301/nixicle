@@ -37,6 +37,17 @@ in {
         };
       };
 
+      cloudflared = {
+        tunnels = {
+          "ec0b6af0-a823-4616-a08b-b871fd2c7f58" = {
+            ingress = {
+              "tandoor-recipes.haseebmajid.dev/media/" = "http://localhost:8100";
+              "tandoor-recipes.haseebmajid.dev" = "http://localhost:8099";
+            };
+          };
+        };
+      };
+
       postgresql = {
         ensureDatabases = ["tandoor_recipes"];
         ensureUsers = [
