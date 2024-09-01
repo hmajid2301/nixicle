@@ -22,7 +22,7 @@ in {
     ];
 
     fileSystems."/mnt/share" = {
-      device = "//192.168.1.73/Data";
+      device = "//192.168.1.73/Data/homelab";
       fsType = "cifs";
       options = let
         # this line prevents hanging on network split

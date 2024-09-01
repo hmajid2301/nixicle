@@ -1,23 +1,9 @@
 <div align="center">
 <h1>
 <img width="96" src="./images/logo.png"></img> <br>
-  Nix Config
+  Nixicle
 </h1>
 </h2><img src="https://raw.githubusercontent.com/catppuccin/catppuccin/main/assets/palette/macchiato.png" width="500" />
-<p></p>
-   <a href="https://github.com/hmajid2301/dotfiles/stargazers">
-      <img src="https://img.shields.io/github/stars/hmajid2301/dotfiles?color=ca9ee6&labelColor=303446&style=for-the-badge">
-   </a>
-   <a href="https://github.com/hmajid2301/dotfiles/blob/main">
-      <img src="https://img.shields.io/github/repo-size/hmajid2301/dotfiles?color=fab387&labelColor=303446&style=for-the-badge&logo=github&logoColor=fab387">
-   </a>
-    <a href="https://nixos.wiki/wiki/Flakes" target="_blank">
-        <img alt="Nix Flakes Ready" src="https://img.shields.io/static/v1?logo=nixos&logoColor=d8dee9&label=Nix%20Flakes&labelColor=5e81ac&message=Ready&color=d8dee9&style=for-the-badge">
-    </a>
-    <a href="https://github.com/snowfallorg/lib" target="_blank">
-        <img alt="Built With Snowfall" src="https://img.shields.io/static/v1?logoColor=d8dee9&label=Built%20With&labelColor=5e81ac&message=Snowfall&color=d8dee9&style=for-the-badge">
-    </a>
- <p></p>
 <img src="./images/terminal.png"></img>
 <p>
   Screenshot updated: 2024-07-15
@@ -38,8 +24,8 @@ no OS on the device. You need to copy ssh keys onto the target machine
 `mkdir -p ~/.ssh && curl https://github.com/hmajid2301.keys > ~/.ssh/authorized_keys` in my case I can copy them from GitHub.
 
 ```bash
-git clone git@github.com:hmajid2301/dotfiles.git ~/dotfiles/
-cd dotfiles
+git clone git@github.com:hmajid2301/nixicle.git ~/nixicle/
+cd nixcile
 
 nix develop
 
@@ -53,11 +39,11 @@ Then run `nix_installer`, which will then ask you which host you would like to i
 
 ### Building
 
-To build my dotfiles for a specific host you can do something like:
+To build my config for a specific host you can do something like:
 
 ```bash
-git clone git@github.com:hmajid2301/dotfiles.git ~/dotfiles/
-cd dotfiles
+git clone git@github.com:hmajid2301/nixicle.git ~/nixicle/
+cd nixicle
 
 nix develop
 
@@ -79,7 +65,7 @@ nix build .#topology.config.output
 
 ## 🚀 Features
 
-Some features of my dotfiles:
+Some features of my config:
 
 - Structured to allow multiple **NixOS configurations**, including **desktop**, **laptop** and **homelab**
 - **Custom** live ISO for installing NixOS
@@ -89,6 +75,7 @@ Some features of my dotfiles:
 - **sops-nix** for secrets management
 - Different environments like **hyprland** and **gnome**
 - Custom **Neovim** setup declaratively using **nixvim**
+- Homelab all configured in nix.
 
 ## 🏠 Configurations
 
@@ -101,7 +88,7 @@ Some features of my dotfiles:
 | `vm`                                         | QEMU                                                      | -                                                                   | -             | VirGL                                                  |  🐄   | ❄️   | ✅    |
 | `steamdeck`                                  | -                                                         | Zen 2                                                               | 16GB          | 8 RDNA 2 CUs                                           |  🎮️   | 🐧  | ✅    |
 | `um790`                                      |  UM790                                                    |  AMD Ryzen 9 7940HS                                                 | 64GB          | AMD Radeon™ 780M                                       |  ☁️    | ❄️   | ✅    |
-| `ms01`                                       |  MS-01                                                    |  i9-13900H                                                          | 32GB          | Iris Xe Graphics                                       |  ☁️    | ❄️   | ✅    |
+| `ms01`                                       |  MS-01                                                    |  i9-13900H                                                          | 64GB          | Iris Xe Graphics                                       |  ☁️    | ❄️   | ✅    |
 | `s100`                                       |  S100                                                     |  N100                                                               | 8GB           | Iris Xe Graphics                                       |  ☁️    | ❄️   | ✅    |
 | `vps`                                        | QEMU (Hetzner shared)                                     | 2 VCPU                                                              | 2GB           | VirGL                                                  |  🐄   | ❄️   | ✅    |
 
@@ -113,56 +100,6 @@ Some features of my dotfiles:
 - 🐄 : Virtual Machine
 - ☁️ : Server
 
-## 📱 Applications
-
-| Type           | Program      |
-| :------------- | :----------: |
-| OS             | [NixOS](https://nixos.com/) |
-| Editor         | [NeoVim](https://neovim.io/) |
-| Multiplexer    | [Zellij](https://github.com/zellij-org/zellij) |
-| Prompt         | [Starship](https://starship.rs/) |
-| Launcher       | [Rofi](https://github.com/davatorium/rofi) |
-| Shell          | [Fish](https://fishshell.com/) |
-| Status Bar     | [Waybar](https://github.com/Alexays/Waybar) |
-| Terminal       | [Wezterm](https://github.com/wez/wezterm) |
-| Window Manager | [Hyprland](https://hyprland.org/) |
-| Fonts          | [Mono Lisa](https://www.monolisa.dev/) |
-| Colorscheme    | [Catppuccin Mocha](https://github.com/catppuccin) |
-
-### Neovim
-
-My [ neovim config ](./modules/home/cli/editors/nvim/) is made using [nixvim](https://github.com/pta2002/nixvim/).
-Which converts all the nix files into a single "large" init.lua file.
-
-As you will see down below a lot of the UI elements were inspired/copied from nvchad. As I think they have really nice
-looking editor altogether. Particularly the cmp menu, telescope and also the status line.
-
-#### Plugins
-
-Some of the main plugins used in my nvim setup include:
-
-- Session: auto-session
-- Status Line: lualine
-- Buffer Line: bufferline
-- Winbar: barbecue & navic
-- File Explorer: mini.files and oil.nvim
-- LSP: lsp, nvim-cmp, luasnip, friendly-snippets
-- Git: gitsigns, neogit, diffview
-- ColourScheme: notkens12 base46 (nvchad catppuccin)
-- Other: telescope (ofc)
-
-## 🖳  Homelab
-
-This nix config also contains some of the config for my homelab, mostly the bare metal management of the machine.
-All the kubernetes config can be found [here](https://gitlab.com/hmajid2301/homelab).
-
-<details>
-<summary>🕸️ HomeLab Diagram</summary>
-
-![image](./images/homelab/main.svg)
-![image](./images/homelab/network.svg)
-
-</details>
 
 ## 🖼️ Showcase
 

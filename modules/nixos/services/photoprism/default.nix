@@ -24,7 +24,7 @@ in {
     services = {
       photoprism = {
         enable = true;
-        originalsPath = "/mnt/share/haseeb/homelab/photoprism";
+        originalsPath = "/mnt/share/photoprism";
         passwordFile = config.sops.secrets.photoprism_admin_password.path;
         settings = {
           PHOTOPRISM_GID = "989";

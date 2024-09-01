@@ -24,7 +24,7 @@ in {
       plausible = {
         enable = true;
         server = {
-          baseUrl = "https://plausible.bare.homelab.haseebmajid.dev";
+          baseUrl = "https://plausible.haseebmajid.dev";
           port = 8455;
           secretKeybaseFile = config.sops.secrets.plausible_secret_keybase_file.path;
         };
@@ -35,24 +35,12 @@ in {
         };
       };
 
-      traefik = {
-        dynamicConfigOptions = {
-          http = {
-            services = {
-              plausible.loadBalancer.servers = [
-                {
-                  url = "http://localhost:8455";
-                }
-              ];
-            };
-
-            routers = {
-              plausible = {
-                entryPoints = ["websecure"];
-                rule = "Host(`plausible.bare.homelab.haseebmajid.dev`)";
-                service = "plausible";
-                tls.certResolver = "letsencrypt";
-              };
+      cloudflared = {
+        enable = true;
+        tunnels = {
+          "ec0b6af0-a823-4616-a08b-b871fd2c7f58" = {
+            ingress = {
+              "plausible.haseebmajid.dev" = "http://localhost:8455";
             };
           };
         };

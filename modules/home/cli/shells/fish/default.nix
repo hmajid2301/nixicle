@@ -124,8 +124,8 @@ in {
 
         nd = "nix develop";
         nfu = "nix flake update";
-        hms = "home-manager switch --flake ~/dotfiles#${config.nixicle.user.name}@${host}";
-        nrs = "sudo nixos-rebuild switch --flake ~/dotfiles#${host}";
+        hms = "home-manager switch --flake ~/nixicle#${config.nixicle.user.name}@${host}";
+        nrs = "sudo nixos-rebuild switch --flake ~/nixicle#${host}";
 
         # new commads
         weather = "curl wttr.in/London";

@@ -16,13 +16,15 @@
 
     plugins = {
       conform-nvim = {
-        formattersByFt = {
-          sql = ["sqlfluff"];
-        };
+        settings = {
+          formatters_by_ft = {
+            sql = ["sqlfluff"];
+          };
 
-        formatters = {
-          sqlfluff = {
-            command = "${pkgs.sqlfluff}/bin/sqlfluff";
+          formatters = {
+            sqlfluff = {
+              command = "${pkgs.sqlfluff}/bin/sqlfluff";
+            };
           };
         };
       };
@@ -36,12 +38,6 @@
             cmd = "${pkgs.sqlfluff}/bin/sqlfluff";
           };
         };
-      };
-
-      treesitter = {
-        grammarPackages = with config.programs.nixvim.plugins.treesitter.package.builtGrammars; [
-          sql
-        ];
       };
     };
   };

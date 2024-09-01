@@ -259,21 +259,21 @@ in {
             addr = "127.0.0.1";
           };
 
-          "auth" = {
-            signout_redirect_url = "https://auth.bare.homelab.haseebmajid.dev/application/o/grafana/end-session/";
-            oauth_auto_login = true;
-          };
-
-          "auth.generic_oauth" = {
-            enabled = true;
-            client_id = "$__file{${config.sops.secrets.grafana_oauth2_client_id.path}}";
-            client_secret = "$__file{${config.sops.secrets.grafana_oauth2_client_secret.path}}";
-            scopes = "openid profile email";
-            auth_url = "https://auth.bare.homelab.haseebmajid.dev/application/o/authorize/";
-            token_url = "https://auth.bare.homelab.haseebmajid.dev/application/o/token/";
-            api_url = "https://auth.bare.homelab.haseebmajid.dev/application/o/userinfo/";
-            role_attribute_path = "contains(groups, 'Grafana Admins') && 'Admin' || contains(groups, 'Grafana Editors') && 'Editor' || 'Viewer'";
-          };
+          # "auth" = {
+          #   signout_redirect_url = "https://authentik.haseebmajid.dev/application/o/grafana/end-session/";
+          #   oauth_auto_login = true;
+          # };
+          #
+          # "auth.generic_oauth" = {
+          #   enabled = true;
+          #   client_id = "$__file{${config.sops.secrets.grafana_oauth2_client_id.path}}";
+          #   client_secret = "$__file{${config.sops.secrets.grafana_oauth2_client_secret.path}}";
+          #   scopes = "openid profile email";
+          #   auth_url = "https://authentik.haseebmajid.dev/application/o/authorize/";
+          #   token_url = "https://authentik.haseebmajid.dev/application/o/token/";
+          #   api_url = "https://authentik.haseebmajid.dev/application/o/userinfo/";
+          #   role_attribute_path = "contains(groups, 'Grafana Admins') && 'Admin' || contains(groups, 'Grafana Editors') && 'Editor' || 'Viewer'";
+          # };
           database = {
             host = "/run/postgresql";
             user = "grafana";

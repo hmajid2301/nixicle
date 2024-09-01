@@ -21,7 +21,6 @@ in {
         enable = true;
         environmentFile = config.sops.secrets.authenik_env.path;
         settings = {
-          # TODO: fill this settings
           email = {
             host = "smtp.mailgun.org";
             port = 587;

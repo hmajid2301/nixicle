@@ -6,13 +6,15 @@
   programs.nixvim = {
     plugins = {
       conform-nvim = {
-        formattersByFt = {
-          css = ["prettierd"];
-        };
+        settings = {
+          formatters_by_ft = {
+            css = ["prettierd"];
+          };
 
-        formatters = {
-          prettierd = {
-            command = "${pkgs.prettierd}/bin/prettierd";
+          formatters = {
+            prettierd = {
+              command = "${pkgs.prettierd}/bin/prettierd";
+            };
           };
         };
       };
@@ -30,12 +32,6 @@
 
       lsp.servers.cssls = {
         enable = true;
-      };
-
-      treesitter = {
-        grammarPackages = with config.programs.nixvim.plugins.treesitter.package.builtGrammars; [
-          css
-        ];
       };
     };
   };

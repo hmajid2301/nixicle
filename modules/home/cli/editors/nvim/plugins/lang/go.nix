@@ -47,24 +47,26 @@ in {
       };
 
       conform-nvim = {
-        formattersByFt = {
-          go = ["goimports" "golines"];
-        };
-
-        formatters = {
-          golines = {
-            command = "${pkgs.golines}/bin/golines";
-            args = [
-              "-m"
-              "120"
-            ];
+        settings = {
+          formatters_by_ft = {
+            go = ["goimports" "golines"];
           };
-          goimports = {
-            command = "${pkgs.gotools}/bin/goimports";
-            args = [
-              "-local"
-              "gitlab.com/hmajid2301,git.curve.tools,go.curve.tools"
-            ];
+
+          formatters = {
+            golines = {
+              command = "${pkgs.golines}/bin/golines";
+              args = [
+                "-m"
+                "120"
+              ];
+            };
+            goimports = {
+              command = "${pkgs.gotools}/bin/goimports";
+              args = [
+                "-local"
+                "gitlab.com/hmajid2301,git.curve.tools,go.curve.tools"
+              ];
+            };
           };
         };
       };
@@ -141,16 +143,6 @@ in {
             };
           };
         };
-      };
-
-      treesitter = {
-        grammarPackages = with config.programs.nixvim.plugins.treesitter.package.builtGrammars; [
-          templ
-          go
-          gomod
-          gosum
-          gowork
-        ];
       };
     };
   };

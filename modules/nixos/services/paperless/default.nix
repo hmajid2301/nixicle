@@ -32,7 +32,7 @@ in {
     services = {
       paperless = {
         enable = true;
-        mediaDir = "/mnt/share/haseeb/homelab/paperless/media";
+        mediaDir = "/mnt/share/paperless/media";
         passwordFile = config.sops.secrets.paperless_pass.path;
 
         settings = {

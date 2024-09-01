@@ -1,4 +1,8 @@
-{config, ...}: {
+{
+  config,
+  pkgs,
+  ...
+}: {
   programs.nixvim = {
     files = {
       "ftplugin/graphql.lua" = {
@@ -15,12 +19,6 @@
         graphql = {
           enable = true;
         };
-      };
-
-      treesitter = {
-        grammarPackages = with config.programs.nixvim.plugins.treesitter.package.builtGrammars; [
-          graphql
-        ];
       };
     };
   };

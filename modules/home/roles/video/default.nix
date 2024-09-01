@@ -19,7 +19,8 @@ in {
 
     home.packages = with pkgs; [
       audacity
-      shotcut
+      kdePackages.kdenlive
+      davinci-resolve
     ];
   };
 }

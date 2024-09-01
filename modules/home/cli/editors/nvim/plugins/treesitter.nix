@@ -1,4 +1,8 @@
-{config, ...}: {
+{
+  config,
+  pkgs,
+  ...
+}: {
   programs.nixvim = {
     plugins = {
       treesitter = {
@@ -20,21 +24,6 @@
             };
           };
         };
-
-        grammarPackages = with config.programs.nixvim.plugins.treesitter.package.builtGrammars; [
-          c
-          css
-          bash
-          fish
-          diff
-
-          vim
-          vimdoc
-          vhs
-
-          json
-          toml
-        ];
       };
       treesitter-textobjects = {
         enable = true;

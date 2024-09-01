@@ -27,14 +27,16 @@
       };
 
       conform-nvim = {
-        formattersByFt = {
-          typescript = ["prettierd"];
-          javascript = ["prettierd"];
-        };
+        settings = {
+          formatters_by_ft = {
+            typescript = ["prettierd"];
+            javascript = ["prettierd"];
+          };
 
-        formatters = {
-          prettierd = {
-            command = "${pkgs.prettierd}/bin/prettierd";
+          formatters = {
+            prettierd = {
+              command = "${pkgs.prettierd}/bin/prettierd";
+            };
           };
         };
       };
@@ -53,13 +55,6 @@
 
       lsp.servers.tsserver = {
         enable = true;
-      };
-
-      treesitter = {
-        grammarPackages = with config.programs.nixvim.plugins.treesitter.package.builtGrammars; [
-          typescript
-          javascript
-        ];
       };
     };
   };

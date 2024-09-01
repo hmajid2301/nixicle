@@ -16,13 +16,15 @@
 
     plugins = {
       conform-nvim = {
-        formattersByFt = {
-          html = ["htmlbeautifier" "rustywind"];
-        };
+        settings = {
+          formatters_by_ft = {
+            html = ["htmlbeautifier" "rustywind"];
+          };
 
-        formatters = {
-          htmlbeautifier = {
-            command = "${pkgs.rubyPackages.htmlbeautifier}/bin/htmlbeautifier";
+          formatters = {
+            htmlbeautifier = {
+              command = "${pkgs.rubyPackages.htmlbeautifier}/bin/htmlbeautifier";
+            };
           };
         };
       };
@@ -48,12 +50,6 @@
             };
           };
         };
-      };
-
-      treesitter = {
-        grammarPackages = with config.programs.nixvim.plugins.treesitter.package.builtGrammars; [
-          html
-        ];
       };
     };
   };

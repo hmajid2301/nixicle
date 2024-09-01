@@ -2,13 +2,15 @@
   programs.nixvim = {
     plugins = {
       conform-nvim = {
-        formattersByFt = {
-          templ = ["rustywind"];
-        };
+        settings = {
+          formatters_by_ft = {
+            templ = ["rustywind"];
+          };
 
-        formatters = {
-          rustywind = {
-            command = "${pkgs.rustywind}/bin/rustywind";
+          formatters = {
+            rustywind = {
+              command = "${pkgs.rustywind}/bin/rustywind";
+            };
           };
         };
       };
