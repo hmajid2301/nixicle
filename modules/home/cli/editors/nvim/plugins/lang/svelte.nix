@@ -23,12 +23,6 @@
         enable = true;
         filetypes = ["svelte"];
       };
-
-      treesitter = {
-        grammarPackages = with config.programs.nixvim.plugins.treesitter.package.builtGrammars; [
-          svelte
-        ];
-      };
     };
   };
 }

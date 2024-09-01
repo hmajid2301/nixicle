@@ -50,16 +50,20 @@
       cloudflared.enable = true;
       deluge.enable = true;
       homepage.enable = true;
+      gitea.enable = true;
+      gitlab-runner.enable = true;
+      gotify.enable = true;
       jellyfin.enable = true;
       monitoring.enable = true;
       netdata.enable = true;
-      gitlab-runner.enable = true;
-      gotify.enable = true;
       nfs.enable = true;
       paperless.enable = true;
+      plausible.enable = true;
       photoprism.enable = true;
       postgresql.enable = true;
       syncthing.enable = true;
+      # TODO: need a way to configure the settings file
+      # stirling-pdf.enable = true;
       traefik.enable = true;
     };
   };

@@ -33,7 +33,7 @@ in {
     };
 
     home.sessionVariables = {
-      FLAKE = "/home/${config.nixicle.user.name}/dotfiles";
+      FLAKE = "/home/${config.nixicle.user.name}/nixicle";
     };
 
     nix = {

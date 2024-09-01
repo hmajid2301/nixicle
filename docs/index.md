@@ -1,5 +1,18 @@
 # home lab docs
 
+## 🖳  Diagram
+
+This nix config also contains some of the config for my homelab, mostly the bare metal management of the machine.
+All the kubernetes config can be found [here](https://gitlab.com/hmajid2301/homelab).
+
+<details>
+<summary>🕸️ HomeLab Diagram</summary>
+
+![image](./assets/imgs/homelab/main.svg)
+![image](./assets/imgs/homelab/network.svg)
+
+</details>
+
 ## tandoor
 
 no social logisn firs time setup then enable
@@ -386,3 +399,16 @@ hostname needs to be like tandoor-recipes.haseebmajid.dev
 Multi domain authentik: https://www.youtube.com/watch?v=tqimi3SdvCQ
 
 ![tunnel-order.png](assets/imgs/tunnel-order.png)
+
+
+## Sops
+
+sops multiline enviornment files
+```yaml
+tandoor: |
+    SOCIALACCOUNT_PROVIDERS='{ "openid_connect": { "SERVERS": [ { "id": "tandoor", "name": "authentik", "server_url": "https://authentik.haseebmajid.dev/application/o/tandoor/.well-known/openid-configuration", "token_auth_method": "client_secret_basic", "APP": { "client_id": "", "secret": "", }, } ] }}'
+    SECRET_KEY=""
+```
+
+- note = not a colon `:`.
+- quote `"#"` say passwords surround it with quotes can break yaml syntax.

@@ -22,12 +22,14 @@ in {
       nix-develop.enable = true;
 
       conform-nvim = {
-        formattersByFt = {
-          nix = ["alejandra"];
-        };
-        formatters = {
-          alejandra = {
-            command = "${pkgs.alejandra}/bin/alejandra";
+        settings = {
+          formatters_by_ft = {
+            nix = ["alejandra"];
+          };
+          formatters = {
+            alejandra = {
+              command = "${pkgs.alejandra}/bin/alejandra";
+            };
           };
         };
       };
@@ -56,23 +58,17 @@ in {
             };
             options = {
               nixos = {
-                expr = ''(builtins.getFlake "${home}/dotfiles").nixosConfigurations.workstation.options'';
+                expr = ''(builtins.getFlake "${home}/nixicle").nixosConfigurations.workstation.options'';
               };
               home_manager = {
-                expr = ''(builtins.getFlake "${home}/dotfiles").homeConfigurations."haseeb@workstation".options'';
+                expr = ''(builtins.getFlake "${home}/nixicle").homeConfigurations."haseeb@workstation".options'';
               };
               flake_parts = {
-                expr = ''let flake = builtins.getFlake ("${home}/dotfiles"); in flake.debug.options // flake.currentSystem.options'';
+                expr = ''let flake = builtins.getFlake ("${home}/nixicle"); in flake.debug.options // flake.currentSystem.options'';
               };
             };
           };
         };
-      };
-
-      treesitter = {
-        grammarPackages = with config.programs.nixvim.plugins.treesitter.package.builtGrammars; [
-          nix
-        ];
       };
     };
 
