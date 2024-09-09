@@ -3,7 +3,7 @@
   config,
   ...
 }: let
-  buildFlags = "-tags=unit,integration,e2e,bdd";
+  buildFlags = "-tags=unit,integration,e2e,bdd,dind";
 in {
   xdg.configFile."nvim/queries/go/injections.scm".text = builtins.readFile ./lua/go/injections.scm;
 
@@ -49,17 +49,19 @@ in {
       conform-nvim = {
         settings = {
           formatters_by_ft = {
-            go = ["goimports" "golines"];
+            # go = ["goimports" "golines"];
+            go = ["goimports"];
           };
 
           formatters = {
-            golines = {
-              command = "${pkgs.golines}/bin/golines";
-              args = [
-                "-m"
-                "120"
-              ];
-            };
+            # TODO: auto toggle
+            # golines = {
+            #   command = "${pkgs.golines}/bin/golines";
+            #   args = [
+            #     "-m"
+            #     "120"
+            #   ];
+            # };
             goimports = {
               command = "${pkgs.gotools}/bin/goimports";
               args = [

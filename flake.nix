@@ -117,6 +117,11 @@
     };
     authentik-nix.inputs.poetry2nix.follows = "poetry2nix";
 
+    catppuccin-obs = {
+      url = "github:catppuccin/obs";
+      flake = false;
+    };
+
     gx-nvim = {
       url = "github:chrishrb/gx.nvim";
       flake = false;

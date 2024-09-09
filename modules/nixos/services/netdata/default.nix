@@ -31,7 +31,7 @@ in {
             routers = {
               netdata = {
                 entryPoints = ["websecure"];
-                rule = "Host(`netdata.bare.homelab.haseebmajid.dev`)";
+                rule = "Host(`netdata.homelab.haseebmajid.dev`)";
                 service = "netdata";
                 tls.certResolver = "letsencrypt";
                 middlewares = ["authentik"];

@@ -48,8 +48,8 @@ in {
         settings = {
           server = {
             HTTP_PORT = 5705;
-            DOMAIN = "git.bare.homelab.haseebmajid.dev";
-            ROOT_URL = "https://git.bare.homelab.haseebmajid.dev/";
+            DOMAIN = "git.homelab.haseebmajid.dev";
+            ROOT_URL = "https://git.homelab.haseebmajid.dev/";
           };
           mailer = {
             ENABLED = true;
@@ -95,7 +95,7 @@ in {
             routers = {
               gitea = {
                 entryPoints = ["websecure"];
-                rule = "Host(`git.bare.homelab.haseebmajid.dev`)";
+                rule = "Host(`git.homelab.haseebmajid.dev`)";
                 service = "gitea";
                 tls.certResolver = "letsencrypt";
               };

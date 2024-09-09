@@ -43,7 +43,7 @@ in {
             routers = {
               photos = {
                 entryPoints = ["websecure"];
-                rule = "Host(`photos.bare.homelab.haseebmajid.dev`)";
+                rule = "Host(`photos.homelab.haseebmajid.dev`)";
                 service = "photos";
                 tls.certResolver = "letsencrypt";
               };

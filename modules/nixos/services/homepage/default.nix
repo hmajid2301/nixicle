@@ -131,7 +131,8 @@ in {
                   widget = {
                     type = "grafana";
                     url = "{{HOMEPAGE_VAR_GRAFANA_INTERNAL_URL}}";
-                    key = "{{HOMEPAGE_VAR_GRAFANA_API_KEY}}";
+                    username = "{{HOMEPAGE_VAR_GRAFANA_USERNAME}}";
+                    password = "{{HOMEPAGE_VAR_GRAFANA_PASSWORD}}";
                   };
                 };
               }
@@ -277,7 +278,7 @@ in {
                   widget = {
                     type = "deluge";
                     url = "{{HOMEPAGE_VAR_DELUGE_INTERNAL_URL}}";
-                    key = "{{HOMEPAGE_VAR_DELUGE_PASSWORD}}";
+                    password = "{{HOMEPAGE_VAR_DELUGE_PASSWORD}}";
                   };
                 };
               }
@@ -417,7 +418,7 @@ in {
             routers = {
               homepage = {
                 entryPoints = ["websecure"];
-                rule = "Host(`homepage.bare.homelab.haseebmajid.dev`)";
+                rule = "Host(`homepage.homelab.haseebmajid.dev`)";
                 service = "homepage";
                 tls.certResolver = "letsencrypt";
                 middlewares = ["authentik"];

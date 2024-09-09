@@ -10,6 +10,14 @@
         };
       }
       {
+        action = "<cmd>LspRestart<CR>";
+        key = "<leader>lR";
+        mode = ["n"];
+        options = {
+          desc = "Restart LSP";
+        };
+      }
+      {
         action = "<cmd>Telescope lsp_references<CR>";
         key = "<leader>gr";
         mode = ["n"];
@@ -47,8 +55,8 @@
         enable = true;
         settings = {
           format_on_save = {
-            lspFallback = true;
-            timeoutMs = 500;
+            lsp_fallback = true;
+            timeout_ms = 500;
           };
         };
       };

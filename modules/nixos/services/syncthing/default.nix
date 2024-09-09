@@ -38,7 +38,7 @@ in {
             routers = {
               syncthing = {
                 entryPoints = ["websecure"];
-                rule = "Host(`syncthing.bare.homelab.haseebmajid.dev`)";
+                rule = "Host(`syncthing.homelab.haseebmajid.dev`)";
                 service = "syncthing";
                 tls.certResolver = "letsencrypt";
                 middlewares = ["authentik"];

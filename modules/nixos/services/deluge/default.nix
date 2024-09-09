@@ -32,7 +32,7 @@ in {
             routers = {
               deluge = {
                 entryPoints = ["websecure"];
-                rule = "Host(`deluge.bare.homelab.haseebmajid.dev`)";
+                rule = "Host(`deluge.homelab.haseebmajid.dev`)";
                 service = "deluge";
                 tls.certResolver = "letsencrypt";
               };
