@@ -11,6 +11,7 @@ in {
     enable = mkEnableOption "Enable stirling pdf service";
   };
 
+  # TODO: need a way to configure the settings file
   config = mkIf cfg.enable {
     services = {
       stirling-pdf = {
@@ -33,7 +34,7 @@ in {
             routers = {
               pdf = {
                 entryPoints = ["websecure"];
-                rule = "Host(`pdf.bare.homelab.haseebmajid.dev`)";
+                rule = "Host(`pdf.homelab.haseebmajid.dev`)";
                 service = "pdf";
                 tls.certResolver = "letsencrypt";
               };

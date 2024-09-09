@@ -14,16 +14,18 @@
 
   roles.server.enable = true;
   system.boot.enable = lib.mkForce false;
-  services.nixicle.traefik.enable = true;
 
   services = {
+    nixicle.avahi.enable = lib.mkForce false;
+    nixicle.traefik.enable = true;
+
     traefik = {
       dynamicConfigOptions = {
         http = {
           services = {
             jellyfin.loadBalancer.servers = [
               {
-                url = "http://ms01:8096";
+                url = "https://ms01:443";
               }
             ];
           };

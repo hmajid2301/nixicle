@@ -20,7 +20,7 @@ in {
       chafa
       dogdns
       duf
-      # delta
+      delta
       du-dust
       dysk
       entr

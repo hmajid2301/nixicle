@@ -37,6 +37,7 @@ in {
       };
       flaresolverr = {
         enable = true;
+        port = 8191;
         openFirewall = true;
       };
 
@@ -102,49 +103,49 @@ in {
             routers = {
               bazarr = {
                 entryPoints = ["websecure"];
-                rule = "Host(`bazarr.bare.homelab.haseebmajid.dev`)";
+                rule = "Host(`bazarr.homelab.haseebmajid.dev`)";
                 service = "bazarr";
                 tls.certResolver = "letsencrypt";
                 middlewares = ["authentik"];
               };
               readarr = {
                 entryPoints = ["websecure"];
-                rule = "Host(`readarr.bare.homelab.haseebmajid.dev`)";
+                rule = "Host(`readarr.homelab.haseebmajid.dev`)";
                 service = "readarr";
                 tls.certResolver = "letsencrypt";
                 middlewares = ["authentik"];
               };
               lidarr = {
                 entryPoints = ["websecure"];
-                rule = "Host(`lidarr.bare.homelab.haseebmajid.dev`)";
+                rule = "Host(`lidarr.homelab.haseebmajid.dev`)";
                 service = "lidarr";
                 tls.certResolver = "letsencrypt";
                 middlewares = ["authentik"];
               };
               radarr = {
                 entryPoints = ["websecure"];
-                rule = "Host(`radarr.bare.homelab.haseebmajid.dev`)";
+                rule = "Host(`radarr.homelab.haseebmajid.dev`)";
                 service = "radarr";
                 tls.certResolver = "letsencrypt";
                 middlewares = ["authentik"];
               };
               prowlarr = {
                 entryPoints = ["websecure"];
-                rule = "Host(`prowlarr.bare.homelab.haseebmajid.dev`)";
+                rule = "Host(`prowlarr.homelab.haseebmajid.dev`)";
                 service = "prowlarr";
                 tls.certResolver = "letsencrypt";
                 middlewares = ["authentik"];
               };
               sonarr = {
                 entryPoints = ["websecure"];
-                rule = "Host(`sonarr.bare.homelab.haseebmajid.dev`)";
+                rule = "Host(`sonarr.homelab.haseebmajid.dev`)";
                 service = "sonarr";
                 tls.certResolver = "letsencrypt";
                 middlewares = ["authentik"];
               };
               jellyseerr = {
                 entryPoints = ["websecure"];
-                rule = "Host(`jellyseerr.bare.homelab.haseebmajid.dev`)";
+                rule = "Host(`jellyseerr.homelab.haseebmajid.dev`)";
                 service = "jellyseerr";
                 tls.certResolver = "letsencrypt";
               };

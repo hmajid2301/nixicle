@@ -27,7 +27,7 @@ in {
             username = "postmaster@sandbox92beea2c073042199273861834e24d1f.mailgun.org";
             use_tls = true;
             use_ssl = false;
-            from = "hello@haseebmajid.dev";
+            from = "homelab@haseebmajid.dev";
           };
           disable_startup_analytics = true;
           avatars = "initials";
@@ -81,7 +81,7 @@ in {
             routers = {
               auth = {
                 entryPoints = ["websecure"];
-                rule = "Host(`authentik.haseebmajid.dev`) || HostRegexp(`{subdomain:[a-z0-9]+}.haseebmajid.com`) && PathPrefix(`/outpost.goauthentik.io/`)";
+                rule = "Host(`authentik.haseebmajid.dev`) || HostRegexp(`{subdomain:[a-z0-9]+}.homelab.haseebmajid.com`) && PathPrefix(`/outpost.goauthentik.io/`)";
                 service = "auth";
                 tls.certResolver = "letsencrypt";
               };

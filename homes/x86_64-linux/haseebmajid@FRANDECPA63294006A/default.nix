@@ -14,20 +14,13 @@ in {
     desktop.enable = true;
   };
 
-  xdg.desktopEntries.firefox = {
-    name = "firefox";
-    genericName = "Browser";
-    exec = "nixGLIntel firefox"; # this is the main fix and the rest is to conform with original
-    icon = "firefox";
-    terminal = false;
-    categories = [
-      "Network"
-      "WebBrowser"
-    ];
-    settings = {
-      TryExec = "firefox";
-    };
+  home.sessionVariables = {
+    DOCKER_HOST = "unix://$XDG_RUNTIME_DIR/podman/podman.sock";
   };
+
+  home.packages = with pkgs; [
+    screensharing
+  ];
 
   desktops = {
     hyprland = {

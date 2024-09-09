@@ -284,6 +284,22 @@
         "type": "github"
       }
     },
+    "catppuccin-obs": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1725040763,
+        "narHash": "sha256-1Stlcfcl/DZMPPqsShst849Ns0Lgk9D2SekMhTy7zZY=",
+        "owner": "catppuccin",
+        "repo": "obs",
+        "rev": "b17939991545bdd6232e688ec5004b6dfae46f69",
+        "type": "github"
+      },
+      "original": {
+        "owner": "catppuccin",
+        "repo": "obs",
+        "type": "github"
+      }
+    },
     "comma": {
       "inputs": {
         "flake-compat": "flake-compat_3",
@@ -2531,6 +2547,7 @@
         "attic": "attic",
         "authentik-nix": "authentik-nix",
         "catppuccin": "catppuccin",
+        "catppuccin-obs": "catppuccin-obs",
         "comma": "comma",
         "deploy-rs": "deploy-rs",
         "disko": "disko",

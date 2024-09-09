@@ -29,7 +29,7 @@ in {
             routers = {
               n8n = {
                 entryPoints = ["websecure"];
-                rule = "Host(`n8n.bare.homelab.haseebmajid.dev`)";
+                rule = "Host(`n8n.homelab.haseebmajid.dev`)";
                 service = "n8n";
                 tls.certResolver = "letsencrypt";
               };

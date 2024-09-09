@@ -96,8 +96,8 @@ in {
               certResolver = "letsencrypt";
               domains = [
                 {
-                  main = "bare.homelab.haseebmajid.dev";
-                  sans = ["*.bare.homelab.haseebmajid.dev"];
+                  main = "homelab.haseebmajid.dev";
+                  sans = ["*.homelab.haseebmajid.dev"];
                 }
                 {
                   main = "haseebmajid.dev";

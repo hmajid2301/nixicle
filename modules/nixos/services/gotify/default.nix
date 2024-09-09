@@ -34,7 +34,7 @@ in {
             routers = {
               notify = {
                 entryPoints = ["websecure"];
-                rule = "Host(`notify.bare.homelab.haseebmajid.dev`)";
+                rule = "Host(`notify.homelab.haseebmajid.dev`)";
                 service = "notify";
                 tls.certResolver = "letsencrypt";
               };

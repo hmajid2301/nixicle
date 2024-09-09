@@ -42,7 +42,7 @@ in {
           routers = {
             adguardhome = {
               entryPoints = ["websecure"];
-              rule = "Host(`adguard.bare.homelab.haseebmajid.dev`)";
+              rule = "Host(`adguard.homelab.haseebmajid.dev`)";
               service = "adguardhome";
               tls.certResolver = "letsencrypt";
             };

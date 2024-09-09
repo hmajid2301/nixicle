@@ -12,18 +12,20 @@ in {
   };
 
   config = mkIf cfg.enable {
-    sops.secrets.home_assistant_token = {
-      sopsFile = ../secrets.yaml;
-    };
+    sops.secrets = {
+      home_assistant_token = {
+        sopsFile = ../secrets.yaml;
+      };
 
-    sops.secrets.grafana_oauth2_client_id = {
-      sopsFile = ../secrets.yaml;
-      owner = "grafana";
-    };
+      grafana_oauth2_client_id = {
+        sopsFile = ../secrets.yaml;
+        owner = "grafana";
+      };
 
-    sops.secrets.grafana_oauth2_client_secret = {
-      sopsFile = ../secrets.yaml;
-      owner = "grafana";
+      grafana_oauth2_client_secret = {
+        sopsFile = ../secrets.yaml;
+        owner = "grafana";
+      };
     };
 
     services = {
@@ -56,25 +58,25 @@ in {
             routers = {
               prometheus = {
                 entryPoints = ["websecure"];
-                rule = "Host(`prometheus.bare.homelab.haseebmajid.dev`)";
+                rule = "Host(`prometheus.homelab.haseebmajid.dev`)";
                 service = "prometheus";
                 tls.certResolver = "letsencrypt";
               };
               grafana = {
                 entryPoints = ["websecure"];
-                rule = "Host(`grafana.bare.homelab.haseebmajid.dev`)";
+                rule = "Host(`grafana.homelab.haseebmajid.dev`)";
                 service = "grafana";
                 tls.certResolver = "letsencrypt";
               };
               promtail = {
                 entryPoints = ["websecure"];
-                rule = "Host(`promtail.bare.homelab.haseebmajid.dev`)";
+                rule = "Host(`promtail.homelab.haseebmajid.dev`)";
                 service = "promtail";
                 tls.certResolver = "letsencrypt";
               };
               alertmanager = {
                 entryPoints = ["websecure"];
-                rule = "Host(`alertmanager.bare.homelab.haseebmajid.dev`)";
+                rule = "Host(`alertmanager.homelab.haseebmajid.dev`)";
                 service = "alertmanager";
                 tls.certResolver = "letsencrypt";
               };
@@ -254,26 +256,26 @@ in {
         enable = true;
         settings = {
           server = {
-            port = 3010;
-            protocol = "http";
-            addr = "127.0.0.1";
+            http_port = 3010;
+            http_addr = "127.0.0.1";
+            root_url = "https://grafana.homelab.haseebmajid.dev";
           };
 
-          # "auth" = {
-          #   signout_redirect_url = "https://authentik.haseebmajid.dev/application/o/grafana/end-session/";
-          #   oauth_auto_login = true;
-          # };
-          #
-          # "auth.generic_oauth" = {
-          #   enabled = true;
-          #   client_id = "$__file{${config.sops.secrets.grafana_oauth2_client_id.path}}";
-          #   client_secret = "$__file{${config.sops.secrets.grafana_oauth2_client_secret.path}}";
-          #   scopes = "openid profile email";
-          #   auth_url = "https://authentik.haseebmajid.dev/application/o/authorize/";
-          #   token_url = "https://authentik.haseebmajid.dev/application/o/token/";
-          #   api_url = "https://authentik.haseebmajid.dev/application/o/userinfo/";
-          #   role_attribute_path = "contains(groups, 'Grafana Admins') && 'Admin' || contains(groups, 'Grafana Editors') && 'Editor' || 'Viewer'";
-          # };
+          "auth" = {
+            signout_redirect_url = "https://authentik.haseebmajid.dev/application/o/grafana/end-session/";
+            oauth_auto_login = true;
+          };
+
+          "auth.generic_oauth" = {
+            enabled = true;
+            client_id = "$__file{${config.sops.secrets.grafana_oauth2_client_id.path}}";
+            client_secret = "$__file{${config.sops.secrets.grafana_oauth2_client_secret.path}}";
+            scopes = "openid profile email";
+            auth_url = "https://authentik.haseebmajid.dev/application/o/authorize/";
+            token_url = "https://authentik.haseebmajid.dev/application/o/token/";
+            api_url = "https://authentik.haseebmajid.dev/application/o/userinfo/";
+            role_attribute_path = "contains(groups, 'Grafana Admins') && 'Admin' || contains(groups, 'Grafana Editors') && 'Editor' || 'Viewer'";
+          };
           database = {
             host = "/run/postgresql";
             user = "grafana";
