@@ -447,3 +447,59 @@ systemctl start jellyfin.service
     HOMEPAGE_VAR_SYNOLOGY_INTERNAL_URL=http://192.168.1.73:5000
     HOMEPAGE_VAR_SYNOLOGY_USERNAME=homepage
     HOMEPAGE_VAR_SYNOLOGY_PASSWORD=
+
+## Gitlab
+
+this error when using with nix
+
+ERROR: Job failed (system failure): Error response from daemon: failed to create task for container: failed to create shim task: OCI runtime create failed: runc create failed: unable to start container process: exec: "sh": executable file not found in $PATH: unknown (exec.go:78:0s)
+
+
+ fix this permissiosn
+ls -al /var/run/docker.sock
+srw-rw---- 1 root docker 0 Sep 12 20:53 /var/run/docker.sock
+
+#### dind
+
+
+    services.gitlab-runner = {
+      enable = true;
+      settings = {
+        concurrent = 10;
+      };
+      services = {
+        default = {
+          authenticationTokenConfigFile = config.sops.secrets.gitlab_runner_env.path;
+          limit = 10;
+          dockerImage = "debian:stable";
+          dockerPrivileged = true;
+          dockerVolumes = [
+            "/cache"
+          ];
+        };
+      };
+    };
+
+
+to publish
+
+publish:dev-docker:
+  stage: dev
+  variables:
+    DOCKER_HOST: tcp://docker:2375
+    DOCKER_DRIVER: overlay2
+    DOCKER_TLS_CERTDIR: ""
+  only:
+    - merge_request
+  services:
+    - docker:25-dind
+  script:
+    - echo "experimental-features = nix-command flakes" > /etc/nix/nix.conf
+    - nix-env -iA nixpkgs.docker
+    - docker info
+    - nix build .#docker-shell
+    - docker load < ./result
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    # TODO: work out how to do versioning to make this pipeline reproducible
+    - docker image tag banterbus-dev:latest $CI_REGISTRY_IMAGE:latest
+    - docker push $CI_REGISTRY_IMAGE:latest

@@ -2,6 +2,7 @@
   programs.nixvim = {
     extraPlugins = with pkgs.vimPlugins; [
       vim-pencil
+      render-markdown
     ];
 
     keymaps = [
@@ -37,14 +38,22 @@
       }
     ];
 
+    extraConfigLua = ''
+      require('render-markdown').setup({
+      })
+    '';
+
     plugins = {
       twilight.enable = true;
       zen-mode.enable = true;
-      headlines.enable = true;
+      # headlines.enable = true;
 
       obsidian = {
         enable = true;
         settings = {
+          ui = {
+            enable = false;
+          };
           workspaces = [
             {
               name = "second-brain";

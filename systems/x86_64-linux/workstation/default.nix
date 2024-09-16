@@ -16,6 +16,7 @@
     virtualisation.kvm.enable = true;
     hardware.openrgb.enable = true;
     nixicle.ollama.enable = true;
+    nixicle.nfs.enable = true;
   };
   programs.coolercontrol.enable = true;
 
@@ -41,6 +42,11 @@
     supportedFilesystems = lib.mkForce ["btrfs"];
     kernelPackages = pkgs.linuxPackages_latest;
     resumeDevice = "/dev/disk/by-label/nixos";
+
+    initrd = {
+      supportedFilesystems = ["nfs"];
+      kernelModules = ["nfs"];
+    };
   };
 
   system.stateVersion = "23.11";
