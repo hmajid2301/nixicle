@@ -19,6 +19,7 @@ in {
 
     environment.systemPackages = with pkgs; [
       cifs-utils
+      nfs-utils
     ];
 
     fileSystems."/mnt/share" = {

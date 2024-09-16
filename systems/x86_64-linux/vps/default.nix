@@ -10,7 +10,6 @@
   ];
 
   boot.loader.grub.enable = true;
-  boot.loader.grub.device = "/dev/sda1";
 
   roles.server.enable = true;
   system.boot.enable = lib.mkForce false;
@@ -25,7 +24,7 @@
           services = {
             jellyfin.loadBalancer.servers = [
               {
-                url = "https://ms01:443";
+                url = "http://ms01:8096";
               }
             ];
           };

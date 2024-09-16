@@ -23,6 +23,8 @@ in {
       after = ["postgresql.service"];
     };
 
+    users.users.nginx.extraGroups = ["tandoor_recipes"];
+
     services = {
       tandoor-recipes = {
         enable = true;

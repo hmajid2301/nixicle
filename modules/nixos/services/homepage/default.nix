@@ -61,6 +61,18 @@ in {
                 };
               }
               {
+                Jellyfin = {
+                  icon = "jellyfin.png";
+                  href = "{{HOMEPAGE_VAR_JELLYFIN_URL}}";
+                  description = "media management";
+                  widget = {
+                    type = "jellyfin";
+                    url = "{{HOMEPAGE_VAR_JELLYFIN_INTERNAL_URL}}";
+                    key = "{{HOMEPAGE_VAR_JELLYFIN_API_KEY}}";
+                  };
+                };
+              }
+              {
                 Jellyseerr = {
                   icon = "jellyseerr.png";
                   href = "{{HOMEPAGE_VAR_JELLYSEERR_URL}}";
@@ -72,6 +84,22 @@ in {
                   };
                 };
               }
+              {
+                Authentik = {
+                  icon = "authentik.png";
+                  href = "{{HOMEPAGE_VAR_AUTHENTIK_URL}}";
+                  description = "auth management";
+                  widget = {
+                    type = "authentik";
+                    url = "{{HOMEPAGE_VAR_AUTHENTIK_INTERNAL_URL}}";
+                    key = "{{HOMEPAGE_VAR_AUTHENTIK_API_KEY}}";
+                  };
+                };
+              }
+            ];
+          }
+          {
+            internal = [
               {
                 Syncthing = {
                   icon = "syncthing.png";
@@ -96,6 +124,18 @@ in {
                 };
               }
               {
+                Immich = {
+                  icon = "immich.png";
+                  href = "{{HOMEPAGE_VAR_IMMICH_URL}}";
+                  description = "photo management";
+                  widget = {
+                    type = "immich";
+                    url = "{{HOMEPAGE_VAR_IMMICH_INTERNAL_URL}}";
+                    key = "{{HOMEPAGE_VAR_IMMICH_API_KEY}}";
+                  };
+                };
+              }
+              {
                 HomeAssistant = {
                   icon = "home-assistant.png";
                   href = "{{HOMEPAGE_VAR_HOME_ASSISTANT_URL}}";
@@ -104,18 +144,6 @@ in {
                     type = "homeassistant";
                     url = "{{HOMEPAGE_VAR_HOME_ASSISTANT_INTERNAL_URL}}";
                     key = "{{HOMEPAGE_VAR_HOME_ASSISTANT_API_KEY}}";
-                  };
-                };
-              }
-              {
-                Authentik = {
-                  icon = "authentik.png";
-                  href = "{{HOMEPAGE_VAR_AUTHENTIK_URL}}";
-                  description = "auth management";
-                  widget = {
-                    type = "authentik";
-                    url = "{{HOMEPAGE_VAR_AUTHENTIK_INTERNAL_URL}}";
-                    key = "{{HOMEPAGE_VAR_AUTHENTIK_API_KEY}}";
                   };
                 };
               }
@@ -350,6 +378,10 @@ in {
           headerStyle = "clean";
           layout = {
             external = {
+              style = "row";
+              columns = 3;
+            };
+            internal = {
               style = "row";
               columns = 3;
             };

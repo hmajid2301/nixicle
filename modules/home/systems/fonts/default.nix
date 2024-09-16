@@ -27,12 +27,12 @@ in {
       zlib
     ];
 
-    fonts.fontconfig.enable = lib.mkForce true;
-    fonts.fontconfig.defaultFonts = {
-      serif = ["Source Serif" "Noto Color Emoji"];
-      sansSerif = ["Noto Sans" "Noto Color Emoji"];
-      monospace = ["MonoLisa Nerd Font" "Noto Color Emoji"];
-      emoji = ["Noto Color Emoji"];
-    };
+    # fonts.fontconfig.enable = lib.mkForce true;
+    # fonts.fontconfig.defaultFonts = {
+    #   serif = ["Source Serif" "Noto Color Emoji"];
+    #   sansSerif = ["Noto Sans" "Noto Color Emoji"];
+    #   monospace = ["MonoLisa Nerd Font" "Noto Color Emoji"];
+    #   emoji = ["Noto Color Emoji"];
+    # };
   };
 }
