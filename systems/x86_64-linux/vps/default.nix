@@ -27,6 +27,11 @@
                 url = "http://ms01:8096";
               }
             ];
+            immich.loadBalancer.servers = [
+              {
+                url = "http://ms01:2283";
+              }
+            ];
           };
 
           routers = {
@@ -34,6 +39,12 @@
               entryPoints = ["websecure"];
               rule = "Host(`jellyfin.haseebmajid.dev`)";
               service = "jellyfin";
+              tls.certResolver = "letsencrypt";
+            };
+            immich = {
+              entryPoints = ["websecure"];
+              rule = "Host(`immich.haseebmajid.dev`)";
+              service = "immich";
               tls.certResolver = "letsencrypt";
             };
           };

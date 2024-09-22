@@ -177,6 +177,46 @@
           "x"
         ];
       }
+      {
+        action = "<cmd>cnext<CR>zz";
+        key = "<C-n>";
+        options = {
+          desc = "Go to next item in quickfix list and center cursor";
+        };
+        mode = [
+          "n"
+        ];
+      }
+      {
+        action = "<cmd>cprev<CR>zz";
+        key = "<C-p>";
+        options = {
+          desc = "Go to previous item in quickfix list and center cursor";
+        };
+        mode = [
+          "n"
+        ];
+      }
+      {
+        action = "<cmd>lnext<CR>zz";
+        key = "<leader>k";
+        options = {
+          desc = "Go to next item in location list and center cursor";
+        };
+        mode = [
+          "n"
+        ];
+      }
+      {
+        action = "<cmd>lprev<CR>zz";
+        key = "<leader>j";
+        options = {
+          desc = "Go to previous item in location list and center cursor";
+        };
+        mode = [
+          "n"
+        ];
+      }
     ];
   };
 }
