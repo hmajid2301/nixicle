@@ -36,7 +36,6 @@ in {
       ouch
       silver-searcher
       procs
-      psensor
       tokei
       trash-cli
       tailspin

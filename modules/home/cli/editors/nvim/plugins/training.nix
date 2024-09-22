@@ -35,7 +35,9 @@
 
     plugins.hardtime = {
       enable = true;
-      enabled = false;
+      settings = {
+        enabled = false;
+      };
     };
   };
 }
