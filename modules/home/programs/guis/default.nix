@@ -13,20 +13,16 @@ in {
 
   config = mkIf cfg.enable {
     home.packages = with pkgs; [
-      obsidian
       trayscale
 
       foliate
       pavucontrol
 
-      fragments
-      baobab
       sushi
       gnome-disk-utility
       totem
       gvfs
       loupe
-      gnome-text-editor
 
       nautilus
       ffmpegthumbnailer # thumbnails

@@ -89,7 +89,13 @@ in {
           enable = true;
           settings = {
             dap_go_enabled = true;
-            args = buildFlags;
+            go_list_args = [buildFlags];
+            go_test_args = [buildFlags];
+            dap_go_opts = {
+              delve = {
+                build_flags = [buildFlags];
+              };
+            };
           };
         };
       };
