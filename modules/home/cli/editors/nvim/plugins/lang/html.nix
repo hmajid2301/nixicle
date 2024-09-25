@@ -36,7 +36,7 @@
 
         html = {
           enable = true;
-          filetypes = ["html"];
+          filetypes = ["html" "templ"];
           settings = {
             html = {
               format = {

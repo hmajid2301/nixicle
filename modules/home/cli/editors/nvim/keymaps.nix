@@ -217,6 +217,26 @@
           "n"
         ];
       }
+      {
+        action = "<cmd>cmp.mapping.scroll_docs(-4)<CR>";
+        key = "<C-b>";
+        options = {
+          desc = "Scroll docs down";
+        };
+        mode = [
+          "n"
+        ];
+      }
+      {
+        action = "<cmd>cmp.mapping.scroll_docs(4)<CR>";
+        key = "<C-f>";
+        options = {
+          desc = "Scroll docs up";
+        };
+        mode = [
+          "n"
+        ];
+      }
     ];
   };
 }
