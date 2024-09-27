@@ -503,3 +503,55 @@ publish:dev-docker:
     # TODO: work out how to do versioning to make this pipeline reproducible
     - docker image tag banterbus-dev:latest $CI_REGISTRY_IMAGE:latest
     - docker push $CI_REGISTRY_IMAGE:latest
+
+## syncthing
+
+Old topic, but for me, it was due to my password manager auto-filling the password for the shared folder with the main Syncthing web password:
+
+![syncthing-encryption.png](../images/syncthing-encryption.png)
+
+## cloudflare traefik authentik
+
+  config,
+  lib,
+  ...
+}: {
+      cloudflared = {
+        enable = true;
+        tunnels = {
+          "ec0b6af0-a823-4616-a08b-b871fd2c7f58" = {
+            ingress = {
+              "navidrome.haseebmajid.dev" = "https://localhost";
+            };
+          };
+        };
+      };
+
+      traefik = {
+        dynamicConfigOptions = {
+          http = {
+            services = {
+              navidrome.loadBalancer.servers = [
+                {
+                  url = "http://localhost:4533";
+                }
+              ];
+            };
+
+            routers = {
+              navidrome = {
+                entryPoints = ["websecure"];
+                rule = "Host(`navidrome.haseebmajid.dev`)";
+                service = "navidrome";
+                tls.certResolver = "letsencrypt";
+                middlewares = ["authentik"];
+              };
+            };
+          };
+        };
+      };
+    };
+  };
+}
+
+![cloudflare-traefik.png](assets/imgs/cloudflare-traefik.png)

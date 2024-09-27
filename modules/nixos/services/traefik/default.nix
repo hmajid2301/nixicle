@@ -81,9 +81,8 @@ in {
               };
             };
           };
-
           entryPoints.web = {
-            address = ":80";
+            address = "0.0.0.0:80";
             http.redirections.entryPoint = {
               to = "websecure";
               scheme = "https";
@@ -91,7 +90,7 @@ in {
             };
           };
           entryPoints.websecure = {
-            address = ":443";
+            address = "0.0.0.0:443";
             http.tls = {
               certResolver = "letsencrypt";
               domains = [
