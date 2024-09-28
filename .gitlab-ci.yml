@@ -6,6 +6,6 @@ stages:
 tailscale:
   stage: deploy
   script:
-    - nix-shell -p tailscale --run tailscaled --state="mem:" &
-    - nix-shell -p --run tailscale up --authkey=${TAILSCALE_AUTHKEY} --hostname="gitlab-$(cat /etc/hostname)" --accept-routes
-    - nix-shell -p --run tailscale status
+    - nix-shell -p tailscale --run 'tailscaled --state="mem:" &'
+    - nix-shell -p --run 'tailscale up --authkey=${TAILSCALE_AUTHKEY} --hostname="gitlab-$(cat /etc/hostname)" --accept-routes'
+    - nix-shell -p --run 'tailscale status'
