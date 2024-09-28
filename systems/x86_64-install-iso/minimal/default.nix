@@ -11,7 +11,6 @@
   };
 
   system = {
-    fonts.enable = true;
     locale.enable = true;
   };
 

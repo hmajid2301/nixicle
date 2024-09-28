@@ -43,7 +43,7 @@ in {
 
       "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0" = {
         binding = "<Super>Return";
-        command = "foot";
+        command = "kitty";
         name = "Open Terminal";
       };
 
