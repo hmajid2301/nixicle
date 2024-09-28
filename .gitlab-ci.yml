@@ -53,4 +53,4 @@ tailscale:
     - tailscaled --state="mem:" &
     - tailscale up --authkey=${TAILSCALE_AUTHKEY} --hostname="gitlab-$(cat /etc/hostname)" --accept-routes
     - tailscale status
-    - deploy ".#$HOST" --hostname $HOST --ssh-user nixos --skip-checks --confirm-timeout "600"
+    - deploy ".#$HOST" --hostname $HOST --ssh-user nixos --skip-checks --confirm-timeout "600" --remote-build
