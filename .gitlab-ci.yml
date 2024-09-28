@@ -21,6 +21,7 @@ publish:docker:ci:
         - "containers/ci.nix"
   services:
     - docker:25-dind
+  allow_failure: true
   script:
     - echo "experimental-features = nix-command flakes" > /etc/nix/nix.conf
     - nix-env -iA nixpkgs.docker
@@ -57,6 +58,6 @@ tailscale:
     - tailscale status
     - mkdir -p /tmp
     - chmod 1777 /tmp
-    - dig --run "dig google.com"
+    - dig google.com
     - deploy ".#$HOST" --hostname $HOST --ssh-user nixos --skip-checks --confirm-timeout "600" --remote-build
 
