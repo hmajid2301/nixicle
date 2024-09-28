@@ -24,7 +24,7 @@ publish:docker:ci:
   script:
     - echo "experimental-features = nix-command flakes" > /etc/nix/nix.conf
     - nix-env -iA nixpkgs.docker
-    - nix build .#container-ci
+    - nix-build container/ci.nix
     - docker load < ./result
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     # INFO: Check if the image tag already exists, until immutable tags are ready.
