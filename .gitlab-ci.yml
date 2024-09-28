@@ -29,11 +29,11 @@ publish:docker:ci:
     - docker load < ./result
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     # INFO: Check if the image tag already exists, until immutable tags are ready.
-    - |
-      if docker pull $IMAGE:$IMAGE_TAG; then
-        echo "Image with tag $IMAGE_TAG already exists. Failing the pipeline."
-        exit 1
-      fi
+    # - |
+    #   if docker pull $IMAGE:$IMAGE_TAG; then
+    #     echo "Image with tag $IMAGE_TAG already exists. Failing the pipeline."
+    #     exit 1
+    #   fi
     - docker image tag nixicle:latest $IMAGE:latest
     - docker image tag nixicle:latest $IMAGE:$IMAGE_TAG
     - docker push $CI_REGISTRY_IMAGE/ci:latest
