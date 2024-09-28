@@ -8,36 +8,36 @@ variables:
   IMAGE_TAG: 0.1.0
   NIXICLE_CI_IMAGE: $CI_REGISTRY_IMAGE/ci:$IMAGE_TAG
 
-# publish:docker:ci:
-#   stage: pre
-#   variables:
-#     DOCKER_HOST: tcp://docker:2375
-#     DOCKER_DRIVER: overlay2
-#     DOCKER_TLS_CERTDIR: ""
-#     IMAGE: $CI_REGISTRY_IMAGE/ci
-#   rules:
-#     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-#       changes:
-#         - "containers/ci.nix"
-#   services:
-#     - docker:25-dind
-#   script:
-#     - echo "experimental-features = nix-command flakes" > /etc/nix/nix.conf
-#     - nix-env -iA nixpkgs.docker
-#     # TODO: build this using the flake?
-#     - nix-build containers/ci.nix
-#     - docker load < ./result
-#     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-#     # INFO: Check if the image tag already exists, until immutable tags are ready.
-#     - |
-#       if docker pull $IMAGE:$IMAGE_TAG; then
-#         echo "Image with tag $IMAGE_TAG already exists. Failing the pipeline."
-#         exit 1
-#       fi
-#     - docker image tag nixicle:latest $IMAGE:latest
-#     - docker image tag nixicle:latest $IMAGE:$IMAGE_TAG
-#     - docker push $CI_REGISTRY_IMAGE/ci:latest
-#     - docker push $IMAGE:$IMAGE_TAG
+publish:docker:ci:
+  stage: pre
+  variables:
+    DOCKER_HOST: tcp://docker:2375
+    DOCKER_DRIVER: overlay2
+    DOCKER_TLS_CERTDIR: ""
+    IMAGE: $CI_REGISTRY_IMAGE/ci
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      changes:
+        - "containers/ci.nix"
+  services:
+    - docker:25-dind
+  script:
+    - echo "experimental-features = nix-command flakes" > /etc/nix/nix.conf
+    - nix-env -iA nixpkgs.docker
+    # TODO: build this using the flake?
+    - nix-build containers/ci.nix
+    - docker load < ./result
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    # INFO: Check if the image tag already exists, until immutable tags are ready.
+    # - |
+    #   if docker pull $IMAGE:$IMAGE_TAG; then
+    #     echo "Image with tag $IMAGE_TAG already exists. Failing the pipeline."
+    #     exit 1
+    #   fi
+    - docker image tag nixicle:latest $IMAGE:latest
+    - docker image tag nixicle:latest $IMAGE:$IMAGE_TAG
+    - docker push $CI_REGISTRY_IMAGE/ci:latest
+    - docker push $IMAGE:$IMAGE_TAG
 
 tailscale:
   stage: deploy
@@ -57,6 +57,6 @@ tailscale:
     - tailscale status
     - mkdir -p /tmp
     - chmod 1777 /tmp
-    - nix-shell -p dig --run "dig google.com"
+    - dig --run "dig google.com"
     - deploy ".#$HOST" --hostname $HOST --ssh-user nixos --skip-checks --confirm-timeout "600" --remote-build
 

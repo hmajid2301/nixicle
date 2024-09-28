@@ -9,6 +9,7 @@ pkgs.dockerTools.buildImage {
       nh
       deploy-rs
       coreutils
+      busybox
       gnugrep
       nix
       bash
