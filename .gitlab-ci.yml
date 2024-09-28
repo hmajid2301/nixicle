@@ -55,8 +55,8 @@ tailscale:
     - tailscaled --state="mem:" &
     - tailscale up --authkey=${TAILSCALE_AUTHKEY} --hostname="gitlab-$(cat /etc/hostname)" --accept-routes --accept-dns
     - tailscale status
-    - nix-shell -p dig --run "nslookup google.com"
     - mkdir -p /tmp
     - chmod 1777 /tmp
+    - nix-shell -p dig --run "nslookup google.com"
     - deploy ".#$HOST" --hostname $HOST --ssh-user nixos --skip-checks --confirm-timeout "600" --remote-build
 
