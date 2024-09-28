@@ -46,7 +46,5 @@ tailscale:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - tailscaled --state="mem:" &
-    - echo $TAILSCALE_AUTHKEY
-
     - tailscale up --authkey=${TAILSCALE_AUTHKEY} --hostname="gitlab-$(cat /etc/hostname)" --accept-routes
-    # - tailscale status
+    - tailscale status
