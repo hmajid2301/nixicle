@@ -1,11 +1,47 @@
 image: nixos/nix
 
 stages:
+  - pre
   - deploy
+
+variables:
+  IMAGE_TAG: 0.1.0
+  NIXICLE_CI_IMAGE: $CI_REGISTRY_IMAGE/ci:$IMAGE_TAG
+
+publish:docker:ci:
+  stage: pre
+  variables:
+    DOCKER_HOST: tcp://docker:2375
+    DOCKER_DRIVER: overlay2
+    DOCKER_TLS_CERTDIR: ""
+    IMAGE: $CI_REGISTRY_IMAGE/ci
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      changes:
+        - "containers/ci.nix"
+  services:
+    - docker:25-dind
+  script:
+    - echo "experimental-features = nix-command flakes" > /etc/nix/nix.conf
+    - nix-env -iA nixpkgs.docker
+    - nix build .#container-ci
+    - docker load < ./result
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    # INFO: Check if the image tag already exists, until immutable tags are ready.
+    - |
+      if docker pull $IMAGE:$IMAGE_TAG; then
+        echo "Image with tag $IMAGE_TAG already exists. Failing the pipeline."
+        exit 1
+      fi
+    - docker image tag nixicle-dev:latest $IMAGE:latest
+    - docker image tag nixicle-dev:latest $IMAGE:$IMAGE_TAG
+    - docker push $CI_REGISTRY_IMAGE/ci:latest
+    - docker push $IMAGE:$IMAGE_TAG
 
 tailscale:
   stage: deploy
+  image: $NIXICLE_CI_IMAGE
   script:
-    - nix-shell -p tailscale --run 'tailscaled --state="mem:" &'
-    - nix-shell -p tailscale --run 'tailscale up --authkey=${TAILSCALE_AUTHKEY} --hostname="gitlab-$(cat /etc/hostname)" --accept-routes'
-    - nix-shell -p tailscale --run 'tailscale status'
+    - tailscaled --state="mem:" &
+    - tailscale up --authkey=${TAILSCALE_AUTHKEY} --hostname="gitlab-$(cat /etc/hostname)" --accept-routes
+    - tailscale status
