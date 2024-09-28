@@ -15,7 +15,6 @@ in {
 
     system = {
       nix.enable = true;
-      fonts.enable = true;
     };
 
     cli = {

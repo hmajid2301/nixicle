@@ -14,13 +14,17 @@ in {
     desktop.enable = true;
   };
 
-  home.sessionVariables = {
-    DOCKER_HOST = "unix://$XDG_RUNTIME_DIR/podman/podman.sock";
+  home = {
+    sessionVariables = {
+      DOCKER_HOST = "unix://$XDG_RUNTIME_DIR/podman/podman.sock";
+    };
+
+    packages = with pkgs; [
+      screensharing
+    ];
   };
 
-  home.packages = with pkgs; [
-    screensharing
-  ];
+  wayland.windowManager.hyprland.keyBinds.bind."SUPER, Return" = "exec, nixGLIntel kitty";
 
   desktops = {
     hyprland = {

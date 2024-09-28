@@ -27,7 +27,6 @@ in {
     system = {
       nix.enable = true;
       boot.enable = true;
-      fonts.enable = true;
       locale.enable = true;
     };
     styles.stylix.enable = true;
