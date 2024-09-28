@@ -57,6 +57,6 @@ tailscale:
     - tailscale status
     - mkdir -p /tmp
     - chmod 1777 /tmp
-    - nix-shell -p dig --run "nslookup google.com"
+    - nix-shell -p dig --run "dig google.com"
     - deploy ".#$HOST" --hostname $HOST --ssh-user nixos --skip-checks --confirm-timeout "600" --remote-build
 
