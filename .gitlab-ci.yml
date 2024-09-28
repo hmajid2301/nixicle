@@ -53,7 +53,7 @@ tailscale:
     - mkdir -p /etc/nix/
     - echo "experimental-features = nix-command flakes" >> /etc/nix/nix.conf
     - tailscaled --state="mem:" &
-    - tailscale up --authkey=${TAILSCALE_AUTHKEY} --hostname="gitlab-$(cat /etc/hostname)" --accept-routes
+    - tailscale up --authkey=${TAILSCALE_AUTHKEY} --hostname="gitlab-$(cat /etc/hostname)" --accept-routes --accept-dns
     - tailscale status
     - mkdir -p /tmp
     - chmod 1777 /tmp
