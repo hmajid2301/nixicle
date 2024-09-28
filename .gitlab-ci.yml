@@ -47,4 +47,4 @@ tailscale:
   script:
     - tailscaled --state="mem:" &
     # - tailscale up --authkey=${TAILSCALE_AUTHKEY} --hostname="gitlab-$(cat /etc/hostname)" --accept-routes
-    # - tailscale status
+    - tailscale status
