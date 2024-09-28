@@ -54,4 +54,4 @@ tailscale:
     - echo "experimental-features = nix-command flakes" >> /etc/nix/nix.conf
     - nix-shell -p tailscale --run 'tailscaled --state="mem:" &'
     - nix-shell -p tailscale --run 'tailscale up --authkey=${TAILSCALE_AUTHKEY} --hostname="gitlab-$(cat /etc/hostname)" --accept-routes'
-    - nix-shell -p deploy-rs -- run 'deploy ".#$HOST" --hostname $HOST --ssh-user nixos --skip-checks --confirm-timeout "600" --remote-build'
+    - nix-shell -p deploy-rs --run 'deploy ".#$HOST" --hostname $HOST --ssh-user nixos --skip-checks --confirm-timeout "600" --remote-build'
