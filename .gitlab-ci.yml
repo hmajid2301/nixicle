@@ -34,8 +34,8 @@ publish:docker:ci:
     #     echo "Image with tag $IMAGE_TAG already exists. Failing the pipeline."
     #     exit 1
     #   fi
-    - docker image tag nixicle-dev:latest $IMAGE:latest
-    - docker image tag nixicle-dev:latest $IMAGE:$IMAGE_TAG
+    - docker image tag nixicle:latest $IMAGE:latest
+    - docker image tag nixicle:latest $IMAGE:$IMAGE_TAG
     - docker push $CI_REGISTRY_IMAGE/ci:latest
     - docker push $IMAGE:$IMAGE_TAG
 
