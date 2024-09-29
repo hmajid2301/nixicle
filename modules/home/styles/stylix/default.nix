@@ -19,6 +19,16 @@ in {
   config = lib.mkIf cfg.enable {
     home.packages = with pkgs; [
       (nerdfonts.override {fonts = ["NerdFontsSymbolsOnly"];})
+      noto-fonts
+      noto-fonts-cjk
+      noto-fonts-emoji
+      liberation_ttf
+      fira-code
+      fira-code-symbols
+      mplus-outline-fonts.githubRelease
+      dina-font
+      ubuntu_font_family
+      work-sans
     ];
 
     stylix = {
