@@ -35,11 +35,11 @@ in {
         enable = true;
         group = "media";
       };
-      flaresolverr = {
-        enable = true;
-        port = 8191;
-        openFirewall = true;
-      };
+      # flaresolverr = {
+      #   enable = true;
+      #   port = 8191;
+      #   openFirewall = true;
+      # };
 
       jellyseerr.enable = true;
 
