@@ -65,7 +65,6 @@ in {
         flavour = "mocha";
         color_overrides.all = colors;
         integrations = {
-          alpha = true;
           # cmp = true;
           dashboard = true;
           # dap = {

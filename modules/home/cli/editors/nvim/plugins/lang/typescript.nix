@@ -53,7 +53,7 @@
         };
       };
 
-      lsp.servers.tsserver = {
+      lsp.servers.ts-ls = {
         enable = true;
       };
     };

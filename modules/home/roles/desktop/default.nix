@@ -68,12 +68,6 @@ in {
       LIBSEAT_BACKEND = "logind";
     };
 
-    nixpkgs.config.allowUnfreePredicate = pkg:
-      builtins.elem (lib.getName pkg) [
-        "joypixels"
-      ];
-    nixpkgs.config.joypixels.acceptLicense = true;
-
     # TODO: move this to somewhere
     home.packages = with pkgs; [
       elgato-fix

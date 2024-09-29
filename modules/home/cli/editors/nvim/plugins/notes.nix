@@ -2,7 +2,7 @@
   programs.nixvim = {
     extraPlugins = with pkgs.vimPlugins; [
       vim-pencil
-      render-markdown
+      render-markdown-nvim
     ];
 
     keymaps = [
