@@ -33,6 +33,7 @@ in {
       programs.nixvim = {
         enable = true;
         extraPlugins = with pkgs.vimPlugins; [plenary-nvim];
+        plugins.web-devicons.enable = true;
         defaultEditor = true;
         viAlias = true;
         vimAlias = true;

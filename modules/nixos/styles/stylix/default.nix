@@ -13,7 +13,6 @@ in {
   config = lib.mkIf cfg.enable {
     fonts = {
       enableDefaultPackages = true;
-      enableGhostscriptFonts = true;
       fontDir.enable = true;
       packages = with pkgs; [
         (nerdfonts.override {fonts = ["NerdFontsSymbolsOnly"];})

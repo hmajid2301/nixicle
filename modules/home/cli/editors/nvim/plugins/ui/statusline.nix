@@ -2,127 +2,51 @@
   programs.nixvim = {
     plugins.lualine = {
       enable = true;
-      globalstatus = true;
-      disabledFiletypes.statusline = ["alpha" "neo-tree"];
-      extensions = ["neo-tree"];
-      theme = {
-        normal = {
-          a = {
-            fg = "#1E1D2D";
-            bg = "#89B4FA";
+      settings = {
+        options = {
+          globalstatus = true;
+          icons_enabled = true;
+          theme = "catppuccin";
+          section_separators = {
+            right = "";
+            left = "▊ ";
           };
-          b = {
-            fg = "#D9E0EE";
-            bg = "#2f2e3e";
-          };
-          c = {
-            fg = "#605f6f";
-            bg = "#232232";
+          component_separators = {
+            left = "";
+            right = "";
           };
         };
 
-        insert = {
-          a = {
-            fg = "#1E1D2D";
-            bg = "#c7a0dc";
-          };
-        };
-        visual = {
-          a = {
-            fg = "#1E1D2D";
-            bg = "#89DCEB";
-          };
-        };
-        replace = {
-          a = {
-            fg = "#1E1D2D";
-            bg = "#F8BD96";
-          };
-        };
-        terminal = {
-          a = {
-            fg = "#1E1D2D";
-            bg = "#ABE9B3";
-          };
-        };
-        command = {
-          a = {
-            fg = "#1E1D2D";
-            bg = "#ABE9B3";
-          };
-        };
-        confirm = {
-          a = {
-            fg = "#1E1D2D";
-            bg = "#B5E8E0";
-          };
-        };
-        select = {
-          a = {
-            fg = "#1E1D2D";
-            bg = "#89B4FA";
-          };
-        };
-
-        inactive = {
-          b = {
-            fg = "#D9E0EE";
-            bg = "#2f2e3e";
-          };
-          c = {
-            fg = "#D9E0EE";
-            bg = "#232232";
-          };
-        };
-      };
-      sectionSeparators = {
-        right = "";
-        left = "▊ ";
-      };
-      componentSeparators = {
-        left = "";
-        right = "";
-      };
-
-      sections = {
-        lualine_a = [
-          {
-            name = "mode";
-            extraConfig = {
+        sections = {
+          lualine_a = [
+            {
+              __unkeyed-1 = "mode";
+              icon = " ";
               color = {
                 gui = "bold";
               };
-              fmt.__raw =
-                # lua
-                ''
-                  function(str)
-                    return " " .. str
-                  end
-                '';
-            };
-          }
-        ];
-        lualine_b = [
-          {
-            name = "filetype";
-            extraConfig = {
+            }
+          ];
+          lualine_b = [
+            {
+              __unkeyed-1 = "filetype";
               icon_only = true;
-              colored = false;
-              separator = "";
+              colored = true;
               padding = {
                 left = 1;
                 right = 0;
               };
-            };
-          }
-          {
-            name = "filename";
-          }
-        ];
-        lualine_c = [
-          {
-            name = "branch";
-            extraConfig = {
+            }
+            {
+              __unkeyed-1 = "filename";
+              color = {
+                fg = "#FFF";
+              };
+            }
+          ];
+          lualine_c = [
+            {
+              __unkeyed-1 = "branch";
               padding = {
                 left = 2;
                 right = 0;
@@ -131,28 +55,28 @@
               colored = false;
               color = {
                 gui = "bold";
+                fg = "#605f6f";
               };
-            };
-          }
-          {
-            name = "diff";
-            extraConfig = {
+            }
+            {
+              __unkeyed-1 = "diff";
               colored = false;
+              color = {
+                gui = "bold";
+                fg = "#605f6f";
+              };
               symbols = {
                 added = " ";
                 modified = " ";
                 removed = " ";
               };
-            };
-          }
-        ];
-        lualine_x = [
-          {
-            name = "diagnostics";
-            extraConfig = {
+            }
+          ];
+          lualine_x = [
+            {
+              __unkeyed-1 = "diagnostics";
               color = {
                 fg = "#605f6f";
-                bg = "#232232";
                 gui = "bold";
               };
               diagnostics_color = {
@@ -163,168 +87,119 @@
                 error = " ";
                 warn = " ";
               };
-            };
-          }
-          # {
-          #   name.__raw =
-          #     # lua
-          #     ''
-          #       function() return "  " .. require("dap").status() end
-          #     '';
-          #
-          #   cond.__raw =
-          #     # lua
-          #     ''
-          #       function ()
-          #         return package.loaded["dap"] and require("dap").status() ~= ""
-          #       end
-          #     '';
-          #   color = {
-          #     fg = "#2d2c3c";
-          #     bg = "#CBA6F7";
-          #     gui = "bold";
-          #   };
-          #   separator = {
-          #     left = "";
-          #   };
-          # }
-          {
-            name.__raw =
-              # lua
-              ''
-                function()
-                	 return (vim.t.maximized and " ") or ""
-                end
-              '';
-            color = {
-              fg = "#2d2c3c";
-              bg = "#CBA6F7";
-              gui = "bold";
-            };
-            separator = {
-              left = "";
-            };
-          }
-        ];
-        lualine_y = [
-          # TODO: fix this hack for showing icon with colors
-          {
-            name.__raw =
-              # lua
-              ''
-                function()
-                    return "  "
-                end
-              '';
-
-            padding = {
-              left = 0;
-              right = 0;
-            };
-            separator = {
-              left = "";
-            };
-            color = {
-              fg = "#2d2c3c";
-              bg = "#8bc2f0";
-            };
-          }
-          {
-            name.__raw =
-              # lua
-              ''
-                function()
-                		local buf_ft = vim.api.nvim_buf_get_option(0, 'filetype')
-                		local clients = vim.lsp.get_active_clients()
-                		if next(clients) == nil then
-                				return "None"
-                		end
-
-                		local msg = ""
-                		for _, client in ipairs(clients) do
-                				local filetypes = client.config.filetypes
-                				if filetypes and vim.fn.index(filetypes, buf_ft) ~= -1 and client.name ~= "null-ls" then
-                						msg = msg .. client.name .. " "
-                				end
-                		end
-
-                		if msg then
-                			return msg
-                		else
-                			return "None"
-                		end
-
-                	end
-              '';
-            color = {
-              fg = "#D9E0EE";
-              bg = "#2f2e3e";
-              gui = "bold";
-            };
-          }
-          {
-            name.__raw =
-              # lua
-              ''
-                function()
-                    return " "
-                end
-              '';
-
-            padding = {
-              left = 0;
-              right = 0;
-            };
-            separator = {
-              left = "";
-            };
-            color = {
-              fg = "#2d2c3c";
-              bg = "#F38BA8";
-              gui = "bold";
-            };
-          }
-          {
-            name = "location";
-            extraConfig = {
+            }
+            {
+              __unkeyed-1.__raw =
+                # lua
+                ''
+                  function()
+                     return (vim.t.maximized and " ") or ""
+                  end
+                '';
               color = {
-                fg = "#D9E0EE";
-                bg = "#2f2e3e";
+                fg = "#2d2c3c";
+                bg = "#CBA6F7";
+                gui = "bold";
               };
-            };
-          }
-        ];
-        lualine_z = [
-          {
-            name.__raw =
-              # lua
-              ''
-                function()
-                    return " "
-                end
-              '';
+              separator = {
+                left = "";
+              };
+            }
+          ];
+          lualine_y = [
+            {
+              __unkeyed-1.__raw =
+                # lua
+                ''
+                  function()
+                      local buf_ft = vim.api.nvim_buf_get_option(0, 'filetype')
+                      local clients = vim.lsp.get_active_clients()
+                      if next(clients) == nil then
+                          return "None"
+                      end
 
-            padding = {
-              left = 0;
-              right = 0;
-            };
-            separator = {
-              left = "";
-            };
-            color = {
-              fg = "#2d2c3c";
-              bg = "#ABE9B3";
-              gui = "bold";
-            };
-          }
-          {
-            name = "progress";
-            color = {
-              bg = "#2d2c3c";
-              fg = "#ABE9B3";
-            };
-          }
-        ];
+                      local msg = ""
+                      for _, client in ipairs(clients) do
+                          local filetypes = client.config.filetypes
+                          if filetypes and vim.fn.index(filetypes, buf_ft) ~= -1 then
+                              msg = msg .. client.name .. " "
+                          end
+                      end
+
+                      if msg then
+                        return msg
+                      else
+                        return "None"
+                      end
+
+                    end
+                '';
+              icon = {
+                __unkeyed-1 = " ";
+                color = {
+                  fg = "#2d2c3c";
+                  bg = "#8bc2f0";
+                };
+              };
+              padding = {
+                left = 0;
+                right = 0;
+              };
+              separator = {
+                left = "";
+              };
+              color = {
+                bg = "#2d2c3c";
+                fg = "#FFF";
+              };
+            }
+            {
+              __unkeyed-1 = "location";
+              icon = {
+                __unkeyed-1 = " ";
+                color = {
+                  fg = "#2d2c3c";
+                  bg = "#F38BA8";
+                };
+              };
+              padding = {
+                left = 0;
+                right = 0;
+              };
+              separator = {
+                left = "";
+              };
+              color = {
+                bg = "#2d2c3c";
+                fg = "#FFF";
+              };
+            }
+          ];
+          lualine_z = [
+            {
+              __unkeyed-1 = "progress";
+              icon = {
+                __unkeyed-1 = " ";
+                # TODO: use variable colours
+                color = {
+                  fg = "#2d2c3c";
+                  bg = "#ABE9B3";
+                };
+              };
+              padding = {
+                left = 0;
+                right = 0;
+              };
+              separator = {
+                left = "";
+              };
+              color = {
+                bg = "#2d2c3c";
+                fg = "#ABE9B3";
+              };
+            }
+          ];
+        };
       };
     };
   };
