@@ -26,9 +26,9 @@ in {
         enable = true;
         associations.added = {
           "video/mp4" = ["org.gnome.Totem.desktop"];
-          "video/quicktime" = ["org.gnome.Totem.dekstop"];
-          "video/webm" = ["org.gnome.Totem.dekstop"];
-          "video/x-matroska" = ["org.gnome.Totem.dekstop"];
+          "video/quicktime" = ["org.gnome.Totem.desktop"];
+          "video/webm" = ["org.gnome.Totem.desktop"];
+          "video/x-matroska" = ["org.gnome.Totem.desktop"];
           "image/gif" = ["org.gnome.Loupe.desktop"];
           "image/png" = ["org.gnome.Loupe.desktop"];
           "image/jpg" = ["org.gnome.Loupe.desktop"];
@@ -50,9 +50,9 @@ in {
           "x-scheme-handler/unknown" = "firefox";
 
           "audio/*" = ["mpv.desktop"];
-          "video/*" = ["org.gnome.Totem.dekstop"];
-          "video/mp4" = ["org.gnome.Totem.dekstop"];
-          "video/x-matroska" = ["org.gnome.Totem.dekstop"];
+          "video/*" = ["org.gnome.Totem.desktop"];
+          "video/mp4" = ["org.gnome.Totem.desktop"];
+          "video/x-matroska" = ["org.gnome.Totem.desktop"];
           "image/*" = ["org.gnome.loupe.desktop"];
           "image/png" = ["org.gnome.loupe.desktop"];
           "image/jpg" = ["org.gnome.loupe.desktop"];
