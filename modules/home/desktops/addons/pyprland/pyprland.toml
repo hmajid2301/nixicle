@@ -1,10 +1,10 @@
 [pyprland]
 plugins = ["scratchpads"]
 
-[scratchpads.pavucontrol]
+[scratchpads.pwvucontrol]
 animation = "fromTop"
-command = "pavucontrol"
-class = "pavucontrol"
+command = "pwvucontrol"
+class = "pwvucontrol"
 size = "50% 80%"
 
 [scratchpads.term]

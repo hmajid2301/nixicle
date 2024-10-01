@@ -17,6 +17,7 @@ in {
 
       foliate
       pavucontrol
+      pwvucontrol
 
       sushi
       gnome-disk-utility
