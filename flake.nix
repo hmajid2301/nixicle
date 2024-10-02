@@ -121,17 +121,12 @@
       url = "github:catppuccin/obs";
       flake = false;
     };
-
     gx-nvim = {
       url = "github:chrishrb/gx.nvim";
       flake = false;
     };
     maximize-nvim = {
       url = "github:declancm/maximize.nvim";
-      flake = false;
-    };
-    advanced-git-search-nvim = {
-      url = "github:aaronhallaert/advanced-git-search.nvim";
       flake = false;
     };
   };

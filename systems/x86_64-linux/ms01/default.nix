@@ -40,8 +40,9 @@
   };
 
   roles = {
-    server = {
+    kubernetes = {
       enable = true;
+      role = "server";
     };
   };
 

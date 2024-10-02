@@ -1,21 +1,5 @@
 {
   "nodes": {
-    "advanced-git-search-nvim": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1725269419,
-        "narHash": "sha256-YF/cN3FwH/ADeY3fIHs4FRFwXb+g/HzjEV2YKr8WF3o=",
-        "owner": "aaronhallaert",
-        "repo": "advanced-git-search.nvim",
-        "rev": "1c5a10f5c838cfad2c17d7464311d6fb416cb319",
-        "type": "github"
-      },
-      "original": {
-        "owner": "aaronhallaert",
-        "repo": "advanced-git-search.nvim",
-        "type": "github"
-      }
-    },
     "ags": {
       "inputs": {
         "nixpkgs": "nixpkgs_7",
@@ -2611,7 +2595,6 @@
     },
     "root": {
       "inputs": {
-        "advanced-git-search-nvim": "advanced-git-search-nvim",
         "attic": "attic",
         "authentik-nix": "authentik-nix",
         "catppuccin": "catppuccin",
