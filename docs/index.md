@@ -555,3 +555,20 @@ Old topic, but for me, it was due to my password manager auto-filling the passwo
 }
 
 ![cloudflare-traefik.png](assets/imgs/cloudflare-traefik.png)
+
+
+## Setup flux
+
+setup k3s
+
+copy config.personal (look at .envrc): https://docs.k3s.io/cluster-access
+
+```bash
+flux bootstrap gitlab \
+        --deploy-token-auth \
+        --owner=hmajid2301 \
+        --repository=homelab \
+        --branch=main \
+        --path=clusters \
+        --personal
+```
