@@ -1,6 +1,6 @@
 {pkgs, ...}: {
   programs.nixvim = {
-    extraPlugins = with pkgs; [
+    extraPlugins = with pkgs.vimPlugins; [
       advanced-git-search-nvim
     ];
 
