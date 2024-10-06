@@ -29,7 +29,7 @@
             ];
             immich.loadBalancer.servers = [
               {
-                url = "http://ms01:2283";
+                url = "http://ms01:3001";
               }
             ];
           };

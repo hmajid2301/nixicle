@@ -13,6 +13,12 @@ in {
 
   config = mkIf cfg.enable {
     services = {
+      immich = {
+        enable = true;
+        # group = "media";
+        # mediaLocation = "/mnt/share/immich";
+      };
+
       cloudflared = {
         tunnels = {
           "ec0b6af0-a823-4616-a08b-b871fd2c7f58" = {
@@ -22,23 +28,13 @@ in {
         };
       };
 
-      # postgresql = {
-      #   ensureDatabases = ["immich"];
-      #   ensureUsers = [
-      #     {
-      #       name = "immich";
-      #       ensureDBOwnership = true;
-      #     }
-      #   ];
-      # };
-
       traefik = {
         dynamicConfigOptions = {
           http = {
             services = {
               immich.loadBalancer.servers = [
                 {
-                  url = "http://localhost:2283";
+                  url = "http://localhost:3001";
                 }
               ];
             };
