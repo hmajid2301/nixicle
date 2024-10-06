@@ -19,6 +19,7 @@ in {
       curlie
       chafa
       dogdns
+      doggo
       duf
       delta
       du-dust

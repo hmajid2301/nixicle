@@ -31,8 +31,6 @@
       netdata.enable = true;
       nfs.enable = true;
       paperless.enable = true;
-      # plausible.enable = true;
-      # photoprism.enable = true;
       postgresql.enable = true;
       syncthing.enable = true;
       traefik.enable = true;

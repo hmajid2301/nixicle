@@ -295,7 +295,7 @@ postgres-# \l
                  |                 |          |             |             | postgres=CTc/postgres
  template1       | postgres        | UTF8     | en_GB.UTF-8 | en_GB.UTF-8 | =c/postgres          +
                  |                 |          |             |             | postgres=CTc/postgres
-postgres=# dropdb "tandoor";
+postgres=# DROP DATABASE "tandoor";
 postgres=# \l
                                   List of databases
    Name    |   Owner   | Encoding |   Collate   |    Ctype    |   Access privileges
