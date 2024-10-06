@@ -53,9 +53,9 @@
         panel.enabled = false;
       };
 
-      codeium-nvim = {
-        enable = true;
-      };
+      # codeium-nvim = {
+      #   enable = true;
+      # };
     };
   };
 
