@@ -19,6 +19,7 @@
     nixicle.nfs.enable = true;
   };
   programs.coolercontrol.enable = true;
+  hardware.amdgpu.opencl.enable = true;
 
   roles = {
     gaming.enable = true;
