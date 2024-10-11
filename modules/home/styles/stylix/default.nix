@@ -20,6 +20,7 @@ in {
     home.packages = with pkgs; [
       (nerdfonts.override {fonts = ["NerdFontsSymbolsOnly"];})
       google-fonts
+      plemoljp
     ];
 
     stylix = {

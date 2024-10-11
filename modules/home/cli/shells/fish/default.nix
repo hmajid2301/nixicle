@@ -22,9 +22,9 @@ in {
         ${pkgs.nix-your-shell}/bin/nix-your-shell --nom fish | source
         set -x GOPATH $XDG_DATA_HOME/go
         set -x GOPRIVATE "git.curve.tools,go.curve.tools,gitlab.com/imaginecurve"
-        set -gx PATH $PATH $HOME/.krew/bin
-        fish_add_path --path --append $GOPATH/bin/
-        fish_add_path --path --append /usr/local/bin /usr/bin ~/.local/bin
+        set -gx PATH /usr/local/bin /usr/bin ~/.local/bin $GOPATH/bin/ $PATH $HOME/.krew/bin
+        # fish_add_path --path --append $GOPATH/bin/
+        # fish_add_path --path --append /usr/local/bin /usr/bin ~/.local/bin
 
         # fifc setup
         set -Ux fifc_editor nvim

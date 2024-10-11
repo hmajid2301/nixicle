@@ -17,7 +17,7 @@ in {
     services.nixicle.kdeconnect.enable = lib.mkForce false;
 
     home.packages = with pkgs; [
-      gnome.gnome-tweaks
+      gnome-tweaks
 
       gnomeExtensions.user-themes
       gnomeExtensions.space-bar
