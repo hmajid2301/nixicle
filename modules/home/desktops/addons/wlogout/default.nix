@@ -17,37 +17,37 @@ in {
       layout = [
         {
           label = "lock";
-          action = "${pkgs.hyprlock}/bin/hyprlock";
+          action = "hyprlock";
           text = "Lock";
           keybind = "l";
         }
         {
           label = "hibernate";
-          action = "${pkgs.systemd}/bin/systemctl hibernate";
+          action = "systemctl hibernate";
           text = "Hibernate";
           keybind = "h";
         }
         {
           label = "logout";
-          action = "${pkgs.systemd}/bin/loginctl terminate-user $USER";
+          action = "loginctl terminate-user $USER";
           text = "Logout";
           keybind = "L";
         }
         {
           label = "shutdown";
-          action = "${pkgs.systemd}/bin/systemctl poweroff";
+          action = "systemctl poweroff";
           text = "Shutdown";
           keybind = "S";
         }
         {
           label = "suspend";
-          action = "${pkgs.systemd}/bin/systemctl suspend-then-hibernate";
+          action = "systemctl suspend-then-hibernate";
           text = "Suspend";
           keybind = "s";
         }
         {
           label = "reboot";
-          action = "${pkgs.systemd}/bin/systemctl reboot";
+          action = "systemctl reboot";
           text = "Reboot";
           keybind = "r";
         }
