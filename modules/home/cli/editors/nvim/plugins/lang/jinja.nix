@@ -37,11 +37,11 @@
         };
       };
 
-      lsp.servers = {
-        jinja_lsp = {
-          enable = true;
-        };
-      };
+      # lsp.servers = {
+      #   jinja_lsp = {
+      #     enable = true;
+      #   };
+      # };
     };
   };
 }
