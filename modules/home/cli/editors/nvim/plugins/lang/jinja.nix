@@ -1,11 +1,19 @@
 {
-  config,
   pkgs,
+  config,
   ...
 }: {
   programs.nixvim = {
     files = {
-      "ftplugin/lua.lua" = {
+      "ftplugin/jinja.lua" = {
+        opts = {
+          expandtab = true;
+          shiftwidth = 4;
+          tabstop = 4;
+        };
+      };
+
+      "ftplugin/go.lua" = {
         opts = {
           expandtab = true;
           shiftwidth = 4;
@@ -15,30 +23,23 @@
     };
 
     plugins = {
-      lsp.servers.lua_ls.enable = true;
-
       conform-nvim = {
         settings = {
           formatters_by_ft = {
-            lua = ["stylua"];
+            jinja = ["djlint"];
           };
 
           formatters = {
-            stylua = {
-              command = "${pkgs.stylua}/bin/stylua";
+            djlint = {
+              command = "${pkgs.djlint}/bin/djlint";
             };
           };
         };
       };
 
-      lint = {
-        lintersByFt = {
-          lua = ["luacheck"];
-        };
-        linters = {
-          luacheck = {
-            cmd = "${pkgs.lua54Packages.luacheck}/bin/luacheck";
-          };
+      lsp.servers = {
+        jinja_lsp = {
+          enable = true;
         };
       };
     };

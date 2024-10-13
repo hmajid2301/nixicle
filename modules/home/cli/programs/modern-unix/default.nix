@@ -55,7 +55,7 @@ in {
       sqlc
       golines
       gotools
-      go-task
+      # go-task
       go-mockery
       gotestsum
     ];
