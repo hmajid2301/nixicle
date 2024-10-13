@@ -12,7 +12,7 @@ in {
   };
 
   config = mkIf cfg.enable {
-    home.packages = [pkgs.hyprpanel];
+    home.packages = [pkgs.hyprpanel pkgs.ags];
 
     programs.waybar = {
       enable = true;
