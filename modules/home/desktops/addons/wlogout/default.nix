@@ -41,7 +41,11 @@ in {
         }
         {
           label = "suspend";
+<<<<<<< Updated upstream
           action = "${pkgs.systemd}/bin/systemctl suspend-then-hibernate";
+=======
+          action = "systemctl suspend";
+>>>>>>> Stashed changes
           text = "Suspend";
           keybind = "s";
         }
