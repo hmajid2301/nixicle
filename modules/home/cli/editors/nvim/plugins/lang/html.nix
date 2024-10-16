@@ -3,6 +3,8 @@
   pkgs,
   ...
 }: {
+  xdg.configFile."nvim/queries/html/injections.scm".text = builtins.readFile ./lua/html/injections.scm;
+
   programs.nixvim = {
     files = {
       "ftplugin/html.lua" = {
