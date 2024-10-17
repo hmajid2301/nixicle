@@ -645,3 +645,21 @@ kubectl apply -f  clusters/flux-system/gotk-sync.yaml
 
  and ofc revert
 
+setup dns for tunnel
+
+`cloudflared tunnel route dns dd71b433-5bc3-4cc0-9db3-2536f3778f40 dev.banterbus.games`
+
+here in the deployment config
+
+```yaml
+  config.yaml: |
+    tunnel: k3s-cluster
+    credentials-file: /etc/cloudflared/creds/credentials.json
+    metrics: 0.0.0.0:2000
+    ingress:
+    - hostname: dev.banterbus.games
+      service: http://banterbus:8080
+    - hostname: hello.banterbus.games
+      service: hello_world
+    - service: http_status:404
+```

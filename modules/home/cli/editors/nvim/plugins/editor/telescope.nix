@@ -101,6 +101,7 @@
             "^.devenv/"
             "^.direnv/"
             "^.git/"
+            "^.gitlab-ci-local/"
           ];
           borderchars = [
             "─"
