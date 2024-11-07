@@ -113,6 +113,8 @@ in {
         l = "eza --group --header --group-directories-first --long --git --all --binary --all --icons always";
         tree = "eza --tree";
         sudo = "sudo -E -s";
+        k = "kubectl";
+        kgp = "kubectl get pods";
 
         tsu = "tailscale up";
         tsd = "tailscale down";
@@ -212,15 +214,15 @@ in {
           name = "fifc";
           inherit (pkgs.fishPlugins.fifc) src;
         }
-        {
-          name = "kubectl-abbr";
-          src = pkgs.fetchFromGitHub {
-            owner = "lewisacidic";
-            repo = "fish-kubectl-abbr";
-            rev = "161450ab83da756c400459f4ba8e8861770d930c";
-            sha256 = "sha256-iKNaD0E7IwiQZ+7pTrbPtrUcCJiTcVpb9ksVid1J6A0=";
-          };
-        }
+        # {
+        #   name = "kubectl-abbr";
+        #   src = pkgs.fetchFromGitHub {
+        #     owner = "lewisacidic";
+        #     repo = "fish-kubectl-abbr";
+        #     rev = "161450ab83da756c400459f4ba8e8861770d930c";
+        #     sha256 = "sha256-iKNaD0E7IwiQZ+7pTrbPtrUcCJiTcVpb9ksVid1J6A0=";
+        #   };
+        # }
         {
           name = "git-abbr";
           inherit (pkgs.fishPlugins.git-abbr) src;

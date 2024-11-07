@@ -47,6 +47,8 @@ in {
       yq-go
       viddy
 
+      kaf
+
       # go
       go
       golangci-lint
