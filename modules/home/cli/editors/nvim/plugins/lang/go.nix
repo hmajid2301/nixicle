@@ -6,6 +6,7 @@
   buildFlags = "-tags=unit,integration,e2e,bdd,dind";
 in {
   xdg.configFile."nvim/queries/go/injections.scm".text = builtins.readFile ./lua/go/injections.scm;
+  xdg.configFile."nvim/queries/templ/injections.scm".text = builtins.readFile ./lua/html/injections.scm;
 
   home.packages = with pkgs; [delve];
 
