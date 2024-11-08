@@ -50,6 +50,7 @@ in {
       kaf
 
       # go
+      arion
       go
       golangci-lint
       air
@@ -57,7 +58,7 @@ in {
       sqlc
       golines
       gotools
-      # go-task
+      go-task
       go-mockery
       gotestsum
     ];

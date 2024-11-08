@@ -24,7 +24,7 @@ in {
         extraFlags = ''--kubelet-arg "node-ip=0.0.0.0"'';
         role = mkIf (cfg.role == "agent") "agent";
         # TODO: how can we set this programmatically
-        serverAddr = mkIf (cfg.role == "agent") "https://um790:6443";
+        serverAddr = mkIf (cfg.role == "agent") "https://ms01:6443";
       };
     };
   };
