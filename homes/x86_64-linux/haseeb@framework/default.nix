@@ -10,6 +10,10 @@
     };
   };
 
+  home.packages = with pkgs; [
+    nwg-displays
+  ];
+
   roles = {
     desktop.enable = true;
     social.enable = true;
