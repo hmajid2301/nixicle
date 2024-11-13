@@ -34,6 +34,8 @@
             "ia" = "@parameter.inner";
             "ah" = "@assignment.outer";
             "ih" = "@assignment.inner";
+            "ae" = "@attribute.outer";
+            "ie" = "@attribute.inner";
             "l=" = "@assignment.lhs";
             "r=" = "@assignment.rhs";
             "af" = "@function.outer";
