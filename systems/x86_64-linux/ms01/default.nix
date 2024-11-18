@@ -32,6 +32,7 @@
       nfs.enable = true;
       paperless.enable = true;
       postgresql.enable = true;
+      redis.enable = true;
       syncthing.enable = true;
       traefik.enable = true;
     };
