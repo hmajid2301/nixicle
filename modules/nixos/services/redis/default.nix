@@ -19,6 +19,27 @@ in {
           port = 6380;
         };
       };
+
+      traefik = {
+        dynamicConfigOptions = {
+          http = {
+            services.redis.loadBalancer.servers = [
+              {
+                url = "http://localhost:6380";
+              }
+            ];
+
+            routers = {
+              redis = {
+                entryPoints = ["websecure"];
+                rule = "Host(`redis.homelab.haseebmajid.dev`)";
+                service = "redis";
+                tls.certResolver = "letsencrypt";
+              };
+            };
+          };
+        };
+      };
     };
   };
 }
