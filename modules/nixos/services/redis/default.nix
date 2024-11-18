@@ -13,9 +13,11 @@ in {
 
   config = mkIf cfg.enable {
     services = {
-      redis = {
-        enable = true;
-        settings = {};
+      redis.servers = {
+        main = {
+          enable = true;
+          port = 6380;
+        };
       };
     };
   };
