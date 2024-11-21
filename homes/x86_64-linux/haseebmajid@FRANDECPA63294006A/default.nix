@@ -39,6 +39,7 @@ in {
 
     packages = with pkgs; [
       screensharing
+      nwg-displays
     ];
   };
 
