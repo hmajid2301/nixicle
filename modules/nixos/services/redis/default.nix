@@ -16,6 +16,7 @@ in {
       redis.servers = {
         main = {
           enable = true;
+          openFirewall = true;
           port = 6380;
         };
       };
@@ -31,10 +32,10 @@ in {
 
             routers = {
               redis = {
-                entryPoints = ["websecure"];
+                entryPoints = ["redis"];
                 rule = "Host(`redis.homelab.haseebmajid.dev`)";
                 service = "redis";
-                tls.certResolver = "letsencrypt";
+                # tls.certResolver = "letsencrypt";
               };
             };
           };
