@@ -82,7 +82,7 @@ in {
             };
           };
           entryPoints.redis = {
-            address = "0.0.0.0:6380";
+            address = "0.0.0.0:6381";
           };
           entryPoints.web = {
             address = "0.0.0.0:80";

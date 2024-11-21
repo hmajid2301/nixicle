@@ -18,24 +18,31 @@ in {
           enable = true;
           openFirewall = true;
           port = 6380;
+          bind = "0.0.0.0";
+          logLevel = "debug";
         };
       };
 
       traefik = {
         dynamicConfigOptions = {
-          http = {
-            services.redis.loadBalancer.servers = [
-              {
-                url = "http://localhost:6380";
-              }
-            ];
+          tcp = {
+            services = {
+              redis = {
+                loadBalancer = {
+                  servers = [
+                    {
+                      address = "127.0.0.1:6380";
+                    }
+                  ];
+                };
+              };
+            };
 
             routers = {
               redis = {
                 entryPoints = ["redis"];
-                rule = "Host(`redis.homelab.haseebmajid.dev`)";
+                rule = "HostSNI(`*`)";
                 service = "redis";
-                # tls.certResolver = "letsencrypt";
               };
             };
           };
