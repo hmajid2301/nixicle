@@ -34,7 +34,7 @@ in {
             services = {
               immich.loadBalancer.servers = [
                 {
-                  url = "http://localhost:3001";
+                  url = "http://localhost:2283";
                 }
               ];
             };
