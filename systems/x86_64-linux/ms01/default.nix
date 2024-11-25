@@ -36,6 +36,21 @@
       syncthing.enable = true;
       traefik.enable = true;
     };
+
+    traefik = {
+      dynamicConfigOptions = {
+        http = {
+          routers = {
+            api = {
+              entryPoints = ["websecure"];
+              rule = "Host(`traefik.homelab.haseebmajid.dev`)";
+              service = "api@internal";
+              tls.certResolver = "letsencrypt";
+            };
+          };
+        };
+      };
+    };
   };
 
   roles = {
