@@ -15,8 +15,8 @@ in {
     services = {
       immich = {
         enable = true;
-        # group = "media";
-        # mediaLocation = "/mnt/share/immich";
+        group = "media";
+        mediaLocation = "/mnt/share/immich";
       };
 
       cloudflared = {
