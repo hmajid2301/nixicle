@@ -36,7 +36,7 @@ in {
           log = {
             level = "INFO";
             filePath = "/var/log/traefik.log";
-            # format = "json";  # Uses text format (common) by default
+            format = "json";
             noColor = false;
             maxSize = 100;
             compress = true;
@@ -46,15 +46,15 @@ in {
             prometheus = {};
           };
 
-          # tracing = {};
+          tracing = {};
 
           accessLog = {
             addInternals = true;
             filePath = "/var/log/traefik-access.log";
-            bufferingSize = 100; # Number of log lines
+            bufferingSize = 100;
             fields = {
               names = {
-                StartUTC = "drop"; # Write logs in Container Local Time instead of UTC
+                StartUTC = "drop";
               };
             };
             filters = {
@@ -67,7 +67,6 @@ in {
           };
           api = {
             dashboard = true;
-            insecure = true;
           };
           certificatesResolvers = {
             tailscale.tailscale = {};
