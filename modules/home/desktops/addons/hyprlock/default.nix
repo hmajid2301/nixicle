@@ -21,29 +21,6 @@ in {
           hide_cursor = true;
         };
 
-        input-field = [
-          {
-            size = {
-              width = 300;
-              height = 60;
-            };
-            outline_thickness = 4;
-            dots_size = 0.2;
-            dots_spacing = 0.2;
-            dots_center = true;
-            fade_on_empty = false;
-            placeholder_text = ''<span foreground="##cdd6f4"><i>󰌾 Logged in as </i><span foreground="##cba6f7">$USER</span></span>'';
-            hide_input = false;
-            fail_text = "<i>$FAIL <b>($ATTEMPTS)</b></i>";
-            position = {
-              x = -0;
-              y = -35;
-            };
-            halign = "center";
-            valign = "center";
-          }
-        ];
-
         label = [
           {
             text = ''cmd[update:43200000] echo "$(date +"%A, %d %B %Y")"'';
@@ -64,12 +41,6 @@ in {
             };
             halign = "right";
             valign = "top";
-          }
-        ];
-
-        background = [
-          {
-            path = "${config.stylix.image}";
           }
         ];
       };

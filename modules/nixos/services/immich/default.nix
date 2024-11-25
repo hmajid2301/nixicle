@@ -15,6 +15,7 @@ in {
     services = {
       immich = {
         enable = true;
+        host = "0.0.0.0";
         group = "media";
         mediaLocation = "/mnt/share/immich";
       };
