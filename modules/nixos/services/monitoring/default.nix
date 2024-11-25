@@ -257,14 +257,14 @@ in {
         settings = {
           server = {
             http_port = 3010;
-            http_addr = "127.0.0.1";
+            http_addr = "0.0.0.0";
             root_url = "https://grafana.homelab.haseebmajid.dev";
           };
 
-          "auth" = {
-            signout_redirect_url = "https://authentik.haseebmajid.dev/application/o/grafana/end-session/";
-            oauth_auto_login = true;
-          };
+          # "auth" = {
+          #   signout_redirect_url = "https://authentik.haseebmajid.dev/application/o/grafana/end-session/";
+          #   oauth_auto_login = true;
+          # };
 
           "auth.generic_oauth" = {
             enabled = true;

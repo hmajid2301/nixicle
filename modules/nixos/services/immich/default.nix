@@ -15,17 +15,9 @@ in {
     services = {
       immich = {
         enable = true;
-        # group = "media";
-        # mediaLocation = "/mnt/share/immich";
-      };
-
-      cloudflared = {
-        tunnels = {
-          "ec0b6af0-a823-4616-a08b-b871fd2c7f58" = {
-            ingress = {
-            };
-          };
-        };
+        host = "0.0.0.0";
+        group = "media";
+        mediaLocation = "/mnt/share/immich";
       };
 
       traefik = {
@@ -34,7 +26,7 @@ in {
             services = {
               immich.loadBalancer.servers = [
                 {
-                  url = "http://localhost:3001";
+                  url = "http://localhost:2283";
                 }
               ];
             };
