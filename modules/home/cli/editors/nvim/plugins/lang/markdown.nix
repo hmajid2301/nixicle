@@ -26,6 +26,11 @@
     };
 
     plugins = {
+      clipboard-image = {
+        enable = true;
+        clipboardPackage = pkgs.wl-clipboard;
+      };
+
       image = {
         enable = true;
         integrations.markdown = {
