@@ -306,6 +306,16 @@ postgres=# \l
            |           |          |             |             | postgres=CTc/postgres
  template1 | postgres  | UTF8     | en_GB.UTF-8 | en_GB.UTF-8 | =c/postgres          +
            |           |          |             |             | postgres=CTc/postgres
+
+postgres=# \c immich
+WARNING:  database "immich" has a collation version mismatch
+DETAIL:  The database was created using collation version 2.39, but the operating system provides version 2.40.
+HINT:  Rebuild all objects in this database that use the default collation and run ALTER DATABASE immich REFRESH COLLATION VERSION, or build PostgreSQL with the right library version.
+You are now connected to database "immich" as user "postgres".
+immich=# SELECT * FROM users;
+immich=# SELECT * FROM users;
+immich=# UPDATE users SET "isAdmin"='t' WHERE email='hello@haseebmajid.dev';
+UPDATE 1
 ```
 
 ### Cloudflare
