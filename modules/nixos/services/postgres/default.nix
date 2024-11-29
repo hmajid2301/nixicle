@@ -25,7 +25,7 @@ in {
       };
       postgresqlBackup = {
         enable = true;
-        location = "/mnt/share/postgresql";
+        # location = "/mnt/share/postgresql";
         backupAll = true;
         startAt = "*-*-* 10:00:00";
       };
