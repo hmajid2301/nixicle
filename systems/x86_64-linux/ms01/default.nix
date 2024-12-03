@@ -60,6 +60,21 @@
     };
   };
 
+  security.pam.loginLimits = [
+    {
+      domain = "*";
+      type = "soft";
+      item = "nofile";
+      value = 65536;
+    }
+    {
+      domain = "*";
+      type = "hard";
+      item = "nofile";
+      value = 65536;
+    }
+  ];
+
   # networking.interfaces.enp1s0.wakeOnLan.enable = true;
 
   topology.self = {
