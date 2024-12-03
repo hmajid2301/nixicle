@@ -41,7 +41,7 @@ in {
             routers = {
               redis = {
                 entryPoints = ["redis"];
-                rule = "HostSNI(`redis.homelab.haseebmajid.dev`)";
+                rule = "HostSNI(`*`)";
                 service = "redis";
               };
             };
