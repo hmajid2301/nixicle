@@ -19,17 +19,16 @@ in {
           openFirewall = true;
           port = 6380;
           bind = "0.0.0.0";
-          logLevel = "debug";
-          settings = {
-            # # tls-port = 4242;
-            # # tls-cert-file = "${../../data/server.crt}";
-            # # tls-key-file = "${../../data/server.key}";
-            #
-            # # disable client authentification
-            # tls-auth-clients = "no";
-            # tls-ciphers = "DEFAULT:!MEDIUM";
-            # tls-prefer-server-ciphers = "yes";
-          };
+          # settings = {
+          #   # # tls-port = 4242;
+          #   # # tls-cert-file = "${../../data/server.crt}";
+          #   # # tls-key-file = "${../../data/server.key}";
+          #   #
+          #   # # disable client authentification
+          #   # tls-auth-clients = "no";
+          #   # tls-ciphers = "DEFAULT:!MEDIUM";
+          #   # tls-prefer-server-ciphers = "yes";
+          # };
         };
       };
 
