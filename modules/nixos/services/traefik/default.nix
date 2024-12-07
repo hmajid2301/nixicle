@@ -80,31 +80,40 @@ in {
               };
             };
           };
-          entryPoints.redis = {
-            address = "0.0.0.0:6381";
-          };
-          entryPoints.web = {
-            address = "0.0.0.0:80";
-            http.redirections.entryPoint = {
-              to = "websecure";
-              scheme = "https";
-              permanent = true;
+
+          entryPoints = {
+            redis = {
+              address = "0.0.0.0:6381";
             };
-          };
-          entryPoints.websecure = {
-            address = "0.0.0.0:443";
-            http.tls = {
-              certResolver = "letsencrypt";
-              domains = [
-                {
-                  main = "homelab.haseebmajid.dev";
-                  sans = ["*.homelab.haseebmajid.dev"];
-                }
-                {
-                  main = "haseebmajid.dev";
-                  sans = ["*.haseebmajid.dev"];
-                }
-              ];
+
+            postgres = {
+              address = "0.0.0.0:5433";
+            };
+
+            web = {
+              address = "0.0.0.0:80";
+              http.redirections.entryPoint = {
+                to = "websecure";
+                scheme = "https";
+                permanent = true;
+              };
+            };
+
+            websecure = {
+              address = "0.0.0.0:443";
+              http.tls = {
+                certResolver = "letsencrypt";
+                domains = [
+                  {
+                    main = "homelab.haseebmajid.dev";
+                    sans = ["*.homelab.haseebmajid.dev"];
+                  }
+                  {
+                    main = "haseebmajid.dev";
+                    sans = ["*.haseebmajid.dev"];
+                  }
+                ];
+              };
             };
           };
         };
