@@ -23,11 +23,38 @@ in {
           search_path = "\"$user\", public, vectors";
         };
       };
+
       postgresqlBackup = {
         enable = true;
-        location = "/mnt/share/postgresql";
+        # location = "/mnt/share/postgresql";
         backupAll = true;
         startAt = "*-*-* 10:00:00";
+      };
+
+      traefik = {
+        dynamicConfigOptions = {
+          tcp = {
+            services = {
+              postgres = {
+                loadBalancer = {
+                  servers = [
+                    {
+                      address = "127.0.0.1:5432";
+                    }
+                  ];
+                };
+              };
+            };
+
+            routers = {
+              postgres = {
+                entryPoints = ["postgres"];
+                rule = "HostSNI(`*`)";
+                service = "postgres";
+              };
+            };
+          };
+        };
       };
     };
   };
