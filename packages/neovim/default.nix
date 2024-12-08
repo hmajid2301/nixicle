@@ -4,10 +4,11 @@
   inputs,
   config,
   ...
-}: let
-  neovim = [
-    (import ../../modules/home/cli/editors/nvim {
-      inherit pkgs lib inputs config;
-    })
-  ];
-in {inherit neovim;}
+}:
+pkgs.nixvim.makeNixvimWithModule {
+  inherit pkgs;
+
+  module = {
+    imports = ../.../../moules/home/cli/editors/nvim;
+  };
+}
