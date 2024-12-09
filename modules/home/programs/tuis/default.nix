@@ -14,7 +14,8 @@ in {
   config = mkIf cfg.enable {
     home.packages = with pkgs;
     with pkgs.nixicle; [
-      s-tui
+      # s-tui
+      # lazysql
     ];
   };
 }
