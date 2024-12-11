@@ -22,7 +22,7 @@
         ];
       }
       {
-        action = ''<cmd>lua require("neotest").stop()<cr>'';
+        action = ''<cmd>lua require("neotest").run.stop()<cr>'';
         key = "<leader>tS";
         options = {
           desc = "Stop Tests";
