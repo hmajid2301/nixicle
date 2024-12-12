@@ -13,10 +13,11 @@ in {
   config = lib.mkIf cfg.enable {
     fonts = {
       enableDefaultPackages = true;
+      fontconfig.enable = true;
       fontDir.enable = true;
-      packages = with pkgs; [
-        nerd-fonts.symbols-only
-      ];
+      # packages = with pkgs; [
+      #   nerd-fonts.symbols-only
+      # ];
 
       fontconfig = {
         localConf = ''
