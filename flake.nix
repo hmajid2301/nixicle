@@ -129,6 +129,10 @@
       url = "github:declancm/maximize.nvim";
       flake = false;
     };
+    cmp-dbee = {
+      url = "github:MattiasMTS/cmp-dbee";
+      flake = false;
+    };
   };
 
   outputs = inputs: let

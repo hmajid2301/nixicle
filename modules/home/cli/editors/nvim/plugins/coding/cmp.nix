@@ -1,5 +1,23 @@
 {
+  pkgs,
+  inputs,
+  ...
+}: let
+  cmp-dbee = pkgs.vimUtils.buildVimPlugin {
+    version = "latest";
+    pname = "cmp-dbee";
+    src = inputs.cmp-dbee;
+  };
+in {
   programs.nixvim = {
+    extraPlugins = with pkgs.vimPlugins; [
+      cmp-dbee
+    ];
+
+    extraConfigLua = ''
+      require("cmp-dbee").setup()
+    '';
+
     plugins = {
       cmp-buffer = {
         enable = true;
@@ -34,6 +52,7 @@
                 { name = 'path' },
                 { name = 'copilot' },
                 { name = 'codeium' },
+                { name = 'cmp-dbee' },
                 -- { name = 'ultisnips' },
                 -- { name = 'snippy' },
                 -- { name = 'vsnip' },
