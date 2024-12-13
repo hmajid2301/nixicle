@@ -17,9 +17,9 @@ in {
   };
 
   config = lib.mkIf cfg.enable {
+    fonts.fontconfig.enable = true;
     home.packages = with pkgs; [
       nerd-fonts.symbols-only
-      # google-fonts
       open-sans
       plemoljp
     ];
