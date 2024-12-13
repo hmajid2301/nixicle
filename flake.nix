@@ -176,7 +176,7 @@
 
       overlays = with inputs; [
         nixgl.overlay
-        nur.overlay
+        nur.overlays.default
         nix-topology.overlays.default
       ];
 
