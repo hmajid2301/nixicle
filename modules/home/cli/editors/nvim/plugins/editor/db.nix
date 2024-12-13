@@ -1,13 +1,5 @@
 {pkgs, ...}: {
   programs.nixvim = {
-    extraPlugins = with pkgs.vimPlugins; [
-      nvim-dbee
-    ];
-
-    extraConfigLua = ''
-      require("dbee").setup()
-    '';
-
     plugins.lsp.servers.sqls = {
       enable = true;
       settings = {
@@ -21,5 +13,13 @@
         };
       };
     };
+
+    extraPlugins = with pkgs.vimPlugins; [
+      nvim-dbee
+    ];
+
+    extraConfigLua = ''
+      require("dbee").setup()
+    '';
   };
 }
