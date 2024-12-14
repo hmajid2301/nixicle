@@ -1,25 +1,6 @@
 {pkgs, ...}: {
   programs.nixvim = {
     plugins.lsp.servers = {
-      sqlls = {
-        enable = true;
-        package = null;
-        settings = {
-          sqlLanguageServer = {
-            connections = [
-              {
-                name = "postgres";
-                adapter = "postgres";
-                host = "localhost";
-                port = 5432;
-                user = "postgres";
-                password = "postgres";
-                database = "postgres";
-              }
-            ];
-          };
-        };
-      };
       sqls = {
         enable = true;
         settings = {
