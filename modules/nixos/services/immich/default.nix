@@ -16,8 +16,7 @@ in {
       immich = {
         enable = true;
         host = "0.0.0.0";
-        group = "media";
-        mediaLocation = "/mnt/share/immich";
+        mediaLocation = "/mnt/nfs/homelab/immich";
       };
 
       traefik = {

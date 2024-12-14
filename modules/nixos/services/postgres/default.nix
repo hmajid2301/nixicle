@@ -15,7 +15,6 @@ in {
     services = {
       postgresql = {
         enable = true;
-        # TODO: look at using default postgres
         package = pkgs.postgresql_16_jit;
         extraPlugins = ps: with ps; [pgvecto-rs];
         authentication = pkgs.lib.mkOverride 10 ''
