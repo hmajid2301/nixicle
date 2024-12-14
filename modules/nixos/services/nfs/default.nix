@@ -22,6 +22,11 @@ in {
       nfs-utils
     ];
 
+    fileSystems."/mnt/nfs" = {
+      device = "192.168.1.73:/volume1/Data";
+      fsType = "nfs";
+    };
+
     fileSystems."/mnt/share" = {
       device = "//192.168.1.73/Data/homelab";
       fsType = "cifs";
