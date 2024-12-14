@@ -3,7 +3,7 @@
     plugins.lsp.servers = {
       sqlls = {
         enable = true;
-        package = pkgs.nixicle.sql-language-server;
+        package = null;
         settings = {
           sqlLanguageServer = {
             connections = [
