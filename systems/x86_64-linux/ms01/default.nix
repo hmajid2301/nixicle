@@ -30,7 +30,7 @@
       navidrome.enable = true;
       netdata.enable = true;
       nfs.enable = true;
-      paperless.enable = true;
+      # paperless.enable = true;
       postgresql.enable = true;
       redis.enable = true;
       syncthing.enable = true;
@@ -65,14 +65,26 @@
       domain = "*";
       type = "soft";
       item = "nofile";
-      value = 65536;
+      value = 1048576;
     }
     {
       domain = "*";
       type = "hard";
       item = "nofile";
-      value = 65536;
+      value = 1048576;
     }
+  ];
+
+  boot.kernel.sysctl = {
+    "fs.inotify.max_user_instances" = "8192";
+  };
+
+  # INFO: Until there is a better fix; https://github.com/NixOS/nixpkgs/issues/360592
+  nixpkgs.config.permittedInsecurePackages = [
+    "aspnetcore-runtime-6.0.36"
+    "aspnetcore-runtime-wrapped-6.0.36"
+    "dotnet-sdk-6.0.428"
+    "dotnet-sdk-wrapped-6.0.428"
   ];
 
   # networking.interfaces.enp1s0.wakeOnLan.enable = true;
