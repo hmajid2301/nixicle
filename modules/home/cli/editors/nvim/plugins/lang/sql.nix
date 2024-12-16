@@ -15,19 +15,19 @@
     };
 
     plugins = {
-      conform-nvim = {
-        settings = {
-          formatters_by_ft = {
-            sql = ["sqlfluff"];
-          };
-
-          formatters = {
-            sqlfluff = {
-              command = "${pkgs.sqlfluff}/bin/sqlfluff";
-            };
-          };
-        };
-      };
+      # conform-nvim = {
+      #   settings = {
+      #     formatters_by_ft = {
+      #       sql = ["sqlfluff"];
+      #     };
+      #
+      #     formatters = {
+      #       sqlfluff = {
+      #         command = "${pkgs.sqlfluff}/bin/sqlfluff";
+      #       };
+      #     };
+      #   };
+      # };
 
       lint = {
         lintersByFt = {
