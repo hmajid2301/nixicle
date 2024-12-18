@@ -26,6 +26,7 @@ in {
       kubelogin-oidc
       stern
       kubernetes-helm
+      kustomize
       fluxcd
     ];
   };
