@@ -2,7 +2,7 @@
   programs.nixvim = {
     plugins.lsp.servers = {
       sqls = {
-        enable = true;
+        enable = false;
         settings = {
           sqls = {
             connections = [
@@ -11,6 +11,13 @@
                 dataSourceName = "host=127.0.0.1 port=5432 user=postgres password=postgres dbname=postgres sslmode=disable";
               }
             ];
+            onAttach = {
+              function = ''
+                client.server_capabilities.documentFormattingProvider = false
+                client.server_capabilities.documentRangeFormattingProvider = false
+                require('sqls').on_attach(client, bufnr)
+              '';
+            };
           };
         };
       };

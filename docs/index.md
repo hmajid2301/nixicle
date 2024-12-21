@@ -411,6 +411,14 @@ Multi domain authentik: https://www.youtube.com/watch?v=tqimi3SdvCQ
 ![tunnel-order.png](assets/imgs/tunnel-order.png)
 
 
+#### DNS
+
+```bash
+cloudflared tunnel route dns ff77cc7c-6f69-406a-b86c-4ed3afde0093 budibase.haseebmajid.dev
+2024-12-15T21:46:51Z INF Added CNAME budibase.haseebmajid.dev.banterbus.games which will route to this tunnel tunnelID=ff77cc
+7c-6f69-406a-b86c-4ed3afde0093
+```
+
 ## Sops
 
 sops multiline enviornment files
@@ -672,4 +680,21 @@ here in the deployment config
     - hostname: hello.banterbus.games
       service: hello_world
     - service: http_status:404
+```
+
+postgres new db rules
+
+```bash
+postgres=# CREATE USER banterbus_dev WITH PASSWORD '...';
+CREATE ROLE
+postgres=# CREATE DATABASE banterbus_dev;
+CREATE DATABASE
+postgres=# GRANT ALL PRIVILEGES ON DATABASE banterbus_dev TO banterbus_dev;
+GRANT
+postgres=# \c banterbus_dev
+You are now connected to database "banterbus_dev" as user "postgres".
+banterbus_dev=# GRANT ALL PRIVILEGES ON DATABASE banterbus_dev TO banterbus_dev;
+GRANT
+banterbus_dev=# GRANT ALL ON SCHEMA public TO banterbus_dev;
+GRANT
 ```
