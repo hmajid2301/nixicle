@@ -1,37 +1,56 @@
 {
   disko.devices = {
     disk = {
-      nvme0n1 = {
+      system = {
         type = "disk";
         device = "/dev/nvme0n1";
         content = {
           type = "gpt";
           partitions = {
-            boot = {
-              size = "1M";
-              type = "EF02";
-            };
             ESP = {
+              label = "boot";
+              name = "ESP";
               size = "512M";
               type = "EF00";
               content = {
                 type = "filesystem";
                 format = "vfat";
                 mountpoint = "/boot";
+                mountOptions = [
+                  "defaults"
+                ];
               };
             };
             root = {
               size = "100%";
               content = {
-                type = "filesystem";
-                format = "btrfs";
-                mountpoint = "/";
-                mountOptions = ["compress=zstd" "noatime"];
+                type = "btrfs";
+                extraArgs = ["-L" "nixos" "-f"];
                 subvolumes = {
-                  "/root" = {mountpoint = "/";};
-                  "/home" = {mountpoint = "/home";};
-                  "/nix" = {mountpoint = "/nix";};
-                  "/var" = {mountpoint = "/var";};
+                  "/root" = {
+                    mountpoint = "/";
+                    mountOptions = ["subvol=root" "compress=zstd" "noatime"];
+                  };
+                  "/home" = {
+                    mountpoint = "/home";
+                    mountOptions = ["subvol=home" "compress=zstd" "noatime"];
+                  };
+                  "/nix" = {
+                    mountpoint = "/nix";
+                    mountOptions = ["subvol=nix" "compress=zstd" "noatime"];
+                  };
+                  "/persist" = {
+                    mountpoint = "/persist";
+                    mountOptions = ["subvol=persist" "compress=zstd" "noatime"];
+                  };
+                  "/log" = {
+                    mountpoint = "/var/log";
+                    mountOptions = ["subvol=log" "compress=zstd" "noatime"];
+                  };
+                  "/swap" = {
+                    mountpoint = "/swap";
+                    swap.swapfile.size = "64G";
+                  };
                 };
               };
             };
@@ -39,31 +58,95 @@
         };
       };
 
-      nas = {
-        type = "btrfs";
-        devices = [
-          "/dev/sda"
-          "/dev/sdb"
-          "/dev/sdc"
-          "/dev/sdd"
-        ];
+      storage1 = {
+        type = "disk";
+        device = "/dev/sda";
         content = {
-          type = "btrfs";
-          extraArgs = ["-d" "raid5"];
-          mountpoint = "/storage";
-          mountOptions = [
-            "compress=zstd"
-            "noatime"
-          ];
-          subvolumes = {
-            "/data" = {
-              mountpoint = "/storage/data";
+          type = "gpt";
+          partitions = {
+            storage = {
+              size = "100%";
+              content = {
+                type = "btrfs";
+                extraArgs = ["-L" "storage" "-f"];
+              };
             };
-            "/media" = {
-              mountpoint = "/storage/media";
+          };
+        };
+      };
+
+      storage2 = {
+        type = "disk";
+        device = "/dev/sdb";
+        content = {
+          type = "gpt";
+          partitions = {
+            storage = {
+              size = "100%";
+              content = {
+                type = "btrfs";
+                extraArgs = [
+                  "-f"
+                  "-L"
+                  "storage"
+                  "-d"
+                  "raid5"
+                  "-m"
+                  "raid5"
+                  "/dev/sda1"
+                  "/dev/sdc1"
+                  "/dev/sdd1"
+                ];
+                mountpoint = "/storage";
+                subvolumes = {
+                  "/data" = {
+                    mountpoint = "/storage/data";
+                    mountOptions = ["subvol=data" "compress=zstd" "noatime"];
+                  };
+                  "/media" = {
+                    mountpoint = "/storage/media";
+                    mountOptions = ["subvol=media" "compress=zstd" "noatime"];
+                  };
+                  "/backups" = {
+                    mountpoint = "/storage/backups";
+                    mountOptions = ["subvol=backups" "compress=zstd" "noatime"];
+                  };
+                };
+              };
             };
-            "/backups" = {
-              mountpoint = "/storage/backups";
+          };
+        };
+      };
+
+      storage3 = {
+        type = "disk";
+        device = "/dev/sdc";
+        content = {
+          type = "gpt";
+          partitions = {
+            storage = {
+              size = "100%";
+              content = {
+                type = "btrfs";
+                extraArgs = ["-L" "storage" "-f"];
+              };
+            };
+          };
+        };
+      };
+
+      storage4 = {
+        type = "disk";
+        device = "/dev/sdd";
+        content = {
+          type = "gpt";
+          partitions = {
+            storage = {
+              size = "100%";
+              content = {
+                type = "btrfs";
+                extraArgs = ["-L" "storage" "-f"];
+              };
             };
           };
         };
