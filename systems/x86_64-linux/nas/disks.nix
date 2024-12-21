@@ -7,59 +7,67 @@
         content = {
           type = "gpt";
           partitions = {
+            boot = {
+              size = "1M";
+              type = "EF02";
+            };
             ESP = {
-              label = "boot";
-              name = "ESP";
               size = "512M";
               type = "EF00";
               content = {
                 type = "filesystem";
                 format = "vfat";
                 mountpoint = "/boot";
-                mountOptions = [
-                  "defaults"
-                ];
               };
             };
             root = {
               size = "100%";
               content = {
-                type = "btrfs";
-                extraArgs = ["-L" "nixos" "-f"];
+                type = "filesystem";
+                format = "btrfs";
+                mountpoint = "/";
+                mountOptions = ["compress=zstd" "noatime"];
                 subvolumes = {
-                  "/root" = {
-                    mountpoint = "/";
-                    mountOptions = ["subvol=root" "compress=zstd" "noatime"];
-                  };
-                  "/home" = {
-                    mountpoint = "/home";
-                    mountOptions = ["subvol=home" "compress=zstd" "noatime"];
-                  };
-                  "/nix" = {
-                    mountpoint = "/nix";
-                    mountOptions = ["subvol=nix" "compress=zstd" "noatime"];
-                  };
-                  "/persist" = {
-                    mountpoint = "/persist";
-                    mountOptions = ["subvol=persist" "compress=zstd" "noatime"];
-                  };
-                  "/log" = {
-                    mountpoint = "/var/log";
-                    mountOptions = ["subvol=log" "compress=zstd" "noatime"];
-                  };
-                  "/swap" = {
-                    mountpoint = "/swap";
-                    swap.swapfile.size = "32G";
-                  };
+                  "/root" = {mountpoint = "/";};
+                  "/home" = {mountpoint = "/home";};
+                  "/nix" = {mountpoint = "/nix";};
+                  "/var" = {mountpoint = "/var";};
                 };
               };
             };
           };
         };
       };
+
+      nas = {
+        type = "btrfs";
+        devices = [
+          "/dev/sda"
+          "/dev/sdb"
+          "/dev/sdc"
+          "/dev/sdd"
+        ];
+        content = {
+          type = "btrfs";
+          extraArgs = ["-d" "raid5"];
+          mountpoint = "/storage";
+          mountOptions = [
+            "compress=zstd"
+            "noatime"
+          ];
+          subvolumes = {
+            "/data" = {
+              mountpoint = "/storage/data";
+            };
+            "/media" = {
+              mountpoint = "/storage/media";
+            };
+            "/backups" = {
+              mountpoint = "/storage/backups";
+            };
+          };
+        };
+      };
     };
   };
-
-  fileSystems."/persist".neededForBoot = true;
-  fileSystems."/var/log".neededForBoot = true;
 }

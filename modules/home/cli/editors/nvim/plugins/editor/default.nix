@@ -205,9 +205,9 @@ in {
         enable = true;
       };
 
-      nvim-colorizer = {
+      colorizer = {
         enable = true;
-        userDefaultOptions.tailwind = true;
+        settings.user_default_options.tailwind = true;
       };
 
       todo-comments = {
