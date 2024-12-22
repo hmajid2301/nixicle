@@ -38,28 +38,28 @@
       #   };
       # };
 
-      chatgpt = {
-        enable = true;
-        settings = {
-          api_key_cmd = "cat ${config.sops.secrets.chatgpt_api_key.path}";
-        };
-      };
+      # chatgpt = {
+      #   enable = true;
+      #   settings = {
+      #     api_key_cmd = "cat ${config.sops.secrets.chatgpt_api_key.path}";
+      #   };
+      # };
 
-      ollama = {
-        enable = true;
-      };
+      # ollama = {
+      #   enable = true;
+      # };
 
       copilot-chat.enable = true;
 
-      copilot-lua = {
-        enable = true;
-        suggestion = {
-          enabled = true;
-          autoTrigger = true;
-          keymap.accept = "<M-;>";
-        };
-        panel.enabled = false;
-      };
+      # copilot-lua = {
+      #   enable = true;
+      #   suggestion = {
+      #     enabled = true;
+      #     autoTrigger = true;
+      #     keymap.accept = "<M-;>";
+      #   };
+      #   panel.enabled = false;
+      # };
 
       # codeium-nvim = {
       #   enable = true;
