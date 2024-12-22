@@ -13,7 +13,8 @@ in {
   config = mkIf cfg.enable {
     services.uptime-kuma = {
       enable = true;
-      setting = {
+      settings = {
+        HOST = "0.0.0.0";
         PORT = "4000";
       };
     };

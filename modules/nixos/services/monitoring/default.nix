@@ -113,7 +113,7 @@ in {
                 name = "all";
                 webhook_configs = [
                   {url = "http://127.0.0.1:11000/alert";} # matrix-hook
-                  {url = with config.services.gotify; "http://localhost:${environment.GOTIFY_SERVER_PORT}";} # alertmanger-ntfy
+                  {url = with config.services.gotify; "http://s100:8051";} # alertmanger-ntfy
                 ];
               }
             ];
