@@ -2,10 +2,10 @@
 site_name: Haseeb Majid | Home Cluster
 site_description: My home lab configuration
 site_author: Haseeb Majid
-site_url: https://second-brain.haseebmajid.dev
+site_url: https://homelab.haseebmajid.dev
 
-repo_name: hmajid2301/second-brain
-repo_url: https://github.com/hmajid2301/second-brain
+repo_name: hmajid2301/nixicle
+repo_url: https://github.com/hmajid2301/nixicle
 edit_uri: "edit/main/"
 
 theme:

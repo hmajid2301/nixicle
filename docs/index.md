@@ -698,3 +698,24 @@ GRANT
 banterbus_dev=# GRANT ALL ON SCHEMA public TO banterbus_dev;
 GRANT
 ```
+
+### Loki in Kubernetes
+
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: loki-gateway2
+  namespace: monitoring
+spec:
+  type: NodePort
+  ports:
+    - name: http-metrics
+      port: 80
+      targetPort: 8080
+      nodePort: 31111  # Ensure this is within the valid range 30000-32767
+  selector:
+    app.kubernetes.io/component: gateway
+    app.kubernetes.io/instance: loki
+    app.kubernetes.io/name: loki
+```
