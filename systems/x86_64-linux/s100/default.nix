@@ -17,6 +17,8 @@
     postgresql.enable = true;
     home-assistant.enable = true;
     adguard.enable = true;
+    gotify.enable = true;
+    uptime-kuma.enable = true;
   };
 
   topology.self = {
