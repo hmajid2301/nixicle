@@ -65,10 +65,11 @@
           type = "gpt";
           partitions = {
             storage = {
+              name = "storage1";
               size = "100%";
               content = {
                 type = "btrfs";
-                extraArgs = ["-L" "storage" "-f"];
+                extraArgs = ["-f"];
               };
             };
           };
@@ -82,36 +83,11 @@
           type = "gpt";
           partitions = {
             storage = {
+              name = "storage2";
               size = "100%";
               content = {
                 type = "btrfs";
-                extraArgs = [
-                  "-f"
-                  "-L"
-                  "storage"
-                  "-d"
-                  "raid5"
-                  "-m"
-                  "raid5"
-                  "/dev/sda1"
-                  "/dev/sdc1"
-                  "/dev/sdd1"
-                ];
-                mountpoint = "/storage";
-                subvolumes = {
-                  "/data" = {
-                    mountpoint = "/storage/data";
-                    mountOptions = ["subvol=data" "compress=zstd" "noatime"];
-                  };
-                  "/media" = {
-                    mountpoint = "/storage/media";
-                    mountOptions = ["subvol=media" "compress=zstd" "noatime"];
-                  };
-                  "/backups" = {
-                    mountpoint = "/storage/backups";
-                    mountOptions = ["subvol=backups" "compress=zstd" "noatime"];
-                  };
-                };
+                extraArgs = ["-f"];
               };
             };
           };
@@ -125,10 +101,11 @@
           type = "gpt";
           partitions = {
             storage = {
+              name = "storage3";
               size = "100%";
               content = {
                 type = "btrfs";
-                extraArgs = ["-L" "storage" "-f"];
+                extraArgs = ["-f"];
               };
             };
           };
@@ -142,10 +119,11 @@
           type = "gpt";
           partitions = {
             storage = {
+              name = "storage4";
               size = "100%";
               content = {
                 type = "btrfs";
-                extraArgs = ["-L" "storage" "-f"];
+                extraArgs = ["-f"];
               };
             };
           };
