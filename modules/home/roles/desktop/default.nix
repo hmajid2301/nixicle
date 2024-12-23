@@ -24,13 +24,14 @@ with lib; let
     #!/bin/sh
     SOURCE1="alsa_output.usb-SteelSeries_Arctis_Nova_Pro_Wireless-00.analog-stereo"
     SOURCE2="alsa_output.usb-ACTIONS_Pebble_V3-00.pro-output-0"
+    SOURCE2A="alsa_output.usb-ACTIONS_Pebble_V3-00.analog-stereo"
 
     # Get the current default sink
     CURRENT_SINK=$(${pkgs.pulseaudio}/bin/pactl get-default-sink)
 
     # Toggle between the two sinks
     if [ "$CURRENT_SINK" = "$SOURCE1" ]; then
-        ${pkgs.pulseaudio}/bin/pactl set-default-sink "$SOURCE2"
+        ${pkgs.pulseaudio}/bin/pactl set-default-sink "$SOURCE2" || ${pkgs.pulseaudio}/bin/pactl set-default-sink "$SOURCE2A"
         echo "Switched to Pebble V3"
     else
         ${pkgs.pulseaudio}/bin/pactl set-default-sink "$SOURCE1"
