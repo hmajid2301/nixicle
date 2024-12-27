@@ -39,7 +39,7 @@ in {
       kanshi.enable = true;
       rofi.enable = true;
       swaync.enable = true;
-      waybar.enable = true;
+      hyprpanel.enable = true;
       wlogout.enable = true;
       wlsunset.enable = true;
 
