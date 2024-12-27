@@ -63,29 +63,13 @@ in {
         set fish_cursor_replace_one underscore blink
         set fish_cursor_visual      block
 
-        if status is-interactive
-            if type -q zellij
-                # Update the zellij tab name with the current process name or pwd.
-                function zellij_tab_name_update_pre --on-event fish_preexec
-                    if set -q ZELLIJ
-                        set -l cmd_line (string split " " -- $argv)
-                        set -l process_name $cmd_line[1]
-                        if test -n "$process_name" -a "$process_name" != "z"
-                            command nohup zellij action rename-tab $process_name >/dev/null 2>&1
-                        end
-                    end
-                end
+        # Correct cursor for ghostty when in VI mode.
+        if string match -q -- '*ghostty*' $TERM
+          set -g fish_vi_force_cursor 1
+        end
 
-                function zellij_tab_name_update_post --on-event fish_postexec
-                    if set -q ZELLIJ
-                        set -l cmd_line (string split " " -- $argv)
-                        set -l process_name $cmd_line[1]
-                        if test "$process_name" = "z"
-                            command nohup zellij action rename-tab (prompt_pwd) >/dev/null 2>&1
-                        end
-                    end
-                end
-            end
+        function __auto_zellij_update_tabname --on-variable PWD --description "Update zellij tab name on directory change"
+          _zellij_update_tabname
         end
       '';
 
@@ -141,6 +125,35 @@ in {
 
       functions = {
         fish_greeting = '''';
+
+        _zellij_update_tabname = ''
+          if set -q ZELLIJ
+            set current_dir $PWD
+            if test $current_dir = $HOME
+                set tab_name "~"
+            else
+                set tab_name (basename $current_dir)
+            end
+
+            if fish_git_prompt >/dev/null
+                # we are in a git repo
+
+                # if we are in a git superproject, use the superproject name
+                # otherwise, use the toplevel repo name
+                set git_root (git rev-parse --show-superproject-working-tree)
+                if test -z $git_root
+                    set git_root (git rev-parse --show-toplevel)
+                end
+
+                #  if we are in a subdirectory of the git root, use the relative path
+                if test (string lower "$git_root") != (string lower "$current_dir")
+                    set tab_name (basename $git_root)/(basename $current_dir)
+                end
+            end
+
+            nohup zellij action rename-tab $tab_name >/dev/null 2>&1
+          end
+        '';
 
         envsource = ''
           for line in (cat $argv | grep -v '^#')

@@ -50,7 +50,6 @@ in {
       kaf
 
       # go
-      arion
       go
       golangci-lint
       air
@@ -61,6 +60,8 @@ in {
       go-task
       go-mockery
       gotestsum
+
+      nodejs_23
     ];
   };
 }
