@@ -133,6 +133,10 @@
       url = "github:MattiasMTS/cmp-dbee";
       flake = false;
     };
+
+    ghostty = {
+      url = "github:ghostty-org/ghostty";
+    };
   };
 
   outputs = inputs: let

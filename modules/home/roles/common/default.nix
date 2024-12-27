@@ -19,7 +19,7 @@ in {
 
     cli = {
       terminals.foot.enable = true;
-      terminals.kitty.enable = true;
+      terminals.ghostty.enable = true;
       shells.fish.enable = true;
     };
     programs = {

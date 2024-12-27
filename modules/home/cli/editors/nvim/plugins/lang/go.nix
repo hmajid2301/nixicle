@@ -140,7 +140,6 @@ in {
                 bools = true;
                 defers = true;
                 deprecated = true;
-                fieldalignment = true;
                 tests = true;
                 nilness = true;
                 httpresponse = true;

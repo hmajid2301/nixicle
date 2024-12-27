@@ -583,12 +583,12 @@ copy config.personal (look at .envrc): https://docs.k3s.io/cluster-access
 
 ```bash
 flux bootstrap gitlab \
-        --deploy-token-auth \
-        --owner=hmajid2301 \
-        --repository=homelab \
-        --branch=main \
-        --path=clusters \
-        --personal
+              --owner=hmajid2301 \
+              --repository=k3s-config \
+              --branch=main \
+              --path=clusters \
+              --personal \
+            --read-write-key=true --token-auth=false --components-extra=image-reflector-controller,image-automation-controller
 ```
 
 for cert-manager
