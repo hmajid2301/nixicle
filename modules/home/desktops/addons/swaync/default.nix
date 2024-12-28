@@ -12,7 +12,7 @@ in {
 
   config = mkIf cfg.enable {
     services.swaync = {
-      enable = false;
+      enable = true;
       settings = {};
       style = builtins.readFile ./swaync.css;
     };

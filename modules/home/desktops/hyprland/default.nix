@@ -38,7 +38,7 @@ in {
       # qt.enable = true;
       kanshi.enable = true;
       rofi.enable = true;
-      swaync.enable = true;
+      swaync.enable = false;
       hyprpanel.enable = true;
       wlogout.enable = true;
       wlsunset.enable = true;
