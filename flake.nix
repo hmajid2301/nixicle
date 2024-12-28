@@ -85,7 +85,7 @@
       hyprland-xdph.follows = "hyprland-xdph-git";
       hyprland-protocols.follows = "hyprland-protocols-git";
     };
-    hyprpanel.url = "github:Jas-SinghFSU/HyprPanel";
+    hyprpanel.url = "github:Jas-SinghFSU/HyprPanel/ba7e0dfd52172c9c63ee11da689dce49cf76ae1f";
 
     nixvim = {
       url = "github:nix-community/nixvim";

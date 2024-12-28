@@ -24,6 +24,10 @@ in {
       plemoljp
     ];
 
+    # TODO: Possible to use stylix instead?
+    catppuccin.flavor = "mocha";
+    catppuccin.fish.enable = true;
+
     stylix = {
       enable = true;
       autoEnable = true;

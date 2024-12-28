@@ -35,6 +35,7 @@ in {
       enable = true;
       flags = [
         "--disable-up-arrow"
+        "--disable-ctrl-r"
       ];
       settings = {
         sync_address = "https://majiy00-shell.fly.dev";
