@@ -7,6 +7,10 @@
     version = "latest";
     pname = "cmp-dbee";
     src = inputs.cmp-dbee;
+    nvimSkipModule = [
+      "cmp-dbee.connection"
+      "cmp-dbee.source"
+    ];
   };
 in {
   programs.nixvim = {
