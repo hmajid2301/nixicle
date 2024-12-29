@@ -10,9 +10,14 @@
   ];
 
   boot.loader.grub.enable = true;
-
-  roles.server.enable = true;
   system.boot.enable = lib.mkForce false;
+
+  roles = {
+    kubernetes = {
+      enable = true;
+      role = "agent";
+    };
+  };
 
   services = {
     nixicle.avahi.enable = lib.mkForce false;
