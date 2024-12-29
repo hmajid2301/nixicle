@@ -3,7 +3,7 @@
     extraConfigLua = ''
       local dap, dapui = require("dap"),require("dapui")
       dap.listeners.after.event_initialized["dapui_config"]=function()
-      	dapui.open()
+      	dapui.open(1)
       end
       dap.listeners.before.event_terminated["dapui_config"]=function()
       	dapui.close()
@@ -48,30 +48,16 @@
             {
               elements = [
                 {
-                  id = "breakpoints";
-                  size = 0.25;
-                }
-                {
                   id = "stacks";
-                  size = 0.25;
+                  size = 0.20;
                 }
-                {
-                  id = "watches";
-                  size = 0.25;
-                }
-              ];
-              position = "bottom";
-              size = 10;
-            }
-            {
-              elements = [
                 {
                   id = "scopes";
-                  size = 1;
+                  size = 0.80;
                 }
               ];
               position = "bottom";
-              size = 10;
+              size = 40;
             }
             {
               elements = [
@@ -79,9 +65,27 @@
                   id = "repl";
                   size = 1;
                 }
+                # {
+                #   id = "console";
+                #   size = 0.20;
+                # }
               ];
               position = "bottom";
-              size = 10;
+              size = 30;
+            }
+            {
+              elements = [
+                {
+                  id = "breakpoints";
+                  size = 0.50;
+                }
+                {
+                  id = "watches";
+                  size = 0.50;
+                }
+              ];
+              position = "bottom";
+              size = 30;
             }
           ];
         };
@@ -119,7 +123,7 @@
               require("dapui").update_render(render)
             end
           '';
-        key = "<leader>dut";
+        key = "<leader>dT";
         options = {
           desc = " toggle types";
         };
@@ -365,6 +369,60 @@
         key = "<leader>du";
         options = {
           desc = "Toggle UI";
+        };
+        mode = [
+          "n"
+        ];
+      }
+      {
+        action.__raw =
+          # lua
+          ''
+            function()
+              require('dapui').open(1)
+              require('dapui').close(2)
+              require('dapui').close(3)
+            end
+          '';
+        key = "<leader>d1";
+        options = {
+          desc = "Debug layout 1; Stacks, Scopes";
+        };
+        mode = [
+          "n"
+        ];
+      }
+      {
+        action.__raw =
+          # lua
+          ''
+            function()
+              require('dapui').open(2)
+              require('dapui').close(1)
+              require('dapui').close(3)
+            end
+          '';
+        key = "<leader>d2";
+        options = {
+          desc = "Debug layout 2; breakpoints, watches";
+        };
+        mode = [
+          "n"
+        ];
+      }
+      {
+        action =
+          # lua
+          ''
+            function()
+              require('dapui').open(3)
+              require('dapui').close(1)
+              require('dapui').close(2)
+            end
+          '';
+        key = "<leader>d3";
+        options = {
+          desc = "Debug layout 3; repl, console";
         };
         mode = [
           "n"
