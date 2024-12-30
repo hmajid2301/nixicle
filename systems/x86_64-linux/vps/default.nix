@@ -20,8 +20,12 @@
   };
 
   services = {
-    nixicle.avahi.enable = lib.mkForce false;
-    nixicle.traefik.enable = true;
+    nixicle = {
+      avahi.enable = lib.mkForce false;
+      traefik.enable = true;
+      postgresql.enable = true;
+      redis.enable = true;
+    };
 
     traefik = {
       dynamicConfigOptions = {

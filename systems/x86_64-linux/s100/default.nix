@@ -9,7 +9,10 @@
   ];
 
   roles = {
-    server.enable = true;
+    kubernetes = {
+      enable = true;
+      role = "agent";
+    };
   };
 
   services.nixicle = {
