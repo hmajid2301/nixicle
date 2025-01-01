@@ -1,4 +1,5 @@
 {
+  pkgs,
   config,
   lib,
   ...
@@ -338,7 +339,7 @@ in {
         };
       };
 
-      otel-collector = {
+      opentelemetry-collector = {
         enable = true;
         package = pkgs.opentelemetry-collector-contrib;
         settings = {
