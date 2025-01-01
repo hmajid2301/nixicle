@@ -330,14 +330,27 @@ in {
         };
       };
 
-      tempo = {
-        enable = true;
-        settings = {
-          server = {
-            http_listen_port = "4400";
-          };
-        };
-      };
+      # tempo = {
+      #   enable = true;
+      #   settings = {
+      #     server = {
+      #       http_listen_port = 4400;
+      #       grpc_listen_port = 4401;
+      #     };
+      #     # TODO: use s3
+      #     storage = {
+      #       trace = {
+      #         backend = "s3";
+      #         s3 = {
+      #           bucket = "tempo";
+      #           endpoint = "localhost:9095";
+      #           tls_insecure_skip_verify = true;
+      #           region = "us-east-1";
+      #         };
+      #       };
+      #     };
+      #   };
+      # };
 
       opentelemetry-collector = {
         enable = true;
@@ -360,7 +373,7 @@ in {
 
             exporters = {
               "otlp" = {
-                endpoint = "jaeger:4317";
+                endpoint = "localhost:31100";
                 tls = {
                   insecure = true;
                 };
