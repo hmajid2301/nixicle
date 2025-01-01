@@ -53,6 +53,16 @@ in {
                   url = "http://localhost:9093";
                 }
               ];
+              otel-collector.loadBalancer.servers = [
+                {
+                  url = "http://localhost:4317";
+                }
+              ];
+              tempo.loadBalancer.servers = [
+                {
+                  url = "http://localhost:4400";
+                }
+              ];
             };
 
             routers = {
@@ -78,6 +88,18 @@ in {
                 entryPoints = ["websecure"];
                 rule = "Host(`alertmanager.homelab.haseebmajid.dev`)";
                 service = "alertmanager";
+                tls.certResolver = "letsencrypt";
+              };
+              otel-collector = {
+                entryPoints = ["websecure"];
+                rule = "Host(`otel-collector.homelab.haseebmajid.dev`)";
+                service = "otel-collector";
+                tls.certResolver = "letsencrypt";
+              };
+              tempo = {
+                entryPoints = ["websecure"];
+                rule = "Host(`tempo.homelab.haseebmajid.dev`)";
+                service = "tempo";
                 tls.certResolver = "letsencrypt";
               };
             };
@@ -302,6 +324,69 @@ in {
                   url = "http://127.0.0.1:${toString config.services.loki.configuration.server.http_listen_port}";
                 }
               ];
+            };
+          };
+        };
+      };
+
+      tempo = {
+        enable = true;
+        settings = {
+          server = {
+            http_listen_port = "4400";
+          };
+        };
+      };
+
+      otel-collector = {
+        enable = true;
+        package = pkgs.opentelemetry-collector-contrib;
+        settings = {
+          otelcolConfig = {
+            receivers = {
+              otlp = {
+                protocols = {
+                  http = {
+                    endpoint = "localhost:4317";
+                  };
+                };
+              };
+            };
+
+            processors = {
+              batch = {};
+            };
+
+            exporters = {
+              "otlp" = {
+                endpoint = "jaeger:4317";
+                tls = {
+                  insecure = true;
+                };
+              };
+              prometheus = {
+                endpoint = "localhost:3020";
+              };
+            };
+
+            extensions = {
+              health_check = {};
+            };
+
+            service = {
+              extensions = ["health_check"];
+              pipelines = {
+                traces = {
+                  receivers = ["otlp"];
+                  processors = ["batch"];
+                  exporters = ["otlp"];
+                };
+                metrics = {
+                  receivers = ["otlp"];
+                  processors = ["batch"];
+                  exporters = ["otlp"];
+                };
+              };
             };
           };
         };
