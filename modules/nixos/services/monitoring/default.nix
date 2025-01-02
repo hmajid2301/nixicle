@@ -352,59 +352,59 @@ in {
       #   };
       # };
 
-      opentelemetry-collector = {
-        enable = true;
-        package = pkgs.opentelemetry-collector-contrib;
-        settings = {
-          otelcolConfig = {
-            receivers = {
-              otlp = {
-                protocols = {
-                  http = {
-                    endpoint = "localhost:4317";
-                  };
-                };
-              };
-            };
-
-            processors = {
-              batch = {};
-            };
-
-            exporters = {
-              "otlp" = {
-                endpoint = "localhost:31100";
-                tls = {
-                  insecure = true;
-                };
-              };
-              prometheus = {
-                endpoint = "localhost:3020";
-              };
-            };
-
-            extensions = {
-              health_check = {};
-            };
-
-            service = {
-              extensions = ["health_check"];
-              pipelines = {
-                traces = {
-                  receivers = ["otlp"];
-                  processors = ["batch"];
-                  exporters = ["otlp"];
-                };
-                metrics = {
-                  receivers = ["otlp"];
-                  processors = ["batch"];
-                  exporters = ["otlp"];
-                };
-              };
-            };
-          };
-        };
-      };
+      # opentelemetry-collector = {
+      #   enable = true;
+      #   package = pkgs.opentelemetry-collector-contrib;
+      #   settings = {
+      #     otelcolConfig = {
+      #       receivers = {
+      #         otlp = {
+      #           protocols = {
+      #             http = {
+      #               endpoint = "localhost:4317";
+      #             };
+      #           };
+      #         };
+      #       };
+      #
+      #       processors = {
+      #         batch = {};
+      #       };
+      #
+      #       exporters = {
+      #         "otlp" = {
+      #           endpoint = "localhost:31100";
+      #           tls = {
+      #             insecure = true;
+      #           };
+      #         };
+      #         prometheus = {
+      #           endpoint = "localhost:3020";
+      #         };
+      #       };
+      #
+      #       extensions = {
+      #         health_check = {};
+      #       };
+      #
+      #       service = {
+      #         extensions = ["health_check"];
+      #         pipelines = {
+      #           traces = {
+      #             receivers = ["otlp"];
+      #             processors = ["batch"];
+      #             exporters = ["otlp"];
+      #           };
+      #           metrics = {
+      #             receivers = ["otlp"];
+      #             processors = ["batch"];
+      #             exporters = ["otlp"];
+      #           };
+      #         };
+      #       };
+      #     };
+      #   };
+      # };
     };
   };
 }

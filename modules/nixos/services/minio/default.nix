@@ -29,12 +29,12 @@ in {
             services = {
               console-minio.loadBalancer.servers = [
                 {
-                  url = "http://localhost:9055";
+                  url = "http://localhost:9056";
                 }
               ];
               minio.loadBalancer.servers = [
                 {
-                  url = "http://localhost:9056";
+                  url = "http://localhost:9055";
                 }
               ];
             };
