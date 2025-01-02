@@ -1,4 +1,5 @@
 {
+  pkgs,
   config,
   lib,
   ...
@@ -53,6 +54,16 @@ in {
                   url = "http://localhost:9093";
                 }
               ];
+              otel-collector.loadBalancer.servers = [
+                {
+                  url = "http://localhost:4317";
+                }
+              ];
+              tempo.loadBalancer.servers = [
+                {
+                  url = "http://localhost:4400";
+                }
+              ];
             };
 
             routers = {
@@ -78,6 +89,18 @@ in {
                 entryPoints = ["websecure"];
                 rule = "Host(`alertmanager.homelab.haseebmajid.dev`)";
                 service = "alertmanager";
+                tls.certResolver = "letsencrypt";
+              };
+              otel-collector = {
+                entryPoints = ["websecure"];
+                rule = "Host(`otel-collector.homelab.haseebmajid.dev`)";
+                service = "otel-collector";
+                tls.certResolver = "letsencrypt";
+              };
+              tempo = {
+                entryPoints = ["websecure"];
+                rule = "Host(`tempo.homelab.haseebmajid.dev`)";
+                service = "tempo";
                 tls.certResolver = "letsencrypt";
               };
             };
@@ -306,6 +329,82 @@ in {
           };
         };
       };
+
+      # tempo = {
+      #   enable = true;
+      #   settings = {
+      #     server = {
+      #       http_listen_port = 4400;
+      #       grpc_listen_port = 4401;
+      #     };
+      #     # TODO: use s3
+      #     storage = {
+      #       trace = {
+      #         backend = "s3";
+      #         s3 = {
+      #           bucket = "tempo";
+      #           endpoint = "localhost:9095";
+      #           tls_insecure_skip_verify = true;
+      #           region = "us-east-1";
+      #         };
+      #       };
+      #     };
+      #   };
+      # };
+
+      # opentelemetry-collector = {
+      #   enable = true;
+      #   package = pkgs.opentelemetry-collector-contrib;
+      #   settings = {
+      #     otelcolConfig = {
+      #       receivers = {
+      #         otlp = {
+      #           protocols = {
+      #             http = {
+      #               endpoint = "localhost:4317";
+      #             };
+      #           };
+      #         };
+      #       };
+      #
+      #       processors = {
+      #         batch = {};
+      #       };
+      #
+      #       exporters = {
+      #         "otlp" = {
+      #           endpoint = "localhost:31100";
+      #           tls = {
+      #             insecure = true;
+      #           };
+      #         };
+      #         prometheus = {
+      #           endpoint = "localhost:3020";
+      #         };
+      #       };
+      #
+      #       extensions = {
+      #         health_check = {};
+      #       };
+      #
+      #       service = {
+      #         extensions = ["health_check"];
+      #         pipelines = {
+      #           traces = {
+      #             receivers = ["otlp"];
+      #             processors = ["batch"];
+      #             exporters = ["otlp"];
+      #           };
+      #           metrics = {
+      #             receivers = ["otlp"];
+      #             processors = ["batch"];
+      #             exporters = ["otlp"];
+      #           };
+      #         };
+      #       };
+      #     };
+      #   };
+      # };
     };
   };
 }
