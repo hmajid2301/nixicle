@@ -18,6 +18,10 @@ in {
         sopsFile = ../secrets.yaml;
       };
 
+      minio_prometheus_bearer_token = {
+        sopsFile = ../secrets.yaml;
+      };
+
       grafana_oauth2_client_id = {
         sopsFile = ../secrets.yaml;
         owner = "grafana";
@@ -144,6 +148,14 @@ in {
         };
 
         exporters = {
+          redis = {
+            enable = true;
+          };
+
+          postgres = {
+            enable = true;
+          };
+
           node = {
             port = 3021;
             enabledCollectors = ["systemd"];
@@ -160,6 +172,42 @@ in {
             static_configs = [
               {
                 targets = ["s100:8123"];
+              }
+            ];
+          }
+
+          {
+            job_name = "redis";
+            metrics_path = "/metrics";
+            static_configs = [
+              {
+                targets = [
+                  "127.0.0.1:${toString config.services.prometheus.exporters.redis.port}"
+                ];
+              }
+            ];
+          }
+
+          {
+            job_name = "postgres";
+            static_configs = [
+              {
+                targets = [
+                  "127.0.0.1:${toString config.services.prometheus.exporters.postgres.port}"
+                ];
+              }
+            ];
+          }
+
+          {
+            job_name = "minio";
+            metrics_path = "/minio/metrics/v3";
+            bearer_token_file = config.sops.secrets.minio_prometheus_bearer_token.path;
+            static_configs = [
+              {
+                targets = [
+                  "127.0.0.1${toString config.services.minio.listenAddress}"
+                ];
               }
             ];
           }
