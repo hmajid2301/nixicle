@@ -18,6 +18,10 @@ in {
         sopsFile = ../secrets.yaml;
       };
 
+      minio_prometheus_bearer_token = {
+        sopsFile = ../secrets.yaml;
+      };
+
       grafana_oauth2_client_id = {
         sopsFile = ../secrets.yaml;
         owner = "grafana";
@@ -174,6 +178,7 @@ in {
 
           {
             job_name = "redis";
+            metrics_path = "/metrics";
             static_configs = [
               {
                 targets = [
