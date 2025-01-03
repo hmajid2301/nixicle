@@ -144,6 +144,14 @@ in {
         };
 
         exporters = {
+          redis = {
+            enable = true;
+          };
+
+          postgres = {
+            enable = true;
+          };
+
           node = {
             port = 3021;
             enabledCollectors = ["systemd"];
