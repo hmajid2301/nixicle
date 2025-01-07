@@ -13,15 +13,13 @@ in {
 
   config = mkIf cfg.enable {
     services = {
-      # couchdb = {
-      #   enable = true;
-      #   bindAddress = "0.0.0.0";
-      #   adminUser = "admin";
-      #   adminPass = "password";
-      # };
+      couchdb = {
+        enable = true;
+      };
+
       traefik = {
         dynamicConfigOptions = {
-          http = {
+          tcp = {
             services = {
               couchdb.loadBalancer.servers = [
                 {
