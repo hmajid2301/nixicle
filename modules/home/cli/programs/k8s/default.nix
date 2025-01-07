@@ -28,6 +28,7 @@ in {
       kubernetes-helm
       kustomize
       fluxcd
+      kubefwd
     ];
   };
 }
