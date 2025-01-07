@@ -19,7 +19,7 @@ in {
 
       traefik = {
         dynamicConfigOptions = {
-          tcp = {
+          http = {
             services = {
               couchdb.loadBalancer.servers = [
                 {
