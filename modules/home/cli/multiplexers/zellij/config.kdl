@@ -165,6 +165,13 @@ keybinds {
         bind "d" { Detach; }
         bind "Space" { NextSwapLayout; }
         bind "x" { CloseFocus; SwitchToMode "Normal"; }
+        bind "g" { LaunchOrFocusPlugin "https://github.com/laperlej/zellij-sessionizer/releases/download/v0.4.3/zellij-sessionizer.wasm" {
+              floating true
+              move_to_focused_tab true
+              cwd "/"
+              root_dirs "/home/haseeb/projects;/home/haseebmajid/projects"
+          }; SwitchToMode "Locked";
+      }
     }
 
     shared_except "locked" {
