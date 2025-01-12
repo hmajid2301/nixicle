@@ -24,6 +24,7 @@
       gitlab-runner.enable = true;
       immich.enable = true;
       jellyfin.enable = true;
+      logging.enable = true;
       monitoring.enable = true;
       minio.enable = true;
       navidrome.enable = true;
