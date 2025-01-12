@@ -15,8 +15,11 @@
   system.boot.enable = lib.mkForce false;
 
   services = {
-    nixicle.avahi.enable = lib.mkForce false;
-    nixicle.traefik.enable = true;
+    nixicle = {
+      avahi.enable = lib.mkForce false;
+      taefik.enable = true;
+      logging.enable = true;
+    };
 
     traefik = {
       dynamicConfigOptions = {
