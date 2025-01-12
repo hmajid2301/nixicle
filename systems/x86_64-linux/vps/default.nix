@@ -14,16 +14,33 @@
   roles.server.enable = true;
   system.boot.enable = lib.mkForce false;
 
+  sops.secrets.cloudflared_vps = {
+    sopsFile = ../../../modules/nixos/services/secrets.yaml;
+    owner = "cloudflared";
+  };
+
   services = {
-    traefik.enable = true;
+    cloudflared = {
+      enable = true;
+      tunnels = {
+        "0e845de6-544a-47f2-a1d5-c76be02ce153" = {
+          credentialsFile = config.sops.secrets.cloudflared_vps.path;
+          default = "http_status:404";
+        };
+      };
+    };
+  };
+
+  services = {
     avahi.enable = lib.mkForce false;
 
     nixicle = {
+      traefik.enable = true;
       logging.enable = true;
       postgresql.enable = true;
       # n8n.enable = true;
-      gotify.enable = true;
-      uptime-kuma.enable = true;
+      # gotify.enable = true;
+      # uptime-kuma.enable = true;
     };
 
     traefik = {
