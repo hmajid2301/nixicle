@@ -15,8 +15,16 @@
   system.boot.enable = lib.mkForce false;
 
   services = {
-    nixicle.avahi.enable = lib.mkForce false;
-    nixicle.traefik.enable = true;
+    traefik.enable = true;
+    avahi.enable = lib.mkForce false;
+
+    nixicle = {
+      logging.enable = true;
+      postgresql.enable = true;
+      # n8n.enable = true;
+      gotify.enable = true;
+      uptime-kuma.enable = true;
+    };
 
     traefik = {
       dynamicConfigOptions = {
@@ -27,6 +35,7 @@
                 url = "http://ms01:8096";
               }
             ];
+
             immich.loadBalancer.servers = [
               {
                 url = "http://ms01:2283";
