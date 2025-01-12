@@ -13,18 +13,6 @@ in {
   };
 
   config = mkIf cfg.enable {
-    sops.secrets = {
-      grafana_oauth2_client_id = {
-        sopsFile = ../secrets.yaml;
-        owner = "grafana";
-      };
-
-      grafana_oauth2_client_secret = {
-        sopsFile = ../secrets.yaml;
-        owner = "grafana";
-      };
-    };
-
     services = {
       loki = {
         enable = true;
@@ -89,7 +77,7 @@ in {
           };
           clients = [
             {
-              url = "http://127.0.0.1:${toString config.services.loki.configuration.server.http_listen_port}/loki/api/v1/push";
+              url = "http://127.0.0.1:3030/loki/api/v1/push";
             }
           ];
           scrape_configs = [

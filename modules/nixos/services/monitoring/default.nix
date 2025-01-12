@@ -273,27 +273,31 @@ in {
             settings = {
               datasources = [
                 {
-                  name = "Prometheus";
+                  name = "Prometheus (ms01)";
                   type = "prometheus";
                   access = "proxy";
+                  editable = true;
                   url = "http://127.0.0.1:${toString config.services.prometheus.port}";
                 }
                 {
                   name = "Loki (ms01)";
                   type = "loki";
                   access = "proxy";
+                  editable = true;
                   url = "http://127.0.0.1:${toString config.services.loki.configuration.server.http_listen_port}";
                 }
                 {
                   name = "Loki (s100)";
                   type = "loki";
                   access = "proxy";
+                  editable = true;
                   url = "http://s100:3030";
                 }
                 {
                   name = "Loki (vps)";
                   type = "loki";
                   access = "proxy";
+                  editable = true;
                   url = "http://vps:3030";
                 }
               ];

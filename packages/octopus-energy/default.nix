@@ -26,6 +26,7 @@ buildHomeAssistantComponent rec {
     pytest-socket
     pytest-asyncio
     sqlalchemy
+    pydantic
   ];
 
   # checkPhase = ''
