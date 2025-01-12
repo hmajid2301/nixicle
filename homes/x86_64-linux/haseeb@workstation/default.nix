@@ -18,6 +18,7 @@
     desktop.enable = true;
     social.enable = true;
     gaming.enable = true;
+    gamedev.enable = true;
     video.enable = true;
   };
 
