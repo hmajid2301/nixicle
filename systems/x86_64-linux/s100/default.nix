@@ -18,6 +18,7 @@
     home-assistant.enable = true;
     adguard.enable = true;
     gotify.enable = true;
+    uptime-kuma.enable = true;
     n8n.enable = true;
     logging.enable = true;
   };
