@@ -1,12 +1,30 @@
 {
   pkgs,
   lib,
+  config,
   ...
 }: {
   imports = [
     ./hardware-configuration.nix
     ./disks.nix
   ];
+
+  sops.secrets.cloudflared_ms01 = {
+    sopsFile = ../../../modules/nixos/services/secrets.yaml;
+    owner = "cloudflared";
+  };
+
+  services = {
+    cloudflared = {
+      enable = true;
+      tunnels = {
+        "ec0b6af0-a823-4616-a08b-b871fd2c7f58" = {
+          credentialsFile = config.sops.secrets.cloudflared_ms01.path;
+          default = "http_status:404";
+        };
+      };
+    };
+  };
 
   services = {
     tandoor.enable = true;
@@ -16,7 +34,6 @@
     nixicle = {
       authentik.enable = true;
       audiobookshelf.enable = true;
-      cloudflared.enable = true;
       couchdb.enable = true;
       deluge.enable = true;
       homepage.enable = true;
