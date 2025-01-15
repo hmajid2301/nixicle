@@ -29,7 +29,7 @@ in {
         [
           (utils.standardPluginOverlay inputs)
         ];
-      packageNames = ["myHomeModuleNvim"];
+      packageNames = ["regularCats"];
 
       luaPath = "${./.}";
 
@@ -345,6 +345,7 @@ in {
         regularCats = {pkgs, ...}: {
           settings = {
             wrapRc = false;
+            unwrappedCfgPath = "${config.home.homeDirectory}/nixicle/modules/home/cli/editors/neovim/";
             configDirName = "nixCats-nvim";
             aliases = ["testCat"];
             neovim-unwrapped = inputs.neovim-nightly-overlay.packages.${pkgs.system}.neovim;
