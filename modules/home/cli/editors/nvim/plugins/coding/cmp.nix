@@ -6,7 +6,7 @@
   cmp-dbee = pkgs.vimUtils.buildVimPlugin {
     version = "latest";
     pname = "cmp-dbee";
-    src = inputs.cmp-dbee;
+    src = inputs.plugins-cmp-dbee;
     nvimSkipModule = [
       "cmp-dbee.connection"
       "cmp-dbee.source"

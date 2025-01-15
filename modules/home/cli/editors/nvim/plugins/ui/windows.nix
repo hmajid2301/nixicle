@@ -6,7 +6,7 @@
   maximize-nvim = pkgs.vimUtils.buildVimPlugin {
     version = "latest";
     pname = "maximize.nvim";
-    src = inputs.maximize-nvim;
+    src = inputs.plugins-maximize-nvim;
   };
 in {
   programs.nixvim = {
