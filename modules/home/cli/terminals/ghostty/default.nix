@@ -25,6 +25,7 @@ in {
         window-padding-y = 6;
         copy-on-select = "clipboard";
         cursor-style = "block";
+        confirm-close-surface = false;
       };
     };
   };
