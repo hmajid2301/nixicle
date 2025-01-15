@@ -4,7 +4,7 @@
   inputs,
   ...
 }: let
-  utils = inputs.nixCats.utils;
+  inherit (inputs.nixCats) utils;
 in {
   imports = [
     inputs.nixCats.homeModule
@@ -272,11 +272,9 @@ in {
           # they contain a settings set defined above
           # see :help nixCats.flake.outputs.settings
           settings = {
-            wrapRc = true;
-            # IMPORTANT:
-            # your alias may not conflict with your other packages.
+            wrapRc = false;
             aliases = ["vim" "homeVim"];
-            # neovim-unwrapped = inputs.neovim-nightly-overlay.packages.${pkgs.system}.neovim;
+            neovim-unwrapped = inputs.neovim-nightly-overlay.packages.${pkgs.system}.neovim;
           };
           # and a set of categories that you want
           # (and other information to pass to lua)
@@ -291,6 +289,104 @@ in {
                 "nixCats('path.to.value')"
                 "see :help nixCats"
               ];
+            };
+          };
+        };
+
+        nixCats = {pkgs, ...}: {
+          settings = {
+            wrapRc = true;
+            aliases = ["vimCat"];
+            configDirName = "nixCats-nvim";
+            neovim-unwrapped = inputs.neovim-nightly-overlay.packages.${pkgs.system}.neovim;
+          };
+          categories = {
+            general = true;
+            neonixdev = true;
+
+            css = true;
+            docker = true;
+            html = true;
+            go = true;
+            json = true;
+            lua = true;
+            markdown = true;
+            nix = true;
+            python = true;
+            sql = true;
+            terraform = true;
+            toml = true;
+            typescript = true;
+            yaml = true;
+
+            ai = true;
+            diagnostics = true;
+            editor = true;
+            debug = true;
+            test = true;
+            lint = true;
+            format = true;
+            git = true;
+            ui = true;
+            extra = true;
+
+            lspDebugMode = false;
+            themer = true;
+            colorscheme = "catppuccin";
+          };
+          extra = {
+            nixdExtras = {
+              inherit (inputs) nixpkgs;
+              flake-path = inputs.self;
+            };
+          };
+        };
+
+        regularCats = {pkgs, ...}: {
+          settings = {
+            wrapRc = false;
+            configDirName = "nixCats-nvim";
+            aliases = ["testCat"];
+            neovim-unwrapped = inputs.neovim-nightly-overlay.packages.${pkgs.system}.neovim;
+          };
+          categories = {
+            general = true;
+            neonixdev = true;
+
+            css = true;
+            docker = true;
+            html = true;
+            go = true;
+            json = true;
+            lua = true;
+            markdown = true;
+            nix = true;
+            python = true;
+            sql = true;
+            terraform = true;
+            toml = true;
+            typescript = true;
+            yaml = true;
+
+            ai = true;
+            diagnostics = true;
+            editor = true;
+            debug = true;
+            test = true;
+            lint = true;
+            format = true;
+            git = true;
+            ui = true;
+            extra = true;
+
+            lspDebugMode = false;
+            themer = true;
+            colorscheme = "catppuccin";
+          };
+          extra = {
+            nixdExtras = {
+              inherit (inputs) nixpkgs;
+              flake-path = inputs.self;
             };
           };
         };
