@@ -92,24 +92,21 @@ require("lze").load({
 
 			dapui.setup({
 				expand_lines = false,
+				layouts = {
+					{
+						elements = { { id = "stacks", size = 0.2 }, { id = "scopes", size = 0.8 } },
+						position = "bottom",
+						size = 40,
+					},
+					{ elements = { { id = "repl", size = 1 } }, position = "bottom", size = 30 },
+					{
+						elements = { { id = "breakpoints", size = 0.5 }, { id = "watches", size = 0.5 } },
+						position = "bottom",
+						size = 30,
+					},
+				},
 			})
 		end,
-
-		dapui.setup({
-			layouts = {
-				{
-					elements = { { id = "stacks", size = 0.2 }, { id = "scopes", size = 0.8 } },
-					position = "bottom",
-					size = 40,
-				},
-				{ elements = { { id = "repl", size = 1 } }, position = "bottom", size = 30 },
-				{
-					elements = { { id = "breakpoints", size = 0.5 }, { id = "watches", size = 0.5 } },
-					position = "bottom",
-					size = 30,
-				},
-			},
-		}),
 	},
 	{
 		"nvim-dap-go",

@@ -47,9 +47,6 @@ vim.opt.inccommand = "split"
 -- Minimal number of screen lines to keep above and below the cursor.
 vim.opt.scrolloff = 10
 
--- Make line numbers default
-vim.wo.number = true
-
 -- Indent
 vim.o.smarttab = true
 vim.opt.cpoptions:append("I")
@@ -70,9 +67,11 @@ vim.o.undofile = true
 vim.o.ignorecase = true
 vim.o.smartcase = true
 
+-- Make line numbers default
+vim.opt.number = true
 -- Keep signcolumn on by default
-vim.wo.signcolumn = "yes"
-vim.wo.relativenumber = true
+vim.opt.signcolumn = "yes"
+vim.opt.relativenumber = true
 vim.opt.cursorline = true
 vim.opt.numberwidth = 2
 
