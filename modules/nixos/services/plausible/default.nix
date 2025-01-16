@@ -21,6 +21,7 @@ in {
     };
 
     services = {
+      clickhouse.enable = true;
       plausible = {
         enable = true;
         server = {
@@ -38,7 +39,7 @@ in {
       cloudflared = {
         enable = true;
         tunnels = {
-          "ec0b6af0-a823-4616-a08b-b871fd2c7f58" = {
+          "0e845de6-544a-47f2-a1d5-c76be02ce153" = {
             ingress = {
               "plausible.haseebmajid.dev" = "http://localhost:8455";
             };
