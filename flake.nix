@@ -18,11 +18,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    deploy-rs = {
-      url = "github:serokell/deploy-rs";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     nixos-hardware = {
       url = "github:nixos/nixos-hardware";
     };
@@ -36,8 +31,6 @@
     lanzaboote.url = "github:nix-community/lanzaboote";
 
     nixgl.url = "github:nix-community/nixGL";
-    stylix.url = "github:danth/stylix";
-    catppuccin.url = "github:catppuccin/nix";
     nix-index-database.url = "github:nix-community/nix-index-database";
 
     disko = {
@@ -60,6 +53,8 @@
       url = "github:nix-community/comma";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    # Hyprland
 
     hypr-contrib = {
       url = "github:hyprwm/contrib";
@@ -87,27 +82,20 @@
     };
     hyprpanel.url = "github:Jas-SinghFSU/HyprPanel/ba7e0dfd52172c9c63ee11da689dce49cf76ae1f";
 
-    nixvim = {
-      url = "github:nix-community/nixvim";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    # Homelab
 
     attic = {
       url = "github:zhaofengli/attic";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    firefox-gnome-theme = {
-      url = "github:rafaelmardojai/firefox-gnome-theme";
-      flake = false;
-    };
-
-    zjstatus = {
-      url = "github:dj95/zjstatus";
-    };
-
     nix-topology = {
       url = "github:oddlama/nix-topology";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    deploy-rs = {
+      url = "github:serokell/deploy-rs";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -117,20 +105,52 @@
     };
     authentik-nix.inputs.poetry2nix.follows = "poetry2nix";
 
+    # Styling
+
     catppuccin-obs = {
       url = "github:catppuccin/obs";
       flake = false;
     };
-    gx-nvim = {
+
+    firefox-gnome-theme = {
+      url = "github:rafaelmardojai/firefox-gnome-theme";
+      flake = false;
+    };
+
+    stylix.url = "github:danth/stylix";
+    catppuccin.url = "github:catppuccin/nix";
+
+    # Terminal
+
+    zjstatus = {
+      url = "github:dj95/zjstatus";
+    };
+
+    # Neovim
+
+    nixvim = {
+      url = "github:nix-community/nixvim";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    nixCats.url = "github:BirdeeHub/nixCats-nvim";
+
+    neovim-nightly-overlay = {
+      url = "github:nix-community/neovim-nightly-overlay";
+    };
+
+    plugins-cmp-dbee = {
+      url = "github:MattiasMTS/cmp-dbee";
+      flake = false;
+    };
+
+    plugins-gx-nvim = {
       url = "github:chrishrb/gx.nvim";
       flake = false;
     };
-    maximize-nvim = {
+
+    plugins-maximize-nvim = {
       url = "github:declancm/maximize.nvim";
-      flake = false;
-    };
-    cmp-dbee = {
-      url = "github:MattiasMTS/cmp-dbee";
       flake = false;
     };
   };
