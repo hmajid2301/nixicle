@@ -7,7 +7,7 @@
   gx-nvim = pkgs.vimUtils.buildVimPlugin {
     version = "latest";
     pname = "gx.nvim";
-    src = inputs.gx-nvim;
+    src = inputs.plugins-gx-nvim;
   };
 in {
   imports = lib.snowfall.fs.get-non-default-nix-files ./.;
