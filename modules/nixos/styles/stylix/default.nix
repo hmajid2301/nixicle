@@ -13,10 +13,11 @@ in {
   config = lib.mkIf cfg.enable {
     fonts = {
       enableDefaultPackages = true;
-      fontconfig.enable = true;
       fontDir.enable = true;
 
       fontconfig = {
+        enable = true;
+        useEmbeddedBitmaps = true;
         localConf = ''
           <?xml version="1.0"?>
           <!DOCTYPE fontconfig SYSTEM "fonts.dtd">
@@ -39,6 +40,24 @@ in {
                       <family>emoji</family>
                   </prefer>
               </alias>
+
+              <match target="pattern">
+                <test qual="any" name="family">
+                  <string>monospace</string>
+                </test>
+                <edit name="family" mode="assign" binding="same">
+                  <string>monospace</string>
+                </edit>
+              </match>
+
+              <match target="pattern">
+                <test name="family">
+                  <string>"monospace"</string>
+                </test>
+                <edit name="family" mode="prepend">
+                  <string>monospace</string>
+                </edit>
+              </match>
           </fontconfig>
         '';
       };
@@ -60,33 +79,33 @@ in {
         size = 24;
       };
 
-      # fonts = {
-      #   sizes = {
-      #     terminal = 14;
-      #     applications = 12;
-      #     popups = 12;
-      #   };
-      #
-      #   serif = {
-      #     name = "Source Serif";
-      #     package = pkgs.source-serif;
-      #   };
-      #
-      #   sansSerif = {
-      #     name = "Noto Sans";
-      #     package = pkgs.noto-fonts;
-      #   };
-      #
-      #   monospace = {
-      #     package = pkgs.nixicle.monolisa;
-      #     name = "MonoLisa Nerd Font";
-      #   };
-      #
-      #   emoji = {
-      #     package = pkgs.noto-fonts-emoji;
-      #     name = "Noto Color Emoji";
-      #   };
-      # };
+      fonts = {
+        sizes = {
+          terminal = 14;
+          applications = 12;
+          popups = 12;
+        };
+
+        serif = {
+          name = "Source Serif";
+          package = pkgs.source-serif;
+        };
+
+        sansSerif = {
+          name = "Noto Sans";
+          package = pkgs.noto-fonts;
+        };
+
+        monospace = {
+          package = pkgs.nixicle.monolisa;
+          name = "MonoLisa Nerd Font";
+        };
+
+        emoji = {
+          package = pkgs.noto-fonts-emoji;
+          name = "Noto Color Emoji";
+        };
+      };
     };
   };
 }

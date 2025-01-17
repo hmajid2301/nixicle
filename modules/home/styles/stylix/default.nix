@@ -30,11 +30,22 @@ in {
     catppuccin.flavor = "mocha";
     catppuccin.fish.enable = true;
 
+    fonts.fontconfig.defaultFonts.monospace = [];
+
     stylix = {
       enable = true;
       autoEnable = true;
       base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-mocha.yaml";
       targets.nixvim.enable = false;
+
+      iconTheme = {
+        enable = true;
+        package = pkgs.catppuccin-papirus-folders.override {
+          flavor = "mocha";
+          accent = "lavender";
+        };
+        dark = "Papirus-Dark";
+      };
 
       targets = {
         firefox = {
