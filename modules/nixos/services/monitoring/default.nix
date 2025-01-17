@@ -1,4 +1,5 @@
 {
+  pkgs,
   config,
   lib,
   ...
@@ -14,6 +15,10 @@ in {
   config = mkIf cfg.enable {
     sops.secrets = {
       home_assistant_token = {
+        sopsFile = ../secrets.yaml;
+      };
+
+      minio_prometheus_bearer_token = {
         sopsFile = ../secrets.yaml;
       };
 
@@ -53,6 +58,16 @@ in {
                   url = "http://localhost:9093";
                 }
               ];
+              otel-collector.loadBalancer.servers = [
+                {
+                  url = "http://localhost:4317";
+                }
+              ];
+              tempo.loadBalancer.servers = [
+                {
+                  url = "http://localhost:4400";
+                }
+              ];
             };
 
             routers = {
@@ -78,6 +93,18 @@ in {
                 entryPoints = ["websecure"];
                 rule = "Host(`alertmanager.homelab.haseebmajid.dev`)";
                 service = "alertmanager";
+                tls.certResolver = "letsencrypt";
+              };
+              otel-collector = {
+                entryPoints = ["websecure"];
+                rule = "Host(`otel-collector.homelab.haseebmajid.dev`)";
+                service = "otel-collector";
+                tls.certResolver = "letsencrypt";
+              };
+              tempo = {
+                entryPoints = ["websecure"];
+                rule = "Host(`tempo.homelab.haseebmajid.dev`)";
+                service = "tempo";
                 tls.certResolver = "letsencrypt";
               };
             };
@@ -121,6 +148,14 @@ in {
         };
 
         exporters = {
+          redis = {
+            enable = true;
+          };
+
+          postgres = {
+            enable = true;
+          };
+
           node = {
             port = 3021;
             enabledCollectors = ["systemd"];
@@ -142,6 +177,42 @@ in {
           }
 
           {
+            job_name = "redis";
+            metrics_path = "/metrics";
+            static_configs = [
+              {
+                targets = [
+                  "127.0.0.1:${toString config.services.prometheus.exporters.redis.port}"
+                ];
+              }
+            ];
+          }
+
+          {
+            job_name = "postgres";
+            static_configs = [
+              {
+                targets = [
+                  "127.0.0.1:${toString config.services.prometheus.exporters.postgres.port}"
+                ];
+              }
+            ];
+          }
+
+          {
+            job_name = "minio";
+            metrics_path = "/minio/metrics/v3";
+            bearer_token_file = config.sops.secrets.minio_prometheus_bearer_token.path;
+            static_configs = [
+              {
+                targets = [
+                  "127.0.0.1${toString config.services.minio.listenAddress}"
+                ];
+              }
+            ];
+          }
+
+          {
             job_name = "nodes";
             static_configs = [
               {
@@ -152,94 +223,6 @@ in {
             ];
           }
         ];
-      };
-
-      loki = {
-        enable = true;
-        configuration = {
-          server.http_listen_port = 3030;
-          auth_enabled = false;
-          ingester = {
-            lifecycler = {
-              ring = {
-                kvstore = {
-                  store = "inmemory";
-                };
-                replication_factor = 1;
-              };
-            };
-            chunk_idle_period = "5m";
-            chunk_retain_period = "30s";
-          };
-          schema_config = {
-            configs = [
-              {
-                from = "2020-10-24";
-                store = "boltdb-shipper";
-                object_store = "filesystem";
-                schema = "v13";
-                index = {
-                  prefix = "index_";
-                  period = "24h";
-                };
-              }
-            ];
-          };
-          storage_config = {
-            boltdb_shipper = {
-              active_index_directory = "/var/lib/loki/index";
-              cache_location = "/var/lib/loki/cache";
-            };
-            filesystem = {
-              directory = "/var/lib/loki/chunks";
-            };
-          };
-          limits_config = {
-            reject_old_samples = true;
-            reject_old_samples_max_age = "168h";
-            allow_structured_metadata = false;
-          };
-          compactor = {
-            working_directory = "/var/lib/loki/compactor";
-          };
-        };
-      };
-
-      promtail = {
-        enable = true;
-        configuration = {
-          server = {
-            http_listen_port = 3031;
-            grpc_listen_port = 0;
-          };
-          positions = {
-            filename = "/tmp/positions.yaml";
-          };
-          clients = [
-            {
-              url = "http://127.0.0.1:${toString config.services.loki.configuration.server.http_listen_port}/loki/api/v1/push";
-            }
-          ];
-          scrape_configs = [
-            {
-              job_name = "journal";
-              journal = {
-                max_age = "12h";
-                labels = {
-                  job = "systemd-journal";
-                  # TODO: do not hardcode
-                  host = "ms01";
-                };
-              };
-              relabel_configs = [
-                {
-                  source_labels = ["__journal__systemd_unit"];
-                  target_label = "unit";
-                }
-              ];
-            }
-          ];
-        };
       };
 
       postgresql = {
@@ -290,22 +273,114 @@ in {
             settings = {
               datasources = [
                 {
-                  name = "Prometheus";
+                  name = "Prometheus (ms01)";
                   type = "prometheus";
                   access = "proxy";
+                  editable = true;
                   url = "http://127.0.0.1:${toString config.services.prometheus.port}";
                 }
                 {
-                  name = "Loki";
+                  name = "Loki (ms01)";
                   type = "loki";
                   access = "proxy";
+                  editable = true;
                   url = "http://127.0.0.1:${toString config.services.loki.configuration.server.http_listen_port}";
+                }
+                {
+                  name = "Loki (s100)";
+                  type = "loki";
+                  access = "proxy";
+                  editable = true;
+                  url = "http://s100:3030";
+                }
+                {
+                  name = "Loki (vps)";
+                  type = "loki";
+                  access = "proxy";
+                  editable = true;
+                  url = "http://vps:3030";
                 }
               ];
             };
           };
         };
       };
+
+      # tempo = {
+      #   enable = true;
+      #   settings = {
+      #     server = {
+      #       http_listen_port = 4400;
+      #       grpc_listen_port = 4401;
+      #     };
+      #     # TODO: use s3
+      #     storage = {
+      #       trace = {
+      #         backend = "s3";
+      #         s3 = {
+      #           bucket = "tempo";
+      #           endpoint = "localhost:9095";
+      #           tls_insecure_skip_verify = true;
+      #           region = "us-east-1";
+      #         };
+      #       };
+      #     };
+      #   };
+      # };
+
+      # opentelemetry-collector = {
+      #   enable = true;
+      #   package = pkgs.opentelemetry-collector-contrib;
+      #   settings = {
+      #     otelcolConfig = {
+      #       receivers = {
+      #         otlp = {
+      #           protocols = {
+      #             http = {
+      #               endpoint = "localhost:4317";
+      #             };
+      #           };
+      #         };
+      #       };
+      #
+      #       processors = {
+      #         batch = {};
+      #       };
+      #
+      #       exporters = {
+      #         "otlp" = {
+      #           endpoint = "localhost:31100";
+      #           tls = {
+      #             insecure = true;
+      #           };
+      #         };
+      #         prometheus = {
+      #           endpoint = "localhost:3020";
+      #         };
+      #       };
+      #
+      #       extensions = {
+      #         health_check = {};
+      #       };
+      #
+      #       service = {
+      #         extensions = ["health_check"];
+      #         pipelines = {
+      #           traces = {
+      #             receivers = ["otlp"];
+      #             processors = ["batch"];
+      #             exporters = ["otlp"];
+      #           };
+      #           metrics = {
+      #             receivers = ["otlp"];
+      #             processors = ["batch"];
+      #             exporters = ["otlp"];
+      #           };
+      #         };
+      #       };
+      #     };
+      #   };
+      # };
     };
   };
 }

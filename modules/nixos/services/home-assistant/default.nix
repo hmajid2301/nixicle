@@ -46,6 +46,7 @@ in {
             zigpy-xbee
             zigpy-znp
             zigpy-zigate
+            pydantic
           ];
         config = {
           # TODO: waiting on this https://github.com/NixOS/nixpkgs/pull/328794/files

@@ -15,7 +15,6 @@
   services = {
     virtualisation.kvm.enable = true;
     hardware.openrgb.enable = true;
-    nixicle.ollama.enable = true;
     nixicle.nfs.enable = true;
   };
   programs.coolercontrol.enable = true;

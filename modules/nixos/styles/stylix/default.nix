@@ -13,6 +13,8 @@ in {
   config = lib.mkIf cfg.enable {
     fonts = {
       enableDefaultPackages = true;
+      fontconfig.enable = true;
+      fontDir.enable = true;
 
       fontconfig = {
         localConf = ''

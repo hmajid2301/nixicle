@@ -19,16 +19,22 @@ in {
         enable = true;
         listenAddress = ":9055";
         consoleAddress = ":9056";
-        dataDir = ["/mnt/share/minio"];
+        # TODO: Move to NAS
+        # dataDir = ["/mnt/nfs/homelab/minio"];
       };
 
       traefik = {
         dynamicConfigOptions = {
           http = {
             services = {
-              minio.loadBalancer.servers = [
+              console-minio.loadBalancer.servers = [
                 {
                   url = "http://localhost:9056";
+                }
+              ];
+              minio.loadBalancer.servers = [
+                {
+                  url = "http://localhost:9055";
                 }
               ];
             };
@@ -38,6 +44,12 @@ in {
                 entryPoints = ["websecure"];
                 rule = "Host(`minio.homelab.haseebmajid.dev`)";
                 service = "minio";
+                tls.certResolver = "letsencrypt";
+              };
+              console-minio = {
+                entryPoints = ["websecure"];
+                rule = "Host(`console.minio.homelab.haseebmajid.dev`)";
+                service = "console-minio";
                 tls.certResolver = "letsencrypt";
               };
             };
