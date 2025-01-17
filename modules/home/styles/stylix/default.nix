@@ -22,6 +22,8 @@ in {
       nerd-fonts.symbols-only
       open-sans
       plemoljp
+      dejavu_fonts
+      nerd-fonts.droid-sans-mono
     ];
 
     # TODO: Possible to use stylix instead?
@@ -33,6 +35,13 @@ in {
       autoEnable = true;
       base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-mocha.yaml";
       targets.nixvim.enable = false;
+
+      targets = {
+        firefox = {
+          firefoxGnomeTheme.enable = true;
+          profileNames = ["Default"];
+        };
+      };
 
       image = pkgs.nixicle.wallpapers.earth;
 
