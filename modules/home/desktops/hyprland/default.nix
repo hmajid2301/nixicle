@@ -34,7 +34,7 @@ in {
     xdg.configFile."hypr".recursive = true;
 
     desktops.addons = {
-      gtk.enable = true;
+      # gtk.enable = true;
       # qt.enable = true;
       kanshi.enable = true;
       rofi.enable = true;
