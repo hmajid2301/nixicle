@@ -11,14 +11,12 @@ in {
   config = mkIf cfg.enable {
     wayland.windowManager.hyprland = {
       enable = true;
-      package = pkgs.hyprland;
 
-      reloadConfig = true;
-      systemdIntegration = true;
-      recommendedEnvironment = true;
+      systemd.enable = true;
+      systemd.enableXdgAutostart = true;
       xwayland.enable = true;
 
-      config = {
+      settings = {
         input = {
           kb_layout = "gb";
           touchpad = {

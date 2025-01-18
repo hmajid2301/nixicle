@@ -59,7 +59,7 @@ with lib; let
   '';
 in {
   config = mkIf cfg.enable {
-    wayland.windowManager.hyprland.keyBinds = {
+    wayland.windowManager.hyprland.settings = {
       bind = {
         "SUPER, Return" = "exec, foot";
         "SUPER, B" = "exec, ${config.desktops.addons.rofi.package}/bin/rofi -show drun -mode drun";
