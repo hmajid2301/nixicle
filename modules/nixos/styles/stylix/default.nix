@@ -16,7 +16,13 @@ in {
       fontDir.enable = true;
       fontconfig = {
         enable = true;
-        useEmbeddedBitmaps = true;
+
+        localConf = ''
+          <alias>
+            <family>monospace</family>
+            <prefer><family>Symbols Nerd Font</family></prefer>
+          </alias>
+        '';
       };
     };
 
@@ -55,7 +61,7 @@ in {
 
         monospace = {
           package = pkgs.nixicle.monolisa;
-          name = "MonoLisa Nerd Font";
+          name = "MonoLisa";
         };
 
         emoji = {

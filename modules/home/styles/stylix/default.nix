@@ -49,7 +49,7 @@ in {
         };
       };
 
-      image = pkgs.nixicle.wallpapers.earth;
+      image = pkgs.nixicle.wallpapers.windows-error;
 
       cursor = {
         name = "Bibata-Modern-Classic";
@@ -76,7 +76,7 @@ in {
 
         monospace = {
           package = pkgs.nixicle.monolisa;
-          name = "MonoLisa Nerd Font";
+          name = "MonoLisa";
         };
 
         emoji = {
