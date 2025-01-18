@@ -29,11 +29,6 @@ in {
           port = 8455;
           secretKeybaseFile = config.sops.secrets.plausible_secret_keybase_file.path;
         };
-        adminUser = {
-          email = "hello@haseebmajid.dev";
-          passwordFile = config.sops.secrets.plausible_admin_password.path;
-          activate = true;
-        };
       };
 
       cloudflared = {

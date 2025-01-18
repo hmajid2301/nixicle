@@ -8,6 +8,8 @@
     ./disks.nix
   ];
 
+  environment.pathsToLink = ["/share/fish"];
+
   # TODO: when merged in
   systemd.package = pkgs.systemd.overrideAttrs (old: {
     patches =
