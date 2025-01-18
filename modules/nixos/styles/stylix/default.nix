@@ -34,7 +34,7 @@ in {
       homeManagerIntegration.followSystem = false;
       targets.nixvim.enable = false;
 
-      image = pkgs.nixicle.wallpapers.earth;
+      image = pkgs.nixicle.wallpapers.windows-error;
 
       cursor = {
         name = "Bibata-Modern-Classic";
