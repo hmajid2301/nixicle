@@ -14,52 +14,9 @@ in {
     fonts = {
       enableDefaultPackages = true;
       fontDir.enable = true;
-
       fontconfig = {
         enable = true;
         useEmbeddedBitmaps = true;
-        localConf = ''
-          <?xml version="1.0"?>
-          <!DOCTYPE fontconfig SYSTEM "fonts.dtd">
-          <fontconfig>
-              <alias binding="weak">
-                  <family>monospace</family>
-                  <prefer>
-                      <family>emoji</family>
-                  </prefer>
-              </alias>
-              <alias binding="weak">
-                  <family>sans-serif</family>
-                  <prefer>
-                      <family>emoji</family>
-                  </prefer>
-              </alias>
-              <alias binding="weak">
-                  <family>serif</family>
-                  <prefer>
-                      <family>emoji</family>
-                  </prefer>
-              </alias>
-
-              <match target="pattern">
-                <test qual="any" name="family">
-                  <string>monospace</string>
-                </test>
-                <edit name="family" mode="assign" binding="same">
-                  <string>monospace</string>
-                </edit>
-              </match>
-
-              <match target="pattern">
-                <test name="family">
-                  <string>"monospace"</string>
-                </test>
-                <edit name="family" mode="prepend">
-                  <string>monospace</string>
-                </edit>
-              </match>
-          </fontconfig>
-        '';
       };
     };
 

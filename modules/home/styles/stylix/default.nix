@@ -21,16 +21,11 @@ in {
     home.packages = with pkgs; [
       nerd-fonts.symbols-only
       open-sans
-      plemoljp
-      dejavu_fonts
-      nerd-fonts.droid-sans-mono
     ];
 
     # TODO: Possible to use stylix instead?
     catppuccin.flavor = "mocha";
     catppuccin.fish.enable = true;
-
-    fonts.fontconfig.defaultFonts.monospace = [];
 
     stylix = {
       enable = true;
