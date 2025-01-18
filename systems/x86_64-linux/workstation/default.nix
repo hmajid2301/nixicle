@@ -8,17 +8,23 @@
     ./disks.nix
   ];
 
-  environment.pathsToLink = ["/share/fish"];
-  systemd.services.NetworkManager-wait-online.enable = lib.mkForce false;
-  systemd.services.systemd-networkd-wait-online.enable = lib.mkForce false;
+  # TODO: when merged in
+  systemd.package = pkgs.systemd.overrideAttrs (old: {
+    patches =
+      old.patches
+      ++ [
+        (pkgs.fetchurl {
+          url = "https://github.com/wrvsrx/systemd/compare/tag_fix-hibernate-resume%5E...tag_fix-hibernate-resume.patch";
+          hash = "sha256-Z784xysVUOYXCoTYJDRb3ppGiR8CgwY5CNV8jJSLOXU=";
+        })
+      ];
+  });
 
   services = {
     virtualisation.kvm.enable = true;
     hardware.openrgb.enable = true;
     nixicle.nfs.enable = true;
   };
-  programs.coolercontrol.enable = true;
-  hardware.amdgpu.opencl.enable = true;
 
   roles = {
     gaming.enable = true;

@@ -1,7 +1,6 @@
 {
   config,
   lib,
-  pkgs,
   ...
 }:
 with lib; let
@@ -12,8 +11,6 @@ in {
   };
 
   config = mkIf cfg.enable {
-    home.packages = [pkgs.hyprpanel pkgs.ags];
-
     programs.waybar = {
       enable = true;
       systemd.enable = true;
