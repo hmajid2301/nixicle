@@ -21,7 +21,6 @@ in {
     home.packages = with pkgs; [
       nerd-fonts.symbols-only
       open-sans
-      plemoljp
     ];
 
     # TODO: Possible to use stylix instead?
@@ -34,7 +33,23 @@ in {
       base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-mocha.yaml";
       targets.nixvim.enable = false;
 
-      image = pkgs.nixicle.wallpapers.earth;
+      iconTheme = {
+        enable = true;
+        package = pkgs.catppuccin-papirus-folders.override {
+          flavor = "mocha";
+          accent = "lavender";
+        };
+        dark = "Papirus-Dark";
+      };
+
+      targets = {
+        firefox = {
+          firefoxGnomeTheme.enable = true;
+          profileNames = ["Default"];
+        };
+      };
+
+      image = pkgs.nixicle.wallpapers.windows-error;
 
       cursor = {
         name = "Bibata-Modern-Classic";
@@ -61,7 +76,7 @@ in {
 
         monospace = {
           package = pkgs.nixicle.monolisa;
-          name = "MonoLisa Nerd Font";
+          name = "MonoLisa";
         };
 
         emoji = {

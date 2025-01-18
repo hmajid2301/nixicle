@@ -13,33 +13,15 @@ in {
   config = lib.mkIf cfg.enable {
     fonts = {
       enableDefaultPackages = true;
-      fontconfig.enable = true;
       fontDir.enable = true;
-
       fontconfig = {
+        enable = true;
+
         localConf = ''
-          <?xml version="1.0"?>
-          <!DOCTYPE fontconfig SYSTEM "fonts.dtd">
-          <fontconfig>
-              <alias binding="weak">
-                  <family>monospace</family>
-                  <prefer>
-                      <family>emoji</family>
-                  </prefer>
-              </alias>
-              <alias binding="weak">
-                  <family>sans-serif</family>
-                  <prefer>
-                      <family>emoji</family>
-                  </prefer>
-              </alias>
-              <alias binding="weak">
-                  <family>serif</family>
-                  <prefer>
-                      <family>emoji</family>
-                  </prefer>
-              </alias>
-          </fontconfig>
+          <alias>
+            <family>monospace</family>
+            <prefer><family>Symbols Nerd Font</family></prefer>
+          </alias>
         '';
       };
     };
@@ -79,7 +61,7 @@ in {
 
         monospace = {
           package = pkgs.nixicle.monolisa;
-          name = "MonoLisa Nerd Font";
+          name = "MonoLisa";
         };
 
         emoji = {

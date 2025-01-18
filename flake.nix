@@ -112,11 +112,6 @@
       flake = false;
     };
 
-    firefox-gnome-theme = {
-      url = "github:rafaelmardojai/firefox-gnome-theme";
-      flake = false;
-    };
-
     stylix.url = "github:danth/stylix";
     catppuccin.url = "github:catppuccin/nix";
 

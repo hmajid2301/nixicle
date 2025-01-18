@@ -17,7 +17,7 @@ in {
 
       settings = {
         theme = "catppuccin-mocha";
-        font-family = "MonoLisa Nerd Font";
+        font-family = "${config.stylix.fonts.monospace.name}";
         command = "fish";
         gtk-titlebar = false;
         font-size = 14;
