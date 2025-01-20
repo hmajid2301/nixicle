@@ -49,7 +49,7 @@ in {
         };
       };
 
-      image = pkgs.nixicle.wallpapers.windows-error;
+      image = pkgs.nixicle.wallpapers.nixppuccin;
 
       cursor = {
         name = "Bibata-Modern-Classic";
