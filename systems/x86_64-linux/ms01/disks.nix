@@ -1,13 +1,17 @@
 {
   disko.devices = {
     disk = {
-      one = {
+      disk1 = {
         type = "disk";
         device = "/dev/nvme0n1";
         content = {
           type = "gpt";
           partitions = {
-            boot = {
+            BOOT = {
+              size = "1M";
+              type = "EF02"; # for grub MBR
+            };
+            ESP = {
               size = "500M";
               type = "EF00";
               content = {
@@ -15,23 +19,27 @@
                 name = "boot";
               };
             };
-            primary = {
+            mdadm = {
               size = "100%";
               content = {
-                type = "lvm_pv";
-                vg = "pool";
+                type = "mdraid";
+                name = "raid0";
               };
             };
           };
         };
       };
-      two = {
+      disk2 = {
         type = "disk";
         device = "/dev/nvme1n1";
         content = {
           type = "gpt";
           partitions = {
-            boot = {
+            BOOT = {
+              size = "1M";
+              type = "EF02"; # for grub MBR
+            };
+            ESP = {
               size = "500M";
               type = "EF00";
               content = {
@@ -39,23 +47,27 @@
                 name = "boot";
               };
             };
-            primary = {
+            mdadm = {
               size = "100%";
               content = {
-                type = "lvm_pv";
-                vg = "pool";
+                type = "mdraid";
+                name = "raid0";
               };
             };
           };
         };
       };
-      three = {
+      disk3 = {
         type = "disk";
         device = "/dev/nvme2n1";
         content = {
           type = "gpt";
           partitions = {
-            boot = {
+            BOOT = {
+              size = "1M";
+              type = "EF02"; # for grub MBR
+            };
+            ESP = {
               size = "500M";
               type = "EF00";
               content = {
@@ -63,11 +75,11 @@
                 name = "boot";
               };
             };
-            primary = {
+            mdadm = {
               size = "100%";
               content = {
-                type = "lvm_pv";
-                vg = "pool";
+                type = "mdraid";
+                name = "raid0";
               };
             };
           };
@@ -86,30 +98,19 @@
           mountOptions = ["umask=0077"];
         };
       };
-    };
-    lvm_vg = {
-      pool = {
-        type = "lvm_vg";
-        lvs = {
-          root = {
-            size = "100M";
-            lvm_type = "mirror";
-            content = {
-              type = "filesystem";
-              format = "ext4";
-              mountpoint = "/";
-              mountOptions = [
-                "defaults"
-              ];
-            };
-          };
-          home = {
-            size = "10M";
-            lvm_type = "raid0";
-            content = {
-              type = "filesystem";
-              format = "ext4";
-              mountpoint = "/home";
+      raid0 = {
+        type = "mdadm";
+        level = 0;
+        content = {
+          type = "gpt";
+          partitions = {
+            primary = {
+              size = "100%";
+              content = {
+                type = "filesystem";
+                format = "ext4";
+                mountpoint = "/";
+              };
             };
           };
         };
