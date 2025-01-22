@@ -1,116 +1,94 @@
 {
-  disko.devices = {
-    disk = {
-      disk1 = {
-        type = "disk";
-        device = "/dev/nvme0n1";
-        content = {
-          type = "gpt";
-          partitions = {
-            BOOT = {
-              size = "1M";
-              type = "EF02"; # for grub MBR
-            };
-            ESP = {
-              size = "500M";
-              type = "EF00";
-              content = {
-                type = "mdraid";
-                name = "boot";
-              };
-            };
-            mdadm = {
-              size = "100%";
-              content = {
-                type = "mdraid";
-                name = "raid0";
-              };
+  disko.devices = let
+    disk = id: {
+      type = "disk";
+      device = "/dev/nvme${id}n1";
+      content = {
+        type = "gpt";
+        partitions = {
+          ESP = {
+            priority = 100;
+            # Hetzner
+            start = "2M";
+            size = "500M";
+            # Hetzner's Debian installation was using "EFI System" as the partition code for the ESP mdadm raid1 members.
+            # so far _this_ is not working, however it did for Hetzner.
+            type = "EF00";
+            content = {
+              type = "mdraid";
+              name = "esp";
             };
           };
-        };
-      };
-      disk2 = {
-        type = "disk";
-        device = "/dev/nvme1n1";
-        content = {
-          type = "gpt";
-          partitions = {
-            BOOT = {
-              size = "1M";
-              type = "EF02"; # for grub MBR
-            };
-            ESP = {
-              size = "500M";
-              type = "EF00";
-              content = {
-                type = "mdraid";
-                name = "boot";
-              };
-            };
-            mdadm = {
-              size = "100%";
-              content = {
-                type = "mdraid";
-                name = "raid0";
-              };
-            };
-          };
-        };
-      };
-      disk3 = {
-        type = "disk";
-        device = "/dev/nvme2n1";
-        content = {
-          type = "gpt";
-          partitions = {
-            BOOT = {
-              size = "1M";
-              type = "EF02"; # for grub MBR
-            };
-            ESP = {
-              size = "500M";
-              type = "EF00";
-              content = {
-                type = "mdraid";
-                name = "boot";
-              };
-            };
-            mdadm = {
-              size = "100%";
-              content = {
-                type = "mdraid";
-                name = "raid0";
-              };
+
+          # boot = {
+          #   priority = 101;
+          #   size = "100%";
+          #   content = {
+          #     type = "mdraid";
+          #     name = "boot";
+          #   };
+          # };
+
+          rootfs = {
+            size = "100%";
+            content = {
+              type = "mdraid";
+              name = "rootfs";
             };
           };
         };
       };
     };
+  in {
+    disk = {
+      sda = disk "0";
+      sdb = disk "1";
+      sdc = disk "2";
+    };
+
     mdadm = {
-      boot = {
+      esp = {
         type = "mdadm";
         level = 1;
         metadata = "1.0";
         content = {
           type = "filesystem";
+          # hetzner
           format = "vfat";
+          extraArgs = [
+            "-F"
+            "16"
+          ];
+          # FIXME: it should be possible to use /boot/efi here and leave /boot on the btrfs
           mountpoint = "/boot";
           mountOptions = ["umask=0077"];
         };
       };
-      raid0 = {
+
+      # boot = {
+      #   type = "mdadm";
+      #   level = 1;
+      #   content = {
+      #     type = "filesystem";
+      #     format = "ext3";
+      #     mountpoint = "/boot";
+      #   };
+      # };
+
+      rootfs = {
         type = "mdadm";
         level = 0;
         content = {
-          type = "gpt";
-          partitions = {
-            primary = {
-              size = "100%";
-              content = {
-                type = "filesystem";
-                format = "ext4";
-                mountpoint = "/";
-              };
+          type = "btrfs";
+          extraArgs = ["-f"]; # Override existing partition
+          subvolumes = {
+            # Subvolume name is different from mountpoint
+            "/rootfs" = {
+              mountpoint = "/";
+            };
+            "/nix" = {
+              mountOptions = ["noatime"];
+              mountpoint = "/nix";
             };
           };
         };
