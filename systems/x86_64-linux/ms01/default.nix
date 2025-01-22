@@ -9,6 +9,8 @@
     ./disks.nix
   ];
 
+  networking.hostId = "8425e349";
+
   sops.secrets.cloudflared_ms01 = {
     sopsFile = ../../../modules/nixos/services/secrets.yaml;
     owner = "cloudflared";

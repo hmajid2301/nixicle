@@ -1,94 +1,83 @@
-{
-  disko.devices = let
-    disk = id: {
-      type = "disk";
-      device = "/dev/nvme${id}n1";
-      content = {
-        type = "gpt";
-        partitions = {
-          ESP = {
-            priority = 100;
-            # Hetzner
-            start = "2M";
-            size = "500M";
-            # Hetzner's Debian installation was using "EFI System" as the partition code for the ESP mdadm raid1 members.
-            # so far _this_ is not working, however it did for Hetzner.
-            type = "EF00";
-            content = {
-              type = "mdraid";
-              name = "esp";
-            };
+{lib, ...}: let
+  mirrorBoot = idx: {
+    type = "disk";
+    device = "/dev/nvme${idx}n1";
+    content = {
+      type = "gpt";
+      partitions = {
+        ESP = lib.mkIf (idx == "0") {
+          size = "1G";
+          type = "EF00";
+          content = {
+            type = "filesystem";
+            format = "vfat";
+            #mountpoint = "/boot${idx}";
+            mountpoint = "/boot";
+            mountOptions = ["nofail"];
           };
-
-          # boot = {
-          #   priority = 101;
-          #   size = "100%";
-          #   content = {
-          #     type = "mdraid";
-          #     name = "boot";
-          #   };
-          # };
-
-          rootfs = {
-            size = "100%";
-            content = {
-              type = "mdraid";
-              name = "rootfs";
-            };
+        };
+        zfs = {
+          size = "100%";
+          content = {
+            type = "zfs";
+            pool = "zroot";
           };
         };
       };
     };
-  in {
+  };
+in {
+  boot.loader.systemd-boot.enable = true;
+  boot.loader.efi.canTouchEfiVariables = true;
+  # FIXME: grub doesn't boot default entry? -> maybe add mirrored boots to systemd-boot?
+  #boot.loader.grub = {
+  #  enable = true;
+  #  efiSupport = true;
+  #  efiInstallAsRemovable = true;
+  #  mirroredBoots = [
+  #    { path = "/boot0"; devices = [ "nodev" ]; }
+  #    { path = "/boot1"; devices = [ "nodev" ]; }
+  #  ];
+  #};
+
+  disko.devices = {
     disk = {
-      sda = disk "0";
-      sdb = disk "1";
-      sdc = disk "2";
+      x = mirrorBoot "0";
+      y = mirrorBoot "1";
+      z = mirrorBoot "2";
     };
-
-    mdadm = {
-      esp = {
-        type = "mdadm";
-        level = 1;
-        metadata = "1.0";
-        content = {
-          type = "filesystem";
-          # hetzner
-          format = "vfat";
-          extraArgs = [
-            "-F"
-            "16"
-          ];
-          # FIXME: it should be possible to use /boot/efi here and leave /boot on the btrfs
-          mountpoint = "/boot";
-          mountOptions = ["umask=0077"];
+    zpool = {
+      zroot = {
+        type = "zpool";
+        mode = "mirror";
+        rootFsOptions = {
+          compression = "lz4";
+          acltype = "posixacl";
+          xattr = "sa";
+          "com.sun:auto-snapshot" = "true";
+          mountpoint = "none";
         };
-      };
-
-      # boot = {
-      #   type = "mdadm";
-      #   level = 1;
-      #   content = {
-      #     type = "filesystem";
-      #     format = "ext3";
-      #     mountpoint = "/boot";
-      #   };
-      # };
-
-      rootfs = {
-        type = "mdadm";
-        level = 0;
-        content = {
-          type = "btrfs";
-          extraArgs = ["-f"]; # Override existing partition
-          subvolumes = {
-            # Subvolume name is different from mountpoint
-            "/rootfs" = {
-              mountpoint = "/";
-            };
-            "/nix" = {
-              mountOptions = ["noatime"];
-              mountpoint = "/nix";
+        options.ashift = "12";
+        datasets = {
+          "root" = {
+            type = "zfs_fs";
+          };
+          "root/nixos" = {
+            type = "zfs_fs";
+            options.mountpoint = "/";
+            mountpoint = "/";
+          };
+          "root/home" = {
+            type = "zfs_fs";
+            options.mountpoint = "/home";
+            mountpoint = "/home";
+          };
+          "root/tmp" = {
+            type = "zfs_fs";
+            mountpoint = "/tmp";
+            options = {
+              mountpoint = "/tmp";
+              sync = "disabled";
             };
           };
         };
