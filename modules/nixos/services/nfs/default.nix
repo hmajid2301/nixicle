@@ -17,6 +17,10 @@ in {
       sopsFile = ../secrets.yaml;
     };
 
+    services.nfs.server = {
+      enable = true;
+    };
+
     environment.systemPackages = with pkgs; [
       cifs-utils
       nfs-utils
