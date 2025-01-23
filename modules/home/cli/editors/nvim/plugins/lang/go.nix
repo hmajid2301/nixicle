@@ -104,6 +104,7 @@ in {
       lsp.servers = {
         templ = {
           enable = true;
+          package = pkgs.nixicle.templ;
         };
 
         gopls = {
