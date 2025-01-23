@@ -40,8 +40,8 @@
       postgresql.enable = true;
       plausible.enable = true;
       # n8n.enable = true;
-      # gotify.enable = true;
-      # uptime-kuma.enable = true;
+      gotify.enable = true;
+      uptime-kuma.enable = true;
     };
 
     traefik = {
