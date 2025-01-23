@@ -20,6 +20,16 @@ in {
         };
       };
 
+      cloudflared = {
+        tunnels = {
+          "0e845de6-544a-47f2-a1d5-c76be02ce153" = {
+            ingress = {
+              "notify.haseebmajid.dev" = "http://localhost:8051";
+            };
+          };
+        };
+      };
+
       traefik = {
         dynamicConfigOptions = {
           http = {
