@@ -1,83 +1,101 @@
-{lib, ...}: let
-  mirrorBoot = idx: {
-    type = "disk";
-    device = "/dev/nvme${idx}n1";
-    content = {
-      type = "gpt";
-      partitions = {
-        ESP = lib.mkIf (idx == "0") {
-          size = "1G";
-          type = "EF00";
-          content = {
-            type = "filesystem";
-            format = "vfat";
-            #mountpoint = "/boot${idx}";
-            mountpoint = "/boot";
-            mountOptions = ["nofail"];
+{
+  boot = {
+    loader = {
+      grub = {
+        enable = true;
+        devices = ["nodev"];
+        efiSupport = true;
+        efiInstallAsRemovable = true;
+        mirroredBoots = [
+          {
+            path = "/boot0";
+            devices = ["nodev"];
+          }
+          {
+            path = "/boot1";
+            devices = ["nodev"];
+          }
+        ];
+      };
+    };
+  };
+
+  disko.devices = {
+    disk = {
+      sda = {
+        type = "disk";
+        device = "/dev/nvme0n1";
+        content = {
+          type = "gpt";
+          partitions = {
+            BOOT = {
+              size = "1M";
+              type = "EF02"; # for grub MBR
+            };
+            ESP = {
+              size = "1G";
+              type = "EF00";
+              content = {
+                type = "filesystem";
+                format = "vfat";
+                mountpoint = "/boot0";
+              };
+            };
+            raid = {
+              size = "100%";
+              content = {
+                type = "mdraid";
+                name = "raid1";
+              };
+            };
           };
         };
-        zfs = {
-          size = "100%";
-          content = {
-            type = "zfs";
-            pool = "zroot";
+      };
+      sdb = {
+        type = "disk";
+        device = "/dev/nvme1n1";
+        content = {
+          type = "gpt";
+          partitions = {
+            BOOT = {
+              size = "1M";
+              type = "EF02"; # for grub MBR
+            };
+            ESP = {
+              size = "1G";
+              type = "EF00";
+              content = {
+                type = "filesystem";
+                format = "vfat";
+                mountpoint = "/boot1";
+              };
+            };
+            raid = {
+              size = "100%";
+              content = {
+                type = "mdraid";
+                name = "raid1";
+              };
+            };
           };
         };
       };
     };
-  };
-in {
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
-  # FIXME: grub doesn't boot default entry? -> maybe add mirrored boots to systemd-boot?
-  #boot.loader.grub = {
-  #  enable = true;
-  #  efiSupport = true;
-  #  efiInstallAsRemovable = true;
-  #  mirroredBoots = [
-  #    { path = "/boot0"; devices = [ "nodev" ]; }
-  #    { path = "/boot1"; devices = [ "nodev" ]; }
-  #  ];
-  #};
-
-  disko.devices = {
-    disk = {
-      x = mirrorBoot "0";
-      y = mirrorBoot "1";
-      z = mirrorBoot "2";
-    };
-    zpool = {
-      zroot = {
-        type = "zpool";
-        mode = "mirror";
-        rootFsOptions = {
-          compression = "lz4";
-          acltype = "posixacl";
-          xattr = "sa";
-          "com.sun:auto-snapshot" = "true";
-          mountpoint = "none";
-        };
-        options.ashift = "12";
-        datasets = {
-          "root" = {
-            type = "zfs_fs";
-          };
-          "root/nixos" = {
-            type = "zfs_fs";
-            options.mountpoint = "/";
-            mountpoint = "/";
-          };
-          "root/home" = {
-            type = "zfs_fs";
-            options.mountpoint = "/home";
-            mountpoint = "/home";
-          };
-          "root/tmp" = {
-            type = "zfs_fs";
-            mountpoint = "/tmp";
-            options = {
-              mountpoint = "/tmp";
-              sync = "disabled";
+    mdadm = {
+      raid1 = {
+        type = "mdadm";
+        level = 1;
+        metadata = "1.2";
+        content = {
+          type = "gpt";
+          partitions = {
+            root = {
+              size = "100%";
+              content = {
+                type = "filesystem";
+                format = "ext4";
+                mountpoint = "/";
+              };
             };
           };
         };
