@@ -12,11 +12,6 @@
     (modulesPath + "/installer/scan/not-detected.nix")
   ];
 
-  fileSystems."/run/media/nixos/longhorn" = {
-    device = "/dev/disk/by-uuid/a85dfa14-38bf-4cb8-af7e-d1a977a3df0c";
-    fsType = "ext4";
-  };
-
   boot.initrd.availableKernelModules = ["xhci_pci" "thunderbolt" "nvme" "usb_storage" "sd_mod"];
   boot.initrd.kernelModules = [];
   boot.kernelModules = ["kvm-intel"];

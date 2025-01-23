@@ -14,6 +14,7 @@
 @define-color lavender        #b4befe;
 * {
   font-size: 15px;
+  font-family: "Symbols Nerd Font", "MonoLisa";
   font-weight: bold;
 }
 

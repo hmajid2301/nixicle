@@ -16,33 +16,33 @@ in {
     programs.hyprlock = {
       enable = true;
       settings = {
-        general = {
-          disable_loading_bar = true;
-          hide_cursor = true;
-        };
-
-        label = [
-          {
-            text = ''cmd[update:43200000] echo "$(date +"%A, %d %B %Y")"'';
-            font_size = 25;
-            position = {
-              x = -30;
-              y = -150;
-            };
-            halign = "right";
-            valign = "top";
-          }
-          {
-            text = ''cmd[update:30000] echo "$(date +"%R")"'';
-            font_size = 90;
-            position = {
-              x = -30;
-              y = 0;
-            };
-            halign = "right";
-            valign = "top";
-          }
-        ];
+        # general = {
+        #   disable_loading_bar = true;
+        #   hide_cursor = true;
+        # };
+        #
+        # label = [
+        #   {
+        #     text = ''cmd[update:43200000] echo "$(date +"%A, %d %B %Y")"'';
+        #     font_size = 25;
+        #     position = {
+        #       x = -30;
+        #       y = -150;
+        #     };
+        #     halign = "right";
+        #     valign = "top";
+        #   }
+        #   {
+        #     text = ''cmd[update:30000] echo "$(date +"%R")"'';
+        #     font_size = 90;
+        #     position = {
+        #       x = -30;
+        #       y = 0;
+        #     };
+        #     halign = "right";
+        #     valign = "top";
+        #   }
+        # ];
       };
     };
   };
