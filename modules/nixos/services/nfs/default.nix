@@ -19,14 +19,14 @@ in {
 
     networking.firewall.allowedTCPPorts = [2049];
 
-    services.nfs.server = {
-      enable = true;
-      exports = ''
-        /exports     192.168.1.10(rw,fsid=0,no_subtree_check)          192.168.1.15(rw,fsid=0,no_subtree_check)
-        /exports/n1  192.168.1.10(rw,nohide,insecure,no_subtree_check) 192.168.1.15(rw,nohide,insecure,no_subtree_check)
-        /exports/n2  192.168.1.10(rw,nohide,insecure,no_subtree_check) 192.168.1.15(rw,nohide,insecure,no_subtree_check)
-      '';
-    };
+    # services.nfs.server = {
+    #   enable = true;
+    #   exports = ''
+    #     /exports     192.168.1.8(rw,fsid=0,no_subtree_check)          192.168.1.15(rw,fsid=0,no_subtree_check)
+    #     /exports/n1  192.168.1.8(rw,nohide,insecure,no_subtree_check) 192.168.1.15(rw,nohide,insecure,no_subtree_check)
+    #     /exports/n2  192.168.1.8(rw,nohide,insecure,no_subtree_check) 192.168.1.15(rw,nohide,insecure,no_subtree_check)
+    #   '';
+    # };
 
     environment.systemPackages = with pkgs; [
       cifs-utils
@@ -36,6 +36,7 @@ in {
     fileSystems."/mnt/nfs" = {
       device = "192.168.1.73:/volume1/Data";
       fsType = "nfs";
+      # options = ["x-systemd.automount" "noauto"];
     };
 
     fileSystems."/mnt/share" = {
