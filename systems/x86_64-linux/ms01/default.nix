@@ -14,6 +14,16 @@
     owner = "cloudflared";
   };
 
+  fileSystems."/exports/n1" = {
+    device = "/mnt/n1";
+    options = ["bind"];
+  };
+
+  fileSystems."/exports/n2" = {
+    device = "/mnt/n2";
+    options = ["bind"];
+  };
+
   services = {
     cloudflared = {
       enable = true;

@@ -17,8 +17,15 @@ in {
       sopsFile = ../secrets.yaml;
     };
 
+    networking.firewall.allowedTCPPorts = [2049];
+
     services.nfs.server = {
       enable = true;
+      exports = ''
+        /exports     192.168.1.10(rw,fsid=0,no_subtree_check)          192.168.1.15(rw,fsid=0,no_subtree_check)
+        /exports/n1  192.168.1.10(rw,nohide,insecure,no_subtree_check) 192.168.1.15(rw,nohide,insecure,no_subtree_check)
+        /exports/n2  192.168.1.10(rw,nohide,insecure,no_subtree_check) 192.168.1.15(rw,nohide,insecure,no_subtree_check)
+      '';
     };
 
     environment.systemPackages = with pkgs; [
