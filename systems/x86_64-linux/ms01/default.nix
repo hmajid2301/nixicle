@@ -24,18 +24,6 @@
     options = ["bind"];
   };
 
-  networking.firewall.enable = true;
-  networking.firewall.allowedTCPPorts = [
-    5357 # wsdd
-    445
-    139
-  ];
-  networking.firewall.allowedUDPPorts = [
-    3702 # wsdd
-    445
-    139
-  ];
-
   services = {
     cloudflared = {
       enable = true;
@@ -64,7 +52,6 @@
           interfaces = "lo enp90s0 tailscale0";
           security = "user";
           "min protocol" = "SMB2";
-          "log level" = 1;
           "browseable" = "yes";
           "guest ok" = "yes";
         };
@@ -72,6 +59,8 @@
           "path" = "/mnt/n1";
           "guest ok" = "yes";
           "read only" = "no";
+          "create mask" = "0755";
+          "directory mask" = "0755";
         };
       };
     };
