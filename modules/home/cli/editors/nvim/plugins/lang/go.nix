@@ -104,6 +104,8 @@ in {
       lsp.servers = {
         templ = {
           enable = true;
+          # TODO: remove when we move to v3
+          package = pkgs.nixicle.templ;
         };
 
         gopls = {
