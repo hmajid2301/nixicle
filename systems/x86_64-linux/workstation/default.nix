@@ -38,10 +38,7 @@
     };
   };
 
-  # fileSystems."/mnt/nfs2" = {
-  #   device = "192.168.1.8:/n1";
-  #   fsType = "nfs";
-  # };
+  programs.wireshark.enable = true;
 
   boot = {
     kernelParams = [

@@ -17,8 +17,6 @@ in {
       sopsFile = ../secrets.yaml;
     };
 
-    programs.wireshark.enable = true;
-
     environment.systemPackages = with pkgs; [
       cifs-utils
       nfs-utils
