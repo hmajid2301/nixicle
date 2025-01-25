@@ -698,3 +698,14 @@ GRANT
 banterbus_dev=# GRANT ALL ON SCHEMA public TO banterbus_dev;
 GRANT
 ```
+
+## Samba
+
+Must allow port 445 and also, user must exist on machine.
+
+```
+sudo smbpasswd -a nixos
+New SMB password:
+Retype new SMB password:
+Added user nixos.
+```

@@ -25,6 +25,7 @@ in {
     fileSystems."/mnt/nfs" = {
       device = "192.168.1.73:/volume1/Data";
       fsType = "nfs";
+      # options = ["x-systemd.automount" "noauto"];
     };
 
     fileSystems."/mnt/share" = {

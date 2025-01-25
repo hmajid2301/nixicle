@@ -24,7 +24,6 @@ in {
     };
     programs = {
       guis.enable = true;
-      tuis.enable = true;
     };
 
     security = {

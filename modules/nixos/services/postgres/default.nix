@@ -16,7 +16,7 @@ in {
       postgresql = {
         enable = true;
         package = pkgs.postgresql_16_jit;
-        extraPlugins = ps: with ps; [pgvecto-rs];
+        extensions = ps: with ps; [pgvecto-rs];
         authentication = pkgs.lib.mkOverride 10 ''
           #...
           #type database DBuser origin-address auth-method
