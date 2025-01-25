@@ -14,15 +14,15 @@
     owner = "cloudflared";
   };
 
-  # fileSystems."/exports/n1" = {
-  #   device = "/mnt/n1";
-  #   options = ["bind"];
-  # };
-  #
-  # fileSystems."/exports/n2" = {
-  #   device = "/mnt/n2";
-  #   options = ["bind"];
-  # };
+  fileSystems."/export/n1" = {
+    device = "/mnt/n1";
+    options = ["bind"];
+  };
+
+  fileSystems."/export/n2" = {
+    device = "/mnt/n2";
+    options = ["bind"];
+  };
 
   services = {
     cloudflared = {
@@ -62,6 +62,43 @@
       redis.enable = true;
       syncthing.enable = true;
       traefik.enable = true;
+    };
+
+    networking.firewall.enable = true;
+    networking.firewall.allowedTCPPorts = [
+      5357 # wsdd
+    ];
+    networking.firewall.allowedUDPPorts = [
+      3702 # wsdd
+    ];
+
+    services.samba-wsdd = {
+      enable = true;
+      openFirewall = true;
+    };
+
+    services.samba = {
+      enable = true;
+      openFirewall = true;
+      nmbd.enable = true;
+      winbindd.enable = true;
+      settings = {
+        global = {
+          "hosts allow" = "192.168.1. 100.64.0.0/10 127.0.0.1 localhost";
+          "bind interfaces only" = "yes";
+          interfaces = "lo enp90s0 tailscale0";
+          security = "user";
+          "min protocol" = "SMB2";
+          "log level" = 1;
+          "browseable" = "yes";
+          "guest ok" = "yes";
+        };
+        public = {
+          "path" = "/mnt/n1";
+          "guest ok" = "yes";
+          "read only" = "no";
+        };
+      };
     };
 
     traefik = {
