@@ -87,7 +87,8 @@
       # navidrome.enable = true;
       netdata.enable = true;
       nfs.enable = true;
-      # paperless.enable = true;
+      smb.enable = true;
+      paperless.enable = true;
       postgresql.enable = true;
       redis.enable = true;
       syncthing.enable = true;
