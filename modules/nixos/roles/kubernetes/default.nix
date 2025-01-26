@@ -24,8 +24,7 @@ in {
       };
     };
 
-    networking.firewall = lib.mkForce {
-      enable = true;
+    networking.firewall = {
       allowedUDPPorts = [
         53
         8472
