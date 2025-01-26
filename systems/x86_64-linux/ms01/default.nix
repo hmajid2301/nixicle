@@ -84,7 +84,7 @@
       logging.enable = true;
       monitoring.enable = true;
       minio.enable = true;
-      # navidrome.enable = true;
+      navidrome.enable = true;
       netdata.enable = true;
       nfs.enable = true;
       smb.enable = true;
