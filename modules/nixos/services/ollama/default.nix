@@ -17,7 +17,13 @@ in {
 
     services.open-webui = {
       enable = true;
-      port = 8085;
+      port = 8185;
+      environment = {
+        WEBUI_AUTH = "False";
+        ANONYMIZED_TELEMETRY = "False";
+        DO_NOT_TRACK = "True";
+        SCARF_NO_ANALYTICS = "True";
+      };
     };
   };
 }

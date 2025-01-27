@@ -26,6 +26,7 @@
     virtualisation.kvm.enable = true;
     hardware.openrgb.enable = true;
     nixicle.nfs.enable = true;
+    nixicle.ollama.enable = true;
   };
 
   roles = {
