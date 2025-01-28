@@ -1,6 +1,7 @@
 {
   config,
   pkgs,
+  inputs,
   lib,
   ...
 }: let
@@ -15,6 +16,11 @@
     /usr/libexec/xdg-desktop-portal &
   '';
 in {
+  nixGL = {
+    packages = inputs.nixgl.packages;
+    defaultWrapper = "mesa";
+  };
+
   programs = {
     kitty.package = config.lib.nixGL.wrap pkgs.kitty;
     firefox.package = config.lib.nixGL.wrap pkgs.firefox;
