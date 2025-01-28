@@ -13,6 +13,7 @@ in {
   config = mkIf cfg.enable {
     services.ollama = {
       enable = true;
+      acceleration = "rocm";
     };
 
     services.open-webui = {

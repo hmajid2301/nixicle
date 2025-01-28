@@ -15,17 +15,10 @@
     /usr/libexec/xdg-desktop-portal &
   '';
 in {
-  imports = [
-    # TODO: remove when https://github.com/nix-community/home-manager/pull/5355 gets merged:
-    (builtins.fetchurl {
-      url = "https://raw.githubusercontent.com/Smona/home-manager/nixgl-compat/modules/misc/nixgl.nix";
-      sha256 = "01dkfr9wq3ib5hlyq9zq662mp0jl42fw3f6gd2qgdf8l8ia78j7i";
-    })
-  ];
-
   programs = {
     kitty.package = config.lib.nixGL.wrap pkgs.kitty;
     firefox.package = config.lib.nixGL.wrap pkgs.firefox;
+    ghostty.package = config.lib.nixGL.wrap pkgs.ghostty;
   };
 
   roles = {
