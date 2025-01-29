@@ -2,7 +2,6 @@
   config,
   pkgs,
   inputs,
-  lib,
   ...
 }: let
   screensharing = pkgs.writeScriptBin "screensharing" ''
@@ -17,12 +16,11 @@
   '';
 in {
   nixGL = {
-    packages = inputs.nixgl.packages;
+    inherit (inputs.nixgl) packages;
     defaultWrapper = "mesa";
   };
 
   programs = {
-    kitty.package = config.lib.nixGL.wrap pkgs.kitty;
     firefox.package = config.lib.nixGL.wrap pkgs.firefox;
     ghostty.package = config.lib.nixGL.wrap pkgs.ghostty;
   };
