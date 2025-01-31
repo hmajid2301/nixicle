@@ -1,6 +1,7 @@
 {
   config,
   pkgs,
+  inputs,
   lib,
   ...
 }: let
@@ -15,17 +16,14 @@
     /usr/libexec/xdg-desktop-portal &
   '';
 in {
-  imports = [
-    # TODO: remove when https://github.com/nix-community/home-manager/pull/5355 gets merged:
-    (builtins.fetchurl {
-      url = "https://raw.githubusercontent.com/Smona/home-manager/nixgl-compat/modules/misc/nixgl.nix";
-      sha256 = "01dkfr9wq3ib5hlyq9zq662mp0jl42fw3f6gd2qgdf8l8ia78j7i";
-    })
-  ];
+  nixGL = {
+    inherit (inputs.nixgl) packages;
+    defaultWrapper = "mesa";
+  };
 
   programs = {
-    kitty.package = config.lib.nixGL.wrap pkgs.kitty;
     firefox.package = config.lib.nixGL.wrap pkgs.firefox;
+    ghostty.package = config.lib.nixGL.wrap pkgs.ghostty;
   };
 
   roles = {
@@ -42,8 +40,6 @@ in {
       nwg-displays
     ];
   };
-
-  # wayland.windowManager.hyprland.keyBinds.bind."SUPER, Return" = lib.mkForce "exec, nixGLIntel kitty";
 
   desktops = {
     hyprland = {
@@ -62,6 +58,11 @@ in {
   xdg.configFile."environment.d/envvars.conf".text = ''
     PATH="$PATH:/home/haseebmajid/.nix-profile/bin"
   '';
+
+  programs.keychain.keys = lib.mkForce [
+    "id_ed25519"
+    "id_ed25519_personal"
+  ];
 
   cli.programs = {
     git = {
