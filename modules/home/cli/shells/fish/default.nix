@@ -7,7 +7,6 @@
 }:
 with lib;
 with lib.nixicle; let
-  inherit (config.lib.stylix) colors;
   cfg = config.cli.shells.fish;
 in {
   options.cli.shells.fish = with types; {
@@ -16,6 +15,7 @@ in {
 
   config = mkIf cfg.enable {
     stylix.targets.fish.enable = false;
+    programs.carapace.enable = true;
     programs.fish = {
       enable = true;
       interactiveShellInit = ''

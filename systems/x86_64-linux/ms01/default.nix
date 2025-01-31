@@ -93,6 +93,7 @@
       redis.enable = true;
       syncthing.enable = true;
       traefik.enable = true;
+      ollama.enable = true;
     };
 
     traefik = {
