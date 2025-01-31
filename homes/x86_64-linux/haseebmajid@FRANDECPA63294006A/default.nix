@@ -2,6 +2,7 @@
   config,
   pkgs,
   inputs,
+  lib,
   ...
 }: let
   screensharing = pkgs.writeScriptBin "screensharing" ''
@@ -40,8 +41,6 @@ in {
     ];
   };
 
-  # wayland.windowManager.hyprland.keyBinds.bind."SUPER, Return" = lib.mkForce "exec, nixGLIntel kitty";
-
   desktops = {
     hyprland = {
       enable = true;
@@ -59,6 +58,11 @@ in {
   xdg.configFile."environment.d/envvars.conf".text = ''
     PATH="$PATH:/home/haseebmajid/.nix-profile/bin"
   '';
+
+  programs.keychain.keys = lib.mkForce [
+    "id_ed25519"
+    "id_ed25519_personal"
+  ];
 
   cli.programs = {
     git = {
