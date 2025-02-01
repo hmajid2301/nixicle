@@ -171,7 +171,7 @@ keybinds {
               cwd "/"
               root_dirs "/home/haseeb/projects;/home/haseebmajid/projects"
           }; SwitchToMode "Locked";
-      }
+        }
     }
 
     shared_except "locked" {

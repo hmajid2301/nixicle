@@ -98,4 +98,13 @@ return {
 			require("neogit").setup()
 		end,
 	},
+	{
+		"webify-nvim",
+		for_cat = "general.git",
+		keys = {},
+		load = function(name)
+			vim.cmd.packadd(name)
+		end,
+		after = function(plugin) end,
+	},
 }
