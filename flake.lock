@@ -2067,6 +2067,22 @@
         "type": "github"
       }
     },
+    "plugins-webify-nvim": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1735414036,
+        "narHash": "sha256-Q9tJeo281JhEhjtxrh9BMzFfVQhJSZ3XShX4Agi6+1s=",
+        "owner": "pabloariasal",
+        "repo": "webify.nvim",
+        "rev": "69bc088e21834898477df69694ce86ee5561e20b",
+        "type": "github"
+      },
+      "original": {
+        "owner": "pabloariasal",
+        "repo": "webify.nvim",
+        "type": "github"
+      }
+    },
     "poetry2nix": {
       "inputs": {
         "flake-utils": "flake-utils_5",
@@ -2220,6 +2236,7 @@
         "plugins-gx-nvim": "plugins-gx-nvim",
         "plugins-maximize-nvim": "plugins-maximize-nvim",
         "plugins-nvim-dap-view": "plugins-nvim-dap-view",
+        "plugins-webify-nvim": "plugins-webify-nvim",
         "poetry2nix": "poetry2nix",
         "pyprland": "pyprland",
         "snowfall-lib": "snowfall-lib",

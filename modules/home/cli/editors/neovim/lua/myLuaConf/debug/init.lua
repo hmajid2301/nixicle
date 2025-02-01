@@ -28,20 +28,13 @@ require("lze").load({
 		load = (require("nixCatsUtils").isNixCats and function(name)
 			vim.cmd.packadd(name)
 			vim.cmd.packadd("nvim-dap")
-			vim.cmd.packadd("nvim-dap-view")
 		end) or function(name)
 			vim.cmd.packadd(name)
 			vim.cmd.packadd("nvim-dap")
-			vim.cmd.packadd("nvim-dap-view")
 			vim.cmd.packadd("mason-nvim-dap.nvim")
 		end,
 		after = function(plugin)
 			local dap = require("dap")
-			local dapview = require("dap-view")
-
-			dap.listeners.after.event_initialized["dapui_config"] = dapview.open
-			dap.listeners.before.event_terminated["dapui_config"] = dapview.close
-			dap.listeners.before.event_exited["dapui_config"] = dapview.close
 
 			vim.fn.sign_define("DapBreakpoint", { text = " ", texthl = "DapBreakpoint", linehl = "", numhl = "" })
 			vim.fn.sign_define(
@@ -57,8 +50,6 @@ require("lze").load({
 				"DapStopped",
 				{ text = "󰁕 ", texthl = "DiagnosticWarn", linehl = "DapStoppedLine", numhl = "DapStoppedLine" }
 			)
-
-			local dap = require("dap")
 
 			vim.keymap.set("n", "<leader>dc", dap.continue, { desc = "Debug: Start/Continue" })
 			vim.keymap.set("n", "<leader>dv", function()
@@ -85,6 +76,14 @@ require("lze").load({
 			vim.keymap.set("n", "<leader>dB", function()
 				dap.set_breakpoint(vim.fn.input("Breakpoint condition: "))
 			end, { desc = "Debug: Set Breakpoint" })
+		end,
+	},
+	{
+		"nvim-dap-view",
+		for_cat = "debug",
+		on_plugin = { "nvim-dap" },
+		after = function(plugin)
+			require("dap-view").setup({})
 		end,
 	},
 	{

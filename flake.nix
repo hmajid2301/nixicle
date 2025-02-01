@@ -142,6 +142,11 @@
       url = "github:igorlfs/nvim-dap-view";
       flake = false;
     };
+
+    plugins-webify-nvim = {
+      url = "github:pabloariasal/webify.nvim";
+      flake = false;
+    };
   };
 
   outputs = inputs: let
