@@ -137,6 +137,11 @@
       url = "github:declancm/maximize.nvim";
       flake = false;
     };
+
+    plugins-nvim-dap-view = {
+      url = "github:igorlfs/nvim-dap-view";
+      flake = false;
+    };
   };
 
   outputs = inputs: let

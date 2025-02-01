@@ -141,7 +141,8 @@ in {
         optionalPlugins = {
           debug = with pkgs.vimPlugins; [
             nvim-dap
-            nvim-dap-ui
+            # nvim-dap-ui
+            pkgs.neovimPlugins.nvim-dap-view
             nvim-dap-go
           ];
           test = with pkgs.vimPlugins; [
