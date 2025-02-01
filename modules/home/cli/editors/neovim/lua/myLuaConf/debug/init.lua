@@ -14,30 +14,28 @@ require("lze").load({
 			{ "<F3>", desc = "Debug: Step Out" },
 			{ "<leader>b", desc = "Debug: Toggle Breakpoint" },
 			{ "<leader>B", desc = "Debug: Set Breakpoint" },
-			{ "<F7>", desc = "Debug: See last session result." },
 			{ "<leader>db", mode = { "n" }, desc = "Debug: Toggle Breakpoint" },
 			{ "<leader>dp", mode = { "n" }, desc = "Debug: Pause" },
 			{ "<leader>dl", mode = { "n" }, desc = "Debug: Run the last config" },
 			{ "<leader>ds", mode = { "n" }, desc = "Debug: Focused Session" },
 			{ "<leader>dt", mode = { "n" }, desc = "Debug: Stop" },
-			{ "<leader>dw", mode = { "n" }, desc = "Debug: Hover Widget" },
 			{ "<leader>dC", mode = { "n" }, desc = "Debug: Run to cursor" },
 			{ "<leader>dB", mode = { "n" }, desc = "Debug: Set Breakpoint" },
-			{ "<leader>dut", mode = { "n" }, desc = "Debug: Toggle Types" },
+			{ "<leader>dv", mode = { "n" }, desc = "Debug: Toggle Scopes" },
 			{ "<leader>td", mode = { "n" }, desc = "Test: Debug nearest" },
 		},
 		-- colorscheme = "",
 		load = (require("nixCatsUtils").isNixCats and function(name)
 			vim.cmd.packadd(name)
 			vim.cmd.packadd("nvim-dap")
-			vim.cmd.packadd("nvim-dap-ui")
 		end) or function(name)
 			vim.cmd.packadd(name)
 			vim.cmd.packadd("nvim-dap")
-			vim.cmd.packadd("nvim-dap-ui")
 			vim.cmd.packadd("mason-nvim-dap.nvim")
 		end,
 		after = function(plugin)
+			local dap = require("dap")
+
 			vim.fn.sign_define("DapBreakpoint", { text = " ", texthl = "DapBreakpoint", linehl = "", numhl = "" })
 			vim.fn.sign_define(
 				"DapBreakpointCondition",
@@ -50,24 +48,18 @@ require("lze").load({
 			vim.fn.sign_define("DapLogPoint", { text = " ", texthl = "DapBreakpoint", linehl = "", numhl = "" })
 			vim.fn.sign_define(
 				"DapStopped",
-				{ text = "󰁕 ", texthl = "DiagnosticWarn", linehl = "DapStoppedLine", numhl = "DapStoppedLine" }
+				{ text = "󰁕 ", texthl = "DapStopped", linehl = "DapStopped", numhl = "DapStopped" }
 			)
 
-			local dap = require("dap")
-			local dapui = require("dapui")
-
-			dap.listeners.after.event_initialized["dapui_config"] = function()
-				dapui.open(1)
-			end
-			dap.listeners.before.event_terminated["dapui_config"] = dapui.close
-			dap.listeners.before.event_exited["dapui_config"] = dapui.close
-
 			vim.keymap.set("n", "<leader>dc", dap.continue, { desc = "Debug: Start/Continue" })
+			vim.keymap.set("n", "<leader>dv", function()
+				local widgets = require("dap.ui.widgets")
+				widgets.centered_float(widgets.scopes, { border = "rounded" })
+			end, { desc = "Debug: Toggle DAP Scopes" })
 			vim.keymap.set("n", "<F5>", dap.continue, { desc = "Debug: Start/Continue" })
 			vim.keymap.set("n", "<F1>", dap.step_into, { desc = "Debug: Step Into" })
 			vim.keymap.set("n", "<F2>", dap.step_over, { desc = "Debug: Step Over" })
 			vim.keymap.set("n", "<F3>", dap.step_out, { desc = "Debug: Step Out" })
-			vim.keymap.set("n", "<F7>", dapui.toggle, { desc = "Debug: See last session result." })
 
 			vim.keymap.set("n", "<leader>dr", function()
 				dap.disconnect()
@@ -84,28 +76,14 @@ require("lze").load({
 			vim.keymap.set("n", "<leader>dB", function()
 				dap.set_breakpoint(vim.fn.input("Breakpoint condition: "))
 			end, { desc = "Debug: Set Breakpoint" })
-			vim.keymap.set("n", "<leader>dut", function()
-				local render = dapui.config.render
-				render.max_type_length = (render.max_type_length == nil) and 0 or nil
-				require("dapui").update_render(render)
-			end, { desc = "Debug: Toggle Types" })
-
-			dapui.setup({
-				expand_lines = false,
-				layouts = {
-					{
-						elements = { { id = "stacks", size = 0.2 }, { id = "scopes", size = 0.8 } },
-						position = "bottom",
-						size = 40,
-					},
-					{ elements = { { id = "repl", size = 1 } }, position = "bottom", size = 30 },
-					{
-						elements = { { id = "breakpoints", size = 0.5 }, { id = "watches", size = 0.5 } },
-						position = "bottom",
-						size = 30,
-					},
-				},
-			})
+		end,
+	},
+	{
+		"nvim-dap-view",
+		for_cat = "debug",
+		on_plugin = { "nvim-dap" },
+		after = function(plugin)
+			require("dap-view").setup({})
 		end,
 	},
 	{
