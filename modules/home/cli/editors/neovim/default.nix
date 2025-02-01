@@ -141,7 +141,8 @@ in {
         optionalPlugins = {
           debug = with pkgs.vimPlugins; [
             nvim-dap
-            nvim-dap-ui
+            # nvim-dap-ui
+            pkgs.neovimPlugins.nvim-dap-view
             nvim-dap-go
           ];
           test = with pkgs.vimPlugins; [
@@ -193,6 +194,7 @@ in {
               diffview-nvim
               advanced-git-search-nvim
               neogit
+              pkgs.neovimPlugins.webify-nvim
             ];
             diagnostics = with pkgs.vimPlugins; [
               trouble-nvim
