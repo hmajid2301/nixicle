@@ -48,7 +48,7 @@ require("lze").load({
 			vim.fn.sign_define("DapLogPoint", { text = " ", texthl = "DapBreakpoint", linehl = "", numhl = "" })
 			vim.fn.sign_define(
 				"DapStopped",
-				{ text = "󰁕 ", texthl = "DiagnosticWarn", linehl = "DapStoppedLine", numhl = "DapStoppedLine" }
+				{ text = "󰁕 ", texthl = "DapStopped", linehl = "DapStopped", numhl = "DapStopped" }
 			)
 
 			vim.keymap.set("n", "<leader>dc", dap.continue, { desc = "Debug: Start/Continue" })
