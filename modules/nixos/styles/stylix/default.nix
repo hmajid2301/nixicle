@@ -16,12 +16,22 @@ in {
       fontDir.enable = true;
       fontconfig = {
         enable = true;
+        useEmbeddedBitmaps = true;
 
         localConf = ''
-          <alias>
-            <family>monospace</family>
-            <prefer><family>Symbols Nerd Font</family></prefer>
-          </alias>
+          <?xml version="1.0"?>
+          <!DOCTYPE fontconfig SYSTEM "urn:fontconfig:fonts.dtd">
+          <fontconfig>
+            <!-- Add Symbols Nerd Font as a global fallback -->
+            <match target="pattern">
+              <test name="family" compare="not_eq">
+                <string>Symbols Nerd Font</string>
+              </test>
+              <edit name="family" mode="append">
+                <string>Symbols Nerd Font</string>
+              </edit>
+            </match>
+          </fontconfig>
         '';
       };
     };
