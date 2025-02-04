@@ -30,6 +30,8 @@ in {
     desktop.enable = true;
   };
 
+  service.nixicle.syncthing.enable = lib.mkForce false;
+
   home = {
     sessionVariables = {
       DOCKER_HOST = "unix://$XDG_RUNTIME_DIR/podman/podman.sock";
