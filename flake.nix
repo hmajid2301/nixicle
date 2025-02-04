@@ -38,6 +38,8 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    nixos-facter-modules.url = "github:numtide/nixos-facter-modules";
+
     nixos-anywhere = {
       url = "github:numtide/nixos-anywhere";
       inputs.nixpkgs.follows = "nixpkgs";
