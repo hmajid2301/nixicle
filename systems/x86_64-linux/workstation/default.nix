@@ -1,11 +1,14 @@
 {
   pkgs,
   lib,
+  inputs,
   ...
 }: {
   imports = [
     ./hardware-configuration.nix
     ./disks.nix
+    inputs.nixos-facter-modules.nixosModules.facter
+    {config.facter.reportPath = ./facter.json;}
   ];
 
   environment.pathsToLink = ["/share/fish"];
