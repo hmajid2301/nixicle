@@ -15,6 +15,21 @@ return {
 		end,
 	},
 	{
+		"helpview-nvim",
+		event = "DeferredUIEnter",
+		for_cat = "general.ui",
+		cmd = { "Help", "H" },
+		-- ft = "",
+		-- colorscheme = "",
+		load = function(name)
+			vim.cmd.packadd("")
+			vim.cmd.packadd(name)
+		end,
+		after = function(plugin)
+			require("helpview").setup({})
+		end,
+	},
+	{
 		"nvchad-ui",
 		for_cat = "general.ui",
 		-- cmd = {  },
