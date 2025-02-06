@@ -15,21 +15,6 @@ return {
 		end,
 	},
 	{
-		"helpview-nvim",
-		event = "DeferredUIEnter",
-		for_cat = "general.ui",
-		cmd = { "Help", "H" },
-		-- ft = "",
-		-- colorscheme = "",
-		load = function(name)
-			vim.cmd.packadd("")
-			vim.cmd.packadd(name)
-		end,
-		after = function(plugin)
-			require("helpview").setup({})
-		end,
-	},
-	{
 		"nvchad-ui",
 		for_cat = "general.ui",
 		-- cmd = {  },
@@ -262,6 +247,14 @@ return {
 		-- keys = "",
 		after = function(plugin)
 			require("fidget").setup({})
+		end,
+	},
+	{
+		"OXY2DEV/helpview.nvim",
+		for_cat = "general.ui",
+		event = "DeferredUIEnter",
+		after = function(plugin)
+			require("helpview").setup({})
 		end,
 	},
 }
