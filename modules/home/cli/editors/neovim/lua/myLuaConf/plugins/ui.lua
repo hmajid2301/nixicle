@@ -250,7 +250,7 @@ return {
 		end,
 	},
 	{
-		"OXY2DEV/helpview.nvim",
+		"helpview.nvim",
 		for_cat = "general.ui",
 		event = "DeferredUIEnter",
 		after = function(plugin)
