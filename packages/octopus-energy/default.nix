@@ -7,14 +7,14 @@
 buildHomeAssistantComponent rec {
   owner = "BottlecapDave";
   domain = "octopus_energy";
-  version = "13.5.3";
+  version = "14.0.0-beta.1";
   format = "other";
 
   src = fetchFromGitHub {
     owner = "BottlecapDave";
     repo = "HomeAssistant-OctopusEnergy";
     rev = "v${version}";
-    sha256 = "sha256-qkPHb4o6rwXvifT+1L/pmpmJy3Qv4+ZYlhMn/cDnYDA=";
+    sha256 = "sha256-5UX74mgg9eV6kdupB42RrxTnNeLyeOScVg41mMhfARo=";
   };
 
   checkInputs = with pkgs.python312Packages;

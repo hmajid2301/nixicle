@@ -30,7 +30,7 @@ in {
     desktop.enable = true;
   };
 
-  service.nixicle.syncthing.enable = lib.mkForce false;
+  services.nixicle.syncthing.enable = lib.mkForce false;
 
   home = {
     sessionVariables = {
@@ -40,6 +40,7 @@ in {
     packages = with pkgs; [
       screensharing
       nwg-displays
+      (lib.hiPrio (config.lib.nixGL.wrap totem))
     ];
   };
 
