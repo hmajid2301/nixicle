@@ -249,4 +249,12 @@ return {
 			require("fidget").setup({})
 		end,
 	},
+	{
+		"helpview.nvim",
+		for_cat = "general.ui",
+		event = "DeferredUIEnter",
+		after = function(plugin)
+			require("helpview").setup({})
+		end,
+	},
 }

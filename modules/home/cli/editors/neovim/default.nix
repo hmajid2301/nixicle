@@ -230,6 +230,7 @@ in {
               barbecue-nvim
               nvchad-ui
               base46
+              helpview-nvim
             ];
           };
         };

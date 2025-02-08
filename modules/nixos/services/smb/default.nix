@@ -39,7 +39,7 @@ in {
           global = {
             "hosts allow" = "192.168.1. 100.64.0.0/10 127.0.0.1 localhost";
             "bind interfaces only" = "yes";
-            interfaces = "lo enp90s0 tailscale0";
+            interfaces = "lo enp91s0 tailscale0";
             security = "user";
             "min protocol" = "SMB2";
             "browseable" = "yes";
