@@ -34,6 +34,8 @@
         };
       };
     };
+
+    ollama.acceleration = lib.mkForce "cuda";
   };
 
   services = {
