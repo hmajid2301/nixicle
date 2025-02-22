@@ -54,6 +54,7 @@ in {
             stylelint
             prettierd
             tailwindcss-language-server
+            vimPlugins.tailwind-tools-nvim
           ];
           docker = with pkgs; [
             dockerfile-language-server-nodejs
