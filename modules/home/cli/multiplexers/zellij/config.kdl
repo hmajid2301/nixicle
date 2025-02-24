@@ -169,7 +169,7 @@ keybinds {
               floating true
               move_to_focused_tab true
               cwd "/"
-              root_dirs "/home/haseeb/projects;/home/haseebmajid/projects"
+              root_dirs "/home/haseeb/projects;/home/haseebmajid/projects;/home/haseebmajid/projects/personal;/home/haseebmajid;/home/haseeb"
           }; SwitchToMode "Locked";
         }
     }

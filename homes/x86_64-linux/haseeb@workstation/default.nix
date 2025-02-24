@@ -10,10 +10,6 @@
     };
   };
 
-  services.nixicle = {
-    syncthing.enable = true;
-  };
-
   roles = {
     desktop.enable = true;
     social.enable = true;

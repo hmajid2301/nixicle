@@ -36,7 +36,8 @@ in {
       keymapp
 
       src-cli
-      optinix
+      flyctl
+      # optinix
 
       (hiPrio parallel)
       moreutils
