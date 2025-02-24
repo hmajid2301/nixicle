@@ -16,9 +16,9 @@
 
     plugins = {
       lsp.servers = {
-        graphql = {
-          enable = true;
-        };
+        # graphql = {
+        #   enable = true;
+        # };
       };
     };
   };

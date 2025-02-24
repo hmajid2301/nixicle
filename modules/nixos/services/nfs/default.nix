@@ -23,13 +23,13 @@ in {
     ];
 
     fileSystems."/mnt/nfs" = {
-      device = "192.168.1.73:/volume1/Data";
+      device = "192.168.1.74:/volume1/Data";
       fsType = "nfs";
       # options = ["x-systemd.automount" "noauto"];
     };
 
     fileSystems."/mnt/share" = {
-      device = "//192.168.1.73/Data/homelab";
+      device = "//192.168.1.74/Data/homelab";
       fsType = "cifs";
       options = let
         # this line prevents hanging on network split
