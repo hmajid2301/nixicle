@@ -20,6 +20,7 @@ in {
         font-family = "${config.stylix.fonts.monospace.name}";
         command = "fish";
         gtk-titlebar = false;
+        gtk-tabs-location = "hidden";
         font-size = 14;
         window-padding-x = 6;
         window-padding-y = 6;
