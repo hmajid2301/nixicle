@@ -53,8 +53,8 @@ in {
       };
       shellAbbrs = {
         # abbr existing commands
-        vim = "nvim";
-        n = "nvim";
+        vim = "regularCats";
+        n = "regularCats";
         ss = "zellij -l welcome";
         cd = "z";
         cdi = "zi";
@@ -63,7 +63,7 @@ in {
         dig = "dog";
         cat = "bat";
         curl = "curlie";
-        rm = "trash";
+        rm = "gomi";
         ping = "gping";
         ls = "eza";
         sl = "eza";
