@@ -21,6 +21,7 @@ in {
         command = "fish";
         gtk-titlebar = false;
         gtk-tabs-location = "hidden";
+        gtk-single-instance = true;
         font-size = 14;
         window-padding-x = 6;
         window-padding-y = 6;

@@ -9,6 +9,6 @@ size = "50% 80%"
 
 [scratchpads.term]
 animation = "fromTop"
-command = "foot --class kitty-dropterm -e yazi"
+command = "ghostty --class kitty-dropterm -e yazi"
 class = "kitty-dropterm"
 size = "75% 60%"
