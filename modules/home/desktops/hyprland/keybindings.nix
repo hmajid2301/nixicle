@@ -61,7 +61,7 @@ in {
   config = mkIf cfg.enable {
     wayland.windowManager.hyprland.settings = {
       bind = [
-        "SUPER, Return, exec, foot"
+        "SUPER, Return, exec, ghostty"
         "SUPER, B, exec, ${config.desktops.addons.rofi.package}/bin/rofi -show drun -mode drun"
         "SUPER, Q, killactive,"
         "SUPER, F, Fullscreen,0"

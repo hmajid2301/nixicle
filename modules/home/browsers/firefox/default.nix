@@ -14,6 +14,10 @@ in {
   };
 
   config = mkIf cfg.enable {
+    home.packages = with pkgs; [
+      inputs.zen-browser.packages.${pkgs.system}.default
+    ];
+
     xdg.mimeApps.defaultApplications = {
       "text/html" = ["firefox.desktop"];
       "text/xml" = ["firefox.desktop"];
