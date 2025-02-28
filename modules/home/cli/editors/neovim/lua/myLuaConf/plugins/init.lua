@@ -6,7 +6,7 @@ vim.g.base46_cache = vim.fn.stdpath("data") .. "/base46_cache/"
 dofile(vim.g.base46_cache .. "defaults")
 dofile(vim.g.base46_cache .. "statusline")
 
-vim.hl = vim.highlight
+-- vim.hl = vim.highlight
 
 -- require("catppuccin").setup({
 -- 	flavour = "mocha",

@@ -29,7 +29,7 @@ in {
         [
           (utils.standardPluginOverlay inputs)
         ];
-      packageNames = ["regularCats"];
+      packageNames = ["regularCats" "nixCats"];
 
       luaPath = "${./.}";
 
