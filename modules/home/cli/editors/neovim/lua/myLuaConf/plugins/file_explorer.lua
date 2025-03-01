@@ -4,7 +4,7 @@ return {
 		for_cat = "general.extra",
 		keys = {
 			{ "-", mode = { "n" }, desc = "Open parent directory" },
-			{ "<leader>-", mode = { "n" }, desc = "Open nvim root directory" },
+			{ "<leader>r-", mode = { "n" }, desc = "Open nvim root directory" },
 		},
 		load = function(name)
 			vim.cmd.packadd(name)
