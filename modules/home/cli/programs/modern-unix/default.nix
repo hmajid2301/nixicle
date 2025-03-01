@@ -39,7 +39,7 @@ in {
       procs
       tokei
       gomi
-      tailspin
+      # tailspin
       ripgrep
       sd
       xcp
