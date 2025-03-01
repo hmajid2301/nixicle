@@ -123,6 +123,7 @@ in {
           general = with pkgs.vimPlugins; {
             always = [
               lze
+              lzextras
               vim-repeat
               plenary-nvim
             ];

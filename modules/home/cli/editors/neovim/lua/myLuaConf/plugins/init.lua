@@ -6,24 +6,24 @@ vim.g.base46_cache = vim.fn.stdpath("data") .. "/base46_cache/"
 dofile(vim.g.base46_cache .. "defaults")
 dofile(vim.g.base46_cache .. "statusline")
 
--- vim.hl = vim.highlight
+vim.hl = vim.highlight
 
--- require("catppuccin").setup({
--- 	flavour = "mocha",
--- 	integrations = {
--- 		-- gitsigns = true,
--- 		-- illuminate = true,
--- 		-- grug_far = true,
--- 		-- indent_blankline = true,
--- 		-- mini = true,
--- 		-- navic = true,
--- 		-- telescope = true,
--- 		-- neotest = true,
--- 		-- flash = true,
--- 		-- treesitter = true,
--- 		-- treesitter_context = true,
--- 	},
--- })
+require("catppuccin").setup({
+	flavour = "mocha",
+	integrations = {
+		-- gitsigns = true,
+		-- illuminate = true,
+		-- grug_far = true,
+		-- indent_blankline = true,
+		-- mini = true,
+		-- navic = true,
+		-- telescope = true,
+		-- neotest = true,
+		-- flash = true,
+		-- treesitter = true,
+		-- treesitter_context = true,
+	},
+})
 
 -- TODO: lazyload this
 require("auto-session").setup({})
