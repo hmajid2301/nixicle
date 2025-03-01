@@ -60,11 +60,11 @@
       netdata.enable = true;
       nfs.enable = true;
       smb.enable = true;
-      # paperless.enable = true;
+      paperless.enable = true;
       postgresql.enable = true;
       redis.enable = true;
       traefik.enable = true;
-      # ollama.enable = true;
+      ollama.enable = true;
     };
 
     traefik = {

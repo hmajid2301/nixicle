@@ -1,6 +1,15 @@
+local function faster_get_path(name)
+	local path = vim.tbl_get(package.loaded, "nixCats", "pawsible", "allPlugins", "opt", name)
+	if path then
+		vim.cmd.packadd(name)
+		return path
+	end
+	return nil -- nil will make it default to normal behavior
+end
+
 ---packadd + after/plugin
 ---@type fun(names: string[]|string)
-local load_w_after_plugin = require("nixCatsUtils.lzUtils").make_load_with_after({ "plugin" })
+local load_w_after_plugin = require("lzextras").make_load_with_afters({ "plugin" }, faster_get_path)
 
 -- NOTE: packadd doesnt load after directories.
 -- hence, the above function that you can get from luaUtils that exists to make that easy.
@@ -50,18 +59,17 @@ return {
 		load = load_w_after_plugin,
 	},
 	{
-		"cmp-dbee",
-		for_cat = "general.cmp",
-		on_require = { "nvim-dbee" },
-		on_plugin = { "nvim-cmp" },
-		load = load_w_after_plugin,
-	},
-	{
 		"cmp_luasnip",
 		for_cat = "general.cmp",
 		on_plugin = { "nvim-cmp" },
 		load = load_w_after_plugin,
 	},
+	-- {
+	-- 	"cmp_dbee",
+	-- 	for_cat = "general.extra",
+	-- 	on_plugin = { "nvim-cmp" },
+	-- 	load = load_w_after_plugin,
+	-- },
 	{
 		"friendly-snippets",
 		for_cat = "general.cmp",
@@ -134,8 +142,6 @@ return {
 				mapping = cmp.mapping.preset.insert({
 					["<C-p>"] = cmp.mapping.scroll_docs(-4),
 					["<C-n>"] = cmp.mapping.scroll_docs(4),
-					["<C-j>"] = cmp.mapping.select_next_item(),
-					["<C-k>"] = cmp.mapping.select_prev_item(),
 					["<C-Space>"] = cmp.mapping.complete({}),
 					["<CR>"] = cmp.mapping.confirm({
 						behavior = cmp.ConfirmBehavior.Replace,
@@ -172,8 +178,6 @@ return {
 					{ name = "path" },
 					{ name = "luasnip" },
 					{ name = "buffer" },
-					-- TODO: Only for SQL files
-					-- { name = "cmp-dbee" },
 				}),
 				enabled = function()
 					return vim.bo[0].buftype ~= "prompt"
