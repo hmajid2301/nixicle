@@ -1,19 +1,17 @@
-local colorschemeName = nixCats("colorscheme")
-if not require("nixCatsUtils").isNixCats then
-	colorschemeName = "catppuccin"
-end
--- Could I lazy load on colorscheme with lze?
--- sure. But I was going to call vim.cmd.colorscheme() during startup anyway
--- this is just an example, feel free to do a better job!
-vim.cmd.colorscheme(colorschemeName)
+-- local colorschemeName = nixCats("colorscheme")
+-- if not require("nixCatsUtils").isNixCats then
+-- 	colorschemeName = "catppuccin"
+-- end
+-- -- Could I lazy load on colorscheme with lze?
+-- -- sure. But I was going to call vim.cmd.colorscheme() during startup anyway
+-- -- this is just an example, feel free to do a better job!
+-- vim.cmd.colorscheme(colorschemeName)
 
 -- put this in your main init.lua file ( before lazy setup )
 vim.g.base46_cache = vim.fn.stdpath("data") .. "/base46_cache/"
 
 dofile(vim.g.base46_cache .. "defaults")
 dofile(vim.g.base46_cache .. "statusline")
-
-vim.hl = vim.highlight
 
 -- require("catppuccin").setup({
 -- 	flavour = "mocha",
