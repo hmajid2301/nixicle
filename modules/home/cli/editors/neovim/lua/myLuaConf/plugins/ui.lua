@@ -113,7 +113,7 @@ return {
 							colored = false,
 							color = {
 								gui = "bold",
-								fg = "#605f6f",
+								fg = "#FFF",
 							},
 						},
 						{
@@ -151,7 +151,7 @@ return {
 								return (vim.t.maximized and " ") or ""
 							end,
 							color = {
-								fg = "#2d2c3c",
+								fg = "#FFF",
 								bg = "#CBA6F7",
 								gui = "bold",
 							},
@@ -179,7 +179,7 @@ return {
 							icon = {
 								" ",
 								color = {
-									fg = "#2d2c3c",
+									fg = "#FFF",
 									bg = "#8bc2f0",
 								},
 							},
@@ -198,7 +198,7 @@ return {
 							icon = {
 								" ",
 								color = {
-									fg = "#2d2c3c",
+									fg = "#FFF",
 									bg = "#F38BA8",
 								},
 							},

@@ -70,6 +70,12 @@ return {
 		on_plugin = { "nvim-cmp" },
 		load = load_w_after_plugin,
 	},
+	-- {
+	-- 	"cmp_dbee",
+	-- 	for_cat = "general.extra",
+	-- 	on_plugin = { "nvim-cmp" },
+	-- 	load = load_w_after_plugin,
+	-- },
 	{
 		"friendly-snippets",
 		for_cat = "general.cmp",
