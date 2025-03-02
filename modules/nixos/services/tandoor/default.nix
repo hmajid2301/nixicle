@@ -29,6 +29,8 @@ in {
       tandoor-recipes = {
         enable = true;
         port = 8099;
+        # user = "tandoor_recipes";
+        # group = "tandoor_recipes";
         extraConfig = {
           DB_ENGINE = "django.db.backends.postgresql";
           POSTGRES_HOST = "/run/postgresql";

@@ -62,7 +62,6 @@ return {
 			})
 		end,
 	},
-
 	{
 		"lualine.nvim",
 		for_cat = "general.ui",
@@ -103,7 +102,7 @@ return {
 						},
 						{
 							"filename",
-							color = { fg = "#FFF" },
+							color = { fg = "#FFFFFF" },
 						},
 					},
 					lualine_c = {
@@ -175,11 +174,7 @@ return {
 									end
 								end
 
-								if msg ~= "" then
-									return msg
-								else
-									return "None"
-								end
+								return msg ~= "" and msg or "None"
 							end,
 							icon = {
 								" ",
@@ -190,11 +185,12 @@ return {
 							},
 							separator = {
 								left = "",
+								color = { fg = "#8bc2f0", bg = "#1e1e2e" },
 							},
 							padding = { left = 0, right = 0 },
 							color = {
 								bg = "#2d2c3c",
-								fg = "#FFF",
+								fg = "#FFFFFF",
 							},
 						},
 						{
@@ -208,11 +204,12 @@ return {
 							},
 							separator = {
 								left = "",
+								color = { fg = "#F38BA8", bg = "#1e1e2e" },
 							},
 							padding = { left = 0, right = 1 },
 							color = {
 								bg = "#2d2c3c",
-								fg = "#FFF",
+								fg = "#FFFFFF",
 							},
 						},
 					},
@@ -228,11 +225,12 @@ return {
 							},
 							separator = {
 								left = "",
+								color = { fg = "#ABE9B3", bg = "#1e1e2e" },
 							},
 							padding = { left = 0, right = 0 },
 							color = {
 								bg = "#2d2c3c",
-								fg = "#ABE9B3",
+								fg = "#FFFFFF",
 							},
 						},
 					},
