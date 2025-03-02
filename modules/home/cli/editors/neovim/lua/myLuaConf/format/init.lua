@@ -24,7 +24,7 @@ require("lze").load({
 					css = { "prettierd" },
 					go = { "gofmt", "goimports" },
 					lua = { "stylua" },
-					templ = { "rustywind", "templ" },
+					templ = { "rustywind" },
 					-- html = { "htmlbeautifier", "rustywind" },
 					nix = { "nixfmt" },
 					python = { "isort", "black" },
