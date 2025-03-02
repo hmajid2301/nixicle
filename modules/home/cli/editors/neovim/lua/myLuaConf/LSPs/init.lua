@@ -160,27 +160,28 @@ require("lze").load({
 	{ "yamlls", lsp = {} },
 	{
 		"htmx",
-		lsp = {},
-	},
-
-	{
-		"html",
 		lsp = {
 			filetypes = { "html", "templ" },
-			settings = {
-				html = {
-					format = {
-						wrapLineLength = 120,
-						wrapAttributes = "auto",
-					},
-					hover = {
-						documentation = true,
-						references = true,
-					},
-				},
-			},
 		},
 	},
+	-- {
+	-- 	"html",
+	-- 	lsp = {
+	-- 		filetypes = { "html", "templ" },
+	-- 		settings = {
+	-- 			html = {
+	-- 				format = {
+	-- 					wrapLineLength = 120,
+	-- 					wrapAttributes = "auto",
+	-- 				},
+	-- 				hover = {
+	-- 					documentation = true,
+	-- 					references = true,
+	-- 				},
+	-- 			},
+	-- 		},
+	-- 	},
+	-- },
 	{
 		"sqls",
 		lsp = {
