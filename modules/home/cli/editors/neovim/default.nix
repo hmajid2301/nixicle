@@ -64,7 +64,9 @@ in {
           html = with pkgs; [
             htmlhint
             rubyPackages_3_4.htmlbeautifier
+            htmx-lsp
             rustywind
+            vscode-langservers-extracted
           ];
           go = with pkgs; [
             golangci-lint
@@ -106,6 +108,9 @@ in {
           ];
           toml = with pkgs; [
             taplo
+          ];
+          templ = with pkgs; [
+            templ
           ];
           typescript = with pkgs; [
             typescript-language-server
@@ -178,6 +183,12 @@ in {
               cmp-nvim-lsp-signature-help
               cmp-cmdline-history
               lspkind-nvim
+              (pkgs.neovimPlugins.cmp-dbee.overrideAttrs {
+                nvimSkipModule = [
+                  "cmp-dbee.connection"
+                  "cmp-dbee.source"
+                ];
+              })
             ];
             treesitter = with pkgs.vimPlugins; [
               nvim-treesitter-textobjects
@@ -218,13 +229,6 @@ in {
               comment-nvim
               undotree
               nvim-dbee
-
-              (pkgs.neovimPlugins.cmp-dbee.overrideAttrs {
-                nvimSkipModule = [
-                  "cmp-dbee.connection"
-                  "cmp-dbee.source"
-                ];
-              })
             ];
             ui = with pkgs.vimPlugins; [
               indent-blankline-nvim
@@ -321,6 +325,7 @@ in {
             sql = true;
             terraform = true;
             toml = true;
+            templ = true;
             typescript = true;
             yaml = true;
 
@@ -371,6 +376,7 @@ in {
             sql = true;
             terraform = true;
             toml = true;
+            templ = true;
             typescript = true;
             yaml = true;
 

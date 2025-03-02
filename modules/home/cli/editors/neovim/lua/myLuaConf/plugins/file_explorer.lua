@@ -4,7 +4,7 @@ return {
 		for_cat = "general.extra",
 		keys = {
 			{ "-", mode = { "n" }, desc = "Open parent directory" },
-			{ "<leader>-", mode = { "n" }, desc = "Open nvim root directory" },
+			{ "<leader>r-", mode = { "n" }, desc = "Open nvim root directory" },
 		},
 		load = function(name)
 			vim.cmd.packadd(name)
@@ -39,7 +39,7 @@ return {
 				},
 			})
 			vim.keymap.set("n", "-", "<cmd>Oil<CR>", { noremap = true, desc = "Open Parent Directory" })
-			vim.keymap.set("n", "<leader>-", "<cmd>Oil .<CR>", { noremap = true, desc = "Open nvim root directory" })
+			vim.keymap.set("n", "<leader>r-", "<cmd>Oil .<CR>", { noremap = true, desc = "Open nvim root directory" })
 		end,
 	},
 }

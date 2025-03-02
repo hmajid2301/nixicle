@@ -64,6 +64,12 @@ return {
 		on_plugin = { "nvim-cmp" },
 		load = load_w_after_plugin,
 	},
+	{
+		"cmp_dbee",
+		for_cat = "general.cmp",
+		on_plugin = { "nvim-cmp" },
+		load = load_w_after_plugin,
+	},
 	-- {
 	-- 	"cmp_dbee",
 	-- 	for_cat = "general.extra",
@@ -115,23 +121,13 @@ return {
 			local luasnip = require("luasnip")
 			local lspkind = require("lspkind")
 
-			cmp.setup({
+			local options = {
 				formatting = {
 					format = lspkind.cmp_format({
 						mode = "text",
 						with_text = true,
 						maxwidth = 50, -- prevent the popup from showing more than provided characters (e.g 50 will not show more than 50 characters)
 						ellipsis_char = "...", -- when popup menu exceed maxwidth, the truncated part would show ellipsis_char instead (must define maxwidth first)
-
-						menu = {
-							buffer = "[BUF]",
-							nvim_lsp = "[LSP]",
-							nvim_lsp_signature_help = "[LSP]",
-							nvim_lsp_document_symbol = "[LSP]",
-							nvim_lua = "[API]",
-							path = "[PATH]",
-							luasnip = "[SNIP]",
-						},
 					}),
 				},
 				snippet = {
@@ -186,7 +182,9 @@ return {
 					native_menu = false,
 					ghost_text = false,
 				},
-			})
+			}
+			options = vim.tbl_deep_extend("force", options, require("nvchad.cmp"))
+			require("cmp").setup(options)
 
 			cmp.setup.filetype("lua", {
 				sources = cmp.config.sources({
@@ -209,6 +207,14 @@ return {
 						},
 					},
 				},
+			})
+
+			cmp.setup.filetype("sql", {
+				sources = cmp.config.sources({
+					{ name = "cmp-dbee" },
+					{ name = "buffer" },
+					{ name = "luasnip" },
+				}),
 			})
 
 			-- Use buffer source for `/` and `?` (if you enabled `native_menu`, this won't work anymore).

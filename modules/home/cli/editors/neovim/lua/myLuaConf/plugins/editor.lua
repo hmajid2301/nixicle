@@ -79,6 +79,11 @@ return {
 				under_cursor = true,
 				large_file_cutoff = 2000,
 			})
+
+			-- TODO: don't hardcode here the bg
+			vim.api.nvim_set_hl(0, "IlluminatedWordText", { bg = "#383747" })
+			vim.api.nvim_set_hl(0, "IlluminatedWordRead", { bg = "#383747" })
+			vim.api.nvim_set_hl(0, "IlluminatedWordWrite", { bg = "#383747" })
 		end,
 	},
 	{
