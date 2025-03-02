@@ -22,9 +22,9 @@ require("lze").load({
 				},
 				formatters_by_ft = {
 					css = { "prettierd" },
-					go = { "gofmt" },
+					go = { "gofmt", "goimports" },
 					lua = { "stylua" },
-					templ = { "rustywind" },
+					templ = { "rustywind", "templ" },
 					html = { "htmlbeautifier", "rustywind" },
 					nix = { "nixfmt" },
 					python = { "isort", "black" },

@@ -142,7 +142,7 @@ require("lze").load({
 	{ "docker_compose_language_service", lsp = {} },
 	{ "pyright", lsp = {} },
 	{ "marksman", lsp = {} },
-	{ "tsserver", lsp = {} },
+	{ "ts_ls", lsp = {} },
 	{
 		"tailwindcss",
 		lsp = {

@@ -183,6 +183,12 @@ in {
               cmp-nvim-lsp-signature-help
               cmp-cmdline-history
               lspkind-nvim
+              (pkgs.neovimPlugins.cmp-dbee.overrideAttrs {
+                nvimSkipModule = [
+                  "cmp-dbee.connection"
+                  "cmp-dbee.source"
+                ];
+              })
             ];
             treesitter = with pkgs.vimPlugins; [
               nvim-treesitter-textobjects
@@ -223,13 +229,6 @@ in {
               comment-nvim
               undotree
               nvim-dbee
-
-              (pkgs.neovimPlugins.cmp-dbee.overrideAttrs {
-                nvimSkipModule = [
-                  "cmp-dbee.connection"
-                  "cmp-dbee.source"
-                ];
-              })
             ];
             ui = with pkgs.vimPlugins; [
               indent-blankline-nvim
