@@ -4,7 +4,7 @@ local options = {
 		theme = "catppuccin", -- default theme
 		hl_add = {},
 		hl_override = {
-			["@property"] = { fg = "#F38BA8" },
+			-- ["@property"] = { fg = "#F38BA8" },
 		},
 		integrations = {
 			"dap",
