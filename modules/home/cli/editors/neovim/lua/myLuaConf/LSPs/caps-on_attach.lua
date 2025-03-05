@@ -11,7 +11,7 @@ function M.on_attach(_, bufnr)
 		vim.keymap.set("n", keys, func, { buffer = bufnr, desc = desc })
 	end
 
-	nmap("<leader>rn", vim.lsp.buf.rename, "[R]e[n]ame")
+	nmap("<leader>cr", vim.lsp.buf.rename, "[R]e[n]ame")
 	nmap("<leader>ca", vim.lsp.buf.code_action, "[C]ode [A]ction")
 
 	nmap("gd", vim.lsp.buf.definition, "[G]oto [D]efinition")
@@ -20,10 +20,10 @@ function M.on_attach(_, bufnr)
 	-- because otherwise they would load telescope eagerly when this is defined.
 	-- due to us using the on_require handler to make sure it is available.
 	if nixCats("general.telescope") then
-		nmap("gr", function()
+		nmap("<leader>gr", function()
 			require("telescope.builtin").lsp_references()
 		end, "[G]oto [R]eferences")
-		nmap("gI", function()
+		nmap("<leader>gi", function()
 			require("telescope.builtin").lsp_implementations()
 		end, "[G]oto [I]mplementation")
 		nmap("<leader>ds", function()
@@ -38,7 +38,7 @@ function M.on_attach(_, bufnr)
 
 	-- See `:help K` for why this keymap
 	nmap("K", vim.lsp.buf.hover, "Hover Documentation")
-	nmap("<C-k>", vim.lsp.buf.signature_help, "Signature Documentation")
+	vim.keymap.set("i", "<C-k>", vim.lsp.buf.signature_help, { desc = "Signature Documentation" })
 
 	-- Lesser used LSP functionality
 	nmap("gD", vim.lsp.buf.declaration, "[G]oto [D]eclaration")
