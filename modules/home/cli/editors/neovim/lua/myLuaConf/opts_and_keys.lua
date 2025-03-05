@@ -162,6 +162,16 @@ vim.keymap.set("n", "]d", vim.diagnostic.goto_next, { desc = "Go to next diagnos
 vim.keymap.set("n", "<leader>e", vim.diagnostic.open_float, { desc = "Open floating diagnostic message" })
 vim.keymap.set("n", "<leader>q", vim.diagnostic.setloclist, { desc = "Open diagnostics list" })
 
+vim.diagnostic.config({
+	virtual_text = {
+		prefix = "●", -- Could be '■', '▎', 'x'
+	},
+	severity_sort = true,
+	float = {
+		source = "if_many", -- Or "if_many"
+	},
+})
+
 -- kickstart.nvim starts you with this.
 -- But it constantly clobbers your system clipboard whenever you delete anything.
 
@@ -186,7 +196,6 @@ vim.keymap.set(
 	{ noremap = true, silent = true, desc = "Yank line to clipboard" }
 )
 vim.keymap.set({ "n", "v", "x" }, "<C-a>", "gg6vG$", { noremap = true, silent = true, desc = "Select all" })
-vim.keymap.set({ "n", "v", "x" }, "<leader>p", '"+p', { noremap = true, silent = true, desc = "Paste from clipboard" })
 vim.keymap.set(
 	"i",
 	"<C-p>",
@@ -195,7 +204,7 @@ vim.keymap.set(
 )
 vim.keymap.set(
 	"x",
-	"<leader>P",
+	"<leader>p",
 	'"_dP',
 	{ noremap = true, silent = true, desc = "Paste over selection without erasing unnamed register" }
 )
@@ -213,7 +222,6 @@ vim.keymap.set("n", "k", "v:count == 0 ? 'gk' : 'k'", { silent = true, expr = tr
 vim.keymap.set("n", "<leader>|", "<C-w>v", { desc = "Split window right" })
 vim.keymap.set("n", "<leader>-", "<C-w>s", { desc = "Split window below" })
 vim.keymap.set({ "n", "v", "x" }, "<C-s>", "<cmd>w<cr><esc>", { desc = "Save file" })
-vim.keymap.set("v", "<leader>p", "'_dP", { desc = "Paste without updating buffer" })
 vim.keymap.set({ "v", "x" }, ">", ">gv", { desc = "Stay in visual mode during outdent" })
 vim.keymap.set({ "v", "x" }, "<", "<gv", { desc = "Stay in visual mode during indent" })
 vim.keymap.set("n", "<C-n>", "<cmd>cnext<CR>zz", { desc = "Go to next item in quickfix list and center cursor" })

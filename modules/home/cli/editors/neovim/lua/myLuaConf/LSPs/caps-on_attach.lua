@@ -14,7 +14,7 @@ function M.on_attach(_, bufnr)
 	nmap("<leader>cr", vim.lsp.buf.rename, "[R]e[n]ame")
 	nmap("<leader>ca", vim.lsp.buf.code_action, "[C]ode [A]ction")
 
-	nmap("gd", vim.lsp.buf.definition, "[G]oto [D]efinition")
+	nmap("<leader>gd", vim.lsp.buf.definition, "[G]oto [D]efinition")
 
 	-- NOTE: why are these functions that call the telescope builtin?
 	-- because otherwise they would load telescope eagerly when this is defined.
@@ -41,7 +41,7 @@ function M.on_attach(_, bufnr)
 	vim.keymap.set("i", "<C-k>", vim.lsp.buf.signature_help, { desc = "Signature Documentation" })
 
 	-- Lesser used LSP functionality
-	nmap("gD", vim.lsp.buf.declaration, "[G]oto [D]eclaration")
+	nmap("<leader>gD", vim.lsp.buf.declaration, "[G]oto [D]eclaration")
 	nmap("<leader>wa", vim.lsp.buf.add_workspace_folder, "[W]orkspace [A]dd Folder")
 	nmap("<leader>wr", vim.lsp.buf.remove_workspace_folder, "[W]orkspace [R]emove Folder")
 	nmap("<leader>wl", function()
