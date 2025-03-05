@@ -208,6 +208,9 @@ vim.keymap.set(
 	'"_dP',
 	{ noremap = true, silent = true, desc = "Paste over selection without erasing unnamed register" }
 )
+-- vim.keymap.set("n", "P", '"+P', { noremap = true })
+vim.keymap.set({ "n", "x" }, "p", '"+p', { noremap = true, desc = "Paste from clipboard" })
+vim.keymap.set({ "n", "x" }, "P", '"+P', { noremap = true, desc = "Paste before from clipboard" })
 vim.keymap.set("n", "<C-d>", "<C-d>zz", { desc = "Keep cursor in middle when jumping" })
 vim.keymap.set("n", "<C-u>", "<C-u>zz", { desc = "Keep cursor in middle when jumping" })
 vim.keymap.set("n", "<leader>mj", ":m .+1<CR>==", { desc = "Move selected lines down" })
@@ -233,9 +236,39 @@ vim.keymap.set(
 	"<cmd>lprev<CR>zz",
 	{ desc = "Go to previous item in location list and center cursor" }
 )
-vim.keymap.set("n", "<C-b>", "<cmd>cmp.mapping.scroll_docs(-4)<CR>", { desc = "Scroll docs down" })
-vim.keymap.set("n", "<C-f>", "<cmd>cmp.mapping.scroll_docs(4)<CR>", { desc = "Scroll docs up" })
 
-vim.api.nvim_set_hl(0, "@constant.builtin.go", { fg = "#F38BA8" })
-vim.api.nvim_set_hl(0, "@lsp.type.variable.go", { fg = "#F38BA8" })
-vim.api.nvim_set_hl(0, "@constant.builtin", { fg = "#F38BA8" })
+-- TODO: Move to chadrc
+vim.api.nvim_set_hl(0, "@string.special.url", { fg = "#f5e0dc", italic = true, underline = true })
+vim.api.nvim_set_hl(0, "@string.special", { fg = "#74c7ec" })
+vim.api.nvim_set_hl(0, "WinSeparator", {
+	fg = "#11111b", -- Foreground color of the separator line
+	bg = "NONE", -- Background color (transparent)
+	bold = true, -- Optional: make the line bold
+})
+vim.api.nvim_set_hl(0, "VertSplit", {
+	fg = "#11111b", -- Match WinSeparator color
+	bg = "NONE",
+	ctermfg = 238, -- Terminal color index (dark gray)
+	ctermbg = "NONE",
+})
+
+local function hilink(group, other_group)
+	vim.api.nvim_set_hl(0, group, { link = other_group })
+end
+
+hilink("NavbuddyArray", "Identifier")
+hilink("NavbuddyBoolean", "Boolean")
+hilink("NavbuddyClass", "Type")
+hilink("NavbuddyConstant", "Constant")
+hilink("NavbuddyConstructor", "Function")
+hilink("NavbuddyFile", "Special")
+hilink("NavbuddyFunction", "Function")
+hilink("NavbuddyInterface", "Type")
+hilink("NavbuddyMethod", "Function")
+hilink("NavbuddyNull", "Special")
+hilink("NavbuddyNumber", "Number")
+hilink("NavbuddyObject", "Identifier")
+hilink("NavbuddyOperator", "Operator")
+hilink("NavbuddyString", "String")
+hilink("NavbuddyStruct", "Structure")
+hilink("NavbuddyVariable", "@variable")
