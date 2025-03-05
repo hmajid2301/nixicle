@@ -93,6 +93,8 @@ return {
 		load = function(name)
 			vim.cmd.packadd(name)
 			vim.cmd.packadd("nvim-navbuddy")
+			vim.cmd.packadd("nui-nvim")
+			vim.cmd.packadd("nvim-navic")
 		end,
 		after = function(plugin)
 			require("nvim-navbuddy").setup({
