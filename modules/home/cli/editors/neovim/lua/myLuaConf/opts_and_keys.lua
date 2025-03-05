@@ -235,3 +235,7 @@ vim.keymap.set(
 )
 vim.keymap.set("n", "<C-b>", "<cmd>cmp.mapping.scroll_docs(-4)<CR>", { desc = "Scroll docs down" })
 vim.keymap.set("n", "<C-f>", "<cmd>cmp.mapping.scroll_docs(4)<CR>", { desc = "Scroll docs up" })
+
+vim.api.nvim_set_hl(0, "@constant.builtin.go", { fg = "#F38BA8" })
+vim.api.nvim_set_hl(0, "@lsp.type.variable.go", { fg = "#F38BA8" })
+vim.api.nvim_set_hl(0, "@constant.builtin", { fg = "#F38BA8" })
