@@ -8,9 +8,10 @@ return {
 		-- colorscheme = "",
 		load = function(name)
 			vim.cmd.packadd(name)
+			vim.cmd.packadd("dropbar-nvim")
 		end,
 		after = function(plugin)
-			require("dropbar").setup({})
+			require("dropbar").setup()
 		end,
 	},
 	{
