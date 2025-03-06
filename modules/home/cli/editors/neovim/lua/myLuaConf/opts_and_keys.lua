@@ -157,9 +157,14 @@ vim.keymap.set("n", "k", "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = tr
 vim.keymap.set("n", "j", "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
 
 -- Diagnostic keymaps
-vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, { desc = "Go to previous diagnostic message" })
-vim.keymap.set("n", "]d", vim.diagnostic.goto_next, { desc = "Go to next diagnostic message" })
-vim.keymap.set("n", "<leader>e", vim.diagnostic.open_float, { desc = "Open floating diagnostic message" })
+vim.keymap.set("n", "[d", function()
+	vim.diagnostic.jump({ count = -1 })
+end, { desc = "Go to previous diagnostic message" })
+vim.keymap.set("n", "]d", function()
+	vim.diagnostic.jump({ count = 1 })
+end, { desc = "Go to next diagnostic message" })
+
+vim.keymap.set("n", "<leader>cd", vim.diagnostic.open_float, { desc = "Open floating diagnostic message" })
 vim.keymap.set("n", "<leader>q", vim.diagnostic.setloclist, { desc = "Open diagnostics list" })
 
 vim.diagnostic.config({
@@ -256,19 +261,3 @@ vim.api.nvim_set_hl(0, "VertSplit", {
 -- 	vim.api.nvim_set_hl(0, group, { link = other_group })
 -- end
 --
--- hilink("NavbuddyArray", "Identifier")
--- hilink("NavbuddyBoolean", "Boolean")
--- hilink("NavbuddyClass", "Type")
--- hilink("NavbuddyConstant", "Constant")
--- hilink("NavbuddyConstructor", "Function")
--- hilink("NavbuddyFile", "Special")
--- hilink("NavbuddyFunction", "Function")
--- hilink("NavbuddyInterface", "Type")
--- hilink("NavbuddyMethod", "Function")
--- hilink("NavbuddyNull", "Special")
--- hilink("NavbuddyNumber", "Number")
--- hilink("NavbuddyObject", "Identifier")
--- hilink("NavbuddyOperator", "Operator")
--- hilink("NavbuddyString", "String")
--- hilink("NavbuddyStruct", "Structure")
--- hilink("NavbuddyVariable", "@variable")

@@ -1,17 +1,16 @@
 return {
 	{
-		"barbecue.nvim",
+		"dropbar-nvim",
 		event = "DeferredUIEnter",
 		for_cat = "general.ui",
 		-- cmd = {  },
 		-- ft = "",
 		-- colorscheme = "",
 		load = function(name)
-			vim.cmd.packadd("nvim-web-devicons")
 			vim.cmd.packadd(name)
 		end,
 		after = function(plugin)
-			require("barbecue").setup({})
+			require("dropbar").setup({})
 		end,
 	},
 	{

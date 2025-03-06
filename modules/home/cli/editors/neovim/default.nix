@@ -129,9 +129,7 @@ in {
                 refactoring-nvim
                 arrow-nvim
                 vim-illuminate
-                nvim-navbuddy
                 nvim-navic
-                nui-nvim
                 todo-comments-nvim
                 grug-far-nvim
                 smart-splits-nvim
@@ -147,7 +145,7 @@ in {
               ui = with pkgs.vimPlugins; [
                 indent-blankline-nvim
                 lualine-nvim
-                barbecue-nvim
+                dropbar-nvim
                 nvchad-ui
                 base46
                 helpview-nvim
