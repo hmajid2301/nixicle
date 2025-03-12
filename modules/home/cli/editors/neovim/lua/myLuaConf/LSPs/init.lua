@@ -54,6 +54,15 @@ require("lze").load({
 						globals = { "nixCats", "vim" },
 						disable = { "missing-fields" },
 					},
+					library = {
+						vim.env.VIMRUNTIME, -- Neovim runtime files
+						-- Add other Lua paths if needed:
+						-- "${3rd}/luv/library",
+						-- "${3rd}/busted/library",
+					},
+					workspace = {
+						checkThirdParty = false,
+					},
 					telemetry = { enabled = false },
 				},
 			},
@@ -156,7 +165,7 @@ require("lze").load({
 	},
 	{ "templ", lsp = {} },
 	{ "terraformls", lsp = {} },
-	{ "taplo", lsp = {} },
+	-- { "taplo", lsp = {} },
 	{ "yamlls", lsp = {} },
 	{
 		"htmx",
@@ -183,19 +192,19 @@ require("lze").load({
 	-- 		},
 	-- 	},
 	-- },
-	{
-		"sqls",
-		lsp = {
-			settings = {
-				sqls = {
-					connections = {
-						{
-							driver = "postgresql",
-							dataSourceName = "host=127.0.0.1 port=5432 user=postgres password=postgres dbname=postgres sslmode=disable",
-						},
-					},
-				},
-			},
-		},
-	},
+	-- {
+	-- 	"sqls",
+	-- 	lsp = {
+	-- 		settings = {
+	-- 			sqls = {
+	-- 				connections = {
+	-- 					{
+	-- 						driver = "postgresql",
+	-- 						dataSourceName = "host=127.0.0.1 port=5432 user=postgres password=postgres dbname=postgres sslmode=disable",
+	-- 					},
+	-- 				},
+	-- 			},
+	-- 		},
+	-- 	},
+	-- },
 })

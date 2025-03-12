@@ -87,23 +87,6 @@ return {
 		end,
 	},
 	{
-		"SmiteshP/nvim-navbuddy",
-		for_cat = "general.editor",
-		event = "DeferredUIEnter",
-		load = function(name)
-			vim.cmd.packadd(name)
-			vim.cmd.packadd("nvim-navbuddy")
-		end,
-		after = function(plugin)
-			require("nvim-navbuddy").setup({
-				lsp = {
-					auto_attach = true,
-				},
-			})
-			vim.keymap.set("n", "<leader>nb", "<cmd>Navbuddy<cr>", { desc = "Show navbuddy" })
-		end,
-	},
-	{
 		"folke/todo-comments.nvim",
 		for_cat = "general.editor",
 		event = "DeferredUIEnter",

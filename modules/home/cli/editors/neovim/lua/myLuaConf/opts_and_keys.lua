@@ -157,10 +157,25 @@ vim.keymap.set("n", "k", "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = tr
 vim.keymap.set("n", "j", "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
 
 -- Diagnostic keymaps
-vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, { desc = "Go to previous diagnostic message" })
-vim.keymap.set("n", "]d", vim.diagnostic.goto_next, { desc = "Go to next diagnostic message" })
-vim.keymap.set("n", "<leader>e", vim.diagnostic.open_float, { desc = "Open floating diagnostic message" })
+vim.keymap.set("n", "[d", function()
+	vim.diagnostic.jump({ count = -1 })
+end, { desc = "Go to previous diagnostic message" })
+vim.keymap.set("n", "]d", function()
+	vim.diagnostic.jump({ count = 1 })
+end, { desc = "Go to next diagnostic message" })
+
+vim.keymap.set("n", "<leader>cd", vim.diagnostic.open_float, { desc = "Open floating diagnostic message" })
 vim.keymap.set("n", "<leader>q", vim.diagnostic.setloclist, { desc = "Open diagnostics list" })
+
+vim.diagnostic.config({
+	virtual_text = {
+		prefix = "●", -- Could be '■', '▎', 'x'
+	},
+	severity_sort = true,
+	float = {
+		source = "if_many", -- Or "if_many"
+	},
+})
 
 -- kickstart.nvim starts you with this.
 -- But it constantly clobbers your system clipboard whenever you delete anything.
@@ -186,7 +201,6 @@ vim.keymap.set(
 	{ noremap = true, silent = true, desc = "Yank line to clipboard" }
 )
 vim.keymap.set({ "n", "v", "x" }, "<C-a>", "gg6vG$", { noremap = true, silent = true, desc = "Select all" })
-vim.keymap.set({ "n", "v", "x" }, "<leader>p", '"+p', { noremap = true, silent = true, desc = "Paste from clipboard" })
 vim.keymap.set(
 	"i",
 	"<C-p>",
@@ -195,10 +209,13 @@ vim.keymap.set(
 )
 vim.keymap.set(
 	"x",
-	"<leader>P",
+	"<leader>p",
 	'"_dP',
 	{ noremap = true, silent = true, desc = "Paste over selection without erasing unnamed register" }
 )
+-- vim.keymap.set("n", "P", '"+P', { noremap = true })
+vim.keymap.set({ "n", "x" }, "p", '"+p', { noremap = true, desc = "Paste from clipboard" })
+vim.keymap.set({ "n", "x" }, "P", '"+P', { noremap = true, desc = "Paste before from clipboard" })
 vim.keymap.set("n", "<C-d>", "<C-d>zz", { desc = "Keep cursor in middle when jumping" })
 vim.keymap.set("n", "<C-u>", "<C-u>zz", { desc = "Keep cursor in middle when jumping" })
 vim.keymap.set("n", "<leader>mj", ":m .+1<CR>==", { desc = "Move selected lines down" })
@@ -213,7 +230,6 @@ vim.keymap.set("n", "k", "v:count == 0 ? 'gk' : 'k'", { silent = true, expr = tr
 vim.keymap.set("n", "<leader>|", "<C-w>v", { desc = "Split window right" })
 vim.keymap.set("n", "<leader>-", "<C-w>s", { desc = "Split window below" })
 vim.keymap.set({ "n", "v", "x" }, "<C-s>", "<cmd>w<cr><esc>", { desc = "Save file" })
-vim.keymap.set("v", "<leader>p", "'_dP", { desc = "Paste without updating buffer" })
 vim.keymap.set({ "v", "x" }, ">", ">gv", { desc = "Stay in visual mode during outdent" })
 vim.keymap.set({ "v", "x" }, "<", "<gv", { desc = "Stay in visual mode during indent" })
 vim.keymap.set("n", "<C-n>", "<cmd>cnext<CR>zz", { desc = "Go to next item in quickfix list and center cursor" })
@@ -225,5 +241,23 @@ vim.keymap.set(
 	"<cmd>lprev<CR>zz",
 	{ desc = "Go to previous item in location list and center cursor" }
 )
-vim.keymap.set("n", "<C-b>", "<cmd>cmp.mapping.scroll_docs(-4)<CR>", { desc = "Scroll docs down" })
-vim.keymap.set("n", "<C-f>", "<cmd>cmp.mapping.scroll_docs(4)<CR>", { desc = "Scroll docs up" })
+
+-- TODO: Move to chadrc
+vim.api.nvim_set_hl(0, "@string.special.url", { fg = "#f5e0dc", italic = true, underline = true })
+vim.api.nvim_set_hl(0, "@string.special", { fg = "#74c7ec" })
+vim.api.nvim_set_hl(0, "WinSeparator", {
+	fg = "#11111b", -- Foreground color of the separator line
+	bg = "NONE", -- Background color (transparent)
+	bold = true, -- Optional: make the line bold
+})
+vim.api.nvim_set_hl(0, "VertSplit", {
+	fg = "#11111b", -- Match WinSeparator color
+	bg = "NONE",
+	ctermfg = 238, -- Terminal color index (dark gray)
+	ctermbg = "NONE",
+})
+
+-- local function hilink(group, other_group)
+-- 	vim.api.nvim_set_hl(0, group, { link = other_group })
+-- end
+--

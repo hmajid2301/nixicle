@@ -20,7 +20,7 @@ require("catppuccin").setup({
 		-- grug_far = true,
 		-- indent_blankline = true,
 		-- mini = true,
-		-- navic = true,
+		navic = true,
 		-- telescope = true,
 		-- neotest = true,
 		-- flash = true,
