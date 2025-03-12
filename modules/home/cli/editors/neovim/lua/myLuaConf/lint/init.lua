@@ -18,7 +18,8 @@ require("lze").load({
 				nix = { "statix" },
 				javascript = { "eslint" },
 				typescript = { "eslint" },
-				yaml = { "yamllint" },
+				-- TODO: fix yaml
+				-- yaml = { "yamllint" },
 			}
 
 			vim.api.nvim_create_autocmd({ "BufWritePost" }, {

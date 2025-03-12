@@ -1,17 +1,23 @@
 return {
 	{
-		"barbecue.nvim",
+		"dropbar.nvim",
 		event = "DeferredUIEnter",
 		for_cat = "general.ui",
 		-- cmd = {  },
 		-- ft = "",
 		-- colorscheme = "",
-		load = function(name)
-			vim.cmd.packadd("nvim-web-devicons")
-			vim.cmd.packadd(name)
-		end,
+		-- load = function(name)
+		-- 	vim.cmd.packadd(name)
+		-- 	vim.cmd.packadd("dropbar-nvim")
+		-- end,
+		keys = {
+			{ "<leader>nb", mode = { "n" }, desc = "Show dropbar picker" },
+		},
 		after = function(plugin)
-			require("barbecue").setup({})
+			require("dropbar").setup()
+			vim.keymap.set("n", "<leader>nb", function()
+				require("dropbar.api").pick()
+			end, { desc = "Show dropbar picker" })
 		end,
 	},
 	{

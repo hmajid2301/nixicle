@@ -24,13 +24,14 @@ require("lze").load({
 					css = { "prettierd" },
 					go = { "gofmt", "goimports" },
 					lua = { "stylua" },
-					templ = { "rustywind" },
+					-- TODO: fix these
+					-- templ = { "rustywind" },
 					-- html = { "htmlbeautifier", "rustywind" },
 					nix = { "nixfmt" },
 					python = { "isort", "black" },
 					javascript = { "prettierd" },
 					typescript = { "prettierd" },
-					yaml = { "yamlfmt" },
+					-- yaml = { "yamlfmt" },
 				},
 			})
 		end,
