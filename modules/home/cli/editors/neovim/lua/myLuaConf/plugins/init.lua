@@ -8,24 +8,24 @@
 -- vim.cmd.colorscheme(colorschemeName)
 
 -- put this in your main init.lua file ( before lazy setup )
-vim.g.base46_cache = vim.fn.stdpath("data") .. "/base46_cache/"
+-- vim.g.base46_cache = vim.fn.stdpath("data") .. "/base46_cache/"
 
 require("catppuccin").setup({
 	flavour = "mocha",
 	integrations = {
-		-- gitsigns = true,
+		gitsigns = true,
 		illuminate = {
 			enabled = true,
 		},
-		-- grug_far = true,
-		-- indent_blankline = true,
-		-- mini = true,
+		grug_far = true,
+		indent_blankline = true,
+		mini = true,
 		navic = true,
-		-- telescope = true,
-		-- neotest = true,
-		-- flash = true,
-		-- treesitter = true,
-		-- treesitter_context = true,
+		telescope = true,
+		neotest = true,
+		flash = true,
+		treesitter = true,
+		treesitter_context = true,
 	},
 })
 
@@ -44,5 +44,5 @@ require("lze").load({
 	{ import = "myLuaConf.plugins.ui" },
 })
 
-dofile(vim.g.base46_cache .. "defaults")
-dofile(vim.g.base46_cache .. "statusline")
+-- dofile(vim.g.base46_cache .. "defaults")
+-- dofile(vim.g.base46_cache .. "statusline")

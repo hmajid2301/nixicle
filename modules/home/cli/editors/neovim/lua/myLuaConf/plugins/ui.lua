@@ -21,21 +21,44 @@ return {
 		end,
 	},
 	{
-		"nvchad-ui",
+		"tailwind-tools",
+		event = "DeferredUIEnter",
 		for_cat = "general.ui",
 		-- cmd = {  },
-		-- event = "",
 		-- ft = "",
 		-- colorscheme = "",
-		load = function(name)
-			vim.cmd.packadd(name)
-			vim.cmd.packadd("base46")
-		end,
+		-- load = function(name)
+		-- 	vim.cmd.packadd(name)
+		-- 	vim.cmd.packadd("dropbar-nvim")
+		-- end,
 		after = function(plugin)
-			require("base46").load_all_highlights()
-			require("nvchad")
+			require("tailwind-tools").setup({
+				server = {
+					override = false,
+				},
+				document_color = {
+					inline_symbol = "󱓻 ",
+				},
+			})
 		end,
 	},
+	-- {
+	-- 	"nvchad-ui",
+	-- 	for_cat = "general.ui",
+	-- 	-- cmd = {  },
+	-- 	-- event = "",
+	-- 	-- ft = "",
+	-- 	-- colorscheme = "",
+	-- 	load = function(name)
+	-- 		vim.cmd.packadd(name)
+	-- 		vim.cmd.packadd("base46")
+	-- 	end,
+	-- 	after = function(plugin)
+	-- 		require("base46").load_all_highlights()
+	-- 		require("nvchad")
+	-- 	end,
+	-- },
+	--
 	{
 		"lukas-reineke/indent-blankline.nvim",
 		for_cat = "general.ui",

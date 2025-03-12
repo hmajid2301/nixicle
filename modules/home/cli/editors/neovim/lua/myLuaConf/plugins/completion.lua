@@ -122,12 +122,42 @@ return {
 			local lspkind = require("lspkind")
 
 			local options = {
+				window = {
+					completion = {
+						winhighlight = "FloatBorder:CmpBorder,Normal:CmpPmenu,CursorLine:CmpSel,Search:PmenuSel",
+						scrollbar = false,
+						sidePadding = 0,
+						border = {
+							"╭",
+							"─",
+							"╮",
+							"│",
+							"╯",
+							"─",
+							"╰",
+							"│",
+						},
+					},
+				},
+				documentation = {
+					border = {
+						"╭",
+						"─",
+						"╮",
+						"│",
+						"╯",
+						"─",
+						"╰",
+						"│",
+					},
+					winhighlight = "FloatBorder:CmpBorder,Normal:CmpPmenu,CursorLine:CmpSel,Search:PmenuSel",
+				},
 				formatting = {
 					format = lspkind.cmp_format({
 						mode = "text",
 						with_text = true,
-						maxwidth = 50, -- prevent the popup from showing more than provided characters (e.g 50 will not show more than 50 characters)
-						ellipsis_char = "...", -- when popup menu exceed maxwidth, the truncated part would show ellipsis_char instead (must define maxwidth first)
+						maxwidth = 50,
+						ellipsis_char = "...",
 					}),
 				},
 				snippet = {
