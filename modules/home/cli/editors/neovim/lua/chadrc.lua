@@ -2,14 +2,7 @@ local options = {
 	base46 = {
 		theme = "catppuccin",
 		hl_add = {},
-		hl_override = {
-			["@property"] = { fg = "#F38BA8" },
-			["@lsp.typemod.variable.defaultLibrary.go"] = { fg = "#F38BA8" },
-			["@lsp.typemod.variable.readonly.go"] = { fg = "#F38BA8" },
-			["@constructor"] = { fg = "#F8BD96" },
-			["@tag"] = { fg = "#cba6f7" },
-			-- ["@string.special.url"] = { fg = "#f5e0dc", style = { "italic", "underline" } },
-		},
+		hl_override = {},
 		integrations = {
 			"dap",
 		},
