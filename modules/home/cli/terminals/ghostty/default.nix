@@ -29,7 +29,7 @@ in {
         cursor-style = "block";
         confirm-close-surface = false;
         keybind = [
-          "ctrl+shift+-=increase_font_size"
+          "ctrl+shift+plus=increase_font_size:1"
         ];
       };
     };
