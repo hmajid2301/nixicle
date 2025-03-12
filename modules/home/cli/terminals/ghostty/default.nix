@@ -28,6 +28,9 @@ in {
         copy-on-select = "clipboard";
         cursor-style = "block";
         confirm-close-surface = false;
+        keybind = [
+          "ctrl+shift+plus=increase_font_size:1"
+        ];
       };
     };
   };

@@ -87,7 +87,6 @@ require("nixCatsUtils.catPacker").setup({
 	{ "ThePrimeagen/refactoring.nvim", opt = true },
 	{ "otavioschwanck/arrow.nvim", opt = true },
 	{ "RRethy/vim-illuminate", opt = true },
-	{ "SmiteshP/nvim-navbuddy", opt = true },
 	{ "folke/todo-comments.nvim", opt = true },
 	{ "lukas-reineke/indent-blankline.nvim", opt = true },
 	{ "MagicDuck/grug-far.nvim", opt = true },
