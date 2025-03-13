@@ -37,6 +37,19 @@ return {
 		end,
 	},
 	{
+		"gbprod/yanky.nvim",
+		for_cat = "general.editor",
+		event = "DeferredUIEnter",
+		load = function(name)
+			vim.cmd.packadd("yanky.nvim")
+			vim.cmd.packadd(name)
+		end,
+		config = function() end,
+		after = function(plugin)
+			require("yanky").setup()
+		end,
+	},
+	{
 		"echasnovski/mini.nvim",
 		for_cat = "general.editor",
 		event = "DeferredUIEnter",
@@ -49,7 +62,7 @@ return {
 			require("mini.surround").setup()
 			require("mini.comment").setup()
 			require("mini.files").setup()
-			require("mini.pairs").setup()
+			-- require("mini.pairs").setup()
 			require("mini.trailspace").setup()
 		end,
 	},

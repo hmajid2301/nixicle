@@ -218,7 +218,7 @@ return {
 					ghost_text = false,
 				},
 			}
-			options = vim.tbl_deep_extend("force", options, require("nvchad.cmp"))
+			-- options = vim.tbl_deep_extend("force", options, require("nvchad.cmp"))
 			require("cmp").setup(options)
 
 			cmp.setup.filetype("lua", {

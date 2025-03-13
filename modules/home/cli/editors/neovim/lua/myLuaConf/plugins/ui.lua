@@ -1,15 +1,15 @@
 return {
 	{
-		"dropbar.nvim",
+		"Bekaboo/dropbar.nvim",
 		event = "DeferredUIEnter",
 		for_cat = "general.ui",
 		-- cmd = {  },
 		-- ft = "",
 		-- colorscheme = "",
-		-- load = function(name)
-		-- 	vim.cmd.packadd(name)
-		-- 	vim.cmd.packadd("dropbar-nvim")
-		-- end,
+		load = function(name)
+			vim.cmd.packadd(name)
+			vim.cmd.packadd("dropbar.nvim")
+		end,
 		keys = {
 			{ "<leader>nb", mode = { "n" }, desc = "Show dropbar picker" },
 		},
@@ -21,16 +21,16 @@ return {
 		end,
 	},
 	{
-		"tailwind-tools",
+		"luckasRanarison/tailwind-tools.nvim",
 		event = "DeferredUIEnter",
 		for_cat = "general.ui",
 		-- cmd = {  },
 		-- ft = "",
 		-- colorscheme = "",
-		-- load = function(name)
-		-- 	vim.cmd.packadd(name)
-		-- 	vim.cmd.packadd("dropbar-nvim")
-		-- end,
+		load = function(name)
+			vim.cmd.packadd(name)
+			vim.cmd.packadd("tailwind-tools.nvim")
+		end,
 		after = function(plugin)
 			require("tailwind-tools").setup({
 				server = {
