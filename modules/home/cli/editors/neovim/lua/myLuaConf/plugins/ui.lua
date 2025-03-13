@@ -42,23 +42,6 @@ return {
 			})
 		end,
 	},
-	-- {
-	-- 	"nvchad-ui",
-	-- 	for_cat = "general.ui",
-	-- 	-- cmd = {  },
-	-- 	-- event = "",
-	-- 	-- ft = "",
-	-- 	-- colorscheme = "",
-	-- 	load = function(name)
-	-- 		vim.cmd.packadd(name)
-	-- 		vim.cmd.packadd("base46")
-	-- 	end,
-	-- 	after = function(plugin)
-	-- 		require("base46").load_all_highlights()
-	-- 		require("nvchad")
-	-- 	end,
-	-- },
-	--
 	{
 		"lukas-reineke/indent-blankline.nvim",
 		for_cat = "general.ui",
