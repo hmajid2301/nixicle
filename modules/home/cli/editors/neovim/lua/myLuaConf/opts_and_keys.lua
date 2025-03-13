@@ -103,14 +103,14 @@ vim.api.nvim_create_autocmd("FileType", {
 
 -- [[ Highlight on yank ]]
 -- See `:help vim.highlight.on_yank()`
-local highlight_group = vim.api.nvim_create_augroup("YankHighlight", { clear = true })
-vim.api.nvim_create_autocmd("TextYankPost", {
-	callback = function()
-		vim.highlight.on_yank()
-	end,
-	group = highlight_group,
-	pattern = "*",
-})
+-- local highlight_group = vim.api.nvim_create_augroup("YankHighlight", { clear = true })
+-- vim.api.nvim_create_autocmd("TextYankPost", {
+-- 	callback = function()
+-- 		vim.highlight.on_yank()
+-- 	end,
+-- 	group = highlight_group,
+-- 	pattern = "*",
+-- })
 
 vim.api.nvim_create_autocmd("BufWritePre", {
 	pattern = "*.templ",
@@ -207,15 +207,12 @@ vim.keymap.set(
 	"<C-r><C-p>+",
 	{ noremap = true, silent = true, desc = "Paste from clipboard from within insert mode" }
 )
-vim.keymap.set(
-	"x",
-	"<leader>p",
-	'"_dP',
-	{ noremap = true, silent = true, desc = "Paste over selection without erasing unnamed register" }
-)
--- vim.keymap.set("n", "P", '"+P', { noremap = true })
-vim.keymap.set({ "n", "x" }, "p", '"+p', { noremap = true, desc = "Paste from clipboard" })
-vim.keymap.set({ "n", "x" }, "P", '"+P', { noremap = true, desc = "Paste before from clipboard" })
+-- vim.keymap.set(
+-- 	"x",
+-- 	"<leader>p",
+-- 	'"_dP',
+-- 	{ noremap = true, silent = true, desc = "Paste over selection without erasing unnamed register" }
+-- )
 vim.keymap.set("n", "<C-d>", "<C-d>zz", { desc = "Keep cursor in middle when jumping" })
 vim.keymap.set("n", "<C-u>", "<C-u>zz", { desc = "Keep cursor in middle when jumping" })
 vim.keymap.set("n", "<leader>mj", ":m .+1<CR>==", { desc = "Move selected lines down" })

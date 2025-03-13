@@ -11,5 +11,4 @@ require("lze").load({
 	{ import = "myLuaConf.plugins.git" },
 	{ import = "myLuaConf.plugins.ai" },
 	{ import = "myLuaConf.plugins.ui" },
-	{ import = "myLuaConf.plugins.colorscheme" },
 })

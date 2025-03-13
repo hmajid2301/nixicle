@@ -123,10 +123,10 @@ return {
 
 			local options = {
 				window = {
-					completion = {
+					completion = cmp.config.window.bordered({
 						winhighlight = "FloatBorder:CmpBorder,Normal:CmpPmenu,CursorLine:CmpSel,Search:PmenuSel",
 						scrollbar = false,
-						sidePadding = 0,
+						side_padding = 0,
 						border = {
 							"╭",
 							"─",
@@ -137,20 +137,10 @@ return {
 							"╰",
 							"│",
 						},
-					},
-				},
-				documentation = {
-					border = {
-						"╭",
-						"─",
-						"╮",
-						"│",
-						"╯",
-						"─",
-						"╰",
-						"│",
-					},
-					winhighlight = "FloatBorder:CmpBorder,Normal:CmpPmenu,CursorLine:CmpSel,Search:PmenuSel",
+					}),
+					documentation = cmp.config.window.bordered({
+						winhighlight = "FloatBorder:CmpBorder,Normal:CmpPmenu,CursorLine:CmpSel,Search:PmenuSel",
+					}),
 				},
 				formatting = {
 					format = lspkind.cmp_format({
