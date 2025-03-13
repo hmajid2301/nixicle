@@ -101,17 +101,6 @@ vim.api.nvim_create_autocmd("FileType", {
 	end,
 })
 
--- [[ Highlight on yank ]]
--- See `:help vim.highlight.on_yank()`
--- local highlight_group = vim.api.nvim_create_augroup("YankHighlight", { clear = true })
--- vim.api.nvim_create_autocmd("TextYankPost", {
--- 	callback = function()
--- 		vim.highlight.on_yank()
--- 	end,
--- 	group = highlight_group,
--- 	pattern = "*",
--- })
-
 vim.api.nvim_create_autocmd("BufWritePre", {
 	pattern = "*.templ",
 	callback = function()
@@ -133,7 +122,7 @@ vim.api.nvim_create_autocmd("BufWritePre", {
 		end
 	end,
 })
-
+--
 vim.g.netrw_liststyle = 0
 vim.g.netrw_banner = 0
 -- [[ Basic Keymaps ]]
@@ -185,21 +174,6 @@ vim.diagnostic.config({
 --  See `:help 'clipboard'`
 vim.o.clipboard = "unnamedplus"
 
--- You should instead use these keybindings so that they are still easy to use, but dont conflict
-vim.keymap.set("n", "<leader>y", '"+y', { noremap = true, silent = true, desc = "Yank to clipboard" })
-vim.keymap.set({ "v", "x" }, "<leader>y", '"+y', { noremap = true, silent = true, desc = "Yank to clipboard" })
-vim.keymap.set(
-	{ "n", "v", "x" },
-	"<leader>yy",
-	'"+yy',
-	{ noremap = true, silent = true, desc = "Yank line to clipboard" }
-)
-vim.keymap.set(
-	{ "n", "v", "x" },
-	"<leader>Y",
-	'"+yy',
-	{ noremap = true, silent = true, desc = "Yank line to clipboard" }
-)
 vim.keymap.set({ "n", "v", "x" }, "<C-a>", "gg6vG$", { noremap = true, silent = true, desc = "Select all" })
 vim.keymap.set(
 	"i",
@@ -238,23 +212,3 @@ vim.keymap.set(
 	"<cmd>lprev<CR>zz",
 	{ desc = "Go to previous item in location list and center cursor" }
 )
-
--- TODO: Move to chadrc
-vim.api.nvim_set_hl(0, "@string.special.url", { fg = "#f5e0dc", italic = true, underline = true })
-vim.api.nvim_set_hl(0, "@string.special", { fg = "#74c7ec" })
-vim.api.nvim_set_hl(0, "WinSeparator", {
-	fg = "#11111b", -- Foreground color of the separator line
-	bg = "NONE", -- Background color (transparent)
-	bold = true, -- Optional: make the line bold
-})
-vim.api.nvim_set_hl(0, "VertSplit", {
-	fg = "#11111b", -- Match WinSeparator color
-	bg = "NONE",
-	ctermfg = 238, -- Terminal color index (dark gray)
-	ctermbg = "NONE",
-})
-
--- local function hilink(group, other_group)
--- 	vim.api.nvim_set_hl(0, group, { link = other_group })
--- end
---

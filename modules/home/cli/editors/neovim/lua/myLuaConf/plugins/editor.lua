@@ -47,9 +47,6 @@ return {
 		config = function() end,
 		after = function(plugin)
 			require("yanky").setup({
-				-- system_clipboard = {
-				-- 	sync_with_ring = true,
-				-- },
 				highlight = { timer = 150 },
 			})
 
@@ -65,7 +62,13 @@ return {
 			vim.keymap.set({ "n", "x" }, "P", "<Plug>(YankyPutBefore)")
 			vim.keymap.set({ "n", "x" }, "gp", "<Plug>(YankyGPutAfter)")
 			vim.keymap.set({ "n", "x" }, "gP", "<Plug>(YankyGPutBefore)")
-
+			vim.keymap.set({ "n", "x" }, "<leader>ip", "<Plug>(YankyPutAfterCharwise)", { desc = "Inline Paste After" })
+			vim.keymap.set(
+				{ "n", "x" },
+				"<leader>iP",
+				"<Plug>(YankyPutBeforeCharwise)",
+				{ desc = "Inline Paste Before" }
+			)
 			vim.keymap.set("n", "<c-p>", "<Plug>(YankyPreviousEntry)")
 			vim.keymap.set("n", "<c-n>", "<Plug>(YankyNextEntry)")
 		end,
