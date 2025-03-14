@@ -157,8 +157,10 @@ require("lze").load({
 		lsp = {
 			filetypes = { "html", "templ" },
 			settings = {
-				includedLanguages = {
-					templ = "html",
+				tailwindcss = {
+					includeLanguages = {
+						templ = "html",
+					},
 				},
 			},
 		},
@@ -181,8 +183,9 @@ require("lze").load({
 	-- 		settings = {
 	-- 			html = {
 	-- 				format = {
-	-- 					wrapLineLength = 120,
-	-- 					wrapAttributes = "auto",
+	-- 					enable = false,
+	-- 					-- wrapLineLength = 120,
+	-- 					-- wrapAttributes = "auto",
 	-- 				},
 	-- 				hover = {
 	-- 					documentation = true,

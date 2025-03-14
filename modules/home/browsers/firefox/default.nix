@@ -1,28 +1,17 @@
-{
-  inputs,
-  lib,
-  host,
-  pkgs,
-  config,
-  ...
-}:
-with lib; let
-  cfg = config.browsers.firefox;
+{ inputs, lib, host, pkgs, config, ... }:
+with lib;
+let cfg = config.browsers.firefox;
 in {
   options.browsers.firefox = {
     enable = mkEnableOption "enable firefox browser";
   };
 
   config = mkIf cfg.enable {
-    home.packages = with pkgs; [
-      inputs.zen-browser.packages.${pkgs.system}.default
-    ];
-
     xdg.mimeApps.defaultApplications = {
-      "text/html" = ["firefox.desktop"];
-      "text/xml" = ["firefox.desktop"];
-      "x-scheme-handler/http" = ["firefox.desktop"];
-      "x-scheme-handler/https" = ["firefox.desktop"];
+      "text/html" = [ "firefox.desktop" ];
+      "text/xml" = [ "firefox.desktop" ];
+      "x-scheme-handler/http" = [ "firefox.desktop" ];
+      "x-scheme-handler/https" = [ "firefox.desktop" ];
     };
 
     programs.firefox = {
