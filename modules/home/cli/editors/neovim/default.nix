@@ -31,7 +31,6 @@ in {
               stylelint
               prettierd
               tailwindcss-language-server
-              vimPlugins.tailwind-tools-nvim
             ];
             docker = with pkgs; [
               dockerfile-language-server-nodejs
@@ -133,6 +132,7 @@ in {
                 todo-comments-nvim
                 grug-far-nvim
                 smart-splits-nvim
+                yanky-nvim
                 pkgs.neovimPlugins.gx-nvim
               ];
               extra = with pkgs.vimPlugins; [
@@ -146,9 +146,8 @@ in {
                 indent-blankline-nvim
                 lualine-nvim
                 dropbar-nvim
-                nvchad-ui
-                base46
                 helpview-nvim
+                tailwind-tools-nvim
               ];
             };
           };
@@ -178,34 +177,6 @@ in {
 
       # see :help nixCats.flake.outputs.packageDefinitions
       packageDefinitions.replace = {
-        # These are the names of your packages
-        # you can include as many as you wish.
-        myHomeModuleNvim = { pkgs, ... }: {
-          # they contain a settings set defined above
-          # see :help nixCats.flake.outputs.settings
-          settings = {
-            wrapRc = false;
-            aliases = [ "vim" "homeVim" ];
-            neovim-unwrapped =
-              inputs.neovim-nightly-overlay.packages.${pkgs.system}.neovim;
-          };
-          # and a set of categories that you want
-          # (and other information to pass to lua)
-          categories = {
-            general = true;
-            test = true;
-            example = {
-              youCan = "add more than just booleans";
-              toThisSet = [
-                "and the contents of this categories set"
-                "will be accessible to your lua with"
-                "nixCats('path.to.value')"
-                "see :help nixCats"
-              ];
-            };
-          };
-        };
-
         nixCats = { pkgs, ... }: {
           settings = {
             wrapRc = true;

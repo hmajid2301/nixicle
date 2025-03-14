@@ -1,15 +1,15 @@
 return {
 	{
-		"dropbar.nvim",
+		"Bekaboo/dropbar.nvim",
 		event = "DeferredUIEnter",
 		for_cat = "general.ui",
 		-- cmd = {  },
 		-- ft = "",
 		-- colorscheme = "",
-		-- load = function(name)
-		-- 	vim.cmd.packadd(name)
-		-- 	vim.cmd.packadd("dropbar-nvim")
-		-- end,
+		load = function(name)
+			vim.cmd.packadd(name)
+			vim.cmd.packadd("dropbar.nvim")
+		end,
 		keys = {
 			{ "<leader>nb", mode = { "n" }, desc = "Show dropbar picker" },
 		},
@@ -21,19 +21,28 @@ return {
 		end,
 	},
 	{
-		"nvchad-ui",
+		"luckasRanarison/tailwind-tools.nvim",
+		event = "DeferredUIEnter",
 		for_cat = "general.ui",
 		-- cmd = {  },
-		-- event = "",
 		-- ft = "",
 		-- colorscheme = "",
 		load = function(name)
 			vim.cmd.packadd(name)
-			vim.cmd.packadd("base46")
+			vim.cmd.packadd("tailwind-tools.nvim")
 		end,
 		after = function(plugin)
-			require("base46").load_all_highlights()
-			require("nvchad")
+			require("tailwind-tools").setup({
+				server = {
+					override = false,
+				},
+				document_color = {
+					enabled = true, -- can be toggled by commands
+					kind = "inline", -- "inline" | "foreground" | "background"
+					debounce = 200, -- in milliseconds, only applied in insert mode
+					inline_symbol = "󱓻 ",
+				},
+			})
 		end,
 	},
 	{
@@ -166,8 +175,8 @@ return {
 					lualine_y = {
 						{
 							function()
-								local buf_ft = vim.api.nvim_buf_get_option(0, "filetype")
-								local clients = vim.lsp.get_active_clients()
+								local buf_ft = vim.api.nvim_get_option_value("filetype", { buf = 0 })
+								local clients = vim.lsp.get_clients()
 								if next(clients) == nil then
 									return "None"
 								end
@@ -185,7 +194,7 @@ return {
 							icon = {
 								" ",
 								color = {
-									fg = "#FFF",
+									fg = "#2d2c3c",
 									bg = "#8bc2f0",
 								},
 							},
