@@ -122,12 +122,32 @@ return {
 			local lspkind = require("lspkind")
 
 			local options = {
+				window = {
+					completion = cmp.config.window.bordered({
+						winhighlight = "FloatBorder:CmpBorder,Normal:CmpPmenu,CursorLine:CmpSel,Search:PmenuSel",
+						scrollbar = false,
+						side_padding = 0,
+						border = {
+							"╭",
+							"─",
+							"╮",
+							"│",
+							"╯",
+							"─",
+							"╰",
+							"│",
+						},
+					}),
+					documentation = cmp.config.window.bordered({
+						winhighlight = "FloatBorder:CmpBorder,Normal:CmpPmenu,CursorLine:CmpSel,Search:PmenuSel",
+					}),
+				},
 				formatting = {
 					format = lspkind.cmp_format({
-						mode = "text",
+						mode = "symbol_text",
 						with_text = true,
-						maxwidth = 50, -- prevent the popup from showing more than provided characters (e.g 50 will not show more than 50 characters)
-						ellipsis_char = "...", -- when popup menu exceed maxwidth, the truncated part would show ellipsis_char instead (must define maxwidth first)
+						maxwidth = 60,
+						ellipsis_char = "...",
 					}),
 				},
 				snippet = {
@@ -188,7 +208,7 @@ return {
 					ghost_text = false,
 				},
 			}
-			options = vim.tbl_deep_extend("force", options, require("nvchad.cmp"))
+			-- options = vim.tbl_deep_extend("force", options, require("nvchad.cmp"))
 			require("cmp").setup(options)
 
 			cmp.setup.filetype("lua", {

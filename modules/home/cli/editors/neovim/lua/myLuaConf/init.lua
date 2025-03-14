@@ -12,6 +12,7 @@ require("lze").register_handlers(require("lzextras").lsp)
 
 -- NOTE: general plugins
 require("myLuaConf.plugins")
+require("myLuaConf.plugins.colorscheme")
 
 -- NOTE: obviously, more plugins, but more organized by what they do below
 

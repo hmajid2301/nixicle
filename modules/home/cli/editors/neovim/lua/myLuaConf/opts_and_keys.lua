@@ -2,20 +2,6 @@
 vim.g.mapleader = " "
 vim.g.maplocalleader = ","
 
-if os.getenv("WAYLAND_DISPLAY") and vim.fn.exepath("wl-copy") ~= "" then
-	vim.g.clipboard = {
-		name = "wl-clipboard",
-		copy = {
-			["+"] = "wl-copy",
-			["*"] = "wl-copy",
-		},
-		paste = {
-			["+"] = "wl-paste",
-			["*"] = "wl-paste",
-		},
-		cache_enabled = 1,
-	}
-end
 -- [[ Setting options ]]
 -- See `:help vim.o`
 -- NOTE: You can change these options as you wish!
@@ -101,17 +87,6 @@ vim.api.nvim_create_autocmd("FileType", {
 	end,
 })
 
--- [[ Highlight on yank ]]
--- See `:help vim.highlight.on_yank()`
-local highlight_group = vim.api.nvim_create_augroup("YankHighlight", { clear = true })
-vim.api.nvim_create_autocmd("TextYankPost", {
-	callback = function()
-		vim.highlight.on_yank()
-	end,
-	group = highlight_group,
-	pattern = "*",
-})
-
 vim.api.nvim_create_autocmd("BufWritePre", {
 	pattern = "*.templ",
 	callback = function()
@@ -133,7 +108,7 @@ vim.api.nvim_create_autocmd("BufWritePre", {
 		end
 	end,
 })
-
+--
 vim.g.netrw_liststyle = 0
 vim.g.netrw_banner = 0
 -- [[ Basic Keymaps ]]
@@ -183,23 +158,8 @@ vim.diagnostic.config({
 -- Sync clipboard between OS and Neovim.
 --  Remove this option if you want your OS clipboard to remain independent.
 --  See `:help 'clipboard'`
-vim.o.clipboard = "unnamedplus"
+vim.opt.clipboard = "unnamedplus"
 
--- You should instead use these keybindings so that they are still easy to use, but dont conflict
-vim.keymap.set("n", "<leader>y", '"+y', { noremap = true, silent = true, desc = "Yank to clipboard" })
-vim.keymap.set({ "v", "x" }, "<leader>y", '"+y', { noremap = true, silent = true, desc = "Yank to clipboard" })
-vim.keymap.set(
-	{ "n", "v", "x" },
-	"<leader>yy",
-	'"+yy',
-	{ noremap = true, silent = true, desc = "Yank line to clipboard" }
-)
-vim.keymap.set(
-	{ "n", "v", "x" },
-	"<leader>Y",
-	'"+yy',
-	{ noremap = true, silent = true, desc = "Yank line to clipboard" }
-)
 vim.keymap.set({ "n", "v", "x" }, "<C-a>", "gg6vG$", { noremap = true, silent = true, desc = "Select all" })
 vim.keymap.set(
 	"i",
@@ -207,15 +167,12 @@ vim.keymap.set(
 	"<C-r><C-p>+",
 	{ noremap = true, silent = true, desc = "Paste from clipboard from within insert mode" }
 )
-vim.keymap.set(
-	"x",
-	"<leader>p",
-	'"_dP',
-	{ noremap = true, silent = true, desc = "Paste over selection without erasing unnamed register" }
-)
--- vim.keymap.set("n", "P", '"+P', { noremap = true })
-vim.keymap.set({ "n", "x" }, "p", '"+p', { noremap = true, desc = "Paste from clipboard" })
-vim.keymap.set({ "n", "x" }, "P", '"+P', { noremap = true, desc = "Paste before from clipboard" })
+-- vim.keymap.set(
+-- 	"x",
+-- 	"<leader>p",
+-- 	'"_dP',
+-- 	{ noremap = true, silent = true, desc = "Paste over selection without erasing unnamed register" }
+-- )
 vim.keymap.set("n", "<C-d>", "<C-d>zz", { desc = "Keep cursor in middle when jumping" })
 vim.keymap.set("n", "<C-u>", "<C-u>zz", { desc = "Keep cursor in middle when jumping" })
 vim.keymap.set("n", "<leader>mj", ":m .+1<CR>==", { desc = "Move selected lines down" })
@@ -241,23 +198,3 @@ vim.keymap.set(
 	"<cmd>lprev<CR>zz",
 	{ desc = "Go to previous item in location list and center cursor" }
 )
-
--- TODO: Move to chadrc
-vim.api.nvim_set_hl(0, "@string.special.url", { fg = "#f5e0dc", italic = true, underline = true })
-vim.api.nvim_set_hl(0, "@string.special", { fg = "#74c7ec" })
-vim.api.nvim_set_hl(0, "WinSeparator", {
-	fg = "#11111b", -- Foreground color of the separator line
-	bg = "NONE", -- Background color (transparent)
-	bold = true, -- Optional: make the line bold
-})
-vim.api.nvim_set_hl(0, "VertSplit", {
-	fg = "#11111b", -- Match WinSeparator color
-	bg = "NONE",
-	ctermfg = 238, -- Terminal color index (dark gray)
-	ctermbg = "NONE",
-})
-
--- local function hilink(group, other_group)
--- 	vim.api.nvim_set_hl(0, group, { link = other_group })
--- end
---

@@ -78,8 +78,6 @@ require("nixCatsUtils.catPacker").setup({
 	-- ui
 	{ "nvim-lualine/lualine.nvim", opt = true },
 	{ "utilyre/barbecue.nvim", opt = true },
-	{ "NvChad/ui", opt = true },
-	{ "NvChad/base46", opt = true },
 
 	-- editor
 	{ "folke/trouble.nvim", opt = true },
