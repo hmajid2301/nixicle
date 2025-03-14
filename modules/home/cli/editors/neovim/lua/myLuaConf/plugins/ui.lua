@@ -37,6 +37,9 @@ return {
 					override = false,
 				},
 				document_color = {
+					enabled = true, -- can be toggled by commands
+					kind = "inline", -- "inline" | "foreground" | "background"
+					debounce = 200, -- in milliseconds, only applied in insert mode
 					inline_symbol = "󱓻 ",
 				},
 			})

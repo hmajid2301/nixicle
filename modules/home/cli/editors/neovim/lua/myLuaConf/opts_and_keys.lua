@@ -2,20 +2,6 @@
 vim.g.mapleader = " "
 vim.g.maplocalleader = ","
 
-if os.getenv("WAYLAND_DISPLAY") and vim.fn.exepath("wl-copy") ~= "" then
-	vim.g.clipboard = {
-		name = "wl-clipboard",
-		copy = {
-			["+"] = "wl-copy",
-			["*"] = "wl-copy",
-		},
-		paste = {
-			["+"] = "wl-paste",
-			["*"] = "wl-paste",
-		},
-		cache_enabled = 1,
-	}
-end
 -- [[ Setting options ]]
 -- See `:help vim.o`
 -- NOTE: You can change these options as you wish!
@@ -172,7 +158,7 @@ vim.diagnostic.config({
 -- Sync clipboard between OS and Neovim.
 --  Remove this option if you want your OS clipboard to remain independent.
 --  See `:help 'clipboard'`
-vim.o.clipboard = "unnamedplus"
+vim.opt.clipboard = "unnamedplus"
 
 vim.keymap.set({ "n", "v", "x" }, "<C-a>", "gg6vG$", { noremap = true, silent = true, desc = "Select all" })
 vim.keymap.set(
