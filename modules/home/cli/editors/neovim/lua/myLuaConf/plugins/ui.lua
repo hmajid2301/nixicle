@@ -194,7 +194,7 @@ return {
 							icon = {
 								" ",
 								color = {
-									fg = "#FFFFFF",
+									fg = "#2d2c3c",
 									bg = "#8bc2f0",
 								},
 							},

@@ -146,7 +146,7 @@ return {
 					format = lspkind.cmp_format({
 						mode = "text",
 						with_text = true,
-						maxwidth = 50,
+						maxwidth = 60,
 						ellipsis_char = "...",
 					}),
 				},
