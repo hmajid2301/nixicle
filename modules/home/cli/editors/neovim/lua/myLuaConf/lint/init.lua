@@ -9,7 +9,8 @@ require("lze").load({
 		-- colorscheme = "",
 		after = function(plugin)
 			require("lint").linters_by_ft = {
-				css = { "stylelint" },
+				-- TODO: css with tailwind
+				-- css = { "stylelint" },
 				docker = { "hadolint" },
 				go = { "golangcilint" },
 				html = { "htmlhint" },

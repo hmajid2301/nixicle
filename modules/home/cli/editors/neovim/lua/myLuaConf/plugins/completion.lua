@@ -126,7 +126,8 @@ return {
 					completion = cmp.config.window.bordered({
 						winhighlight = "FloatBorder:CmpBorder,Normal:CmpPmenu,CursorLine:CmpSel,Search:PmenuSel",
 						scrollbar = false,
-						side_padding = 0,
+						side_padding = 1,
+						col_offset = -4,
 						border = {
 							"╭",
 							"─",
@@ -144,6 +145,15 @@ return {
 				},
 				formatting = {
 					format = lspkind.cmp_format({
+						preset = "default",
+						menu = {
+							nvim_lsp = "[LSP]",
+							luasnip = "[Snippet]",
+							buffer = "[Buffer]",
+							path = "[Path]",
+							nvim_lua = "[Lua]",
+							cmp_dbee = "[DB]",
+						},
 						mode = "symbol_text",
 						with_text = true,
 						maxwidth = 60,
