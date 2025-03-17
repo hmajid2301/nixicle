@@ -155,8 +155,22 @@ return {
 						},
 					}),
 					documentation = cmp.config.window.bordered({
+<<<<<<< Updated upstream
 						winhighlight = "FloatBorder:CmpDocBorder,Normal:CmpDoc",
 						side_padding = 1,
+=======
+						border = {
+							"╭",
+							"─",
+							"╮",
+							"│",
+							"╯",
+							"─",
+							"╰",
+							"│",
+						},
+						winhighlight = "FloatBorder:CmpBorder,Normal:CmpPmenu,CursorLine:CmpSel,Search:PmenuSel",
+>>>>>>> Stashed changes
 					}),
 				},
 				formatting = {

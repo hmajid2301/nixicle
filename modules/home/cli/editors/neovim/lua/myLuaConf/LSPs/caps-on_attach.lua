@@ -19,7 +19,7 @@ function M.on_attach(_, bufnr)
 	-- because otherwise they would load telescope eagerly when this is defined.
 	-- due to us using the on_require handler to make sure it is available.
 	if nixCats("general.telescope") then
-		nmap("gr", function()
+		nmap("<leader>gr", function()
 			require("telescope.builtin").lsp_references()
 		end, "[G]oto [R]eferences")
 		nmap("<leader>gi", function()
