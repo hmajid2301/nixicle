@@ -4,17 +4,13 @@ local function faster_get_path(name)
 		vim.cmd.packadd(name)
 		return path
 	end
-	return nil -- nil will make it default to normal behavior
+	return nil
 end
 
----packadd + after/plugin
----@type fun(names: string[]|string)
 local load_w_after_plugin = require("lzextras").make_load_with_afters({ "plugin" }, faster_get_path)
 
--- NOTE: packadd doesnt load after directories.
--- hence, the above function that you can get from luaUtils that exists to make that easy.
-
 return {
+	-- CMP Plugins
 	{
 		"cmp-buffer",
 		for_cat = "general.cmp",
@@ -70,12 +66,6 @@ return {
 		on_plugin = { "nvim-cmp" },
 		load = load_w_after_plugin,
 	},
-	-- {
-	-- 	"cmp_dbee",
-	-- 	for_cat = "general.extra",
-	-- 	on_plugin = { "nvim-cmp" },
-	-- 	load = load_w_after_plugin,
-	-- },
 	{
 		"friendly-snippets",
 		for_cat = "general.cmp",
@@ -86,37 +76,62 @@ return {
 		for_cat = "general.cmp",
 		dep_of = { "nvim-cmp" },
 		load = load_w_after_plugin,
+		after = function()
+			require("lspkind").init({
+				symbol_map = {
+					Text = "󰉿 ",
+					Method = "󰆧 ",
+					Function = "󰊕 ",
+					Constructor = " ",
+					Field = "󰜢 ",
+					Variable = "󰀫 ",
+					Class = "󰠱 ",
+					Interface = " ",
+					Module = " ",
+					Property = "󰜢 ",
+					Unit = "󰑭 ",
+					Value = "󰎠 ",
+					Enum = " ",
+					Keyword = "󰌋 ",
+					Snippet = " ",
+					Color = "󰏘 ",
+					File = "󰈙 ",
+					Reference = "󰈇 ",
+					Folder = "󰉋 ",
+					EnumMember = " ",
+					Constant = "󰏿 ",
+					Struct = "󰙅 ",
+					Event = " ",
+					Operator = "󰆕 ",
+					TypeParameter = "󰊄 ",
+				},
+			})
+		end,
 	},
 	{
 		"luasnip",
 		for_cat = "general.cmp",
 		dep_of = { "nvim-cmp" },
-		after = function(plugin)
+		after = function()
 			local luasnip = require("luasnip")
 			require("luasnip.loaders.from_vscode").lazy_load()
 			luasnip.config.setup({})
 
-			local ls = require("luasnip")
-
 			vim.keymap.set({ "i", "s" }, "<M-n>", function()
-				if ls.choice_active() then
-					ls.change_choice(1)
+				if luasnip.choice_active() then
+					luasnip.change_choice(1)
 				end
 			end)
 		end,
 	},
+
+	-- Main CMP Configuration
 	{
 		"nvim-cmp",
 		for_cat = "general.cmp",
-		-- cmd = { "" },
 		event = { "DeferredUIEnter" },
 		on_require = { "cmp" },
-		-- ft = "",
-		-- keys = "",
-		-- colorscheme = "",
-		after = function(plugin)
-			-- [[ Configure nvim-cmp ]]
-			-- See `:help cmp`
+		after = function()
 			local cmp = require("cmp")
 			local luasnip = require("luasnip")
 			local lspkind = require("lspkind")
@@ -140,11 +155,13 @@ return {
 						},
 					}),
 					documentation = cmp.config.window.bordered({
-						winhighlight = "FloatBorder:CmpBorder,Normal:CmpPmenu,CursorLine:CmpSel,Search:PmenuSel",
+						winhighlight = "FloatBorder:CmpDocBorder,Normal:CmpDoc",
+						side_padding = 1,
 					}),
 				},
 				formatting = {
 					format = lspkind.cmp_format({
+						mode = "symbol_text",
 						preset = "default",
 						menu = {
 							nvim_lsp = "[LSP]",
@@ -154,8 +171,12 @@ return {
 							nvim_lua = "[Lua]",
 							cmp_dbee = "[DB]",
 						},
-						mode = "symbol_text",
-						with_text = true,
+						before = function(entry, vim_item)
+							-- Add margins and padding
+							vim_item.kind = string.format(" %s ", vim_item.kind)
+							vim_item.menu = "  " .. (vim_item.menu or "") .. "  "
+							return vim_item
+						end,
 						maxwidth = 60,
 						ellipsis_char = "...",
 					}),
@@ -197,15 +218,9 @@ return {
 						end
 					end, { "i", "s" }),
 				}),
-
 				sources = cmp.config.sources({
-					-- The insertion order influences the priority of the sources
-					{
-						name = "nvim_lsp" --[[ , keyword_length = 3 ]],
-					},
-					{
-						name = "nvim_lsp_signature_help" --[[ , keyword_length = 3  ]],
-					},
+					{ name = "nvim_lsp" },
+					{ name = "nvim_lsp_signature_help" },
 					{ name = "path" },
 					{ name = "luasnip" },
 					{ name = "buffer" },
@@ -218,30 +233,23 @@ return {
 					ghost_text = false,
 				},
 			}
-			-- options = vim.tbl_deep_extend("force", options, require("nvchad.cmp"))
-			require("cmp").setup(options)
 
+			-- Setup highlight groups for margins
+			vim.api.nvim_set_hl(0, "CmpItemKind", { bg = "NONE" })
+			vim.api.nvim_set_hl(0, "CmpItemMenu", { fg = "#565f89", italic = true })
+
+			cmp.setup(options)
+
+			-- Filetype-specific configurations
 			cmp.setup.filetype("lua", {
 				sources = cmp.config.sources({
 					{ name = "nvim_lua" },
-					{
-						name = "nvim_lsp" --[[ , keyword_length = 3  ]],
-					},
-					{
-						name = "nvim_lsp_signature_help" --[[ , keyword_length = 3  ]],
-					},
+					{ name = "nvim_lsp" },
+					{ name = "nvim_lsp_signature_help" },
 					{ name = "path" },
 					{ name = "luasnip" },
 					{ name = "buffer" },
 				}),
-				{
-					{
-						name = "cmdline",
-						option = {
-							ignore_cmds = { "Man", "!" },
-						},
-					},
-				},
 			})
 
 			cmp.setup.filetype("sql", {
@@ -252,27 +260,20 @@ return {
 				}),
 			})
 
-			-- Use buffer source for `/` and `?` (if you enabled `native_menu`, this won't work anymore).
+			-- Cmdline configurations
 			cmp.setup.cmdline({ "/", "?" }, {
 				mapping = cmp.mapping.preset.cmdline(),
 				sources = {
-					{
-						name = "nvim_lsp_document_symbol" --[[ , keyword_length = 3  ]],
-					},
+					{ name = "nvim_lsp_document_symbol" },
 					{ name = "buffer" },
 					{ name = "cmdline_history" },
 				},
-				view = {
-					entries = { name = "wildmenu", separator = "|" },
-				},
 			})
 
-			-- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
 			cmp.setup.cmdline(":", {
 				mapping = cmp.mapping.preset.cmdline(),
 				sources = cmp.config.sources({
 					{ name = "cmdline" },
-					-- { name = 'cmdline_history' },
 					{ name = "path" },
 				}),
 			})
