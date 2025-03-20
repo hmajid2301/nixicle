@@ -37,6 +37,20 @@ return {
 		end,
 	},
 	{
+		"kndndrj/nvim-dbee",
+		for_cat = "general.editor",
+		cmd = { "Dbee" },
+		-- event = "DeferredUIEnter",
+		load = function(name)
+			vim.cmd.packadd("nvim-dbee")
+			vim.cmd.packadd(name)
+		end,
+		-- config = function() end,
+		after = function(plugin)
+			require("dbee").setup({})
+		end,
+	},
+	{
 		"gbprod/yanky.nvim",
 		for_cat = "general.editor",
 		event = "DeferredUIEnter",

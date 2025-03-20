@@ -76,37 +76,6 @@ return {
 		for_cat = "general.cmp",
 		dep_of = { "nvim-cmp" },
 		load = load_w_after_plugin,
-		after = function()
-			require("lspkind").init({
-				symbol_map = {
-					Text = "󰉿 ",
-					Method = "󰆧 ",
-					Function = "󰊕 ",
-					Constructor = " ",
-					Field = "󰜢 ",
-					Variable = "󰀫 ",
-					Class = "󰠱 ",
-					Interface = " ",
-					Module = " ",
-					Property = "󰜢 ",
-					Unit = "󰑭 ",
-					Value = "󰎠 ",
-					Enum = " ",
-					Keyword = "󰌋 ",
-					Snippet = " ",
-					Color = "󰏘 ",
-					File = "󰈙 ",
-					Reference = "󰈇 ",
-					Folder = "󰉋 ",
-					EnumMember = " ",
-					Constant = "󰏿 ",
-					Struct = "󰙅 ",
-					Event = " ",
-					Operator = "󰆕 ",
-					TypeParameter = "󰊄 ",
-				},
-			})
-		end,
 	},
 	{
 		"luasnip",
@@ -155,10 +124,7 @@ return {
 						},
 					}),
 					documentation = cmp.config.window.bordered({
-<<<<<<< Updated upstream
-						winhighlight = "FloatBorder:CmpDocBorder,Normal:CmpDoc",
 						side_padding = 1,
-=======
 						border = {
 							"╭",
 							"─",
@@ -170,7 +136,6 @@ return {
 							"│",
 						},
 						winhighlight = "FloatBorder:CmpBorder,Normal:CmpPmenu,CursorLine:CmpSel,Search:PmenuSel",
->>>>>>> Stashed changes
 					}),
 				},
 				formatting = {
@@ -185,12 +150,6 @@ return {
 							nvim_lua = "[Lua]",
 							cmp_dbee = "[DB]",
 						},
-						before = function(entry, vim_item)
-							-- Add margins and padding
-							vim_item.kind = string.format(" %s ", vim_item.kind)
-							vim_item.menu = "  " .. (vim_item.menu or "") .. "  "
-							return vim_item
-						end,
 						maxwidth = 60,
 						ellipsis_char = "...",
 					}),
