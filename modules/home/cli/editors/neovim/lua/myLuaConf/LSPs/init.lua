@@ -3,6 +3,8 @@ if catUtils.isNixCats and nixCats("lspDebugMode") then
 	vim.lsp.set_log_level("debug")
 end
 
+vim.filetype.add({ extension = { templ = "templ" } })
+
 require("lze").load({
 	-- Existing configurations...
 	{
@@ -155,7 +157,7 @@ require("lze").load({
 	{
 		"tailwindcss",
 		lsp = {
-			filetypes = { "html", "templ" },
+			filetypes = { "templ" },
 			settings = {
 				tailwindcss = {
 					includeLanguages = {
@@ -176,38 +178,38 @@ require("lze").load({
 		},
 	},
 	-- TODO: fix this so it works with templ
-	-- {
-	-- 	"html",
-	-- 	lsp = {
-	-- 		filetypes = { "html", "templ" },
-	-- 		settings = {
-	-- 			html = {
-	-- 				format = {
-	-- 					enable = false,
-	-- 					-- wrapLineLength = 120,
-	-- 					-- wrapAttributes = "auto",
-	-- 				},
-	-- 				hover = {
-	-- 					documentation = true,
-	-- 					references = true,
-	-- 				},
-	-- 			},
-	-- 		},
-	-- 	},
-	-- },
-	-- {
-	-- 	"sqls",
-	-- 	lsp = {
-	-- 		settings = {
-	-- 			sqls = {
-	-- 				connections = {
-	-- 					{
-	-- 						driver = "postgresql",
-	-- 						dataSourceName = "host=127.0.0.1 port=5432 user=postgres password=postgres dbname=postgres sslmode=disable",
-	-- 					},
-	-- 				},
-	-- 			},
-	-- 		},
-	-- 	},
-	-- },
+	{
+		"html",
+		lsp = {
+			filetypes = { "html", "templ" },
+			settings = {
+				html = {
+					format = {
+						enable = false,
+						-- wrapLineLength = 120,
+						-- wrapAttributes = "auto",
+					},
+					hover = {
+						documentation = true,
+						references = true,
+					},
+				},
+			},
+		},
+	},
+	{
+		"sqls",
+		lsp = {
+			settings = {
+				sqls = {
+					connections = {
+						{
+							driver = "postgresql",
+							dataSourceName = "host=127.0.0.1 port=5432 user=postgres password=postgres dbname=postgres sslmode=disable",
+						},
+					},
+				},
+			},
+		},
+	},
 })
