@@ -157,13 +157,23 @@ require("lze").load({
 	{ "terraformls", lsp = {} },
 	-- { "taplo", lsp = {} },
 	{ "yamlls", lsp = {} },
-	{ "templ", lsp = {} },
 	{
 		"tailwindcss",
+		root_dir = function(fname)
+			return vim.fs.dirname(vim.fs.find(".git", { path = fname, upward = true })[1])
+		end,
 		lsp = {
-			filetypes = { "templ" },
 			settings = {
 				tailwindcss = {
+					experimental = {
+						classRegex = {
+							"@?class\\(([^]*)\\)",
+							"'([^']*)'",
+						},
+						configFile = {
+							"static/css/tailwind.css",
+						},
+					},
 					includeLanguages = {
 						templ = "html",
 					},
@@ -171,18 +181,24 @@ require("lze").load({
 			},
 		},
 	},
-	-- {
-	-- 	"html",
-	-- 	lsp = {
-	-- 		filetypes = { "html", "templ" },
-	-- 	},
-	-- },
-	-- {
-	-- 	"htmx",
-	-- 	lsp = {
-	-- 		filetypes = { "html", "templ" },
-	-- 	},
-	-- },
+	{
+		"html",
+		lsp = {
+			priority = 2,
+		},
+	},
+	{
+		"htmx",
+		lsp = {
+			priority = 2,
+		},
+	},
+	{
+		"templ",
+		lsp = {
+			priority = 1,
+		},
+	},
 	{
 		"sqls",
 		lsp = {
