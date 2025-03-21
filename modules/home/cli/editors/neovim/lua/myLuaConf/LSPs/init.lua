@@ -154,6 +154,10 @@ require("lze").load({
 	{ "pyright", lsp = {} },
 	{ "marksman", lsp = {} },
 	{ "ts_ls", lsp = {} },
+	{ "terraformls", lsp = {} },
+	-- { "taplo", lsp = {} },
+	{ "yamlls", lsp = {} },
+	{ "templ", lsp = {} },
 	{
 		"tailwindcss",
 		lsp = {
@@ -167,36 +171,18 @@ require("lze").load({
 			},
 		},
 	},
-	{ "templ", lsp = {} },
-	{ "terraformls", lsp = {} },
-	-- { "taplo", lsp = {} },
-	{ "yamlls", lsp = {} },
-	{
-		"htmx",
-		lsp = {
-			filetypes = { "html", "templ" },
-		},
-	},
-	-- TODO: fix this so it works with templ
-	{
-		"html",
-		lsp = {
-			filetypes = { "html", "templ" },
-			settings = {
-				html = {
-					format = {
-						enable = false,
-						-- wrapLineLength = 120,
-						-- wrapAttributes = "auto",
-					},
-					hover = {
-						documentation = true,
-						references = true,
-					},
-				},
-			},
-		},
-	},
+	-- {
+	-- 	"html",
+	-- 	lsp = {
+	-- 		filetypes = { "html", "templ" },
+	-- 	},
+	-- },
+	-- {
+	-- 	"htmx",
+	-- 	lsp = {
+	-- 		filetypes = { "html", "templ" },
+	-- 	},
+	-- },
 	{
 		"sqls",
 		lsp = {
