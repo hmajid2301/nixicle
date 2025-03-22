@@ -16,9 +16,9 @@ return {
 		end,
 		after = function(plugin)
 			require("dropbar").setup()
-			-- vim.keymap.set("n", "<leader>nb", function()
-			-- 	require("dropbar.api").pick()
-			-- end, { desc = "Show dropbar picker" })
+			vim.keymap.set("n", "<leader>nb", function()
+				require("dropbar.api").pick()
+			end, { desc = "Show dropbar picker" })
 		end,
 	},
 	{
