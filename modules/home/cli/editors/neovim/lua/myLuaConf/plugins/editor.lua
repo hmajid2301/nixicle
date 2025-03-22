@@ -209,4 +209,21 @@ return {
 			vim.keymap.set({ "n", "x" }, "gx", "<cmd>Browse<cr>", { desc = "Open link in Browser" })
 		end,
 	},
+	{
+		"smjonas/inc-rename.nvim",
+		for_cat = "general.editor",
+		keys = {
+			{ "<leader>cr", mode = { "n" }, desc = "LSP: Rename" },
+		},
+		cmd = { "IncRename" },
+		load = function(name)
+			vim.cmd.packadd(name)
+			vim.cmd.packadd("inc-rename.nvim")
+		end,
+		after = function(plugin)
+			require("inc-rename").setup({})
+
+			vim.keymap.set("n", "<leader>cr", ":IncRename ")
+		end,
+	},
 }
