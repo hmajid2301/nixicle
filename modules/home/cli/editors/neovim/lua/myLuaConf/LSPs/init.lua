@@ -6,7 +6,6 @@ end
 vim.filetype.add({ extension = { templ = "templ" } })
 
 require("lze").load({
-	-- Existing configurations...
 	{
 		"nvim-lspconfig",
 		for_cat = "general.core",
@@ -163,13 +162,14 @@ require("lze").load({
 			return vim.fs.dirname(vim.fs.find(".git", { path = fname, upward = true })[1])
 		end,
 		lsp = {
+			filetypes = { "templ" },
 			settings = {
 				tailwindcss = {
 					experimental = {
-						classRegex = {
-							"@?class\\(([^]*)\\)",
-							"'([^']*)'",
-						},
+						-- classRegex = {
+						-- 	"@?class\\(([^]*)\\)",
+						-- 	"'([^']*)'",
+						-- },
 						configFile = {
 							"static/css/tailwind.css",
 						},
@@ -181,22 +181,20 @@ require("lze").load({
 			},
 		},
 	},
-	{
-		"html",
-		lsp = {
-			priority = 2,
-		},
-	},
-	{
-		"htmx",
-		lsp = {
-			priority = 2,
-		},
-	},
+	-- TODO: work out how to enable
+	-- {
+	-- 	"html",
+	-- 	lsp = {
+	-- 	},
+	-- },
+	-- {
+	-- 	"htmx",
+	-- 	lsp = {},
+	-- },
 	{
 		"templ",
 		lsp = {
-			priority = 1,
+			filetypes = { "templ" },
 		},
 	},
 	{
