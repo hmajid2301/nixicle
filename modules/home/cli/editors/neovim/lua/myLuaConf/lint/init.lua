@@ -15,7 +15,7 @@ require("lze").load({
 				go = { "golangcilint" },
 				html = { "htmlhint" },
 				lua = { "luacheck" },
-				markdown = { "markdownlint-cli2" },
+				-- markdown = { "markdownlint-cli2" },
 				nix = { "statix" },
 				javascript = { "eslint" },
 				typescript = { "eslint" },
