@@ -3,18 +3,11 @@
 
   sops.secrets.cloudflared_ms01 = {
     sopsFile = ../../../modules/nixos/services/secrets.yaml;
-    owner = "cloudflared";
   };
 
-  fileSystems."/export/n1" = {
-    device = "/mnt/n1";
-    options = [ "bind" ];
-  };
+  fileSystems."/mnt/n1" = { device = "/dev/nvme1n1p1"; };
 
-  fileSystems."/export/n2" = {
-    device = "/mnt/n2";
-    options = [ "bind" ];
-  };
+  fileSystems."/mnt/n2" = { device = "/dev/nvme2n1p1"; };
 
   services = {
     cloudflared = {
@@ -37,7 +30,7 @@
 
     nixicle = {
       authentik.enable = true;
-      audiobookshelf.enable = true;
+      # audiobookshelf.enable = true;
       couchdb.enable = true;
       deluge.enable = true;
       homepage.enable = true;
@@ -56,7 +49,7 @@
       postgresql.enable = true;
       redis.enable = true;
       traefik.enable = true;
-      ollama.enable = true;
+      # ollama.enable = true;
     };
 
     traefik = {
