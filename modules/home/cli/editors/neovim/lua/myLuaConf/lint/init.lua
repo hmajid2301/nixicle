@@ -19,6 +19,7 @@ require("lze").load({
 				nix = { "statix" },
 				javascript = { "eslint" },
 				typescript = { "eslint" },
+				sql = { "sqlfluff" },
 				-- TODO: fix yaml
 				-- yaml = { "yamllint" },
 			}

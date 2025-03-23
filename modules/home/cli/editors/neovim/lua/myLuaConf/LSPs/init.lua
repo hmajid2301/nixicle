@@ -127,7 +127,7 @@ require("lze").load({
 	},
 	{
 		"nixd",
-		enabled = catUtils.isNixCats and (nixCats("nix") or nixCats("neonixdev")),
+		-- enabled = catUtils.isNixCats and (nixCats("nix") or nixCats("neonixdev")),
 		lsp = {
 			filetypes = { "nix" },
 			settings = {
@@ -210,6 +210,14 @@ require("lze").load({
 					},
 				},
 			},
+			on_attach = function(client, bufnr)
+				-- Disable formatting capabilities
+				client.server_capabilities.documentFormattingProvider = false
+				client.server_capabilities.documentRangeFormattingProvider = false
+
+				-- Preserve default SQLs functionality
+				require("sqls").on_attach(client, bufnr)
+			end,
 		},
 	},
 })
