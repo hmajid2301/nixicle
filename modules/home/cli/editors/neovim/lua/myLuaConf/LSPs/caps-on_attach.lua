@@ -38,9 +38,12 @@ function M.on_attach(_, bufnr)
 
 	-- See `:help K` for why this keymap
 	nmap("K", function()
-		vim.lsp.buf.signature_help({ border = "rounded" })
+		vim.lsp.buf.hover({ border = "rounded" })
 	end, "Hover Documentation")
-	vim.keymap.set("i", "<C-k>", vim.lsp.buf.signature_help, { desc = "Signature Documentation" })
+
+	vim.keymap.set("i", "<C-k>", function()
+		vim.lsp.buf.signature_help({ border = "rounded" })
+	end, { desc = "Signature Documentation" })
 
 	-- Lesser used LSP functionality
 	nmap("<leader>gD", vim.lsp.buf.declaration, "[G]oto [D]eclaration")
