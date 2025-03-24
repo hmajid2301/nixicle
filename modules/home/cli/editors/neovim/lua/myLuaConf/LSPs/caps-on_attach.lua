@@ -13,8 +13,9 @@ function M.on_attach(_, bufnr)
 	end
 
 	-- nmap("<leader>cr", vim.lsp.buf.rename, "[R]e[n]ame")
-	nmap("<leader>ca", vim.lsp.buf.code_action, "[C]ode [A]ction")
+	-- nmap("<leader>ca", vim.lsp.buf.code_action, "[C]ode [A]ction")
 	nmap("<leader>gd", vim.lsp.buf.definition, "[G]oto [D]efinition")
+	vim.keymap.set({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, { desc = "Code Actions" })
 
 	-- NOTE: why are these functions that call the telescope builtin?
 	-- because otherwise they would load telescope eagerly when this is defined.

@@ -221,9 +221,9 @@ return {
 			vim.cmd.packadd("inc-rename.nvim")
 		end,
 		after = function(plugin)
-			require("inc-rename").setup({})
+			require("inc_rename").setup({})
 
-			vim.keymap.set("n", "<leader>cr", ":IncRename ")
+			vim.keymap.set({ "n", "v" }, "<leader>cr", ":IncRename ")
 		end,
 	},
 }

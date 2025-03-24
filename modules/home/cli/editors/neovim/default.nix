@@ -113,6 +113,7 @@ in {
               telescope = with pkgs.vimPlugins; [
                 telescope-fzf-native-nvim
                 telescope-media-files-nvim
+                telescope-ui-select-nvim
                 telescope-nvim
               ];
               always = with pkgs.vimPlugins; [ nvim-lspconfig ];
