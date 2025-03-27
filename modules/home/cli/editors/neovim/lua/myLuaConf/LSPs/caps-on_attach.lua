@@ -1,4 +1,5 @@
 local M = {}
+
 function M.on_attach(_, bufnr)
 	-- we create a function that lets us more easily define mappings specific
 	-- for LSP related items. It sets the mode, buffer and description for us each time.
@@ -12,14 +13,15 @@ function M.on_attach(_, bufnr)
 	end
 
 	nmap("<leader>cr", vim.lsp.buf.rename, "[R]e[n]ame")
-	nmap("<leader>ca", vim.lsp.buf.code_action, "[C]ode [A]ction")
+	-- nmap("<leader>ca", vim.lsp.buf.code_action, "[C]ode [A]ction")
 	nmap("<leader>gd", vim.lsp.buf.definition, "[G]oto [D]efinition")
+	vim.keymap.set({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, { desc = "Code Actions" })
 
 	-- NOTE: why are these functions that call the telescope builtin?
 	-- because otherwise they would load telescope eagerly when this is defined.
 	-- due to us using the on_require handler to make sure it is available.
 	if nixCats("general.telescope") then
-		nmap("gr", function()
+		nmap("<leader>gr", function()
 			require("telescope.builtin").lsp_references()
 		end, "[G]oto [R]eferences")
 		nmap("<leader>gi", function()
@@ -36,8 +38,13 @@ function M.on_attach(_, bufnr)
 	nmap("<leader>D", vim.lsp.buf.type_definition, "Type [D]efinition")
 
 	-- See `:help K` for why this keymap
-	nmap("K", vim.lsp.buf.hover, "Hover Documentation")
-	vim.keymap.set("i", "<C-k>", vim.lsp.buf.signature_help, { desc = "Signature Documentation" })
+	nmap("K", function()
+		vim.lsp.buf.hover({ border = "rounded" })
+	end, "Hover Documentation")
+
+	vim.keymap.set("i", "<C-k>", function()
+		vim.lsp.buf.signature_help({ border = "rounded" })
+	end, { desc = "Signature Documentation" })
 
 	-- Lesser used LSP functionality
 	nmap("<leader>gD", vim.lsp.buf.declaration, "[G]oto [D]eclaration")
@@ -56,6 +63,7 @@ function M.get_capabilities(server_name)
 		capabilities = vim.tbl_deep_extend("force", capabilities, require("cmp_nvim_lsp").default_capabilities())
 	end
 	capabilities.textDocument.completion.completionItem.snippetSupport = true
+
 	return capabilities
 end
 return M

@@ -1,18 +1,19 @@
 return {
 	{
 		"Bekaboo/dropbar.nvim",
+		-- event = "BufEnter",
 		event = "DeferredUIEnter",
 		for_cat = "general.ui",
 		-- cmd = {  },
-		-- ft = "",
+		-- ft = "go",
 		-- colorscheme = "",
+		-- keys = {
+		-- 	{ "<leader>nb", mode = { "n" }, desc = "Show dropbar picker" },
+		-- },
 		load = function(name)
 			vim.cmd.packadd(name)
 			vim.cmd.packadd("dropbar.nvim")
 		end,
-		keys = {
-			{ "<leader>nb", mode = { "n" }, desc = "Show dropbar picker" },
-		},
 		after = function(plugin)
 			require("dropbar").setup()
 			vim.keymap.set("n", "<leader>nb", function()

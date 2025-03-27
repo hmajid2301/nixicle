@@ -45,6 +45,7 @@ in {
               vscode-langservers-extracted
             ];
             go = with pkgs; [ golangci-lint delve gopls gotools gotestsum ];
+            ts = with pkgs; [ eslint ];
             json = with pkgs;
               [ nodePackages_latest.vscode-json-languageserver ];
             lua = with pkgs; [
@@ -112,6 +113,7 @@ in {
               telescope = with pkgs.vimPlugins; [
                 telescope-fzf-native-nvim
                 telescope-media-files-nvim
+                telescope-ui-select-nvim
                 telescope-nvim
               ];
               always = with pkgs.vimPlugins; [ nvim-lspconfig ];
@@ -133,6 +135,8 @@ in {
                 grug-far-nvim
                 smart-splits-nvim
                 yanky-nvim
+                inc-rename-nvim
+                snacks-nvim
                 pkgs.neovimPlugins.gx-nvim
               ];
               extra = with pkgs.vimPlugins; [
@@ -191,6 +195,7 @@ in {
             css = true;
             docker = true;
             html = true;
+            ts = true;
             go = true;
             json = true;
             lua = true;
@@ -245,6 +250,7 @@ in {
             docker = true;
             html = true;
             go = true;
+            ts = true;
             json = true;
             lua = true;
             markdown = true;
