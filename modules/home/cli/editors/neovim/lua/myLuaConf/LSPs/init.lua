@@ -3,8 +3,9 @@ if catUtils.isNixCats and nixCats("lspDebugMode") then
 	vim.lsp.set_log_level("debug")
 end
 
+vim.filetype.add({ extension = { templ = "templ" } })
+
 require("lze").load({
-	-- Existing configurations...
 	{
 		"nvim-lspconfig",
 		for_cat = "general.core",
@@ -126,7 +127,7 @@ require("lze").load({
 	},
 	{
 		"nixd",
-		enabled = catUtils.isNixCats and (nixCats("nix") or nixCats("neonixdev")),
+		-- enabled = catUtils.isNixCats and (nixCats("nix") or nixCats("neonixdev")),
 		lsp = {
 			filetypes = { "nix" },
 			settings = {
@@ -152,12 +153,27 @@ require("lze").load({
 	{ "pyright", lsp = {} },
 	{ "marksman", lsp = {} },
 	{ "ts_ls", lsp = {} },
+	{ "terraformls", lsp = {} },
+	-- { "taplo", lsp = {} },
+	{ "yamlls", lsp = {} },
 	{
 		"tailwindcss",
+		root_dir = function(fname)
+			return vim.fs.dirname(vim.fs.find(".git", { path = fname, upward = true })[1])
+		end,
 		lsp = {
-			filetypes = { "html", "templ" },
+			filetypes = { "templ" },
 			settings = {
 				tailwindcss = {
+					experimental = {
+						-- classRegex = {
+						-- 	"@?class\\(([^]*)\\)",
+						-- 	"'([^']*)'",
+						-- },
+						configFile = {
+							"static/css/tailwind.css",
+						},
+					},
 					includeLanguages = {
 						templ = "html",
 					},
@@ -165,49 +181,42 @@ require("lze").load({
 			},
 		},
 	},
-	{ "templ", lsp = {} },
-	{ "terraformls", lsp = {} },
-	-- { "taplo", lsp = {} },
-	{ "yamlls", lsp = {} },
-	{
-		"htmx",
-		lsp = {
-			filetypes = { "html", "templ" },
-		},
-	},
-	-- TODO: fix this so it works with templ
+	-- TODO: work out how to enable
 	-- {
 	-- 	"html",
 	-- 	lsp = {
-	-- 		filetypes = { "html", "templ" },
-	-- 		settings = {
-	-- 			html = {
-	-- 				format = {
-	-- 					enable = false,
-	-- 					-- wrapLineLength = 120,
-	-- 					-- wrapAttributes = "auto",
-	-- 				},
-	-- 				hover = {
-	-- 					documentation = true,
-	-- 					references = true,
-	-- 				},
-	-- 			},
-	-- 		},
 	-- 	},
 	-- },
 	-- {
-	-- 	"sqls",
-	-- 	lsp = {
-	-- 		settings = {
-	-- 			sqls = {
-	-- 				connections = {
-	-- 					{
-	-- 						driver = "postgresql",
-	-- 						dataSourceName = "host=127.0.0.1 port=5432 user=postgres password=postgres dbname=postgres sslmode=disable",
-	-- 					},
-	-- 				},
-	-- 			},
-	-- 		},
-	-- 	},
+	-- 	"htmx",
+	-- 	lsp = {},
 	-- },
+	{
+		"templ",
+		lsp = {
+			filetypes = { "templ" },
+		},
+	},
+	{
+		"sqls",
+		lsp = {
+			settings = {
+				sqls = {
+					connections = {
+						{
+							driver = "postgresql",
+							dataSourceName = "host=127.0.0.1 port=5432 user=postgres password=postgres dbname=postgres sslmode=disable",
+						},
+					},
+				},
+			},
+			on_attach = function(client, bufnr)
+				client.server_capabilities.documentFormattingProvider = false
+				client.server_capabilities.documentRangeFormattingProvider = false
+
+				-- -- Preserve default SQLs functionality
+				-- require("sqls").on_attach(client, bufnr)
+			end,
+		},
+	},
 })

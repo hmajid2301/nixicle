@@ -1,5 +1,11 @@
 -- TODO: lazyload this
-require("auto-session").setup({})
+require("auto-session").setup({
+	pre_save_cmds = {
+		function()
+			vim.opt.winbar = nil -- Clear winbar before saving session
+		end,
+	},
+})
 
 require("lze").load({
 	{ import = "myLuaConf.plugins.telescope" },

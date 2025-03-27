@@ -26,6 +26,7 @@ return {
 			vim.cmd.packadd("telescope-fzf-native.nvim")
 			vim.cmd.packadd("telescope-media-files")
 			vim.cmd.packadd("advanced-git-search.nvim")
+			vim.cmd.packadd("telescope-ui-select.nvim")
 		end,
 		after = function(plugin)
 			require("telescope").setup({
@@ -91,6 +92,7 @@ return {
 			pcall(require("telescope").load_extension, "fzf")
 			pcall(require("telescope").load_extension, "media_files")
 			pcall(require("telescope").load_extension, "advanced_git_search")
+			pcall(require("telescope").load_extension, "ui-select")
 			-- require("telescope").extensions.dap.configurations()
 
 			local builtin = require("telescope.builtin")
