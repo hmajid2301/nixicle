@@ -223,7 +223,43 @@ return {
 		after = function(plugin)
 			require("inc_rename").setup({})
 
-			vim.keymap.set({ "n", "v" }, "<leader>cr", ":IncRename ")
+			vim.keymap.set({ "n", "v" }, "<leader>rn", function()
+				return ":IncRename " .. vim.fn.expand("<cword>")
+			end, { expr = true })
+		end,
+	},
+	{
+		"folke/snacks.nvim",
+		for_cat = "general.editor",
+		event = "DeferredUIEnter",
+		load = function(name)
+			vim.cmd.packadd(name)
+			vim.cmd.packadd("snacks.nvim")
+		end,
+		after = function(plugin)
+			require("snacks").setup({
+				bigfile = { enabled = true },
+				gitbrowse = { enabled = true },
+				rename = { enabled = true },
+				image = { enabled = true },
+				quickfile = { enabled = true },
+			})
+
+			vim.api.nvim_create_autocmd("User", {
+				pattern = "OilActionsPost",
+				callback = function(event)
+					if event.data.actions.type == "move" then
+						Snacks.rename.on_rename_file(event.data.actions.src_url, event.data.actions.dest_url)
+					end
+				end,
+			})
+
+			vim.api.nvim_create_autocmd("User", {
+				pattern = "MiniFilesActionRename",
+				callback = function(event)
+					Snacks.rename.on_rename_file(event.data.from, event.data.to)
+				end,
+			})
 		end,
 	},
 }

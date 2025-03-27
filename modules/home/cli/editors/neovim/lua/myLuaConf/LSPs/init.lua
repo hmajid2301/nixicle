@@ -211,12 +211,11 @@ require("lze").load({
 				},
 			},
 			on_attach = function(client, bufnr)
-				-- Disable formatting capabilities
 				client.server_capabilities.documentFormattingProvider = false
 				client.server_capabilities.documentRangeFormattingProvider = false
 
-				-- Preserve default SQLs functionality
-				require("sqls").on_attach(client, bufnr)
+				-- -- Preserve default SQLs functionality
+				-- require("sqls").on_attach(client, bufnr)
 			end,
 		},
 	},

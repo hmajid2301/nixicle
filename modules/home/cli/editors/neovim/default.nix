@@ -136,6 +136,7 @@ in {
                 smart-splits-nvim
                 yanky-nvim
                 inc-rename-nvim
+                snacks-nvim
                 pkgs.neovimPlugins.gx-nvim
               ];
               extra = with pkgs.vimPlugins; [
