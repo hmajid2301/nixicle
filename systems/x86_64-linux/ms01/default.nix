@@ -1,28 +1,13 @@
-{
-  pkgs,
-  lib,
-  config,
-  ...
-}: {
-  imports = [
-    ./hardware-configuration.nix
-    ./disks.nix
-  ];
+{ pkgs, lib, config, ... }: {
+  imports = [ ./hardware-configuration.nix ./disks.nix ];
 
   sops.secrets.cloudflared_ms01 = {
     sopsFile = ../../../modules/nixos/services/secrets.yaml;
-    owner = "cloudflared";
   };
 
-  fileSystems."/export/n1" = {
-    device = "/mnt/n1";
-    options = ["bind"];
-  };
+  fileSystems."/mnt/n1" = { device = "/dev/nvme0n1p1"; };
 
-  fileSystems."/export/n2" = {
-    device = "/mnt/n2";
-    options = ["bind"];
-  };
+  fileSystems."/mnt/n2" = { device = "/dev/nvme2n1p1"; };
 
   services = {
     cloudflared = {
@@ -45,7 +30,7 @@
 
     nixicle = {
       authentik.enable = true;
-      audiobookshelf.enable = true;
+      # audiobookshelf.enable = true;
       couchdb.enable = true;
       deluge.enable = true;
       homepage.enable = true;
@@ -64,7 +49,7 @@
       postgresql.enable = true;
       redis.enable = true;
       traefik.enable = true;
-      ollama.enable = true;
+      # ollama.enable = true;
     };
 
     traefik = {
@@ -72,7 +57,7 @@
         http = {
           routers = {
             api = {
-              entryPoints = ["websecure"];
+              entryPoints = [ "websecure" ];
               rule = "Host(`traefik.homelab.haseebmajid.dev`)";
               service = "api@internal";
               tls.certResolver = "letsencrypt";
@@ -105,9 +90,7 @@
     }
   ];
 
-  boot.kernel.sysctl = {
-    "fs.inotify.max_user_instances" = "8192";
-  };
+  boot.kernel.sysctl = { "fs.inotify.max_user_instances" = "8192"; };
 
   # INFO: Until there is a better fix; https://github.com/NixOS/nixpkgs/issues/360592
   nixpkgs.config.permittedInsecurePackages = [
@@ -117,20 +100,18 @@
     "dotnet-sdk-wrapped-6.0.428"
   ];
 
-  # networking.interfaces.enp1s0.wakeOnLan.enable = true;
+  networking.interfaces.enp1s0.wakeOnLan.enable = true;
 
-  topology.self = {
-    hardware.info = "MS01";
-  };
+  topology.self = { hardware.info = "MS01"; };
 
   boot = {
-    supportedFilesystems = lib.mkForce ["btrfs"];
+    supportedFilesystems = lib.mkForce [ "btrfs" ];
     kernelPackages = pkgs.linuxPackages_latest;
     resumeDevice = "/dev/disk/by-label/nixos";
 
     initrd = {
-      supportedFilesystems = ["nfs"];
-      kernelModules = ["nfs"];
+      supportedFilesystems = [ "nfs" ];
+      kernelModules = [ "nfs" ];
     };
   };
 

@@ -1,17 +1,11 @@
-{
-  config,
-  pkgs,
-  ...
-}: {
+{ config, pkgs, ... }: {
   programs.nixvim = {
     files = {
       "ftplugin/markdown.lua" = {
         extraConfigLua = ''
           vim.opt.formatoptions:append('t')
         '';
-        localOpts = {
-          textwidth = 120;
-        };
+        localOpts = { textwidth = 120; };
         opts = {
           conceallevel = 1;
           expandtab = true;
@@ -33,27 +27,20 @@
 
       image = {
         enable = true;
-        integrations.markdown = {
+        settings.integrations.markdown = {
           clearInInsertMode = true;
           onlyRenderImageAtCursor = true;
         };
       };
 
       lsp.servers = {
-        marksman = {
-          enable = true;
-        };
+        marksman = { enable = true; };
 
         ltex = {
           enable = true;
-          filetypes = [
-            "markdown"
-            "text"
-          ];
+          filetypes = [ "markdown" "text" ];
 
-          settings = {
-            completionEnabled = true;
-          };
+          settings = { completionEnabled = true; };
 
           extraOptions = {
             checkFrequency = "save";

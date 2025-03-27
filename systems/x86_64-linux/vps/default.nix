@@ -1,13 +1,5 @@
-{
-  config,
-  lib,
-  pkgs,
-  ...
-}: {
-  imports = [
-    ./hardware-configuration.nix
-    ./disks.nix
-  ];
+{ config, lib, pkgs, ... }: {
+  imports = [ ./hardware-configuration.nix ./disks.nix ];
 
   boot.loader.grub.enable = true;
 
@@ -16,7 +8,6 @@
 
   sops.secrets.cloudflared_vps = {
     sopsFile = ../../../modules/nixos/services/secrets.yaml;
-    owner = "cloudflared";
   };
 
   services = {
@@ -48,28 +39,20 @@
       dynamicConfigOptions = {
         http = {
           services = {
-            jellyfin.loadBalancer.servers = [
-              {
-                url = "http://ms01:8096";
-              }
-            ];
+            jellyfin.loadBalancer.servers = [{ url = "http://ms01:8096"; }];
 
-            immich.loadBalancer.servers = [
-              {
-                url = "http://ms01:2283";
-              }
-            ];
+            immich.loadBalancer.servers = [{ url = "http://ms01:2283"; }];
           };
 
           routers = {
             jellyfin = {
-              entryPoints = ["websecure"];
+              entryPoints = [ "websecure" ];
               rule = "Host(`jellyfin.haseebmajid.dev`)";
               service = "jellyfin";
               tls.certResolver = "letsencrypt";
             };
             immich = {
-              entryPoints = ["websecure"];
+              entryPoints = [ "websecure" ];
               rule = "Host(`immich.haseebmajid.dev`)";
               service = "immich";
               tls.certResolver = "letsencrypt";
