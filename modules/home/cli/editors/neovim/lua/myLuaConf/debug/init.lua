@@ -22,6 +22,7 @@ require("lze").load({
 			{ "<leader>dC", mode = { "n" }, desc = "Debug: Run to cursor" },
 			{ "<leader>dB", mode = { "n" }, desc = "Debug: Set Breakpoint" },
 			{ "<leader>dv", mode = { "n" }, desc = "Debug: Toggle Scopes" },
+			{ "<leader>dV", mode = { "n" }, desc = "Debug: Toggle variables under cursor" },
 			{ "<leader>td", mode = { "n" }, desc = "Test: Debug nearest" },
 		},
 		-- colorscheme = "",
@@ -34,7 +35,19 @@ require("lze").load({
 			vim.cmd.packadd("mason-nvim-dap.nvim")
 		end,
 		after = function(plugin)
-			local dap = require("dap")
+			local dap, dv = require("dap"), require("dap-view")
+			dap.listeners.before.attach["dap-view-config"] = function()
+				dv.open()
+			end
+			dap.listeners.before.launch["dap-view-config"] = function()
+				dv.open()
+			end
+			dap.listeners.before.event_terminated["dap-view-config"] = function()
+				dv.close()
+			end
+			dap.listeners.before.event_exited["dap-view-config"] = function()
+				dv.close()
+			end
 
 			vim.fn.sign_define("DapBreakpoint", { text = " ", texthl = "DapBreakpoint", linehl = "", numhl = "" })
 			vim.fn.sign_define(
@@ -56,10 +69,13 @@ require("lze").load({
 				local widgets = require("dap.ui.widgets")
 				widgets.centered_float(widgets.scopes, { border = "rounded" })
 			end, { desc = "Debug: Toggle DAP Scopes" })
+			vim.keymap.set("n", "<leader>dV", function()
+				require("dap.ui.widgets").hover(nil, { border = "rounded" })
+			end, { desc = "Debug: Toggle variable under cursor" })
 			vim.keymap.set("n", "<F5>", dap.continue, { desc = "Debug: Start/Continue" })
-			vim.keymap.set("n", "<F1>", dap.step_into, { desc = "Debug: Step Into" })
-			vim.keymap.set("n", "<F2>", dap.step_over, { desc = "Debug: Step Over" })
-			vim.keymap.set("n", "<F3>", dap.step_out, { desc = "Debug: Step Out" })
+			vim.keymap.set("n", "<F6>", dap.step_into, { desc = "Debug: Step Into" })
+			vim.keymap.set("n", "<F7>", dap.step_over, { desc = "Debug: Step Over" })
+			vim.keymap.set("n", "<F8>", dap.step_out, { desc = "Debug: Step Out" })
 
 			vim.keymap.set("n", "<leader>dr", function()
 				dap.disconnect()
@@ -83,7 +99,13 @@ require("lze").load({
 		for_cat = "debug",
 		on_plugin = { "nvim-dap" },
 		after = function(plugin)
-			require("dap-view").setup({})
+			require("dap-view").setup({
+				windows = {
+					terminal = {
+						hide = { "go" },
+					},
+				},
+			})
 		end,
 	},
 	{

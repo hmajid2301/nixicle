@@ -1,14 +1,12 @@
-{
-  pkgs,
-  config,
-  ...
-}: let
-  buildFlags = "-tags=unit,integration,e2e,bdd,dind";
+{ pkgs, config, ... }:
+let buildFlags = "-tags=unit,integration,e2e,bdd,dind";
 in {
-  xdg.configFile."nvim/queries/go/injections.scm".text = builtins.readFile ./lua/go/injections.scm;
-  xdg.configFile."nvim/queries/templ/injections.scm".text = builtins.readFile ./lua/html/injections.scm;
+  xdg.configFile."nvim/queries/go/injections.scm".text =
+    builtins.readFile ./lua/go/injections.scm;
+  xdg.configFile."nvim/queries/templ/injections.scm".text =
+    builtins.readFile ./lua/html/injections.scm;
 
-  home.packages = with pkgs; [delve];
+  home.packages = with pkgs; [ delve ];
 
   programs.nixvim = {
     files = {
@@ -37,21 +35,19 @@ in {
           path = "dlv";
           inherit buildFlags;
         };
-        dapConfigurations = [
-          {
-            type = "go";
-            name = "Attach remote";
-            mode = "remote";
-            request = "attach";
-          }
-        ];
+        dapConfigurations = [{
+          type = "go";
+          name = "Attach remote";
+          mode = "remote";
+          request = "attach";
+        }];
       };
 
       conform-nvim = {
         settings = {
           formatters_by_ft = {
             # go = ["goimports" "golines"];
-            go = ["goimports"];
+            go = [ "goimports" ];
           };
 
           formatters = {
@@ -75,12 +71,16 @@ in {
       };
 
       lint = {
-        lintersByFt = {
-          go = ["golangcilint"];
-        };
+        lintersByFt = { go = [ "golangcilint" ]; };
         linters = {
           golangcilint = {
             cmd = "${pkgs.golangci-lint}/bin/golangci-lint";
+            args = [
+              "run"
+              "--output.json.path=stdout"
+              "--issues-exit-code=0"
+              "--show-stats=false"
+            ];
           };
         };
       };
@@ -90,30 +90,25 @@ in {
           enable = true;
           settings = {
             dap_go_enabled = true;
-            go_list_args = [buildFlags];
-            go_test_args = [buildFlags];
-            dap_go_opts = {
-              delve = {
-                build_flags = [buildFlags];
-              };
-            };
+            go_list_args = [ buildFlags ];
+            go_test_args = [ buildFlags ];
+            dap_go_opts = { delve = { build_flags = [ buildFlags ]; }; };
           };
         };
       };
 
       lsp.servers = {
-        templ = {
-          enable = true;
-        };
+        templ = { enable = true; };
 
         gopls = {
           enable = true;
 
           extraOptions.settings = {
             gopls = {
-              buildFlags = [buildFlags];
+              buildFlags = [ buildFlags ];
               staticcheck = true;
-              directoryFilters = ["-.git" "-.vscode" "-.idea" "-.vscode-test" "-node_modules"];
+              directoryFilters =
+                [ "-.git" "-.vscode" "-.idea" "-.vscode-test" "-node_modules" ];
               semanticTokens = true;
               codelenses = {
                 gc_details = false;

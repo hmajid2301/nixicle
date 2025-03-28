@@ -1,13 +1,9 @@
 -- TODO: lazyload this
+vim.o.sessionoptions = "blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal,localoptions"
 require("auto-session").setup({
 	pre_save_cmds = {
 		function()
-			for _, tab in ipairs(vim.api.nvim_list_tabpages()) do
-				local wins = vim.api.nvim_tabpage_list_wins(tab)
-				for _, win in ipairs(wins) do
-					vim.api.nvim_set_option_value("winbar", nil, { scope = "win", win = win })
-				end
-			end
+			vim.opt.winbar = nil
 		end,
 	},
 })
