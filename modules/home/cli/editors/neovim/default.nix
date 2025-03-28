@@ -59,7 +59,7 @@ in {
             sql = with pkgs; [ sqlfluff sqls ];
             terraform = with pkgs; [ terraform terraform-lsp ];
             toml = with pkgs; [ taplo ];
-            templ = with pkgs; [ templ ];
+            templ = with pkgs; [ templ neovimPlugins.webify-nvim ];
             typescript = with pkgs; [ typescript-language-server ];
             yaml = with pkgs; [ yamlfmt yamllint yaml-language-server ];
           };

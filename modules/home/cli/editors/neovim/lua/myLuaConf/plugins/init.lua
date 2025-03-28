@@ -2,7 +2,12 @@
 require("auto-session").setup({
 	pre_save_cmds = {
 		function()
-			vim.opt.winbar = nil -- Clear winbar before saving session
+			for _, tab in ipairs(vim.api.nvim_list_tabpages()) do
+				local wins = vim.api.nvim_tabpage_list_wins(tab)
+				for _, win in ipairs(wins) do
+					vim.api.nvim_set_option_value("winbar", nil, { scope = "win", win = win })
+				end
+			end
 		end,
 	},
 })

@@ -141,6 +141,11 @@
       url = "github:pabloariasal/webify.nvim";
       flake = false;
     };
+
+    plugins-templ-goto-definitions = {
+      url = "github:catgoose/templ-goto-definition";
+      flake = false;
+    };
   };
 
   outputs = inputs:
