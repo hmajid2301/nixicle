@@ -184,6 +184,7 @@ in {
         nixCats = { pkgs, ... }: {
           settings = {
             wrapRc = true;
+            suffix-path = true;
             aliases = [ "vimCat" ];
             configDirName = "nixCats-nvim";
             # neovim-unwrapped = inputs.neovim-nightly-overlay.packages.${pkgs.system}.neovim;
@@ -235,6 +236,7 @@ in {
         regularCats = { pkgs, ... }: {
           settings = {
             wrapRc = false;
+            suffix-path = true;
             unwrappedCfgPath =
               "${config.home.homeDirectory}/nixicle/modules/home/cli/editors/neovim";
             configDirName = "nixCats-nvim";
