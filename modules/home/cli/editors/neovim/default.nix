@@ -44,7 +44,15 @@ in {
               rustywind
               vscode-langservers-extracted
             ];
-            go = with pkgs; [ golangci-lint delve gopls gotools gotestsum ];
+            go = with pkgs; [
+              go
+              golangci-lint
+              delve
+              gopls
+              go-tools
+              gotools
+              gotestsum
+            ];
             ts = with pkgs; [ eslint ];
             json = with pkgs;
               [ nodePackages_latest.vscode-json-languageserver ];
