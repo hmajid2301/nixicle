@@ -67,7 +67,7 @@ in {
             sql = with pkgs; [ sqlfluff sqls ];
             terraform = with pkgs; [ terraform terraform-lsp ];
             toml = with pkgs; [ taplo ];
-            templ = with pkgs; [ templ neovimPlugins.webify-nvim ];
+            templ = with pkgs; [ templ ];
             typescript = with pkgs; [ typescript-language-server ];
             yaml = with pkgs; [ yamlfmt yamllint yaml-language-server ];
           };
@@ -146,6 +146,7 @@ in {
                 inc-rename-nvim
                 snacks-nvim
                 pkgs.neovimPlugins.gx-nvim
+                pkgs.neovimPlugins.templ-goto-definition
               ];
               extra = with pkgs.vimPlugins; [
                 fidget-nvim

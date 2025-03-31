@@ -142,7 +142,7 @@
       flake = false;
     };
 
-    plugins-templ-goto-definitions = {
+    plugins-templ-goto-definition = {
       url = "github:catgoose/templ-goto-definition";
       flake = false;
     };

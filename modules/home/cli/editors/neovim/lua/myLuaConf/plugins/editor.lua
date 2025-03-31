@@ -263,15 +263,14 @@ return {
 		end,
 	},
 	{
-		"catgoose/templ-goto-definition",
+		"templ-goto-definition",
 		for_cat = "general.editor",
 		event = "DeferredUIEnter",
 		load = function(name)
 			vim.cmd.packadd(name)
-			vim.cmd.packadd("templ-goto-definition")
 		end,
 		after = function(plugin)
-			-- require("templ-goto-definition").setup()
+			require("templ-goto-definition").setup()
 		end,
 	},
 }

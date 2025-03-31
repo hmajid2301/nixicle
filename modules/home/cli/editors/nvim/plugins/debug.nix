@@ -41,54 +41,7 @@
       };
 
       extensions = {
-        dap-ui = {
-          enable = true;
-          expandLines = false;
-          layouts = [
-            {
-              elements = [
-                {
-                  id = "stacks";
-                  size = 0.20;
-                }
-                {
-                  id = "scopes";
-                  size = 0.80;
-                }
-              ];
-              position = "bottom";
-              size = 40;
-            }
-            {
-              elements = [
-                {
-                  id = "repl";
-                  size = 1;
-                }
-                # {
-                #   id = "console";
-                #   size = 0.20;
-                # }
-              ];
-              position = "bottom";
-              size = 30;
-            }
-            {
-              elements = [
-                {
-                  id = "breakpoints";
-                  size = 0.50;
-                }
-                {
-                  id = "watches";
-                  size = 0.50;
-                }
-              ];
-              position = "bottom";
-              size = 30;
-            }
-          ];
-        };
+        dap-ui = { enable = true; };
         dap-virtual-text = {
           enable = false;
           enabledCommands = true;
@@ -106,12 +59,8 @@
             end
           '';
         key = "<leader>dc";
-        options = {
-          desc = "Continue";
-        };
-        mode = [
-          "n"
-        ];
+        options = { desc = "Continue"; };
+        mode = [ "n" ];
       }
       {
         action.__raw =
@@ -124,12 +73,8 @@
             end
           '';
         key = "<leader>dT";
-        options = {
-          desc = " toggle types";
-        };
-        mode = [
-          "n"
-        ];
+        options = { desc = " toggle types"; };
+        mode = [ "n" ];
       }
       {
         action =
@@ -140,12 +85,8 @@
             end
           '';
         key = "F5";
-        options = {
-          desc = "Step over";
-        };
-        mode = [
-          "n"
-        ];
+        options = { desc = "Step over"; };
+        mode = [ "n" ];
       }
       {
         action.__raw =
@@ -156,12 +97,8 @@
             end
           '';
         key = "F6";
-        options = {
-          desc = "Step Into";
-        };
-        mode = [
-          "n"
-        ];
+        options = { desc = "Step Into"; };
+        mode = [ "n" ];
       }
       {
         action.__raw =
@@ -172,12 +109,8 @@
             end
           '';
         key = "F7";
-        options = {
-          desc = "Step Out";
-        };
-        mode = [
-          "n"
-        ];
+        options = { desc = "Step Out"; };
+        mode = [ "n" ];
       }
       {
         action.__raw =
@@ -188,12 +121,8 @@
             end
           '';
         key = "<leader>dp";
-        options = {
-          desc = "Pause";
-        };
-        mode = [
-          "n"
-        ];
+        options = { desc = "Pause"; };
+        mode = [ "n" ];
       }
       {
         action.__raw =
@@ -204,12 +133,8 @@
             end
           '';
         key = "<leader>db";
-        options = {
-          desc = "Toggle Breakpoint";
-        };
-        mode = [
-          "n"
-        ];
+        options = { desc = "Toggle Breakpoint"; };
+        mode = [ "n" ];
       }
       {
         action.__raw =
@@ -220,12 +145,8 @@
             end
           '';
         key = "<leader>dB";
-        options = {
-          desc = "Breakpoint (conditional)";
-        };
-        mode = [
-          "n"
-        ];
+        options = { desc = "Breakpoint (conditional)"; };
+        mode = [ "n" ];
       }
       {
         action.__raw =
@@ -236,12 +157,8 @@
             end
           '';
         key = "<leader>dR";
-        options = {
-          desc = "Toggle REPL";
-        };
-        mode = [
-          "n"
-        ];
+        options = { desc = "Toggle REPL"; };
+        mode = [ "n" ];
       }
       {
         action.__raw =
@@ -255,12 +172,8 @@
             end
           '';
         key = "<leader>dr";
-        options = {
-          desc = "Restart Debugger";
-        };
-        mode = [
-          "n"
-        ];
+        options = { desc = "Restart Debugger"; };
+        mode = [ "n" ];
       }
       {
         action.__raw =
@@ -271,12 +184,8 @@
             end
           '';
         key = "<leader>dl";
-        options = {
-          desc = "Run Last";
-        };
-        mode = [
-          "n"
-        ];
+        options = { desc = "Run Last"; };
+        mode = [ "n" ];
       }
       {
         action.__raw =
@@ -287,12 +196,8 @@
             end
           '';
         key = "<leader>ds";
-        options = {
-          desc = "Session";
-        };
-        mode = [
-          "n"
-        ];
+        options = { desc = "Session"; };
+        mode = [ "n" ];
       }
       {
         action.__raw =
@@ -303,12 +208,8 @@
             end
           '';
         key = "<leader>dt";
-        options = {
-          desc = "Terminate";
-        };
-        mode = [
-          "n"
-        ];
+        options = { desc = "Terminate"; };
+        mode = [ "n" ];
       }
       {
         action.__raw =
@@ -319,12 +220,8 @@
             end
           '';
         key = "<leader>dw";
-        options = {
-          desc = "Hover Widget";
-        };
-        mode = [
-          "n"
-        ];
+        options = { desc = "Hover Widget"; };
+        mode = [ "n" ];
       }
       {
         action.__raw =
@@ -335,12 +232,8 @@
             end
           '';
         key = "<leader>dC";
-        options = {
-          desc = "Run all lines up to cursor";
-        };
-        mode = [
-          "n"
-        ];
+        options = { desc = "Run all lines up to cursor"; };
+        mode = [ "n" ];
       }
       {
         action.__raw =
@@ -351,12 +244,8 @@
             end
           '';
         key = "<leader>?";
-        options = {
-          desc = "Evaluate value under cursor";
-        };
-        mode = [
-          "n"
-        ];
+        options = { desc = "Evaluate value under cursor"; };
+        mode = [ "n" ];
       }
       {
         action.__raw =
@@ -367,12 +256,8 @@
             end
           '';
         key = "<leader>du";
-        options = {
-          desc = "Toggle UI";
-        };
-        mode = [
-          "n"
-        ];
+        options = { desc = "Toggle UI"; };
+        mode = [ "n" ];
       }
       {
         action.__raw =
@@ -385,12 +270,8 @@
             end
           '';
         key = "<leader>d1";
-        options = {
-          desc = "Debug layout 1; Stacks, Scopes";
-        };
-        mode = [
-          "n"
-        ];
+        options = { desc = "Debug layout 1; Stacks, Scopes"; };
+        mode = [ "n" ];
       }
       {
         action.__raw =
@@ -403,12 +284,8 @@
             end
           '';
         key = "<leader>d2";
-        options = {
-          desc = "Debug layout 2; breakpoints, watches";
-        };
-        mode = [
-          "n"
-        ];
+        options = { desc = "Debug layout 2; breakpoints, watches"; };
+        mode = [ "n" ];
       }
       {
         action =
@@ -421,12 +298,8 @@
             end
           '';
         key = "<leader>d3";
-        options = {
-          desc = "Debug layout 3; repl, console";
-        };
-        mode = [
-          "n"
-        ];
+        options = { desc = "Debug layout 3; repl, console"; };
+        mode = [ "n" ];
       }
       {
         action.__raw =
@@ -437,12 +310,8 @@
             end
           '';
         key = "<leader>de";
-        options = {
-          desc = "Eval";
-        };
-        mode = [
-          "n"
-        ];
+        options = { desc = "Eval"; };
+        mode = [ "n" ];
       }
     ];
   };

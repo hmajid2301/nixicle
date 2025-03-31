@@ -35,15 +35,12 @@
     gaming.enable = true;
     desktop = {
       enable = true;
-      addons = {
-        hyprland.enable = true;
-        # gnome.enable = true;
-      };
+      addons = { hyprland.enable = true; };
     };
   };
 
   programs.wireshark.enable = true;
-  systemd.services.NetworkManager-wait-online.enable = false;
+  systemd.services.systemd-networkd-wait-online.enable = lib.mkForce false;
 
   boot = {
     kernelParams = [ "resume_offset=533760" ];
@@ -61,3 +58,4 @@
 
   system.stateVersion = "23.11";
 }
+
