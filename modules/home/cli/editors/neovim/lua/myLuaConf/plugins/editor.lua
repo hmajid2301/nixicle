@@ -104,18 +104,18 @@ return {
 			require("mini.trailspace").setup()
 		end,
 	},
-	{
-		"otavioschwanck/arrow.nvim",
-		for_cat = "general.editor",
-		event = "DeferredUIEnter",
-		load = function(name)
-			vim.cmd.packadd(name)
-			vim.cmd.packadd("arrow.nvim")
-		end,
-		after = function(plugin)
-			require("arrow").setup()
-		end,
-	},
+	-- {
+	-- 	"otavioschwanck/arrow.nvim",
+	-- 	for_cat = "general.editor",
+	-- 	event = "DeferredUIEnter",
+	-- 	load = function(name)
+	-- 		vim.cmd.packadd(name)
+	-- 		vim.cmd.packadd("arrow.nvim")
+	-- 	end,
+	-- 	after = function(plugin)
+	-- 		require("arrow").setup()
+	-- 	end,
+	-- },
 	{
 		"RRethy/vim-illuminate",
 		for_cat = "general.editor",

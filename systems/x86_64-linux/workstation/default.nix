@@ -13,6 +13,8 @@
     extraPackages = with pkgs; [ rocmPackages.clr.icd ];
   };
 
+  environment.systemPackages = with pkgs; [ chromium ];
+
   # TODO: when merged in
   systemd.package = pkgs.systemd.overrideAttrs (old: {
     patches = old.patches ++ [
