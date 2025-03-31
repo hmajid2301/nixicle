@@ -101,6 +101,7 @@
   ];
 
   networking.interfaces.enp1s0.wakeOnLan.enable = true;
+  systemd.services.NetworkManager-wait-online.enable = false;
 
   topology.self = { hardware.info = "MS01"; };
 
