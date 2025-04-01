@@ -2,37 +2,48 @@ require("lze").load({
 	{
 		"nvim-lint",
 		for_cat = "lint",
-		-- cmd = { "" },
 		event = "FileType",
-		-- ft = "",
-		-- keys = "",
-		-- colorscheme = "",
 		after = function(plugin)
+			local golint = require("lint").linters.golangcilint
+
+			-- Set up arguments dynamically based on golangci-lint version
+			golint.args = (function()
+				local ok, value = pcall(vim.fn.system, { "golangci-lint", "version" })
+				if ok and (string.find(value, "version v2") or string.find(value, "version 2")) then
+					return {
+						"run",
+						"--output.json.path=stdout",
+						"--issues-exit-code=0",
+						"--show-stats=false",
+						vim.fn.fnamemodify(vim.api.nvim_buf_get_name(0), ":h"),
+					}
+				else
+					return {
+						"run",
+						"--out-format",
+						"json",
+						"--issues-exit-code=0",
+						"--show-stats=false",
+						"--print-issued-lines=false",
+						"--print-linter-name=false",
+						vim.fn.fnamemodify(vim.api.nvim_buf_get_name(0), ":h"),
+					}
+				end
+			end)()
+
+			-- Set linters for different file types
 			require("lint").linters_by_ft = {
-				-- TODO: css with tailwind
-				-- css = { "stylelint" },
 				docker = { "hadolint" },
 				go = { "golangcilint" },
 				html = { "htmlhint" },
 				lua = { "luacheck" },
-				-- markdown = { "markdownlint-cli2" },
 				nix = { "statix" },
 				javascript = { "eslint" },
 				typescript = { "eslint" },
 				sql = { "sqlfluff" },
-				-- TODO: fix yaml
-				-- yaml = { "yamllint" },
 			}
 
-			-- TODO: when we this is merged in: https://github.com/mfussenegger/nvim-lint/pull/761
-			local golint = require("lint").linters.golangcilint
-			golint.args = {
-				"run",
-				"--output.json.path=stdout",
-				"--issues-exit-code=0",
-				"--show-stats=false",
-			}
-
+			-- Auto-run linting on save
 			vim.api.nvim_create_autocmd({ "BufWritePost" }, {
 				callback = function()
 					require("lint").try_lint()

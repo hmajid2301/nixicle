@@ -88,11 +88,10 @@ return {
 		end,
 	},
 	{
-		"echasnovski/mini.nvim",
+		"mini.nvim",
 		for_cat = "general.editor",
 		event = "DeferredUIEnter",
 		load = function(name)
-			vim.cmd.packadd("mini.nvim")
 			vim.cmd.packadd(name)
 		end,
 		config = function() end,
@@ -102,6 +101,7 @@ return {
 			require("mini.files").setup()
 			-- require("mini.pairs").setup()
 			require("mini.trailspace").setup()
+			vim.keymap.set("n", "<leader>e", "<cmd>lua MiniFiles.open()<CR>")
 		end,
 	},
 	-- {
@@ -271,6 +271,20 @@ return {
 		end,
 		after = function(plugin)
 			require("templ-goto-definition").setup()
+		end,
+	},
+	{
+		"undotree",
+		for_cat = "general.editor",
+		-- event = "DeferredUIEnter",
+		keys = {
+			{ "<leader>ut", mode = { "n" }, desc = " show undo tree" },
+		},
+		load = function(name)
+			vim.cmd.packadd(name)
+		end,
+		after = function(plugin)
+			vim.keymap.set("n", "<leader>ut", vim.cmd.UndotreeToggle, { desc = "Toggle Undotree" })
 		end,
 	},
 }
