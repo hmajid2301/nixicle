@@ -6,7 +6,7 @@ in {
     wayland.windowManager.hyprland = {
       enable = true;
 
-      systemd.enable = true;
+      systemd.enable = false;
       systemd.enableXdgAutostart = true;
       xwayland.enable = true;
 
@@ -34,13 +34,12 @@ in {
 
         source = [ "${config.home.homeDirectory}/.config/hypr/monitors.conf" ];
 
-        env = [ "XDG_CURRENT_DESKTOP,Hyprland" ];
         exec-once = [
-          "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
-          "dbus-update-activation-environment --systemd --all"
-          "systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
-
+          # "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP QT_QPA_PLATFORMTHEME"
+          # "dbus-update-activation-environment --systemd --all"
+          # "systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
           # "systemctl --user import-environment QT_QPA_PLATFORMTHEME"
+
           # "dbus-update-activation-environment --systemd --all"
           # "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP xdg-desktop-portal-hyprland"
           # "systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP QT_QPA_PLATFORMTHEME"
@@ -55,3 +54,4 @@ in {
     };
   };
 }
+
