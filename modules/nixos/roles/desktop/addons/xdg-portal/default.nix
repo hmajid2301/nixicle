@@ -1,4 +1,4 @@
-{ options, config, lib, pkgs, ... }:
+{ config, lib, pkgs, ... }:
 with lib;
 with lib.nixicle;
 let cfg = config.roles.desktop.addons.xdg-portal;
@@ -10,7 +10,10 @@ in {
   config = mkIf cfg.enable {
     xdg.portal = {
       enable = true;
-      extraPortals = with pkgs; [ xdg-desktop-portal-hyprland ];
+      extraPortals = with pkgs; [
+        xdg-desktop-portal-gtk
+        xdg-desktop-portal-hyprland
+      ];
     };
   };
 }

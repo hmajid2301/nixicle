@@ -1,4 +1,4 @@
-{ options, config, lib, ... }:
+{ config, lib, ... }:
 with lib;
 with lib.nixicle;
 let cfg = config.roles.desktop.addons.hyprland;
@@ -12,7 +12,7 @@ in {
     programs.hyprland = {
       enable = true;
       xwayland.enable = true;
-      withUWSM = true;
+      withUWSM = false;
     };
 
     roles.desktop.addons.greetd.enable = true;

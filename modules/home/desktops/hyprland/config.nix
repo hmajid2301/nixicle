@@ -6,7 +6,7 @@ in {
     wayland.windowManager.hyprland = {
       enable = true;
 
-      systemd.enable = false;
+      systemd.enable = true;
       systemd.enableXdgAutostart = true;
       xwayland.enable = true;
 
@@ -35,14 +35,6 @@ in {
         source = [ "${config.home.homeDirectory}/.config/hypr/monitors.conf" ];
 
         exec-once = [
-          # "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP QT_QPA_PLATFORMTHEME"
-          # "dbus-update-activation-environment --systemd --all"
-          # "systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
-          # "systemctl --user import-environment QT_QPA_PLATFORMTHEME"
-
-          # "dbus-update-activation-environment --systemd --all"
-          # "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP xdg-desktop-portal-hyprland"
-          # "systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP QT_QPA_PLATFORMTHEME"
           "${pkgs.kanshi}/bin/kanshi"
           "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1"
           "${pkgs.pyprland}/bin/pypr"
