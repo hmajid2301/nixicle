@@ -15,7 +15,10 @@ require("lze").load({
 						"--output.json.path=stdout",
 						"--issues-exit-code=0",
 						"--show-stats=false",
-						vim.fn.fnamemodify(vim.api.nvim_buf_get_name(0), ":h"),
+						-- Use a function to dynamically get the current buffer's directory
+						function()
+							return vim.fn.fnamemodify(vim.api.nvim_buf_get_name(0), ":h")
+						end,
 					}
 				else
 					return {
@@ -26,7 +29,9 @@ require("lze").load({
 						"--show-stats=false",
 						"--print-issued-lines=false",
 						"--print-linter-name=false",
-						vim.fn.fnamemodify(vim.api.nvim_buf_get_name(0), ":h"),
+						function()
+							return vim.fn.fnamemodify(vim.api.nvim_buf_get_name(0), ":h")
+						end,
 					}
 				end
 			end)()
