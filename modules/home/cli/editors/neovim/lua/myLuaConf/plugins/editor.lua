@@ -210,15 +210,14 @@ return {
 		end,
 	},
 	{
-		"smjonas/inc-rename.nvim",
+		"inc-rename.nvim",
 		for_cat = "general.editor",
 		keys = {
-			{ "<leader>cr", mode = { "n" }, desc = "LSP: Rename" },
+			{ "<leader>rn", mode = { "n" }, desc = "LSP: Rename" },
 		},
 		cmd = { "IncRename" },
 		load = function(name)
 			vim.cmd.packadd(name)
-			vim.cmd.packadd("inc-rename.nvim")
 		end,
 		after = function(plugin)
 			require("inc_rename").setup({})

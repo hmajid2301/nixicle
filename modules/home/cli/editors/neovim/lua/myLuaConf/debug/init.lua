@@ -12,8 +12,6 @@ require("lze").load({
 			{ "<F1>", desc = "Debug: Step Into" },
 			{ "<F2>", desc = "Debug: Step Over" },
 			{ "<F3>", desc = "Debug: Step Out" },
-			{ "<leader>b", desc = "Debug: Toggle Breakpoint" },
-			{ "<leader>B", desc = "Debug: Set Breakpoint" },
 			{ "<leader>db", mode = { "n" }, desc = "Debug: Toggle Breakpoint" },
 			{ "<leader>dp", mode = { "n" }, desc = "Debug: Pause" },
 			{ "<leader>dl", mode = { "n" }, desc = "Debug: Run the last config" },
@@ -98,7 +96,7 @@ require("lze").load({
 			vim.keymap.set("n", "<leader>dC", dap.run_to_cursor, { desc = "Debug: Run to cursor" })
 			vim.keymap.set("n", "<leader>dB", function()
 				dap.set_breakpoint(vim.fn.input("Breakpoint condition: "))
-			end, { desc = "Debug: Set Breakpoint" })
+			end, { desc = "Debug: Set Breakpoint (with condition)" })
 		end,
 	},
 	{
