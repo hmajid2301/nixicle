@@ -135,6 +135,7 @@ in {
               ];
               diagnostics = with pkgs.vimPlugins; [ trouble-nvim ];
               editor = with pkgs.vimPlugins; [
+                SchemaStore-nvim
                 mini-nvim
                 refactoring-nvim
                 arrow-nvim

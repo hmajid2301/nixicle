@@ -148,14 +148,37 @@ require("lze").load({
 	-- New LSP configurations added here
 	{ "cssls", lsp = {} },
 	{ "dockerls", lsp = {} },
-	{ "jsonls", lsp = {} },
 	{ "docker_compose_language_service", lsp = {} },
 	{ "pyright", lsp = {} },
 	{ "marksman", lsp = {} },
 	{ "ts_ls", lsp = {} },
 	{ "terraformls", lsp = {} },
 	-- { "taplo", lsp = {} },
-	{ "yamlls", lsp = {} },
+	{
+		"jsonls",
+		lsp = {
+			settings = {
+				json = {
+					schemas = require("schemastore").json.schemas(),
+					validate = { enable = true },
+				},
+			},
+		},
+	},
+	{
+		"yamlls",
+		lsp = {
+			settings = {
+				yaml = {
+					schemaStore = {
+						enable = false,
+						url = "",
+					},
+					schemas = require("schemastore").yaml.schemas(),
+				},
+			},
+		},
+	},
 	{
 		"tailwindcss",
 		-- root_dir = function(fname)
