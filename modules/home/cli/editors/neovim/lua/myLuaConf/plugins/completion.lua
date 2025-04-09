@@ -86,6 +86,8 @@ return {
 			require("luasnip.loaders.from_vscode").lazy_load()
 			luasnip.config.setup({})
 
+			require("myLuaConf.plugins.snippets.go").create_go_snippets()
+
 			vim.keymap.set({ "i", "s" }, "<M-n>", function()
 				if luasnip.choice_active() then
 					luasnip.change_choice(1)

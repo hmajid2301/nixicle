@@ -1,12 +1,10 @@
 require("lze").load({
 	{
 		"neotest",
-		-- NOTE: I dont want to figure out mason tools installer for this, so I only enabled debug if nix loaded config
 		for_cat = "test",
 		-- cmd = { "" },
-		-- event = "",
 		-- ft = "",
-		on_plugin = { "nvim-dap", "neotest" },
+		-- on_plugin = { "nvim-dap", "neotest" },
 		keys = {
 			{ "<leader>tt", mode = { "n" }, desc = "Test: Run all in current file" },
 			{ "<leader>tT", mode = { "n" }, desc = "Test: Run all in all files" },
@@ -26,22 +24,16 @@ require("lze").load({
 			require("neotest").setup({
 				adapters = {
 					require("neotest-golang")({
-						runner = "gotestsum",
-						dap_go_enabled = true,
-						go_list_args = {
-							"-tags=unit,integration,e2e,bdd,dind",
-						},
-						go_test_args = {
-							"-count=1",
-							"-tags=unit,integration,e2e,bdd,dind",
-						},
+						go_test_args = { "-v", "-x", "-count=1", "-tags=integration" },
+						go_list_args = { "-tags=integration" },
 						dap_go_opts = {
 							delve = {
-								build_flags = { "-tags=unit,integration,e2e,bdd,dind" },
+								build_flags = { "-tags=integration" },
 							},
 						},
 					}),
 				},
+				output = { open_on_run = true },
 			})
 
 			local neotest = require("neotest")
@@ -62,7 +54,7 @@ require("lze").load({
 				neotest.run.run({ suite = false, strategy = "dap" })
 			end, { desc = "Test: Debug nearest" })
 			vim.keymap.set("n", "<leader>tO", function()
-				neotest.run.output_panel.toggle()
+				neotest.output_panel.toggle()
 			end, { desc = "Test: Toggle output" })
 		end,
 	},

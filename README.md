@@ -61,6 +61,9 @@ deploy .#ms01 --hostname ms01 --ssh-user nixos --skip-checks
 
 # Build Home Lab diagram using nix-topology
 nix build .#topology.config.output
+
+# Run neovim
+nix run .#homeConfigurations."haseeb@workstation".config.nixCats.out.packages.nixCats
 ```
 
 ## 🚀 Features
