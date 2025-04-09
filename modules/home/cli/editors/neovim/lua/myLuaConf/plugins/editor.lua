@@ -88,11 +88,10 @@ return {
 		end,
 	},
 	{
-		"echasnovski/mini.nvim",
+		"mini.nvim",
 		for_cat = "general.editor",
 		event = "DeferredUIEnter",
 		load = function(name)
-			vim.cmd.packadd("mini.nvim")
 			vim.cmd.packadd(name)
 		end,
 		config = function() end,
@@ -102,20 +101,21 @@ return {
 			require("mini.files").setup()
 			-- require("mini.pairs").setup()
 			require("mini.trailspace").setup()
+			vim.keymap.set("n", "<leader>e", "<cmd>lua MiniFiles.open()<CR>")
 		end,
 	},
-	{
-		"otavioschwanck/arrow.nvim",
-		for_cat = "general.editor",
-		event = "DeferredUIEnter",
-		load = function(name)
-			vim.cmd.packadd(name)
-			vim.cmd.packadd("arrow.nvim")
-		end,
-		after = function(plugin)
-			require("arrow").setup()
-		end,
-	},
+	-- {
+	-- 	"otavioschwanck/arrow.nvim",
+	-- 	for_cat = "general.editor",
+	-- 	event = "DeferredUIEnter",
+	-- 	load = function(name)
+	-- 		vim.cmd.packadd(name)
+	-- 		vim.cmd.packadd("arrow.nvim")
+	-- 	end,
+	-- 	after = function(plugin)
+	-- 		require("arrow").setup()
+	-- 	end,
+	-- },
 	{
 		"RRethy/vim-illuminate",
 		for_cat = "general.editor",
@@ -210,15 +210,14 @@ return {
 		end,
 	},
 	{
-		"smjonas/inc-rename.nvim",
+		"inc-rename.nvim",
 		for_cat = "general.editor",
 		keys = {
-			{ "<leader>cr", mode = { "n" }, desc = "LSP: Rename" },
+			{ "<leader>rn", mode = { "n" }, desc = "LSP: Rename" },
 		},
 		cmd = { "IncRename" },
 		load = function(name)
 			vim.cmd.packadd(name)
-			vim.cmd.packadd("inc-rename.nvim")
 		end,
 		after = function(plugin)
 			require("inc_rename").setup({})
@@ -260,6 +259,31 @@ return {
 					Snacks.rename.on_rename_file(event.data.from, event.data.to)
 				end,
 			})
+		end,
+	},
+	{
+		"templ-goto-definition",
+		for_cat = "general.editor",
+		event = "DeferredUIEnter",
+		load = function(name)
+			vim.cmd.packadd(name)
+		end,
+		after = function(plugin)
+			require("templ-goto-definition").setup()
+		end,
+	},
+	{
+		"undotree",
+		for_cat = "general.editor",
+		-- event = "DeferredUIEnter",
+		keys = {
+			{ "<leader>ut", mode = { "n" }, desc = " show undo tree" },
+		},
+		load = function(name)
+			vim.cmd.packadd(name)
+		end,
+		after = function(plugin)
+			vim.keymap.set("n", "<leader>ut", vim.cmd.UndotreeToggle, { desc = "Toggle Undotree" })
 		end,
 	},
 }

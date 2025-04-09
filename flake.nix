@@ -105,12 +105,6 @@
     zjstatus = { url = "github:dj95/zjstatus"; };
 
     # Neovim
-
-    nixvim = {
-      url = "github:nix-community/nixvim";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     nixCats.url = "github:BirdeeHub/nixCats-nvim";
 
     neovim-nightly-overlay = {
@@ -139,6 +133,11 @@
 
     plugins-webify-nvim = {
       url = "github:pabloariasal/webify.nvim";
+      flake = false;
+    };
+
+    plugins-templ-goto-definition = {
+      url = "github:catgoose/templ-goto-definition";
       flake = false;
     };
   };

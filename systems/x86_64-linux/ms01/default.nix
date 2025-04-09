@@ -92,16 +92,6 @@
 
   boot.kernel.sysctl = { "fs.inotify.max_user_instances" = "8192"; };
 
-  # INFO: Until there is a better fix; https://github.com/NixOS/nixpkgs/issues/360592
-  nixpkgs.config.permittedInsecurePackages = [
-    "aspnetcore-runtime-6.0.36"
-    "aspnetcore-runtime-wrapped-6.0.36"
-    "dotnet-sdk-6.0.428"
-    "dotnet-sdk-wrapped-6.0.428"
-  ];
-
-  networking.interfaces.enp1s0.wakeOnLan.enable = true;
-
   topology.self = { hardware.info = "MS01"; };
 
   boot = {
