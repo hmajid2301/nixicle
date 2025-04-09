@@ -1,27 +1,16 @@
-{
-  lib,
-  pkgs,
-  config,
-  inputs,
-  ...
-}: let
-  cfg = config.styles.stylix;
+{ lib, pkgs, config, inputs, ... }:
+let cfg = config.styles.stylix;
 in {
   imports = with inputs; [
     stylix.homeManagerModules.stylix
-    catppuccin.homeManagerModules.catppuccin
+    catppuccin.homeModules.catppuccin
   ];
 
-  options.styles.stylix = {
-    enable = lib.mkEnableOption "Enable stylix";
-  };
+  options.styles.stylix = { enable = lib.mkEnableOption "Enable stylix"; };
 
   config = lib.mkIf cfg.enable {
     fonts.fontconfig.enable = true;
-    home.packages = with pkgs; [
-      nerd-fonts.symbols-only
-      open-sans
-    ];
+    home.packages = with pkgs; [ nerd-fonts.symbols-only open-sans ];
 
     # TODO: Possible to use stylix instead?
     catppuccin.flavor = "mocha";
@@ -30,8 +19,8 @@ in {
     stylix = {
       enable = true;
       autoEnable = true;
-      base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-mocha.yaml";
-      targets.nixvim.enable = false;
+      base16Scheme =
+        "${pkgs.base16-schemes}/share/themes/catppuccin-mocha.yaml";
 
       iconTheme = {
         enable = true;
@@ -45,7 +34,7 @@ in {
       targets = {
         firefox = {
           firefoxGnomeTheme.enable = true;
-          profileNames = ["Default"];
+          profileNames = [ "Default" ];
         };
       };
 

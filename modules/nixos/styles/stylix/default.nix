@@ -1,14 +1,7 @@
-{
-  lib,
-  pkgs,
-  config,
-  ...
-}: let
-  cfg = config.styles.stylix;
+{ lib, pkgs, config, ... }:
+let cfg = config.styles.stylix;
 in {
-  options.styles.stylix = {
-    enable = lib.mkEnableOption "Enable stylix";
-  };
+  options.styles.stylix = { enable = lib.mkEnableOption "Enable stylix"; };
 
   config = lib.mkIf cfg.enable {
     fonts = {
@@ -39,10 +32,10 @@ in {
     stylix = {
       enable = true;
       autoEnable = true;
-      base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-mocha.yaml";
+      base16Scheme =
+        "${pkgs.base16-schemes}/share/themes/catppuccin-mocha.yaml";
       homeManagerIntegration.autoImport = false;
       homeManagerIntegration.followSystem = false;
-      targets.nixvim.enable = false;
 
       image = pkgs.nixicle.wallpapers.windows-error;
 

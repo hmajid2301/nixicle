@@ -1,12 +1,7 @@
-{
-  config,
-  lib,
-  pkgs,
-  ...
-}:
+{ config, lib, pkgs, ... }:
 with lib;
-with lib.nixicle; let
-  cfg = config.services.nixicle.smb;
+with lib.nixicle;
+let cfg = config.services.nixicle.smb;
 in {
   options.services.nixicle.smb = {
     enable = mkEnableOption "Enable the smb server";
@@ -51,6 +46,7 @@ in {
             "read only" = "no";
             "create mask" = "0755";
             "directory mask" = "0755";
+            "force user" = "nobody";
           };
         };
       };

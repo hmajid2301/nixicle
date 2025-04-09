@@ -2,6 +2,7 @@
 let inherit (inputs.nixCats) utils;
 in {
   imports = [ inputs.nixCats.homeModule ];
+  # TODO: enable true like every other package
   config = {
     # this value, nixCats is the defaultPackageName you pass to mkNixosModules
     # it will be the namespace for your options.
@@ -44,7 +45,15 @@ in {
               rustywind
               vscode-langservers-extracted
             ];
-            go = with pkgs; [ golangci-lint delve gopls gotools gotestsum ];
+            go = with pkgs; [
+              go
+              golangci-lint
+              delve
+              gopls
+              go-tools
+              gotools
+              gotestsum
+            ];
             ts = with pkgs; [ eslint ];
             json = with pkgs;
               [ nodePackages_latest.vscode-json-languageserver ];
@@ -138,6 +147,7 @@ in {
                 inc-rename-nvim
                 snacks-nvim
                 pkgs.neovimPlugins.gx-nvim
+                pkgs.neovimPlugins.templ-goto-definition
               ];
               extra = with pkgs.vimPlugins; [
                 fidget-nvim
@@ -184,6 +194,8 @@ in {
         nixCats = { pkgs, ... }: {
           settings = {
             wrapRc = true;
+            suffix-path = true;
+            suffix-LD = true;
             aliases = [ "vimCat" ];
             configDirName = "nixCats-nvim";
             # neovim-unwrapped = inputs.neovim-nightly-overlay.packages.${pkgs.system}.neovim;
@@ -235,10 +247,12 @@ in {
         regularCats = { pkgs, ... }: {
           settings = {
             wrapRc = false;
+            suffix-path = true;
+            suffix-LD = true;
             unwrappedCfgPath =
               "${config.home.homeDirectory}/nixicle/modules/home/cli/editors/neovim";
             configDirName = "nixCats-nvim";
-            aliases = [ "testCat" ];
+            aliases = [ "nvim" ];
             neovim-unwrapped =
               inputs.neovim-nightly-overlay.packages.${pkgs.system}.neovim;
           };
