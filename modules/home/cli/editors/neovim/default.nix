@@ -2,6 +2,7 @@
 let inherit (inputs.nixCats) utils;
 in {
   imports = [ inputs.nixCats.homeModule ];
+  # TODO: enable true like every other package
   config = {
     # this value, nixCats is the defaultPackageName you pass to mkNixosModules
     # it will be the namespace for your options.
@@ -251,7 +252,7 @@ in {
             unwrappedCfgPath =
               "${config.home.homeDirectory}/nixicle/modules/home/cli/editors/neovim";
             configDirName = "nixCats-nvim";
-            aliases = [ "testCat" ];
+            aliases = [ "nvim" ];
             neovim-unwrapped =
               inputs.neovim-nightly-overlay.packages.${pkgs.system}.neovim;
           };
