@@ -4,6 +4,7 @@ in {
   imports = [ inputs.nixCats.homeModule ];
   # TODO: enable true like every other package
   config = {
+    programs.neovim.defaultEditor = true;
     # this value, nixCats is the defaultPackageName you pass to mkNixosModules
     # it will be the namespace for your options.
     nixCats = {
@@ -76,7 +77,8 @@ in {
             debug = with pkgs.vimPlugins; [ nvim-nio ];
             general = with pkgs.vimPlugins; {
               always = [ lze lzextras vim-repeat plenary-nvim ];
-              extra = [ oil-nvim nvim-web-devicons auto-session ];
+              extra =
+                [ oil-nvim SchemaStore-nvim nvim-web-devicons auto-session ];
             };
             themer = with pkgs.vimPlugins;
               (builtins.getAttr (categories.colorscheme or "catppuccin") {
@@ -135,7 +137,6 @@ in {
               ];
               diagnostics = with pkgs.vimPlugins; [ trouble-nvim ];
               editor = with pkgs.vimPlugins; [
-                SchemaStore-nvim
                 mini-nvim
                 refactoring-nvim
                 arrow-nvim
