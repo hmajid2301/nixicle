@@ -101,10 +101,12 @@ return {
 	{
 		"webify-nvim",
 		for_cat = "general.git",
-		keys = {},
+		cmd = { "OpenFileInRepo", "OpenLineInRepo", "YankFileUrl" },
 		load = function(name)
 			vim.cmd.packadd(name)
 		end,
-		after = function(plugin) end,
+		after = function(plugin)
+			require("webify").setup({})
+		end,
 	},
 }

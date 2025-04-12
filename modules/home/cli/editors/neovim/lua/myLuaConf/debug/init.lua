@@ -3,9 +3,6 @@ require("lze").load({
 		"nvim-dap",
 		-- NOTE: I dont want to figure out mason tools installer for this, so I only enabled debug if nix loaded config
 		for_cat = "debug",
-		-- cmd = { "" },
-		-- event = "",
-		-- ft = "",
 		keys = {
 			{ "<leader>dc", desc = "Debug: Start/Continue" },
 			{ "<F5>", desc = "Debug: Start/Continue" },
@@ -16,6 +13,7 @@ require("lze").load({
 			{ "<leader>dp", mode = { "n" }, desc = "Debug: Pause" },
 			{ "<leader>dl", mode = { "n" }, desc = "Debug: Run the last config" },
 			{ "<leader>ds", mode = { "n" }, desc = "Debug: Focused Session" },
+			{ "<leader>dr", mode = { "n" }, desc = "Debug: Restart" },
 			{ "<leader>dt", mode = { "n" }, desc = "Debug: Stop" },
 			{ "<leader>dC", mode = { "n" }, desc = "Debug: Run to cursor" },
 			{ "<leader>dB", mode = { "n" }, desc = "Debug: Set Breakpoint" },
@@ -26,10 +24,8 @@ require("lze").load({
 		-- colorscheme = "",
 		load = (require("nixCatsUtils").isNixCats and function(name)
 			vim.cmd.packadd(name)
-			vim.cmd.packadd("nvim-dap")
 		end) or function(name)
 			vim.cmd.packadd(name)
-			vim.cmd.packadd("nvim-dap")
 			vim.cmd.packadd("mason-nvim-dap.nvim")
 		end,
 		after = function(plugin)
@@ -82,13 +78,12 @@ require("lze").load({
 			vim.keymap.set("n", "<F7>", dap.step_over, { desc = "Debug: Step Over" })
 			vim.keymap.set("n", "<F8>", dap.step_out, { desc = "Debug: Step Out" })
 
+			vim.keymap.set("n", "<leader>db", dap.toggle_breakpoint, { desc = "Debug: Toggle Breakpoint" })
 			vim.keymap.set("n", "<leader>dr", function()
 				dap.disconnect()
 				dap.close()
 				dap.run_last()
 			end, { desc = "Debug: Restart" })
-			--
-			vim.keymap.set("n", "<leader>db", dap.toggle_breakpoint, { desc = "Debug: Toggle Breakpoint" })
 			vim.keymap.set("n", "<leader>dp", dap.pause, { desc = "Debug: Pause" })
 			vim.keymap.set("n", "<leader>dl", dap.run_last, { desc = "Debug: Run the last config" })
 			vim.keymap.set("n", "<leader>ds", dap.session, { desc = "Debug: Focused Session" })

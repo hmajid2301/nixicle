@@ -7,6 +7,7 @@ in {
   };
 
   config = mkIf cfg.enable {
+    programs.neovim.defaultEditor = true;
     cli = {
       multiplexers.zellij.enable = true;
 

@@ -4,7 +4,6 @@ in {
   imports = [ inputs.nixCats.homeModule ];
   # TODO: enable true like every other package
   config = {
-    programs.neovim.defaultEditor = true;
     # this value, nixCats is the defaultPackageName you pass to mkNixosModules
     # it will be the namespace for your options.
     nixCats = {
@@ -98,7 +97,7 @@ in {
             format = with pkgs.vimPlugins; [ conform-nvim ];
             neonixdev = with pkgs.vimPlugins; [ lazydev-nvim ];
             general = {
-              ai = with pkgs.vimPlugins; [ CopilotChat-nvim ];
+              ai = with pkgs.vimPlugins; [ CopilotChat-nvim avante-nvim ];
               cmp = with pkgs.vimPlugins; [
                 # cmp stuff
                 nvim-cmp

@@ -127,7 +127,7 @@ require("lze").load({
 	},
 	{
 		"nixd",
-		-- enabled = catUtils.isNixCats and (nixCats("nix") or nixCats("neonixdev")),
+		enabled = catUtils.isNixCats and (nixCats("nix") or nixCats("neonixdev")),
 		lsp = {
 			filetypes = { "nix" },
 			settings = {
@@ -223,6 +223,7 @@ require("lze").load({
 	{
 		"sqls",
 		lsp = {
+			filetypes = { "sql" },
 			settings = {
 				sqls = {
 					connections = {
