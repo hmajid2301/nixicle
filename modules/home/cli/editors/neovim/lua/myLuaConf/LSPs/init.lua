@@ -145,7 +145,6 @@ require("lze").load({
 			},
 		},
 	},
-	-- New LSP configurations added here
 	{ "cssls", lsp = {} },
 	{ "dockerls", lsp = {} },
 	{ "docker_compose_language_service", lsp = {} },
