@@ -1,9 +1,13 @@
 -- TODO: lazyload this
 vim.o.sessionoptions = "blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal,localoptions"
+
 require("auto-session").setup({
 	pre_save_cmds = {
 		function()
-			vim.opt.winbar = nil
+			vim.cmd([[
+                noautocmd windo set winbar=
+                noautocmd windo setlocal winbar=
+            ]])
 		end,
 	},
 })

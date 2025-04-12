@@ -19,6 +19,9 @@ require("lze").load({
 						command = "goimports",
 						args = { "-local", "gitlab.com/hmajid2301,git.curve.tools,go.curve.tools" },
 					},
+					yamlfmt = {
+						args = { "-formatter", "retain_line_breaks_single=true" },
+					},
 				},
 				formatters_by_ft = {
 					css = { "prettierd" },
@@ -32,7 +35,7 @@ require("lze").load({
 					javascript = { "prettierd" },
 					typescript = { "prettierd" },
 					sqls = { "sqlfluff" },
-					-- yaml = { "yamlfmt" },
+					yaml = { "yamlfmt" },
 				},
 			})
 		end,

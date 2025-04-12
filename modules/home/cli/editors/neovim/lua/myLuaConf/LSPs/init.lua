@@ -167,15 +167,16 @@ require("lze").load({
 	{
 		"yamlls",
 		lsp = {
-			settings = {
-				yaml = {
-					schemaStore = {
-						enable = false,
-						url = "",
-					},
-					schemas = require("schemastore").yaml.schemas(),
-				},
-			},
+			-- filetypes = { "yaml", "yml" },
+			-- settings = {
+			-- 	yaml = {
+			-- 		schemaStore = {
+			-- 			enable = false,
+			-- 			url = "",
+			-- 		},
+			-- 		schemas = require("schemastore").yaml.schemas(),
+			-- 	},
+			-- },
 		},
 	},
 	{

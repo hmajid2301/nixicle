@@ -5,7 +5,6 @@ vim.g.maplocalleader = ","
 -- [[ Setting options ]]
 -- See `:help vim.o`
 -- NOTE: You can change these options as you wish!
-vim.opt.sessionoptions = "blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal,localoptions"
 vim.opt.switchbuf = "useopen,uselast"
 vim.opt.foldlevel = 99
 vim.opt.foldlevelstart = 99

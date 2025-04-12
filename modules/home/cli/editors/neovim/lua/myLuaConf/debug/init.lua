@@ -59,19 +59,6 @@ require("lze").load({
 			)
 
 			vim.keymap.set("n", "<leader>dc", dap.continue, { desc = "Debug: Start/Continue" })
-			local dap_widgets = require("dap.ui.widgets")
-
-			-- Initialize widget views with toggle capability
-			local scopes_view = dap_widgets.centered_float(dap_widgets.scopes, { border = "rounded" })
-			local variables_view = dap_widgets.hover(nil, { border = "rounded" })
-
-			vim.keymap.set("n", "<leader>dv", function()
-				scopes_view:toggle() -- Built-in toggle method
-			end, { desc = "Debug: Toggle Scopes Window" })
-
-			vim.keymap.set("n", "<leader>dV", function()
-				variables_view:toggle() -- Built-in toggle method
-			end, { desc = "Debug: Toggle Variables Window" })
 
 			vim.keymap.set("n", "<F5>", dap.continue, { desc = "Debug: Start/Continue" })
 			vim.keymap.set("n", "<F6>", dap.step_into, { desc = "Debug: Step Into" })
@@ -92,6 +79,25 @@ require("lze").load({
 			vim.keymap.set("n", "<leader>dB", function()
 				dap.set_breakpoint(vim.fn.input("Breakpoint condition: "))
 			end, { desc = "Debug: Set Breakpoint (with condition)" })
+
+			local dap_widgets = require("dap.ui.widgets")
+
+			local scopes_widget = dap_widgets.scopes
+			local hover_widget = dap_widgets.hover
+
+			vim.keymap.set("n", "<leader>dv", function()
+				local widget = dap_widgets.centered_float(scopes_widget, {
+					border = "rounded",
+					width = 80,
+					height = 25,
+				})
+				widget:toggle() -- Use toggle on the newly created widget
+			end, { desc = "Debug: Toggle Scopes Window" })
+
+			vim.keymap.set("n", "<leader>dV", function()
+				local widget = hover_widget(nil, { border = "rounded" })
+				widget:toggle() -- Use toggle on the newly created widget
+			end, { desc = "Debug: Toggle Variables Window" })
 		end,
 	},
 	{

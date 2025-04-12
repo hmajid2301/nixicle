@@ -97,7 +97,11 @@ in {
             format = with pkgs.vimPlugins; [ conform-nvim ];
             neonixdev = with pkgs.vimPlugins; [ lazydev-nvim ];
             general = {
-              ai = with pkgs.vimPlugins; [ CopilotChat-nvim avante-nvim ];
+              ai = with pkgs.vimPlugins; [
+                copilot-lua
+                CopilotChat-nvim
+                avante-nvim
+              ];
               cmp = with pkgs.vimPlugins; [
                 # cmp stuff
                 nvim-cmp
