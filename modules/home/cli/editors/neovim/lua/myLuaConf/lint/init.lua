@@ -12,7 +12,7 @@ require("lze").load({
 				nix = { "statix" },
 				javascript = { "eslint" },
 				typescript = { "eslint" },
-				sql = { "sqlfluff" },
+				sql = { "sqruff" },
 			}
 
 			vim.api.nvim_create_autocmd({ "BufWritePost" }, {

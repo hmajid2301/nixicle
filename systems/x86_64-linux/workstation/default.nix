@@ -15,6 +15,11 @@
 
   environment.systemPackages = with pkgs; [ chromium ];
 
+  programs.neovim = {
+    enable = true;
+    defaultEditor = true;
+  };
+
   # TODO: when merged in
   systemd.package = pkgs.systemd.overrideAttrs (old: {
     patches = old.patches ++ [
@@ -30,7 +35,7 @@
     virtualisation.kvm.enable = true;
     hardware.openrgb.enable = true;
     nixicle.nfs.enable = true;
-    nixicle.ollama.enable = true;
+    # nixicle.ollama.enable = true;
   };
 
   roles = {

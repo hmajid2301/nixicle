@@ -65,7 +65,7 @@ in {
             markdown = with pkgs; [ marksman markdownlint-cli2 ];
             nix = with pkgs; [ nixd nixfmt statix nix-doc ];
             python = with pkgs; [ isort black pyright ];
-            sql = with pkgs; [ sqlfluff sqls ];
+            sql = with pkgs; [ sqruff sqls ];
             terraform = with pkgs; [ terraform terraform-lsp ];
             toml = with pkgs; [ taplo ];
             templ = with pkgs; [ templ ];

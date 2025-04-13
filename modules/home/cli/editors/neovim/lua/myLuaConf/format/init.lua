@@ -34,7 +34,7 @@ require("lze").load({
 					python = { "isort", "black" },
 					javascript = { "prettierd" },
 					typescript = { "prettierd" },
-					sqls = { "sqlfluff" },
+					sql = { "sqruff" },
 					yaml = { "yamlfmt" },
 				},
 			})
