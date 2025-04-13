@@ -8,7 +8,7 @@ return {
 		cmd = { "CopilotChat", "Copilot" },
 		load = function(name)
 			vim.cmd.packadd(name)
-			vim.cmd.packadd("copilot")
+			vim.cmd.packadd("copilot.lua")
 		end,
 		after = function(plugin)
 			require("copilot").setup({})
