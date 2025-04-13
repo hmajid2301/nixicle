@@ -26,6 +26,13 @@ require("lze").load({
 					require("neotest-golang")({
 						go_test_args = { "-v", "-x", "-count=1", "-tags=integration" },
 						go_list_args = { "-tags=integration" },
+						-- dap_mode = "manual",
+						-- dap_manual_config = {
+						-- 	name = "Debug go tests",
+						-- 	type = "go", -- Preconfigured DAP adapter name
+						-- 	request = "launch",
+						-- 	mode = "remote",
+						-- },
 						dap_go_opts = {
 							delve = {
 								build_flags = { "-tags=integration" },

@@ -30,6 +30,12 @@ require("lze").load({
 		end,
 		after = function(plugin)
 			local dap, dv = require("dap"), require("dap-view")
+			local dap_vscode = require("dap.ext.vscode")
+
+			dap_vscode.load_launchjs(nil, {
+				go = { "go" },
+			})
+
 			dap.listeners.before.attach["dap-view-config"] = function()
 				dv.open()
 			end
@@ -82,21 +88,28 @@ require("lze").load({
 
 			local dap_widgets = require("dap.ui.widgets")
 
-			local scopes_widget = dap_widgets.scopes
-			local hover_widget = dap_widgets.hover
+			local scopes_widget = dap_widgets.centered_float(dap_widgets.scopes, {
+				border = "rounded",
+				width = 80,
+				height = 25,
+			})
+
+			local hover_widget = dap_widgets.hover(nil, { border = "rounded" })
 
 			vim.keymap.set("n", "<leader>dv", function()
-				local widget = dap_widgets.centered_float(scopes_widget, {
-					border = "rounded",
-					width = 80,
-					height = 25,
-				})
-				widget.toggle()
+				if scopes_widget.winid and vim.api.nvim_win_is_valid(scopes_widget.winid) then
+					scopes_widget.close()
+				else
+					scopes_widget.open()
+				end
 			end, { desc = "Debug: Toggle Scopes Window" })
 
 			vim.keymap.set("n", "<leader>dV", function()
-				local widget = hover_widget(nil, { border = "rounded" })
-				widget.toggle() -- Use toggle on the newly created widget
+				if hover_widget.winid and vim.api.nvim_win_is_valid(hover_widget.winid) then
+					hover_widget.close()
+				else
+					hover_widget.open()
+				end
 			end, { desc = "Debug: Toggle Variables Window" })
 		end,
 	},
