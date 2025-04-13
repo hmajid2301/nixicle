@@ -12,7 +12,9 @@ return {
 		end,
 		after = function(plugin)
 			require("copilot").setup({})
-			require("CopilotChat").setup({})
+			require("CopilotChat").setup({
+				model = "gpt-4o",
+			})
 			vim.keymap.set("n", "<leader>ac", "<cmd>CopilotChat<cr>", { desc = "Toggle Copilot Chat" })
 		end,
 	},
@@ -26,6 +28,7 @@ return {
 		after = function(plugin)
 			require("avante").setup({
 				provider = "copilot",
+				hints = { enabled = false },
 				custom_tools = {
 					{
 						name = "run_go_tests", -- Unique name for the tool

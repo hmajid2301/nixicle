@@ -8,13 +8,7 @@
 
   environment.pathsToLink = [ "/share/fish" ];
 
-  hardware.opengl = {
-    enable = true;
-    extraPackages = with pkgs; [ rocmPackages.clr.icd ];
-  };
-
-  environment.systemPackages = with pkgs; [ chromium ];
-
+  environment.variables.EDITOR = "nvim";
   programs.neovim = {
     enable = true;
     defaultEditor = true;
@@ -42,7 +36,10 @@
     gaming.enable = true;
     desktop = {
       enable = true;
-      addons = { hyprland.enable = true; };
+      addons = {
+        hyprland.enable = true;
+        gnome.enable = true;
+      };
     };
   };
 

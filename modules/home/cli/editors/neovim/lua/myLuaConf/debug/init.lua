@@ -91,12 +91,12 @@ require("lze").load({
 					width = 80,
 					height = 25,
 				})
-				widget:toggle() -- Use toggle on the newly created widget
+				widget.toggle()
 			end, { desc = "Debug: Toggle Scopes Window" })
 
 			vim.keymap.set("n", "<leader>dV", function()
 				local widget = hover_widget(nil, { border = "rounded" })
-				widget:toggle() -- Use toggle on the newly created widget
+				widget.toggle() -- Use toggle on the newly created widget
 			end, { desc = "Debug: Toggle Variables Window" })
 		end,
 	},
@@ -121,7 +121,7 @@ require("lze").load({
 		after = function(plugin)
 			require("dap-go").setup({
 				dap_configurations = { { mode = "remote", name = "Attach remote", request = "attach", type = "go" } },
-				delve = { build_flags = "-tags=unit,integration,e2e,bdd,dind", path = "dlv", port = "38697" },
+				delve = { build_flags = "-tags=unit,integration,e2e,bdd,dind", path = "dlv", port = "40000" },
 			})
 		end,
 	},
