@@ -41,9 +41,11 @@ return {
 		cmd = { "Dbee" },
 		load = function(name)
 			vim.cmd.packadd(name)
+			vim.cmd.packadd("cmp-dbee")
 		end,
 		after = function(plugin)
 			require("dbee").setup({})
+			require("cmp-dbee").setup()
 		end,
 	},
 	{
