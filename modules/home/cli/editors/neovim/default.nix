@@ -92,7 +92,11 @@ in {
               pkgs.neovimPlugins.nvim-dap-view
               nvim-dap-go
             ];
-            test = with pkgs.vimPlugins; [ neotest neotest-golang ];
+            test = with pkgs.vimPlugins; [
+              neotest
+              neotest-golang
+              nvim-coverage
+            ];
             lint = with pkgs.vimPlugins; [ nvim-lint ];
             format = with pkgs.vimPlugins; [ conform-nvim ];
             neonixdev = with pkgs.vimPlugins; [ lazydev-nvim ];

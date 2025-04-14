@@ -65,4 +65,17 @@ require("lze").load({
 			end, { desc = "Test: Toggle output" })
 		end,
 	},
+	{
+		"nvim-coverage",
+		for_cat = "test",
+		event = "DeferredUIEnter",
+		load = function(name)
+			vim.cmd.packadd(name)
+		end,
+		after = function(plugin)
+			require("coverage").setup({
+				auto_reload = true,
+			})
+		end,
+	},
 })
