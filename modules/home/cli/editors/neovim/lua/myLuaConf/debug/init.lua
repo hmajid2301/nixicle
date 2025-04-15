@@ -32,9 +32,9 @@ require("lze").load({
 			local dap, dv = require("dap"), require("dap-view")
 			local dap_vscode = require("dap.ext.vscode")
 
-			dap_vscode.load_launchjs(nil, {
-				go = { "go" },
-			})
+			-- dap_vscode.load_launchjs(nil, {
+			-- 	go = { "go" },
+			-- })
 
 			dap.listeners.before.attach["dap-view-config"] = function()
 				dv.open()
@@ -88,29 +88,71 @@ require("lze").load({
 
 			local dap_widgets = require("dap.ui.widgets")
 
-			local scopes_widget = dap_widgets.centered_float(dap_widgets.scopes, {
-				border = "rounded",
-				width = 80,
-				height = 25,
-			})
+			local debug_widgets = {
+				scopes = nil,
+				hover = nil,
+			}
 
-			local hover_widget = dap_widgets.hover(nil, { border = "rounded" })
+			local function create_scopes_widget()
+				return dap_widgets.centered_float(dap_widgets.scopes, {
+					border = "rounded",
+					width = 200,
+					height = 25,
+				})
+			end
 
-			vim.keymap.set("n", "<leader>dv", function()
-				if scopes_widget.winid and vim.api.nvim_win_is_valid(scopes_widget.winid) then
-					scopes_widget.close()
-				else
-					scopes_widget.open()
+			local function create_hover_widget()
+				return dap_widgets.hover(nil, { border = "rounded" })
+			end
+
+			local function safe_toggle(widget_type, creator_fn)
+				return function()
+					local current = debug_widgets[widget_type]
+
+					-- Close if exists
+					if current then
+						pcall(function()
+							-- Close window and clear buffer directly
+							if current.winid and vim.api.nvim_win_is_valid(current.winid) then
+								vim.api.nvim_win_close(current.winid, true)
+							end
+							if current.bufnr and vim.api.nvim_buf_is_valid(current.bufnr) then
+								vim.api.nvim_buf_delete(current.bufnr, { force = true })
+							end
+						end)
+						debug_widgets[widget_type] = nil
+						return
+					end
+
+					-- Create and open new widget
+					local new_widget = creator_fn()
+					new_widget.open()
+					debug_widgets[widget_type] = new_widget
+
+					-- Track window closure
+					vim.api.nvim_create_autocmd("WinClosed", {
+						pattern = tostring(new_widget.winid),
+						once = true,
+						callback = function()
+							debug_widgets[widget_type] = nil
+						end,
+					})
 				end
-			end, { desc = "Debug: Toggle Scopes Window" })
+			end
 
-			vim.keymap.set("n", "<leader>dV", function()
-				if hover_widget.winid and vim.api.nvim_win_is_valid(hover_widget.winid) then
-					hover_widget.close()
-				else
-					hover_widget.open()
-				end
-			end, { desc = "Debug: Toggle Variables Window" })
+			-- Keymaps
+			vim.keymap.set(
+				"n",
+				"<leader>dv",
+				safe_toggle("scopes", create_scopes_widget),
+				{ desc = "Debug: Toggle Scopes" }
+			)
+			vim.keymap.set(
+				"n",
+				"<leader>dV",
+				safe_toggle("hover", create_hover_widget),
+				{ desc = "Debug: Toggle Variables" }
+			)
 		end,
 	},
 	{

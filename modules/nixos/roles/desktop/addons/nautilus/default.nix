@@ -1,12 +1,7 @@
-{
-  config,
-  lib,
-  pkgs,
-  ...
-}:
+{ config, lib, pkgs, ... }:
 with lib;
-with lib.nixicle; let
-  cfg = config.roles.desktop.addons.nautilus;
+with lib.nixicle;
+let cfg = config.roles.desktop.addons.nautilus;
 in {
   options.roles.desktop.addons.nautilus = with types; {
     enable = mkBoolOpt false "Whether to enable the gnome file manager.";
@@ -18,19 +13,21 @@ in {
 
     environment = {
       sessionVariables = {
-        NAUTILUS_EXTENSION_DIR = "${config.system.path}/lib/nautilus/extensions-4";
-        NAUTILUS_4_EXTENSION_DIR = "${config.system.path}/lib/nautilus/extensions-4";
-        GST_PLUGIN_SYSTEM_PATH_1_0 = lib.makeSearchPathOutput "lib" "lib/gstreamer-1.0" (with pkgs.gst_all_1; [
-          gst-plugins-good
-          gst-plugins-bad
-          gst-plugins-ugly
-          gst-libav
-        ]);
+        NAUTILUS_EXTENSION_DIR =
+          "${config.system.path}/lib/nautilus/extensions-4";
+        NAUTILUS_4_EXTENSION_DIR =
+          "${config.system.path}/lib/nautilus/extensions-4";
+        GST_PLUGIN_SYSTEM_PATH_1_0 =
+          lib.makeSearchPathOutput "lib" "lib/gstreamer-1.0"
+          (with pkgs.gst_all_1; [
+            gst-plugins-good
+            gst-plugins-bad
+            gst-plugins-ugly
+            gst-libav
+          ]);
       };
 
-      pathsToLink = [
-        "/share/nautilus-python/extensions"
-      ];
+      pathsToLink = [ "/share/nautilus-python/extensions" ];
 
       systemPackages = with pkgs; [
         ffmpegthumbnailer # thumbnails
@@ -42,11 +39,9 @@ in {
 
     snowfallorg.users.${config.user.name}.home.config = {
       dconf.settings = {
-        "org/gnome/desktop/privacy" = {
-          remember-recent-files = false;
-        };
+        "org/gnome/desktop/privacy" = { remember-recent-files = false; };
         "com/github/stunkymonkey/nautilus-open-any-terminal" = {
-          terminal = "kitty";
+          terminal = "ghostty";
         };
       };
     };

@@ -7,7 +7,7 @@ in {
   options.desktops.gnome = { enable = mkEnableOption "enable gnome DE"; };
 
   config = mkIf cfg.enable {
-    services.nixicle.kdeconnect.enable = lib.mkForce false;
+    # services.nixicle.kdeconnect.enable = lib.mkForce false;
 
     home.packages = with pkgs; [
       gnome-tweaks
@@ -67,7 +67,7 @@ in {
       "org/gnome/desktop/wm/keybindings" = { close = [ "<Super>q" ]; };
 
       "com/github/stunkymonkey/nautilus-open-any-terminal" = {
-        terminal = "wezterm";
+        terminal = "ghostty";
       };
 
       "org/gnome/shell/keybindings/toggle-application-view" = { "@as" = [ ]; };
