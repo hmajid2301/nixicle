@@ -8,7 +8,6 @@
 
   environment.pathsToLink = [ "/share/fish" ];
 
-  environment.variables.EDITOR = "nvim";
   programs.neovim = {
     enable = true;
     defaultEditor = true;
