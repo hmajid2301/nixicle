@@ -22,6 +22,9 @@ return {
 		"avante.nvim",
 		for_cat = "general.ai",
 		cmd = { "AvanteChat", "AvanteAsk" },
+		keys = {
+			{ "<leader>aa", mode = { "n" }, desc = "Toggle Avanate" },
+		},
 		load = function(name)
 			vim.cmd.packadd(name)
 		end,

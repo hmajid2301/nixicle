@@ -2,9 +2,6 @@ require("lze").load({
 	{
 		"neotest",
 		for_cat = "test",
-		-- cmd = { "" },
-		-- ft = "",
-		-- on_plugin = { "nvim-dap", "neotest" },
 		keys = {
 			{ "<leader>tt", mode = { "n" }, desc = "Test: Run all in current file" },
 			{ "<leader>tT", mode = { "n" }, desc = "Test: Run all in all files" },
@@ -26,13 +23,6 @@ require("lze").load({
 					require("neotest-golang")({
 						go_test_args = { "-v", "-x", "-count=1", "-tags=integration" },
 						go_list_args = { "-tags=integration" },
-						-- dap_mode = "manual",
-						-- dap_manual_config = {
-						-- 	name = "Debug go tests",
-						-- 	type = "go", -- Preconfigured DAP adapter name
-						-- 	request = "launch",
-						-- 	mode = "remote",
-						-- },
 						dap_go_opts = {
 							delve = {
 								build_flags = { "-tags=integration" },
