@@ -3,6 +3,25 @@ if catUtils.isNixCats and nixCats("lspDebugMode") then
 	vim.lsp.set_log_level("debug")
 end
 
+-- NOTE: This file uses lzextras.lsp handler https://github.com/BirdeeHub/lzextras?tab=readme-ov-file#lsp-handler
+-- This is a slightly more performant fallback function
+-- for when you don't provide a filetype to trigger on yourself.
+-- nixCats gives us the paths, which is faster than searching the rtp!
+local old_ft_fallback = require("lze").h.lsp.get_ft_fallback()
+require("lze").h.lsp.set_ft_fallback(function(name)
+	local lspcfg = nixCats.pawsible({ "allPlugins", "opt", "nvim-lspconfig" })
+		or nixCats.pawsible({ "allPlugins", "start", "nvim-lspconfig" })
+	if lspcfg then
+		local ok, cfg = pcall(dofile, lspcfg .. "/lsp/" .. name .. ".lua")
+		if not ok then
+			ok, cfg = pcall(dofile, lspcfg .. "/lua/lspconfig/configs/" .. name .. ".lua")
+		end
+		return (ok and cfg or {}).filetypes or {}
+	else
+		return old_ft_fallback(name)
+	end
+end)
+
 vim.filetype.add({ extension = { templ = "templ" } })
 
 require("lze").load({
@@ -12,8 +31,8 @@ require("lze").load({
 		on_require = { "lspconfig" },
 		lsp = function(plugin)
 			require("lspconfig")[plugin.name].setup(vim.tbl_extend("force", {
-				capabilities = require("myLuaConf.LSPs.caps-on_attach").get_capabilities(plugin.name),
-				on_attach = require("myLuaConf.LSPs.caps-on_attach").on_attach,
+				capabilities = require("myLuaConf.LSPs.on_attach").get_capabilities(plugin.name),
+				on_attach = require("myLuaConf.LSPs.on_attach").on_attach,
 			}, plugin.lsp or {}))
 		end,
 	},
@@ -188,15 +207,15 @@ require("lze").load({
 			filetypes = { "templ" },
 			settings = {
 				tailwindcss = {
-					experimental = {
-						-- classRegex = {
-						-- 	"@?class\\(([^]*)\\)",
-						-- 	"'([^']*)'",
-						-- },
-						configFile = {
-							"static/css/tailwind.css",
-						},
-					},
+					-- experimental = {
+					-- 	-- classRegex = {
+					-- 	-- 	"@?class\\(([^]*)\\)",
+					-- 	-- 	"'([^']*)'",
+					-- 	-- },
+					-- 	configFile = {
+					-- 		"static/css/tailwind.css",
+					-- 	},
+					-- },
 					includeLanguages = {
 						templ = "html",
 					},
@@ -204,11 +223,9 @@ require("lze").load({
 			},
 		},
 	},
-	-- TODO: work out how to enable
 	-- {
 	-- 	"html",
-	-- 	lsp = {
-	-- 	},
+	-- 	lsp = {},
 	-- },
 	-- {
 	-- 	"htmx",
