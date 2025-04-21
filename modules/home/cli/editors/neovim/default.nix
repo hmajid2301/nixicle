@@ -2,6 +2,13 @@
 let inherit (inputs.nixCats) utils;
 in {
   imports = [ inputs.nixCats.homeModule ];
+
+  programs.neovim = {
+    enable = true;
+    viAlias = true;
+    vimAlias = true;
+    defaultEditor = true;
+  };
   # TODO: enable true like every other package
   config = {
     # this value, nixCats is the defaultPackageName you pass to mkNixosModules

@@ -29,11 +29,17 @@ require("lze").load({
 		"nvim-lspconfig",
 		for_cat = "general.core",
 		on_require = { "lspconfig" },
+		-- NOTE: define a function for lsp,
+		-- and it will run for all specs with type(plugin.lsp) == table
+		-- when their filetype trigger loads them
 		lsp = function(plugin)
-			require("lspconfig")[plugin.name].setup(vim.tbl_extend("force", {
-				capabilities = require("myLuaConf.LSPs.on_attach").get_capabilities(plugin.name),
-				on_attach = require("myLuaConf.LSPs.on_attach").on_attach,
-			}, plugin.lsp or {}))
+			vim.lsp.config(plugin.name, plugin.lsp or {})
+			vim.lsp.enable(plugin.name)
+		end,
+		before = function(_)
+			vim.lsp.config("*", {
+				on_attach = require("myLuaConf.LSPs.on_attach"),
+			})
 		end,
 	},
 	{
