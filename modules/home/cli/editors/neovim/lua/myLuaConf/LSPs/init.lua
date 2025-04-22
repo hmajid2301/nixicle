@@ -195,23 +195,15 @@ require("lze").load({
 	},
 	{
 		"tailwindcss",
-		root_dir = function(fname)
-			return vim.fs.dirname(vim.fs.find(".git", { path = fname, upward = true })[1])
-		end,
 		lsp = {
+			-- TODO: Why do we to specify filetypes for tailwindcss to load.
+			filetypes = { "templ", "html" },
+			cmd = { "tailwindcss-language-server", "--stdio" },
+			root_markers = { ".git" },
 			settings = {
-				tailwindcss = {
+				tailwindCSS = {
 					experimental = {
-						classRegex = {
-							"@?class\\(([^]*)\\)",
-							"'([^']*)'",
-						},
-						configFile = {
-							"static/css/tailwind.css",
-						},
-					},
-					includeLanguages = {
-						templ = "html",
+						configFile = "static/css/tailwind.css",
 					},
 				},
 			},
@@ -227,9 +219,7 @@ require("lze").load({
 	-- },
 	{
 		"templ",
-		lsp = {
-			filetypes = { "templ" },
-		},
+		lsp = {},
 	},
 	{
 		"sqls",
