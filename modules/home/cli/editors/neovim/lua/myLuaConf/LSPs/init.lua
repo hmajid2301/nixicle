@@ -195,12 +195,22 @@ require("lze").load({
 	},
 	{
 		"tailwindcss",
+		root_dir = function(fname)
+			return vim.fs.dirname(vim.fs.find(".git", { path = fname, upward = true })[1])
+		end,
 		lsp = {
-			filetypes = { "templ", "html", "css" },
-			cmd = { "tailwindcss-language-server", "--stdio" },
-			tailwindcss = {
-				init_options = {
-					userLanguages = {
+			settings = {
+				tailwindcss = {
+					experimental = {
+						classRegex = {
+							"@?class\\(([^]*)\\)",
+							"'([^']*)'",
+						},
+						configFile = {
+							"static/css/tailwind.css",
+						},
+					},
+					includeLanguages = {
 						templ = "html",
 					},
 				},
@@ -211,10 +221,10 @@ require("lze").load({
 		"html",
 		lsp = {},
 	},
-	{
-		"htmx",
-		lsp = {},
-	},
+	-- {
+	-- 	"htmx",
+	-- 	lsp = {},
+	-- },
 	{
 		"templ",
 		lsp = {
