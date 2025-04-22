@@ -2,15 +2,14 @@ vim.keymap.set({ "n", "x" }, "xq", "<cmd>cclose<cr>", { desc = "Close quicklist/
 
 return {
 	{
-		"ThePrimeagen/refactoring.nvim",
+		"refactoring.nvim",
 		for_cat = "general.editor",
 		event = "DeferredUIEnter",
 		load = function(name)
 			vim.cmd.packadd(name)
-			vim.cmd.packadd("refactoring.nvim")
 		end,
 		after = function(plugin)
-			require("refactoring").setup()
+			require("refactoring").setup({})
 
 			vim.keymap.set("x", "<leader>re", "<cmd>Refactor extract<cr>", { desc = "Refactor extract" })
 			vim.keymap.set(
@@ -37,25 +36,23 @@ return {
 		end,
 	},
 	{
-		"kndndrj/nvim-dbee",
+		"nvim-dbee",
 		for_cat = "general.editor",
 		cmd = { "Dbee" },
-		-- event = "DeferredUIEnter",
 		load = function(name)
-			vim.cmd.packadd("nvim-dbee")
 			vim.cmd.packadd(name)
+			vim.cmd.packadd("cmp-dbee")
 		end,
-		-- config = function() end,
 		after = function(plugin)
 			require("dbee").setup({})
+			require("cmp-dbee").setup()
 		end,
 	},
 	{
-		"gbprod/yanky.nvim",
+		"yanky.nvim",
 		for_cat = "general.editor",
 		event = "DeferredUIEnter",
 		load = function(name)
-			vim.cmd.packadd("yanky.nvim")
 			vim.cmd.packadd(name)
 		end,
 		config = function() end,
@@ -117,12 +114,11 @@ return {
 	-- 	end,
 	-- },
 	{
-		"RRethy/vim-illuminate",
+		"vim-illuminate",
 		for_cat = "general.editor",
 		event = "DeferredUIEnter",
 		load = function(name)
 			vim.cmd.packadd(name)
-			vim.cmd.packadd("vim-illuminate")
 		end,
 		after = function(plugin)
 			require("illuminate").configure({
@@ -138,24 +134,22 @@ return {
 		end,
 	},
 	{
-		"folke/todo-comments.nvim",
+		"todo-comments.nvim",
 		for_cat = "general.editor",
 		event = "DeferredUIEnter",
 		load = function(name)
 			vim.cmd.packadd(name)
-			vim.cmd.packadd("todo-comments.nvim")
 		end,
 		after = function(plugin)
 			require("todo-comments").setup({})
 		end,
 	},
 	{
-		"MagicDuck/grug-far.nvim",
+		"grug-far.nvim",
 		for_cat = "general.editor",
 		event = "DeferredUIEnter",
 		load = function(name)
 			vim.cmd.packadd(name)
-			vim.cmd.packadd("grug-far.nvim")
 		end,
 		after = function(plugin)
 			require("grug-far").setup({})
@@ -172,12 +166,11 @@ return {
 		end,
 	},
 	{
-		"mrjones2014/smart-splits.nvim",
+		"smart-splits.nvim",
 		for_cat = "general.editor",
 		event = "DeferredUIEnter",
 		load = function(name)
 			vim.cmd.packadd(name)
-			vim.cmd.packadd("smart-splits.nvim")
 		end,
 		after = function(plugin)
 			require("smart-splits").setup({})
@@ -228,12 +221,11 @@ return {
 		end,
 	},
 	{
-		"folke/snacks.nvim",
+		"snacks.nvim",
 		for_cat = "general.editor",
 		event = "DeferredUIEnter",
 		load = function(name)
 			vim.cmd.packadd(name)
-			vim.cmd.packadd("snacks.nvim")
 		end,
 		after = function(plugin)
 			require("snacks").setup({
