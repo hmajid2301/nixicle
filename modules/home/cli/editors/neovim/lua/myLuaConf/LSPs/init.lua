@@ -177,7 +177,7 @@ require("lze").load({
 	{ "marksman", lsp = {} },
 	{ "ts_ls", lsp = {} },
 	{ "terraformls", lsp = {} },
-	-- { "taplo", lsp = {} },
+	{ "taplo", lsp = {} },
 	{
 		"jsonls",
 		lsp = {
@@ -191,52 +191,30 @@ require("lze").load({
 	},
 	{
 		"yamlls",
-		lsp = {
-			-- filetypes = { "yaml", "yml" },
-			-- settings = {
-			-- 	yaml = {
-			-- 		schemaStore = {
-			-- 			enable = false,
-			-- 			url = "",
-			-- 		},
-			-- 		schemas = require("schemastore").yaml.schemas(),
-			-- 	},
-			-- },
-		},
+		lsp = {},
 	},
 	{
 		"tailwindcss",
-		-- root_dir = function(fname)
-		-- 	return vim.fs.dirname(vim.fs.find(".git", { path = fname, upward = true })[1])
-		-- end,
 		lsp = {
-			filetypes = { "templ" },
-			settings = {
-				tailwindcss = {
-					-- experimental = {
-					-- 	-- classRegex = {
-					-- 	-- 	"@?class\\(([^]*)\\)",
-					-- 	-- 	"'([^']*)'",
-					-- 	-- },
-					-- 	configFile = {
-					-- 		"static/css/tailwind.css",
-					-- 	},
-					-- },
-					includeLanguages = {
+			filetypes = { "templ", "html", "css" },
+			cmd = { "tailwindcss-language-server", "--stdio" },
+			tailwindcss = {
+				init_options = {
+					userLanguages = {
 						templ = "html",
 					},
 				},
 			},
 		},
 	},
-	-- {
-	-- 	"html",
-	-- 	lsp = {},
-	-- },
-	-- {
-	-- 	"htmx",
-	-- 	lsp = {},
-	-- },
+	{
+		"html",
+		lsp = {},
+	},
+	{
+		"htmx",
+		lsp = {},
+	},
 	{
 		"templ",
 		lsp = {
