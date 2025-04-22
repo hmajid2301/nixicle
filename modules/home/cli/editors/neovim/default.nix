@@ -2,6 +2,13 @@
 let inherit (inputs.nixCats) utils;
 in {
   imports = [ inputs.nixCats.homeModule ];
+
+  programs.neovim = {
+    enable = true;
+    viAlias = true;
+    vimAlias = true;
+    defaultEditor = true;
+  };
   # TODO: enable true like every other package
   config = {
     # this value, nixCats is the defaultPackageName you pass to mkNixosModules
@@ -65,7 +72,7 @@ in {
             markdown = with pkgs; [ marksman markdownlint-cli2 ];
             nix = with pkgs; [ nixd nixfmt statix nix-doc ];
             python = with pkgs; [ isort black pyright ];
-            sql = with pkgs; [ sqlfluff sqls ];
+            sql = with pkgs; [ sqruff sqls ];
             terraform = with pkgs; [ terraform terraform-lsp ];
             toml = with pkgs; [ taplo ];
             templ = with pkgs; [ templ ];
@@ -76,7 +83,8 @@ in {
             debug = with pkgs.vimPlugins; [ nvim-nio ];
             general = with pkgs.vimPlugins; {
               always = [ lze lzextras vim-repeat plenary-nvim ];
-              extra = [ oil-nvim nvim-web-devicons auto-session ];
+              extra =
+                [ oil-nvim SchemaStore-nvim nvim-web-devicons auto-session ];
             };
             themer = with pkgs.vimPlugins;
               (builtins.getAttr (categories.colorscheme or "catppuccin") {
@@ -91,12 +99,20 @@ in {
               pkgs.neovimPlugins.nvim-dap-view
               nvim-dap-go
             ];
-            test = with pkgs.vimPlugins; [ neotest neotest-golang ];
+            test = with pkgs.vimPlugins; [
+              neotest
+              neotest-golang
+              nvim-coverage
+            ];
             lint = with pkgs.vimPlugins; [ nvim-lint ];
             format = with pkgs.vimPlugins; [ conform-nvim ];
             neonixdev = with pkgs.vimPlugins; [ lazydev-nvim ];
             general = {
-              ai = with pkgs.vimPlugins; [ CopilotChat-nvim ];
+              ai = with pkgs.vimPlugins; [
+                copilot-lua
+                CopilotChat-nvim
+                avante-nvim
+              ];
               cmp = with pkgs.vimPlugins; [
                 # cmp stuff
                 nvim-cmp

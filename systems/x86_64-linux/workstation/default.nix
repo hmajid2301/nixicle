@@ -8,12 +8,10 @@
 
   environment.pathsToLink = [ "/share/fish" ];
 
-  hardware.opengl = {
+  programs.neovim = {
     enable = true;
-    extraPackages = with pkgs; [ rocmPackages.clr.icd ];
+    defaultEditor = true;
   };
-
-  environment.systemPackages = with pkgs; [ chromium ];
 
   # TODO: when merged in
   systemd.package = pkgs.systemd.overrideAttrs (old: {
@@ -30,14 +28,17 @@
     virtualisation.kvm.enable = true;
     hardware.openrgb.enable = true;
     nixicle.nfs.enable = true;
-    nixicle.ollama.enable = true;
+    # nixicle.ollama.enable = true;
   };
 
   roles = {
     gaming.enable = true;
     desktop = {
       enable = true;
-      addons = { hyprland.enable = true; };
+      addons = {
+        hyprland.enable = true;
+        gnome.enable = true;
+      };
     };
   };
 
