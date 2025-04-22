@@ -1,4 +1,4 @@
-{ lib, config, ... }:
+{ lib, config, pkgs, ... }:
 with lib;
 let cfg = config.roles.development;
 in {
@@ -7,6 +7,27 @@ in {
   };
 
   config = mkIf cfg.enable {
+
+    xdg.desktopEntries = lib.optionalAttrs pkgs.stdenv.isLinux {
+      neovim = {
+        name = "Neovim";
+        genericName = "editor";
+        exec = "nvim -f %F";
+        mimeType = [
+          "text/html"
+          "text/xml"
+          "text/plain"
+          "text/english"
+          "text/x-makefile"
+          "text/x-c++hdr"
+          "text/x-tex"
+          "application/x-shellscript"
+        ];
+        terminal = false;
+        type = "Application";
+      };
+    };
+
     cli = {
       multiplexers.zellij.enable = true;
 

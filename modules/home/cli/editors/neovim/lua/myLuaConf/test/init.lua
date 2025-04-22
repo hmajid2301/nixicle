@@ -2,9 +2,6 @@ require("lze").load({
 	{
 		"neotest",
 		for_cat = "test",
-		-- cmd = { "" },
-		-- ft = "",
-		-- on_plugin = { "nvim-dap", "neotest" },
 		keys = {
 			{ "<leader>tt", mode = { "n" }, desc = "Test: Run all in current file" },
 			{ "<leader>tT", mode = { "n" }, desc = "Test: Run all in all files" },
@@ -56,6 +53,19 @@ require("lze").load({
 			vim.keymap.set("n", "<leader>tO", function()
 				neotest.output_panel.toggle()
 			end, { desc = "Test: Toggle output" })
+		end,
+	},
+	{
+		"nvim-coverage",
+		for_cat = "test",
+		event = "DeferredUIEnter",
+		load = function(name)
+			vim.cmd.packadd(name)
+		end,
+		after = function(plugin)
+			require("coverage").setup({
+				auto_reload = true,
+			})
 		end,
 	},
 })

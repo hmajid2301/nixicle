@@ -51,6 +51,7 @@ in {
         # abbr existing commands
         vim = "regularCats";
         n = "regularCats";
+        nvim = "regularCats";
         ss = "zellij -l welcome";
         cd = "z";
         cdi = "zi";
