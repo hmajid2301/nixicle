@@ -2,10 +2,6 @@ require("lze").load({
 	{
 		"conform.nvim",
 		for_cat = "format",
-		-- cmd = { "" },
-		-- event = "",
-		-- ft = "",
-		-- colorscheme = "",
 		after = function(plugin)
 			local conform = require("conform")
 
