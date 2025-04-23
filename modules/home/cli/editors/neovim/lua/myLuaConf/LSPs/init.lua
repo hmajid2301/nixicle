@@ -202,9 +202,12 @@ require("lze").load({
 			root_markers = { ".git" },
 			settings = {
 				tailwindCSS = {
-					experimental = {
-						configFile = "static/css/tailwind.css",
-					},
+					-- experimental = {
+					-- 	configFile = "static/css/tailwind.css",
+					-- },
+					-- files = {
+					-- 	exclude = { ".direnv" },
+					-- },
 				},
 			},
 		},
