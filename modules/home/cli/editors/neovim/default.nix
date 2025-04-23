@@ -38,6 +38,7 @@ in {
             css = with pkgs; [
               stylelint
               prettierd
+              rustywind
               tailwindcss-language-server
             ];
             docker = with pkgs; [
@@ -49,7 +50,6 @@ in {
               htmlhint
               rubyPackages_3_4.htmlbeautifier
               htmx-lsp
-              rustywind
               vscode-langservers-extracted
             ];
             go = with pkgs; [
@@ -61,7 +61,6 @@ in {
               gotools
               gotestsum
             ];
-            ts = with pkgs; [ eslint ];
             json = with pkgs;
               [ nodePackages_latest.vscode-json-languageserver ];
             lua = with pkgs; [
@@ -76,7 +75,7 @@ in {
             terraform = with pkgs; [ terraform terraform-lsp ];
             toml = with pkgs; [ taplo ];
             templ = with pkgs; [ templ ];
-            typescript = with pkgs; [ typescript-language-server ];
+            typescript = with pkgs; [ typescript-language-server eslint ];
             yaml = with pkgs; [ yamlfmt yamllint yaml-language-server ];
           };
           startupPlugins = {
