@@ -212,7 +212,7 @@ require("lze").load({
 	-- },
 	{
 		"templ",
-		-- lsp = {},
+		lsp = {},
 	},
 	{
 		"sqls",
