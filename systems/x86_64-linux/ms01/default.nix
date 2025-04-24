@@ -5,9 +5,17 @@
     sopsFile = ../../../modules/nixos/services/secrets.yaml;
   };
 
-  fileSystems."/mnt/n1" = { device = "/dev/nvme0n1p1"; };
+  fileSystems."/mnt/n1" = {
+    device = "/dev/nvme1n1p1";
+    fsType = "ext4"; # Change to actual filesystem type (xfs, btrfs, etc)
+    options = [ "defaults" "noatime" ];
+  };
 
-  fileSystems."/mnt/n2" = { device = "/dev/nvme2n1p1"; };
+  fileSystems."/mnt/n2" = {
+    device = "/dev/nvme2n1p1";
+    fsType = "ext4"; # Change to actual filesystem type
+    options = [ "defaults" "noatime" ];
+  };
 
   services = {
     cloudflared = {
