@@ -278,4 +278,13 @@ return {
 			vim.keymap.set("n", "<leader>ut", vim.cmd.UndotreeToggle, { desc = "Toggle Undotree" })
 		end,
 	},
+
+	{
+		"vim-dotenv",
+		for_cat = "general.editor",
+		cmd = { "Dotenv" },
+		-- after = function(plugin)
+		-- 	vim.keymap.set("n", "<leader>ut", vim.cmd.UndotreeToggle, { desc = "Toggle Undotree" })
+		-- end,
+	},
 }

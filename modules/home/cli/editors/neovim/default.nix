@@ -102,6 +102,7 @@ in {
               neotest
               neotest-golang
               nvim-coverage
+              vim-dotenv
             ];
             lint = with pkgs.vimPlugins; [ nvim-lint ];
             format = with pkgs.vimPlugins; [ conform-nvim ];
