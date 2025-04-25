@@ -18,9 +18,6 @@ return {
 			{ "<leader>fb", mode = { "n" }, desc = "Find buffer" },
 			{ "<leader>fc", mode = { "n" }, desc = "Find command" },
 		},
-		-- event = "",
-		-- ft = "",
-		-- colorscheme = "",
 		load = function(name)
 			vim.cmd.packadd(name)
 			vim.cmd.packadd("telescope-fzf-native.nvim")
@@ -97,7 +94,7 @@ return {
 
 			local builtin = require("telescope.builtin")
 			vim.keymap.set("n", "<leader>fh", builtin.help_tags, { desc = "Find help" })
-			vim.keymap.set("n", "<leader>ff", builtin.find_files, { desc = "Find files" })
+			-- vim.keymap.set("n", "<leader>ff", builtin.find_files, { desc = "Find files" })
 			vim.keymap.set("n", "<leader>fm", builtin.keymaps, { desc = "Find keymaps" })
 			vim.keymap.set("n", "<leader>fs", builtin.builtin, { desc = "Find telescopes" })
 			vim.keymap.set("n", "<leader>fw", builtin.grep_string, { desc = "Find current word" })
@@ -107,7 +104,7 @@ return {
 			vim.keymap.set("n", "<leader>f.", builtin.oldfiles, { desc = "Find recent files" })
 			vim.keymap.set("n", "<leader>fb", builtin.buffers, { desc = "Find buffer" })
 			vim.keymap.set("n", "<leader>fc", builtin.command_history, { desc = "Find command" })
-			vim.keymap.set("n", "<leader>fa", function()
+			vim.keymap.set("n", "<leader>ff", function()
 				builtin.find_files({ hidden = true, follow = true })
 			end, { desc = "Find all files" })
 		end,

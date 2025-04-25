@@ -197,9 +197,9 @@ require("lze").load({
 		"tailwindcss",
 		lsp = {
 			-- TODO: Why do we to specify filetypes for tailwindcss to load.
-			-- filetypes = { "templ", "html" },
-			-- cmd = { "tailwindcss-language-server", "--stdio" },
-			-- root_markers = { ".git" },
+			filetypes = { "templ", "html" },
+			cmd = { "tailwindcss-language-server", "--stdio" },
+			root_markers = { ".git" },
 		},
 	},
 	{
