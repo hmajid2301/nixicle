@@ -1901,6 +1901,22 @@
         "type": "github"
       }
     },
+    "plugins-cmp-go-deep": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1745827204,
+        "narHash": "sha256-+xXWf1WlTYhB/yLBFUCb0xazeDQXDdb0mNL3fV190ao=",
+        "owner": "samiulsami",
+        "repo": "cmp-go-deep",
+        "rev": "56fe68ea06f712b619f7af01b26a25309ba998e7",
+        "type": "github"
+      },
+      "original": {
+        "owner": "samiulsami",
+        "repo": "cmp-go-deep",
+        "type": "github"
+      }
+    },
     "plugins-gx-nvim": {
       "flake": false,
       "locked": {
@@ -2147,6 +2163,7 @@
         "nixpkgs": "nixpkgs_8",
         "nur": "nur",
         "plugins-cmp-dbee": "plugins-cmp-dbee",
+        "plugins-cmp-go-deep": "plugins-cmp-go-deep",
         "plugins-gx-nvim": "plugins-gx-nvim",
         "plugins-maximize-nvim": "plugins-maximize-nvim",
         "plugins-nvim-dap-view": "plugins-nvim-dap-view",

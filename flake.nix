@@ -147,6 +147,11 @@
       url = "github:rachartier/tiny-code-action.nvim";
       flake = false;
     };
+
+    plugins-cmp-go-deep = {
+      url = "github:samiulsami/cmp-go-deep";
+      flake = false;
+    };
   };
 
   outputs = inputs:
