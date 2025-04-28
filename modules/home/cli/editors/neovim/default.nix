@@ -71,7 +71,7 @@ in {
             markdown = with pkgs; [ marksman markdownlint-cli2 ];
             nix = with pkgs; [ nixd nixfmt statix nix-doc ];
             python = with pkgs; [ isort black pyright ];
-            sql = with pkgs; [ sqruff sqls python313Packages.sqlfmt ];
+            sql = with pkgs; [ sqls sqlfluff ];
             terraform = with pkgs; [ terraform terraform-lsp ];
             toml = with pkgs; [ taplo ];
             templ = with pkgs; [ templ ];
@@ -164,6 +164,7 @@ in {
                 snacks-nvim
                 pkgs.neovimPlugins.gx-nvim
                 pkgs.neovimPlugins.templ-goto-definition
+                pkgs.neovimPlugins.tiny-code-actions
               ];
               extra = with pkgs.vimPlugins; [
                 fidget-nvim

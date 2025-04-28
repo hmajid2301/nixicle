@@ -278,7 +278,6 @@ return {
 			vim.keymap.set("n", "<leader>ut", vim.cmd.UndotreeToggle, { desc = "Toggle Undotree" })
 		end,
 	},
-
 	{
 		"vim-dotenv",
 		for_cat = "general.editor",
@@ -286,5 +285,18 @@ return {
 		-- after = function(plugin)
 		-- 	vim.keymap.set("n", "<leader>ut", vim.cmd.UndotreeToggle, { desc = "Toggle Undotree" })
 		-- end,
+	},
+	{
+		"tiny-code-actions",
+		for_cat = "general.editor",
+		event = "DeferredUIEnter",
+		keys = {
+			{ "<leader>ca", mode = { "n" }, desc = "code actions" },
+		},
+		after = function(plugin)
+			vim.keymap.set({ "n", "v" }, "<leader>ca", function()
+				require("tiny-code-action").code_action()
+			end, { noremap = true, silent = true })
+		end,
 	},
 }

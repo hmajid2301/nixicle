@@ -69,6 +69,8 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    hyprpanel.url = "github:Jas-SinghFSU/HyprPanel";
+
     # Homelab
 
     attic = {
@@ -140,6 +142,11 @@
       url = "github:catgoose/templ-goto-definition";
       flake = false;
     };
+
+    plugins-tiny-code-actions = {
+      url = "github:rachartier/tiny-code-action.nvim";
+      flake = false;
+    };
   };
 
   outputs = inputs:
@@ -182,6 +189,7 @@
         nixgl.overlay
         nur.overlays.default
         nix-topology.overlays.default
+        hyprpanel.overlay
       ];
 
       deploy = lib.mkDeploy { inherit (inputs) self; };
