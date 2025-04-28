@@ -130,6 +130,7 @@ in {
                 (pkgs.neovimPlugins.cmp-dbee.overrideAttrs {
                   nvimSkipModule = [ "cmp-dbee.connection" "cmp-dbee.source" ];
                 })
+                pkgs.neovimPlugins.cmp-go-deep
               ];
               treesitter = with pkgs.vimPlugins; [
                 nvim-treesitter-textobjects

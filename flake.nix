@@ -140,6 +140,11 @@
       url = "github:catgoose/templ-goto-definition";
       flake = false;
     };
+
+    plugins-cmp-go-deep = {
+      url = "github:samiulsami/cmp-go-deep";
+      flake = false;
+    };
   };
 
   outputs = inputs:
