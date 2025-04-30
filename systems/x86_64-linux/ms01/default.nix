@@ -7,13 +7,13 @@
 
   fileSystems."/mnt/n1" = {
     device = "/dev/nvme1n1p1";
-    fsType = "ext4"; # Change to actual filesystem type (xfs, btrfs, etc)
+    fsType = "ext4";
     options = [ "defaults" "noatime" ];
   };
 
   fileSystems."/mnt/n2" = {
     device = "/dev/nvme2n1p1";
-    fsType = "ext4"; # Change to actual filesystem type
+    fsType = "ext4";
     options = [ "defaults" "noatime" ];
   };
 
@@ -51,13 +51,13 @@
       minio.enable = true;
       # navidrome.enable = true;
       netdata.enable = true;
-      nfs.enable = true;
+      #nfs.enable = true;
       smb.enable = true;
       paperless.enable = true;
       postgresql.enable = true;
       redis.enable = true;
       traefik.enable = true;
-      # ollama.enable = true;
+      ollama.enable = true;
     };
 
     traefik = {

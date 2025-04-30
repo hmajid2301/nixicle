@@ -209,8 +209,7 @@
               builtins.head (builtins.attrNames self.nixosConfigurations)
             };
         in import nix-topology {
-          inherit (host)
-            pkgs; # Only this package set must include nix-topology.overlays.default
+          inherit (host) pkgs;
           modules = [
             (import ./topology { inherit (host) config; })
             { inherit (self) nixosConfigurations; }

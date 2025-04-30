@@ -97,6 +97,7 @@ return {
 			require("mini.comment").setup()
 			require("mini.files").setup()
 			require("mini.pairs").setup({
+				-- INFO: Taken from here: https://github.com/desdic/neovim/blob/main/lua/plugins/mini-pairs.lua
 				modes = { insert = true, command = false, terminal = false },
 
 				mappings = {
