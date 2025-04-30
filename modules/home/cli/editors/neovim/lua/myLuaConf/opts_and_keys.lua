@@ -14,6 +14,7 @@ vim.opt.winminwidth = 10
 vim.opt.equalalways = true
 vim.opt.swapfile = false
 vim.opt.incsearch = true
+vim.opt.winborder = "rounded"
 
 -- Sets how neovim will display certain whitespace characters in the editor.
 --  See `:help 'list'`
