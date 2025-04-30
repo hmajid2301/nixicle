@@ -2,10 +2,6 @@ require("lze").load({
 	{
 		"conform.nvim",
 		for_cat = "format",
-		-- cmd = { "" },
-		-- event = "",
-		-- ft = "",
-		-- colorscheme = "",
 		after = function(plugin)
 			local conform = require("conform")
 
@@ -27,14 +23,13 @@ require("lze").load({
 					css = { "prettierd" },
 					go = { "gofmt", "goimports" },
 					lua = { "stylua" },
-					-- TODO: fix these
-					-- templ = { "rustywind" },
-					-- html = { "htmlbeautifier", "rustywind" },
+					templ = { "rustywind", "templ" },
+					html = { "htmlbeautifier", "rustywind" },
 					nix = { "nixfmt" },
 					python = { "isort", "black" },
 					javascript = { "prettierd" },
 					typescript = { "prettierd" },
-					sql = { "sqruff" },
+					sql = { "sqlfluff" },
 					yaml = { "yamlfmt" },
 				},
 			})

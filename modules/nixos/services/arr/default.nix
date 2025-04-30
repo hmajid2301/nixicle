@@ -1,17 +1,19 @@
-{
-  config,
-  lib,
-  ...
-}:
-with lib; let
-  cfg = config.services.arr;
+{ config, lib, ... }:
+with lib;
+let cfg = config.services.arr;
 in {
-  options.services.arr = {
-    enable = mkEnableOption "Enable the arr";
-  };
+  options.services.arr = { enable = mkEnableOption "Enable the arr"; };
 
   config = mkIf cfg.enable {
-    users.groups.media = {};
+    users.groups.media = { };
+
+    systemd.tmpfiles.rules = [
+      "d /mnt/n1/media 0775 root media -"
+      "d /mnt/n1/media/Shows 0775 root media -"
+      "d /mnt/n1/media/Movies 0775 root media -"
+      "d /mnt/n1/media/Music 0775 root media -"
+      "d /mnt/n1/media/Books 0775 root media -"
+    ];
 
     services = {
       bazarr = {
@@ -58,93 +60,69 @@ in {
         dynamicConfigOptions = {
           http = {
             services = {
-              bazarr.loadBalancer.servers = [
-                {
-                  url = "http://localhost:6767";
-                }
-              ];
-              readarr.loadBalancer.servers = [
-                {
-                  url = "http://localhost:8787";
-                }
-              ];
-              lidarr.loadBalancer.servers = [
-                {
-                  url = "http://localhost:8686";
-                }
-              ];
-              radarr.loadBalancer.servers = [
-                {
-                  url = "http://localhost:7878";
-                }
-              ];
-              prowlarr.loadBalancer.servers = [
-                {
-                  url = "http://localhost:9696";
-                }
-              ];
-              sonarr.loadBalancer.servers = [
-                {
-                  url = "http://localhost:8989";
-                }
-              ];
-              jellyseerr.loadBalancer.servers = [
-                {
-                  url = "http://localhost:5055";
-                }
-              ];
-              jellyfin.loadBalancer.servers = [
-                {
-                  url = "http://localhost:8096";
-                }
-              ];
+              bazarr.loadBalancer.servers =
+                [{ url = "http://localhost:6767"; }];
+              readarr.loadBalancer.servers =
+                [{ url = "http://localhost:8787"; }];
+              lidarr.loadBalancer.servers =
+                [{ url = "http://localhost:8686"; }];
+              radarr.loadBalancer.servers =
+                [{ url = "http://localhost:7878"; }];
+              prowlarr.loadBalancer.servers =
+                [{ url = "http://localhost:9696"; }];
+              sonarr.loadBalancer.servers =
+                [{ url = "http://localhost:8989"; }];
+              jellyseerr.loadBalancer.servers =
+                [{ url = "http://localhost:5055"; }];
+              jellyfin.loadBalancer.servers =
+                [{ url = "http://localhost:8096"; }];
             };
 
             routers = {
               bazarr = {
-                entryPoints = ["websecure"];
+                entryPoints = [ "websecure" ];
                 rule = "Host(`bazarr.homelab.haseebmajid.dev`)";
                 service = "bazarr";
                 tls.certResolver = "letsencrypt";
-                middlewares = ["authentik"];
+                middlewares = [ "authentik" ];
               };
               readarr = {
-                entryPoints = ["websecure"];
+                entryPoints = [ "websecure" ];
                 rule = "Host(`readarr.homelab.haseebmajid.dev`)";
                 service = "readarr";
                 tls.certResolver = "letsencrypt";
-                middlewares = ["authentik"];
+                middlewares = [ "authentik" ];
               };
               lidarr = {
-                entryPoints = ["websecure"];
+                entryPoints = [ "websecure" ];
                 rule = "Host(`lidarr.homelab.haseebmajid.dev`)";
                 service = "lidarr";
                 tls.certResolver = "letsencrypt";
-                middlewares = ["authentik"];
+                middlewares = [ "authentik" ];
               };
               radarr = {
-                entryPoints = ["websecure"];
+                entryPoints = [ "websecure" ];
                 rule = "Host(`radarr.homelab.haseebmajid.dev`)";
                 service = "radarr";
                 tls.certResolver = "letsencrypt";
-                middlewares = ["authentik"];
+                middlewares = [ "authentik" ];
               };
               prowlarr = {
-                entryPoints = ["websecure"];
+                entryPoints = [ "websecure" ];
                 rule = "Host(`prowlarr.homelab.haseebmajid.dev`)";
                 service = "prowlarr";
                 tls.certResolver = "letsencrypt";
-                middlewares = ["authentik"];
+                middlewares = [ "authentik" ];
               };
               sonarr = {
-                entryPoints = ["websecure"];
+                entryPoints = [ "websecure" ];
                 rule = "Host(`sonarr.homelab.haseebmajid.dev`)";
                 service = "sonarr";
                 tls.certResolver = "letsencrypt";
-                middlewares = ["authentik"];
+                middlewares = [ "authentik" ];
               };
               jellyseerr = {
-                entryPoints = ["websecure"];
+                entryPoints = [ "websecure" ];
                 rule = "Host(`jellyseerr.homelab.haseebmajid.dev`)";
                 service = "jellyseerr";
                 tls.certResolver = "letsencrypt";

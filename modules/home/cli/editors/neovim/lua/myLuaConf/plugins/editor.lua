@@ -96,7 +96,86 @@ return {
 			require("mini.surround").setup()
 			require("mini.comment").setup()
 			require("mini.files").setup()
-			-- require("mini.pairs").setup()
+			require("mini.pairs").setup({
+				-- INFO: Taken from here: https://github.com/desdic/neovim/blob/main/lua/plugins/mini-pairs.lua
+				modes = { insert = true, command = false, terminal = false },
+
+				mappings = {
+					[")"] = { action = "close", pair = "()", neigh_pattern = "[^\\]." },
+					["]"] = { action = "close", pair = "[]", neigh_pattern = "[^\\]." },
+					["}"] = { action = "close", pair = "{}", neigh_pattern = "[^\\]." },
+					["["] = {
+						action = "open",
+						pair = "[]",
+						neigh_pattern = ".[%s%z%)}%]]",
+						register = { cr = false },
+						-- foo|bar -> press "[" -> foo[bar
+						-- foobar| -> press "[" -> foobar[]
+						-- |foobar -> press "[" -> [foobar
+						-- | foobar -> press "[" -> [] foobar
+						-- foobar | -> press "[" -> foobar []
+						-- {|} -> press "[" -> {[]}
+						-- (|) -> press "[" -> ([])
+						-- [|] -> press "[" -> [[]]
+					},
+					["{"] = {
+						action = "open",
+						pair = "{}",
+						-- neigh_pattern = ".[%s%z%)}]",
+						neigh_pattern = ".[%s%z%)}%]]",
+						register = { cr = false },
+						-- foo|bar -> press "{" -> foo{bar
+						-- foobar| -> press "{" -> foobar{}
+						-- |foobar -> press "{" -> {foobar
+						-- | foobar -> press "{" -> {} foobar
+						-- foobar | -> press "{" -> foobar {}
+						-- (|) -> press "{" -> ({})
+						-- {|} -> press "{" -> {{}}
+					},
+					["("] = {
+						action = "open",
+						pair = "()",
+						-- neigh_pattern = ".[%s%z]",
+						neigh_pattern = ".[%s%z%)]",
+						register = { cr = false },
+						-- foo|bar -> press "(" -> foo(bar
+						-- foobar| -> press "(" -> foobar()
+						-- |foobar -> press "(" -> (foobar
+						-- | foobar -> press "(" -> () foobar
+						-- foobar | -> press "(" -> foobar ()
+					},
+					-- Single quote: Prevent pairing if either side is a letter
+					['"'] = {
+						action = "closeopen",
+						pair = '""',
+						neigh_pattern = "[^%w\\][^%w]",
+						register = { cr = false },
+					},
+					-- Single quote: Prevent pairing if either side is a letter
+					["'"] = {
+						action = "closeopen",
+						pair = "''",
+						neigh_pattern = "[^%w\\][^%w]",
+						register = { cr = false },
+					},
+					-- Backtick: Prevent pairing if either side is a letter
+					["`"] = {
+						action = "closeopen",
+						pair = "``",
+						neigh_pattern = "[^%w\\][^%w]",
+						register = { cr = false },
+					},
+				},
+				-- -- skip autopair when next character is one of these
+				skip_next = [=[[%w%%%'%[%"%.%`%$]]=],
+				-- -- skip autopair when the cursor is inside these treesitter nodes
+				skip_ts = { "string" },
+				-- -- skip autopair when next character is closing pair
+				-- -- and there are more closing pairs than opening pairs
+				skip_unbalanced = true,
+				-- -- better deal with markdown code blocks
+				markdown = true,
+			})
 			require("mini.trailspace").setup()
 			vim.keymap.set("n", "<leader>e", "<cmd>lua MiniFiles.open()<CR>")
 		end,
@@ -276,6 +355,27 @@ return {
 		end,
 		after = function(plugin)
 			vim.keymap.set("n", "<leader>ut", vim.cmd.UndotreeToggle, { desc = "Toggle Undotree" })
+		end,
+	},
+	{
+		"vim-dotenv",
+		for_cat = "general.editor",
+		cmd = { "Dotenv" },
+		-- after = function(plugin)
+		-- 	vim.keymap.set("n", "<leader>ut", vim.cmd.UndotreeToggle, { desc = "Toggle Undotree" })
+		-- end,
+	},
+	{
+		"tiny-code-actions",
+		for_cat = "general.editor",
+		event = "DeferredUIEnter",
+		keys = {
+			{ "<leader>ca", mode = { "n" }, desc = "code actions" },
+		},
+		after = function(plugin)
+			vim.keymap.set({ "n", "v" }, "<leader>ca", function()
+				require("tiny-code-action").code_action()
+			end, { noremap = true, silent = true })
 		end,
 	},
 }

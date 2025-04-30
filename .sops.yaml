@@ -17,11 +17,11 @@
 # sops updatekeys secrets/secrets.yaml
 keys:
   - &users:
-    - &haseeb_workstation age1emuknmcdwt5letup4eatvjxrrllkd06uqhslvzhwr0jkjj9f8ewquz9xur
+    - &haseeb_workstation age1vmnnywhflwymjcgllmp5sgf05dn3qvamd2ylhxquwcuvlrm8ma3sc882mp
     - &haseebmajid_curve age1rc26esy506fa0kv2y97sjzfk4g2pr0ctv2rzkacewx5d8urns3zqhr7r7n
   - &hosts:
     - &framework age1kzxen8ynw28h935jnjc9t8cx4p8mv6angk5suvkp6ntu4am9pe4smfw22z
-    - &workstation age1fy626vylmpya4t4gyqx6kw4ggn7j79upjgt4jka2gq6lysluhd0s8ytqls
+    - &workstation age1vsjjdkgrv72tr3uftryj2szt3n0xk8h3ce54kzyfsmxtymxu6s4qgu5yuk
     - &mainboard age1rpqz5vl9tkgje46h43sjgthmqjcltwgm8fm9xdm9yk2ugemuqqrs6jpr43
     - &um790 age1wtkcl8gwwumvzf78ttqy4gh2pwzz724glugs5wah2fcudgfh5pxq3urkpg
     - &ms01 age1uswlqzs3pf99r6e8qq5d3eh44sufe5tdczmfqygeam7vfr96fugqa0pps7

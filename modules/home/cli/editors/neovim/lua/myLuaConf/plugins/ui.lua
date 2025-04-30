@@ -1,18 +1,13 @@
 return {
 	{
-		"Bekaboo/dropbar.nvim",
-		-- event = "BufEnter",
+		"dropbar.nvim",
 		event = "DeferredUIEnter",
 		for_cat = "general.ui",
-		-- cmd = {  },
-		-- ft = "go",
-		-- colorscheme = "",
 		-- keys = {
 		-- 	{ "<leader>nb", mode = { "n" }, desc = "Show dropbar picker" },
 		-- },
 		load = function(name)
 			vim.cmd.packadd(name)
-			vim.cmd.packadd("dropbar.nvim")
 		end,
 		after = function(plugin)
 			require("dropbar").setup()
@@ -22,15 +17,11 @@ return {
 		end,
 	},
 	{
-		"luckasRanarison/tailwind-tools.nvim",
+		"tailwind-tools.nvim",
 		event = "DeferredUIEnter",
 		for_cat = "general.ui",
-		-- cmd = {  },
-		-- ft = "",
-		-- colorscheme = "",
 		load = function(name)
 			vim.cmd.packadd(name)
-			vim.cmd.packadd("tailwind-tools.nvim")
 		end,
 		after = function(plugin)
 			require("tailwind-tools").setup({
@@ -38,21 +29,20 @@ return {
 					override = false,
 				},
 				document_color = {
-					enabled = true, -- can be toggled by commands
-					kind = "inline", -- "inline" | "foreground" | "background"
-					debounce = 200, -- in milliseconds, only applied in insert mode
+					enabled = true,
+					kind = "inline",
+					debounce = 200,
 					inline_symbol = "󱓻 ",
 				},
 			})
 		end,
 	},
 	{
-		"lukas-reineke/indent-blankline.nvim",
+		"indent-blankline.nvim",
 		for_cat = "general.ui",
 		event = "DeferredUIEnter",
 		load = function(name)
 			vim.cmd.packadd(name)
-			vim.cmd.packadd("indent-blankline.nvim")
 		end,
 		after = function(plugin)
 			require("ibl").setup({
@@ -81,11 +71,7 @@ return {
 	{
 		"lualine.nvim",
 		for_cat = "general.ui",
-		-- cmd = { "" },
 		event = "DeferredUIEnter",
-		-- ft = "",
-		-- keys = "",
-		-- colorscheme = "",
 		after = function(plugin)
 			require("lualine").setup({
 				options = {
@@ -102,6 +88,12 @@ return {
 					},
 				},
 				sections = {
+					-- tabline = {
+					-- 	lualine_a = { "buffers" },
+					-- 	-- if you use lualine-lsp-progress, I have mine here instead of fidget
+					-- 	-- lualine_b = { 'lsp_progress', },
+					-- 	lualine_z = { "tabs" },
+					-- },
 					lualine_a = {
 						{
 							"mode",
@@ -258,7 +250,6 @@ return {
 		"fidget.nvim",
 		for_cat = "general.extra",
 		event = "DeferredUIEnter",
-		-- keys = "",
 		after = function(plugin)
 			require("fidget").setup({})
 		end,

@@ -1,8 +1,0 @@
-services:
-  docs:
-    image: squidfunk/mkdocs-material:9.5.31
-    volumes:
-      - ./:docs
-    ports:
-      - 8000:8000
-

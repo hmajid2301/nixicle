@@ -8,17 +8,6 @@ in {
   };
 
   config = mkIf cfg.enable {
-    # TODO: Fix this
-    # fileSystems."/dev/nvme0n1p1" = {
-    #   device = "/mnt/n1";
-    #   options = ["bind"];
-    # };
-    #
-    # fileSystems."/dev/nvme2n1p1" = {
-    #   device = "/mnt/n2";
-    #   options = ["bind"];
-    # };
-
     services = {
       samba-wsdd = {
         enable = true;
@@ -28,6 +17,7 @@ in {
       samba = {
         enable = true;
         openFirewall = true;
+        securityType = "user";
         nmbd.enable = true;
         winbindd.enable = true;
         settings = {
@@ -38,15 +28,18 @@ in {
             security = "user";
             "min protocol" = "SMB2";
             "browseable" = "yes";
-            "guest ok" = "yes";
+            "guest account" = "nobody";
+            "map to guest" = "bad user";
           };
           public = {
             "path" = "/mnt/n1";
-            "guest ok" = "yes";
+            "browseable" = "yes";
             "read only" = "no";
-            "create mask" = "0755";
+            "guest ok" = "yes";
+            "create mask" = "0644";
             "directory mask" = "0755";
-            "force user" = "nobody";
+            "force user" = "nixos";
+            "force group" = "users";
           };
         };
       };
