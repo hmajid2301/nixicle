@@ -3,13 +3,13 @@ let inherit (inputs.nixCats) utils;
 in {
   imports = [ inputs.nixCats.homeModule ];
 
-  xdg.configFile."nvim/queries/go/injections.scm".text =
-    builtins.readFile ./lua/myLuaConf/syntax/go.scm;
-  xdg.configFile."nvim/queries/templ/injections.scm".text =
-    builtins.readFile ./lua/myLuaConf/syntax/html.scm;
-
   # TODO: enable true like every other package
   config = {
+
+    xdg.configFile."nvim/queries/go/injections.scm".text =
+      builtins.readFile ./lua/myLuaConf/syntax/go.scm;
+    xdg.configFile."nvim/queries/templ/injections.scm".text =
+      builtins.readFile ./lua/myLuaConf/syntax/html.scm;
 
     programs.neovim = {
       enable = true;
