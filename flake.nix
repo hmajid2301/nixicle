@@ -69,6 +69,8 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    hyprpanel.url = "github:Jas-SinghFSU/HyprPanel";
+
     # Homelab
 
     attic = {
@@ -140,6 +142,16 @@
       url = "github:catgoose/templ-goto-definition";
       flake = false;
     };
+
+    plugins-tiny-code-actions = {
+      url = "github:rachartier/tiny-code-action.nvim";
+      flake = false;
+    };
+
+    plugins-cmp-go-deep = {
+      url = "github:samiulsami/cmp-go-deep";
+      flake = false;
+    };
   };
 
   outputs = inputs:
@@ -182,6 +194,7 @@
         nixgl.overlay
         nur.overlays.default
         nix-topology.overlays.default
+        hyprpanel.overlay
       ];
 
       deploy = lib.mkDeploy { inherit (inputs) self; };
@@ -196,8 +209,7 @@
               builtins.head (builtins.attrNames self.nixosConfigurations)
             };
         in import nix-topology {
-          inherit (host)
-            pkgs; # Only this package set must include nix-topology.overlays.default
+          inherit (host) pkgs;
           modules = [
             (import ./topology { inherit (host) config; })
             { inherit (self) nixosConfigurations; }

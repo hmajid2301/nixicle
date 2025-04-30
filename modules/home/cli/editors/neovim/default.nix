@@ -2,15 +2,15 @@
 let inherit (inputs.nixCats) utils;
 in {
   imports = [ inputs.nixCats.homeModule ];
-
-  programs.neovim = {
-    enable = true;
-    viAlias = true;
-    vimAlias = true;
-    defaultEditor = true;
-  };
   # TODO: enable true like every other package
   config = {
+
+    programs.neovim = {
+      enable = true;
+      viAlias = true;
+      vimAlias = true;
+      defaultEditor = true;
+    };
     # this value, nixCats is the defaultPackageName you pass to mkNixosModules
     # it will be the namespace for your options.
     nixCats = {
@@ -38,6 +38,7 @@ in {
             css = with pkgs; [
               stylelint
               prettierd
+              rustywind
               tailwindcss-language-server
             ];
             docker = with pkgs; [
@@ -49,7 +50,6 @@ in {
               htmlhint
               rubyPackages_3_4.htmlbeautifier
               htmx-lsp
-              rustywind
               vscode-langservers-extracted
             ];
             go = with pkgs; [
@@ -61,7 +61,6 @@ in {
               gotools
               gotestsum
             ];
-            ts = with pkgs; [ eslint ];
             json = with pkgs;
               [ nodePackages_latest.vscode-json-languageserver ];
             lua = with pkgs; [
@@ -72,11 +71,11 @@ in {
             markdown = with pkgs; [ marksman markdownlint-cli2 ];
             nix = with pkgs; [ nixd nixfmt statix nix-doc ];
             python = with pkgs; [ isort black pyright ];
-            sql = with pkgs; [ sqruff sqls ];
+            sql = with pkgs; [ sqls sqlfluff ];
             terraform = with pkgs; [ terraform terraform-lsp ];
             toml = with pkgs; [ taplo ];
             templ = with pkgs; [ templ ];
-            typescript = with pkgs; [ typescript-language-server ];
+            typescript = with pkgs; [ typescript-language-server eslint ];
             yaml = with pkgs; [ yamlfmt yamllint yaml-language-server ];
           };
           startupPlugins = {
@@ -103,6 +102,7 @@ in {
               neotest
               neotest-golang
               nvim-coverage
+              vim-dotenv
             ];
             lint = with pkgs.vimPlugins; [ nvim-lint ];
             format = with pkgs.vimPlugins; [ conform-nvim ];
@@ -130,6 +130,7 @@ in {
                 (pkgs.neovimPlugins.cmp-dbee.overrideAttrs {
                   nvimSkipModule = [ "cmp-dbee.connection" "cmp-dbee.source" ];
                 })
+                pkgs.neovimPlugins.cmp-go-deep
               ];
               treesitter = with pkgs.vimPlugins; [
                 nvim-treesitter-textobjects
@@ -164,6 +165,7 @@ in {
                 snacks-nvim
                 pkgs.neovimPlugins.gx-nvim
                 pkgs.neovimPlugins.templ-goto-definition
+                pkgs.neovimPlugins.tiny-code-actions
               ];
               extra = with pkgs.vimPlugins; [
                 fidget-nvim

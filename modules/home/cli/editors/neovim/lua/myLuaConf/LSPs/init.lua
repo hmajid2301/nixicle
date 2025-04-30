@@ -177,7 +177,7 @@ require("lze").load({
 	{ "marksman", lsp = {} },
 	{ "ts_ls", lsp = {} },
 	{ "terraformls", lsp = {} },
-	-- { "taplo", lsp = {} },
+	{ "taplo", lsp = {} },
 	{
 		"jsonls",
 		lsp = {
@@ -191,57 +191,31 @@ require("lze").load({
 	},
 	{
 		"yamlls",
-		lsp = {
-			-- filetypes = { "yaml", "yml" },
-			-- settings = {
-			-- 	yaml = {
-			-- 		schemaStore = {
-			-- 			enable = false,
-			-- 			url = "",
-			-- 		},
-			-- 		schemas = require("schemastore").yaml.schemas(),
-			-- 	},
-			-- },
-		},
+		lsp = {},
 	},
 	{
 		"tailwindcss",
-		-- root_dir = function(fname)
-		-- 	return vim.fs.dirname(vim.fs.find(".git", { path = fname, upward = true })[1])
-		-- end,
 		lsp = {
-			filetypes = { "templ" },
-			settings = {
-				tailwindcss = {
-					-- experimental = {
-					-- 	-- classRegex = {
-					-- 	-- 	"@?class\\(([^]*)\\)",
-					-- 	-- 	"'([^']*)'",
-					-- 	-- },
-					-- 	configFile = {
-					-- 		"static/css/tailwind.css",
-					-- 	},
-					-- },
-					includeLanguages = {
-						templ = "html",
-					},
-				},
-			},
+			filetypes = { "templ", "html" },
+			-- cmd = { "tailwindcss-language-server", "--stdio" },
+			-- TODO: Why do we to specify filetypes for tailwindcss to load.
+			-- filetypes = { "templ", "html" },
+			-- cmd = { "tailwindcss-language-server", "--stdio" },
+			workspace_required = true,
+			root_markers = { ".git" },
 		},
 	},
-	-- {
-	-- 	"html",
-	-- 	lsp = {},
-	-- },
+	{
+		"html",
+		lsp = {},
+	},
 	-- {
 	-- 	"htmx",
 	-- 	lsp = {},
 	-- },
 	{
 		"templ",
-		lsp = {
-			filetypes = { "templ" },
-		},
+		lsp = {},
 	},
 	{
 		"sqls",

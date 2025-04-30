@@ -67,6 +67,12 @@ return {
 		load = load_w_after_plugin,
 	},
 	{
+		"cmp-go-deep",
+		for_cat = "general.cmp",
+		on_plugin = { "nvim-cmp" },
+		load = load_w_after_plugin,
+	},
+	{
 		"friendly-snippets",
 		for_cat = "general.cmp",
 		dep_of = { "nvim-cmp" },
@@ -196,6 +202,7 @@ return {
 				sources = cmp.config.sources({
 					{ name = "nvim_lsp" },
 					{ name = "nvim_lsp_signature_help" },
+					{ name = "go_deep" },
 					{ name = "path" },
 					{ name = "luasnip" },
 					{ name = "buffer" },

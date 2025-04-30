@@ -25,9 +25,6 @@ return {
 		keys = {
 			{ "<leader>aa", mode = { "n" }, desc = "Toggle Avanate" },
 		},
-		load = function(name)
-			vim.cmd.packadd(name)
-		end,
 		after = function(plugin)
 			require("avante").setup({
 				provider = "copilot",
