@@ -277,8 +277,8 @@ in {
               "${config.home.homeDirectory}/nixicle/modules/home/cli/editors/neovim";
             configDirName = "nixCats-nvim";
             aliases = [ "nvim" ];
-            neovim-unwrapped =
-              inputs.neovim-nightly-overlay.packages.${pkgs.system}.neovim;
+            # neovim-unwrapped =
+            #   inputs.neovim-nightly-overlay.packages.${pkgs.system}.neovim;
           };
           categories = {
             general = true;
