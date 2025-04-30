@@ -12,7 +12,7 @@ return function(_, bufnr)
 
 	nmap("<leader>cr", vim.lsp.buf.rename, "[R]e[n]ame")
 	nmap("<leader>gd", vim.lsp.buf.definition, "[G]oto [D]efinition")
-	vim.keymap.set({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, { desc = "Code Actions" })
+	-- vim.keymap.set({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, { desc = "Code Actions" })
 	nmap("<leader>lR", "<cmd>LspRestart<cr>", "Restart LSP")
 
 	-- NOTE: why are these functions that call the telescope builtin?

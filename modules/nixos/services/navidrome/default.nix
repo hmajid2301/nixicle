@@ -1,10 +1,6 @@
-{
-  config,
-  lib,
-  ...
-}:
-with lib; let
-  cfg = config.services.nixicle.navidrome;
+{ config, lib, ... }:
+with lib;
+let cfg = config.services.nixicle.navidrome;
 in {
   options.services.nixicle.navidrome = {
     enable = mkEnableOption "Enable the navidrome service";
@@ -16,7 +12,7 @@ in {
         enable = true;
         group = "media";
         settings = {
-          MusicFolder = "/mnt/share/media/Music";
+          MusicFolder = "/mnt/n1/media/Music";
           ND_REVERSEPROXYUSERHEADER = "X-authentik-username";
           ND_REVERSEPROXYWHITELIST = "0.0.0.0/0";
         };
@@ -42,20 +38,17 @@ in {
         dynamicConfigOptions = {
           http = {
             services = {
-              navidrome.loadBalancer.servers = [
-                {
-                  url = "http://localhost:4533";
-                }
-              ];
+              navidrome.loadBalancer.servers =
+                [{ url = "http://localhost:4533"; }];
             };
 
             routers = {
               navidrome = {
-                entryPoints = ["websecure"];
+                entryPoints = [ "websecure" ];
                 rule = "Host(`navidrome.haseebmajid.dev`)";
                 service = "navidrome";
                 tls.certResolver = "letsencrypt";
-                middlewares = ["authentik"];
+                middlewares = [ "authentik" ];
               };
             };
           };

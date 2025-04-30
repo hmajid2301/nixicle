@@ -10,6 +10,8 @@
     gnome = { enable = true; };
   };
 
+  home.packages = with pkgs; [ hyprpanel ];
+
   roles = {
     desktop.enable = true;
     social.enable = true;

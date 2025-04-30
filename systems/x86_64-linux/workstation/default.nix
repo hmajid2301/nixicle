@@ -13,6 +13,8 @@
     defaultEditor = true;
   };
 
+  system.boot.plymouth = lib.mkForce false;
+
   # TODO: when merged in
   systemd.package = pkgs.systemd.overrideAttrs (old: {
     patches = old.patches ++ [
