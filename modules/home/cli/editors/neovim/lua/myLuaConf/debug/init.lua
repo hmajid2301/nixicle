@@ -30,11 +30,6 @@ require("lze").load({
 		end,
 		after = function(plugin)
 			local dap, dv = require("dap"), require("dap-view")
-			local dap_vscode = require("dap.ext.vscode")
-
-			-- dap_vscode.load_launchjs(nil, {
-			-- 	go = { "go" },
-			-- })
 
 			dap.listeners.before.attach["dap-view-config"] = function()
 				dv.open()

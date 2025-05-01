@@ -20,9 +20,6 @@ return {
 		"tailwind-tools.nvim",
 		event = "DeferredUIEnter",
 		for_cat = "general.ui",
-		load = function(name)
-			vim.cmd.packadd(name)
-		end,
 		after = function(plugin)
 			require("tailwind-tools").setup({
 				server = {
@@ -41,9 +38,6 @@ return {
 		"indent-blankline.nvim",
 		for_cat = "general.ui",
 		event = "DeferredUIEnter",
-		load = function(name)
-			vim.cmd.packadd(name)
-		end,
 		after = function(plugin)
 			require("ibl").setup({
 				indent = {
