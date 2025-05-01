@@ -13,7 +13,7 @@
 
   fileSystems."/mnt/n2" = {
     device = "/dev/nvme2n1p1";
-    fsType = "ext4"; # Change to actual filesystem type
+    fsType = "ext4";
     options = [ "defaults" "noatime" ];
   };
 

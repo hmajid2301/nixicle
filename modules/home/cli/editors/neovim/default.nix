@@ -2,8 +2,14 @@
 let inherit (inputs.nixCats) utils;
 in {
   imports = [ inputs.nixCats.homeModule ];
+
   # TODO: enable true like every other package
   config = {
+
+    xdg.configFile."nvim/queries/go/injections.scm".text =
+      builtins.readFile ./lua/myLuaConf/syntax/go.scm;
+    xdg.configFile."nvim/queries/templ/injections.scm".text =
+      builtins.readFile ./lua/myLuaConf/syntax/html.scm;
 
     programs.neovim = {
       enable = true;
@@ -69,7 +75,7 @@ in {
               lua-language-server
             ];
             markdown = with pkgs; [ marksman markdownlint-cli2 ];
-            nix = with pkgs; [ nixd nixfmt statix nix-doc ];
+            nix = with pkgs; [ nixd nixfmt-rfc-style statix nix-doc ];
             python = with pkgs; [ isort black pyright ];
             sql = with pkgs; [ sqls sqlfluff ];
             terraform = with pkgs; [ terraform terraform-lsp ];
@@ -271,8 +277,8 @@ in {
               "${config.home.homeDirectory}/nixicle/modules/home/cli/editors/neovim";
             configDirName = "nixCats-nvim";
             aliases = [ "nvim" ];
-            neovim-unwrapped =
-              inputs.neovim-nightly-overlay.packages.${pkgs.system}.neovim;
+            # neovim-unwrapped =
+            #   inputs.neovim-nightly-overlay.packages.${pkgs.system}.neovim;
           };
           categories = {
             general = true;

@@ -1,11 +1,6 @@
-{
-  config,
-  lib,
-  pkgs,
-  ...
-}:
-with lib; let
-  cfg = config.services.nixicle.jellyfin;
+{ config, lib, pkgs, ... }:
+with lib;
+let cfg = config.services.nixicle.jellyfin;
 in {
   options.services.nixicle.jellyfin = {
     enable = mkEnableOption "Enable jellyfin service";
@@ -13,7 +8,7 @@ in {
 
   config = mkIf cfg.enable {
     nixpkgs.config.packageOverrides = pkgs: {
-      vaapiIntel = pkgs.vaapiIntel.override {enableHybridCodec = true;};
+      vaapiIntel = pkgs.vaapiIntel.override { enableHybridCodec = true; };
     };
 
     hardware.graphics = {
@@ -30,21 +25,19 @@ in {
 
     services = {
       jellyfin.enable = true;
+      jellyfin.openFirewall = true;
 
       traefik = {
         dynamicConfigOptions = {
           http = {
             services = {
-              jellyfin.loadBalancer.servers = [
-                {
-                  url = "http://localhost:8096";
-                }
-              ];
+              jellyfin.loadBalancer.servers =
+                [{ url = "http://localhost:8096"; }];
             };
 
             routers = {
               jellyfin = {
-                entryPoints = ["websecure"];
+                entryPoints = [ "websecure" ];
                 rule = "Host(`jellyfin.homelab.haseebmajid.dev`)";
                 service = "jellyfin";
                 tls.certResolver = "letsencrypt";
