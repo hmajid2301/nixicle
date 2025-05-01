@@ -36,9 +36,9 @@ return function(_, bufnr)
 	nmap("<leader>D", vim.lsp.buf.type_definition, "Type [D]efinition")
 
 	-- See `:help K` for why this keymap
-	-- nmap("K", function()
-	-- 	vim.lsp.buf.hover({ border = "rounded" })
-	-- end, "Hover Documentation")
+	nmap("K", function()
+		vim.lsp.buf.hover({ border = "rounded" })
+	end, "Hover Documentation")
 
 	vim.keymap.set("i", "<C-k>", function()
 		vim.lsp.buf.signature_help({ border = "rounded" })

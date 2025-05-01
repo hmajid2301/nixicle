@@ -75,7 +75,7 @@ in {
               lua-language-server
             ];
             markdown = with pkgs; [ marksman markdownlint-cli2 ];
-            nix = with pkgs; [ nixd nixfmt statix nix-doc ];
+            nix = with pkgs; [ nixd nixfmt-rfc-style statix nix-doc ];
             python = with pkgs; [ isort black pyright ];
             sql = with pkgs; [ sqls sqlfluff ];
             terraform = with pkgs; [ terraform terraform-lsp ];
