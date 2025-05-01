@@ -100,7 +100,6 @@ in {
           optionalPlugins = {
             debug = with pkgs.vimPlugins; [
               nvim-dap
-              # nvim-dap-ui
               pkgs.neovimPlugins.nvim-dap-view
               nvim-dap-go
             ];
@@ -120,18 +119,11 @@ in {
                 avante-nvim
               ];
               cmp = with pkgs.vimPlugins; [
-                # cmp stuff
-                nvim-cmp
+                blink-cmp
+                blink-compat
+                blink-ripgrep-nvim
                 luasnip
                 friendly-snippets
-                cmp_luasnip
-                cmp-buffer
-                cmp-path
-                cmp-nvim-lua
-                cmp-nvim-lsp
-                cmp-cmdline
-                cmp-nvim-lsp-signature-help
-                cmp-cmdline-history
                 lspkind-nvim
                 (pkgs.neovimPlugins.cmp-dbee.overrideAttrs {
                   nvimSkipModule = [ "cmp-dbee.connection" "cmp-dbee.source" ];
@@ -208,7 +200,7 @@ in {
           # in your lua config via
           # vim.g.python3_host_prog
           # or run from nvim terminal via :!<packagename>-python3
-          extraPython3Packages = { test = _: [ ]; };
+          python3.libraries = { test = _: [ ]; };
           # populates $LUA_PATH and $LUA_CPATH
           extraLuaPackages = { test = [ (_: [ ]) ]; };
         };
