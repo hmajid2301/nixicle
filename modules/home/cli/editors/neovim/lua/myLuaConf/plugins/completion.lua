@@ -66,27 +66,43 @@ return {
 			require("blink-cmp").setup({
 				sources = {
 					default = { "lsp", "buffer", "snippets", "path" },
-					-- per_filetype = { sql = { "cmp-dbee" }, go = { "go_deep" } },
+					per_filetype = {
+						sql = { "buffer", "cmp-dbee", "snippets" },
+						-- go = { "go_deep" }
+					},
 					providers = {
-						-- ripgrep = { module = "blink-ripgrep", name = "Ripgrep" },
-						-- ["cmp-dbee"] = { name = "cmp-dbee", module = "blink.compat.source" },
+						ripgrep = { module = "blink-ripgrep", name = "Ripgrep" },
+						["cmp-dbee"] = { name = "cmp-dbee", module = "blink.compat.source" },
 						-- ["go_deep"] = { name = "go_deep", module = "blink.compat.source" },
 					},
 				},
 				keymap = {
-					preset = "default",
-					["<CR>"] = { "accept", "fallback" },
+					preset = "enter",
+					["<Tab>"] = { "select_next", "fallback" },
+					["<S-Tab>"] = { "select_prev", "fallback" },
 					["<C-j>"] = { "select_next", "fallback_to_mappings" },
 					["<C-k>"] = { "select_prev", "fallback_to_mappings" },
 				},
+				snippets = { preset = "luasnip" },
+				signature = { enabled = true },
 				cmdline = {
 					keymap = {
-						["<Tab>"] = { "show", "accept" },
+						["<cr>"] = {
+							function(cmp)
+								return cmp.accept({
+									callback = function()
+										vim.api.nvim_feedkeys("\n", "n", true)
+									end,
+								})
+							end,
+							"fallback",
+						},
+						["<Tab>"] = { "select_next" },
+						["<S-Tab>"] = { "select_prev" },
+						["<C-e>"] = { "cancel" },
 					},
 					completion = { menu = { auto_show = true } },
 				},
-				snippets = { preset = "luasnip" },
-				signature = { enabled = true },
 				completion = {
 					menu = {
 						border = "single",
@@ -101,8 +117,11 @@ return {
 							},
 						},
 					},
+					list = { selection = { preselect = false, auto_insert = true } },
 					documentation = {
 						auto_show = true,
+						auto_show_delay_ms = 200,
+						window = { border = "rounded" },
 					},
 				},
 			})
