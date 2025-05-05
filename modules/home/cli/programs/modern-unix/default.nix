@@ -1,12 +1,7 @@
-{
-  pkgs,
-  config,
-  lib,
-  ...
-}:
+{ pkgs, config, lib, ... }:
 with lib;
-with lib.nixicle; let
-  cfg = config.cli.programs.modern-unix;
+with lib.nixicle;
+let cfg = config.cli.programs.modern-unix;
 in {
   options.cli.programs.modern-unix = with types; {
     enable = mkBoolOpt false "Whether or not to enable modern unix tools";
@@ -50,6 +45,7 @@ in {
 
       # go
       go
+      goose
       golangci-lint
       air
       templ
@@ -61,6 +57,7 @@ in {
       gotestsum
 
       nodejs_23
+      sshx
     ];
   };
 }

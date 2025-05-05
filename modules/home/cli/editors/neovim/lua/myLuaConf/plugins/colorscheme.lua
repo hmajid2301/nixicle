@@ -72,6 +72,7 @@ require("catppuccin").setup({
 		all = colors,
 	},
 	integrations = {
+		blink_cmp = true,
 		dashboard = true,
 		gitsigns = true,
 		illuminate = { enabled = true },
@@ -390,6 +391,27 @@ hl(0, "CmpItemKindColor", { fg = colors.white })
 hl(0, "CmpItemKindReference", { fg = colors.base05 })
 hl(0, "CmpItemKindOperator", { fg = colors.base05 })
 hl(0, "CmpItemKindTypeParameter", { fg = colors.base08 })
+
+-- Blink
+hl(0, "BlinkCmpMenu", { bg = colors.black })
+hl(0, "BlinkCmpMenuBorder", { fg = colors.grey_fg })
+hl(0, "BlinkCmpMenuSelection", { link = "PmenuSel", bold = true })
+hl(0, "BlinkCmpScrollBarThumb", { bg = colors.grey })
+hl(0, "BlinkCmpScrollBarGutter", { bg = colors.black2 })
+hl(0, "BlinkCmpLabel", { fg = colors.white })
+hl(0, "BlinkCmpLabelDeprecated", { fg = colors.red, strikethrough = true })
+hl(0, "BlinkCmpLabelMatch", { fg = colors.blue, bold = true })
+hl(0, "BlinkCmpLabelDetail", { fg = colors.light_grey })
+hl(0, "BlinkCmpLabelDescription", { fg = colors.light_grey })
+hl(0, "BlinkCmpSource", { fg = colors.grey_fg })
+hl(0, "BlinkCmpGhostText", { fg = colors.grey_fg })
+hl(0, "BlinkCmpDoc", { bg = colors.black })
+hl(0, "BlinkCmpDocBorder", { fg = colors.grey_fg })
+hl(0, "BlinkCmpDocSeparator", { fg = colors.grey })
+hl(0, "BlinkCmpDocCursorLine", { bg = colors.one_bg })
+hl(0, "BlinkCmpSignatureHelp", { bg = colors.black })
+hl(0, "BlinkCmpSignatureHelpBorder", { fg = colors.grey_fg })
+hl(0, "BlinkCmpSignatureHelpActiveParameter", { fg = colors.blue, bold = true })
 
 -- DAP
 hl(0, "DapBreakpoint", { fg = colors.red })
