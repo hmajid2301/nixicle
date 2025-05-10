@@ -88,9 +88,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    poetry2nix.url = "github:nix-community/poetry2nix";
     authentik-nix = { url = "github:nix-community/authentik-nix"; };
-    authentik-nix.inputs.poetry2nix.follows = "poetry2nix";
 
     # Styling
 

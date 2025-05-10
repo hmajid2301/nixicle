@@ -1,12 +1,7 @@
-{
-  config,
-  lib,
-  pkgs,
-  ...
-}:
+{ config, lib, pkgs, ... }:
 with lib;
-with lib.nixicle; let
-  cfg = config.roles.gaming;
+with lib.nixicle;
+let cfg = config.roles.gaming;
 in {
   options.roles.gaming = with types; {
     enable = mkBoolOpt false "Enable the gaming suite";
@@ -19,9 +14,7 @@ in {
 
       graphics = {
         enable = true;
-        extraPackages = with pkgs; [
-          mesa
-        ];
+        extraPackages = with pkgs; [ mesa rocmPackages.clr.icd ];
       };
     };
 
@@ -32,19 +25,12 @@ in {
       gamescope.enable = true;
       steam = {
         enable = true;
-        package = pkgs.steam.override {
-          extraPkgs = p:
-            with p; [
-              mangohud
-              gamemode
-            ];
-        };
+        package =
+          pkgs.steam.override { extraPkgs = p: with p; [ mangohud gamemode ]; };
         dedicatedServer.openFirewall = true;
         remotePlay.openFirewall = true;
         gamescopeSession.enable = true;
-        extraCompatPackages = with pkgs; [
-          proton-ge-bin
-        ];
+        extraCompatPackages = with pkgs; [ proton-ge-bin ];
       };
     };
 

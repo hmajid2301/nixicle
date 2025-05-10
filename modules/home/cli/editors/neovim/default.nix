@@ -1,6 +1,13 @@
-{ config, lib, inputs, ... }:
-let inherit (inputs.nixCats) utils;
-in {
+{
+  config,
+  lib,
+  inputs,
+  ...
+}:
+let
+  inherit (inputs.nixCats) utils;
+in
+{
   imports = [ inputs.nixCats.homeModule ];
 
   # TODO: enable true like every other package
@@ -32,15 +39,32 @@ in {
       addOverlays =
         # (import ./overlays inputs) ++
         [ (utils.standardPluginOverlay inputs) ];
-      packageNames = [ "regularCats" "nixCats" ];
+      packageNames = [
+        "regularCats"
+        "nixCats"
+      ];
 
       luaPath = "${./.}";
 
       # categoryDefinitions.replace will replace the whole categoryDefinitions with a new one
-      categoryDefinitions.replace = { pkgs, settings, categories, extra, name
-        , mkNvimPlugin, ... }@packageDef: {
+      categoryDefinitions.replace =
+        {
+          pkgs,
+          settings,
+          categories,
+          extra,
+          name,
+          mkNvimPlugin,
+          ...
+        }@packageDef:
+        {
           lspsAndRuntimeDeps = {
-            general = with pkgs; [ universal-ctags ripgrep fd stdenv.cc.cc ];
+            general = with pkgs; [
+              universal-ctags
+              ripgrep
+              fd
+              stdenv.cc.cc
+            ];
             css = with pkgs; [
               stylelint
               prettierd
@@ -67,31 +91,65 @@ in {
               gotools
               gotestsum
             ];
-            json = with pkgs;
-              [ nodePackages_latest.vscode-json-languageserver ];
+            json = with pkgs; [ nodePackages_latest.vscode-json-languageserver ];
             lua = with pkgs; [
               stylua
               luajitPackages.luacheck
               lua-language-server
             ];
-            markdown = with pkgs; [ marksman markdownlint-cli2 ];
-            nix = with pkgs; [ nixd nixfmt-rfc-style statix nix-doc ];
-            python = with pkgs; [ isort black pyright ];
-            sql = with pkgs; [ sqls sqlfluff ];
-            terraform = with pkgs; [ terraform terraform-lsp ];
+            markdown = with pkgs; [
+              marksman
+              markdownlint-cli2
+            ];
+            nix = with pkgs; [
+              nixd
+              nixfmt-rfc-style
+              statix
+              nix-doc
+            ];
+            python = with pkgs; [
+              isort
+              black
+              pyright
+            ];
+            sql = with pkgs; [
+              sqls
+              sqlfluff
+            ];
+            terraform = with pkgs; [
+              terraform
+              terraform-lsp
+            ];
             toml = with pkgs; [ taplo ];
             templ = with pkgs; [ templ ];
-            typescript = with pkgs; [ typescript-language-server eslint ];
-            yaml = with pkgs; [ yamlfmt yamllint yaml-language-server ];
+            typescript = with pkgs; [
+              typescript-language-server
+              eslint
+            ];
+            yaml = with pkgs; [
+              yamlfmt
+              yamllint
+              yaml-language-server
+            ];
           };
           startupPlugins = {
             debug = with pkgs.vimPlugins; [ nvim-nio ];
             general = with pkgs.vimPlugins; {
-              always = [ lze lzextras vim-repeat plenary-nvim ];
-              extra =
-                [ oil-nvim SchemaStore-nvim nvim-web-devicons auto-session ];
+              always = [
+                lze
+                lzextras
+                vim-repeat
+                plenary-nvim
+              ];
+              extra = [
+                oil-nvim
+                SchemaStore-nvim
+                nvim-web-devicons
+                auto-session
+              ];
             };
-            themer = with pkgs.vimPlugins;
+            themer =
+              with pkgs.vimPlugins;
               (builtins.getAttr (categories.colorscheme or "catppuccin") {
                 "catppuccin" = catppuccin-nvim;
                 "catppuccin-mocha" = catppuccin-nvim;
@@ -126,7 +184,10 @@ in {
                 friendly-snippets
                 lspkind-nvim
                 (pkgs.neovimPlugins.cmp-dbee.overrideAttrs {
-                  nvimSkipModule = [ "cmp-dbee.connection" "cmp-dbee.source" ];
+                  nvimSkipModule = [
+                    "cmp-dbee.connection"
+                    "cmp-dbee.source"
+                  ];
                 })
                 pkgs.neovimPlugins.cmp-go-deep
               ];
@@ -184,12 +245,15 @@ in {
           # shared libraries to be added to LD_LIBRARY_PATH
           # variable available to nvim runtime
           sharedLibraries = {
-            general = with pkgs;
-              [
-                # libgit2
-              ];
+            general = with pkgs; [
+              # libgit2
+            ];
           };
-          environmentVariables = { test = { CATTESTVAR = "It worked!"; }; };
+          environmentVariables = {
+            test = {
+              CATTESTVAR = "It worked!";
+            };
+          };
           extraWrapperArgs = {
             test = [ ''--set CATTESTVAR2 "It worked again!"'' ];
           };
@@ -200,121 +264,126 @@ in {
           # in your lua config via
           # vim.g.python3_host_prog
           # or run from nvim terminal via :!<packagename>-python3
-          python3.libraries = { test = _: [ ]; };
+          python3.libraries = {
+            test = _: [ ];
+          };
           # populates $LUA_PATH and $LUA_CPATH
-          extraLuaPackages = { test = [ (_: [ ]) ]; };
+          extraLuaPackages = {
+            test = [ (_: [ ]) ];
+          };
         };
 
       # see :help nixCats.flake.outputs.packageDefinitions
       packageDefinitions.replace = {
-        nixCats = { pkgs, ... }: {
-          settings = {
-            wrapRc = true;
-            suffix-path = true;
-            suffix-LD = true;
-            aliases = [ "vimCat" ];
-            configDirName = "nixCats-nvim";
-            # neovim-unwrapped = inputs.neovim-nightly-overlay.packages.${pkgs.system}.neovim;
-          };
-          categories = {
-            general = true;
-            neonixdev = true;
+        nixCats =
+          { pkgs, ... }:
+          {
+            settings = {
+              wrapRc = true;
+              suffix-path = true;
+              suffix-LD = true;
+              aliases = [ "nvim" ];
+              configDirName = "nvim";
+              # neovim-unwrapped = inputs.neovim-nightly-overlay.packages.${pkgs.system}.neovim;
+            };
+            categories = {
+              general = true;
+              neonixdev = true;
 
-            css = true;
-            docker = true;
-            html = true;
-            ts = true;
-            go = true;
-            json = true;
-            lua = true;
-            markdown = true;
-            nix = true;
-            python = true;
-            sql = true;
-            terraform = true;
-            toml = true;
-            templ = true;
-            typescript = true;
-            yaml = true;
+              css = true;
+              docker = true;
+              html = true;
+              ts = true;
+              go = true;
+              json = true;
+              lua = true;
+              markdown = true;
+              nix = true;
+              python = true;
+              sql = true;
+              terraform = true;
+              toml = true;
+              templ = true;
+              typescript = true;
+              yaml = true;
 
-            ai = true;
-            diagnostics = true;
-            editor = true;
-            debug = true;
-            test = true;
-            lint = true;
-            format = true;
-            git = true;
-            ui = true;
-            extra = true;
+              ai = true;
+              diagnostics = true;
+              editor = true;
+              debug = true;
+              test = true;
+              lint = true;
+              format = true;
+              git = true;
+              ui = true;
+              extra = true;
 
-            lspDebugMode = false;
-            themer = true;
-            colorscheme = "catppuccin";
-          };
-          extra = {
-            nixdExtras = {
-              inherit (inputs) nixpkgs;
-              flake-path = inputs.self;
+              lspDebugMode = false;
+              themer = true;
+              colorscheme = "catppuccin";
+            };
+            extra = {
+              nixdExtras = {
+                inherit (inputs) nixpkgs;
+                flake-path = inputs.self;
+              };
             };
           };
-        };
 
-        regularCats = { pkgs, ... }: {
-          settings = {
-            wrapRc = false;
-            suffix-path = true;
-            suffix-LD = true;
-            unwrappedCfgPath =
-              "${config.home.homeDirectory}/nixicle/modules/home/cli/editors/neovim";
-            configDirName = "nixCats-nvim";
-            aliases = [ "nvim" ];
-            # neovim-unwrapped =
-            #   inputs.neovim-nightly-overlay.packages.${pkgs.system}.neovim;
-          };
-          categories = {
-            general = true;
-            neonixdev = true;
+        regularCats =
+          { pkgs, ... }:
+          {
+            settings = {
+              wrapRc = false;
+              suffix-path = true;
+              suffix-LD = true;
+              unwrappedCfgPath = "${config.home.homeDirectory}/nixicle/modules/home/cli/editors/neovim";
+              configDirName = "nvim";
+              # neovim-unwrapped = inputs.neovim-nightly-overlay.packages.${pkgs.system}.neovim;
+            };
+            categories = {
+              general = true;
+              neonixdev = true;
 
-            css = true;
-            docker = true;
-            html = true;
-            go = true;
-            ts = true;
-            json = true;
-            lua = true;
-            markdown = true;
-            nix = true;
-            python = true;
-            sql = true;
-            terraform = true;
-            toml = true;
-            templ = true;
-            typescript = true;
-            yaml = true;
+              css = true;
+              docker = true;
+              html = true;
+              go = true;
+              ts = true;
+              json = true;
+              lua = true;
+              markdown = true;
+              nix = true;
+              python = true;
+              sql = true;
+              terraform = true;
+              toml = true;
+              templ = true;
+              typescript = true;
+              yaml = true;
 
-            ai = true;
-            diagnostics = true;
-            editor = true;
-            debug = true;
-            test = true;
-            lint = true;
-            format = true;
-            git = true;
-            ui = true;
-            extra = true;
+              ai = true;
+              diagnostics = true;
+              editor = true;
+              debug = true;
+              test = true;
+              lint = true;
+              format = true;
+              git = true;
+              ui = true;
+              extra = true;
 
-            lspDebugMode = false;
-            themer = true;
-            colorscheme = "catppuccin";
-          };
-          extra = {
-            nixdExtras = {
-              inherit (inputs) nixpkgs;
-              flake-path = inputs.self;
+              lspDebugMode = false;
+              themer = true;
+              colorscheme = "catppuccin";
+            };
+            extra = {
+              nixdExtras = {
+                inherit (inputs) nixpkgs;
+                flake-path = inputs.self;
+              };
             };
           };
-        };
       };
     };
   };

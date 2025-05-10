@@ -56,7 +56,6 @@ in {
       go-mockery
       gotestsum
 
-      nodejs_23
       sshx
     ];
   };
