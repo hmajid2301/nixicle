@@ -378,4 +378,15 @@ return {
 			end, { noremap = true, silent = true })
 		end,
 	},
+	{
+		"inline-edit",
+		for_cat = "general.editor",
+		event = "DeferredUIEnter",
+		keys = {
+			{ "<leader>rE", mode = { "n" }, desc = "Inline edit" },
+		},
+		after = function(plugin)
+			vim.keymap.set({ "n", "v" }, "<leader>rE", "<cmd>InlineEdit<cr>", { noremap = true, silent = true })
+		end,
+	},
 }

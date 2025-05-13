@@ -225,6 +225,7 @@ in
                 pkgs.neovimPlugins.gx-nvim
                 pkgs.neovimPlugins.templ-goto-definition
                 pkgs.neovimPlugins.tiny-code-actions
+                pkgs.neovimPlugins.inline-edit
               ];
               extra = with pkgs.vimPlugins; [
                 fidget-nvim
