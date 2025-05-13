@@ -159,7 +159,7 @@ vim.diagnostic.config({
 --  See `:help 'clipboard'`
 vim.opt.clipboard = "unnamedplus"
 
-vim.keymap.set({ "n", "v", "x" }, "<C-a>", "gg6vG$", { noremap = true, silent = true, desc = "Select all" })
+-- vim.keymap.set({ "n", "v", "x" }, "<C-a>", "gg6vG$", { noremap = true, silent = true, desc = "Select all" })
 vim.keymap.set(
 	"i",
 	"<C-p>",
