@@ -81,6 +81,7 @@ in
               rubyPackages_3_4.htmlbeautifier
               htmx-lsp
               vscode-langservers-extracted
+              svelte-language-server
             ];
             go = with pkgs; [
               go

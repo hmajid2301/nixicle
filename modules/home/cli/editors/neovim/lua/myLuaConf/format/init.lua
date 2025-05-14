@@ -31,6 +31,7 @@ require("lze").load({
 					javascript = { "prettierd" },
 					typescript = { "prettierd" },
 					sql = { "sqlfluff" },
+					svelte = { "prettierd" },
 					yaml = { "yamlfmt" },
 				},
 			})
