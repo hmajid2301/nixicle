@@ -252,11 +252,10 @@ return {
 			vim.cmd.packadd(name)
 		end,
 		after = function(plugin)
-			require("smart-splits").setup({})
+			require("smart-splits").setup()
 
 			local smart_splits = require("smart-splits")
-
-			vim.keymap.set("n", "<leader>mr", smart_splits.start_resize_mode)
+			-- vim.keymap.set("n", "<leader>mr", smart_splits.start_resize_mode)
 			vim.keymap.set("n", "<C-h>", smart_splits.move_cursor_left)
 			vim.keymap.set("n", "<C-j>", smart_splits.move_cursor_down)
 			vim.keymap.set("n", "<C-k>", smart_splits.move_cursor_up)
