@@ -18,12 +18,12 @@ in
     xdg.configFile."nvim/queries/templ/injections.scm".text =
       builtins.readFile ./lua/myLuaConf/syntax/html.scm;
 
-    programs.neovim = {
-      enable = true;
-      viAlias = true;
-      vimAlias = true;
-      defaultEditor = true;
-    };
+    # programs.neovim = {
+    #   enable = true;
+    #   viAlias = true;
+    #   vimAlias = true;
+    #   defaultEditor = true;
+    # };
     # this value, nixCats is the defaultPackageName you pass to mkNixosModules
     # it will be the namespace for your options.
     nixCats = {
