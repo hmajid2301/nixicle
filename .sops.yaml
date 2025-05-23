@@ -18,9 +18,10 @@
 keys:
   - &users:
     - &haseeb_workstation age1vmnnywhflwymjcgllmp5sgf05dn3qvamd2ylhxquwcuvlrm8ma3sc882mp
+    - &haseeb_framework age1w6rhh8lvm9u0207gqf8wtk4eelatm7z6nvcyx5qxt4lkhk4lrq2swqcfpj
     - &haseebmajid_curve age1rc26esy506fa0kv2y97sjzfk4g2pr0ctv2rzkacewx5d8urns3zqhr7r7n
   - &hosts:
-    - &framework age1kzxen8ynw28h935jnjc9t8cx4p8mv6angk5suvkp6ntu4am9pe4smfw22z
+    - &framework age1vuljyz2m25vemv7djq8c5dwuwgl8m7g8lsr7tcnzrfh3mylkucrs39vueh
     - &workstation age1vsjjdkgrv72tr3uftryj2szt3n0xk8h3ce54kzyfsmxtymxu6s4qgu5yuk
     - &mainboard age1rpqz5vl9tkgje46h43sjgthmqjcltwgm8fm9xdm9yk2ugemuqqrs6jpr43
     - &um790 age1wtkcl8gwwumvzf78ttqy4gh2pwzz724glugs5wah2fcudgfh5pxq3urkpg
@@ -34,6 +35,7 @@ creation_rules:
     - age:
       - *workstation
       - *haseeb_workstation
+      - *haseeb_framework
       - *haseebmajid_curve
       - *framework
       - *mainboard
@@ -48,6 +50,7 @@ creation_rules:
       - *framework
       - *haseeb_workstation
       - *haseebmajid_curve
+      - *haseeb_framework
       - *um790
       - *ms01
       - *s100
@@ -60,6 +63,7 @@ creation_rules:
       - *framework
       - *haseeb_workstation
       - *haseebmajid_curve
+      - *haseeb_framework
       - *um790
       - *ms01
       - *s100
@@ -71,3 +75,4 @@ creation_rules:
       - *framework
       - *haseeb_workstation
       - *haseebmajid_curve
+      - *haseeb_framework
