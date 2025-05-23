@@ -18,12 +18,6 @@ in
     xdg.configFile."nvim/queries/templ/injections.scm".text =
       builtins.readFile ./lua/myLuaConf/syntax/html.scm;
 
-    # programs.neovim = {
-    #   enable = true;
-    #   viAlias = true;
-    #   vimAlias = true;
-    #   defaultEditor = true;
-    # };
     # this value, nixCats is the defaultPackageName you pass to mkNixosModules
     # it will be the namespace for your options.
     nixCats = {
@@ -341,7 +335,7 @@ in
               suffix-LD = true;
               unwrappedCfgPath = "${config.home.homeDirectory}/nixicle/modules/home/cli/editors/neovim";
               configDirName = "nvim";
-              # neovim-unwrapped = inputs.neovim-nightly-overlay.packages.${pkgs.system}.neovim;
+              neovim-unwrapped = inputs.neovim-nightly-overlay.packages.${pkgs.system}.neovim;
             };
             categories = {
               general = true;
