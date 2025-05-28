@@ -22,7 +22,6 @@ keys:
   - &hosts:
     - &framework age1vuljyz2m25vemv7djq8c5dwuwgl8m7g8lsr7tcnzrfh3mylkucrs39vueh
     - &workstation age1vsjjdkgrv72tr3uftryj2szt3n0xk8h3ce54kzyfsmxtymxu6s4qgu5yuk
-    - &mainboard age1rpqz5vl9tkgje46h43sjgthmqjcltwgm8fm9xdm9yk2ugemuqqrs6jpr43
     - &ms01 age1uswlqzs3pf99r6e8qq5d3eh44sufe5tdczmfqygeam7vfr96fugqa0pps7
     - &s100 age19pl6jt7ekljfjww4g9anzafdxj0e52mnfnsyd26u5xdemfksqpwsnfwrs5
     - &vps age1968z5kxjrf5nnzmvp7fp70pytkpnaaa0xel7cqr8nt4vtezygfnstuh4dx
@@ -32,10 +31,7 @@ creation_rules:
     key_groups:
     - age:
       - *workstation
-      - *haseeb_workstation
-      - *haseeb_framework
       - *framework
-      - *mainboard
       - *ms01
       - *s100
 
@@ -44,8 +40,6 @@ creation_rules:
     - age:
       - *workstation
       - *framework
-      - *haseeb_workstation
-      - *haseeb_framework
       - *ms01
       - *s100
       - *vps
@@ -55,8 +49,6 @@ creation_rules:
     - age:
       - *workstation
       - *framework
-      - *haseeb_workstation
-      - *haseeb_framework
       - *ms01
       - *s100
       - *vps
@@ -64,6 +56,5 @@ creation_rules:
   - path_regex: modules/home/secrets.ya?ml$
     key_groups:
     - age:
-      - *framework
       - *haseeb_workstation
       - *haseeb_framework
