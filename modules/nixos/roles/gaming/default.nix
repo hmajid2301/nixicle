@@ -18,7 +18,7 @@ in
 
     hardware = {
       # xpadneo.enable = true;
-      xone.enable = true;
+      # xone.enable = true;
 
       graphics = {
         enable = true;
