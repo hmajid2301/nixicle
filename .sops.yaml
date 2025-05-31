@@ -18,9 +18,9 @@
 keys:
   - &users:
     - &haseeb_workstation age1vmnnywhflwymjcgllmp5sgf05dn3qvamd2ylhxquwcuvlrm8ma3sc882mp
-    - &haseeb_framework age1w6rhh8lvm9u0207gqf8wtk4eelatm7z6nvcyx5qxt4lkhk4lrq2swqcfpj
+    - &haseeb_framework age1nfkkq86jk3yhhzgk3jt0kjzfpzv4qee3uheellawzgrmd296gczqa68yt7
   - &hosts:
-    - &framework age1vuljyz2m25vemv7djq8c5dwuwgl8m7g8lsr7tcnzrfh3mylkucrs39vueh
+    - &framework age16lkhqtnle3z62gy0tk9x4tn3w43st2cnvdpl8r84xpzkn2f7jv8qxl5a9q
     - &workstation age1vsjjdkgrv72tr3uftryj2szt3n0xk8h3ce54kzyfsmxtymxu6s4qgu5yuk
     - &ms01 age1uswlqzs3pf99r6e8qq5d3eh44sufe5tdczmfqygeam7vfr96fugqa0pps7
     - &s100 age19pl6jt7ekljfjww4g9anzafdxj0e52mnfnsyd26u5xdemfksqpwsnfwrs5
