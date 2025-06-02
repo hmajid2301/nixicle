@@ -28,9 +28,9 @@ in
     ghostty.package = config.lib.nixGL.wrap pkgs.ghostty;
   };
 
-  # roles = {
-  #   desktop.enable = true;
-  # };
+  roles = {
+    desktop.enable = true;
+  };
 
   home = {
     sessionVariables = {
