@@ -24,13 +24,13 @@ in
   };
 
   programs = {
-    firefox.package = config.lib.nixGL.wrap pkgs.firefox;
+    # firefox.package = config.lib.nixGL.wrap pkgs.firefox;
     ghostty.package = config.lib.nixGL.wrap pkgs.ghostty;
   };
 
-  # roles = {
-  #   desktop.enable = true;
-  # };
+  roles = {
+    desktop.enable = true;
+  };
 
   home = {
     sessionVariables = {
