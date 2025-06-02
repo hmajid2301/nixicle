@@ -52,8 +52,8 @@ in
         htop.enable = true;
         k8s.enable = true;
         modern-unix.enable = true;
-        # network-tools.enable = true;
-        # nix-index.enable = true;
+        network-tools.enable = true;
+        nix-index.enable = true;
         # podman.enable = true;
         # ssh.enable = true;
         starship.enable = true;
