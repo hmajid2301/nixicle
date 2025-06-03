@@ -252,11 +252,10 @@ return {
 			vim.cmd.packadd(name)
 		end,
 		after = function(plugin)
-			require("smart-splits").setup({})
+			require("smart-splits").setup()
 
 			local smart_splits = require("smart-splits")
-
-			vim.keymap.set("n", "<leader>mr", smart_splits.start_resize_mode)
+			-- vim.keymap.set("n", "<leader>mr", smart_splits.start_resize_mode)
 			vim.keymap.set("n", "<C-h>", smart_splits.move_cursor_left)
 			vim.keymap.set("n", "<C-j>", smart_splits.move_cursor_down)
 			vim.keymap.set("n", "<C-k>", smart_splits.move_cursor_up)
@@ -376,6 +375,17 @@ return {
 			vim.keymap.set({ "n", "v" }, "<leader>ca", function()
 				require("tiny-code-action").code_action()
 			end, { noremap = true, silent = true })
+		end,
+	},
+	{
+		"inline-edit",
+		for_cat = "general.editor",
+		event = "DeferredUIEnter",
+		keys = {
+			{ "<leader>rE", mode = { "n" }, desc = "Inline edit" },
+		},
+		after = function(plugin)
+			vim.keymap.set({ "n", "v" }, "<leader>rE", "<cmd>InlineEdit<cr>", { noremap = true, silent = true })
 		end,
 	},
 }

@@ -5,9 +5,11 @@
   ...
 }:
 with lib;
-with lib.nixicle; let
+with lib.nixicle;
+let
   cfg = config.security.yubikey;
-in {
+in
+{
   options.security.yubikey = with types; {
     enable = mkBoolOpt false "Whether to enable yubikey for auth.";
   };
@@ -15,8 +17,8 @@ in {
   config = mkIf cfg.enable {
     services = {
       pcscd.enable = true;
-      udev.packages = with pkgs; [yubikey-personalization];
-      dbus.packages = [pkgs.gcr];
+      udev.packages = with pkgs; [ yubikey-personalization ];
+      dbus.packages = [ pkgs.gcr ];
 
       # INFO: lock PC on yubikey removal
       udev.extraRules = ''
