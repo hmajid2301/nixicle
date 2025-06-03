@@ -114,6 +114,8 @@ in
             terraform = with pkgs; [
               terraform
               terraform-lsp
+              tflint
+              tfsec
             ];
             toml = with pkgs; [ taplo ];
             templ = with pkgs; [ templ ];
