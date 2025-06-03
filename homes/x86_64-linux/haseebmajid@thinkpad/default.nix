@@ -37,11 +37,13 @@ in
       DOCKER_HOST = "unix://$XDG_RUNTIME_DIR/podman/podman.sock";
     };
 
-    # packages = with pkgs; [
-    #   screensharing
-    #   nwg-displays
-    #   (lib.hiPrio (config.lib.nixGL.wrap totem))
-    # ];
+    packages = with pkgs; [
+      semgrep
+      pre-commit
+      # screensharing
+      # nwg-displays
+      # (lib.hiPrio (config.lib.nixGL.wrap totem))
+    ];
   };
 
   # desktops = {

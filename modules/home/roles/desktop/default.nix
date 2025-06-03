@@ -47,8 +47,8 @@ in
 
   config = mkIf cfg.enable {
     roles = {
-      # common.enable = true;
-      # development.enable = true;
+      common.enable = true;
+      development.enable = true;
     };
 
     # Fixes tray icons: https://github.com/nix-community/home-manager/issues/2064#issuecomment-887300055
