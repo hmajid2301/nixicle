@@ -1,4 +1,9 @@
-{ pkgs, config, lib, ... }:
+{
+  pkgs,
+  config,
+  lib,
+  ...
+}:
 with lib;
 let
   cfg = config.roles.desktop;
@@ -34,8 +39,11 @@ let
         echo "Switched to Arctis Nova Pro Wireless"
     fi
   '';
-in {
-  options.roles.desktop = { enable = mkEnableOption "Enable desktop suite"; };
+in
+{
+  options.roles.desktop = {
+    enable = mkEnableOption "Enable desktop suite";
+  };
 
   config = mkIf cfg.enable {
     roles = {
@@ -61,6 +69,8 @@ in {
       MOZ_ENABLE_WAYLAND = 1;
       QT_QPA_PLATFORM = "wayland;xcb";
       LIBSEAT_BACKEND = "logind";
+      EDITOR = "nixCats";
+      MANPAGER = "nixCats +Man!";
     };
 
     # TODO: move this to somewhere

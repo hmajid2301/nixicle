@@ -28,7 +28,7 @@ return {
 	default_prog = { "fish" },
 	window_decorations = "NONE",
 	font = wezterm.font_with_fallback({
-		"MonoLisa Nerd Font",
+		"MonoLisa",
 		"Fira Code",
 		"Noto Color Emoji",
 	}),

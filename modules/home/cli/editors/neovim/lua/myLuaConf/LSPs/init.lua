@@ -176,6 +176,7 @@ require("lze").load({
 	{ "pyright", lsp = {} },
 	{ "marksman", lsp = {} },
 	{ "ts_ls", lsp = {} },
+	{ "svelte", lsp = {} },
 	{ "terraformls", lsp = {} },
 	{ "taplo", lsp = {} },
 	{

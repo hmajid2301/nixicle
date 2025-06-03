@@ -5,7 +5,8 @@
   ...
 }:
 with lib;
-with lib.nixicle; let
+with lib.nixicle;
+let
   cfg = config.cli.multiplexers.zellij;
   inherit (config.lib.stylix) colors;
 
@@ -55,7 +56,8 @@ with lib.nixicle; let
     	zellij attach -c "$SESSION_TITLE"
     fi
   '';
-in {
+in
+{
   options.cli.multiplexers.zellij = with types; {
     enable = mkBoolOpt false "enable zellij multiplexer";
   };
