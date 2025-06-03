@@ -1,7 +1,13 @@
-{ inputs, lib, host, pkgs, config, ... }:
+{
+  lib,
+  config,
+  ...
+}:
 with lib;
-let cfg = config.browsers.firefox;
-in {
+let
+  cfg = config.browsers.firefox;
+in
+{
   options.browsers.firefox = {
     enable = mkEnableOption "enable firefox browser";
   };

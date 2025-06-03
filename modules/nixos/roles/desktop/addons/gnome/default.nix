@@ -1,8 +1,15 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 with lib;
 with lib.nixicle;
-let cfg = config.roles.desktop.addons.gnome;
-in {
+let
+  cfg = config.roles.desktop.addons.gnome;
+in
+{
   options.roles.desktop.addons.gnome = with types; {
     enable = mkBoolOpt false "Enable or disable the gnome DE.";
   };
@@ -11,13 +18,13 @@ in {
     roles.desktop.addons.nautilus.enable = true;
 
     services = {
+      displayManager.gdm.enable = true;
+      desktopManager.gnome = {
+        enable = true;
+        extraGSettingsOverridePackages = [ pkgs.nautilus-open-any-terminal ];
+      };
       xserver = {
         enable = true;
-        displayManager.gdm.enable = true;
-        desktopManager.gnome = {
-          enable = true;
-          extraGSettingsOverridePackages = [ pkgs.nautilus-open-any-terminal ];
-        };
       };
     };
 

@@ -3,9 +3,11 @@
   pkgs,
   config,
   ...
-}: let
+}:
+let
   cfg = config.roles.common;
-in {
+in
+{
   options.roles.common = {
     enable = lib.mkEnableOption "Enable common configuration";
   };
@@ -37,7 +39,7 @@ in {
 
       src-cli
       flyctl
-      # optinix
+      optinix
 
       (hiPrio parallel)
       moreutils

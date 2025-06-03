@@ -1,13 +1,14 @@
-{config, ...}: let
-  inherit
-    (config.lib.topology)
+{ config, ... }:
+let
+  inherit (config.lib.topology)
     mkInternet
     mkDevice
     mkSwitch
     mkRouter
     mkConnection
     ;
-in {
+in
+{
   networks.home = {
     name = "Home";
     cidrv4 = "192.168.1.1/24";
@@ -15,7 +16,7 @@ in {
 
   nodes = {
     ms01.interfaces.tailscale0.network = "home";
-    um790.interfaces.tailscale0.network = "home";
+    vps.interfaces.tailscale0.network = "home";
     s100.interfaces.tailscale0.network = "home";
 
     # internet = mkInternet {

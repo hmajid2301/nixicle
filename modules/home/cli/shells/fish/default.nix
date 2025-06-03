@@ -1,8 +1,16 @@
-{ pkgs, lib, config, host, ... }:
+{
+  pkgs,
+  lib,
+  config,
+  host,
+  ...
+}:
 with lib;
 with lib.nixicle;
-let cfg = config.cli.shells.fish;
-in {
+let
+  cfg = config.cli.shells.fish;
+in
+{
   options.cli.shells.fish = with types; {
     enable = mkBoolOpt false "enable fish shell";
   };
@@ -64,8 +72,7 @@ in {
         ping = "gping";
         ls = "eza";
         sl = "eza";
-        l =
-          "eza --group --header --group-directories-first --long --git --all --binary --all --icons always";
+        l = "eza --group --header --group-directories-first --long --git --all --binary --all --icons always";
         tree = "eza --tree";
         sudo = "sudo -E -s";
         k = "kubectl";
@@ -81,19 +88,15 @@ in {
 
         nd = "nix develop";
         nfu = "nix flake update";
-        hms =
-          "home-manager switch --flake ~/nixicle#${config.nixicle.user.name}@${host}";
+        hms = "home-manager switch --flake ~/nixicle#${config.nixicle.user.name}@${host}";
         nrs = "sudo nixos-rebuild switch --flake ~/nixicle#${host}";
 
         # new commads
         weather = "curl wttr.in/London";
 
-        pfile =
-          "fzf --preview 'bat --style=numbers --color=always --line-range :500 {}'";
-        gdub =
-          "git fetch -p && git branch -vv | grep ': gone]' | awk '{print }' | xargs git branch -D $argv;";
-        tldrf = ''
-          ${pkgs.tldr}/bin/tldr --list | fzf --preview "${pkgs.tldr}/bin/tldr {1} --color" --preview-window=right,70% | xargs tldr'';
+        pfile = "fzf --preview 'bat --style=numbers --color=always --line-range :500 {}'";
+        gdub = "git fetch -p && git branch -vv | grep ': gone]' | awk '{print }' | xargs git branch -D $argv;";
+        tldrf = ''${pkgs.tldr}/bin/tldr --list | fzf --preview "${pkgs.tldr}/bin/tldr {1} --color" --preview-window=right,70% | xargs tldr'';
         docker-compose = "podman-compose";
       };
 
@@ -198,6 +201,15 @@ in {
         {
           name = "fifc";
           inherit (pkgs.fishPlugins.fifc) src;
+        }
+        {
+          name = "nvm.fish";
+          src = pkgs.fetchFromGitHub {
+            owner = "jorgebucaran";
+            repo = "nvm.fish";
+            rev = "846f1f20b2d1d0a99e344f250493c41a450f9448";
+            sha256 = "sha256-u3qhoYBDZ0zBHbD+arDxLMM8XoLQlNI+S84wnM3nDzg=";
+          };
         }
         # {
         #   name = "kubectl-abbr";

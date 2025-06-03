@@ -34,7 +34,7 @@ in {
       procs
       tokei
       gomi
-      # tailspin
+      tailspin
       ripgrep
       sd
       xcp
@@ -56,7 +56,6 @@ in {
       go-mockery
       gotestsum
 
-      nodejs_23
       sshx
     ];
   };

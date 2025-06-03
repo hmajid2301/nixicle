@@ -4,6 +4,7 @@ simplified_ui true
 default_shell "fish"
 copy_on_select true
 show_startup_tips false
+scrollback_editor "nixCats"
 
 // If you'd like to override the default keybindings completely, be sure to change "keybinds" to "keybinds clear-defaults=true"
 keybinds {

@@ -4,20 +4,14 @@
   ...
 }:
 with lib;
-with lib.nixicle; let
+with lib.nixicle;
+let
   cfg = config.cli.programs.git;
-
-  rewriteURL =
-    lib.mapAttrs' (key: value: {
-      name = "url.${key}";
-      value = {insteadOf = value;};
-    })
-    cfg.urlRewrites;
-in {
+in
+{
   options.cli.programs.git = with types; {
     enable = mkBoolOpt false "Whether or not to enable git.";
     email = mkOpt (nullOr str) "hello@haseebmajid.dev" "The email to use with git.";
-    urlRewrites = mkOpt (attrsOf str) {} "url we need to rewrite i.e. ssh to http";
     allowedSigners = mkOpt str "" "The public key used for signing commits";
   };
 
@@ -29,48 +23,48 @@ in {
       userName = "Haseeb Majid";
       userEmail = cfg.email;
 
-      extraConfig =
-        {
-          gpg.format = "ssh";
-          gpg.ssh.allowedSignersFile = "~/.ssh/allowed_signers";
-          commit.gpgsign = true;
-          user.signingkey = "~/.ssh/id_ed25519.pub";
+      extraConfig = {
+        gpg.format = "ssh";
+        gpg.ssh.allowedSignersFile = "~/.ssh/allowed_signers";
+        commit.gpgsign = true;
+        user.signingkey = "~/.ssh/id_ed25519.pub";
 
-          core = {
-            editor = "nvim";
-            pager = "delta";
-          };
+        core = {
+          editor = "nvim";
+          pager = "delta";
+        };
 
-          color = {
-            ui = true;
-          };
+        color = {
+          ui = true;
+        };
 
-          interactive = {
-            diffFitler = "delta --color-only";
-          };
+        interactive = {
+          diffFitler = "delta --color-only";
+        };
 
-          delta = {
-            enable = true;
-            navigate = true;
-            light = false;
-            side-by-side = false;
-            options.syntax-theme = "catppuccin";
-          };
+        delta = {
+          enable = true;
+          navigate = true;
+          light = false;
+          side-by-side = false;
+          options.syntax-theme = "catppuccin";
+        };
 
-          pull = {
-            ff = "only";
-          };
+        pull = {
+          ff = "only";
+        };
 
-          push = {
-            default = "current";
-            autoSetupRemote = true;
-          };
+        push = {
+          default = "current";
+          autoSetupRemote = true;
+        };
 
-          init = {
-            defaultBranch = "init";
-          };
-        }
-        // rewriteURL;
+        init = {
+          defaultBranch = "init";
+        };
+
+        url."git@github.com:".insteadOf = "https://github.com/";
+      };
     };
   };
 }
