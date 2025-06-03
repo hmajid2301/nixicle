@@ -55,7 +55,7 @@ in
         network-tools.enable = true;
         nix-index.enable = true;
         podman.enable = true;
-        # ssh.enable = true;
+        ssh.enable = true;
         starship.enable = true;
         yazi.enable = true;
         zoxide.enable = true;
