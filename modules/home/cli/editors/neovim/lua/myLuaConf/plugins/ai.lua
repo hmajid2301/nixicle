@@ -63,8 +63,28 @@ return {
 							return vim.fn.system(string.format("go test -v %s", target))
 						end,
 					},
+					{
+						name = "mcphub_avante",
+						func = function()
+							return {
+								require("mcphub.extensions.avante").mcp_tool(),
+							}
+						end,
+					},
 				},
+				system_prompt = function()
+					local hub = require("mcphub").get_hub_instance()
+					return hub and hub:get_active_servers_prompt() or ""
+				end,
 			})
+		end,
+	},
+	{
+		"mcphub.nvim",
+		for_cat = "general.ai",
+		cmd = { "MCPHub" },
+		after = function(plugin)
+			require("mcphub").setup({})
 		end,
 	},
 }

@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  pkgs,
   inputs,
   ...
 }:
@@ -8,7 +9,9 @@ let
   inherit (inputs.nixCats) utils;
 in
 {
-  imports = [ inputs.nixCats.homeModule ];
+  imports = [
+    inputs.nixCats.homeModule
+  ];
 
   # TODO: enable true like every other package
   config = {
@@ -172,11 +175,13 @@ in
                 copilot-lua
                 CopilotChat-nvim
                 avante-nvim
+                inputs.mcphub-nvim.packages.${pkgs.system}.default
               ];
               cmp = with pkgs.vimPlugins; [
                 blink-cmp
                 blink-compat
                 blink-ripgrep-nvim
+                blink-cmp-avante
                 luasnip
                 friendly-snippets
                 lspkind-nvim
@@ -187,6 +192,7 @@ in
                   ];
                 })
                 pkgs.neovimPlugins.cmp-go-deep
+                sqlite-lua
               ];
               treesitter = with pkgs.vimPlugins; [
                 nvim-treesitter-textobjects

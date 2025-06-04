@@ -60,12 +60,14 @@ return {
 			vim.cmd.packadd(name)
 			vim.cmd.packadd("blink.compat")
 			vim.cmd.packadd("blink-ripgrep")
+			vim.cmd.packadd("blink-cmp-avante")
+			vim.cmd.packadd("sqlite.lua")
 			vim.cmd.packadd("snacks.nvim")
 		end,
 		after = function()
 			require("blink-cmp").setup({
 				sources = {
-					default = { "lsp", "buffer", "snippets", "path" },
+					default = { "go_deep", "avante", "lsp", "buffer", "snippets", "path" },
 					per_filetype = {
 						sql = { "buffer", "cmp-dbee", "snippets" },
 						-- go = { "go_deep" }
@@ -73,7 +75,13 @@ return {
 					providers = {
 						ripgrep = { module = "blink-ripgrep", name = "Ripgrep" },
 						["cmp-dbee"] = { name = "cmp-dbee", module = "blink.compat.source" },
-						-- ["go_deep"] = { name = "go_deep", module = "blink.compat.source" },
+						avante = { module = "blink-cmp-avante", name = "Avante", opts = {} },
+						go_deep = {
+							name = "go_deep",
+							module = "blink.compat.source",
+							min_keyword_length = 3,
+							max_items = 5,
+						},
 					},
 				},
 				keymap = {
