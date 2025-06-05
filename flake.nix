@@ -119,6 +119,14 @@
       url = "github:nix-community/neovim-nightly-overlay";
     };
 
+    mcphub-nvim = {
+      url = "github:ravitemer/mcphub.nvim";
+    };
+
+    mcp-hub = {
+      url = "github:ravitemer/mcp-hub";
+    };
+
     plugins-cmp-dbee = {
       url = "github:MattiasMTS/cmp-dbee";
       flake = false;
