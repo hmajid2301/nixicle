@@ -94,16 +94,8 @@ return {
 				signature = { enabled = true },
 				cmdline = {
 					keymap = {
-						["<cr>"] = {
-							function(cmp)
-								return cmp.accept({
-									callback = function()
-										vim.api.nvim_feedkeys("\n", "n", true)
-									end,
-								})
-							end,
-							"fallback",
-						},
+						preset = "inherit",
+						["<cr>"] = { "select_and_accept" },
 						["<Tab>"] = { "select_next" },
 						["<S-Tab>"] = { "select_prev" },
 						["<C-e>"] = { "cancel" },
