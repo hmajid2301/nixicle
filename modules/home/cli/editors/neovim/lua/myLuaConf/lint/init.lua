@@ -13,6 +13,7 @@ require("lze").load({
 				javascript = { "eslint" },
 				typescript = { "eslint" },
 				sql = { "sqlfluff" },
+				terraform = { "tflint", "tfsec" },
 			}
 
 			vim.api.nvim_create_autocmd({ "BufWritePost" }, {
