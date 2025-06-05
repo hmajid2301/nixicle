@@ -6,16 +6,16 @@
   ...
 }:
 let
-  screensharing = pkgs.writeScriptBin "screensharing" ''
-    #!/usr/bin/env bash
-    sleep 1
-    killall -e xdg-desktop-portal-hyprland
-    killall -e xdg-desktop-portal-wlr
-    killall xdg-desktop-portal
-    /usr/libexec/xdg-desktop-portal-hyprland &
-    sleep 2
-    /usr/libexec/xdg-desktop-portal &
-  '';
+  # screensharing = pkgs.writeScriptBin "screensharing" ''
+  #   #!/usr/bin/env bash
+  #   sleep 1
+  #   killall -e xdg-desktop-portal-hyprland
+  #   killall -e xdg-desktop-portal-wlr
+  #   killall xdg-desktop-portal
+  #   /usr/libexec/xdg-desktop-portal-hyprland &
+  #   sleep 2
+  #   /usr/libexec/xdg-desktop-portal &
+  # '';
 in
 {
   nixGL = {
@@ -32,10 +32,12 @@ in
     desktop.enable = true;
   };
 
+  # stylix.autoEnable = lib.mkForce false;
+
   home = {
-    sessionVariables = {
-      DOCKER_HOST = "unix://$XDG_RUNTIME_DIR/podman/podman.sock";
-    };
+    # sessionVariables = {
+    #   DOCKER_HOST = "unix://$XDG_RUNTIME_DIR/podman/podman.sock";
+    # };
 
     packages = with pkgs; [
       semgrep
@@ -45,6 +47,9 @@ in
       # (lib.hiPrio (config.lib.nixGL.wrap totem))
     ];
   };
+
+  sops.defaultSymlinkPath = lib.mkForce "/run/user/1001/secrets";
+  sops.defaultSecretsMountPoint = lib.mkForce "/run/user/1001/secrets.d";
 
   # desktops = {
   #   hyprland = {
