@@ -10,7 +10,7 @@ let
 in
 {
   imports = with inputs; [
-    stylix.homeManagerModules.stylix
+    stylix.homeModules.stylix
     catppuccin.homeModules.catppuccin
   ];
 
@@ -45,6 +45,7 @@ in
 
       targets = {
         firefox = {
+          colorTheme.enable = true;
           firefoxGnomeTheme.enable = true;
           profileNames = [ "Default" ];
         };

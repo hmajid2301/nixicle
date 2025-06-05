@@ -177,7 +177,9 @@ require("lze").load({
 	{ "marksman", lsp = {} },
 	{ "ts_ls", lsp = {} },
 	{ "svelte", lsp = {} },
-	{ "terraformls", lsp = {} },
+	{ "terraformls", lsp = {
+		cmd = { "terraform-lsp", "serve" },
+	} },
 	{ "taplo", lsp = {} },
 	{
 		"jsonls",

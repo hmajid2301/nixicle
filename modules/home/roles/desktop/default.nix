@@ -2,6 +2,7 @@
   pkgs,
   config,
   lib,
+  inputs,
   ...
 }:
 with lib;
@@ -92,6 +93,9 @@ in
       slurp
       sway-contrib.grimshot
       pkgs.satty
+
+      # TODO: used for neovim
+      inputs.mcp-hub.packages.${pkgs.system}.default
     ];
   };
 }

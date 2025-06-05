@@ -43,7 +43,6 @@ in
 
       (hiPrio parallel)
       moreutils
-      nvtopPackages.amd
       unzip
       gnupg
 

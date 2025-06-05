@@ -33,6 +33,7 @@ require("lze").load({
 					python = { "isort", "black" },
 					javascript = { "prettierd" },
 					typescript = { "prettierd" },
+					terraform = { "terraform_fmt" },
 					sql = { "sqlfluff" },
 					svelte = { "prettierd" },
 					yaml = { "yamlfmt" },
