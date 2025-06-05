@@ -70,7 +70,6 @@ return {
 					default = { "go_deep", "avante", "lsp", "buffer", "snippets", "path" },
 					per_filetype = {
 						sql = { "buffer", "cmp-dbee", "snippets" },
-						-- go = { "go_deep" }
 					},
 					providers = {
 						ripgrep = { module = "blink-ripgrep", name = "Ripgrep" },
