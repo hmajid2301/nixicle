@@ -20,15 +20,15 @@ in
         maxHistoryLength = 99999999;
       };
 
-      cloudflared = {
-        tunnels = {
-          "0e845de6-544a-47f2-a1d5-c76be02ce153" = {
-            ingress = {
-              "atuin.haseebmajid.dev" = "http://localhost:8888";
-            };
-          };
-        };
-      };
+      # cloudflared = {
+      #   tunnels = {
+      #     "0e845de6-544a-47f2-a1d5-c76be02ce153" = {
+      #       ingress = {
+      #         "atuin.haseebmajid.dev" = "http://localhost:8888";
+      #       };
+      #     };
+      #   };
+      # };
     };
   };
 }
