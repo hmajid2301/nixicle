@@ -44,7 +44,7 @@ in
       pre-commit
       # screensharing
       # nwg-displays
-      # (lib.hiPrio (config.lib.nixGL.wrap totem))
+      (lib.hiPrio (config.lib.nixGL.wrap totem))
     ];
   };
 
