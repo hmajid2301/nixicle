@@ -93,13 +93,16 @@ return {
 				snippets = { preset = "luasnip" },
 				signature = { enabled = true },
 				cmdline = {
-					keymap = {
-						preset = "inherit",
-						["<cr>"] = { "select_and_accept" },
-						["<Tab>"] = { "select_next" },
-						["<S-Tab>"] = { "select_prev" },
-						["<C-e>"] = { "cancel" },
-					},
+					-- keymap = {
+					-- 	preset = "inherit",
+					-- 	["<cr>"] = { "select_and_accept" },
+					-- 	["<Tab>"] = { "select_next" },
+					-- 	["<S-Tab>"] = { "select_prev" },
+					-- 	["<C-e>"] = { "cancel" },
+					-- },
+					-- completion = { menu = { auto_show = true } },
+
+					keymap = { preset = "inherit" },
 					completion = { menu = { auto_show = true } },
 				},
 				completion = {
