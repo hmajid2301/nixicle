@@ -31,7 +31,7 @@ in
 
     stylix = {
       enable = true;
-      autoEnable = false;
+      autoEnable = true;
       base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-mocha.yaml";
 
       iconTheme = {
@@ -48,8 +48,6 @@ in
           firefoxGnomeTheme.enable = true;
           profileNames = [ "Default" ];
         };
-        gnome.enable = false;
-        gnome.useWallpaper = false;
       };
 
       image = pkgs.nixicle.wallpapers.nixppuccin;
