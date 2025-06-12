@@ -48,7 +48,7 @@ in
 
   config = mkIf cfg.enable {
     roles = {
-      # common.enable = true;
+      common.enable = true;
       development.enable = true;
     };
 
