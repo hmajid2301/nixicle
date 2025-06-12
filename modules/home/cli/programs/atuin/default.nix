@@ -53,8 +53,8 @@ in
       };
     };
 
-    sops.secrets.atuin_key = {
-      sopsFile = ../../../secrets.yaml;
-    };
+    # sops.secrets.atuin_key = {
+    #   sopsFile = ../../../secrets.yaml;
+    # };
   };
 }
