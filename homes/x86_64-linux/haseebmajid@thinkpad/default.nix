@@ -45,9 +45,9 @@ in
     packages = with pkgs; [
       semgrep
       pre-commit
-      pkgs.nixicle.monolisa
-      pkgs.noto-fonts-emoji
-      pkgs.source-serif
+      # pkgs.nixicle.monolisa
+      # pkgs.noto-fonts-emoji
+      # pkgs.source-serif
       # screensharing
       # nwg-displays
       (lib.hiPrio (config.lib.nixGL.wrap totem))
