@@ -46,7 +46,7 @@ in
         db.enable = true;
         direnv.enable = true;
         eza.enable = true;
-        fzf.enable = true;
+        # fzf.enable = true;
         git.enable = true;
         gpg.enable = true;
         # htop.enable = true;
