@@ -28,9 +28,9 @@ in
     #   guis.enable = true;
     # };
 
-    # security = {
-    #   sops.enable = true;
-    # };
+    security = {
+      sops.enable = true;
+    };
     # styles.stylix.enable = true;
 
     # TODO: move this to a separate module
