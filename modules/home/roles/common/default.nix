@@ -31,7 +31,7 @@ in
     security = {
       sops.enable = true;
     };
-    # styles.stylix.enable = true;
+    styles.stylix.enable = true;
 
     # TODO: move this to a separate module
     home.packages = with pkgs; [
