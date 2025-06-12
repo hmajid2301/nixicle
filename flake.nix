@@ -120,7 +120,7 @@
       url = "github:nix-community/neovim-nightly-overlay";
     };
 
-    mcphub-nvim = {/
+    mcphub-nvim = {
       url = "github:ravitemer/mcphub.nvim";
     };
 
