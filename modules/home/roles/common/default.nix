@@ -13,7 +13,7 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    # browsers.firefox.enable = true;
+    browsers.firefox.enable = true;
 
     system = {
       nix.enable = true;
@@ -24,9 +24,10 @@ in
       terminals.ghostty.enable = true;
       shells.fish.enable = true;
     };
-    # programs = {
-    #   guis.enable = true;
-    # };
+
+    programs = {
+      guis.enable = true;
+    };
 
     security = {
       sops.enable = true;
