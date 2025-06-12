@@ -103,8 +103,8 @@
       flake = false;
     };
 
-    stylix.url = "github:danth/stylix";
-    # stylix.url = "github:danth/stylix/197526923a2929b223bab3e36d3aa240f5f84870";
+    # stylix.url = "github:danth/stylix";
+    stylix.url = "github:danth/stylix/197526923a2929b223bab3e36d3aa240f5f84870";
     catppuccin.url = "github:catppuccin/nix";
 
     # Terminal
@@ -120,7 +120,7 @@
       url = "github:nix-community/neovim-nightly-overlay";
     };
 
-    mcphub-nvim = {
+    mcphub-nvim = {/
       url = "github:ravitemer/mcphub.nvim";
     };
 
