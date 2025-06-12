@@ -103,8 +103,7 @@
       flake = false;
     };
 
-    # stylix.url = "github:danth/stylix";
-    stylix.url = "github:danth/stylix/release-24.11";
+    stylix.url = "github:danth/stylix";
     catppuccin.url = "github:catppuccin/nix";
 
     # Terminal

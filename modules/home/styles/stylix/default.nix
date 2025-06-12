@@ -10,7 +10,7 @@ let
 in
 {
   imports = with inputs; [
-    stylix.homeManagerModules.stylix
+    stylix.homeModules.stylix
     catppuccin.homeModules.catppuccin
   ];
 
