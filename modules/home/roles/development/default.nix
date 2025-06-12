@@ -36,7 +36,7 @@ in
     };
 
     cli = {
-      multiplexers.zellij.enable = true;
+      # multiplexers.zellij.enable = true;
 
       programs = {
         # attic.enable = true;
@@ -49,7 +49,7 @@ in
         # fzf.enable = true;
         git.enable = true;
         gpg.enable = true;
-        # htop.enable = true;
+        htop.enable = true;
         # k8s.enable = true;
         # modern-unix.enable = true;
         # network-tools.enable = true;
