@@ -49,6 +49,7 @@ in
           profileNames = [ "Default" ];
         };
         gnome.enable = false;
+        gnome.useWallpaper = false;
       };
 
       image = pkgs.nixicle.wallpapers.nixppuccin;
