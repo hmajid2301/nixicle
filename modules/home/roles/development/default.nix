@@ -36,7 +36,7 @@ in
     };
 
     cli = {
-      # multiplexers.zellij.enable = true;
+      multiplexers.zellij.enable = true;
 
       programs = {
         # attic.enable = true;
