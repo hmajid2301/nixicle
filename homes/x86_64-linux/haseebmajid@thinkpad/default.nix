@@ -32,7 +32,7 @@ in
     desktop.enable = true;
   };
 
-  stylix.enable = lib.mkForce false;
+  # stylix.enable = lib.mkForce false;
   stylix.autoEnable = lib.mkForce false;
   stylix.targets.gnome.enable = lib.mkForce false;
   stylix.targets.gnome.useWallpaper = lib.mkForce false;
@@ -45,9 +45,11 @@ in
     packages = with pkgs; [
       semgrep
       pre-commit
+
+      # INFO: Packages stylix usually installs but doesn't work with gnome 46 at the moment.
+      # So we are installing them here and we will manually set them.
       pkgs.nixicle.monolisa
       pkgs.noto-fonts-emoji
-      # pkgs.source-serif
       # screensharing
       # nwg-displays
       (lib.hiPrio (config.lib.nixGL.wrap totem))
