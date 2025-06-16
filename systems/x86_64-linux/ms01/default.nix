@@ -1,5 +1,14 @@
-{ pkgs, lib, config, ... }: {
-  imports = [ ./hardware-configuration.nix ./disks.nix ];
+{
+  pkgs,
+  lib,
+  config,
+  ...
+}:
+{
+  imports = [
+    ./hardware-configuration.nix
+    ./disks.nix
+  ];
 
   sops.secrets.cloudflared_ms01 = {
     sopsFile = ../../../modules/nixos/services/secrets.yaml;
@@ -8,13 +17,19 @@
   fileSystems."/mnt/n1" = {
     device = "/dev/nvme1n1p1";
     fsType = "ext4";
-    options = [ "defaults" "noatime" ];
+    options = [
+      "defaults"
+      "noatime"
+    ];
   };
 
   fileSystems."/mnt/n2" = {
     device = "/dev/nvme2n1p1";
     fsType = "ext4";
-    options = [ "defaults" "noatime" ];
+    options = [
+      "defaults"
+      "noatime"
+    ];
   };
 
   services = {
@@ -38,7 +53,8 @@
 
     nixicle = {
       authentik.enable = true;
-      # audiobookshelf.enable = true;
+      atuin.enable = true;
+      audiobookshelf.enable = true;
       couchdb.enable = true;
       deluge.enable = true;
       homepage.enable = true;
@@ -49,7 +65,7 @@
       logging.enable = true;
       monitoring.enable = true;
       minio.enable = true;
-      # navidrome.enable = true;
+      navidrome.enable = true;
       netdata.enable = true;
       #nfs.enable = true;
       smb.enable = true;
@@ -98,9 +114,13 @@
     }
   ];
 
-  boot.kernel.sysctl = { "fs.inotify.max_user_instances" = "8192"; };
+  boot.kernel.sysctl = {
+    "fs.inotify.max_user_instances" = "8192";
+  };
 
-  topology.self = { hardware.info = "MS01"; };
+  topology.self = {
+    hardware.info = "MS01";
+  };
 
   boot = {
     supportedFilesystems = lib.mkForce [ "btrfs" ];

@@ -45,11 +45,9 @@ in
 
       targets = {
         firefox = {
-          colorTheme.enable = true;
           firefoxGnomeTheme.enable = true;
           profileNames = [ "Default" ];
         };
-        gnome.enable = false;
       };
 
       image = pkgs.nixicle.wallpapers.nixppuccin;

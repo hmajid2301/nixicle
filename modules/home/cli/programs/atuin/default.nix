@@ -5,7 +5,8 @@
   ...
 }:
 with lib;
-with lib.nixicle; let
+with lib.nixicle;
+let
   cfg = config.cli.programs.atuin;
 
   atuin-export-fish = pkgs.buildGoModule rec {
@@ -21,15 +22,19 @@ with lib.nixicle; let
 
     vendorHash = "sha256-hLEmRq7Iw0hHEAla0Ehwk1EfmpBv6ddBuYtq12XdhVc=";
 
-    ldflags = ["-s" "-w"];
+    ldflags = [
+      "-s"
+      "-w"
+    ];
   };
-in {
+in
+{
   options.cli.programs.atuin = with types; {
     enable = mkBoolOpt false "Whether or not to enable atuin";
   };
 
   config = mkIf cfg.enable {
-    home.packages = [atuin-export-fish];
+    home.packages = [ atuin-export-fish ];
 
     programs.atuin = {
       enable = true;
@@ -38,7 +43,7 @@ in {
         "--disable-ctrl-r"
       ];
       settings = {
-        sync_address = "https://majiy00-shell.fly.dev";
+        sync_address = "https://atuin.haseebmajid.dev";
         sync_frequency = "15m";
         dialect = "uk";
         enter_accept = false;
@@ -48,8 +53,8 @@ in {
       };
     };
 
-    sops.secrets.atuin_key = {
-      sopsFile = ../../../secrets.yaml;
-    };
+    # sops.secrets.atuin_key = {
+    #   sopsFile = ../../../secrets.yaml;
+    # };
   };
 }
