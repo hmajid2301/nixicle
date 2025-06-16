@@ -24,6 +24,7 @@ in
       terminals.ghostty.enable = true;
       shells.fish.enable = true;
     };
+
     programs = {
       guis.enable = true;
     };
