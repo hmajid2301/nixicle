@@ -1,4 +1,10 @@
-{ pkgs, lib, inputs, ... }: {
+{
+  pkgs,
+  lib,
+  inputs,
+  ...
+}:
+{
   imports = [
     ./hardware-configuration.nix
     ./disks.nix
@@ -13,14 +19,14 @@
     defaultEditor = true;
   };
 
+  programs.kdeconnect.enable = true;
   system.boot.plymouth = lib.mkForce false;
 
   # TODO: when merged in
   systemd.package = pkgs.systemd.overrideAttrs (old: {
     patches = old.patches ++ [
       (pkgs.fetchurl {
-        url =
-          "https://github.com/wrvsrx/systemd/compare/tag_fix-hibernate-resume%5E...tag_fix-hibernate-resume.patch";
+        url = "https://github.com/wrvsrx/systemd/compare/tag_fix-hibernate-resume%5E...tag_fix-hibernate-resume.patch";
         hash = "sha256-Z784xysVUOYXCoTYJDRb3ppGiR8CgwY5CNV8jJSLOXU=";
       })
     ];
@@ -49,7 +55,10 @@
 
   boot = {
     kernelParams = [ "resume_offset=533760" ];
-    blacklistedKernelModules = [ "ath12k_pci" "ath12k" ];
+    blacklistedKernelModules = [
+      "ath12k_pci"
+      "ath12k"
+    ];
 
     supportedFilesystems = lib.mkForce [ "btrfs" ];
     kernelPackages = pkgs.linuxPackages_latest;
@@ -63,4 +72,3 @@
 
   system.stateVersion = "23.11";
 }
-

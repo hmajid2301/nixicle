@@ -30,6 +30,7 @@ require("lze").load({
 					templ = { "rustywind", "templ" },
 					html = { "htmlbeautifier", "rustywind" },
 					nix = { "nixfmt" },
+					markdown = { "trim_newlines", "trim_whitespace" },
 					python = { "isort", "black" },
 					javascript = { "prettierd" },
 					typescript = { "prettierd" },

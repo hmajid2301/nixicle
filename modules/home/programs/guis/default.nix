@@ -20,16 +20,16 @@ in
       foliate
       pwvucontrol
 
-      # sushi
-      # gnome-disk-utility
-      # # totem
-      # gvfs
-      # loupe
+      sushi
+      gnome-disk-utility
+      totem
+      gvfs
+      loupe
 
-      # nautilus
-      # ffmpegthumbnailer # thumbnails
-      # nautilus-python # enable plugins
-      # gst_all_1.gst-libav # thumbnails
+      nautilus
+      ffmpegthumbnailer # thumbnails
+      nautilus-python # enable plugins
+      gst_all_1.gst-libav # thumbnails
     ];
   };
 }
