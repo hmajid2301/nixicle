@@ -160,6 +160,7 @@ in
               nvim-dap
               pkgs.neovimPlugins.nvim-dap-view
               nvim-dap-go
+              debugmaster-nvim
             ];
             test = with pkgs.vimPlugins; [
               neotest
