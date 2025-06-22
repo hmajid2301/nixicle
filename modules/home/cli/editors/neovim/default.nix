@@ -238,6 +238,9 @@ in
                 undotree
                 nvim-dbee
               ];
+              notes = with pkgs.vimPlugins; [
+                obsidian-nvim
+              ];
               ui = with pkgs.vimPlugins; [
                 indent-blankline-nvim
                 lualine-nvim
