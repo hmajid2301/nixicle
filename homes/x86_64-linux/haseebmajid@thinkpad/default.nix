@@ -34,8 +34,8 @@ in
 
   # stylix.enable = lib.mkForce false;
   # stylix.autoEnable = lib.mkForce false;
-  # stylix.targets.gnome.enable = lib.mkForce false;
-  # stylix.targets.gnome.useWallpaper = lib.mkForce false;
+  stylix.targets.gnome.enable = lib.mkForce false;
+  stylix.targets.gnome.useWallpaper = lib.mkForce false;
 
   home = {
     # sessionVariables = {
