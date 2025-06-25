@@ -19,5 +19,5 @@ tailscale:
     - tailscaled --state="mem:" &
     - tailscale up --authkey=${TAILSCALE_AUTHKEY} --hostname="gitlab-$(cat /etc/hostname)" --accept-routes --accept-dns
     - tailscale status
-    - nix run github:serokell/deploy -- ".#$HOST" --hostname $HOST --ssh-user nixos --skip-checks --confirm-timeout "600" --remote-build
+    - nix run github:serokell/deploy ".#$HOST" -- --hostname $HOST --ssh-user nixos --skip-checks --confirm-timeout "600" --remote-build
 
