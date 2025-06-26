@@ -18,7 +18,7 @@ tailscale:
     - nix-env -iA nixpkgs.docker nixpkgs.go-task nixpkgs.flyctl nixpkgs.tailscale nixpkgs.jq
     - tailscaled --state="mem:" &
     - tailscale up --authkey=${TAILSCALE_AUTHKEY} --hostname="gitlab-$(cat /etc/hostname)" --accept-routes --accept-dns
-    - ssh-keygen -t ed25519 -N ""
+    - ssh-keygen -t ed25519 -N "" -f ~/.ssh/id_ed25519
     - tailscale set --ssh
     - tailscale status
     - nix profile install github:serokell/deploy-rs
