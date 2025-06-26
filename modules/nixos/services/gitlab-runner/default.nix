@@ -4,9 +4,11 @@
   pkgs,
   ...
 }:
-with lib; let
+with lib;
+let
   cfg = config.services.nixicle.gitlab-runner;
-in {
+in
+{
   options.services.nixicle.gitlab-runner = {
     enable = mkEnableOption "Enable gitlab runner";
   };
@@ -31,6 +33,9 @@ in {
           dockerPrivileged = true;
           dockerVolumes = [
             "/cache"
+            "/nix/store:/nix/store:ro"
+            "/nix/var/nix/db:/nix/var/nix/db:ro"
+            "/nix/var/nix/daemon-socket:/nix/var/nix/daemon-socket:ro"
           ];
         };
       };

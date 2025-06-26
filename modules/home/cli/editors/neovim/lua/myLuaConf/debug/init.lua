@@ -175,4 +175,13 @@ require("lze").load({
 			})
 		end,
 	},
+
+	{
+		"debugmaster-nvim",
+		for_cat = "debug",
+		on_plugin = { "nvim-dap" },
+		after = function(plugin)
+			require("debugmaster").setup({})
+		end,
+	},
 })

@@ -160,6 +160,7 @@ in
               nvim-dap
               pkgs.neovimPlugins.nvim-dap-view
               nvim-dap-go
+              debugmaster-nvim
             ];
             test = with pkgs.vimPlugins; [
               neotest
@@ -236,6 +237,9 @@ in
                 comment-nvim
                 undotree
                 nvim-dbee
+              ];
+              notes = with pkgs.vimPlugins; [
+                obsidian-nvim
               ];
               ui = with pkgs.vimPlugins; [
                 indent-blankline-nvim

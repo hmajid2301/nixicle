@@ -6,16 +6,16 @@
   ...
 }:
 let
-  # screensharing = pkgs.writeScriptBin "screensharing" ''
-  #   #!/usr/bin/env bash
-  #   sleep 1
-  #   killall -e xdg-desktop-portal-hyprland
-  #   killall -e xdg-desktop-portal-wlr
-  #   killall xdg-desktop-portal
-  #   /usr/libexec/xdg-desktop-portal-hyprland &
-  #   sleep 2
-  #   /usr/libexec/xdg-desktop-portal &
-  # '';
+  screensharing = pkgs.writeScriptBin "screensharing" ''
+    #!/usr/bin/env bash
+    sleep 1
+    killall -e xdg-desktop-portal-hyprland
+    killall -e xdg-desktop-portal-wlr
+    killall xdg-desktop-portal
+    /usr/libexec/xdg-desktop-portal-hyprland &
+    sleep 2
+    /usr/libexec/xdg-desktop-portal &
+  '';
 in
 {
   nixGL = {
@@ -33,7 +33,7 @@ in
   };
 
   # stylix.enable = lib.mkForce false;
-  stylix.autoEnable = lib.mkForce false;
+  # stylix.autoEnable = lib.mkForce false;
   stylix.targets.gnome.enable = lib.mkForce false;
   stylix.targets.gnome.useWallpaper = lib.mkForce false;
 
@@ -59,19 +59,19 @@ in
   sops.defaultSymlinkPath = lib.mkForce "/run/user/1001/secrets";
   sops.defaultSecretsMountPoint = lib.mkForce "/run/user/1001/secrets.d";
 
-  # desktops = {
-  #   hyprland = {
-  #     enable = true;
-  #     execOnceExtras = [
-  #       "warp-taskbar"
-  #       "blueman-applet"
-  #       "${screensharing}/bin/screensharing"
-  #       "nm-applet"
-  #     ];
-  #   };
-  #
-  #   gnome.enable = true;
-  # };
+  desktops = {
+    hyprland = {
+      enable = true;
+      execOnceExtras = [
+        "warp-taskbar"
+        "blueman-applet"
+        "${screensharing}/bin/screensharing"
+        "nm-applet"
+      ];
+    };
+
+    # gnome.enable = true;
+  };
 
   xdg.configFile."environment.d/envvars.conf".text = ''
     PATH="$PATH:/home/haseebmajid/.nix-profile/bin"
