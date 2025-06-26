@@ -12,6 +12,7 @@ tailscale:
         - HOST:
           - ms01
           - s100
+          - vps
   script:
     - mkdir -p /etc/nix/
     - echo "experimental-features = nix-command flakes" >> /etc/nix/nix.conf
