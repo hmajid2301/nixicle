@@ -30,7 +30,6 @@ tailscale:
     - tailscaled --state="mem:" --statedir=/var/lib/tailscale &
     - tailscale up --authkey=${TAILSCALE_AUTHKEY} --hostname="gitlab-$(cat /etc/hostname)" --accept-routes --accept-dns --ssh
     - tailscale status
-    - ssh -v vps -l nixos
-    # - nix profile install github:serokell/deploy-rs
-    # - deploy ".#$HOST" --hostname $HOST --ssh-user nixos --skip-checks --confirm-timeout "600" --remote-build
+    - nix profile install github:serokell/deploy-rs
+    - deploy ".#$HOST" --hostname $HOST --ssh-user nixos --skip-checks --confirm-timeout "600" --remote-build
 
