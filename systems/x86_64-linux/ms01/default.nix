@@ -47,7 +47,7 @@
   };
 
   services = {
-    tandoor.enable = true;
+    # tandoor.enable = true;
     arr.enable = true;
     # vpn.enable = true;
 

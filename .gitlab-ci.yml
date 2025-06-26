@@ -1,0 +1,36 @@
+image: nixos/nix
+
+stages:
+  - deploy
+
+tailscale:
+  stage: deploy
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  parallel:
+      matrix:
+        - HOST:
+          - ms01
+          - s100
+          - vps
+  script:
+    - mkdir -p /etc/nix/
+    - echo "experimental-features = nix-command flakes" >> /etc/nix/nix.conf
+    - nix-env -iA nixpkgs.docker nixpkgs.go-task nixpkgs.flyctl nixpkgs.tailscale nixpkgs.jq
+    - ssh-keygen -t ed25519 -N "" -f ~/.ssh/id_ed25519
+    - mkdir -p /etc/ssh/
+    - ssh-keygen -t ed25519 -N "" -f /etc/ssh/ssh_host_ed25519_key
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - echo "Host *" >> ~/.ssh/config
+    - echo "  StrictHostKeyChecking no" >> ~/.ssh/config
+    - echo "  UserKnownHostsFile /dev/null" >> ~/.ssh/config
+    - export SSH_ASKPASS_REQUIRE=never
+    - eval $(ssh-agent -s)
+    - ssh-add ~/.ssh/id_ed25519 2>/dev/null
+    - tailscaled --state="mem:" --statedir=/var/lib/tailscale &
+    - tailscale up --authkey=${TAILSCALE_AUTHKEY} --hostname="gitlab-$(cat /etc/hostname)" --accept-routes --accept-dns --ssh
+    - tailscale status
+    - nix profile install github:serokell/deploy-rs
+    - deploy ".#$HOST" --hostname $HOST --ssh-user nixos --skip-checks --confirm-timeout "600" --remote-build
+
