@@ -46,7 +46,7 @@ in
       targets = {
         firefox = {
           firefoxGnomeTheme.enable = true;
-          profileNames = [ "Default" ];
+          profileNames = [ "default" ];
         };
       };
 
