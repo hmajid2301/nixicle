@@ -93,6 +93,7 @@ return {
 				snippets = { preset = "luasnip" },
 				signature = { enabled = true },
 				cmdline = {
+					enabled = true,
 					-- keymap = {
 					-- 	preset = "inherit",
 					-- 	["<cr>"] = { "select_and_accept" },
@@ -101,9 +102,8 @@ return {
 					-- 	["<C-e>"] = { "cancel" },
 					-- },
 					-- completion = { menu = { auto_show = true } },
-
-					keymap = { preset = "inherit" },
-					completion = { menu = { auto_show = true } },
+					-- keymap = { preset = "inherit" },
+					-- completion = { menu = { auto_show = true } },
 				},
 				completion = {
 					menu = {
