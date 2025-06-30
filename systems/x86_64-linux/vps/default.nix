@@ -1,5 +1,14 @@
-{ config, lib, pkgs, ... }: {
-  imports = [ ./hardware-configuration.nix ./disks.nix ];
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
+{
+  imports = [
+    ./hardware-configuration.nix
+    ./disks.nix
+  ];
 
   boot.loader.grub.enable = true;
 
@@ -30,6 +39,7 @@
       logging.enable = true;
       postgresql.enable = true;
       plausible.enable = true;
+      gitlab-runner.enable = true;
       # n8n.enable = true;
       gotify.enable = true;
       uptime-kuma.enable = true;
@@ -39,9 +49,9 @@
       dynamicConfigOptions = {
         http = {
           services = {
-            jellyfin.loadBalancer.servers = [{ url = "http://ms01:8096"; }];
+            jellyfin.loadBalancer.servers = [ { url = "http://ms01:8096"; } ];
 
-            immich.loadBalancer.servers = [{ url = "http://ms01:2283"; }];
+            immich.loadBalancer.servers = [ { url = "http://ms01:2283"; } ];
           };
 
           routers = {
