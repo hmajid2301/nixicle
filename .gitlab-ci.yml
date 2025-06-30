@@ -28,9 +28,13 @@ tailscale:
     - export SSH_ASKPASS_REQUIRE=never
     - eval $(ssh-agent -s)
     - ssh-add ~/.ssh/id_ed25519 2>/dev/null
+    - echo "nameserver 1.1.1.1" > /etc/resolv.conf
+    - echo "nameserver 8.8.8.8" >> /etc/resolv.conf
     - tailscaled --state="mem:" --statedir=/var/lib/tailscale &
-    - tailscale up --authkey=${TAILSCALE_AUTHKEY} --hostname="gitlab-$(cat /etc/hostname)" --accept-routes --accept-dns --ssh
+    - tailscale up --authkey=${TAILSCALE_AUTHKEY} --hostname="gitlab-$(cat /etc/hostname)" --accept-routes --ssh
+    # Verify connectivity
     - tailscale status
+    - nix-shell -p bind.dnsutils --run "dig api.github.com +short"
     - nix profile install github:serokell/deploy-rs
     - deploy ".#$HOST" --hostname $HOST --ssh-user nixos --skip-checks --confirm-timeout "600" --remote-build
 
