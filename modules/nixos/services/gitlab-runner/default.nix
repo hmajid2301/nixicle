@@ -33,9 +33,9 @@ in
           dockerPrivileged = true;
           dockerVolumes = [
             "/cache"
-            "/nix/store:/nix/store:ro"
-            "/nix/var/nix/db:/nix/var/nix/db:ro"
-            "/nix/var/nix/daemon-socket:/nix/var/nix/daemon-socket:ro"
+            # "/nix/store:/nix/store:ro"
+            # "/nix/var/nix/db:/nix/var/nix/db:ro"
+            # "/nix/var/nix/daemon-socket:/nix/var/nix/daemon-socket:ro"
           ];
         };
       };

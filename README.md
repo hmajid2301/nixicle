@@ -67,6 +67,9 @@ nix build .#containers-ci
 
 # Run neovim
 nix run .#homeConfigurations."haseeb@workstation".config.nixCats.out.packages.nixCats
+
+# Build docker image used in ci
+nix build .#containers-ci
 ```
 
 ## 🚀 Features
