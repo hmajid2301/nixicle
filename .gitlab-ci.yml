@@ -32,9 +32,6 @@ tailscale:
     - echo "nameserver 8.8.8.8" >> /etc/resolv.conf
     - tailscaled --state="mem:" --statedir=/var/lib/tailscale &
     - tailscale up --authkey=${TAILSCALE_AUTHKEY} --hostname="gitlab-$(cat /etc/hostname)" --accept-routes --ssh
-    # Verify connectivity
-    - tailscale status
-    - nix-shell -p bind.dnsutils --run "dig api.github.com +short"
     - nix profile install github:serokell/deploy-rs
     - deploy ".#$HOST" --hostname $HOST --ssh-user nixos --skip-checks --confirm-timeout "600" --remote-build
 
