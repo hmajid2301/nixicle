@@ -14,6 +14,10 @@
     sopsFile = ../../../modules/nixos/services/secrets.yaml;
   };
 
+  sops.secrets.gitlab_runner_env_ms01 = {
+    sopsFile = ../../../modules/nixos/services/secrets.yaml;
+  };
+
   fileSystems."/mnt/n1" = {
     device = "/dev/nvme1n1p1";
     fsType = "ext4";
@@ -59,7 +63,10 @@
       deluge.enable = true;
       homepage.enable = true;
       gitea.enable = true;
-      gitlab-runner.enable = true;
+      gitlab-runner = {
+        enable = true;
+        sopsFile = config.sops.secrets.gitlab_runner_env_ms01.path;
+      };
       immich.enable = true;
       jellyfin.enable = true;
       logging.enable = true;

@@ -35,6 +35,9 @@ creation_rules:
       - *framework
       - *ms01
       - *s100
+      - *haseeb_workstation
+      - *haseeb_framework
+      - *haseebmajid_thinkpad
 
   - path_regex: modules/nixos/secrets.ya?ml$
     key_groups:
@@ -44,6 +47,9 @@ creation_rules:
       - *ms01
       - *s100
       - *vps
+      - *haseeb_workstation
+      - *haseeb_framework
+      - *haseebmajid_thinkpad
 
   - path_regex: modules/nixos/services/secrets.ya?ml$
     key_groups:
@@ -53,6 +59,9 @@ creation_rules:
       - *ms01
       - *s100
       - *vps
+      - *haseeb_workstation
+      - *haseeb_framework
+      - *haseebmajid_thinkpad
 
   - path_regex: modules/home/secrets.ya?ml$
     key_groups:
