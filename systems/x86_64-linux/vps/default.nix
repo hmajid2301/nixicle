@@ -43,7 +43,6 @@
       logging.enable = true;
       postgresql.enable = true;
       plausible.enable = true;
-      # gitlab-runner.enable = true;
       # n8n.enable = true;
       gotify.enable = true;
       uptime-kuma.enable = true;
