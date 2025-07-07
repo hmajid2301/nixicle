@@ -3,9 +3,11 @@
   lib,
   ...
 }:
-with lib; let
+with lib;
+let
   cfg = config.cli.terminals.ghostty;
-in {
+in
+{
   options.cli.terminals.ghostty = {
     enable = mkEnableOption "enable ghostty terminal emulator";
   };
@@ -16,13 +18,11 @@ in {
       enableFishIntegration = true;
 
       settings = {
-        theme = "catppuccin-mocha";
-        font-family = "${config.stylix.fonts.monospace.name}";
+        fallback-family = "Symbols Nerd Font";
         command = "fish";
         gtk-titlebar = false;
         gtk-tabs-location = "hidden";
         gtk-single-instance = true;
-        font-size = 14;
         window-padding-x = 6;
         window-padding-y = 6;
         copy-on-select = "clipboard";
