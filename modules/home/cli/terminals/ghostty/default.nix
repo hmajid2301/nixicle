@@ -13,12 +13,21 @@ in
   };
 
   config = mkIf cfg.enable {
+    stylix.targets.ghostty.enable = false;
+
     programs.ghostty = {
       enable = true;
       enableFishIntegration = true;
 
       settings = {
-        fallback-family = "Symbols Nerd Font";
+        "font-family" = [
+          "MonoLisa" # Primary font
+          "Symbols Nerd Font" # Glyph fallback
+          "Noto Color Emoji" # Emoji fallback
+        ];
+
+        theme = "catppuccin-mocha";
+
         command = "fish";
         gtk-titlebar = false;
         gtk-tabs-location = "hidden";
