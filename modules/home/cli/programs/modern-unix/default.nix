@@ -48,7 +48,7 @@ in
       yq-go
       viddy
 
-      kaf
+      pkgs.nixicle.kaf
 
       # go
       go
