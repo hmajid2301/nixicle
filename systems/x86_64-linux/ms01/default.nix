@@ -81,7 +81,7 @@
       postgresql.enable = true;
       redis.enable = true;
       traefik.enable = true;
-      ollama.enable = true;
+      # ollama.enable = true;
     };
 
     traefik = {
