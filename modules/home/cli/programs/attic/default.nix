@@ -5,9 +5,11 @@
   ...
 }:
 with lib;
-with lib.nixicle; let
+with lib.nixicle;
+let
   cfg = config.cli.programs.attic;
-in {
+in
+{
   options.cli.programs.attic = with types; {
     enable = mkBoolOpt false "Whether or not to enable attic";
   };
@@ -24,11 +26,11 @@ in {
     nix.settings = {
       trusted-substituters = [
         "https://staging.attic.rs/attic-ci"
-        "https://majiy00-nix-binary-cache.fly.dev/system?priority=43"
+        "https://attic.homelab.haseebmajid.dev/prod"
       ];
       trusted-public-keys = [
         "attic-ci:U5Sey4mUxwBXM3iFapmP0/ogODXywKLRNgRPQpEXxbo="
-        "system:DdaMnHcRKtgaov3GCR8mlrFuX90ShC2LkHv6kC7nluo="
+        "prod:4TZIFicr4E4MeKPyFMP+mswjRqKVnN6qxWeEsTLVQkU="
       ];
       netrc-file = config.sops.secrets."netrc".path;
     };
