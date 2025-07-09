@@ -16,7 +16,7 @@ tailscale:
   script:
     - mkdir -p /etc/nix/
     - echo "experimental-features = nix-command flakes" >> /etc/nix/nix.conf
-    - nix-env -iA nixpkgs.docker nixpkgs.go-task nixpkgs.flyctl nixpkgs.tailscale nixpkgs.jq
+    - nix-env -iA nixpkgs.docker nixpkgs.go-task nixpkgs.flyctl nixpkgs.tailscale nixpkgs.jq nixpkgs.attic-client
     - ssh-keygen -t ed25519 -N "" -f ~/.ssh/id_ed25519
     - mkdir -p /etc/ssh/
     - ssh-keygen -t ed25519 -N "" -f /etc/ssh/ssh_host_ed25519_key
@@ -32,6 +32,9 @@ tailscale:
     - echo "nameserver 8.8.8.8" >> /etc/resolv.conf
     - tailscaled --state="mem:" --statedir=/var/lib/tailscale &
     - tailscale up --authkey=${TAILSCALE_AUTHKEY} --hostname="gitlab-$(cat /etc/hostname)" --accept-routes --ssh
+    - attic login prod https://attic.homelab.haseebmajid.dev $ATTIC_AUTH_KEY
+    - attic use prod:prod
+    - attic watch-store prod:prod &
     - nix profile install github:serokell/deploy-rs
     - deploy ".#$HOST" --hostname $HOST --ssh-user nixos --skip-checks --confirm-timeout "600" --remote-build
 
