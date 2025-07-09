@@ -56,6 +56,7 @@
     # vpn.enable = true;
 
     nixicle = {
+      atticd.enable = true;
       authentik.enable = true;
       atuin.enable = true;
       audiobookshelf.enable = true;
