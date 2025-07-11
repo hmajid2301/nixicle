@@ -16,6 +16,8 @@ build:
   script:
     - mkdir -p /etc/nix
     - echo "experimental-features = nix-command flakes" >> /etc/nix/nix.conf
+    - echo "extra-platforms = $PLATFORM i686-linux" >> /etc/nix/nix.conf
+    - echo "system-features = benchmark big-parallel nixos-test i686" >> /etc/nix/nix.conf
     - echo "extra-platforms = $PLATFORM" >> /etc/nix/nix.conf
     - echo "substituters = https://attic.homelab.haseebmajid.dev/system?priority=43 https://nix-community.cachix.org?priority=41 https://numtide.cachix.org?priority=42 https://cache.nixos.org/" >> /etc/nix/nix.conf
     - echo "trusted-public-keys = cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY= system:5M8uBPjS68HTadSbeCs0Jiu0Z1tJBNdahtKBCXhl+Z0= nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs= numtide.cachix.org-1:2ps1kLBUWjxIneOy1Ik6cQjb41X0iXVXeHigGmycPPE=" >> /etc/nix/nix.conf
