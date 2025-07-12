@@ -1,22 +1,24 @@
 image: nixos/nix
 
 stages:
+  - build
   - deploy
 
-tailscale:
-  stage: deploy
+
+build:
+  stage: build
   rules:
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-  parallel:
-      matrix:
-        - HOST:
-          - ms01
-          - s100
-          - vps
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
   script:
-    - mkdir -p /etc/nix/
+    - mkdir -p /etc/nix
     - echo "experimental-features = nix-command flakes" >> /etc/nix/nix.conf
-    - nix-env -iA nixpkgs.docker nixpkgs.go-task nixpkgs.flyctl nixpkgs.tailscale nixpkgs.jq
+    - echo "extra-platforms = x86_64-linux i686-linux" >> /etc/nix/nix.conf
+    - echo "system-features = benchmark big-parallel nixos-test i686" >> /etc/nix/nix.conf
+    - echo "substituters = https://attic.homelab.haseebmajid.dev/system?priority=43 https://nix-community.cachix.org?priority=41 https://numtide.cachix.org?priority=42 https://cache.nixos.org/" >> /etc/nix/nix.conf
+    - echo "trusted-public-keys = cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY= system:5M8uBPjS68HTadSbeCs0Jiu0Z1tJBNdahtKBCXhl+Z0= nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs= numtide.cachix.org-1:2ps1kLBUWjxIneOy1Ik6cQjb41X0iXVXeHigGmycPPE=" >> /etc/nix/nix.conf
+    - echo "machine attic.homelab.haseebmajid.dev password $ATTIC_AUTH_KEY" | tee /etc/nix/netrc
+    - echo "experimental-features = nix-command flakes" >> /etc/nix/nix.conf
+    - nix-env -iA nixpkgs.tailscale nixpkgs.attic-client nixpkgs.cacert
     - ssh-keygen -t ed25519 -N "" -f ~/.ssh/id_ed25519
     - mkdir -p /etc/ssh/
     - ssh-keygen -t ed25519 -N "" -f /etc/ssh/ssh_host_ed25519_key
@@ -32,9 +34,45 @@ tailscale:
     - echo "nameserver 8.8.8.8" >> /etc/resolv.conf
     - tailscaled --state="mem:" --statedir=/var/lib/tailscale &
     - tailscale up --authkey=${TAILSCALE_AUTHKEY} --hostname="gitlab-$(cat /etc/hostname)" --accept-routes --ssh
-    # Verify connectivity
-    - tailscale status
-    - nix-shell -p bind.dnsutils --run "dig api.github.com +short"
+    - attic login prod https://attic.homelab.haseebmajid.dev $ATTIC_AUTH_KEY
+    - attic use prod:prod
+    - attic watch-store prod:prod &
+    - nix run github:zhaofengli/attic#default login prod https://attic.homelab.haseebmajid.dev $ATTIC_AUTH_KEY
+    - nix flake update
+    - nix run github:Mic92/nix-fast-build -- --skip-cached --no-nom --attic-cache prod:prod
+
+tailscale:
+  stage: deploy
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  parallel:
+      matrix:
+        - HOST:
+          - ms01
+          - s100
+          - vps
+  script:
+    - mkdir -p /etc/nix/
+    - echo "experimental-features = nix-command flakes" >> /etc/nix/nix.conf
+    - nix-env -iA nixpkgs.tailscale nixpkgs.attic-client
+    - ssh-keygen -t ed25519 -N "" -f ~/.ssh/id_ed25519
+    - mkdir -p /etc/ssh/
+    - ssh-keygen -t ed25519 -N "" -f /etc/ssh/ssh_host_ed25519_key
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - echo "Host *" >> ~/.ssh/config
+    - echo "  StrictHostKeyChecking no" >> ~/.ssh/config
+    - echo "  UserKnownHostsFile /dev/null" >> ~/.ssh/config
+    - export SSH_ASKPASS_REQUIRE=never
+    - eval $(ssh-agent -s)
+    - ssh-add ~/.ssh/id_ed25519 2>/dev/null
+    - echo "nameserver 1.1.1.1" > /etc/resolv.conf
+    - echo "nameserver 8.8.8.8" >> /etc/resolv.conf
+    - tailscaled --state="mem:" --statedir=/var/lib/tailscale &
+    - tailscale up --authkey=${TAILSCALE_AUTHKEY} --hostname="gitlab-$(cat /etc/hostname)" --accept-routes --ssh
+    - attic login prod https://attic.homelab.haseebmajid.dev $ATTIC_AUTH_KEY
+    - attic use prod:prod
+    - attic watch-store prod:prod &
     - nix profile install github:serokell/deploy-rs
     - deploy ".#$HOST" --hostname $HOST --ssh-user nixos --skip-checks --confirm-timeout "600" --remote-build
 

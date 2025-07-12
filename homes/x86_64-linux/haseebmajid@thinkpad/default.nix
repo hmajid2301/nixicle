@@ -50,8 +50,8 @@ in
       # So we are installing them here and we will manually set them.
       pkgs.nixicle.monolisa
       pkgs.noto-fonts-emoji
-      # screensharing
-      # nwg-displays
+      screensharing
+      nwg-displays
       (lib.hiPrio (config.lib.nixGL.wrap totem))
     ];
   };
