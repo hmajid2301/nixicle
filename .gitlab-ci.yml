@@ -23,6 +23,23 @@ build:
     - echo "machine attic.homelab.haseebmajid.dev password $ATTIC_AUTH_KEY" | tee /etc/nix/netrc
     # - git config --global url."https://$GH_TOKEN@github.com".insteadOf https://github.com
     # - nix run nixpkgs#nh os build -- -u
+    - echo "experimental-features = nix-command flakes" >> /etc/nix/nix.conf
+    - nix-env -iA nixpkgs.tailscale nixpkgs.attic-client
+    - ssh-keygen -t ed25519 -N "" -f ~/.ssh/id_ed25519
+    - mkdir -p /etc/ssh/
+    - ssh-keygen -t ed25519 -N "" -f /etc/ssh/ssh_host_ed25519_key
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - echo "Host *" >> ~/.ssh/config
+    - echo "  StrictHostKeyChecking no" >> ~/.ssh/config
+    - echo "  UserKnownHostsFile /dev/null" >> ~/.ssh/config
+    - export SSH_ASKPASS_REQUIRE=never
+    - eval $(ssh-agent -s)
+    - ssh-add ~/.ssh/id_ed25519 2>/dev/null
+    - echo "nameserver 1.1.1.1" > /etc/resolv.conf
+    - echo "nameserver 8.8.8.8" >> /etc/resolv.conf
+    - tailscaled --state="mem:" --statedir=/var/lib/tailscale &
+    - tailscale up --authkey=${TAILSCALE_AUTHKEY} --hostname="gitlab-$(cat /etc/hostname)" --accept-routes --ssh
     - nix run github:zhaofengli/attic#default login prod https://attic.homelab.haseebmajid.dev $ATTIC_AUTH_KEY
     - nix flake update
     - nix run github:Mic92/nix-fast-build -- --skip-cached --no-nom --attic-cache prod:prod
@@ -41,7 +58,7 @@ tailscale:
   script:
     - mkdir -p /etc/nix/
     - echo "experimental-features = nix-command flakes" >> /etc/nix/nix.conf
-    - nix-env -iA nixpkgs.docker nixpkgs.go-task nixpkgs.flyctl nixpkgs.tailscale nixpkgs.jq nixpkgs.attic-client
+    - nix-env -iA nixpkgs.tailscale nixpkgs.attic-client
     - ssh-keygen -t ed25519 -N "" -f ~/.ssh/id_ed25519
     - mkdir -p /etc/ssh/
     - ssh-keygen -t ed25519 -N "" -f /etc/ssh/ssh_host_ed25519_key
