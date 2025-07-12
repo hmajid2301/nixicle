@@ -32,24 +32,11 @@ in
       dynamicConfigOptions = {
         http = {
           services = {
-            attic.loadBalancer = {
-              servers = [
-                {
-                  url = "http://localhost:8899";
-                }
-              ];
-              serversTransport = "attic-transport";
-            };
-          };
-
-          serversTransports = {
-            attic-transport = {
-              forwardingTimeouts = {
-                responseHeaderTimeout = "900s";
-                idleTimeout = "900s";
-                dialTimeout = "30s";
-              };
-            };
+            attic.loadBalancer.servers = [
+              {
+                url = "http://localhost:8899";
+              }
+            ];
           };
 
           routers = {
@@ -58,17 +45,6 @@ in
               rule = "Host(`attic.homelab.haseebmajid.dev`)";
               service = "attic";
               tls.certResolver = "letsencrypt";
-              middlewares = [ "attic-headers" ];
-            };
-          };
-
-          middlewares = {
-            attic-headers = {
-              headers = {
-                requestHeaders = {
-                  maxRequestBodyBytes = 21474836480;
-                };
-              };
             };
           };
         };
