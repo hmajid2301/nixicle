@@ -24,7 +24,9 @@ build:
     # - git config --global url."https://$GH_TOKEN@github.com".insteadOf https://github.com
     # - nix run nixpkgs#nh os build -- -u
     - echo "experimental-features = nix-command flakes" >> /etc/nix/nix.conf
-    - nix-env -iA nixpkgs.tailscale nixpkgs.attic-client
+    - nix-env -iA nixpkgs.tailscale nixpkgs.attic-client nixpkgs.cacert
+    - export SSL_CERT_FILE="$(nix eval --raw nixpkgs#cacert)/etc/ssl/certs/ca-bundle.crt"
+    - export NIX_SSL_CERT_FILE="$SSL_CERT_FILE"
     - ssh-keygen -t ed25519 -N "" -f ~/.ssh/id_ed25519
     - mkdir -p /etc/ssh/
     - ssh-keygen -t ed25519 -N "" -f /etc/ssh/ssh_host_ed25519_key
