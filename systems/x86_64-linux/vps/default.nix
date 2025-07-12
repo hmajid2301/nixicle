@@ -19,6 +19,10 @@
     sopsFile = ../../../modules/nixos/services/secrets.yaml;
   };
 
+  sops.secrets.gitlab_runner_env_vps = {
+    sopsFile = ../../../modules/nixos/services/secrets.yaml;
+  };
+
   services = {
     cloudflared = {
       enable = true;
@@ -39,10 +43,14 @@
       logging.enable = true;
       postgresql.enable = true;
       plausible.enable = true;
-      gitlab-runner.enable = true;
-      # n8n.enable = true;
+      n8n.enable = true;
       gotify.enable = true;
       uptime-kuma.enable = true;
+
+      gitlab-runner = {
+        enable = true;
+        sopsFile = config.sops.secrets.gitlab_runner_env_vps.path;
+      };
     };
 
     traefik = {

@@ -25,7 +25,7 @@ keys:
     - &workstation age1vsjjdkgrv72tr3uftryj2szt3n0xk8h3ce54kzyfsmxtymxu6s4qgu5yuk
     - &ms01 age1uswlqzs3pf99r6e8qq5d3eh44sufe5tdczmfqygeam7vfr96fugqa0pps7
     - &s100 age19pl6jt7ekljfjww4g9anzafdxj0e52mnfnsyd26u5xdemfksqpwsnfwrs5
-    - &vps age1968z5kxjrf5nnzmvp7fp70pytkpnaaa0xel7cqr8nt4vtezygfnstuh4dx
+    - &vps age16gdrw4z5ryphlzulqj9eeamypex98fastk03jlvu9cp9ktzgcagstqtdzk
 
 creation_rules:
   - path_regex: modules/nixos/roles/kubernetes/secrets.ya?ml$
@@ -35,6 +35,9 @@ creation_rules:
       - *framework
       - *ms01
       - *s100
+      - *haseeb_workstation
+      - *haseeb_framework
+      - *haseebmajid_thinkpad
 
   - path_regex: modules/nixos/secrets.ya?ml$
     key_groups:
@@ -44,6 +47,9 @@ creation_rules:
       - *ms01
       - *s100
       - *vps
+      - *haseeb_workstation
+      - *haseeb_framework
+      - *haseebmajid_thinkpad
 
   - path_regex: modules/nixos/services/secrets.ya?ml$
     key_groups:
@@ -53,6 +59,9 @@ creation_rules:
       - *ms01
       - *s100
       - *vps
+      - *haseeb_workstation
+      - *haseeb_framework
+      - *haseebmajid_thinkpad
 
   - path_regex: modules/home/secrets.ya?ml$
     key_groups:
