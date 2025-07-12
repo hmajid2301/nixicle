@@ -3,21 +3,31 @@
   lib,
   ...
 }:
-with lib; let
+with lib;
+let
   cfg = config.cli.terminals.ghostty;
-in {
+in
+{
   options.cli.terminals.ghostty = {
     enable = mkEnableOption "enable ghostty terminal emulator";
   };
 
   config = mkIf cfg.enable {
+    stylix.targets.ghostty.enable = false;
+
     programs.ghostty = {
       enable = true;
       enableFishIntegration = true;
 
       settings = {
+        "font-family" = [
+          "MonoLisa" # Primary font
+          "Symbols Nerd Font" # Glyph fallback
+          "Noto Color Emoji" # Emoji fallback
+        ];
+
         theme = "catppuccin-mocha";
-        font-family = "${config.stylix.fonts.monospace.name}";
+
         command = "fish";
         gtk-titlebar = false;
         gtk-tabs-location = "hidden";

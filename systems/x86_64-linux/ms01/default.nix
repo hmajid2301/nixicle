@@ -14,6 +14,10 @@
     sopsFile = ../../../modules/nixos/services/secrets.yaml;
   };
 
+  sops.secrets.gitlab_runner_env_ms01 = {
+    sopsFile = ../../../modules/nixos/services/secrets.yaml;
+  };
+
   fileSystems."/mnt/n1" = {
     device = "/dev/nvme1n1p1";
     fsType = "ext4";
@@ -47,11 +51,12 @@
   };
 
   services = {
-    # tandoor.enable = true;
+    tandoor.enable = true;
     arr.enable = true;
     # vpn.enable = true;
 
     nixicle = {
+      atticd.enable = true;
       authentik.enable = true;
       atuin.enable = true;
       audiobookshelf.enable = true;
@@ -59,7 +64,10 @@
       deluge.enable = true;
       homepage.enable = true;
       gitea.enable = true;
-      gitlab-runner.enable = true;
+      gitlab-runner = {
+        enable = true;
+        sopsFile = config.sops.secrets.gitlab_runner_env_ms01.path;
+      };
       immich.enable = true;
       jellyfin.enable = true;
       logging.enable = true;
@@ -69,11 +77,11 @@
       netdata.enable = true;
       #nfs.enable = true;
       smb.enable = true;
-      paperless.enable = true;
+      # paperless.enable = true;
       postgresql.enable = true;
       redis.enable = true;
       traefik.enable = true;
-      ollama.enable = true;
+      # ollama.enable = true;
     };
 
     traefik = {
