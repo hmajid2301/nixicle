@@ -45,6 +45,7 @@ build:
     - nix run github:zhaofengli/attic#default login prod https://attic.homelab.haseebmajid.dev $ATTIC_AUTH_KEY
     # - nix flake update
     - nix run github:Mic92/nix-fast-build -- --skip-cached --no-nom --attic-cache prod:prod
+    - ls -al /result
     - nix run github:zhaofengli/attic#default push prod:prod /run/current-system -j 2
 
 tailscale:
