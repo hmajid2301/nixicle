@@ -62,6 +62,7 @@ in
       go-task
       go-mockery
       gotestsum
+      delve
 
       nodejs_24
 
