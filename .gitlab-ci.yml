@@ -71,7 +71,6 @@ deploy:homelab:
     - attic login homelab https://attic.homelab.haseebmajid.dev $ATTIC_AUTH_KEY
     - attic use homelab:main
     - attic watch-store homelab:main &
-    - nix flake update
     - nix run github:Mic92/nix-fast-build -- --skip-cached --no-nom --attic-cache homelab:main
     - nix profile install github:serokell/deploy-rs
     - deploy ".#$HOST" --hostname $HOST --ssh-user nixos --skip-checks --confirm-timeout "600" --remote-build
