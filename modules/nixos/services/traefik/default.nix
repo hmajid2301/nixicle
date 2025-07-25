@@ -3,22 +3,27 @@
   lib,
   ...
 }:
-with lib; let
+with lib;
+let
   cfg = config.services.nixicle.traefik;
-in {
+in
+{
   options.services.nixicle.traefik = {
     enable = mkEnableOption "Enable traefik";
   };
 
   config = mkIf cfg.enable {
-    networking.firewall.allowedTCPPorts = [80 443];
+    networking.firewall.allowedTCPPorts = [
+      80
+      443
+    ];
 
     systemd.services.traefik = {
       environment = {
         CF_API_EMAIL = "hello@haseebmajid.dev";
       };
       serviceConfig = {
-        EnvironmentFile = [config.sops.secrets.cloudflare_api_key.path];
+        EnvironmentFile = [ config.sops.secrets.cloudflare_api_key.path ];
       };
     };
 
@@ -33,43 +38,18 @@ in {
         enable = true;
 
         staticConfigOptions = {
-          log = {
-            level = "INFO";
-            filePath = "/var/log/traefik.log";
-            format = "json";
-            noColor = false;
-            maxSize = 100;
-            compress = true;
-          };
-
           metrics = {
-            prometheus = {};
+            prometheus = { };
           };
 
-          tracing = {};
+          tracing = { };
 
-          accessLog = {
-            addInternals = true;
-            filePath = "/var/log/traefik-access.log";
-            bufferingSize = 100;
-            fields = {
-              names = {
-                StartUTC = "drop";
-              };
-            };
-            filters = {
-              statusCodes = [
-                "204-299"
-                "400-499"
-                "500-599"
-              ];
-            };
-          };
           api = {
             dashboard = true;
           };
+
           certificatesResolvers = {
-            tailscale.tailscale = {};
+            tailscale.tailscale = { };
             letsencrypt = {
               acme = {
                 email = "hello@haseebmajid.dev";
@@ -106,11 +86,11 @@ in {
                 domains = [
                   {
                     main = "homelab.haseebmajid.dev";
-                    sans = ["*.homelab.haseebmajid.dev"];
+                    sans = [ "*.homelab.haseebmajid.dev" ];
                   }
                   {
                     main = "haseebmajid.dev";
-                    sans = ["*.haseebmajid.dev"];
+                    sans = [ "*.haseebmajid.dev" ];
                   }
                 ];
               };

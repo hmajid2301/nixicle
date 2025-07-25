@@ -73,14 +73,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    hyprpanel.url = "github:Jas-SinghFSU/HyprPanel";
-
     # Homelab
-
-    attic = {
-      url = "github:zhaofengli/attic";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
 
     nix-topology = {
       url = "github:oddlama/nix-topology";
@@ -218,7 +211,6 @@
         nixgl.overlay
         nur.overlays.default
         nix-topology.overlays.default
-        hyprpanel.overlay
       ];
 
       deploy = lib.mkDeploy { inherit (inputs) self; };

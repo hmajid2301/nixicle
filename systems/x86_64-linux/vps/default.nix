@@ -1,5 +1,14 @@
-{ config, lib, pkgs, ... }: {
-  imports = [ ./hardware-configuration.nix ./disks.nix ];
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
+{
+  imports = [
+    ./hardware-configuration.nix
+    ./disks.nix
+  ];
 
   boot.loader.grub.enable = true;
 
@@ -7,6 +16,10 @@
   system.boot.enable = lib.mkForce false;
 
   sops.secrets.cloudflared_vps = {
+    sopsFile = ../../../modules/nixos/services/secrets.yaml;
+  };
+
+  sops.secrets.gitlab_runner_env_vps = {
     sopsFile = ../../../modules/nixos/services/secrets.yaml;
   };
 
@@ -30,18 +43,23 @@
       logging.enable = true;
       postgresql.enable = true;
       plausible.enable = true;
-      # n8n.enable = true;
+      n8n.enable = true;
       gotify.enable = true;
       uptime-kuma.enable = true;
+
+      gitlab-runner = {
+        enable = true;
+        sopsFile = config.sops.secrets.gitlab_runner_env_vps.path;
+      };
     };
 
     traefik = {
       dynamicConfigOptions = {
         http = {
           services = {
-            jellyfin.loadBalancer.servers = [{ url = "http://ms01:8096"; }];
+            jellyfin.loadBalancer.servers = [ { url = "http://ms01:8096"; } ];
 
-            immich.loadBalancer.servers = [{ url = "http://ms01:2283"; }];
+            immich.loadBalancer.servers = [ { url = "http://ms01:2283"; } ];
           };
 
           routers = {
