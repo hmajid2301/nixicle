@@ -26,11 +26,11 @@ in
     nix.settings = {
       trusted-substituters = [
         "https://staging.attic.rs/attic-ci"
-        "https://attic.homelab.haseebmajid.dev/prod"
+        "https://attic.homelab.haseebmajid.dev/main"
       ];
       trusted-public-keys = [
         "attic-ci:U5Sey4mUxwBXM3iFapmP0/ogODXywKLRNgRPQpEXxbo="
-        "prod:4TZIFicr4E4MeKPyFMP+mswjRqKVnN6qxWeEsTLVQkU="
+        "main:VlacPrGj7LVuEavaWpEgun9eCNvB6DPqYMe3FraKGzw="
       ];
       netrc-file = config.sops.secrets."netrc".path;
     };
