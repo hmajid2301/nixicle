@@ -4,8 +4,7 @@ stages:
   - build
   - deploy
 
-
-build:
+build:flake:
   stage: build
   rules:
     - if: '$CI_PIPELINE_SOURCE == "schedule"'
@@ -34,14 +33,13 @@ build:
     - echo "nameserver 8.8.8.8" >> /etc/resolv.conf
     - tailscaled --state="mem:" --statedir=/var/lib/tailscale &
     - tailscale up --authkey=${TAILSCALE_AUTHKEY} --hostname="gitlab-$(cat /etc/hostname)" --accept-routes --ssh
-    - attic login prod https://attic.homelab.haseebmajid.dev $ATTIC_AUTH_KEY
-    - attic use prod:prod
-    - attic watch-store prod:prod &
-    - nix run github:zhaofengli/attic#default login prod https://attic.homelab.haseebmajid.dev $ATTIC_AUTH_KEY
+    - attic login homelab https://attic.homelab.haseebmajid.dev $ATTIC_AUTH_KEY
+    - attic use homelab:main
+    - attic watch-store homelab:main &
     - nix flake update
-    - nix run github:Mic92/nix-fast-build -- --skip-cached --no-nom --attic-cache prod:prod
+    - nix run github:Mic92/nix-fast-build -- --skip-cached --no-nom --attic-cache homelab:main
 
-tailscale:
+deploy:homelab:
   stage: deploy
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
@@ -70,9 +68,9 @@ tailscale:
     - echo "nameserver 8.8.8.8" >> /etc/resolv.conf
     - tailscaled --state="mem:" --statedir=/var/lib/tailscale &
     - tailscale up --authkey=${TAILSCALE_AUTHKEY} --hostname="gitlab-$(cat /etc/hostname)" --accept-routes --ssh
-    - attic login prod https://attic.homelab.haseebmajid.dev $ATTIC_AUTH_KEY
-    - attic use prod:prod
-    - attic watch-store prod:prod &
+    - attic login homelab https://attic.homelab.haseebmajid.dev $ATTIC_AUTH_KEY
+    - attic use homelab:main
+    - attic watch-store homelab:main &
     - nix profile install github:serokell/deploy-rs
     - deploy ".#$HOST" --hostname $HOST --ssh-user nixos --skip-checks --confirm-timeout "600" --remote-build
 

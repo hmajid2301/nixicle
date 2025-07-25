@@ -67,6 +67,8 @@ in
       nodejs_24
 
       sshx
+
+      opencode
     ];
   };
 }
