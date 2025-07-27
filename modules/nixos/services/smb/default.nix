@@ -1,8 +1,15 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 with lib;
 with lib.nixicle;
-let cfg = config.services.nixicle.smb;
-in {
+let
+  cfg = config.services.nixicle.smb;
+in
+{
   options.services.nixicle.smb = {
     enable = mkEnableOption "Enable the smb server";
   };
@@ -23,13 +30,12 @@ in {
         settings = {
           global = {
             "hosts allow" = "192.168.1. 100.64.0.0/10 127.0.0.1 localhost";
-            "bind interfaces only" = "yes";
-            interfaces = "lo enp91s0 tailscale0";
             security = "user";
             "min protocol" = "SMB2";
             "browseable" = "yes";
             "guest account" = "nobody";
             "map to guest" = "bad user";
+            # Removed interface restrictions
           };
           public = {
             "path" = "/mnt/n1";
@@ -42,6 +48,19 @@ in {
             "force group" = "users";
           };
         };
+      };
+    };
+
+    # Add systemd fixes
+    systemd.services.samba-nmbd = {
+      after = [
+        "network-online.target"
+        "tailscaled.service"
+      ];
+      wants = [ "network-online.target" ];
+      serviceConfig = {
+        Restart = "on-failure";
+        RestartSec = "5s";
       };
     };
   };
