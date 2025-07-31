@@ -14,6 +14,10 @@
 
   environment.pathsToLink = [ "/share/fish" ];
 
+  environment.systemPackages = with pkgs; [
+    inputs.caelestia.packages.${pkgs.system}.default
+  ];
+
   programs.neovim = {
     enable = true;
     defaultEditor = true;
