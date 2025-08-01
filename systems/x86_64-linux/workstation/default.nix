@@ -16,6 +16,7 @@
 
   environment.systemPackages = with pkgs; [
     inputs.caelestia.packages.${pkgs.system}.default
+    inputs.caelestia.inputs.caelestia-cli.packages.${pkgs.system}.default
   ];
 
   programs.neovim = {
