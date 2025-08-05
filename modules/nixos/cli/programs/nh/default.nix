@@ -16,21 +16,22 @@ in
 
   config = mkIf cfg.enable {
     environment.systemPackages = with pkgs; [
-      (pkgs.nix-output-monitor.overrideAttrs (old: {
-        postPatch = old.postPatch or "" + ''
-          sed -ie ${lib.escapeShellArg ''
-            s/↓/\\xf072e/
-            s/↑/\\xf0737/
-            s/⏱/\\xf520/
-            s/⏵/\\xf04b/
-            s/✔/\\xf00c/
-            s/⏸/\\xf04d/
-            s/⚠/\\xf071/
-            s/∅/\\xf1da/
-            s/∑/\\xf04a0/
-          ''} lib/NOM/Print.hs
-        '';
-      }))
+      (pkgs.nh.override {
+        nix-output-monitor = pkgs.nix-output-monitor.overrideAttrs (old: {
+          postPatch = old.postPatch or "" + ''
+            substituteInPlace lib/NOM/Print.hs \
+              --replace 'down = "↓"' 'down = "\xf072e"' \
+              --replace 'up = "↑"' 'up = "\xf0737"' \
+              --replace 'clock = "⏱"' 'clock = "\xf520"' \
+              --replace 'running = "⏵"' 'running = "\xf04b"' \
+              --replace 'done = "✔"' 'done = "\xf00c"' \
+              --replace 'todo = "⏸"' 'todo = "\xf04d"' \
+              --replace 'warning = "⚠"' 'warning = "\xf071"' \
+              --replace 'average = "∅"' 'average = "\xf1da"' \
+              --replace 'bigsum = "∑"' 'bigsum = "\xf04a0"'
+          '';
+        });
+      })
     ];
 
     programs.nh = {

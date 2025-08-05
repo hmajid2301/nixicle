@@ -69,6 +69,7 @@ in
       sshx
 
       opencode
+      claude-code
     ];
   };
 }
