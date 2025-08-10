@@ -345,13 +345,10 @@ return {
 	{
 		"undotree",
 		for_cat = "general.editor",
-		-- event = "DeferredUIEnter",
+		event = "DeferredUIEnter",
 		keys = {
 			{ "<leader>ut", mode = { "n" }, desc = " show undo tree" },
 		},
-		load = function(name)
-			vim.cmd.packadd(name)
-		end,
 		after = function(plugin)
 			vim.keymap.set("n", "<leader>ut", vim.cmd.UndotreeToggle, { desc = "Toggle Undotree" })
 		end,
@@ -360,9 +357,6 @@ return {
 		"vim-dotenv",
 		for_cat = "general.editor",
 		cmd = { "Dotenv" },
-		-- after = function(plugin)
-		-- 	vim.keymap.set("n", "<leader>ut", vim.cmd.UndotreeToggle, { desc = "Toggle Undotree" })
-		-- end,
 	},
 	{
 		"tiny-code-actions",
