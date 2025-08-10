@@ -1,7 +1,14 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 with lib;
-let cfg = config.services.nixicle.jellyfin;
-in {
+let
+  cfg = config.services.nixicle.jellyfin;
+in
+{
   options.services.nixicle.jellyfin = {
     enable = mkEnableOption "Enable jellyfin service";
   };
@@ -14,12 +21,12 @@ in {
     hardware.graphics = {
       enable = true;
       extraPackages = with pkgs; [
-        intel-media-driver
+        # intel-media-driver
         intel-vaapi-driver # previously vaapiIntel
         vaapiVdpau
         intel-compute-runtime # OpenCL filter support (hardware tonemapping and subtitle burn-in)
         vpl-gpu-rt # QSV on 11th gen or newer
-        intel-media-sdk # QSV up to 11th gen
+        # intel-media-sdk # QSV up to 11th gen
       ];
     };
 
@@ -31,8 +38,7 @@ in {
         dynamicConfigOptions = {
           http = {
             services = {
-              jellyfin.loadBalancer.servers =
-                [{ url = "http://localhost:8096"; }];
+              jellyfin.loadBalancer.servers = [ { url = "http://localhost:8096"; } ];
             };
 
             routers = {

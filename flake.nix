@@ -73,6 +73,8 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    caelestia.url = "github:caelestia-dots/shell";
+
     # Homelab
 
     nix-topology = {

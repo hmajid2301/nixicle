@@ -71,18 +71,7 @@ in
             "HackerNews"
           ];
 
-          # "Bing".metaData.hidden = true;
-          # "eBay".metaData.hidden = true;
-          # "DuckDuckGo".metaData.hidden = true;
-          # "Amazon.com".metaData.hidden = true;
-          # "Wikipedia (en)".metaData.hidden = true;
-          # "YouTube".metaata.hidden = true;
-          # "Kagi".metaData.hidden = true;
-          # "Nix Packages".metaData.hidden = true;
-          # "NixOS Options".metaData.hidden = true;
-          # "Home Manager".metaData.hidden = true;
-          # "SourceGraph".metaData.hidden = true;
-          # "GitHub".metaData.hidden = true;
+
 
           engines = {
             "Kagi" = {
@@ -182,7 +171,7 @@ in
               icon = "https://home-manager-options.extranix.com/images/home-manager-option-search2.png";
               definedAliases = [ "@hm" ];
 
-              url = [
+              urls = [
                 {
                   template = "https://mipmip.github.io/home-manager-option-search/";
                   params = [
