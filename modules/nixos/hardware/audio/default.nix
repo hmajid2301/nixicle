@@ -22,12 +22,53 @@ in {
       pulse.enable = true;
       wireplumber.enable = true;
       jack.enable = true;
+      
+      extraConfig.pipewire."99-usb-audio-fix" = {
+        "context.properties" = {
+          "default.clock.rate" = 48000;
+          "default.clock.quantum" = 512;
+          "default.clock.min-quantum" = 64;
+          "default.clock.max-quantum" = 4096;
+        };
+      };
+      
+      wireplumber.configPackages = [
+        (pkgs.writeTextDir "share/wireplumber/wireplumber.conf.d/99-usb-audio.conf" ''
+          monitor.alsa.rules = [
+            {
+              matches = [
+                {
+                  device.name = "~alsa_card.usb-ACTIONS_Pebble.*"
+                }
+              ]
+              actions = {
+                update-props = {
+                  api.alsa.period-size = 256
+                  api.alsa.periods = 4
+                  api.alsa.headroom = 2048
+                  api.alsa.disable-batch = true
+                  session.suspend-timeout-seconds = 0
+                  api.alsa.start-delay = 0
+                  api.alsa.disable-tsched = false
+                  api.acp.auto-profile = false
+                  device.profile = "output:analog-stereo"
+                }
+              }
+            }
+          ]
+        '')
+      ];
     };
     programs.noisetorch.enable = true;
 
     services.udev.packages = with pkgs; [
       headsetcontrol
     ];
+    
+    # Disable USB autosuspend for Pebble V3 to prevent audio dropouts
+    services.udev.extraRules = ''
+      SUBSYSTEM=="usb", ATTRS{idVendor}=="041e", ATTRS{idProduct}=="3272", ATTR{power/autosuspend}="-1"
+    '';
 
     environment.systemPackages = with pkgs; [
       headsetcontrol
