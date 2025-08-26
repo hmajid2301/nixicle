@@ -65,11 +65,14 @@ in
       delve
 
       nodejs_24
+      bun
 
       sshx
 
+      # ai
       opencode
       claude-code
+      gemini-cli
     ];
   };
 }
