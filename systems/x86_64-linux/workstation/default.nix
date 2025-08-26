@@ -27,7 +27,7 @@
   programs.kdeconnect.enable = true;
   system.boot.plymouth = lib.mkForce false;
 
-  # TODO: when merged in
+  # TODO: when merged in: https://github.com/systemd/systemd/issues/34304
   systemd.package = pkgs.systemd.overrideAttrs (old: {
     patches = old.patches ++ [
       (pkgs.fetchurl {
@@ -56,7 +56,6 @@
   };
 
   programs.wireshark.enable = true;
-  systemd.services.systemd-networkd-wait-online.enable = lib.mkForce false;
 
   boot = {
     kernelParams = [ "resume_offset=533760" ];

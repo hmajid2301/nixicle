@@ -29,7 +29,6 @@ in
 
         extensions.packages = with pkgs.nur.repos.rycee.firefox-addons; [
           bitwarden
-          enhancer-for-youtube
           linkwarden
           languagetool
           old-reddit-redirect
@@ -70,8 +69,6 @@ in
             "GitHub"
             "HackerNews"
           ];
-
-
 
           engines = {
             "Kagi" = {
