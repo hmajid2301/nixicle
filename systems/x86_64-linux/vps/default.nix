@@ -39,6 +39,7 @@
     avahi.enable = lib.mkForce false;
 
     nixicle = {
+      alloy.enable = true;
       traefik.enable = true;
       logging.enable = true;
       postgresql.enable = true;

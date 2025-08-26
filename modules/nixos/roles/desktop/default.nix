@@ -4,15 +4,17 @@
   ...
 }:
 with lib;
-with lib.nixicle; let
+with lib.nixicle;
+let
   cfg = config.roles.desktop;
-in {
+in
+{
   options.roles.desktop = {
     enable = mkEnableOption "Enable desktop configuration";
   };
 
   config = mkIf cfg.enable {
-    boot.binfmt.emulatedSystems = ["aarch64-linux"];
+    boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
 
     roles = {
       common.enable = true;
