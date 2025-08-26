@@ -49,7 +49,6 @@ build:flake:
   script:
     - nix flake update
     - nix run github:Mic92/nix-fast-build -- --skip-cached --no-nom --attic-cache homelab:main
-    - attic push /run/current-system -j 4
 
 deploy:homelab:
   extends: .base_setup
