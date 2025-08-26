@@ -56,7 +56,6 @@
   };
 
   programs.wireshark.enable = true;
-  systemd.services.systemd-networkd-wait-online.enable = lib.mkForce false;
 
   boot = {
     kernelParams = [ "resume_offset=533760" ];

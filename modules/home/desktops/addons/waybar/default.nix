@@ -1,11 +1,14 @@
 {
   config,
   lib,
+  pkgs,
   ...
 }:
-with lib; let
+with lib;
+let
   cfg = config.desktops.addons.waybar;
-in {
+in
+{
   options.desktops.addons.waybar = {
     enable = mkEnableOption "Enable waybar";
   };
@@ -30,6 +33,7 @@ in {
           ];
           modules-right = [
             "backlight"
+            "power-profiles-daemon"
             "battery"
             "pulseaudio"
             "network"
@@ -110,7 +114,13 @@ in {
             format = "{icon} {capacity}%";
             format-alt = "{time}";
             format-charging = "  {capacity}%";
-            format-icons = ["󰁻 " "󰁽 " "󰁿 " "󰂁 " "󰂂 "];
+            format-icons = [
+              "󰁻 "
+              "󰁽 "
+              "󰁿 "
+              "󰂁 "
+              "󰂂 "
+            ];
           };
           network = {
             interval = 1;
@@ -133,12 +143,26 @@ in {
             format-icons = {
               headphone = "  ";
               headset = "  ";
-              default = ["  " "  "];
+              default = [
+                "  "
+                "  "
+              ];
             };
           };
           tray = {
             icon-size = 16;
             spacing = 8;
+          };
+          "power-profiles-daemon" = {
+            format = "{icon}";
+            tooltip-format = "Power profile: {profile}\nDriver: {driver}";
+            tooltip = true;
+            format-icons = {
+              "default" = "󰾅";
+              "performance" = "󰓅";
+              "balanced" = "󰾅";
+              "power-saver" = "󰾆";
+            };
           };
         }
       ];
