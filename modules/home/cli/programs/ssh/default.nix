@@ -21,7 +21,14 @@ in
 
     programs.ssh = {
       enable = true;
-      addKeysToAgent = "yes";
+      enableDefaultConfig = false;
+      matchBlocks."*" = {
+        addKeysToAgent = "yes";
+        # Common default SSH options
+        identitiesOnly = true;
+        serverAliveInterval = 60;
+        serverAliveCountMax = 3;
+      };
     };
   };
 }

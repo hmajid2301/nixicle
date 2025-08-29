@@ -27,15 +27,6 @@
     ];
   };
 
-  fileSystems."/mnt/n2" = {
-    device = "/dev/nvme2n1p1";
-    fsType = "ext4";
-    options = [
-      "defaults"
-      "noatime"
-    ];
-  };
-
   services = {
     cloudflared = {
       enable = true;
@@ -100,12 +91,7 @@
     };
   };
 
-  roles = {
-    kubernetes = {
-      enable = true;
-      role = "server";
-    };
-  };
+  roles.server.enable = true;
 
   security.pam.loginLimits = [
     {
