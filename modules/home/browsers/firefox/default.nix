@@ -39,8 +39,17 @@ in
           "gnomeTheme.spinner" = true;
           "layers.acceleration.force-enabled" = true;
           "identity.fxaccounts.account.device.name" = "${config.nixicle.user.name}@${host}";
+          
+          # Disable all search shortcuts and one-off buttons
           "browser.urlbar.oneOffSearches" = false;
           "browser.search.hiddenOneOffs" = "Google,Yahoo,Bing,Amazon.com,Twitter,Wikipedia (en),YouTube,eBay";
+          
+          # Hide URL bar shortcuts for bookmarks, history, and tabs
+          "browser.urlbar.shortcuts.bookmarks" = false;
+          "browser.urlbar.shortcuts.history" = false;
+          "browser.urlbar.shortcuts.tabs" = false;
+          
+          # Disable other search suggestions
           "extensions.pocket.enabled" = false;
           "browser.urlbar.suggest.engines" = false;
           "browser.urlbar.suggest.openpage" = false;
@@ -73,6 +82,7 @@ in
                   ];
                 }
               ];
+              metaData.hideOneOffButton = true;
             };
 
             "Nix Packages" = {
@@ -97,6 +107,7 @@ in
                   ];
                 }
               ];
+              metaData.hideOneOffButton = true;
             };
 
             "NixOS Options" = {
@@ -117,10 +128,11 @@ in
                   ];
                 }
               ];
+              metaData.hideOneOffButton = true;
             };
 
             "SourceGraph" = {
-              iconUpdateURL = "https://sourcegraph.com/.assets/img/sourcegraph-mark.svg";
+              icon = "https://sourcegraph.com/.assets/img/sourcegraph-mark.svg";
               definedAliases = [ "@sg" ];
 
               urls = [
@@ -134,11 +146,11 @@ in
                   ];
                 }
               ];
+              metaData.hideOneOffButton = true;
             };
 
             "GitHub" = {
-              iconUpdateURL = "https://github.com/favicon.ico";
-              updateInterval = 24 * 60 * 60 * 1000;
+              icon = "https://github.com/favicon.ico";
               definedAliases = [ "@gh" ];
 
               urls = [
@@ -152,6 +164,7 @@ in
                   ];
                 }
               ];
+              metaData.hideOneOffButton = true;
             };
 
             "Home Manager" = {
@@ -169,6 +182,25 @@ in
                   ];
                 }
               ];
+              metaData.hideOneOffButton = true;
+            };
+
+            "HackerNews" = {
+              icon = "https://news.ycombinator.com/favicon.ico";
+              definedAliases = [ "@hn" ];
+
+              urls = [
+                {
+                  template = "https://hn.algolia.com/";
+                  params = [
+                    {
+                      name = "q";
+                      value = "{searchTerms}";
+                    }
+                  ];
+                }
+              ];
+              metaData.hideOneOffButton = true;
             };
           };
         };
