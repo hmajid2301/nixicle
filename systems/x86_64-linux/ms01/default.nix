@@ -67,7 +67,7 @@
       navidrome.enable = true;
       netdata.enable = true;
       #nfs.enable = true;
-      smb.enable = true;
+      # smb.enable = true;
       # paperless.enable = true;
       postgresql.enable = true;
       redis.enable = true;
