@@ -28,16 +28,6 @@ in
         name = "Default";
 
         extensions.packages = with pkgs.nur.repos.rycee.firefox-addons; [
-          bitwarden
-          linkwarden
-          languagetool
-          old-reddit-redirect
-          private-relay
-          reddit-enhancement-suite
-          tab-stash
-          stylus
-          ublock-origin
-          vimium
         ];
 
         settings = {
