@@ -27,8 +27,7 @@ in
       profiles.default = {
         name = "Default";
 
-        extensions.packages = with pkgs.nur.repos.rycee.firefox-addons; [
-        ];
+        extensions.packages = with pkgs.nur.repos.rycee.firefox-addons; [ ];
 
         settings = {
           "browser.uidensity" = 0;

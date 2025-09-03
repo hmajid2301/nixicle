@@ -77,12 +77,12 @@ in
     PATH="$PATH:/home/haseebmajid/.nix-profile/bin"
   '';
 
-  # cli.programs = {
-  #   git = {
-  #     allowedSigners = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGOEtfQ0znAH8QyB4Z5FzRPa9iKkBhuriEpqyfoEkiv+ haseeb.majid@imaginecurve.com";
-  #     email = "haseeb.majid@nala.money";
-  #   };
-  # };
+  cli.programs = {
+    git = {
+      allowedSigners = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDUF0LHH63pGkd1m7FGdbZirVXULDS5WSDzerJ0sskoq haseeb.majid@nala.money";
+      email = "haseeb.majid@nala.money";
+    };
+  };
 
   nixicle.user = {
     enable = true;
