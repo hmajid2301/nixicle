@@ -32,23 +32,12 @@ in
           receivers = {
             otlp.protocols.http.endpoint = "0.0.0.0:3333";
             otlp.protocols.grpc.endpoint = "0.0.0.0:3334";
-            hostmetrics = {
-              collection_interval = "60s";
-              scrapers = {
-                cpu = { };
-                disk = { };
-                filesystem = { };
-                memory = { };
-                network = { };
-                process = { };
-              };
-            };
           };
           processors.batch = { };
           exporters = {
             "otlphttp/betterstack" = {
-              endpoint = "https://s1502393.eu-nbg-2.betterstackdata.com/v1";
-              headers.Authorization = "Bearer $${env:BETTERSTACK_TOKEN}";
+              endpoint = "https://s1502393.eu-nbg-2.betterstackdata.com";
+              headers.Authorization = "Bearer \${env:BETTERSTACK_TOKEN}";
             };
           };
           service = {
@@ -56,13 +45,17 @@ in
             pipelines = {
               "metrics/betterstack" = {
                 receivers = [
-                  "hostmetrics"
                   "otlp"
                 ];
                 processors = [ "batch" ];
                 exporters = [ "otlphttp/betterstack" ];
               };
               "logs/betterstack" = {
+                receivers = [ "otlp" ];
+                processors = [ "batch" ];
+                exporters = [ "otlphttp/betterstack" ];
+              };
+              "traces/betterstack" = {
                 receivers = [ "otlp" ];
                 processors = [ "batch" ];
                 exporters = [ "otlphttp/betterstack" ];
