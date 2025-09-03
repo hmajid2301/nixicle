@@ -127,5 +127,16 @@
     };
   };
 
+  networking = {
+    hostName = "ms01";
+
+    interfaces = {
+      enp2s0f0.wakeOnLan.enable = true;
+      enp2s0f1.wakeOnLan.enable = true;
+      enp87s0.wakeOnLan.enable = true;
+      enp89s0.wakeOnLan.enable = true;
+    };
+  };
+
   system.stateVersion = "23.11";
 }

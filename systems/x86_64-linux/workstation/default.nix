@@ -56,7 +56,7 @@
   };
 
   programs.wireshark.enable = true;
-  
+
   # Explicitly disable systemd-networkd to avoid infinite recursion
   networking.useNetworkd = lib.mkForce false;
   systemd.network.enable = lib.mkForce false;
