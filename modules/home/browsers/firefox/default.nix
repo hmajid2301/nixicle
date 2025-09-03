@@ -27,8 +27,7 @@ in
       profiles.default = {
         name = "Default";
 
-        extensions.packages = with pkgs.nur.repos.rycee.firefox-addons; [
-        ];
+        extensions.packages = with pkgs.nur.repos.rycee.firefox-addons; [ ];
 
         settings = {
           "browser.uidensity" = 0;
@@ -39,17 +38,14 @@ in
           "gnomeTheme.spinner" = true;
           "layers.acceleration.force-enabled" = true;
           "identity.fxaccounts.account.device.name" = "${config.nixicle.user.name}@${host}";
-          
-          # Disable all search shortcuts and one-off buttons
+
           "browser.urlbar.oneOffSearches" = false;
           "browser.search.hiddenOneOffs" = "Google,Yahoo,Bing,Amazon.com,Twitter,Wikipedia (en),YouTube,eBay";
-          
-          # Hide URL bar shortcuts for bookmarks, history, and tabs
+
           "browser.urlbar.shortcuts.bookmarks" = false;
           "browser.urlbar.shortcuts.history" = false;
           "browser.urlbar.shortcuts.tabs" = false;
-          
-          # Disable other search suggestions
+
           "extensions.pocket.enabled" = false;
           "browser.urlbar.suggest.engines" = false;
           "browser.urlbar.suggest.openpage" = false;

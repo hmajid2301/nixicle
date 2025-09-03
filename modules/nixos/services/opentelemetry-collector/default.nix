@@ -47,7 +47,7 @@ in
           processors.batch = { };
           exporters = {
             "otlphttp/betterstack" = {
-              endpoint = "https://s1502393.eu-nbg-2.betterstackdata.com";
+              endpoint = "https://s1502393.eu-nbg-2.betterstackdata.com/v1";
               headers.Authorization = "Bearer $${env:BETTERSTACK_TOKEN}";
             };
           };

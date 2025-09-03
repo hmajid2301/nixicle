@@ -73,7 +73,7 @@ in
       opencode
       claude-code
       gemini-cli
-      crush
+      # crush
     ];
   };
 }
