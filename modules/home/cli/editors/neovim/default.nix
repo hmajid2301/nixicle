@@ -173,9 +173,6 @@ in
             neonixdev = with pkgs.vimPlugins; [ lazydev-nvim ];
             general = {
               ai = with pkgs.vimPlugins; [
-                copilot-lua
-                CopilotChat-nvim
-                avante-nvim
                 inputs.mcphub-nvim.packages.${pkgs.system}.default
               ];
               cmp = with pkgs.vimPlugins; [
