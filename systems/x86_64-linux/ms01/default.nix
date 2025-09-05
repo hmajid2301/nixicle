@@ -27,15 +27,6 @@
     ];
   };
 
-  fileSystems."/mnt/n2" = {
-    device = "/dev/nvme2n1p1";
-    fsType = "ext4";
-    options = [
-      "defaults"
-      "noatime"
-    ];
-  };
-
   services = {
     cloudflared = {
       enable = true;
@@ -76,7 +67,7 @@
       navidrome.enable = true;
       netdata.enable = true;
       #nfs.enable = true;
-      smb.enable = true;
+      # smb.enable = true;
       # paperless.enable = true;
       postgresql.enable = true;
       redis.enable = true;
@@ -100,12 +91,7 @@
     };
   };
 
-  roles = {
-    kubernetes = {
-      enable = true;
-      role = "server";
-    };
-  };
+  roles.server.enable = true;
 
   security.pam.loginLimits = [
     {
@@ -138,6 +124,17 @@
     initrd = {
       supportedFilesystems = [ "nfs" ];
       kernelModules = [ "nfs" ];
+    };
+  };
+
+  networking = {
+    hostName = "ms01";
+
+    interfaces = {
+      enp2s0f0.wakeOnLan.enable = true;
+      enp2s0f1.wakeOnLan.enable = true;
+      enp87s0.wakeOnLan.enable = true;
+      enp89s0.wakeOnLan.enable = true;
     };
   };
 

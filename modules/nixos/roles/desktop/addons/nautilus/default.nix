@@ -32,6 +32,8 @@ in {
       systemPackages = with pkgs; [
         ffmpegthumbnailer # thumbnails
         gst_all_1.gst-libav # thumbnails
+        gdk-pixbuf # image thumbnails
+        webp-pixbuf-loader # webp thumbnails
         nautilus-open-any-terminal
         nautilus-python
       ];
@@ -40,6 +42,10 @@ in {
     snowfallorg.users.${config.user.name}.home.config = {
       dconf.settings = {
         "org/gnome/desktop/privacy" = { remember-recent-files = false; };
+        "org/gnome/nautilus/preferences" = {
+          show-image-thumbnails = "always";
+          thumbnail-limit = 4294967295; # No limit
+        };
         "com/github/stunkymonkey/nautilus-open-any-terminal" = {
           terminal = "ghostty";
         };

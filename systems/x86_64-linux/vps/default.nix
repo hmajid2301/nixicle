@@ -40,6 +40,7 @@
 
     nixicle = {
       alloy.enable = true;
+      otel-collector.enable = true;
       traefik.enable = true;
       logging.enable = true;
       postgresql.enable = true;

@@ -19,7 +19,7 @@ in
         enable = true;
         listenAddress = ":9055";
         consoleAddress = ":9056";
-        dataDir = [ "/mnt/n2/minio" ];
+        dataDir = [ "/mnt/n1/minio" ];
       };
 
       traefik = {
