@@ -205,9 +205,9 @@
         nixos-hardware.nixosModules.framework-13-7040-amd
       ];
 
-      # homes.modules = with inputs; [
-      #   impermanence.nixosModules.home-manager.impermanence
-      # ];
+      homes.modules = with inputs; [
+        impermanence.nixosModules.home-manager.impermanence
+      ];
 
       overlays = with inputs; [
         nixgl.overlay

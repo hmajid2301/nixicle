@@ -27,18 +27,7 @@ in
       profiles.default = {
         name = "Default";
 
-        extensions.packages = with pkgs.nur.repos.rycee.firefox-addons; [
-          bitwarden
-          linkwarden
-          languagetool
-          old-reddit-redirect
-          private-relay
-          reddit-enhancement-suite
-          tab-stash
-          stylus
-          ublock-origin
-          vimium
-        ];
+        extensions.packages = with pkgs.nur.repos.rycee.firefox-addons; [ ];
 
         settings = {
           "browser.uidensity" = 0;
@@ -49,8 +38,14 @@ in
           "gnomeTheme.spinner" = true;
           "layers.acceleration.force-enabled" = true;
           "identity.fxaccounts.account.device.name" = "${config.nixicle.user.name}@${host}";
+
           "browser.urlbar.oneOffSearches" = false;
           "browser.search.hiddenOneOffs" = "Google,Yahoo,Bing,Amazon.com,Twitter,Wikipedia (en),YouTube,eBay";
+
+          "browser.urlbar.shortcuts.bookmarks" = false;
+          "browser.urlbar.shortcuts.history" = false;
+          "browser.urlbar.shortcuts.tabs" = false;
+
           "extensions.pocket.enabled" = false;
           "browser.urlbar.suggest.engines" = false;
           "browser.urlbar.suggest.openpage" = false;
@@ -83,6 +78,7 @@ in
                   ];
                 }
               ];
+              metaData.hideOneOffButton = true;
             };
 
             "Nix Packages" = {
@@ -107,6 +103,7 @@ in
                   ];
                 }
               ];
+              metaData.hideOneOffButton = true;
             };
 
             "NixOS Options" = {
@@ -127,10 +124,11 @@ in
                   ];
                 }
               ];
+              metaData.hideOneOffButton = true;
             };
 
             "SourceGraph" = {
-              iconUpdateURL = "https://sourcegraph.com/.assets/img/sourcegraph-mark.svg";
+              icon = "https://sourcegraph.com/.assets/img/sourcegraph-mark.svg";
               definedAliases = [ "@sg" ];
 
               urls = [
@@ -144,11 +142,11 @@ in
                   ];
                 }
               ];
+              metaData.hideOneOffButton = true;
             };
 
             "GitHub" = {
-              iconUpdateURL = "https://github.com/favicon.ico";
-              updateInterval = 24 * 60 * 60 * 1000;
+              icon = "https://github.com/favicon.ico";
               definedAliases = [ "@gh" ];
 
               urls = [
@@ -162,6 +160,7 @@ in
                   ];
                 }
               ];
+              metaData.hideOneOffButton = true;
             };
 
             "Home Manager" = {
@@ -179,6 +178,25 @@ in
                   ];
                 }
               ];
+              metaData.hideOneOffButton = true;
+            };
+
+            "HackerNews" = {
+              icon = "https://news.ycombinator.com/favicon.ico";
+              definedAliases = [ "@hn" ];
+
+              urls = [
+                {
+                  template = "https://hn.algolia.com/";
+                  params = [
+                    {
+                      name = "q";
+                      value = "{searchTerms}";
+                    }
+                  ];
+                }
+              ];
+              metaData.hideOneOffButton = true;
             };
           };
         };
