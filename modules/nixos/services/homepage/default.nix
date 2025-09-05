@@ -1,13 +1,17 @@
 { config, lib, ... }:
 with lib;
-let cfg = config.services.nixicle.homepage;
-in {
+let
+  cfg = config.services.nixicle.homepage;
+in
+{
   options.services.nixicle.homepage = {
     enable = mkEnableOption "Enable homepage for homelab services";
   };
 
   config = mkIf cfg.enable {
-    sops.secrets.homepage_env = { sopsFile = ../secrets.yaml; };
+    sops.secrets.homepage_env = {
+      sopsFile = ../secrets.yaml;
+    };
 
     services = {
       homepage-dashboard = {
@@ -307,19 +311,21 @@ in {
             ];
           }
           {
-            disk = [{
-              Synology = {
-                icon = "synology.png";
-                href = "{{HOMEPAGE_VAR_SYNOLOGY_URL}}";
-                description = "NAS";
-                widget = {
-                  type = "diskstation";
-                  url = "{{HOMEPAGE_VAR_SYNOLOGY_INTERNAL_URL}}";
-                  username = "{{HOMEPAGE_VAR_SYNOLOGY_USERNAME}}";
-                  password = "{{HOMEPAGE_VAR_SYNOLOGY_PASSWORD}}";
+            disk = [
+              {
+                Synology = {
+                  icon = "synology.png";
+                  href = "{{HOMEPAGE_VAR_SYNOLOGY_URL}}";
+                  description = "NAS";
+                  widget = {
+                    type = "diskstation";
+                    url = "{{HOMEPAGE_VAR_SYNOLOGY_INTERNAL_URL}}";
+                    username = "{{HOMEPAGE_VAR_SYNOLOGY_USERNAME}}";
+                    password = "{{HOMEPAGE_VAR_SYNOLOGY_PASSWORD}}";
+                  };
                 };
-              };
-            }];
+              }
+            ];
           }
           {
             network = [
@@ -401,8 +407,7 @@ in {
               provider = "custom";
               url = "https://kagi.com/search?q=";
               target = "_blank";
-              suggestionUrl =
-                "https://kagi.com/autocomplete?type=list&q="; # Optional
+              suggestionUrl = "https://kagi.com/autocomplete?type=list&q="; # Optional
               showSearchSuggestions = true; # Optional
             };
           }
@@ -416,7 +421,7 @@ in {
           {
             resources = {
               label = "storage";
-              disk = [ "/mnt/n1/" "/mnt/n2" ];
+              disk = [ "/mnt/n1/" ];
             };
           }
           {
@@ -434,8 +439,7 @@ in {
       traefik = {
         dynamicConfigOptions = {
           http = {
-            services.homepage.loadBalancer.servers =
-              [{ url = "http://localhost:8173"; }];
+            services.homepage.loadBalancer.servers = [ { url = "http://localhost:8173"; } ];
 
             routers = {
               homepage = {

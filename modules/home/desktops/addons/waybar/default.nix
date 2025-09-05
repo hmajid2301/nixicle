@@ -153,17 +153,17 @@ in
             icon-size = 16;
             spacing = 8;
           };
-          "power-profiles-daemon" = {
-            format = "{icon}";
-            tooltip-format = "Power profile: {profile}\nDriver: {driver}";
-            tooltip = true;
-            format-icons = {
-              "default" = "󰾅";
-              "performance" = "󰓅";
-              "balanced" = "󰾅";
-              "power-saver" = "󰾆";
-            };
-          };
+          # "power-profiles-daemon" = {
+          #   format = "{icon}";
+          #   tooltip-format = "Power profile: {profile}\nDriver: {driver}";
+          #   tooltip = true;
+          #   format-icons = {
+          #     "default" = "󰾅";
+          #     "performance" = "󰓅";
+          #     "balanced" = "󰾅";
+          #     "power-saver" = "󰾆";
+          #   };
+          # };
         }
       ];
 

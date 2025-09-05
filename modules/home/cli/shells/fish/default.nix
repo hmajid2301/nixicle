@@ -49,7 +49,7 @@ in
           _zellij_update_tabname
         end
 
-        eval (zellij setup --generate-auto-start fish | string collect)
+        # eval (zellij setup --generate-auto-start fish | string collect)
       '';
 
       shellAliases = {

@@ -5,9 +5,11 @@
   ...
 }:
 with lib;
-with lib.nixicle; let
+with lib.nixicle;
+let
   cfg = config.hardware.audio;
-in {
+in
+{
   options.hardware.audio = with types; {
     enable = mkBoolOpt false "Enable or disable hardware audio support";
   };
@@ -22,7 +24,7 @@ in {
       pulse.enable = true;
       wireplumber.enable = true;
       jack.enable = true;
-      
+
       extraConfig.pipewire."99-usb-audio-fix" = {
         "context.properties" = {
           "default.clock.rate" = 48000;
@@ -31,7 +33,7 @@ in {
           "default.clock.max-quantum" = 4096;
         };
       };
-      
+
       wireplumber.configPackages = [
         (pkgs.writeTextDir "share/wireplumber/wireplumber.conf.d/99-usb-audio.conf" ''
           monitor.alsa.rules = [
@@ -64,11 +66,6 @@ in {
     services.udev.packages = with pkgs; [
       headsetcontrol
     ];
-    
-    # Disable USB autosuspend for Pebble V3 to prevent audio dropouts
-    services.udev.extraRules = ''
-      SUBSYSTEM=="usb", ATTRS{idVendor}=="041e", ATTRS{idProduct}=="3272", ATTR{power/autosuspend}="-1"
-    '';
 
     environment.systemPackages = with pkgs; [
       headsetcontrol

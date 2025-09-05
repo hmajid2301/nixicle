@@ -19,7 +19,7 @@ keys:
   - &users:
     - &haseeb_workstation age1vmnnywhflwymjcgllmp5sgf05dn3qvamd2ylhxquwcuvlrm8ma3sc882mp
     - &haseeb_framework age1nfkkq86jk3yhhzgk3jt0kjzfpzv4qee3uheellawzgrmd296gczqa68yt7
-    - &haseebmajid_thinkpad age1qnketc632fscmrqthk733xuewpntvz0awsq79ldytc8efeyqz4hst4j9nu
+    - &haseebmajid_dell age1s6rx9whkkf35t7qaju9vvla8tl2nstt0drx722ca4qadqfx66g0slxyxd0
   - &hosts:
     - &framework age16lkhqtnle3z62gy0tk9x4tn3w43st2cnvdpl8r84xpzkn2f7jv8qxl5a9q
     - &workstation age1vsjjdkgrv72tr3uftryj2szt3n0xk8h3ce54kzyfsmxtymxu6s4qgu5yuk
@@ -37,7 +37,7 @@ creation_rules:
       - *s100
       - *haseeb_workstation
       - *haseeb_framework
-      - *haseebmajid_thinkpad
+      - *haseebmajid_dell
 
   - path_regex: modules/nixos/secrets.ya?ml$
     key_groups:
@@ -49,7 +49,7 @@ creation_rules:
       - *vps
       - *haseeb_workstation
       - *haseeb_framework
-      - *haseebmajid_thinkpad
+      - *haseebmajid_dell
 
   - path_regex: modules/nixos/services/secrets.ya?ml$
     key_groups:
@@ -61,11 +61,11 @@ creation_rules:
       - *vps
       - *haseeb_workstation
       - *haseeb_framework
-      - *haseebmajid_thinkpad
+      - *haseebmajid_dell
 
   - path_regex: modules/home/secrets.ya?ml$
     key_groups:
     - age:
       - *haseeb_workstation
       - *haseeb_framework
-      - *haseebmajid_thinkpad
+      - *haseebmajid_dell
