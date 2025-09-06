@@ -23,7 +23,15 @@
     sopsFile = ../../../modules/nixos/services/secrets.yaml;
   };
 
+  # TODO: Import modern unix?
+  environment.systemPackages = with pkgs; [
+    opencode
+    claude-code
+  ];
+
   services = {
+    avahi.enable = lib.mkForce false;
+
     cloudflared = {
       enable = true;
       tunnels = {
@@ -33,10 +41,6 @@
         };
       };
     };
-  };
-
-  services = {
-    avahi.enable = lib.mkForce false;
 
     nixicle = {
       alloy.enable = true;
@@ -60,7 +64,6 @@
         http = {
           services = {
             jellyfin.loadBalancer.servers = [ { url = "http://ms01:8096"; } ];
-
             immich.loadBalancer.servers = [ { url = "http://ms01:2283"; } ];
           };
 

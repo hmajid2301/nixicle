@@ -20,7 +20,10 @@ in
 
   config = mkIf cfg.enable {
     boot.kernel.sysctl."net.ipv4.ip_forward" = true;
-    virtualisation.docker.enable = true;
+    virtualisation.docker = {
+      enable = true;
+      liveRestore = false; # Required for Docker Swarm mode
+    };
 
     services.gitlab-runner = {
       enable = true;

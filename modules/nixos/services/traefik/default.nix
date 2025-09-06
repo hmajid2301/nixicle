@@ -13,12 +13,21 @@ in
   };
 
   config = mkIf cfg.enable {
+    virtualisation.docker = {
+      enable = true;
+      enableOnBoot = true;
+    };
+
     networking.firewall.allowedTCPPorts = [
       80
       443
+      6381
+      5433
     ];
 
     systemd.services.traefik = {
+      after = [ "docker.service" ];
+      wants = [ "docker.service" ];
       environment = {
         CF_API_EMAIL = "hello@haseebmajid.dev";
       };
@@ -36,6 +45,7 @@ in
 
       traefik = {
         enable = true;
+        group = "docker";
 
         staticConfigOptions = {
           metrics = {
@@ -46,6 +56,13 @@ in
 
           api = {
             dashboard = true;
+          };
+
+          providers = {
+            swarm = {
+              endpoint = "unix:///var/run/docker.sock";
+              exposedByDefault = false;
+            };
           };
 
           certificatesResolvers = {
@@ -84,6 +101,10 @@ in
               http.tls = {
                 certResolver = "letsencrypt";
                 domains = [
+                  {
+                    main = "banterbus.games";
+                    sans = [ "*.banterbus.games" ];
+                  }
                   {
                     main = "homelab.haseebmajid.dev";
                     sans = [ "*.homelab.haseebmajid.dev" ];
