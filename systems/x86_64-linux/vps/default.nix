@@ -26,6 +26,10 @@
     sopsFile = ../../../modules/nixos/services/secrets.yaml;
   };
 
+  sops.secrets.k3s_traefik_token = {
+    sopsFile = ../../../modules/nixos/services/secrets.yaml;
+  };
+
   # TODO: Import modern unix?
   environment.systemPackages = with pkgs; [
     opencode

@@ -33,6 +33,10 @@ in
       sopsFile = ../secrets.yaml;
     };
 
+    sops.secrets.k3s_traefik_token = {
+      sopsFile = ../secrets.yaml;
+    };
+
     services = {
       tailscale.permitCertUid = "traefik";
 
@@ -51,6 +55,23 @@ in
           };
 
           providers = {
+            docker = {
+              endpoint = "unix:///var/run/docker.sock";
+              exposedByDefault = false;
+              swarmMode = true;
+              network = "traefik-network";
+              watch = true;
+            };
+            kubernetes = {
+              endpoint = "https://vps:6443";
+              token = "/run/secrets/k3s_traefik_token";
+              namespaces = ["default" "kube-system"];
+            };
+            kubernetesIngress = {
+              endpoint = "https://vps:6443";
+              token = "/run/secrets/k3s_traefik_token";
+              namespaces = ["default" "kube-system"];
+            };
             file = {
               directory = "/etc/traefik/dynamic";
               watch = true;
