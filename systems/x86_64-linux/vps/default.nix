@@ -11,9 +11,12 @@
   ];
 
   boot.loader.grub.enable = true;
-
-  roles.server.enable = true;
   system.boot.enable = lib.mkForce false;
+
+  roles.kubernetes = {
+    enable = true;
+    role = "server";
+  };
 
   sops.secrets.cloudflared_vps = {
     sopsFile = ../../../modules/nixos/services/secrets.yaml;

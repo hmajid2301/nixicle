@@ -68,7 +68,7 @@
       netdata.enable = true;
       #nfs.enable = true;
       # smb.enable = true;
-      # paperless.enable = true;
+      paperless.enable = true;
       postgresql.enable = true;
       redis.enable = true;
       traefik.enable = true;
@@ -91,7 +91,10 @@
     };
   };
 
-  roles.server.enable = true;
+  roles.kubernetes = {
+    enable = true;
+    role = "agent";
+  };
 
   security.pam.loginLimits = [
     {

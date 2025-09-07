@@ -13,11 +13,6 @@ in
   };
 
   config = mkIf cfg.enable {
-    virtualisation.docker = {
-      enable = true;
-      enableOnBoot = true;
-    };
-
     networking.firewall.allowedTCPPorts = [
       80
       443
@@ -26,8 +21,6 @@ in
     ];
 
     systemd.services.traefik = {
-      after = [ "docker.service" ];
-      wants = [ "docker.service" ];
       environment = {
         CF_API_EMAIL = "hello@haseebmajid.dev";
       };
@@ -45,7 +38,6 @@ in
 
       traefik = {
         enable = true;
-        group = "docker";
 
         staticConfigOptions = {
           metrics = {
@@ -59,9 +51,9 @@ in
           };
 
           providers = {
-            swarm = {
-              endpoint = "unix:///var/run/docker.sock";
-              exposedByDefault = false;
+            file = {
+              directory = "/etc/traefik/dynamic";
+              watch = true;
             };
           };
 

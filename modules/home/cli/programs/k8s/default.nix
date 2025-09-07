@@ -5,9 +5,11 @@
   ...
 }:
 with lib;
-with lib.nixicle; let
+with lib.nixicle;
+let
   cfg = config.cli.programs.k8s;
-in {
+in
+{
   options.cli.programs.k8s = with types; {
     enable = mkBoolOpt false "Whether or not to manage kubernetes";
   };
@@ -20,6 +22,7 @@ in {
     };
 
     home.packages = with pkgs; [
+      argocd
       kubectl
       kubectx
       kubelogin
