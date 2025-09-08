@@ -9,12 +9,18 @@ let
   screensharing = pkgs.writeScriptBin "screensharing" ''
     #!/usr/bin/env bash
     sleep 1
-    killall -e xdg-desktop-portal-hyprland
-    killall -e xdg-desktop-portal-wlr
-    killall xdg-desktop-portal
-    /usr/libexec/xdg-desktop-portal-hyprland &
+    killall -e xdg-desktop-portal-hyprland 2>/dev/null || true
+    killall -e xdg-desktop-portal-wlr 2>/dev/null || true
+    killall xdg-desktop-portal 2>/dev/null || true
+    
+    # Use NixOS paths instead of hardcoded /usr/libexec
+    if command -v xdg-desktop-portal-hyprland >/dev/null 2>&1; then
+      xdg-desktop-portal-hyprland &
+    fi
     sleep 2
-    /usr/libexec/xdg-desktop-portal &
+    if command -v xdg-desktop-portal >/dev/null 2>&1; then
+      xdg-desktop-portal &
+    fi
   '';
 in
 {
@@ -52,6 +58,8 @@ in
     ];
   };
 
+  # TODO: Don't hardcode UID - use dynamic resolution like: "/run/user/${toString config.users.users.${config.home.username}.uid}/secrets"
+  # This breaks if user gets different UID on different systems
   sops.defaultSymlinkPath = lib.mkForce "/run/user/1003/secrets";
   sops.defaultSecretsMountPoint = lib.mkForce "/run/user/1003/secrets.d";
 
@@ -90,7 +98,7 @@ in
     };
 
     configFile."environment.d/envvars.conf".text = ''
-      PATH="$PATH:/home/haseebmajid/.nix-profile/bin"
+      PATH="$PATH:${config.home.homeDirectory}/.nix-profile/bin"
     '';
 
     configFile."fontconfig/conf.d/99-custom-fonts.conf".text = ''
