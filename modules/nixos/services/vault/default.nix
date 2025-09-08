@@ -19,9 +19,7 @@ in
       enable = true;
       address = "0.0.0.0:8200";
       storageBackend = "file";
-      storageConfig = ''
-        path = "/var/lib/vault"
-      '';
+      storagePath = "/var/lib/vault";
       extraConfig = ''
         ui = true
         api_addr = "http://0.0.0.0:8200"
