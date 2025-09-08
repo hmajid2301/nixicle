@@ -59,6 +59,7 @@
       n8n.enable = true;
       gotify.enable = true;
       uptime-kuma.enable = true;
+      vault.enable = true;
 
       gitlab-runner = {
         enable = true;
