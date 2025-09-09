@@ -16,8 +16,6 @@ in
     networking.firewall.allowedTCPPorts = [
       80
       443
-      6381
-      5433
     ];
 
     systemd.services.traefik = {
@@ -48,13 +46,6 @@ in
 
           api = {
             dashboard = true;
-          };
-
-          providers = {
-            file = {
-              directory = "/etc/traefik/dynamic";
-              watch = true;
-            };
           };
 
           certificatesResolvers = {
@@ -93,10 +84,6 @@ in
               http.tls = {
                 certResolver = "letsencrypt";
                 domains = [
-                  {
-                    main = "banterbus.games";
-                    sans = [ "*.banterbus.games" ];
-                  }
                   {
                     main = "homelab.haseebmajid.dev";
                     sans = [ "*.homelab.haseebmajid.dev" ];

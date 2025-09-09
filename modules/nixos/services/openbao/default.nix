@@ -7,31 +7,31 @@
 with lib;
 with lib.nixicle;
 let
-  cfg = config.services.nixicle.vault;
+  cfg = config.services.nixicle.openbao;
 in
 {
-  options.services.nixicle.vault = with types; {
-    enable = mkBoolOpt false "Whether or not to enable HashiCorp Vault";
+  options.services.nixicle.openbao = with types; {
+    enable = mkBoolOpt false "Whether or not to enable OpenBao";
   };
 
   config = mkIf cfg.enable {
-    services.vault = {
+    services.openbao = {
       enable = true;
       address = "0.0.0.0:8200";
       storageBackend = "file";
-      storagePath = "/var/lib/vault";
-      extraConfig = ''
-        ui = true
-        api_addr = "http://0.0.0.0:8200"
-        cluster_addr = "http://0.0.0.0:8201"
-      '';
+      storagePath = "/var/lib/openbao";
+      settings = {
+        ui = true;
+        api_addr = "http://0.0.0.0:8200";
+        cluster_addr = "http://0.0.0.0:8201";
+      };
     };
 
     services.traefik = {
       dynamicConfigOptions = {
         http = {
           services = {
-            vault.loadBalancer.servers = [
+            openbao.loadBalancer.servers = [
               {
                 url = "http://localhost:8200";
               }
@@ -39,10 +39,10 @@ in
           };
 
           routers = {
-            vault = {
+            openbao = {
               entryPoints = [ "websecure" ];
-              rule = "Host(`vault.homelab.haseebmajid.dev`)";
-              service = "vault";
+              rule = "Host(`openbao.homelab.haseebmajid.dev`)";
+              service = "openbao";
               tls.certResolver = "letsencrypt";
             };
           };
@@ -51,3 +51,4 @@ in
     };
   };
 }
+
