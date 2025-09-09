@@ -17,13 +17,8 @@ in
   config = mkIf cfg.enable {
     services.openbao = {
       enable = true;
-      address = "0.0.0.0:8200";
-      storageBackend = "file";
-      storagePath = "/var/lib/openbao";
       settings = {
         ui = true;
-        api_addr = "http://0.0.0.0:8200";
-        cluster_addr = "http://0.0.0.0:8201";
       };
     };
 
@@ -51,4 +46,3 @@ in
     };
   };
 }
-
