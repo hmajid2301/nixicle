@@ -23,18 +23,23 @@ in {
     systemd.tmpfiles.rules = [
       "d /persist 0755 root root -"
       "d /persist/home 0755 root root -"
-      "d /persist/home/haseeb 0755 haseeb users -"
       "d /persist/var/lib 0755 root root -"
       "d /persist/var/log 0755 root root -"
       "d /persist/etc/NetworkManager/system-connections 0700 root root -"
+    ] ++ lib.optionals (builtins.hasAttr "haseeb" config.users.users) [
+      "d /persist/home/haseeb 0755 haseeb users -"
     ];
 
     # Make sure critical directories exist
     system.activationScripts.impermanence = lib.mkBefore ''
       mkdir -p /persist/{home,var/lib,var/log,etc/NetworkManager/system-connections}
-      mkdir -p /persist/home/haseeb/{Documents,Downloads,Pictures,Videos,Music,.ssh,.config,.local,.cache}
-      chown haseeb:users /persist/home/haseeb
-      chown -R haseeb:users /persist/home/haseeb/{Documents,Downloads,Pictures,Videos,Music,.ssh,.config,.local,.cache} 2>/dev/null || true
+      
+      # Only create user directories if user exists
+      if id haseeb >/dev/null 2>&1; then
+        mkdir -p /persist/home/haseeb/{Documents,Downloads,Pictures,Videos,Music,.ssh,.config,.local,.cache}
+        chown haseeb:users /persist/home/haseeb 2>/dev/null || true
+        chown -R haseeb:users /persist/home/haseeb/{Documents,Downloads,Pictures,Videos,Music,.ssh,.config,.local,.cache} 2>/dev/null || true
+      fi
     '';
 
     # This script does the actual wipe of the system
@@ -44,7 +49,10 @@ in {
       description = "Rollback BTRFS root subvolume to a pristine state";
       wantedBy = ["initrd.target"];
       # make sure it's done after encryption and before mounting
-      after = ["systemd-cryptsetup@enc.service"];
+      after = [
+        "systemd-cryptsetup@enc.service"
+        "systemd-cryptsetup@cryptroot.service"
+      ];
       before = ["sysroot.mount"];
       unitConfig.DefaultDependencies = "no";
       serviceConfig = {
@@ -56,16 +64,26 @@ in {
 
         echo "Starting impermanence rollback..."
         
-        # Check if the encrypted device exists
-        if [[ ! -b "/dev/mapper/enc" ]]; then
-          echo "Error: /dev/mapper/enc not found, skipping rollback"
+        # Find the encrypted device (try common names)
+        LUKS_DEVICE=""
+        for device in /dev/mapper/enc /dev/mapper/cryptroot; do
+          if [[ -b "$device" ]]; then
+            LUKS_DEVICE="$device"
+            break
+          fi
+        done
+        
+        if [[ -z "$LUKS_DEVICE" ]]; then
+          echo "Error: No LUKS device found (tried enc, cryptroot), skipping rollback"
           exit 0
         fi
+        
+        echo "Found LUKS device: $LUKS_DEVICE"
 
         mkdir -p /mnt
 
         # Mount the btrfs root to /mnt so we can manipulate subvolumes
-        if ! mount -o subvol=/ /dev/mapper/enc /mnt; then
+        if ! mount -o subvol=/ "$LUKS_DEVICE" /mnt; then
           echo "Error: Failed to mount root filesystem"
           exit 1
         fi

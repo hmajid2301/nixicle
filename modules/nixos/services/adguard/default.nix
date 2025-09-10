@@ -11,7 +11,7 @@ in {
   };
 
   config = mkIf cfg.enable {
-    networking.firewall = lib.mkForce {
+    networking.firewall = {
       enable = true;
       allowedUDPPorts = [
         53

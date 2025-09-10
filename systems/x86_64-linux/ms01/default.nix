@@ -91,7 +91,10 @@
     };
   };
 
-  roles.server.enable = true;
+  roles.kubernetes = {
+    enable = true;
+    role = "agent";
+  };
 
   security.pam.loginLimits = [
     {

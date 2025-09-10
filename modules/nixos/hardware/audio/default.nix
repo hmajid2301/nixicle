@@ -15,9 +15,10 @@ in
   };
 
   config = mkIf cfg.enable {
-    services.pulseaudio.enable = false;
     security.rtkit.enable = true;
-    services.pipewire = {
+    services = {
+      pulseaudio.enable = false;
+      pipewire = {
       enable = true;
       alsa.enable = true;
       alsa.support32Bit = true;
@@ -60,12 +61,14 @@ in
           ]
         '')
       ];
+      };
+      
+      udev.packages = with pkgs; [
+        headsetcontrol
+      ];
     };
+    
     programs.noisetorch.enable = true;
-
-    services.udev.packages = with pkgs; [
-      headsetcontrol
-    ];
 
     environment.systemPackages = with pkgs; [
       headsetcontrol

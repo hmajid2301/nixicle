@@ -35,6 +35,7 @@ creation_rules:
       - *framework
       - *ms01
       - *s100
+      - *vps
       - *haseeb_workstation
       - *haseeb_framework
       - *haseebmajid_dell
