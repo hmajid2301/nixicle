@@ -22,6 +22,7 @@ in
     cli = {
       terminals.foot.enable = true;
       terminals.ghostty.enable = true;
+      programs.k8s.enable = true;
       shells.fish.enable = true;
     };
 
