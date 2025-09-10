@@ -51,6 +51,24 @@ build:flake:
   script:
     - nix flake update
     - nix run github:Mic92/nix-fast-build -- --skip-cached --no-nom --attic-cache homelab:main
+    - echo "Building and pushing all system configurations to Attic..."
+    - for host in framework ms01 s100 vm vps workstation; do
+        echo "Building nixosConfigurations.$host...";
+        nix build ".#nixosConfigurations.$host.config.system.build.toplevel" --print-out-paths | attic push homelab:main;
+      done
+    - echo "Building and pushing packages to Attic..."
+    - nix build ".#packages.x86_64-linux.install" --print-out-paths | attic push homelab:main
+    - nix build ".#packages.x86_64-linux.kaf" --print-out-paths | attic push homelab:main
+    - nix build ".#packages.x86_64-linux.octopus-energy" --print-out-paths | attic push homelab:main
+
+build:changed:
+  extends: .base_setup
+  stage: build
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - echo "Building changed configurations and pushing to Attic..."
+    - nix run github:Mic92/nix-fast-build -- --skip-cached --no-nom --attic-cache homelab:main
 
 deploy:homelab:
   extends: .base_setup

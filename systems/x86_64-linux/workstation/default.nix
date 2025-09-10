@@ -37,6 +37,11 @@
     ];
   });
 
+  hardware.nixicle.ddcci.enable = true;
+  
+  # Add user to i2c group for DDC/CI monitor control
+  users.users.haseeb.extraGroups = [ "i2c" ];
+
   services = {
     virtualisation.kvm.enable = true;
     hardware.openrgb.enable = true;
@@ -71,11 +76,6 @@
     supportedFilesystems = lib.mkForce [ "btrfs" ];
     kernelPackages = pkgs.linuxPackages_latest;
     resumeDevice = "/dev/disk/by-label/nixos";
-
-    initrd = {
-      supportedFilesystems = [ "nfs" ];
-      kernelModules = [ "nfs" ];
-    };
   };
 
   system.stateVersion = "23.11";

@@ -4,22 +4,26 @@
   pkgs,
   ...
 }:
-with lib; let
+with lib;
+let
   cfg = config.services.nixicle.redis;
-in {
+in
+{
   options.services.nixicle.redis = {
     enable = mkEnableOption "Enable redis";
   };
 
   config = mkIf cfg.enable {
     services = {
-      redis.servers = {
-        main = {
-          enable = true;
-          openFirewall = true;
-          port = 6380;
-          bind = "0.0.0.0";
-          logLevel = "debug";
+      redis = {
+        # package = pkgs.valkey;
+        servers = {
+          main = {
+            enable = true;
+            openFirewall = true;
+            port = 6380;
+            bind = "0.0.0.0";
+          };
         };
       };
 
@@ -40,7 +44,7 @@ in {
 
             routers = {
               redis = {
-                entryPoints = ["redis"];
+                entryPoints = [ "redis" ];
                 rule = "HostSNI(`*`)";
                 service = "redis";
               };
