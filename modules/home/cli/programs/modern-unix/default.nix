@@ -73,7 +73,11 @@ in
       opencode
       claude-code
       gemini-cli
-      # crush
+      crush
+
+      # homelab
+      pgcli
+      openbao
     ];
   };
 }

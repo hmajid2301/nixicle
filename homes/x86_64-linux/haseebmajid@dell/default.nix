@@ -9,12 +9,18 @@ let
   screensharing = pkgs.writeScriptBin "screensharing" ''
     #!/usr/bin/env bash
     sleep 1
-    killall -e xdg-desktop-portal-hyprland
-    killall -e xdg-desktop-portal-wlr
-    killall xdg-desktop-portal
-    /usr/libexec/xdg-desktop-portal-hyprland &
+    killall -e xdg-desktop-portal-hyprland 2>/dev/null || true
+    killall -e xdg-desktop-portal-wlr 2>/dev/null || true
+    killall xdg-desktop-portal 2>/dev/null || true
+    
+    # Use NixOS paths instead of hardcoded /usr/libexec
+    if command -v xdg-desktop-portal-hyprland >/dev/null 2>&1; then
+      xdg-desktop-portal-hyprland &
+    fi
     sleep 2
-    /usr/libexec/xdg-desktop-portal &
+    if command -v xdg-desktop-portal >/dev/null 2>&1; then
+      xdg-desktop-portal &
+    fi
   '';
 in
 {
@@ -32,11 +38,6 @@ in
     desktop.enable = true;
   };
 
-  stylix.enable = lib.mkForce false;
-  stylix.autoEnable = lib.mkForce false;
-  stylix.targets.gnome.enable = lib.mkForce false;
-  stylix.targets.gnome.useWallpaper = lib.mkForce false;
-
   home = {
     # sessionVariables = {
     #   DOCKER_HOST = "unix://$XDG_RUNTIME_DIR/podman/podman.sock";
@@ -45,6 +46,7 @@ in
     packages = with pkgs; [
       semgrep
       pre-commit
+      bun
 
       # INFO: Packages stylix usually installs but doesn't work with gnome 46 at the moment.
       # So we are installing them here and we will manually set them.
@@ -56,8 +58,19 @@ in
     ];
   };
 
-  sops.defaultSymlinkPath = lib.mkForce "/run/user/1001/secrets";
-  sops.defaultSecretsMountPoint = lib.mkForce "/run/user/1001/secrets.d";
+  # TODO: Don't hardcode UID - use dynamic resolution like: "/run/user/${toString config.users.users.${config.home.username}.uid}/secrets"
+  # This breaks if user gets different UID on different systems
+  sops.defaultSymlinkPath = lib.mkForce "/run/user/1003/secrets";
+  sops.defaultSecretsMountPoint = lib.mkForce "/run/user/1003/secrets.d";
+
+  stylix = lib.mkForce {
+    enable = false;
+    autoEnable = false;
+    targets.gnome.enable = false;
+    targets.gnome.useWallpaper = false;
+    image = null;
+    base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-mocha.yaml";
+  };
 
   desktops = {
     hyprland = {
@@ -73,9 +86,98 @@ in
     # gnome.enable = true;
   };
 
-  xdg.configFile."environment.d/envvars.conf".text = ''
-    PATH="$PATH:/home/haseebmajid/.nix-profile/bin"
-  '';
+  fonts.fontconfig.enable = true;
+
+  xdg = {
+    mimeApps.defaultApplications = lib.mkForce {
+      "text/html" = [ "google-chrome.desktop" ];
+      "x-scheme-handler/http" = [ "google-chrome.desktop" ];
+      "x-scheme-handler/https" = [ "google-chrome.desktop" ];
+      "x-scheme-handler/about" = [ "google-chrome.desktop" ];
+      "x-scheme-handler/unknown" = [ "google-chrome.desktop" ];
+    };
+
+    configFile."environment.d/envvars.conf".text = ''
+      PATH="$PATH:${config.home.homeDirectory}/.nix-profile/bin"
+    '';
+
+    configFile."fontconfig/conf.d/99-custom-fonts.conf".text = ''
+      <?xml version="1.0"?>
+      <!DOCTYPE fontconfig SYSTEM "urn:fontconfig:fonts.dtd">
+      <fontconfig>
+        <!-- Default sans-serif font -->
+        <match target="pattern">
+          <test qual="any" name="family">
+            <string>sans-serif</string>
+          </test>
+          <edit name="family" mode="assign">
+            <string>Noto Sans</string>
+          </edit>
+        </match>
+
+        <!-- Default serif font -->
+        <match target="pattern">
+          <test qual="any" name="family">
+            <string>serif</string>
+          </test>
+          <edit name="family" mode="assign">
+            <string>Source Serif</string>
+          </edit>
+        </match>
+
+        <!-- Default monospace font -->
+        <match target="pattern">
+          <test qual="any" name="family">
+            <string>monospace</string>
+          </test>
+          <edit name="family" mode="assign">
+            <string>MonoLisa</string>
+          </edit>
+        </match>
+
+        <!-- Comprehensive fallback chain to prevent square blocks -->
+        <match target="pattern">
+          <edit name="family" mode="append">
+            <string>Noto Sans</string>
+          </edit>
+        </match>
+
+        <match target="pattern">
+          <edit name="family" mode="append">
+            <string>Noto Sans CJK SC</string>
+          </edit>
+        </match>
+
+        <match target="pattern">
+          <edit name="family" mode="append">
+            <string>Noto Color Emoji</string>
+          </edit>
+        </match>
+
+        <match target="pattern">
+          <edit name="family" mode="append">
+            <string>Symbols Nerd Font</string>
+          </edit>
+        </match>
+
+        <match target="pattern">
+          <edit name="family" mode="append">
+            <string>DejaVu Sans</string>
+          </edit>
+        </match>
+
+        <!-- Force emoji rendering -->
+        <match target="pattern">
+          <test name="family">
+            <string>emoji</string>
+          </test>
+          <edit name="family" mode="assign">
+            <string>Noto Color Emoji</string>
+          </edit>
+        </match>
+      </fontconfig>
+    '';
+  };
 
   cli.programs = {
     git = {

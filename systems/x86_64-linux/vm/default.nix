@@ -11,7 +11,7 @@
   networking.hostName = "vm";
   system.boot.plymouth = lib.mkForce false;
 
-  system.impermanence.enable = false;
+  system.impermanence.enable = true;
   roles = {
     desktop.enable = true;
     desktop.addons.gnome.enable = true;
