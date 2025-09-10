@@ -39,6 +39,38 @@ let
         echo "Switched to Arctis Nova Pro Wireless"
     fi
   '';
+
+  toggle-monitor-input = pkgs.writeScriptBin "toggle-monitor-input" ''
+    #!/bin/sh
+    # Toggle Gigabyte M32U monitor between DisplayPort and USB-C inputs
+    # Monitor: GIGA-BYTE TECHNOLOGY CO. LTD. Gigabyte M32U (Serial: 21351B000087)
+
+    MONITOR_MODEL="Gigabyte M32U"
+    DISPLAYPORT_INPUT="0f"  # DisplayPort input code for Gigabyte M32U
+    USBC_INPUT="1b"         # USB-C input code for Gigabyte M32U
+
+    # Get current input source
+    echo "Checking current input source..."
+    CURRENT_VCP=$(${pkgs.ddcutil}/bin/ddcutil getvcp 60 2>/dev/null | grep -oP '(?<=current value =\s+)\w+' | tr '[:upper:]' '[:lower:]')
+
+    if [ -z "$CURRENT_VCP" ]; then
+        echo "Failed to read current input source. Using DisplayPort as fallback."
+        CURRENT_VCP="0f"
+    fi
+
+    # Toggle based on current input
+    if [ "$CURRENT_VCP" = "0f" ]; then
+        # Currently DisplayPort, switch to USB-C
+        echo "Switching $MONITOR_MODEL from DisplayPort to USB-C..."
+        ${pkgs.ddcutil}/bin/ddcutil setvcp 60 0x$USBC_INPUT
+        echo "Monitor switched to USB-C input"
+    else
+        # Currently not DisplayPort (assume USB-C or other), switch to DisplayPort
+        echo "Switching $MONITOR_MODEL to DisplayPort..."
+        ${pkgs.ddcutil}/bin/ddcutil setvcp 60 0x$DISPLAYPORT_INPUT
+        echo "Monitor switched to DisplayPort input"
+    fi
+  '';
 in
 {
   options.roles.desktop = {
@@ -77,7 +109,9 @@ in
     home.packages = with pkgs; [
       elgato-fix
       toggle-headphones
+      toggle-monitor-input
 
+      ddcutil
       mplayer
       mtpfs
       jmtpfs
