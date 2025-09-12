@@ -26,6 +26,10 @@
     sopsFile = ../../../modules/nixos/services/secrets.yaml;
   };
 
+  sops.secrets.postgres_terraform_password = {
+    sopsFile = ../../../modules/nixos/secrets.yaml;
+  };
+
 
 
   # TODO: Import modern unix?
@@ -52,7 +56,13 @@
       otel-collector.enable = true;
       traefik.enable = true;
       logging.enable = true;
-      postgresql.enable = true;
+      postgresql = {
+        enable = true;
+        terraformUser = {
+          enable = true;
+          passwordFile = config.sops.secrets.postgres_terraform_password.path;
+        };
+      };
       plausible.enable = true;
       n8n.enable = true;
       gotify.enable = true;
