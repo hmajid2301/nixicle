@@ -35,6 +35,6 @@ pkgs.mkShell {
     ssh-to-age
     gnupg
     age
-    tofu
+    opentofu
   ];
 }

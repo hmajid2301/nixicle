@@ -5,9 +5,11 @@
   ...
 }:
 with lib;
-with lib.nixicle; let
+with lib.nixicle;
+let
   cfg = config.cli.programs.podman;
-in {
+in
+{
   options.cli.programs.podman = with types; {
     enable = mkBoolOpt false "Whether or not to manage podman";
   };
@@ -17,7 +19,6 @@ in {
       podman
       podman-compose
       podman-tui
-      amazon-ecr-credential-helper
     ];
   };
 }

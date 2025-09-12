@@ -60,7 +60,6 @@
         enable = true;
         terraformUser = {
           enable = true;
-          passwordFile = config.sops.secrets.postgres_terraform_password.path;
         };
       };
       plausible.enable = true;
