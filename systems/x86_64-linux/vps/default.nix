@@ -30,8 +30,6 @@
     sopsFile = ../../../modules/nixos/secrets.yaml;
   };
 
-
-
   # TODO: Import modern unix?
   environment.systemPackages = with pkgs; [
     opencode
@@ -56,12 +54,7 @@
       otel-collector.enable = true;
       traefik.enable = true;
       logging.enable = true;
-      postgresql = {
-        enable = true;
-        terraformUser = {
-          enable = true;
-        };
-      };
+      postgresql.enable = true;
       plausible.enable = true;
       n8n.enable = true;
       gotify.enable = true;

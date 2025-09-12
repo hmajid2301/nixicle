@@ -1,5 +1,5 @@
 openbao_address = "https://openbao.homelab.haseebmajid.dev"
-openbao_token = "s.WzVzO2AsRMsSIxJYv9FHVjDg"
+openbao_token = ""
 
 postgres_terraform_password = "password-from-sops"
 terraform_user_password = "existing-terraform-user-password"

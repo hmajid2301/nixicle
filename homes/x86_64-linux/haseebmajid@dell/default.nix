@@ -12,7 +12,7 @@ let
     killall -e xdg-desktop-portal-hyprland 2>/dev/null || true
     killall -e xdg-desktop-portal-wlr 2>/dev/null || true
     killall xdg-desktop-portal 2>/dev/null || true
-    
+
     # Use NixOS paths instead of hardcoded /usr/libexec
     if command -v xdg-desktop-portal-hyprland >/dev/null 2>&1; then
       xdg-desktop-portal-hyprland &
@@ -31,7 +31,7 @@ in
 
   programs = {
     firefox.package = config.lib.nixGL.wrap pkgs.firefox;
-    ghostty.package = config.lib.nixGL.wrap pkgs.ghostty;
+    # ghostty.package = config.lib.nixGL.wrap pkgs.ghostty;
   };
 
   roles = {
@@ -70,6 +70,36 @@ in
     targets.gnome.useWallpaper = false;
     image = null;
     base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-mocha.yaml";
+  };
+
+  programs.ghostty = lib.mkForce {
+    enable = true;
+    enableFishIntegration = true;
+    package = config.lib.nixGL.wrap pkgs.ghostty;
+
+    settings = {
+      "font-family" = [
+        "MonoLisa" # Primary font
+        "Symbols Nerd Font" # Glyph fallback
+        "Noto Color Emoji" # Emoji fallback
+      ];
+
+      theme = "catppuccin-mocha";
+
+      command = "fish";
+      gtk-titlebar = false;
+      gtk-tabs-location = "hidden";
+      gtk-single-instance = true;
+      font-size = 14;
+      window-padding-x = 6;
+      window-padding-y = 6;
+      copy-on-select = "clipboard";
+      cursor-style = "block";
+      confirm-close-surface = false;
+      keybind = [
+        "ctrl+shift+plus=increase_font_size:1"
+      ];
+    };
   };
 
   desktops = {
@@ -148,11 +178,7 @@ in
           </edit>
         </match>
 
-        <match target="pattern">
-          <edit name="family" mode="append">
-            <string>Noto Color Emoji</string>
-          </edit>
-        </match>
+
 
         <match target="pattern">
           <edit name="family" mode="append">

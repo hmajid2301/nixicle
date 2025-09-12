@@ -55,10 +55,7 @@ in
           search_path = "\"$user\", public, vectors";
         };
         initialScript =
-          if cfg.initialScript != null then
-            cfg.initialScript
-          else
-            config.sops.templates."init.sql".path;
+          if cfg.initialScript != null then cfg.initialScript else config.sops.templates."init.sql".path;
       };
 
       postgresqlBackup = {
