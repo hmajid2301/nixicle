@@ -88,7 +88,10 @@
     };
 
     authentik-nix = {
-      url = "github:nix-community/authentik-nix";
+      # # See: https://github.com/nix-community/authentik-nix/issues/72
+      url = "github:nix-community/authentik-nix/a31bbcc1bf41baa9fca1028221068377bba8cd2e";
+      # # Pin to v2025.6.4 to avoid segfault in v2025.8.1
+      # inputs.authentik-src.url = "github:goauthentik/authentik/version/2025.6.4";
     };
 
     # Styling
