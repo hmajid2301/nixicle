@@ -13,13 +13,13 @@ in
 {
   options.desktops.addons.rofi = {
     enable = mkEnableOption "Enable rofi app manager";
-    package = mkPackageOpt pkgs.rofi "Package to use for rofi";
   };
 
   config = mkIf cfg.enable {
     programs.rofi = {
       enable = true;
-      terminal = "${pkgs.ghostty}/bin/ghostty";
+      package = pkgs.rofi;
+      terminal = "${pkgs.foot}/bin/foot";
       extraConfig = {
         modi = "run,drun,window";
         show-icons = true;

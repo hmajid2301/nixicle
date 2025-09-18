@@ -26,7 +26,9 @@
     sopsFile = ../../../modules/nixos/services/secrets.yaml;
   };
 
-
+  sops.secrets.postgres_terraform_password = {
+    sopsFile = ../../../modules/nixos/secrets.yaml;
+  };
 
   # TODO: Import modern unix?
   environment.systemPackages = with pkgs; [
