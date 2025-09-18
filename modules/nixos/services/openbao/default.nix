@@ -126,6 +126,9 @@ in
     # TODO: Configure environment variable for admin password (for future self-init)
     # systemd.services.openbao.serviceConfig.EnvironmentFile = config.sops.secrets.openbao_admin_password.path;
 
+      };
+    };
+
     services.traefik = {
       dynamicConfigOptions = {
         http = {

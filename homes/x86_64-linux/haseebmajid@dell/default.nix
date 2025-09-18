@@ -12,7 +12,6 @@ let
     killall -e xdg-desktop-portal-hyprland 2>/dev/null || true
     killall -e xdg-desktop-portal-wlr 2>/dev/null || true
     killall xdg-desktop-portal 2>/dev/null || true
-
     # Use NixOS paths instead of hardcoded /usr/libexec
     if command -v xdg-desktop-portal-hyprland >/dev/null 2>&1; then
       xdg-desktop-portal-hyprland &
@@ -178,7 +177,11 @@ in
           </edit>
         </match>
 
-
+        <match target="pattern">
+          <edit name="family" mode="append">
+            <string>Noto Color Emoji</string>
+          </edit>
+        </match>
 
         <match target="pattern">
           <edit name="family" mode="append">
