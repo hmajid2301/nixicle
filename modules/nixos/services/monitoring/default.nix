@@ -60,7 +60,7 @@ in {
               ];
               otel-collector.loadBalancer.servers = [
                 {
-                  url = "http://localhost:4317";
+                  url = "http://localhost:3333";
                 }
               ];
               tempo.loadBalancer.servers = [

@@ -30,10 +30,23 @@ in
         package = pkgs.opentelemetry-collector-contrib;
         settings = {
           receivers = {
-            otlp.protocols.http.endpoint = "0.0.0.0:3333";
-            otlp.protocols.grpc.endpoint = "0.0.0.0:3334";
+            otlp.protocols.http = {
+              endpoint = "0.0.0.0:3333";
+              auth.authenticator = "oidc";
+            };
+            otlp.protocols.grpc = {
+              endpoint = "0.0.0.0:3334";
+              auth.authenticator = "oidc";
+            };
           };
           processors.batch = { };
+          extensions = {
+            oidc = {
+              issuer_url = "https://authentik.haseebmajid.dev/application/o/otel-collector/";
+              audience = "otel-collector";
+              username_claim = "preferred_username";
+            };
+          };
           exporters = {
             "otlphttp/betterstack" = {
               endpoint = "https://s1502393.eu-nbg-2.betterstackdata.com";
@@ -42,6 +55,7 @@ in
           };
           service = {
             telemetry.metrics.address = "0.0.0.0:8899";
+            extensions = ["oidc"];
             pipelines = {
               "metrics/betterstack" = {
                 receivers = [
