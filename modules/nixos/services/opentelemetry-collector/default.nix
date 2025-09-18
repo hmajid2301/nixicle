@@ -52,27 +52,50 @@ in
               endpoint = "https://s1502393.eu-nbg-2.betterstackdata.com";
               headers.Authorization = "Bearer \${env:BETTERSTACK_TOKEN}";
             };
+            "prometheus" = {
+              endpoint = "http://127.0.0.1:3020";
+            };
+            "loki" = {
+              endpoint = "http://127.0.0.1:3030/loki/api/v1/push";
+            };
+            "otlp/tempo" = {
+              endpoint = "http://127.0.0.1:4400";
+              tls.insecure = true;
+            };
           };
           service = {
             telemetry.metrics.address = "0.0.0.0:8899";
             extensions = ["oidc"];
             pipelines = {
               "metrics/betterstack" = {
-                receivers = [
-                  "otlp"
-                ];
+                receivers = [ "otlp" ];
                 processors = [ "batch" ];
                 exporters = [ "otlphttp/betterstack" ];
+              };
+              "metrics/prometheus" = {
+                receivers = [ "otlp" ];
+                processors = [ "batch" ];
+                exporters = [ "prometheus" ];
               };
               "logs/betterstack" = {
                 receivers = [ "otlp" ];
                 processors = [ "batch" ];
                 exporters = [ "otlphttp/betterstack" ];
               };
+              "logs/loki" = {
+                receivers = [ "otlp" ];
+                processors = [ "batch" ];
+                exporters = [ "loki" ];
+              };
               "traces/betterstack" = {
                 receivers = [ "otlp" ];
                 processors = [ "batch" ];
                 exporters = [ "otlphttp/betterstack" ];
+              };
+              "traces/tempo" = {
+                receivers = [ "otlp" ];
+                processors = [ "batch" ];
+                exporters = [ "otlp/tempo" ];
               };
             };
           };
