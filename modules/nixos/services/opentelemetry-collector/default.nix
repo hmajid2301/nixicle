@@ -14,13 +14,25 @@ in
   };
 
   config = mkIf cfg.enable {
-    sops.secrets.betterstack_token = {
-      sopsFile = ../secrets.yaml;
+    sops.secrets = {
+      otel_betterstack_token = {
+        sopsFile = ../secrets.yaml;
+      };
+      otel_client_id = {
+        sopsFile = ../secrets.yaml;
+      };
+      otel_client_secret = {
+        sopsFile = ../secrets.yaml;
+      };
     };
 
     systemd.services.opentelemetry-collector = {
       serviceConfig = {
-        EnvironmentFile = [ config.sops.secrets.betterstack_token.path ];
+        EnvironmentFile = [
+          config.sops.secrets.otel_betterstack_token.path
+          config.sops.secrets.otel_client_id.path
+          config.sops.secrets.otel_client_secret.path
+        ];
       };
     };
 
@@ -44,7 +56,9 @@ in
             oidc = {
               issuer_url = "https://authentik.haseebmajid.dev/application/o/otel-collector/";
               audience = "otel-collector";
-              username_claim = "preferred_username";
+              client_id = "\${env:OTEL_CLIENT_ID}";
+              client_secret = "\${env:OTEL_CLIENT_SECRET}";
+              username_claim = "email";
             };
           };
           exporters = {
@@ -65,7 +79,7 @@ in
           };
           service = {
             telemetry.metrics.address = "0.0.0.0:8899";
-            extensions = ["oidc"];
+            extensions = [ "oidc" ];
             pipelines = {
               "metrics/betterstack" = {
                 receivers = [ "otlp" ];
