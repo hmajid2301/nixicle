@@ -35,7 +35,7 @@ in
       nixicle.avahi.enable = true;
       backup.enable = true;
       vpn.enable = true;
-      virtualisation.podman.enable = true;
+      virtualisation.docker.enable = true;
     };
 
     system = {

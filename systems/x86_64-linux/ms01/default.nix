@@ -19,7 +19,7 @@
   };
 
   fileSystems."/mnt/n1" = {
-    device = "/dev/nvme1n1p1";
+    device = "/dev/disk/by-uuid/a85dfa14-38bf-4cb8-af7e-d1a977a3df0c";
     fsType = "ext4";
     options = [
       "defaults"

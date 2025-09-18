@@ -37,7 +37,7 @@ in {
             "networkmanager"
             "input"
             "tty"
-            "podman"
+            "docker"
             "kvm"
             "libvirtd"
           ]

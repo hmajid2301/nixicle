@@ -5,20 +5,21 @@
   ...
 }:
 with lib;
-with lib.nixicle; let
+with lib.nixicle;
+let
   cfg = config.desktops.addons.rofi;
   inherit (config.lib.stylix) colors;
-in {
+in
+{
   options.desktops.addons.rofi = {
     enable = mkEnableOption "Enable rofi app manager";
-    package = mkPackageOpt pkgs.rofi-wayland "Package to use for rofi";
+    package = mkPackageOpt pkgs.rofi "Package to use for rofi";
   };
 
   config = mkIf cfg.enable {
     programs.rofi = {
       enable = true;
-      package = cfg.package;
-      terminal = "${pkgs.foot}/bin/foot";
+      terminal = "${pkgs.ghostty}/bin/ghostty";
       extraConfig = {
         modi = "run,drun,window";
         show-icons = true;
@@ -32,9 +33,10 @@ in {
         display-Network = " 󰤨  Network";
         sidebar-mode = true;
       };
-      theme = let
-        inherit (config.lib.formats.rasi) mkLiteral;
-      in
+      theme =
+        let
+          inherit (config.lib.formats.rasi) mkLiteral;
+        in
         lib.mkForce {
           #"@import" = "default";
           "*" = {
