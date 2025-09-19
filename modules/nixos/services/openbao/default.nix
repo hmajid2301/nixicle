@@ -15,7 +15,6 @@ in
   };
 
   config = mkIf cfg.enable {
-    # Create log directory for audit logs
     systemd.tmpfiles.rules = [
       "d /var/log/openbao 0755 openbao openbao -"
     ];
@@ -125,9 +124,6 @@ in
 
     # TODO: Configure environment variable for admin password (for future self-init)
     # systemd.services.openbao.serviceConfig.EnvironmentFile = config.sops.secrets.openbao_admin_password.path;
-
-      };
-    };
 
     services.traefik = {
       dynamicConfigOptions = {
