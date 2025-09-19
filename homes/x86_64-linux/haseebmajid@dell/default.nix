@@ -51,6 +51,10 @@ in
       # So we are installing them here and we will manually set them.
       pkgs.nixicle.monolisa
       pkgs.noto-fonts-emoji
+      pkgs.noto-fonts
+      pkgs.source-serif
+      pkgs.nerd-fonts.symbols-only
+      pkgs.dejavu_fonts
       screensharing
       nwg-displays
       (lib.hiPrio (config.lib.nixGL.wrap totem))
@@ -173,7 +177,7 @@ in
 
         <match target="pattern">
           <edit name="family" mode="append">
-            <string>Noto Sans CJK SC</string>
+            <string>Noto Sans</string>
           </edit>
         </match>
 
