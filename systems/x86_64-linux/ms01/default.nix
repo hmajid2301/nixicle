@@ -49,7 +49,7 @@
     nixicle = {
       atticd.enable = true;
       authentik.enable = true;
-      atuin.enable = true;
+      # atuin.enable = true;
       audiobookshelf.enable = true;
       couchdb.enable = true;
       deluge.enable = true;

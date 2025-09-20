@@ -1,5 +1,4 @@
 {
-  pkgs,
   config,
   lib,
   ...
@@ -17,6 +16,7 @@ in
   config = mkIf cfg.enable {
     systemd.tmpfiles.rules = [
       "d /mnt/n1/tempo 0755 - - -"
+      "d /var/tempo 0755 - - -"
     ];
 
     sops.secrets = {
@@ -330,10 +330,10 @@ in
             trace = {
               backend = "local";
               local = {
-                path = "/var/lib/tempo";
+                path = "/var/tempo";
               };
               wal = {
-                path = "/var/lib/tempo/wal";
+                path = "/var/tempo/wal";
               };
             };
           };
