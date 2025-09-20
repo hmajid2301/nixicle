@@ -66,6 +66,7 @@
       minio.enable = true;
       navidrome.enable = true;
       netdata.enable = true;
+      otel-collector.enable = true;
       # paperless.enable = true;
       postgresql.enable = true;
       redis.enable = true;
