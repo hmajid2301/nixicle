@@ -36,5 +36,6 @@ pkgs.mkShell {
     gnupg
     age
     opentofu
+    mc
   ];
 }

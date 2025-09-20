@@ -67,7 +67,7 @@ in
               headers.Authorization = "Bearer \${env:BETTERSTACK_TOKEN}";
             };
             "prometheus" = {
-              endpoint = "http://127.0.0.1:3020";
+              endpoint = "0.0.0.0:8889";
             };
             "loki" = {
               endpoint = "http://127.0.0.1:3030/loki/api/v1/push";
