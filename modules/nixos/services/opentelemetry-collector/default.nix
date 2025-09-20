@@ -35,10 +35,7 @@ in
         settings = {
           receivers = {
             otlp.protocols.http = {
-              endpoint = "0.0.0.0:3333";
-            };
-            otlp.protocols.grpc = {
-              endpoint = "0.0.0.0:3334";
+              endpoint = "0.0.0.0:4318";
             };
           };
           processors.batch = { };
@@ -53,9 +50,8 @@ in
             "loki" = {
               endpoint = "http://127.0.0.1:3030/loki/api/v1/push";
             };
-            "otlp/tempo" = {
-              endpoint = "http://127.0.0.1:4400";
-              tls.insecure = true;
+            "otlphttp/tempo" = {
+              endpoint = "http://127.0.0.1:4400/v1/traces";
             };
           };
           service = {
@@ -91,7 +87,7 @@ in
               "traces/tempo" = {
                 receivers = [ "otlp" ];
                 processors = [ "batch" ];
-                exporters = [ "otlp/tempo" ];
+                exporters = [ "otlphttp/tempo" ];
               };
             };
           };
