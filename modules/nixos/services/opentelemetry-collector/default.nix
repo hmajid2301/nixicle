@@ -18,13 +18,23 @@ in
       otel_betterstack_token = {
         sopsFile = ../secrets.yaml;
       };
+      otel_client_id = {
+        sopsFile = ../secrets.yaml;
+      };
+      otel_client_secret = {
+        sopsFile = ../secrets.yaml;
+      };
+    };
+
+    sops.templates."otel_env" = {
+      content = ''
+        BETTERSTACK_TOKEN=${config.sops.placeholder.otel_betterstack_token}
+      '';
     };
 
     systemd.services.opentelemetry-collector = {
       serviceConfig = {
-        EnvironmentFile = [
-          config.sops.secrets.otel_betterstack_token.path
-        ];
+        EnvironmentFile = config.sops.templates."otel_env".path;
       };
     };
 
@@ -35,10 +45,21 @@ in
         settings = {
           receivers = {
             otlp.protocols.http = {
-              endpoint = "0.0.0.0:4318";
+              endpoint = "0.0.0.0:3333";
+              # TODO: Re-enable auth when kube configuration is fixed
+              # auth.authenticator = "oidc";
             };
           };
           processors.batch = { };
+          extensions = {
+            # TODO: Re-enable oidc extension when kube configuration is fixed
+            # oidc = {
+            #   issuer_url = "https://authentik.haseebmajid.dev/application/o/otel-collector/";
+            #   audience = "otel-collector";
+            #   username_claim = "email";
+            # };
+          };
+
           exporters = {
             "otlphttp/betterstack" = {
               endpoint = "https://s1502393.eu-nbg-2.betterstackdata.com";
@@ -58,6 +79,10 @@ in
             telemetry = {
               metrics.level = "none";
             };
+            extensions = [ 
+              # TODO: Re-enable oidc extension when kube configuration is fixed
+              # "oidc" 
+            ];
             pipelines = {
               "metrics/betterstack" = {
                 receivers = [ "otlp" ];
