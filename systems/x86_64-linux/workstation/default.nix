@@ -44,6 +44,9 @@
 
   services = {
     virtualisation.kvm.enable = true;
+    virtualisation.docker.enable = true;
+    # TODO: Look into enabling podman again in the future
+    virtualisation.podman.enable = lib.mkForce false;
     hardware.openrgb.enable = true;
     nixicle.nfs.enable = true;
     # nixicle.ollama.enable = true;

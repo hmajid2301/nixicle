@@ -1,0 +1,337 @@
+terraform {
+  required_providers {
+    vault = {
+      source  = "hashicorp/vault"
+      version = "~> 4.4.0"
+    }
+    kubernetes = {
+      source  = "hashicorp/kubernetes"
+      version = "~> 2.32"
+    }
+  }
+}
+
+variable "openbao_address" {
+  description = "OpenBao server address"
+  type        = string
+  default     = "https://openbao.homelab.haseebmajid.dev"
+}
+
+variable "openbao_token" {
+  description = "OpenBao authentication token"
+  type        = string
+  sensitive   = true
+}
+
+variable "postgres_terraform_password" {
+  description = "Password for postgres terraform user (from SOPS)"
+  type        = string
+  sensitive   = true
+}
+
+variable "postgres_host" {
+  description = "Postgres host"
+  type        = string
+  default     = "postgres.homelab.haseebmajid.dev"
+}
+
+variable "postgres_port" {
+  description = "Postgres port"
+  type        = number
+  default     = 5432
+}
+
+variable "terraform_user_password" {
+  description = "Password for terraform userpass user"
+  type        = string
+  sensitive   = true
+}
+
+variable "kubeconfig_path" {
+  description = "Path to kubeconfig file"
+  type        = string
+  default     = "~/.kube/config"
+}
+
+variable "kubernetes_host" {
+  description = "Kubernetes API server endpoint (optional, will be auto-detected if not provided)"
+  type        = string
+  default     = ""
+}
+
+provider "vault" {
+  address = var.openbao_address
+  token   = var.openbao_token
+}
+
+provider "kubernetes" {
+  config_path = var.kubeconfig_path
+}
+
+# Import existing auth backends
+resource "vault_auth_backend" "kubernetes" {
+  type = "kubernetes"
+  path = "kubernetes"
+}
+
+resource "vault_auth_backend" "userpass" {
+  type = "userpass"
+  path = "userpass"
+}
+
+# Get Kubernetes cluster info dynamically
+data "kubernetes_config_map" "kube_root_ca" {
+  metadata {
+    name      = "kube-root-ca.crt"
+    namespace = "kube-public"
+  }
+}
+
+# Get cluster endpoint from nodes or service
+data "kubernetes_nodes" "all" {}
+
+locals {
+  # Extract the API server endpoint from node information
+  # This assumes your cluster endpoint is accessible from the first node's address
+  kubernetes_host = var.kubernetes_host != "" ? var.kubernetes_host : "https://${data.kubernetes_nodes.all.nodes[0].status[0].addresses[0].address}:6443"
+}
+
+# Kubernetes auth configuration
+resource "vault_kubernetes_auth_backend_config" "kubernetes" {
+  backend                = vault_auth_backend.kubernetes.path
+  kubernetes_host        = local.kubernetes_host
+  kubernetes_ca_cert     = data.kubernetes_config_map.kube_root_ca.data["ca.crt"]
+  disable_iss_validation = true
+  disable_local_ca_jwt   = false
+}
+
+# Kubernetes auth roles
+resource "vault_kubernetes_auth_backend_role" "k8s_auth_role" {
+  backend                          = vault_auth_backend.kubernetes.path
+  role_name                        = "k8s-auth-role"
+  bound_service_account_names      = ["banterbus", "openbao-auth"]
+  bound_service_account_namespaces = ["flux-system", "default", "prod", "dev", "apps", "tailscale"]
+  token_policies                   = ["default", "banterbus-dev", "banterbus-prod"]
+  token_ttl                        = 3600
+  token_max_ttl                    = 86400
+}
+
+resource "vault_kubernetes_auth_backend_role" "tailscale" {
+  backend                          = vault_auth_backend.kubernetes.path
+  role_name                        = "tailscale"
+  bound_service_account_names      = ["tailscale"]
+  bound_service_account_namespaces = ["tailscale"]
+  token_policies                   = ["tailscale"]
+  token_ttl                        = 3600
+}
+
+# Userpass users
+resource "vault_generic_endpoint" "terraform_user" {
+  depends_on           = [vault_auth_backend.userpass]
+  path                 = "auth/userpass/users/terraform"
+  ignore_absent_fields = true
+
+  data_json = jsonencode({
+    policies = ["terraform", "cloudflare-tunnel"]
+    password = var.terraform_user_password
+  })
+}
+
+# Additional policy - test-csi-policy
+resource "vault_policy" "test_csi" {
+  name = "test-csi-policy"
+
+  policy = <<EOT
+path "kv/data/apps/dev/banterbus" {
+  capabilities = ["read"]
+}
+
+path "kv/metadata/apps/dev/banterbus" {
+  capabilities = ["read"]
+}
+EOT
+}
+
+# Import existing policies
+resource "vault_policy" "cloudflare_tunnel" {
+  name = "cloudflare-tunnel"
+
+  policy = <<EOT
+# Allow full access to cloudflare tunnel secrets
+path "kv/data/infra/cloudflare" {
+  capabilities = ["create", "read", "update", "delete"]
+}
+
+path "kv/metadata/infra/cloudflare" {
+  capabilities = ["read", "list"]
+}
+
+# Allow reading tunnel token for Kubernetes deployment
+path "kv/data/infra/cloudflare" {
+  capabilities = ["read"]
+}
+EOT
+}
+
+resource "vault_policy" "banterbus_dev" {
+  name = "banterbus-dev"
+
+  policy = <<EOT
+# Allow reading banterbus dev secrets
+path "kv/data/apps/dev/banterbus" {
+  capabilities = ["read"]
+}
+
+path "kv/metadata/apps/dev/banterbus" {
+  capabilities = ["read"]
+}
+EOT
+}
+
+resource "vault_policy" "banterbus_prod" {
+  name = "banterbus-prod"
+
+  policy = <<EOT
+# Allow reading banterbus prod secrets
+path "kv/data/apps/prod/banterbus" {
+  capabilities = ["read"]
+}
+
+path "kv/metadata/apps/prod/banterbus" {
+  capabilities = ["read"]
+}
+EOT
+}
+
+resource "vault_policy" "tailscale" {
+  name = "tailscale"
+
+  policy = <<EOT
+path "kv/data/infra/tailscale" {
+  capabilities = ["read"]
+}
+
+path "kv/metadata/infra/tailscale" {
+  capabilities = ["read"]
+}
+EOT
+}
+
+resource "vault_policy" "terraform" {
+  name = "terraform"
+
+  policy = <<EOT
+path "kv/*" {
+  capabilities = ["list"]
+}
+
+path "kv/data/apps/*" {
+  capabilities = ["create", "read", "update", "delete", "list"]
+}
+
+path "kv/data/infra/*" {
+  capabilities = ["create", "read", "update", "delete", "list"]
+}
+
+path "kv/metadata/apps/*" {
+  capabilities = ["create", "read", "update", "delete", "list"]
+}
+
+path "kv/metadata/infra/*" {
+  capabilities = ["create", "read", "update", "delete", "list"]
+}
+
+path "auth/token/lookup-self" {
+  capabilities = ["read"]
+}
+
+path "auth/token/renew-self" {
+  capabilities = ["update"]
+}
+
+path "sys/policies/acl/*" {
+  capabilities = ["create", "read", "update", "delete", "list"]
+}
+
+path "sys/auth/kubernetes" {
+  capabilities = ["create", "read", "update", "delete"]
+}
+
+path "sys/mounts/*" {
+  capabilities = ["read", "list"]
+}
+
+path "sys/mounts" {
+  capabilities = ["read", "list"]
+}
+
+path "auth/kubernetes" {
+  capabilities = ["read"]
+}
+
+path "auth/kubernetes/config" {
+  capabilities = ["create", "read", "update", "delete"]
+}
+
+path "auth/kubernetes/role/*" {
+  capabilities = ["create", "read", "update", "delete", "list"]
+}
+
+path "sys/auth" {
+  capabilities = ["read", "list"]
+}
+
+path "sys/auth/*" {
+  capabilities = ["create", "read", "update", "delete", "list"]
+}
+
+path "auth/token/create" {
+  capabilities = ["create", "update"]
+}
+EOT
+}
+
+# Secret engines
+resource "vault_mount" "kv" {
+  path        = "kv"
+  type        = "kv"
+  options = {
+    version = "2"
+  }
+  description = "KV v2 secret mount"
+}
+
+resource "vault_mount" "kubernetes" {
+  path        = "kubernetes"
+  type        = "kubernetes"
+  description = "Kubernetes secret engine"
+}
+
+# Create postgres terraform user secret
+resource "vault_kv_secret_v2" "postgres_terraform" {
+  mount = vault_mount.kv.path
+  name  = "infra/postgres/terraform"
+
+  data_json = jsonencode({
+    username = "terraform_user"
+    password = var.postgres_terraform_password
+    host     = var.postgres_host
+    port     = var.postgres_port
+    database = "default_db"
+  })
+}
+
+# Policy for postgres terraform access
+resource "vault_policy" "postgres_terraform" {
+  name = "postgres-terraform"
+
+  policy = <<EOT
+path "kv/data/infra/postgres/terraform" {
+  capabilities = ["read"]
+}
+
+path "kv/metadata/infra/postgres/terraform" {
+  capabilities = ["read"]
+}
+EOT
+}

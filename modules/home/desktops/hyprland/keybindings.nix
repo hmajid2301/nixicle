@@ -4,7 +4,8 @@
   lib,
   ...
 }:
-with lib; let
+with lib;
+let
   cfg = config.desktops.hyprland;
   laptop_lid_switch = pkgs.writeShellScriptBin "laptop_lid_switch" ''
     #!/usr/bin/env bash
@@ -57,12 +58,13 @@ with lib; let
     hyprctl dispatch moveactive exact $pos_x $pos_y
     hyprctl dispatch resizeactive exact $size_x $size_y
   '';
-in {
+in
+{
   config = mkIf cfg.enable {
     wayland.windowManager.hyprland.settings = {
       bind = [
         "SUPER, Return, exec, ghostty"
-        "SUPER, B, exec, ${config.desktops.addons.rofi.package}/bin/rofi -show drun -mode drun"
+        "SUPER, B, exec, ${pkgs.rofi}/bin/rofi -show drun -mode drun"
         "SUPER, Q, killactive,"
         "SUPER, F, Fullscreen,0"
         "SUPER, R, exec, ${resize}/bin/resize"

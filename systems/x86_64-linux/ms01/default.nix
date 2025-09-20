@@ -19,7 +19,7 @@
   };
 
   fileSystems."/mnt/n1" = {
-    device = "/dev/nvme1n1p1";
+    device = "/dev/disk/by-uuid/a85dfa14-38bf-4cb8-af7e-d1a977a3df0c";
     fsType = "ext4";
     options = [
       "defaults"
@@ -49,7 +49,7 @@
     nixicle = {
       atticd.enable = true;
       authentik.enable = true;
-      atuin.enable = true;
+      # atuin.enable = true;
       audiobookshelf.enable = true;
       couchdb.enable = true;
       deluge.enable = true;
@@ -66,13 +66,11 @@
       minio.enable = true;
       navidrome.enable = true;
       netdata.enable = true;
-      #nfs.enable = true;
-      # smb.enable = true;
+      otel-collector.enable = true;
       # paperless.enable = true;
       postgresql.enable = true;
       redis.enable = true;
       traefik.enable = true;
-      # ollama.enable = true;
     };
 
     traefik = {

@@ -17,7 +17,7 @@ in {
       environmentFile = config.sops.secrets.restic_env.path;
 
       # TODO: use username here
-      paths = ["/home/haseeb"];
+      paths = ["/home/haseeb" "/var/lib/postgresql"];
       repository = "b2:Majiy00Backup";
       timerConfig = {
         OnUnitActiveSec = "1d";
