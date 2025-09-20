@@ -17,7 +17,7 @@
 
   services = {
     virtualisation.kvm.enable = true;
-    virtualisation.podman.enable = true;
+    virtualisation.docker.enable = true;
   };
 
   roles = {

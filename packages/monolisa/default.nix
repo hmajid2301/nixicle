@@ -6,7 +6,7 @@ stdenv.mkDerivation {
   src = ./MonoLisa;
 
   installPhase = ''
-    mkdir -p $out/share/fonts
-    cp -R $src $out/share/fonts/truetype/
+    mkdir -p $out/share/fonts/truetype
+    cp $src/*.ttf $out/share/fonts/truetype/
   '';
 }

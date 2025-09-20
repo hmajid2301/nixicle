@@ -53,7 +53,7 @@ in
         modern-unix.enable = true;
         network-tools.enable = true;
         nix-index.enable = true;
-        podman.enable = true;
+        docker.enable = true;
         ssh.enable = true;
         starship.enable = true;
         yazi.enable = true;

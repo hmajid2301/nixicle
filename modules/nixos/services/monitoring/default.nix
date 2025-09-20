@@ -1,13 +1,14 @@
 {
-  pkgs,
   config,
   lib,
   ...
 }:
 with lib;
-with lib.nixicle; let
+with lib.nixicle;
+let
   cfg = config.services.nixicle.monitoring;
-in {
+in
+{
   options.services.nixicle.monitoring = {
     enable = mkEnableOption "Enable The monitoring stack(loki, prometheus, grafana)";
   };
@@ -48,11 +49,6 @@ in {
                   url = "http://localhost:3010";
                 }
               ];
-              promtail.loadBalancer.servers = [
-                {
-                  url = "http://localhost:3031";
-                }
-              ];
               alertmanager.loadBalancer.servers = [
                 {
                   url = "http://localhost:9093";
@@ -60,7 +56,7 @@ in {
               ];
               otel-collector.loadBalancer.servers = [
                 {
-                  url = "http://localhost:4317";
+                  url = "http://localhost:3333";
                 }
               ];
               tempo.loadBalancer.servers = [
@@ -72,37 +68,31 @@ in {
 
             routers = {
               prometheus = {
-                entryPoints = ["websecure"];
+                entryPoints = [ "websecure" ];
                 rule = "Host(`prometheus.homelab.haseebmajid.dev`)";
                 service = "prometheus";
                 tls.certResolver = "letsencrypt";
               };
               grafana = {
-                entryPoints = ["websecure"];
+                entryPoints = [ "websecure" ];
                 rule = "Host(`grafana.homelab.haseebmajid.dev`)";
                 service = "grafana";
                 tls.certResolver = "letsencrypt";
               };
-              promtail = {
-                entryPoints = ["websecure"];
-                rule = "Host(`promtail.homelab.haseebmajid.dev`)";
-                service = "promtail";
-                tls.certResolver = "letsencrypt";
-              };
               alertmanager = {
-                entryPoints = ["websecure"];
+                entryPoints = [ "websecure" ];
                 rule = "Host(`alertmanager.homelab.haseebmajid.dev`)";
                 service = "alertmanager";
                 tls.certResolver = "letsencrypt";
               };
               otel-collector = {
-                entryPoints = ["websecure"];
+                entryPoints = [ "websecure" ];
                 rule = "Host(`otel-collector.homelab.haseebmajid.dev`)";
                 service = "otel-collector";
                 tls.certResolver = "letsencrypt";
               };
               tempo = {
-                entryPoints = ["websecure"];
+                entryPoints = [ "websecure" ];
                 rule = "Host(`tempo.homelab.haseebmajid.dev`)";
                 service = "tempo";
                 tls.certResolver = "letsencrypt";
@@ -129,7 +119,7 @@ in {
 
             route = {
               receiver = "all";
-              group_by = ["instance"];
+              group_by = [ "instance" ];
               group_wait = "30s";
               group_interval = "2m";
               repeat_interval = "24h";
@@ -139,8 +129,8 @@ in {
               {
                 name = "all";
                 webhook_configs = [
-                  {url = "http://127.0.0.1:11000/alert";} # matrix-hook
-                  {url = with config.services.gotify; "http://s100:8051";} # alertmanger-ntfy
+                  { url = "http://127.0.0.1:11000/alert"; } # matrix-hook
+                  { url = with config.services.gotify; "http://s100:8051"; } # alertmanger-ntfy
                 ];
               }
             ];
@@ -158,7 +148,7 @@ in {
 
           node = {
             port = 3021;
-            enabledCollectors = ["systemd"];
+            enabledCollectors = [ "systemd" ];
             enable = true;
           };
         };
@@ -171,7 +161,7 @@ in {
             bearer_token_file = config.sops.secrets.home_assistant_token.path;
             static_configs = [
               {
-                targets = ["s100:8123"];
+                targets = [ "s100:8123" ];
               }
             ];
           }
@@ -213,6 +203,17 @@ in {
           }
 
           {
+            job_name = "otel-collector";
+            static_configs = [
+              {
+                targets = [
+                  "127.0.0.1:8889"
+                ];
+              }
+            ];
+          }
+
+          {
             job_name = "nodes";
             static_configs = [
               {
@@ -226,7 +227,7 @@ in {
       };
 
       postgresql = {
-        ensureDatabases = ["grafana"];
+        ensureDatabases = [ "grafana" ];
         ensureUsers = [
           {
             name = "grafana";
@@ -300,87 +301,47 @@ in {
                   editable = true;
                   url = "http://vps:3030";
                 }
+                {
+                  name = "Tempo (ms01)";
+                  type = "tempo";
+                  access = "proxy";
+                  editable = true;
+                  url = "http://127.0.0.1:${toString config.services.tempo.settings.server.http_listen_port}";
+                }
               ];
             };
           };
         };
       };
 
-      # tempo = {
-      #   enable = true;
-      #   settings = {
-      #     server = {
-      #       http_listen_port = 4400;
-      #       grpc_listen_port = 4401;
-      #     };
-      #     # TODO: use s3
-      #     storage = {
-      #       trace = {
-      #         backend = "s3";
-      #         s3 = {
-      #           bucket = "tempo";
-      #           endpoint = "localhost:9095";
-      #           tls_insecure_skip_verify = true;
-      #           region = "us-east-1";
-      #         };
-      #       };
-      #     };
-      #   };
-      # };
+      tempo = {
+        enable = true;
+        settings = {
+          server = {
+            http_listen_port = 4400;
+            grpc_listen_port = 4401;
+          };
+          storage = {
+            trace = {
+              backend = "local";
+              local = {
+                path = "/var/lib/tempo";
+              };
+              wal = {
+                path = "/var/lib/tempo/wal";
+              };
+            };
+          };
+        };
+      };
+    };
 
-      # opentelemetry-collector = {
-      #   enable = true;
-      #   package = pkgs.opentelemetry-collector-contrib;
-      #   settings = {
-      #     otelcolConfig = {
-      #       receivers = {
-      #         otlp = {
-      #           protocols = {
-      #             http = {
-      #               endpoint = "localhost:4317";
-      #             };
-      #           };
-      #         };
-      #       };
-      #
-      #       processors = {
-      #         batch = {};
-      #       };
-      #
-      #       exporters = {
-      #         "otlp" = {
-      #           endpoint = "localhost:31100";
-      #           tls = {
-      #             insecure = true;
-      #           };
-      #         };
-      #         prometheus = {
-      #           endpoint = "localhost:3020";
-      #         };
-      #       };
-      #
-      #       extensions = {
-      #         health_check = {};
-      #       };
-      #
-      #       service = {
-      #         extensions = ["health_check"];
-      #         pipelines = {
-      #           traces = {
-      #             receivers = ["otlp"];
-      #             processors = ["batch"];
-      #             exporters = ["otlp"];
-      #           };
-      #           metrics = {
-      #             receivers = ["otlp"];
-      #             processors = ["batch"];
-      #             exporters = ["otlp"];
-      #           };
-      #         };
-      #       };
-      #     };
-      #   };
-      # };
+    # Configure tempo service with proper state directory
+    systemd.services.tempo = {
+      serviceConfig = {
+        StateDirectory = "tempo";
+        StateDirectoryMode = "0755";
+      };
     };
   };
 }

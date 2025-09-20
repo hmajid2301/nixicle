@@ -4,19 +4,43 @@
   pkgs,
   ...
 }:
-with lib; let
+with lib;
+let
   cfg = config.services.nixicle.postgresql;
-in {
+in
+{
   options.services.nixicle.postgresql = {
     enable = mkEnableOption "Enable postgresql";
+    initialScript = mkOption {
+      type = types.nullOr types.path;
+      default = null;
+      description = "Initial script to run on PostgreSQL server startup";
+    };
   };
 
   config = mkIf cfg.enable {
+    sops.secrets.postgres_terraform_password = mkDefault {
+      sopsFile = ../secrets.yaml;
+    };
+
+    sops.templates."init.sql" = {
+      content = ''
+        CREATE USER terraform WITH PASSWORD '${config.sops.placeholder.postgres_terraform_password}';
+        CREATE DATABASE terraform;
+        GRANT ALL PRIVILEGES ON DATABASE terraform TO terraform;
+        ALTER DATABASE terraform OWNER TO terraform;
+        \c terraform;
+        GRANT ALL ON SCHEMA public TO terraform;
+        GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO terraform;
+      '';
+      owner = "postgres";
+    };
+
     services = {
       postgresql = {
         enable = true;
         package = pkgs.postgresql_16_jit;
-        extensions = ps: with ps; [pgvecto-rs];
+        extensions = ps: with ps; [ pgvecto-rs ];
         authentication = pkgs.lib.mkOverride 10 ''
           #...
           #type database DBuser origin-address auth-method
@@ -27,14 +51,15 @@ in {
           host all       all     ::1/128        trust
         '';
         settings = {
-          shared_preload_libraries = ["vectors.so"];
+          shared_preload_libraries = [ "vectors.so" ];
           search_path = "\"$user\", public, vectors";
         };
+        initialScript =
+          if cfg.initialScript != null then cfg.initialScript else config.sops.templates."init.sql".path;
       };
 
       postgresqlBackup = {
         enable = true;
-        # location = "/mnt/share/postgresql";
         backupAll = true;
         startAt = "*-*-* 10:00:00";
       };
@@ -56,7 +81,7 @@ in {
 
             routers = {
               postgres = {
-                entryPoints = ["postgres"];
+                entryPoints = [ "postgres" ];
                 rule = "HostSNI(`*`)";
                 service = "postgres";
               };

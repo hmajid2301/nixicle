@@ -26,13 +26,11 @@
     sopsFile = ../../../modules/nixos/services/secrets.yaml;
   };
 
-
-
   # TODO: Import modern unix?
-  environment.systemPackages = with pkgs; [
-    opencode
-    claude-code
-  ];
+  # environment.systemPackages = with pkgs; [
+  #   opencode
+  #   claude-code
+  # ];
 
   services = {
     avahi.enable = lib.mkForce false;
