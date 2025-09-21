@@ -18,19 +18,24 @@
     role = "server";
   };
 
-  sops.secrets.cloudflared_vps = {
-    sopsFile = ../../../modules/nixos/services/secrets.yaml;
+  sops.secrets = {
+    cloudflared_vps = {
+      sopsFile = ../../../modules/nixos/services/secrets.yaml;
+    };
+
+    gitlab_runner_env_vps = {
+      sopsFile = ../../../modules/nixos/services/secrets.yaml;
+    };
+
+    b2_application_key = {
+      sopsFile = ../../../modules/nixos/services/secrets.yaml;
+    };
   };
 
-  sops.secrets.gitlab_runner_env_vps = {
-    sopsFile = ../../../modules/nixos/services/secrets.yaml;
-  };
-
-  # TODO: Import modern unix?
-  # environment.systemPackages = with pkgs; [
-  #   opencode
-  #   claude-code
-  # ];
+  environment.systemPackages = with pkgs; [
+    opencode
+    claude-code
+  ];
 
   services = {
     avahi.enable = lib.mkForce false;
@@ -56,6 +61,19 @@
       gotify.enable = true;
       uptime-kuma.enable = true;
       openbao.enable = true;
+      headlamp.enable = true;
+
+      s3-backup = {
+        enable = true;
+        endpoint = "s3.us-west-004.backblazeb2.com";
+        bucket = "Majiy00Homelab";
+        accessKeyId = "0043ba7ac168efb000000000c";
+        secretKeyFile = config.sops.secrets.b2_application_key.path;
+        paths = [
+          "/var/lib/postgresql"
+        ];
+        schedule = "daily";
+      };
 
       gitlab-runner = {
         enable = true;

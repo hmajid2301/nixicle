@@ -293,8 +293,8 @@ EOT
 
 # Secret engines
 resource "vault_mount" "kv" {
-  path        = "kv"
-  type        = "kv"
+  path = "kv"
+  type = "kv"
   options = {
     version = "2"
   }
@@ -335,3 +335,4 @@ path "kv/metadata/infra/postgres/terraform" {
 }
 EOT
 }
+
