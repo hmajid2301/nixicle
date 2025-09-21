@@ -8,6 +8,10 @@ let
   cfg = config.services.backup;
 in
 {
+  imports = [
+    ../s3-backup
+  ];
+
   options.services.backup = {
     enable = mkEnableOption "Enable cloud backups";
   };
@@ -19,10 +23,7 @@ in
       environmentFile = config.sops.secrets.restic_env.path;
 
       # TODO: use username here
-      paths = [
-        "/home/haseeb"
-        "/var/lib/postgresql"
-      ];
+      paths = [ "/home/haseeb" ];
       repository = "b2:Majiy00Backup";
       timerConfig = {
         OnUnitActiveSec = "1d";
