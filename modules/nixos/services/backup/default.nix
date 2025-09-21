@@ -8,10 +8,6 @@ let
   cfg = config.services.backup;
 in
 {
-  imports = [
-    ../s3-backup
-  ];
-
   options.services.backup = {
     enable = mkEnableOption "Enable cloud backups";
   };
