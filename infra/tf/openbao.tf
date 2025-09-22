@@ -91,9 +91,8 @@ data "kubernetes_config_map" "kube_root_ca" {
 data "kubernetes_nodes" "all" {}
 
 locals {
-  # Extract the API server endpoint from node information
-  # This assumes your cluster endpoint is accessible from the first node's address
-  kubernetes_host = var.kubernetes_host != "" ? var.kubernetes_host : "https://${data.kubernetes_nodes.all.nodes[0].status[0].addresses[0].address}:6443"
+  # Use vps hostname that OpenBao can reach
+  kubernetes_host = var.kubernetes_host != "" ? var.kubernetes_host : "https://vps:6443"
 }
 
 # Kubernetes auth configuration
@@ -102,16 +101,16 @@ resource "vault_kubernetes_auth_backend_config" "kubernetes" {
   kubernetes_host        = local.kubernetes_host
   kubernetes_ca_cert     = data.kubernetes_config_map.kube_root_ca.data["ca.crt"]
   disable_iss_validation = true
-  disable_local_ca_jwt   = false
+  disable_local_ca_jwt   = true
 }
 
 # Kubernetes auth roles
 resource "vault_kubernetes_auth_backend_role" "k8s_auth_role" {
   backend                          = vault_auth_backend.kubernetes.path
   role_name                        = "k8s-auth-role"
-  bound_service_account_names      = ["banterbus", "openbao-auth"]
-  bound_service_account_namespaces = ["flux-system", "default", "prod", "dev", "apps", "tailscale"]
-  token_policies                   = ["default", "banterbus-dev", "banterbus-prod"]
+  bound_service_account_names      = ["banterbus", "openbao-auth", "default", "flux-system-vault"]
+  bound_service_account_namespaces = ["flux-system", "default", "prod", "dev", "apps", "tailscale", "infra"]
+  token_policies                   = ["default", "banterbus-dev", "banterbus-prod", "gitlab"]
   token_ttl                        = 3600
   token_max_ttl                    = 86400
 }
@@ -212,6 +211,21 @@ path "kv/data/infra/tailscale" {
 }
 
 path "kv/metadata/infra/tailscale" {
+  capabilities = ["read"]
+}
+EOT
+}
+
+resource "vault_policy" "gitlab" {
+  name = "gitlab"
+
+  policy = <<EOT
+# Allow reading GitLab secrets for flux preview environments
+path "kv/data/apps/gitlab" {
+  capabilities = ["read"]
+}
+
+path "kv/metadata/apps/gitlab" {
   capabilities = ["read"]
 }
 EOT
