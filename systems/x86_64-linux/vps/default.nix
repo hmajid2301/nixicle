@@ -87,6 +87,7 @@
           services = {
             jellyfin.loadBalancer.servers = [ { url = "http://ms01:8096"; } ];
             immich.loadBalancer.servers = [ { url = "http://ms01:2283"; } ];
+            flux-webhook.loadBalancer.servers = [ { url = "http://localhost:30081"; } ];
           };
 
           routers = {
@@ -100,6 +101,12 @@
               entryPoints = [ "websecure" ];
               rule = "Host(`immich.haseebmajid.dev`)";
               service = "immich";
+              tls.certResolver = "letsencrypt";
+            };
+            flux-webhook = {
+              entryPoints = [ "websecure" ];
+              rule = "Host(`flux-webhook.homelab.haseebmajid.dev`)";
+              service = "flux-webhook";
               tls.certResolver = "letsencrypt";
             };
           };
