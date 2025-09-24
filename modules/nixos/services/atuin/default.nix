@@ -16,7 +16,7 @@ in
     services = {
       atuin = {
         enable = true;
-        openRegistration = true;
+        openRegistration = false;
         maxHistoryLength = 99999999;
         port = 8890;
       };

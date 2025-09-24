@@ -51,6 +51,7 @@
     };
 
     nixicle = {
+      atuin.enable = true;
       alloy.enable = true;
       otel-collector.enable = true;
       traefik.enable = true;
@@ -82,6 +83,17 @@
     };
 
     traefik = {
+      staticConfigOptions = {
+        providers = {
+          kubernetesIngress = {
+            endpoint = "https://127.0.0.1:6443";
+          };
+          kubernetesCRD = {
+            endpoint = "https://127.0.0.1:6443";
+          };
+        };
+      };
+
       dynamicConfigOptions = {
         http = {
           services = {

@@ -18,17 +18,29 @@ in
       443
     ];
 
+    users.groups.k3s = lib.mkIf config.services.k3s.enable { };
+
+    users.users.traefik = lib.mkIf config.services.k3s.enable {
+      extraGroups = [ "k3s" ];
+    };
+
     systemd.services.traefik = {
       environment = {
         CF_API_EMAIL = "hello@haseebmajid.dev";
       };
       serviceConfig = {
         EnvironmentFile = [ config.sops.secrets.cloudflare_api_key.path ];
+        SupplementaryGroups = lib.mkIf config.services.k3s.enable [ "k3s" ];
       };
+      after = lib.mkIf config.services.k3s.enable [ "k3s.service" ];
+      wants = lib.mkIf config.services.k3s.enable [ "k3s.service" ];
+      requires = lib.mkIf config.services.k3s.enable [ "k3s.service" ];
     };
 
-    sops.secrets.cloudflare_api_key = {
-      sopsFile = ../secrets.yaml;
+    sops.secrets = {
+      cloudflare_api_key = {
+        sopsFile = ../secrets.yaml;
+      };
     };
 
     services = {

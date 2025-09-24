@@ -90,16 +90,32 @@ data "kubernetes_config_map" "kube_root_ca" {
 # Get cluster endpoint from nodes or service
 data "kubernetes_nodes" "all" {}
 
-locals {
-  # Use vps hostname that OpenBao can reach
-  kubernetes_host = var.kubernetes_host != "" ? var.kubernetes_host : "https://vps:6443"
+# Use existing service account for vault authentication
+data "kubernetes_service_account_v1" "vault_auth" {
+  metadata {
+    name      = "vault-auth"
+    namespace = "kube-system"
+  }
+}
+
+# Create token for the existing service account
+resource "kubernetes_secret_v1" "vault_auth_token" {
+  metadata {
+    name      = "vault-auth-token"
+    namespace = "kube-system"
+    annotations = {
+      "kubernetes.io/service-account.name" = data.kubernetes_service_account_v1.vault_auth.metadata[0].name
+    }
+  }
+  type = "kubernetes.io/service-account-token"
 }
 
 # Kubernetes auth configuration
 resource "vault_kubernetes_auth_backend_config" "kubernetes" {
   backend                = vault_auth_backend.kubernetes.path
-  kubernetes_host        = local.kubernetes_host
+  kubernetes_host        = "https://vps:6443"
   kubernetes_ca_cert     = data.kubernetes_config_map.kube_root_ca.data["ca.crt"]
+  token_reviewer_jwt     = kubernetes_secret_v1.vault_auth_token.data["token"]
   disable_iss_validation = true
   disable_local_ca_jwt   = true
 }
