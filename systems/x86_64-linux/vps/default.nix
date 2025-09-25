@@ -62,7 +62,6 @@
       gotify.enable = true;
       uptime-kuma.enable = true;
       openbao.enable = true;
-      headlamp.enable = true;
 
       s3-backup = {
         enable = true;
@@ -83,22 +82,6 @@
     };
 
     traefik = {
-      staticConfigOptions = {
-        providers = {
-          kubernetesIngress = {
-            endpoint = "https://127.0.0.1:6443";
-            token = config.sops.secrets.k8s_traefik_token.path;
-            certAuthFilePath = config.sops.secrets.k8s_traefik_ca.path;
-            ingressClass = "traefik";
-          };
-          kubernetesCRD = {
-            endpoint = "https://127.0.0.1:6443";
-            token = config.sops.secrets.k8s_traefik_token.path;
-            certAuthFilePath = config.sops.secrets.k8s_traefik_ca.path;
-          };
-        };
-      };
-
       dynamicConfigOptions = {
         http = {
           services = {
@@ -124,12 +107,6 @@
               entryPoints = [ "websecure" ];
               rule = "Host(`immich.haseebmajid.dev`)";
               service = "immich";
-              tls.certResolver = "letsencrypt";
-            };
-            flux-webhook = {
-              entryPoints = [ "websecure" ];
-              rule = "Host(`flux-webhook.homelab.haseebmajid.dev`)";
-              service = "flux-webhook";
               tls.certResolver = "letsencrypt";
             };
           };

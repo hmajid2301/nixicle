@@ -32,7 +32,6 @@ in
       serviceConfig = {
         EnvironmentFile = [ config.sops.secrets.cloudflare_api_key.path ];
         SupplementaryGroups = lib.mkIf config.services.k3s.enable [ "k3s" ];
-
       };
       after = lib.mkIf config.services.k3s.enable [ "k3s.service" ];
       wants = lib.mkIf config.services.k3s.enable [ "k3s.service" ];
@@ -82,6 +81,20 @@ in
                   provider = "cloudflare";
                 };
               };
+            };
+          };
+
+          providers = lib.mkIf config.services.k3s.enable {
+            kubernetesIngress = {
+              endpoint = "https://127.0.0.1:6443";
+              token = config.sops.secrets.k8s_traefik_token.path;
+              certAuthFilePath = config.sops.secrets.k8s_traefik_ca.path;
+              ingressClass = "traefik";
+            };
+            kubernetesCRD = {
+              endpoint = "https://127.0.0.1:6443";
+              token = config.sops.secrets.k8s_traefik_token.path;
+              certAuthFilePath = config.sops.secrets.k8s_traefik_ca.path;
             };
           };
 
