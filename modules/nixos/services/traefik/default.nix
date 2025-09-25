@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  pkgs,
   ...
 }:
 with lib;
@@ -31,6 +32,7 @@ in
       serviceConfig = {
         EnvironmentFile = [ config.sops.secrets.cloudflare_api_key.path ];
         SupplementaryGroups = lib.mkIf config.services.k3s.enable [ "k3s" ];
+
       };
       after = lib.mkIf config.services.k3s.enable [ "k3s.service" ];
       wants = lib.mkIf config.services.k3s.enable [ "k3s.service" ];
@@ -40,6 +42,16 @@ in
     sops.secrets = {
       cloudflare_api_key = {
         sopsFile = ../secrets.yaml;
+      };
+      k8s_traefik_token = lib.mkIf config.services.k3s.enable {
+        sopsFile = ../secrets.yaml;
+        owner = "traefik";
+        group = "traefik";
+      };
+      k8s_traefik_ca = lib.mkIf config.services.k3s.enable {
+        sopsFile = ../secrets.yaml;
+        owner = "traefik";
+        group = "traefik";
       };
     };
 
@@ -107,6 +119,10 @@ in
                   {
                     main = "haseebmajid.dev";
                     sans = [ "*.haseebmajid.dev" ];
+                  }
+                  {
+                    main = "banterbus.games";
+                    sans = [ "*.banterbus.games" ];
                   }
                 ];
               };
