@@ -5,3 +5,8 @@ postgres_terraform_password = "password-from-sops"
 terraform_user_password = "existing-terraform-user-password"
 
 kubernetes_host = ""
+
+# Gitlab
+access_token = ""
+remote_state_address = ""
+username = ""

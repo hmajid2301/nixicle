@@ -23,7 +23,8 @@ in
       k3s = {
         enable = true;
         tokenFile = config.sops.secrets.k3s_token.path;
-        extraFlags = ''--kubelet-arg "node-ip=0.0.0.0"'' + optionalString (cfg.role == "server") " --disable=traefik";
+        extraFlags =
+          ''--kubelet-arg "node-ip=0.0.0.0"'' + optionalString (cfg.role == "server") " --disable=traefik";
         role = mkIf (cfg.role == "agent") "agent";
         # TODO: how can we set this programmatically
         serverAddr = mkIf (cfg.role == "agent") "https://vps:6443";

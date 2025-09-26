@@ -18,19 +18,24 @@
     role = "server";
   };
 
-  sops.secrets.cloudflared_vps = {
-    sopsFile = ../../../modules/nixos/services/secrets.yaml;
+  sops.secrets = {
+    cloudflared_vps = {
+      sopsFile = ../../../modules/nixos/services/secrets.yaml;
+    };
+
+    gitlab_runner_env_vps = {
+      sopsFile = ../../../modules/nixos/services/secrets.yaml;
+    };
+
+    b2_application_key = {
+      sopsFile = ../../../modules/nixos/services/secrets.yaml;
+    };
   };
 
-  sops.secrets.gitlab_runner_env_vps = {
-    sopsFile = ../../../modules/nixos/services/secrets.yaml;
-  };
-
-  # TODO: Import modern unix?
-  # environment.systemPackages = with pkgs; [
-  #   opencode
-  #   claude-code
-  # ];
+  environment.systemPackages = with pkgs; [
+    opencode
+    claude-code
+  ];
 
   services = {
     avahi.enable = lib.mkForce false;
@@ -46,6 +51,7 @@
     };
 
     nixicle = {
+      atuin.enable = true;
       alloy.enable = true;
       otel-collector.enable = true;
       traefik.enable = true;
@@ -56,6 +62,18 @@
       gotify.enable = true;
       uptime-kuma.enable = true;
       openbao.enable = true;
+
+      s3-backup = {
+        enable = true;
+        endpoint = "s3.us-west-004.backblazeb2.com";
+        bucket = "Majiy00Homelab";
+        accessKeyId = "0043ba7ac168efb000000000c";
+        secretKeyFile = config.sops.secrets.b2_application_key.path;
+        paths = [
+          "/var/lib/postgresql"
+        ];
+        schedule = "daily";
+      };
 
       gitlab-runner = {
         enable = true;
@@ -69,9 +87,16 @@
           services = {
             jellyfin.loadBalancer.servers = [ { url = "http://ms01:8096"; } ];
             immich.loadBalancer.servers = [ { url = "http://ms01:2283"; } ];
+            flux-webhook.loadBalancer.servers = [ { url = "http://localhost:30081"; } ];
           };
 
           routers = {
+            traefik-dashboard = {
+              entryPoints = [ "websecure" ];
+              rule = "Host(`traefik.homelab.haseebmajid.dev`)";
+              service = "api@internal";
+              tls.certResolver = "letsencrypt";
+            };
             jellyfin = {
               entryPoints = [ "websecure" ];
               rule = "Host(`jellyfin.haseebmajid.dev`)";

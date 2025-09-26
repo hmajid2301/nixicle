@@ -39,8 +39,7 @@ in
     services = {
       postgresql = {
         enable = true;
-        package = pkgs.postgresql_16_jit;
-        extensions = ps: with ps; [ pgvecto-rs ];
+        package = pkgs.postgresql_17;
         authentication = pkgs.lib.mkOverride 10 ''
           #...
           #type database DBuser origin-address auth-method
@@ -50,10 +49,6 @@ in
           # ipv6
           host all       all     ::1/128        trust
         '';
-        settings = {
-          shared_preload_libraries = [ "vectors.so" ];
-          search_path = "\"$user\", public, vectors";
-        };
         initialScript =
           if cfg.initialScript != null then cfg.initialScript else config.sops.templates."init.sql".path;
       };

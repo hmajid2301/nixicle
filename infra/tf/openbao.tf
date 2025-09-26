@@ -90,28 +90,43 @@ data "kubernetes_config_map" "kube_root_ca" {
 # Get cluster endpoint from nodes or service
 data "kubernetes_nodes" "all" {}
 
-locals {
-  # Extract the API server endpoint from node information
-  # This assumes your cluster endpoint is accessible from the first node's address
-  kubernetes_host = var.kubernetes_host != "" ? var.kubernetes_host : "https://${data.kubernetes_nodes.all.nodes[0].status[0].addresses[0].address}:6443"
+# Use existing service account for vault authentication
+data "kubernetes_service_account_v1" "vault_auth" {
+  metadata {
+    name      = "vault-auth"
+    namespace = "kube-system"
+  }
+}
+
+# Create token for the existing service account
+resource "kubernetes_secret_v1" "vault_auth_token" {
+  metadata {
+    name      = "vault-auth-token"
+    namespace = "kube-system"
+    annotations = {
+      "kubernetes.io/service-account.name" = data.kubernetes_service_account_v1.vault_auth.metadata[0].name
+    }
+  }
+  type = "kubernetes.io/service-account-token"
 }
 
 # Kubernetes auth configuration
 resource "vault_kubernetes_auth_backend_config" "kubernetes" {
   backend                = vault_auth_backend.kubernetes.path
-  kubernetes_host        = local.kubernetes_host
+  kubernetes_host        = "https://vps:6443"
   kubernetes_ca_cert     = data.kubernetes_config_map.kube_root_ca.data["ca.crt"]
+  token_reviewer_jwt     = kubernetes_secret_v1.vault_auth_token.data["token"]
   disable_iss_validation = true
-  disable_local_ca_jwt   = false
+  disable_local_ca_jwt   = true
 }
 
 # Kubernetes auth roles
 resource "vault_kubernetes_auth_backend_role" "k8s_auth_role" {
   backend                          = vault_auth_backend.kubernetes.path
   role_name                        = "k8s-auth-role"
-  bound_service_account_names      = ["banterbus", "openbao-auth"]
-  bound_service_account_namespaces = ["flux-system", "default", "prod", "dev", "apps", "tailscale"]
-  token_policies                   = ["default", "banterbus-dev", "banterbus-prod"]
+  bound_service_account_names      = ["banterbus", "openbao-auth", "default", "flux-system-vault"]
+  bound_service_account_namespaces = ["flux-system", "default", "prod", "dev", "apps", "tailscale", "infra"]
+  token_policies                   = ["default", "banterbus-dev", "banterbus-prod", "gitlab"]
   token_ttl                        = 3600
   token_max_ttl                    = 86400
 }
@@ -217,6 +232,21 @@ path "kv/metadata/infra/tailscale" {
 EOT
 }
 
+resource "vault_policy" "gitlab" {
+  name = "gitlab"
+
+  policy = <<EOT
+# Allow reading GitLab secrets for flux preview environments
+path "kv/data/apps/gitlab" {
+  capabilities = ["read"]
+}
+
+path "kv/metadata/apps/gitlab" {
+  capabilities = ["read"]
+}
+EOT
+}
+
 resource "vault_policy" "terraform" {
   name = "terraform"
 
@@ -293,8 +323,8 @@ EOT
 
 # Secret engines
 resource "vault_mount" "kv" {
-  path        = "kv"
-  type        = "kv"
+  path = "kv"
+  type = "kv"
   options = {
     version = "2"
   }
@@ -335,3 +365,4 @@ path "kv/metadata/infra/postgres/terraform" {
 }
 EOT
 }
+
