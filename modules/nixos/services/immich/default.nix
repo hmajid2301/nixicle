@@ -17,6 +17,8 @@ in
         enable = true;
         host = "0.0.0.0";
         mediaLocation = "/mnt/n1/immich";
+        database.enableVectors = false;
+        database.enableVectorChord = true;
       };
 
       traefik = {

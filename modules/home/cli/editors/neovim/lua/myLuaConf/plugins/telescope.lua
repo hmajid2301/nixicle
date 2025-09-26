@@ -80,7 +80,7 @@ return {
 						"--line-number",
 						"--column",
 						"--smart-case",
-						"--fixed-strings",
+						"--no-ignore",
 					},
 				},
 				extensions = {},

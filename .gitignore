@@ -39,3 +39,8 @@ terraform.rc
 # OpenTofu specific
 .tofu
 *.tofu
+
+terraform.tfvars
+# Terraform
+*.tfvars
+*.tfvars.json

@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  pkgs,
   ...
 }:
 with lib;
@@ -18,17 +19,39 @@ in
       443
     ];
 
+    users.groups.k3s = lib.mkIf config.services.k3s.enable { };
+
+    users.users.traefik = lib.mkIf config.services.k3s.enable {
+      extraGroups = [ "k3s" ];
+    };
+
     systemd.services.traefik = {
       environment = {
         CF_API_EMAIL = "hello@haseebmajid.dev";
       };
       serviceConfig = {
         EnvironmentFile = [ config.sops.secrets.cloudflare_api_key.path ];
+        SupplementaryGroups = lib.mkIf config.services.k3s.enable [ "k3s" ];
       };
+      after = lib.mkIf config.services.k3s.enable [ "k3s.service" ];
+      wants = lib.mkIf config.services.k3s.enable [ "k3s.service" ];
+      requires = lib.mkIf config.services.k3s.enable [ "k3s.service" ];
     };
 
-    sops.secrets.cloudflare_api_key = {
-      sopsFile = ../secrets.yaml;
+    sops.secrets = {
+      cloudflare_api_key = {
+        sopsFile = ../secrets.yaml;
+      };
+      k8s_traefik_token = lib.mkIf config.services.k3s.enable {
+        sopsFile = ../secrets.yaml;
+        owner = "traefik";
+        group = "traefik";
+      };
+      k8s_traefik_ca = lib.mkIf config.services.k3s.enable {
+        sopsFile = ../secrets.yaml;
+        owner = "traefik";
+        group = "traefik";
+      };
     };
 
     services = {
@@ -58,6 +81,20 @@ in
                   provider = "cloudflare";
                 };
               };
+            };
+          };
+
+          providers = lib.mkIf config.services.k3s.enable {
+            kubernetesIngress = {
+              endpoint = "https://127.0.0.1:6443";
+              token = config.sops.secrets.k8s_traefik_token.path;
+              certAuthFilePath = config.sops.secrets.k8s_traefik_ca.path;
+              ingressClass = "traefik";
+            };
+            kubernetesCRD = {
+              endpoint = "https://127.0.0.1:6443";
+              token = config.sops.secrets.k8s_traefik_token.path;
+              certAuthFilePath = config.sops.secrets.k8s_traefik_ca.path;
             };
           };
 
@@ -95,6 +132,10 @@ in
                   {
                     main = "haseebmajid.dev";
                     sans = [ "*.haseebmajid.dev" ];
+                  }
+                  {
+                    main = "banterbus.games";
+                    sans = [ "*.banterbus.games" ];
                   }
                 ];
               };
