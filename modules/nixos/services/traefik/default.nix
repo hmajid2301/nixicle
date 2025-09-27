@@ -1,7 +1,6 @@
 {
   config,
   lib,
-  pkgs,
   ...
 }:
 with lib;
@@ -135,7 +134,7 @@ in
                   }
                   {
                     main = "banterbus.games";
-                    sans = [ "*.banterbus.games" ];
+                    sans = [ "*.dev.banterbus.games" ];
                   }
                 ];
               };

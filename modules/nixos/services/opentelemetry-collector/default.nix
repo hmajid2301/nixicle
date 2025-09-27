@@ -25,6 +25,7 @@ in
         EnvironmentFile = [
           config.sops.secrets.otel_betterstack_token.path
         ];
+        SupplementaryGroups = [ "systemd-journal" ];
       };
     };
 
@@ -59,6 +60,16 @@ in
           receivers = {
             otlp.protocols.http = {
               endpoint = "0.0.0.0:3333";
+            };
+            journald = {
+              directory = "/var/log/journal";
+              files = [ "/var/log/journal/*/*" ];
+              start_at = "end";
+              retry_on_failure = {
+                enabled = true;
+                initial_interval = "1s";
+                max_interval = "30s";
+              };
             };
           };
           processors.batch = { };
@@ -101,7 +112,7 @@ in
                 exporters = [ "otlphttp/betterstack" ];
               };
               "logs/loki" = {
-                receivers = [ "otlp" ];
+                receivers = [ "otlp" "journald" ];
                 processors = [ "batch" ];
                 exporters = [ "loki" ];
               };

@@ -38,8 +38,7 @@
   });
 
   hardware.nixicle.ddcci.enable = true;
-  
-  # Add user to i2c group for DDC/CI monitor control
+
   users.users.haseeb.extraGroups = [ "i2c" ];
 
   services = {
@@ -48,8 +47,6 @@
     # TODO: Look into enabling podman again in the future
     virtualisation.podman.enable = lib.mkForce false;
     hardware.openrgb.enable = true;
-    nixicle.nfs.enable = true;
-    # nixicle.ollama.enable = true;
   };
 
   roles = {
