@@ -65,6 +65,7 @@ in
       bind = [
         "SUPER, Return, exec, ghostty"
         "SUPER, B, exec, ${pkgs.rofi}/bin/rofi -show drun -mode drun"
+        "SUPER, E, exec, thunar"
         "SUPER, Q, killactive,"
         "SUPER, F, Fullscreen,0"
         "SUPER, R, exec, ${resize}/bin/resize"

@@ -41,8 +41,8 @@ variable "postgres_port" {
   default     = 5432
 }
 
-variable "terraform_user_password" {
-  description = "Password for terraform userpass user"
+variable "tofu_user_password" {
+  description = "Password for tofu userpass user"
   type        = string
   sensitive   = true
 }
@@ -141,14 +141,14 @@ resource "vault_kubernetes_auth_backend_role" "tailscale" {
 }
 
 # Userpass users
-resource "vault_generic_endpoint" "terraform_user" {
+resource "vault_generic_endpoint" "tofu_user" {
   depends_on           = [vault_auth_backend.userpass]
-  path                 = "auth/userpass/users/terraform"
+  path                 = "auth/userpass/users/tofu"
   ignore_absent_fields = true
 
   data_json = jsonencode({
-    policies = ["terraform", "cloudflare-tunnel"]
-    password = var.terraform_user_password
+    policies = ["tofu", "cloudflare-tunnel"]
+    password = var.tofu_user_password
   })
 }
 
@@ -247,8 +247,8 @@ path "kv/metadata/apps/gitlab" {
 EOT
 }
 
-resource "vault_policy" "terraform" {
-  name = "terraform"
+resource "vault_policy" "tofu" {
+  name = "tofu"
 
   policy = <<EOT
 path "kv/*" {
@@ -343,11 +343,10 @@ resource "vault_kv_secret_v2" "postgres_terraform" {
   name  = "infra/postgres/terraform"
 
   data_json = jsonencode({
-    username = "terraform_user"
+    username = "terraform"
     password = var.postgres_terraform_password
     host     = var.postgres_host
     port     = var.postgres_port
-    database = "default_db"
   })
 }
 
@@ -365,4 +364,6 @@ path "kv/metadata/infra/postgres/terraform" {
 }
 EOT
 }
+
+
 

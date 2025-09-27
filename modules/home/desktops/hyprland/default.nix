@@ -26,6 +26,7 @@ in {
       waybar.enable = true;
       wlogout.enable = true;
       wlsunset.enable = true;
+      thunar.enable = true;
 
       # pyprland.enable = true;
       hyprpaper.enable = true;
