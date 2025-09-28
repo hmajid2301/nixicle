@@ -330,10 +330,10 @@ in
               otlp = {
                 protocols = {
                   http = {
-                    endpoint = "0.0.0.0:4400";
+                    endpoint = "0.0.0.0:4318";
                   };
                   grpc = {
-                    endpoint = "0.0.0.0:4401";
+                    endpoint = "0.0.0.0:4317";
                   };
                 };
               };

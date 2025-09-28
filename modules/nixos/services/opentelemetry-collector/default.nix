@@ -105,7 +105,7 @@ in
               endpoint = "http://127.0.0.1:3030/loki/api/v1/push";
             };
             "otlphttp/tempo" = {
-              endpoint = "http://127.0.0.1:4400";
+              endpoint = "http://127.0.0.1:4318";
             };
           };
           service = {
