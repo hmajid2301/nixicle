@@ -64,6 +64,23 @@
 
   programs.wireshark.enable = true;
 
+  # Thunar file manager with thumbnail support
+  programs.thunar = {
+    enable = true;
+    plugins = with pkgs.xfce; [
+      thunar-archive-plugin
+      thunar-volman
+      thunar-media-tags-plugin
+    ];
+  };
+  
+  # Required for Thunar preferences in non-XFCE environments
+  programs.xfconf.enable = true;
+  
+  # Thumbnail support and mount functionality
+  services.tumbler.enable = true;
+  services.gvfs.enable = true;
+
   # Explicitly disable systemd-networkd to avoid infinite recursion
   networking.useNetworkd = lib.mkForce false;
   systemd.network.enable = lib.mkForce false;

@@ -106,6 +106,10 @@ in
         port = 3020;
         enable = true;
         checkConfig = "syntax-only";
+        extraFlags = [
+          "--web.enable-admin-api"
+          "--storage.tsdb.retention.time=30d"
+        ];
         alertmanager = {
           enable = true;
           configuration = {

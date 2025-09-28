@@ -72,7 +72,26 @@ in
               };
             };
           };
-          processors.batch = { };
+          processors = {
+            batch = { };
+            
+            # Transform processor to create environment and service labels
+            transform = {
+              metric_statements = [
+                {
+                  context = "datapoint";
+                  statements = [
+                    # Add environment label from service namespace
+                    "set(attributes[\"environment\"], resource.attributes[\"service.namespace\"]) where resource.attributes[\"service.namespace\"] != nil"
+                    # Add service label (keep service.name as-is)
+                    "set(attributes[\"service\"], resource.attributes[\"service.name\"]) where resource.attributes[\"service.name\"] != nil"
+                    # Add exported_job label for Grafana compatibility
+                    "set(attributes[\"exported_job\"], Concat([resource.attributes[\"service.namespace\"], \"/\", resource.attributes[\"service.name\"]], \"\")) where resource.attributes[\"service.namespace\"] != nil and resource.attributes[\"service.name\"] != nil"
+                  ];
+                }
+              ];
+            };
+          };
 
           exporters = {
             "otlphttp/betterstack" = {
@@ -86,7 +105,7 @@ in
               endpoint = "http://127.0.0.1:3030/loki/api/v1/push";
             };
             "otlphttp/tempo" = {
-              endpoint = "http://127.0.0.1:4400/v1/traces";
+              endpoint = "http://127.0.0.1:4400";
             };
           };
           service = {
@@ -98,12 +117,12 @@ in
             pipelines = {
               "metrics/betterstack" = {
                 receivers = [ "otlp" ];
-                processors = [ "batch" ];
+                processors = [ "batch" "transform" ];
                 exporters = [ "otlphttp/betterstack" ];
               };
               "metrics/prometheus" = {
                 receivers = [ "otlp" ];
-                processors = [ "batch" ];
+                processors = [ "batch" "transform" ];
                 exporters = [ "prometheus" ];
               };
               "logs/betterstack" = {
