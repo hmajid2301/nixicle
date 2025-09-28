@@ -325,6 +325,20 @@ in
             http_listen_port = 4400;
             grpc_listen_port = 4401;
           };
+          distributor = {
+            receivers = {
+              otlp = {
+                protocols = {
+                  http = {
+                    endpoint = "0.0.0.0:4400";
+                  };
+                  grpc = {
+                    endpoint = "0.0.0.0:4401";
+                  };
+                };
+              };
+            };
+          };
           storage = {
             trace = {
               backend = "local";
