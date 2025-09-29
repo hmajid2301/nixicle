@@ -11,7 +11,8 @@ return {
 			{ "<leader>fm", mode = { "n" }, desc = "Find keymaps" },
 			{ "<leader>fs", mode = { "n" }, desc = "Find telescopes" },
 			{ "<leader>fw", mode = { "n" }, desc = "Find current word" },
-			{ "<leader>fg", mode = { "n" }, desc = "Find grep search" },
+			{ "<leader>fg", mode = { "n" }, desc = "Find files (git)" },
+			{ "<leader>fl", mode = { "n" }, desc = "Find live grep" },
 			{ "<leader>fd", mode = { "n" }, desc = "Find diagnostics" },
 			{ "<leader>fr", mode = { "n" }, desc = "Find resume" },
 			{ "<leader>f.", mode = { "n" }, desc = "Find recent files" },
@@ -80,10 +81,17 @@ return {
 						"--line-number",
 						"--column",
 						"--smart-case",
-						"--no-ignore",
+						"--hidden",
 					},
 				},
 				extensions = {},
+				pickers = {
+					live_grep = {
+						additional_args = function()
+							return { "--hidden" }
+						end,
+					},
+				},
 			})
 
 			pcall(require("telescope").load_extension, "fzf")
@@ -98,15 +106,41 @@ return {
 			vim.keymap.set("n", "<leader>fm", builtin.keymaps, { desc = "Find keymaps" })
 			vim.keymap.set("n", "<leader>fs", builtin.builtin, { desc = "Find telescopes" })
 			vim.keymap.set("n", "<leader>fw", builtin.grep_string, { desc = "Find current word" })
-			vim.keymap.set("n", "<leader>fg", builtin.live_grep, { desc = "Find grep search" })
+			vim.keymap.set("n", "<leader>fl", builtin.live_grep, { desc = "Find live grep" })
+			vim.keymap.set("n", "<leader>fg", function()
+				builtin.find_files({ 
+					hidden = true,
+					follow = true,
+					find_command = {
+						"rg",
+						"--files",
+						"--hidden",
+						-- Respect .ignore, .gitignore, and other ignore files
+					}
+				})
+			end, { desc = "Find files (respects .ignore)" })
 			vim.keymap.set("n", "<leader>fd", builtin.diagnostics, { desc = "Find diagnostics" })
 			vim.keymap.set("n", "<leader>fr", builtin.resume, { desc = "Find resume" })
 			vim.keymap.set("n", "<leader>f.", builtin.oldfiles, { desc = "Find recent files" })
 			vim.keymap.set("n", "<leader>fb", builtin.buffers, { desc = "Find buffer" })
 			vim.keymap.set("n", "<leader>fc", builtin.command_history, { desc = "Find command" })
 			vim.keymap.set("n", "<leader>ff", function()
-				builtin.find_files({ hidden = true, follow = true })
-			end, { desc = "Find all files" })
+				builtin.find_files({ 
+					hidden = true, 
+					follow = true,
+					find_command = {
+						"rg",
+						"--files",
+						"--hidden",
+						"--no-ignore-vcs",
+						"--glob=!.git/",
+						"--glob=!node_modules/",
+						"--glob=!.devenv/",
+						"--glob=!.direnv/",
+						"--glob=!.gitlab-ci-local/",
+					}
+				})
+			end, { desc = "Find all files (ignore common dirs)" })
 		end,
 	},
 }
