@@ -106,6 +106,10 @@ in
         port = 3020;
         enable = true;
         checkConfig = "syntax-only";
+        extraFlags = [
+          "--web.enable-admin-api"
+          "--storage.tsdb.retention.time=30d"
+        ];
         alertmanager = {
           enable = true;
           configuration = {
@@ -320,6 +324,20 @@ in
           server = {
             http_listen_port = 4400;
             grpc_listen_port = 4401;
+          };
+          distributor = {
+            receivers = {
+              otlp = {
+                protocols = {
+                  http = {
+                    endpoint = "0.0.0.0:4318";
+                  };
+                  grpc = {
+                    endpoint = "0.0.0.0:4317";
+                  };
+                };
+              };
+            };
           };
           storage = {
             trace = {
