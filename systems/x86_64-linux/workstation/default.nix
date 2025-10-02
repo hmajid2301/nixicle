@@ -17,6 +17,8 @@
   environment.systemPackages = with pkgs; [
     inputs.caelestia.packages.${pkgs.system}.default
     inputs.caelestia.inputs.caelestia-cli.packages.${pkgs.system}.default
+    cifs-utils
+    samba
   ];
 
   programs.neovim = {
@@ -38,8 +40,7 @@
   });
 
   hardware.nixicle.ddcci.enable = true;
-  
-  # Add user to i2c group for DDC/CI monitor control
+
   users.users.haseeb.extraGroups = [ "i2c" ];
 
   services = {
@@ -48,8 +49,6 @@
     # TODO: Look into enabling podman again in the future
     virtualisation.podman.enable = lib.mkForce false;
     hardware.openrgb.enable = true;
-    nixicle.nfs.enable = true;
-    # nixicle.ollama.enable = true;
   };
 
   roles = {
@@ -65,9 +64,44 @@
 
   programs.wireshark.enable = true;
 
+  # Thunar file manager with thumbnail support
+  programs.thunar = {
+    enable = true;
+    plugins = with pkgs.xfce; [
+      thunar-archive-plugin
+      thunar-volman
+      thunar-media-tags-plugin
+    ];
+  };
+  
+  # Required for Thunar preferences in non-XFCE environments
+  programs.xfconf.enable = true;
+  
+  # Thumbnail support and mount functionality
+  services.tumbler.enable = true;
+  services.gvfs.enable = true;
+
   # Explicitly disable systemd-networkd to avoid infinite recursion
   networking.useNetworkd = lib.mkForce false;
   systemd.network.enable = lib.mkForce false;
+
+  # SMB/CIFS mount
+  fileSystems."/mnt/videos" = {
+    device = "//[2a0a:ef40:1065:4f01:7a55:36ff:fe01:15ae]/main";
+    fsType = "cifs";
+    options = [
+      "credentials=/etc/samba/credentials"
+      "vers=3.0"
+      "iocharset=utf8"
+      "uid=1000"
+      "gid=100"
+      "x-systemd.automount"
+      "noauto"
+      "x-systemd.idle-timeout=60"
+      "x-systemd.device-timeout=5s"
+      "x-systemd.mount-timeout=5s"
+    ];
+  };
 
   boot = {
     kernelParams = [ "resume_offset=533760" ];
@@ -76,7 +110,7 @@
       "ath12k"
     ];
 
-    supportedFilesystems = lib.mkForce [ "btrfs" ];
+    supportedFilesystems = lib.mkForce [ "btrfs" "cifs" ];
     kernelPackages = pkgs.linuxPackages_latest;
     resumeDevice = "/dev/disk/by-label/nixos";
   };

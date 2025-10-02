@@ -41,10 +41,31 @@ in {
 
     snowfallorg.users.${config.user.name}.home.config = {
       dconf.settings = {
-        "org/gnome/desktop/privacy" = { remember-recent-files = false; };
         "org/gnome/nautilus/preferences" = {
-          show-image-thumbnails = "always";
-          thumbnail-limit = 4294967295; # No limit
+          show-image-thumbnails = "always"; # Show thumbnails for all locations (local + remote)
+          thumbnail-limit = 10; # Maximum allowed value (0-10 range)  
+          show-directory-item-counts = "always";
+          executable-text-activation = "ask";
+          always-use-location-entry = false;
+          default-folder-viewer = "icon-view";
+        };
+        "org/gnome/desktop/thumbnailers" = {
+          disable-all = false;
+        };
+        # Ensure all thumbnailer types are enabled
+        "org/gnome/desktop/thumbnailers/gstreamer" = {
+          enable = true;
+        };
+        "org/gnome/desktop/thumbnailers/gdk-pixbuf" = {
+          enable = true;
+        };
+        "org/gnome/desktop/thumbnailers/ffmpegthumbnailer" = {
+          enable = true;
+        };
+        "org/gnome/desktop/privacy" = { 
+          remember-recent-files = false;
+          disable-camera = false;
+          disable-microphone = false;
         };
         "com/github/stunkymonkey/nautilus-open-any-terminal" = {
           terminal = "ghostty";

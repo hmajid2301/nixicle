@@ -19,6 +19,7 @@
     adguard.enable = true;
     n8n.enable = true;
     logging.enable = true;
+    otel-collector.enable = true;
   };
 
   topology.self = {

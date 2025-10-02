@@ -69,7 +69,7 @@ in
               tailwindcss-language-server
             ];
             docker = with pkgs; [
-              dockerfile-language-server-nodejs
+              dockerfile-language-server
               docker-compose-language-service
               hadolint
             ];

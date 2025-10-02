@@ -29,13 +29,13 @@ in
       package = pkgs.openbao;
       settings = {
         ui = true;
-        api_addr = "http://0.0.0.0:8200";
-        cluster_addr = "https://0.0.0.0:8201";
+        api_addr = "http://tailscale0:8200";
+        cluster_addr = "https://tailscale0:8201";
 
         listener = {
           tcp = {
             type = "tcp";
-            address = "0.0.0.0:8200";
+            address = "tailscale0:8200";
             tls_disable = true;
           };
         };
