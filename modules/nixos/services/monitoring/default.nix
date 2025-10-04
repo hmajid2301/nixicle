@@ -87,13 +87,6 @@ in
                 service = "tempo";
                 tls.certResolver = "letsencrypt";
               };
-
-              tempo = {
-                entryPoints = [ "websecure" ];
-                rule = "Host(`tempo.homelab.haseebmajid.dev`)";
-                service = "tempo";
-                tls.certResolver = "letsencrypt";
-              };
             };
           };
         };
