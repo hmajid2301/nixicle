@@ -77,6 +77,9 @@ in
       # homelab
       pgcli
       openbao
+      gnumake
+      kind
+      pnpm
     ];
   };
 }
