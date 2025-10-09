@@ -10,76 +10,25 @@ let
   cfg = config.cli.programs.modern-unix;
 in
 {
+  imports = [
+    ../core-tools
+    ../development
+    ../ai-tools
+    ../homelab
+    ../tui
+  ];
+
   options.cli.programs.modern-unix = with types; {
     enable = mkBoolOpt false "Whether or not to enable modern unix tools";
   };
 
   config = mkIf cfg.enable {
-    home.packages = with pkgs; [
-      broot
-      choose
-      curlie
-      chafa
-      doggo
-      duf
-      delta
-      du-dust
-      dysk
-      entr
-      erdtree
-      fd
-      gdu
-      gping
-      grex
-      hyperfine
-      hexyl
-      jqp
-      jnv
-      ouch
-      silver-searcher
-      procs
-      tokei
-      gomi
-      tailspin
-      ripgrep
-      sd
-      xcp
-      yq-go
-      viddy
-
-      kaf
-
-      # go
-      go
-      goose
-      golangci-lint
-      air
-      templ
-      sqlc
-      golines
-      gotools
-      go-task
-      go-mockery
-      gotestsum
-      delve
-
-      nodejs_24
-      bun
-
-      sshx
-
-      # ai
-      opencode
-      claude-code
-      gemini-cli
-      crush
-
-      # homelab
-      pgcli
-      openbao
-      gnumake
-      kind
-      pnpm
-    ];
+    cli.programs = {
+      core-tools.enable = true;
+      development.enable = true;
+      ai-tools.enable = true;
+      homelab.enable = true;
+      tui.enable = true;
+    };
   };
 }
