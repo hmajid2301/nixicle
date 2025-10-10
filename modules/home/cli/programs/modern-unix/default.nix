@@ -10,14 +10,6 @@ let
   cfg = config.cli.programs.modern-unix;
 in
 {
-  imports = [
-    ../core-tools
-    ../development
-    ../ai-tools
-    ../homelab
-    ../tui
-  ];
-
   options.cli.programs.modern-unix = with types; {
     enable = mkBoolOpt false "Whether or not to enable modern unix tools";
   };

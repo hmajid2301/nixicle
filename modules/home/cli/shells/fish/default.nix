@@ -100,6 +100,10 @@ in
         
         # enhanced cat with smart preview
         wcat = "wellcat";
+        
+        # zellij development layouts
+        zdev = "zellij --layout dev";
+        zdevs = "zellij --layout dev-simple";
         # docker-compose = "docker-compose"; # Use native docker-compose
       };
 
@@ -260,6 +264,49 @@ in
             else if test -d "$item"
               eza --icons -l "$item"
             end
+          end
+        '';
+
+        pkill_fzf = ''
+          ps aux | fzf --header-lines=1 \
+                        --preview 'echo "Process Info:"; ps -p {2} -o pid,ppid,user,time,args' \
+                        --bind 'enter:execute(kill {2})' \
+                        --bind 'ctrl-k:execute(kill -9 {2})'
+        '';
+
+        pkill_port = ''
+          # Get listening ports and processes
+          set port_process (ss -tulpn | grep LISTEN | \
+            awk '{
+              # Extract port from local address (format: *:port or ip:port)
+              split($5, addr, ":");
+              port = addr[length(addr)];
+              
+              # Extract PID from process info (format: users:(("process",pid=123,fd=4)))
+              if (match($7, /pid=([0-9]+)/, pid_match)) {
+                pid = pid_match[1];
+                # Get process name
+                cmd = "ps -p " pid " -o comm= 2>/dev/null";
+                cmd | getline process_name;
+                close(cmd);
+                if (process_name == "") process_name = "unknown";
+                print port "\t" pid "\t" process_name "\t" $5;
+              }
+            }' | \
+            fzf --header "PORT PID PROCESS LOCAL_ADDRESS" \
+                --preview 'echo "Port Details:"; ss -tulpn | grep :{1}; echo ""; echo "Process Details:"; ps -p {2} -o pid,ppid,user,time,args 2>/dev/null || echo "Process not found"' \
+                --bind 'enter:execute(kill {2})' \
+                --bind 'ctrl-k:execute(kill -9 {2})' \
+                --bind 'ctrl-s:execute(sudo kill {2})' \
+                --bind 'ctrl-x:execute(sudo kill -9 {2})')
+          
+          if test -n "$port_process"
+            set pid (echo "$port_process" | awk '{print $2}')
+            set port (echo "$port_process" | awk '{print $1}')
+            set process (echo "$port_process" | awk '{print $3}')
+            echo "Selected: Port $port (PID: $pid, Process: $process)"
+          else
+            echo "No port selected"
           end
         '';
 
