@@ -100,10 +100,6 @@ in
         
         # enhanced cat with smart preview
         wcat = "wellcat";
-        
-        # zellij development layouts
-        zdev = "zellij --layout dev";
-        zdevs = "zellij --layout dev-simple";
         # docker-compose = "docker-compose"; # Use native docker-compose
       };
 
