@@ -55,6 +55,7 @@ in
       pkgs.source-serif
       pkgs.nerd-fonts.symbols-only
       pkgs.dejavu_fonts
+      pkgs.liberation_ttf
       screensharing
       nwg-displays
       (lib.hiPrio (config.lib.nixGL.wrap totem))
@@ -87,7 +88,7 @@ in
         "Noto Color Emoji" # Emoji fallback
       ];
 
-      theme = "catppuccin-mocha";
+      theme = "Catppuccin Mocha";
 
       command = "fish";
       gtk-titlebar = false;
@@ -168,36 +169,44 @@ in
           </edit>
         </match>
 
-        <!-- Comprehensive fallback chain to prevent square blocks -->
+        <!-- Monospace fallback chain -->
         <match target="pattern">
-          <edit name="family" mode="append">
-            <string>Noto Sans</string>
-          </edit>
-        </match>
-
-        <match target="pattern">
-          <edit name="family" mode="append">
-            <string>Noto Sans</string>
-          </edit>
-        </match>
-
-        <match target="pattern">
-          <edit name="family" mode="append">
-            <string>Noto Color Emoji</string>
-          </edit>
-        </match>
-
-        <match target="pattern">
+          <test name="family">
+            <string>monospace</string>
+          </test>
           <edit name="family" mode="append">
             <string>Symbols Nerd Font</string>
           </edit>
         </match>
 
         <match target="pattern">
+          <test name="family">
+            <string>monospace</string>
+          </test>
+          <edit name="family" mode="append">
+            <string>DejaVu Sans Mono</string>
+          </edit>
+        </match>
+
+        <!-- Sans-serif fallback chain -->
+        <match target="pattern">
+          <test name="family">
+            <string>sans-serif</string>
+          </test>
           <edit name="family" mode="append">
             <string>DejaVu Sans</string>
           </edit>
         </match>
+
+        <match target="pattern">
+          <test name="family">
+            <string>sans-serif</string>
+          </test>
+          <edit name="family" mode="append">
+            <string>Symbols Nerd Font</string>
+          </edit>
+        </match>
+
 
         <!-- Force emoji rendering -->
         <match target="pattern">

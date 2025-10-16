@@ -32,28 +32,59 @@ let
     #! /usr/bin/env sh
 
     # Taken from https://github.com/zellij-org/zellij/issues/884#issuecomment-1851136980
-    # select a directory using zoxide
-    ZOXIDE_RESULT=$(zoxide query --interactive)
+    # Modified to handle being called from inside zellij
+
+    # If a directory is passed as an argument, use it; otherwise use zoxide interactive
+    if [[ -n "$1" ]]; then
+      ZOXIDE_RESULT="$1"
+    else
+      # select a directory using zoxide
+      ZOXIDE_RESULT=$(zoxide query --interactive)
+    fi
+
     # checks whether a directory has been selected
     if [[ -z "$ZOXIDE_RESULT" ]]; then
     	# if there was no directory, select returns without executing
     	exit 0
     fi
+
     # extracts the directory name from the absolute path
     SESSION_TITLE=$(echo "$ZOXIDE_RESULT" | sed 's#.*/##')
 
     # get the list of sessions
-    SESSION_LIST=$(zellij list-sessions -n | awk '{print $1}')
+    SESSION_LIST=$(zellij list-sessions -n 2>/dev/null | awk '{print $1}')
 
-    # checks if SESSION_TITLE is in the session list
-    if echo "$SESSION_LIST" | grep -q "^$SESSION_TITLE$"; then
-    	# if so, attach to existing session
-    	zellij attach "$SESSION_TITLE"
+    # Check if we're already inside a zellij session
+    if [[ -n "$ZELLIJ" ]]; then
+      # We're inside zellij, so use zellij action to switch sessions
+      if echo "$SESSION_LIST" | grep -q "^$SESSION_TITLE$"; then
+        # Session exists, switch to it
+        zellij action switch-mode normal
+        zellij action go-to-tab-name "$SESSION_TITLE" 2>/dev/null || {
+          # If session exists but we can't switch tabs, try session switching
+          echo "Switching to existing session: $SESSION_TITLE"
+          zellij action detach
+          zellij attach "$SESSION_TITLE"
+        }
+      else
+        # Session doesn't exist, we need to detach and create new session
+        echo "Creating new session $SESSION_TITLE at $ZOXIDE_RESULT"
+        zellij action detach
+        cd "$ZOXIDE_RESULT"
+        zellij attach -c "$SESSION_TITLE"
+      fi
     else
-    	# if not, create a new session
-    	echo "Creating new session $SESSION_TITLE and CD $ZOXIDE_RESULT"
-    	cd $ZOXIDE_RESULT
-    	zellij attach -c "$SESSION_TITLE"
+      # We're outside zellij, original behavior
+      # checks if SESSION_TITLE is in the session list
+      if echo "$SESSION_LIST" | grep -q "^$SESSION_TITLE$"; then
+      	# if so, attach to existing session
+      	zellij attach "$SESSION_TITLE"
+      else
+      	# if not, create a new session
+      	echo "Creating new session $SESSION_TITLE and CD $ZOXIDE_RESULT"
+      	cd "$ZOXIDE_RESULT"
+      	zellij attach -c "$SESSION_TITLE"
+      fi
     fi
   '';
 in

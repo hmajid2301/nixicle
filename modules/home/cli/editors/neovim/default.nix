@@ -208,6 +208,7 @@ in
                 diffview-nvim
                 advanced-git-search-nvim
                 neogit
+                git-worktree-nvim
                 pkgs.neovimPlugins.webify-nvim
               ];
               diagnostics = with pkgs.vimPlugins; [ trouble-nvim ];

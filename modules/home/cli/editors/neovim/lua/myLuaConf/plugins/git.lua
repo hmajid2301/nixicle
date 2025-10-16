@@ -263,4 +263,57 @@ return {
 			require("webify").setup({})
 		end,
 	},
+	{
+		"git-worktree.nvim",
+		for_cat = "general.git",
+		event = "DeferredUIEnter",
+		after = function(plugin)
+			require("git-worktree").setup({
+				change_directory_command = "cd",
+				update_on_change = true,
+				update_on_change_command = "e .",
+				clearjumps_on_change = true,
+				autopush = false,
+			})
+
+			-- Hook to create/switch zellij session when creating a worktree
+			local worktree = require("git-worktree")
+
+			worktree.on_tree_change(function(op, metadata)
+				if op == worktree.Operations.Create then
+					-- Get the worktree path
+					local worktree_path = metadata.path
+					local session_name = vim.fn.fnamemodify(worktree_path, ":t")
+
+					-- Check if we're inside zellij
+					if vim.env.ZELLIJ then
+						-- We're inside zellij - just notify the user
+						vim.notify(
+							string.format(
+								"Worktree created at: %s\nTo switch to it, exit nvim and run: sesh %s",
+								worktree_path,
+								worktree_path
+							),
+							vim.log.levels.INFO
+						)
+					else
+						-- We're outside zellij - create/switch session automatically
+						vim.fn.jobstart({ "sesh", worktree_path }, {
+							detach = true,
+							on_exit = function(_, exit_code)
+								if exit_code == 0 then
+									vim.notify(
+										"Zellij session created/attached: " .. session_name,
+										vim.log.levels.INFO
+									)
+								else
+									vim.notify("Failed to create zellij session for worktree", vim.log.levels.WARN)
+								end
+							end,
+						})
+					end
+				end
+			end)
+		end,
+	},
 }

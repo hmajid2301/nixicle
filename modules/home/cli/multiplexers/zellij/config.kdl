@@ -6,6 +6,13 @@ copy_on_select true
 show_startup_tips false
 scrollback_editor "nixCats"
 
+ui {
+    pane_frames {
+        hide_session_name true
+        rounded_corners false
+    }
+}
+
 // If you'd like to override the default keybindings completely, be sure to change "keybinds" to "keybinds clear-defaults=true"
 keybinds {
     unbind "Ctrl q"
