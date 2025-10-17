@@ -268,18 +268,25 @@ return {
 		for_cat = "general.git",
 		event = "DeferredUIEnter",
 		after = function(plugin)
-			require("git-worktree").setup({
-				change_directory_command = "cd",
-				update_on_change = true,
-				update_on_change_command = "e .",
-				clearjumps_on_change = true,
-				autopush = false,
-			})
+			local ok, worktree = pcall(require, "git-worktree")
+			if not ok then
+				return
+			end
+
+			-- Setup if the function exists
+			if type(worktree.setup) == "function" then
+				worktree.setup({
+					change_directory_command = "cd",
+					update_on_change = true,
+					update_on_change_command = "e .",
+					clearjumps_on_change = true,
+					autopush = false,
+				})
+			end
 
 			-- Hook to create/switch zellij session when creating a worktree
-			local worktree = require("git-worktree")
-
-			worktree.on_tree_change(function(op, metadata)
+			if type(worktree.on_tree_change) == "function" then
+				worktree.on_tree_change(function(op, metadata)
 				if op == worktree.Operations.Create then
 					-- Get the worktree path
 					local worktree_path = metadata.path
@@ -314,6 +321,7 @@ return {
 					end
 				end
 			end)
+			end
 		end,
 	},
 }
