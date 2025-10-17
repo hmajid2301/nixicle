@@ -37,3 +37,16 @@ if nixCats("format") then
 end
 -- NOTE: I didnt actually include any linters or formatters in this configuration,
 -- but it is enough to serve as an example.
+
+-- NOTE: Show random tip on startup
+local utils = require("myLuaConf.utils")
+vim.api.nvim_create_autocmd("VimEnter", {
+	group = vim.api.nvim_create_augroup("ShowTips", { clear = true }),
+	callback = function()
+		-- Only show tips if no files were opened
+		if vim.fn.argc() == 0 then
+			utils.show_tip()
+		end
+	end,
+	desc = "Show random tip from tips.md on startup",
+})
