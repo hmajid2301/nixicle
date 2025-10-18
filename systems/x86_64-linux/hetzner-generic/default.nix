@@ -5,7 +5,7 @@
   ...
 }: {
   # Basic system configuration for Hetzner
-  networking.hostName = "hetzner-nixos";
+  networking.hostName = lib.mkDefault "hetzner-nixos";
   
   # Enable SSH for remote access
   services.openssh = {
@@ -32,6 +32,12 @@
   # Use systemd-boot
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
+
+  # Dummy root filesystem (should be overridden during installation)
+  fileSystems."/" = {
+    device = "/dev/sda1";
+    fsType = "ext4";
+  };
 
   # Basic packages
   environment.systemPackages = with pkgs; [
