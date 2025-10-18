@@ -54,11 +54,7 @@ in
                   url = "http://localhost:9093";
                 }
               ];
-              otel-collector.loadBalancer.servers = [
-                {
-                  url = "http://localhost:3333";
-                }
-              ];
+
               tempo.loadBalancer.servers = [
                 {
                   url = "http://localhost:4400";
@@ -83,12 +79,6 @@ in
                 entryPoints = [ "websecure" ];
                 rule = "Host(`alertmanager.homelab.haseebmajid.dev`)";
                 service = "alertmanager";
-                tls.certResolver = "letsencrypt";
-              };
-              otel-collector = {
-                entryPoints = [ "websecure" ];
-                rule = "Host(`otel-collector.homelab.haseebmajid.dev`)";
-                service = "otel-collector";
                 tls.certResolver = "letsencrypt";
               };
               tempo = {

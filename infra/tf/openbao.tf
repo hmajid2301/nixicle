@@ -8,6 +8,14 @@ terraform {
       source  = "hashicorp/kubernetes"
       version = "~> 2.32"
     }
+    betterstack = {
+      source  = "BetterStackHQ/better-uptime"
+      version = "~> 0.9.0"
+    }
+    logtail = {
+      source  = "BetterStackHQ/logtail"
+      version = "~> 0.3.0"
+    }
   }
 }
 

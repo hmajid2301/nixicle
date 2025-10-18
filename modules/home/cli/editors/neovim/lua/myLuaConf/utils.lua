@@ -1,48 +1,11 @@
--- NOTE: various, non-plugin config
-require("myLuaConf.opts_and_keys")
+local M = {}
 
--- NOTE: register an extra lze handler with the spec_field 'for_cat'
--- that makes enabling an lze spec for a category slightly nicer
-require("lze").register_handlers(require("nixCatsUtils.lzUtils").for_cat)
-
--- NOTE: Register another one from lzextras. This one makes it so that
--- you can set up lsps within lze specs,
--- and trigger lspconfig setup hooks only on the correct filetypes
-require("lze").register_handlers(require("lzextras").lsp)
-
--- NOTE: general plugins
-require("myLuaConf.plugins")
-require("myLuaConf.plugins.colorscheme")
-
--- NOTE: obviously, more plugins, but more organized by what they do below
-
--- I dont need to explain why this is called lsp right?
-require("myLuaConf.LSPs")
-
--- NOTE: we even ask nixCats if we included our debug stuff in this setup! (we didnt)
--- But we have a good base setup here as an example anyway!
-if nixCats("debug") then
-	require("myLuaConf.debug")
-end
-if nixCats("test") then
-	require("myLuaConf.test")
-end
--- NOTE: we included these though! Or, at least, the category is enabled.
--- these contain nvim-lint and conform setups.
-if nixCats("lint") then
-	require("myLuaConf.lint")
-end
-if nixCats("format") then
-	require("myLuaConf.format")
-end
--- NOTE: I didnt actually include any linters or formatters in this configuration,
--- but it is enough to serve as an example.
-
--- NOTE: Show random tip on startup
-local function show_tip()
+--- Show a random tip from notes.md on startup
+function M.show_tip()
 	local home = os.getenv("HOME")
 	local notes_path = home .. "/nixicle/modules/home/cli/editors/neovim/tips.md"
 
+	-- Check if file exists
 	local file = io.open(notes_path, "r")
 	if not file then
 		return
@@ -54,18 +17,22 @@ local function show_tip()
 	end
 	file:close()
 
+	-- Parse markdown to get sections with bullet points
 	local sections = {}
 	local current_section = nil
 
 	for _, line in ipairs(lines) do
+		-- Check for markdown headers (##)
 		if line:match("^## (.+)") then
 			current_section = line:match("^## (.+)")
 			sections[current_section] = {}
 		elseif line:match("^%- (.+)") and current_section then
+			-- Check for bullet points
 			table.insert(sections[current_section], line:match("^%- (.+)"))
 		end
 	end
 
+	-- Get all tips with their context
 	local tips = {}
 	for section, bullets in pairs(sections) do
 		for _, bullet in ipairs(bullets) do
@@ -77,13 +44,16 @@ local function show_tip()
 		return
 	end
 
+	-- Select a random tip
 	math.randomseed(os.time())
 	local random_tip = tips[math.random(#tips)]
 
+	-- Create a new buffer
 	local buf = vim.api.nvim_create_buf(false, true)
 	vim.api.nvim_buf_set_option(buf, "bufhidden", "wipe")
 	vim.api.nvim_buf_set_option(buf, "filetype", "markdown")
 
+	-- Set buffer content
 	local content = {
 		"",
 		"## " .. random_tip.section,
@@ -97,11 +67,13 @@ local function show_tip()
 	vim.api.nvim_buf_set_lines(buf, 0, -1, false, content)
 	vim.api.nvim_buf_set_option(buf, "modifiable", false)
 
+	-- Calculate window size and position
 	local width = math.min(100, vim.o.columns - 4)
 	local height = #content + 2
 	local row = math.floor((vim.o.lines - height) / 2)
 	local col = math.floor((vim.o.columns - width) / 2)
 
+	-- Open floating window
 	local win = vim.api.nvim_open_win(buf, true, {
 		relative = "editor",
 		width = width,
@@ -112,12 +84,15 @@ local function show_tip()
 		border = "rounded",
 	})
 
+	-- Set window options
 	vim.api.nvim_win_set_option(win, "winblend", 0)
 
+	-- Close on any key press
 	vim.api.nvim_buf_set_keymap(buf, "n", "<CR>", ":close<CR>", { noremap = true, silent = true })
 	vim.api.nvim_buf_set_keymap(buf, "n", "<Esc>", ":close<CR>", { noremap = true, silent = true })
 	vim.api.nvim_buf_set_keymap(buf, "n", "q", ":close<CR>", { noremap = true, silent = true })
 
+	-- Close on any other key
 	local close_on_key = function()
 		if vim.api.nvim_win_is_valid(win) then
 			vim.api.nvim_win_close(win, true)
@@ -125,7 +100,7 @@ local function show_tip()
 	end
 
 	vim.keymap.set("n", "<Space>", close_on_key, { buffer = buf, silent = true })
-	for i = 33, 126 do
+	for i = 33, 126 do -- Printable ASCII characters
 		local char = string.char(i)
 		if char ~= "q" then
 			vim.keymap.set("n", char, close_on_key, { buffer = buf, silent = true })
@@ -133,12 +108,4 @@ local function show_tip()
 	end
 end
 
-vim.api.nvim_create_autocmd("VimEnter", {
-	group = vim.api.nvim_create_augroup("ShowTips", { clear = true }),
-	callback = function()
-		if vim.fn.argc() == 0 then
-			show_tip()
-		end
-	end,
-	desc = "Show random tip from tips.md on startup",
-})
+return M
