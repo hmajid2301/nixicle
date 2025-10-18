@@ -28,7 +28,7 @@ in
           libvdpau-va-gl
           vulkan-loader
           vulkan-validation-layers
-          amdvlk # Optional: AMD's proprietary Vulkan driver
+# amdvlk removed - RADV enabled by default
           mesa.opencl # Enables Rusticl (OpenCL) support
           rocmPackages.clr.icd
         ];

@@ -80,7 +80,6 @@ return {
 						"--line-number",
 						"--column",
 						"--smart-case",
-						"--no-ignore",
 					},
 				},
 				extensions = {},
@@ -98,7 +97,13 @@ return {
 			vim.keymap.set("n", "<leader>fm", builtin.keymaps, { desc = "Find keymaps" })
 			vim.keymap.set("n", "<leader>fs", builtin.builtin, { desc = "Find telescopes" })
 			vim.keymap.set("n", "<leader>fw", builtin.grep_string, { desc = "Find current word" })
-			vim.keymap.set("n", "<leader>fg", builtin.live_grep, { desc = "Find grep search" })
+			vim.keymap.set("n", "<leader>fg", function()
+				builtin.live_grep({
+					additional_args = function()
+						return {"--hidden"}
+					end
+				})
+			end, { desc = "Find grep search" })
 			vim.keymap.set("n", "<leader>fd", builtin.diagnostics, { desc = "Find diagnostics" })
 			vim.keymap.set("n", "<leader>fr", builtin.resume, { desc = "Find resume" })
 			vim.keymap.set("n", "<leader>f.", builtin.oldfiles, { desc = "Find recent files" })

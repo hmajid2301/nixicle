@@ -84,7 +84,161 @@ return {
 		-- keys = "",
 		-- colorscheme = "",
 		after = function(plugin)
-			require("diffview").setup()
+			local actions = require("diffview.actions")
+			
+			require("diffview").setup({
+				diff_binaries = false,
+				enhanced_diff_hl = true, -- Enhanced diff highlighting for cleaner visuals
+				use_icons = true,
+				-- Better diff colors for Catppuccin
+				signs = {
+					fold_closed = "",
+					fold_open = "",
+					done = "✓",
+				},
+				git_cmd = { "git" },
+				use_icons = true, -- Requires nvim-web-devicons
+				show_help_hints = true,
+				watch_index = true,
+
+				-- Enhanced icons using Nerd Font icons
+				icons = {
+					folder_closed = "",
+					folder_open = "",
+				},
+				
+				-- Better visual signs
+				signs = {
+					fold_closed = "",
+					fold_open = "",
+					done = "✓",
+				},
+
+				-- Configure layouts for different view types
+				view = {
+					default = {
+						layout = "diff2_horizontal",
+						disable_diagnostics = true,
+						winbar_info = true,
+					},
+					merge_tool = {
+						layout = "diff3_horizontal", 
+						disable_diagnostics = true,
+					},
+				},
+
+				-- Enhanced file panel styling
+				file_panel = {
+					listing_style = "tree", -- Tree view for better navigation
+					tree_options = {
+						flatten_dirs = true, -- Flatten single-child directories
+						folder_statuses = "only_folded", -- Show status only for folded dirs
+					},
+					win_config = {
+						position = "left",
+						width = 40, -- Slightly wider for better readability
+						win_opts = {},
+					},
+				},
+
+				-- File history panel configuration
+				file_history_panel = {
+					log_options = {
+						git = {
+							single_file = {
+								diff_merges = "combined",
+							},
+							multi_file = {
+								diff_merges = "first-parent",
+							},
+						},
+					},
+					win_config = {
+						position = "bottom",
+						height = 16,
+						win_opts = {},
+					},
+				},
+
+				-- Default arguments for improved experience
+				default_args = {
+					DiffviewOpen = {},
+					DiffviewFileHistory = {},
+				},
+
+				-- Hooks for enhanced visual presentation
+				hooks = {
+					diff_buf_read = function(bufnr)
+						-- Customize diff buffer appearance
+						vim.opt_local.wrap = false
+						vim.opt_local.list = false
+						vim.opt_local.colorcolumn = ""
+						vim.opt_local.number = false
+						vim.opt_local.relativenumber = false
+						
+						-- Enhanced diff colors for Catppuccin
+						vim.api.nvim_set_hl(0, "DiffAdd", { bg = "#a6e3a1", fg = "#11111b", bold = true })
+						vim.api.nvim_set_hl(0, "DiffChange", { bg = "#89b4fa", fg = "#11111b", bold = true })
+						vim.api.nvim_set_hl(0, "DiffDelete", { bg = "#f38ba8", fg = "#11111b", bold = true })
+						vim.api.nvim_set_hl(0, "DiffText", { bg = "#cba6f7", fg = "#11111b", bold = true })
+					end,
+					view_opened = function(view)
+						-- Custom actions when view opens
+						print(("Opened %s"):format(view.class:name()))
+					end,
+				},
+
+				-- Enhanced keymaps
+				keymaps = {
+					view = {
+						{ "n", "q", "<cmd>DiffviewClose<cr>", { desc = "Close diffview" } },
+						{ "n", "<leader>e", actions.focus_files, { desc = "Focus file panel" } },
+						{ "n", "<leader>b", actions.toggle_files, { desc = "Toggle file panel" } },
+						{ "n", "gf", actions.goto_file_edit, { desc = "Open file in new tab" } },
+						{ "n", "<C-w><C-f>", actions.goto_file_split, { desc = "Open file in split" } },
+						{ "n", "<C-w>gf", actions.goto_file_tab, { desc = "Open file in tab" } },
+						{ "n", "<leader>co", actions.conflict_choose("ours"), { desc = "Choose ours" } },
+						{ "n", "<leader>ct", actions.conflict_choose("theirs"), { desc = "Choose theirs" } },
+						{ "n", "<leader>cb", actions.conflict_choose("base"), { desc = "Choose base" } },
+						{ "n", "<leader>ca", actions.conflict_choose("all"), { desc = "Choose all" } },
+						{ "n", "dx", actions.conflict_choose("none"), { desc = "Delete conflict region" } },
+						{ "n", "]x", actions.next_conflict, { desc = "Next conflict" } },
+						{ "n", "[x", actions.prev_conflict, { desc = "Previous conflict" } },
+					},
+					file_panel = {
+						{ "n", "q", "<cmd>DiffviewClose<cr>", { desc = "Close diffview" } },
+						{ "n", "h", actions.close_fold, { desc = "Close fold" } },
+						{ "n", "l", actions.select_entry, { desc = "Select entry" } },
+						{ "n", "o", actions.select_entry, { desc = "Open entry" } },
+						{ "n", "<cr>", actions.select_entry, { desc = "Open entry" } },
+						{ "n", "R", actions.refresh_files, { desc = "Refresh files" } },
+						{ "n", "s", actions.toggle_stage_entry, { desc = "Stage/unstage entry" } },
+						{ "n", "S", actions.stage_all, { desc = "Stage all entries" } },
+						{ "n", "U", actions.unstage_all, { desc = "Unstage all entries" } },
+						{ "n", "X", actions.restore_entry, { desc = "Restore entry" } },
+						{ "n", "L", actions.open_commit_log, { desc = "Open commit log" } },
+						{ "n", "zo", actions.open_fold, { desc = "Open fold" } },
+						{ "n", "zc", actions.close_fold, { desc = "Close fold" } },
+						{ "n", "za", actions.toggle_fold, { desc = "Toggle fold" } },
+						{ "n", "zR", actions.open_all_folds, { desc = "Open all folds" } },
+						{ "n", "zM", actions.close_all_folds, { desc = "Close all folds" } },
+					},
+					file_history_panel = {
+						{ "n", "q", "<cmd>DiffviewClose<cr>", { desc = "Close diffview" } },
+						{ "n", "o", actions.select_entry, { desc = "Open entry" } },
+						{ "n", "<cr>", actions.select_entry, { desc = "Open entry" } },
+						{ "n", "y", actions.copy_hash, { desc = "Copy commit hash" } },
+						{ "n", "L", actions.open_commit_log, { desc = "Show commit details" } },
+						{ "n", "zR", actions.open_all_folds, { desc = "Open all folds" } },
+						{ "n", "zM", actions.close_all_folds, { desc = "Close all folds" } },
+					},
+					option_panel = {
+						{ "n", "q", actions.close, { desc = "Close panel" } },
+						{ "n", "o", actions.select_entry, { desc = "Select entry" } },
+						{ "n", "<cr>", actions.select_entry, { desc = "Select entry" } },
+					},
+				},
+			})
 		end,
 	},
 	{
@@ -107,6 +261,67 @@ return {
 		end,
 		after = function(plugin)
 			require("webify").setup({})
+		end,
+	},
+	{
+		"git-worktree.nvim",
+		for_cat = "general.git",
+		event = "DeferredUIEnter",
+		after = function(plugin)
+			local ok, worktree = pcall(require, "git-worktree")
+			if not ok then
+				return
+			end
+
+			-- Setup if the function exists
+			if type(worktree.setup) == "function" then
+				worktree.setup({
+					change_directory_command = "cd",
+					update_on_change = true,
+					update_on_change_command = "e .",
+					clearjumps_on_change = true,
+					autopush = false,
+				})
+			end
+
+			-- Hook to create/switch zellij session when creating a worktree
+			if type(worktree.on_tree_change) == "function" then
+				worktree.on_tree_change(function(op, metadata)
+				if op == worktree.Operations.Create then
+					-- Get the worktree path
+					local worktree_path = metadata.path
+					local session_name = vim.fn.fnamemodify(worktree_path, ":t")
+
+					-- Check if we're inside zellij
+					if vim.env.ZELLIJ then
+						-- We're inside zellij - just notify the user
+						vim.notify(
+							string.format(
+								"Worktree created at: %s\nTo switch to it, exit nvim and run: sesh %s",
+								worktree_path,
+								worktree_path
+							),
+							vim.log.levels.INFO
+						)
+					else
+						-- We're outside zellij - create/switch session automatically
+						vim.fn.jobstart({ "sesh", worktree_path }, {
+							detach = true,
+							on_exit = function(_, exit_code)
+								if exit_code == 0 then
+									vim.notify(
+										"Zellij session created/attached: " .. session_name,
+										vim.log.levels.INFO
+									)
+								else
+									vim.notify("Failed to create zellij session for worktree", vim.log.levels.WARN)
+								end
+							end,
+						})
+					end
+				end
+			end)
+			end
 		end,
 	},
 }

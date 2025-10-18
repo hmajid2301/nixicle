@@ -91,12 +91,15 @@ in
         hms = "home-manager switch --flake ~/nixicle#${config.nixicle.user.name}@${host}";
         nrs = "sudo nixos-rebuild switch --flake ~/nixicle#${host}";
 
-        # new commads
+        # new commands
         weather = "curl wttr.in/London";
 
         pfile = "fzf --preview 'bat --style=numbers --color=always --line-range :500 {}'";
         gdub = "git fetch -p && git branch -vv | grep ': gone]' | awk '{print }' | xargs git branch -D $argv;";
         tldrf = ''${pkgs.tldr}/bin/tldr --list | fzf --preview "${pkgs.tldr}/bin/tldr {1} --color" --preview-window=right,70% | xargs tldr'';
+        
+        # enhanced cat with smart preview
+        wcat = "wellcat";
         # docker-compose = "docker-compose"; # Use native docker-compose
       };
 
@@ -171,6 +174,136 @@ in
                 --preview 'bat --color=always {1} --highlight-line {2}' \
                 --preview-window 'up,60%,border-bottom,+{2}+3/3,~3' \
                 --bind 'enter:become(nvim {1} +{2})'
+        '';
+
+        nz = ''
+          # get first argument  
+          set -l dir $argv[1]
+          set -l current_dir (pwd)
+          
+          # if directory is provided, cd into it first
+          if test -n "$dir"
+            if test -d "$dir"
+              z "$dir"
+            else
+              echo "Directory '$dir' does not exist"
+              return 1
+            end
+          end
+          
+          # Use fd to find files and fzf with preview like rgvim
+          set file (fd --type f --hidden --follow --exclude .git --exclude node_modules | 
+            fzf --ansi \
+                --preview 'bat --color=always --style=numbers --line-range :500 {} 2>/dev/null || echo "Binary file or preview not available"' \
+                --preview-window 'up,60%,border-bottom' \
+                --header 'Select file to edit (Ctrl-/ toggle preview, Ctrl-C cancel)' \
+                --bind 'ctrl-/:change-preview-window(down|hidden|up)' \
+                --bind 'ctrl-y:execute-silent(echo {} | wl-copy 2>/dev/null || echo {} | xclip -selection clipboard 2>/dev/null || echo "Clipboard not available")')
+          
+          if test -n "$file"
+            nvim "$file"
+          else
+            echo "No file selected"
+            # If we changed directory and no file was selected, ask if user wants to stay
+            if test -n "$dir" -a (pwd) != "$current_dir"
+              if gum confirm "Stay in directory $(pwd)?"
+                echo "Staying in $(pwd)"
+              else
+                cd "$current_dir"
+                echo "Returned to $current_dir"
+              end
+            end
+          end
+        '';
+
+        wellcat = ''
+          if test (count $argv) -eq 0
+            echo "Usage: wellcat <file_or_directory>"
+            return 1
+          end
+          
+          for item in $argv
+            if not test -e "$item"
+              echo "Error: '$item' does not exist"
+              continue
+            end
+            
+            # if file extension ends with .md or .mdx, use glow
+            if string match -q "*.md" "$item"; or string match -q "*.mdx" "$item"
+              glow "$item"
+            else if test -f "$item"
+              # Check if it's an image file
+              set mime_type (file --mime-type -b "$item")
+              if string match -q "image/*" "$mime_type"
+                # Use ghostty for image display instead of kitty icat
+                if string match -q -- '*ghostty*' $TERM
+                  # Note: ghostty doesn't have a direct image display command like kitty
+                  # Using chafa as a fallback for now
+                  if command -v chafa >/dev/null
+                    chafa "$item"
+                  else
+                    echo "Image '$item': $mime_type (preview not available)"
+                  end
+                else
+                  # Fallback to other image viewers
+                  if command -v chafa >/dev/null
+                    chafa "$item"
+                  else
+                    echo "Image '$item': $mime_type (preview not available)"
+                  end
+                end
+              else
+                # Regular file, use bat
+                bat --style=plain --theme ansi "$item"
+              end
+            # if it is a directory, use eza
+            else if test -d "$item"
+              eza --icons -l "$item"
+            end
+          end
+        '';
+
+        pkill_fzf = ''
+          ps aux | fzf --header-lines=1 \
+                        --preview 'echo "Process Info:"; ps -p {2} -o pid,ppid,user,time,args' \
+                        --bind 'enter:execute(kill {2})' \
+                        --bind 'ctrl-k:execute(kill -9 {2})'
+        '';
+
+        pkill_port = ''
+          # Get listening ports and processes
+          set port_process (ss -tulpn | grep LISTEN | \
+            awk '{
+              # Extract port from local address (format: *:port or ip:port)
+              split($5, addr, ":");
+              port = addr[length(addr)];
+              
+              # Extract PID from process info (format: users:(("process",pid=123,fd=4)))
+              if (match($7, /pid=([0-9]+)/, pid_match)) {
+                pid = pid_match[1];
+                # Get process name
+                cmd = "ps -p " pid " -o comm= 2>/dev/null";
+                cmd | getline process_name;
+                close(cmd);
+                if (process_name == "") process_name = "unknown";
+                print port "\t" pid "\t" process_name "\t" $5;
+              }
+            }' | \
+            fzf --header "PORT PID PROCESS LOCAL_ADDRESS" \
+                --preview 'echo "Port Details:"; ss -tulpn | grep :{1}; echo ""; echo "Process Details:"; ps -p {2} -o pid,ppid,user,time,args 2>/dev/null || echo "Process not found"' \
+                --bind 'enter:execute(kill {2})' \
+                --bind 'ctrl-k:execute(kill -9 {2})' \
+                --bind 'ctrl-s:execute(sudo kill {2})' \
+                --bind 'ctrl-x:execute(sudo kill -9 {2})')
+          
+          if test -n "$port_process"
+            set pid (echo "$port_process" | awk '{print $2}')
+            set port (echo "$port_process" | awk '{print $1}')
+            set process (echo "$port_process" | awk '{print $3}')
+            echo "Selected: Port $port (PID: $pid, Process: $process)"
+          else
+            echo "No port selected"
+          end
         '';
 
         fish_command_not_found = ''

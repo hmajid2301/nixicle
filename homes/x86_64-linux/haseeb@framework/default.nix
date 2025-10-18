@@ -16,6 +16,7 @@
 
   roles = {
     desktop.enable = true;
+    development.enable = true;
     social.enable = true;
     video.enable = true;
   };
