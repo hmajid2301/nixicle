@@ -252,15 +252,16 @@
         "utils": "utils_2"
       },
       "locked": {
-        "lastModified": 1756719547,
-        "narHash": "sha256-N9gBKUmjwRKPxAafXEk1EGadfk2qDZPBQp4vXWPHINQ=",
-        "owner": "serokell",
+        "lastModified": 1760869783,
+        "narHash": "sha256-9I2H9x5We6Pl+DBYHjR1s3UT8wgwcpAH03kn9CqtdQc=",
+        "owner": "XYenon",
         "repo": "deploy-rs",
-        "rev": "125ae9e3ecf62fb2c0fd4f2d894eb971f1ecaed2",
+        "rev": "b1b25be706f1441a9463ffbaf5a2d181591f7a68",
         "type": "github"
       },
       "original": {
-        "owner": "serokell",
+        "owner": "XYenon",
+        "ref": "fix/nix-2-32",
         "repo": "deploy-rs",
         "type": "github"
       }

@@ -131,7 +131,7 @@ in
           services = {
             openbao.loadBalancer.servers = [
               {
-                url = "http://localhost:8200";
+                url = "http://100.117.131.57:8200";
               }
             ];
           };
