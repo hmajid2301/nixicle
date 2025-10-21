@@ -192,7 +192,7 @@ keybinds {
         // Smart navigation with vim-zellij-navigator
         bind "Ctrl h" {
             MessagePlugin "https://github.com/hiasr/vim-zellij-navigator/releases/download/0.3.0/vim-zellij-navigator.wasm" {
-                name "move_focus_or_tab";
+                name "move_focus";
                 payload "left";
                 move_mod "ctrl";
                 use_arrow_keys "false";
@@ -216,7 +216,7 @@ keybinds {
         }
         bind "Ctrl l" {
             MessagePlugin "https://github.com/hiasr/vim-zellij-navigator/releases/download/0.3.0/vim-zellij-navigator.wasm" {
-                name "move_focus_or_tab";
+                name "move_focus";
                 payload "right";
                 move_mod "ctrl";
                 use_arrow_keys "false";
