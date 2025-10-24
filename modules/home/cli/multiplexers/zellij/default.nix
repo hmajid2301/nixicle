@@ -11,7 +11,7 @@ let
   inherit (config.lib.stylix) colors;
 
   sesh = pkgs.writeScriptBin "sesh" ''
-    #! /usr/bin/env sh
+    #! /usr/bin/env bash
 
     # Taken from https://github.com/zellij-org/zellij/issues/884#issuecomment-1851136980
     # Modified to handle being called from inside zellij and to support layout selection
