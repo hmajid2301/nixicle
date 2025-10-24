@@ -5,7 +5,7 @@
   ...
 }: {
   # Generic system configuration for any hardware
-  networking.hostName = "nixos-generic";
+  networking.hostName = lib.mkDefault "nixos-generic";
   
   # Enable SSH for remote access
   services.openssh = {
@@ -32,7 +32,17 @@
   ];
   
   # Support for various filesystems
-  boot.supportedFilesystems = [ "ntfs" "exfat" "ext4" "btrfs" "xfs" "zfs" ];
+  boot.supportedFilesystems = [ "ntfs" "exfat" "ext4" "btrfs" "xfs" ];
+  
+  # Set a unique hostId (required if ZFS support is enabled)
+  networking.hostId = "12345678";
+  
+  # Dummy root filesystem for ISO
+  fileSystems."/" = {
+    device = "tmpfs";
+    fsType = "tmpfs";
+    options = [ "mode=0755" ];
+  };
 
   # Use systemd-boot (UEFI) or GRUB (BIOS)
   boot.loader = {

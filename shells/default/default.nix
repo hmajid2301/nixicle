@@ -24,7 +24,7 @@ pkgs.mkShell {
       });
     })
     inputs.nixos-anywhere.packages.${pkgs.system}.nixos-anywhere
-    deploy-rs
+    inputs.deploy-rs.packages.${pkgs.system}.default
 
     statix
     deadnix

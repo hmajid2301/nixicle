@@ -29,13 +29,13 @@ in
       package = pkgs.openbao;
       settings = {
         ui = true;
-        api_addr = "http://tailscale0:8200";
-        cluster_addr = "https://tailscale0:8201";
+        api_addr = "http://100.117.131.57:8200";
+        cluster_addr = "https://100.117.131.57:8201";
 
         listener = {
           tcp = {
             type = "tcp";
-            address = "tailscale0:8200";
+            address = "100.117.131.57:8200";
             tls_disable = true;
           };
         };
@@ -131,7 +131,7 @@ in
           services = {
             openbao.loadBalancer.servers = [
               {
-                url = "http://localhost:8200";
+                url = "http://100.117.131.57:8200";
               }
             ];
           };
