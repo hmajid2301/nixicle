@@ -65,14 +65,14 @@
       };
       immich.enable = true;
       jellyfin.enable = true;
-      karakeep.enable = true;
+      # karakeep.enable = true;
       logging.enable = true;
       monitoring.enable = true;
       minio.enable = true;
       navidrome.enable = true;
       netdata.enable = true;
       otel-collector.enable = true;
-      # paperless.enable = true;
+      paperless.enable = true;
       postgresql.enable = true;
       redis.enable = true;
       traefik.enable = true;

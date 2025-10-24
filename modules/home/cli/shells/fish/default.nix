@@ -44,12 +44,6 @@ in
         if string match -q -- '*ghostty*' $TERM
           set -g fish_vi_force_cursor 1
         end
-
-        function __auto_zellij_update_tabname --on-variable PWD --description "Update zellij tab name on directory change"
-          _zellij_update_tabname
-        end
-
-        # eval (zellij setup --generate-auto-start fish | string collect)
       '';
 
       shellAliases = {
@@ -60,7 +54,6 @@ in
         vim = "regularCats";
         n = "regularCats";
         nvim = "regularCats";
-        ss = "zellij -l welcome";
         cd = "z";
         cdi = "zi";
         cp = "xcp";
@@ -97,43 +90,12 @@ in
         pfile = "fzf --preview 'bat --style=numbers --color=always --line-range :500 {}'";
         gdub = "git fetch -p && git branch -vv | grep ': gone]' | awk '{print }' | xargs git branch -D $argv;";
         tldrf = ''${pkgs.tldr}/bin/tldr --list | fzf --preview "${pkgs.tldr}/bin/tldr {1} --color" --preview-window=right,70% | xargs tldr'';
-        
-        # enhanced cat with smart preview
+
         wcat = "wellcat";
-        # docker-compose = "docker-compose"; # Use native docker-compose
       };
 
       functions = {
         fish_greeting = "";
-
-        _zellij_update_tabname = ''
-          if set -q ZELLIJ
-            set current_dir $PWD
-            if test $current_dir = $HOME
-                set tab_name "~"
-            else
-                set tab_name (basename $current_dir)
-            end
-
-            if fish_git_prompt >/dev/null
-                # we are in a git repo
-
-                # if we are in a git superproject, use the superproject name
-                # otherwise, use the toplevel repo name
-                set git_root (git rev-parse --show-superproject-working-tree)
-                if test -z $git_root
-                    set git_root (git rev-parse --show-toplevel)
-                end
-
-                #  if we are in a subdirectory of the git root, use the relative path
-                if test (string lower "$git_root") != (string lower "$current_dir")
-                    set tab_name (basename $git_root)/(basename $current_dir)
-                end
-            end
-
-            nohup zellij action rename-tab $tab_name >/dev/null 2>&1
-          end
-        '';
 
         envsource = ''
           for line in (cat $argv | grep -v '^\s*#' | grep -v '^\s*$')
@@ -180,7 +142,7 @@ in
           # get first argument  
           set -l dir $argv[1]
           set -l current_dir (pwd)
-          
+
           # if directory is provided, cd into it first
           if test -n "$dir"
             if test -d "$dir"
@@ -190,16 +152,16 @@ in
               return 1
             end
           end
-          
+
           # Use fd to find files and fzf with preview like rgvim
-          set file (fd --type f --hidden --follow --exclude .git --exclude node_modules | 
+          set file (fd --type f --hidden --follow --exclude .git --exclude node_modules |
             fzf --ansi \
                 --preview 'bat --color=always --style=numbers --line-range :500 {} 2>/dev/null || echo "Binary file or preview not available"' \
                 --preview-window 'up,60%,border-bottom' \
                 --header 'Select file to edit (Ctrl-/ toggle preview, Ctrl-C cancel)' \
                 --bind 'ctrl-/:change-preview-window(down|hidden|up)' \
                 --bind 'ctrl-y:execute-silent(echo {} | wl-copy 2>/dev/null || echo {} | xclip -selection clipboard 2>/dev/null || echo "Clipboard not available")')
-          
+
           if test -n "$file"
             nvim "$file"
           else
@@ -221,13 +183,13 @@ in
             echo "Usage: wellcat <file_or_directory>"
             return 1
           end
-          
+
           for item in $argv
             if not test -e "$item"
               echo "Error: '$item' does not exist"
               continue
             end
-            
+
             # if file extension ends with .md or .mdx, use glow
             if string match -q "*.md" "$item"; or string match -q "*.mdx" "$item"
               glow "$item"
@@ -277,7 +239,7 @@ in
               # Extract port from local address (format: *:port or ip:port)
               split($5, addr, ":");
               port = addr[length(addr)];
-              
+
               # Extract PID from process info (format: users:(("process",pid=123,fd=4)))
               if (match($7, /pid=([0-9]+)/, pid_match)) {
                 pid = pid_match[1];
@@ -295,7 +257,7 @@ in
                 --bind 'ctrl-k:execute(kill -9 {2})' \
                 --bind 'ctrl-s:execute(sudo kill {2})' \
                 --bind 'ctrl-x:execute(sudo kill -9 {2})')
-          
+
           if test -n "$port_process"
             set pid (echo "$port_process" | awk '{print $2}')
             set port (echo "$port_process" | awk '{print $1}')

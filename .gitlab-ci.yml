@@ -40,8 +40,6 @@ stages:
     - attic login homelab https://attic.homelab.haseebmajid.dev $ATTIC_AUTH_KEY
     - attic use homelab:main
     - attic watch-store homelab:main &
-  after_script:
-    - attic push main /run/current-system -j 4
 
 build:flake:
   extends: .base_setup
@@ -79,6 +77,6 @@ deploy:homelab:
     matrix:
       - HOST: [ms01, s100, vps]
   script:
-    - nix profile install github:serokell/deploy-rs
+    - nix profile install github:XYenon/deploy-rs/fix/nix-2-32
     - deploy ".#$HOST" --hostname $HOST --ssh-user nixos --skip-checks --confirm-timeout "600" --remote-build
 
