@@ -40,6 +40,8 @@ in
 
         settings = {
           PAPERLESS_DBHOST = "/run/postgresql";
+          PAPERLESS_ALLOWED_HOSTS = "paperless.haseebmajid.dev,localhost,127.0.0.1";
+          PAPERLESS_CSRF_TRUSTED_ORIGINS = "https://paperless.haseebmajid.dev";
         };
       };
 

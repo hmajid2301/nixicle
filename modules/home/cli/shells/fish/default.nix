@@ -139,7 +139,7 @@ in
         '';
 
         nz = ''
-          # get first argument  
+          # get first argument
           set -l dir $argv[1]
           set -l current_dir (pwd)
 
