@@ -223,8 +223,8 @@ keybinds {
             };
         }
 
-        bind "Alt h" { GoToPreviousTab; }
-        bind "Alt l" { GoToNextTab; }
+        bind "Alt h" { MoveFocusOrTab "Left"; }
+        bind "Alt l" { MoveFocusOrTab "Right"; }
 
         bind "Alt =" "Alt +" { Resize "Increase"; }
         bind "Alt -" { Resize "Decrease"; }
