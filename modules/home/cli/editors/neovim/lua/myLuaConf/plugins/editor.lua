@@ -382,4 +382,12 @@ return {
 			vim.keymap.set({ "n", "v" }, "<leader>rE", "<cmd>InlineEdit<cr>", { noremap = true, silent = true })
 		end,
 	},
+	{
+		"neoscroll.nvim",
+		for_cat = "general.editor",
+		event = "DeferredUIEnter",
+		after = function(plugin)
+			require("neoscroll").setup({})
+		end,
+	},
 }
