@@ -132,9 +132,9 @@ resource "vault_kubernetes_auth_backend_config" "kubernetes" {
 resource "vault_kubernetes_auth_backend_role" "k8s_auth_role" {
   backend                          = vault_auth_backend.kubernetes.path
   role_name                        = "k8s-auth-role"
-  bound_service_account_names      = ["banterbus", "openbao-auth", "default", "flux-system-vault"]
-  bound_service_account_namespaces = ["flux-system", "default", "prod", "dev", "apps", "tailscale", "infra"]
-  token_policies                   = ["default", "banterbus-dev", "banterbus-prod", "gitlab"]
+  bound_service_account_names      = ["default", "banterbus", "openbao-auth", "flux-system-vault", "gitlab-agent"]
+  bound_service_account_namespaces = ["infra", "flux-system", "default", "prod", "dev", "apps", "tailscale", "gitlab-agent-k8s"]
+  token_policies                   = ["default", "banterbus-dev", "banterbus-prod", "gitlab", "gitlab-agent"]
   token_ttl                        = 3600
   token_max_ttl                    = 86400
 }
@@ -250,6 +250,21 @@ path "kv/data/apps/gitlab" {
 }
 
 path "kv/metadata/apps/gitlab" {
+  capabilities = ["read"]
+}
+EOT
+}
+
+resource "vault_policy" "gitlab_agent" {
+  name = "gitlab-agent"
+
+  policy = <<EOT
+# Allow reading GitLab agent token
+path "kv/data/infra/gitlab" {
+  capabilities = ["read"]
+}
+
+path "kv/metadata/infra/gitlab" {
   capabilities = ["read"]
 }
 EOT
