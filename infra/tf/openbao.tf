@@ -46,7 +46,7 @@ variable "postgres_host" {
 variable "postgres_port" {
   description = "Postgres port"
   type        = number
-  default     = 5432
+  default     = 5433
 }
 
 variable "tofu_user_password" {
@@ -345,6 +345,7 @@ resource "vault_mount" "kubernetes" {
   description = "Kubernetes secret engine"
 }
 
+# TODO: move to name tofu
 # Create postgres terraform user secret
 resource "vault_kv_secret_v2" "postgres_terraform" {
   mount = vault_mount.kv.path
@@ -373,5 +374,19 @@ path "kv/metadata/infra/postgres/terraform" {
 EOT
 }
 
-
-
+# Create ClusterRoleBinding for token review
+resource "kubernetes_cluster_role_binding_v1" "vault_auth_delegator" {
+  metadata {
+    name = "vault-auth-delegator"
+  }
+  role_ref {
+    api_group = "rbac.authorization.k8s.io"
+    kind      = "ClusterRole"
+    name      = "system:auth-delegator"
+  }
+  subject {
+    kind      = "ServiceAccount"
+    name      = data.kubernetes_service_account_v1.vault_auth.metadata[0].name
+    namespace = data.kubernetes_service_account_v1.vault_auth.metadata[0].namespace
+  }
+}

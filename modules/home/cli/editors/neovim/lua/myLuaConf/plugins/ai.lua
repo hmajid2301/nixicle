@@ -8,7 +8,7 @@ return {
 		end,
 	},
 	{
-		"sidekick.nvim",
+		"sidekick-nvim",
 		for_cat = "general.ai",
 		event = "BufReadPre",
 		after = function(plugin)
