@@ -252,7 +252,9 @@ return {
 			vim.cmd.packadd(name)
 		end,
 		after = function(plugin)
-			require("smart-splits").setup()
+			require("smart-splits").setup({
+				multiplexer_integration = "zellij",
+			})
 
 			local smart_splits = require("smart-splits")
 			-- vim.keymap.set("n", "<leader>mr", smart_splits.start_resize_mode)
