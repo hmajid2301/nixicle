@@ -11,9 +11,6 @@ return {
 		"sidekick-nvim",
 		for_cat = "general.ai",
 		event = "DeferredUIEnter",
-		load = function(name)
-			vim.cmd.packadd(name)
-		end,
 		after = function(plugin)
 			require("sidekick").setup({
 				nes = {
