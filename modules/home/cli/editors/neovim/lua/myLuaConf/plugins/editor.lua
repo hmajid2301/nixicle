@@ -248,12 +248,9 @@ return {
 		"smart-splits.nvim",
 		for_cat = "general.editor",
 		event = "DeferredUIEnter",
-		load = function(name)
-			vim.cmd.packadd(name)
-		end,
 		after = function(plugin)
 			require("smart-splits").setup({
-				multiplexer_integration = "zellij",
+				-- multiplexer_integration = "zellij",
 			})
 
 			local smart_splits = require("smart-splits")
