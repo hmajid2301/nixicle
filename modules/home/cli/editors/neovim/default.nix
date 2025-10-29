@@ -173,7 +173,6 @@ in
             neonixdev = with pkgs.vimPlugins; [ lazydev-nvim ];
             general = {
               ai = with pkgs.vimPlugins; [
-                inputs.mcphub-nvim.packages.${pkgs.system}.default
                 sidekick-nvim
               ];
               cmp = with pkgs.vimPlugins; [

@@ -87,8 +87,6 @@ return {
 					preset = "enter",
 					["<Tab>"] = { "select_next", "fallback" },
 					["<S-Tab>"] = { "select_prev", "fallback" },
-					["<C-j>"] = { "select_next", "fallback_to_mappings" },
-					["<C-k>"] = { "select_prev", "fallback_to_mappings" },
 				},
 				snippets = { preset = "luasnip" },
 				signature = { enabled = true },
