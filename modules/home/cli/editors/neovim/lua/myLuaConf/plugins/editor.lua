@@ -95,7 +95,6 @@ return {
 		after = function(plugin)
 			require("mini.surround").setup()
 			require("mini.comment").setup()
-			require("mini.files").setup()
 			require("mini.pairs").setup({
 				-- INFO: Taken from here: https://github.com/desdic/neovim/blob/main/lua/plugins/mini-pairs.lua
 				modes = { insert = true, command = false, terminal = false },
@@ -177,7 +176,26 @@ return {
 				markdown = true,
 			})
 			require("mini.trailspace").setup()
-			vim.keymap.set("n", "<leader>e", "<cmd>lua MiniFiles.open()<CR>")
+		end,
+	},
+	{
+		"fyler.nvim",
+		for_cat = "general.editor",
+		event = "DeferredUIEnter",
+		load = function(name)
+			vim.cmd.packadd(name)
+		end,
+		after = function(plugin)
+			require("fyler").setup({
+				close_on_select = false,
+				confirm_simple = true,
+				default_explorer = false,
+				delete_to_trash = true,
+			})
+
+			vim.keymap.set("n", "<leader>e", function()
+				require("fyler").toggle()
+			end, { desc = "Toggle file explorer" })
 		end,
 	},
 	-- {
@@ -319,13 +337,6 @@ return {
 					if event.data.actions.type == "move" then
 						Snacks.rename.on_rename_file(event.data.actions.src_url, event.data.actions.dest_url)
 					end
-				end,
-			})
-
-			vim.api.nvim_create_autocmd("User", {
-				pattern = "MiniFilesActionRename",
-				callback = function(event)
-					Snacks.rename.on_rename_file(event.data.from, event.data.to)
 				end,
 			})
 		end,

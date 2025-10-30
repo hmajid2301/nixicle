@@ -214,6 +214,7 @@ in
               diagnostics = with pkgs.vimPlugins; [ trouble-nvim ];
               editor = with pkgs.vimPlugins; [
                 mini-nvim
+                fyler-nvim
                 refactoring-nvim
                 arrow-nvim
                 vim-illuminate
