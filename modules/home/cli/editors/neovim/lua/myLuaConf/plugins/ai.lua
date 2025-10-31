@@ -1,10 +1,20 @@
 return {
 	{
-		"mcphub.nvim",
+		"sidekick.nvim",
 		for_cat = "general.ai",
-		cmd = { "MCPHub" },
+		event = "DeferredUIEnter",
 		after = function(plugin)
-			require("mcphub").setup({})
+			require("sidekick").setup({
+				nes = {
+					enabled = false,
+				},
+				cli = {
+					mux = {
+						backend = "zellij",
+						enabled = true,
+					},
+				},
+			})
 		end,
 	},
 }
