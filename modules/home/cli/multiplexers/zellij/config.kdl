@@ -188,40 +188,40 @@ keybinds {
 
         bind "Alt q" { Quit; }
         bind "Alt n" { NewPane; }
-        
-        // Smart navigation with vim-zellij-navigator
-        bind "Ctrl h" {
-            MessagePlugin "https://github.com/hiasr/vim-zellij-navigator/releases/download/0.3.0/vim-zellij-navigator.wasm" {
-                name "move_focus";
-                payload "left";
-                move_mod "ctrl";
-                use_arrow_keys "false";
-            };
-        }
-        bind "Ctrl j" {
-            MessagePlugin "https://github.com/hiasr/vim-zellij-navigator/releases/download/0.3.0/vim-zellij-navigator.wasm" {
-                name "move_focus";
-                payload "down";
-                move_mod "ctrl";
-                use_arrow_keys "false";
-            };
-        }
-        bind "Ctrl k" {
-            MessagePlugin "https://github.com/hiasr/vim-zellij-navigator/releases/download/0.3.0/vim-zellij-navigator.wasm" {
-                name "move_focus";
-                payload "up";
-                move_mod "ctrl";
-                use_arrow_keys "false";
-            };
-        }
-        bind "Ctrl l" {
-            MessagePlugin "https://github.com/hiasr/vim-zellij-navigator/releases/download/0.3.0/vim-zellij-navigator.wasm" {
-                name "move_focus";
-                payload "right";
-                move_mod "ctrl";
-                use_arrow_keys "false";
-            };
-        }
+
+        // // Smart navigation with vim-zellij-navigator
+        // bind "Ctrl h" {
+        //     MessagePlugin "https://github.com/hiasr/vim-zellij-navigator/releases/download/0.3.0/vim-zellij-navigator.wasm" {
+        //         name "move_focus";
+        //         payload "left";
+        //         move_mod "ctrl";
+        //         use_arrow_keys "false";
+        //     };
+        // }
+        // bind "Ctrl j" {
+        //     MessagePlugin "https://github.com/hiasr/vim-zellij-navigator/releases/download/0.3.0/vim-zellij-navigator.wasm" {
+        //         name "move_focus";
+        //         payload "down";
+        //         move_mod "ctrl";
+        //         use_arrow_keys "false";
+        //     };
+        // }
+        // bind "Ctrl k" {
+        //     MessagePlugin "https://github.com/hiasr/vim-zellij-navigator/releases/download/0.3.0/vim-zellij-navigator.wasm" {
+        //         name "move_focus";
+        //         payload "up";
+        //         move_mod "ctrl";
+        //         use_arrow_keys "false";
+        //     };
+        // }
+        // bind "Ctrl l" {
+        //     MessagePlugin "https://github.com/hiasr/vim-zellij-navigator/releases/download/0.3.0/vim-zellij-navigator.wasm" {
+        //         name "move_focus";
+        //         payload "right";
+        //         move_mod "ctrl";
+        //         use_arrow_keys "false";
+        //     };
+        // }
 
         bind "Alt h" { MoveFocusOrTab "Left"; }
         bind "Alt l" { MoveFocusOrTab "Right"; }

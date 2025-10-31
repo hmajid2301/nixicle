@@ -4,9 +4,11 @@
   ...
 }:
 with lib;
-with lib.nixicle; let
+with lib.nixicle;
+let
   cfg = config.roles.kubernetes;
-in {
+in
+{
   options.roles.kubernetes = {
     enable = mkEnableOption "Enable kubernetes configuration";
     role = mkOpt (types.nullOr types.str) "server" "Whether this node is a server or agent";
@@ -28,6 +30,7 @@ in {
       allowedUDPPorts = [
         53
         8472
+        7844
       ];
 
       allowedTCPPorts = [
@@ -36,6 +39,7 @@ in {
         6443
         6444
         9000
+        7844
         445
         139
       ];

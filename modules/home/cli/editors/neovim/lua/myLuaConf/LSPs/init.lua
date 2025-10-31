@@ -100,7 +100,7 @@ require("lze").load({
 		lsp = {
 			settings = {
 				gopls = {
-					buildFlags = { "-tags=unit,integration,e2e,bdd,dind" },
+					buildFlags = { "-tags=dev,unit,integration,e2e,bdd,dind" },
 					staticcheck = true,
 					directoryFilters = { "-.git", "-.vscode", "-.idea", "-.vscode-test", "-node_modules" },
 					semanticTokens = true,

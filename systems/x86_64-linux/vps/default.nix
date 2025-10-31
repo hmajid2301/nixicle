@@ -57,7 +57,7 @@
       traefik.enable = true;
       logging.enable = true;
       postgresql.enable = true;
-      plausible.enable = true;
+      # plausible.enable = true;
       n8n.enable = true;
       gotify.enable = true;
       uptime-kuma.enable = true;
@@ -91,12 +91,12 @@
           };
 
           routers = {
-             traefik-dashboard = {
-               entryPoints = [ "websecure" ];
-               rule = "Host(`traefik.homelab.haseebmajid.dev`)";
-               service = "api@internal";
-               tls.certResolver = "letsencrypt";
-             };
+            traefik-dashboard = {
+              entryPoints = [ "websecure" ];
+              rule = "Host(`traefik.homelab.haseebmajid.dev`)";
+              service = "api@internal";
+              tls.certResolver = "letsencrypt";
+            };
             jellyfin = {
               entryPoints = [ "websecure" ];
               rule = "Host(`jellyfin.haseebmajid.dev`)";

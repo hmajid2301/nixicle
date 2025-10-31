@@ -21,11 +21,11 @@ require("lze").load({
 			require("neotest").setup({
 				adapters = {
 					require("neotest-golang")({
-						go_test_args = { "-v", "-x", "-count=1", "-tags=integration" },
-						go_list_args = { "-tags=integration" },
+						go_test_args = { "-v", "-x", "-count=1", "-tags=dev,integration" },
+						go_list_args = { "-tags=dev,integration" },
 						dap_go_opts = {
 							delve = {
-								build_flags = { "-tags=integration" },
+								build_flags = { "-tags=dev,integration" },
 							},
 						},
 					}),

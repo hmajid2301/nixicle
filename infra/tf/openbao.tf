@@ -46,7 +46,7 @@ variable "postgres_host" {
 variable "postgres_port" {
   description = "Postgres port"
   type        = number
-  default     = 5432
+  default     = 5433
 }
 
 variable "tofu_user_password" {
@@ -132,9 +132,9 @@ resource "vault_kubernetes_auth_backend_config" "kubernetes" {
 resource "vault_kubernetes_auth_backend_role" "k8s_auth_role" {
   backend                          = vault_auth_backend.kubernetes.path
   role_name                        = "k8s-auth-role"
-  bound_service_account_names      = ["banterbus", "openbao-auth", "default", "flux-system-vault"]
-  bound_service_account_namespaces = ["flux-system", "default", "prod", "dev", "apps", "tailscale", "infra"]
-  token_policies                   = ["default", "banterbus-dev", "banterbus-prod", "gitlab"]
+  bound_service_account_names      = ["default", "banterbus", "openbao-auth", "flux-system-vault", "gitlab-agent"]
+  bound_service_account_namespaces = ["infra", "flux-system", "default", "prod", "dev", "apps", "tailscale", "gitlab-agent-k8s"]
+  token_policies                   = ["default", "banterbus-dev", "banterbus-prod", "gitlab", "gitlab-agent"]
   token_ttl                        = 3600
   token_max_ttl                    = 86400
 }
@@ -255,6 +255,21 @@ path "kv/metadata/apps/gitlab" {
 EOT
 }
 
+resource "vault_policy" "gitlab_agent" {
+  name = "gitlab-agent"
+
+  policy = <<EOT
+# Allow reading GitLab agent token
+path "kv/data/infra/gitlab" {
+  capabilities = ["read"]
+}
+
+path "kv/metadata/infra/gitlab" {
+  capabilities = ["read"]
+}
+EOT
+}
+
 resource "vault_policy" "tofu" {
   name = "tofu"
 
@@ -345,6 +360,7 @@ resource "vault_mount" "kubernetes" {
   description = "Kubernetes secret engine"
 }
 
+# TODO: move to name tofu
 # Create postgres terraform user secret
 resource "vault_kv_secret_v2" "postgres_terraform" {
   mount = vault_mount.kv.path
@@ -373,5 +389,19 @@ path "kv/metadata/infra/postgres/terraform" {
 EOT
 }
 
-
-
+# Create ClusterRoleBinding for token review
+resource "kubernetes_cluster_role_binding_v1" "vault_auth_delegator" {
+  metadata {
+    name = "vault-auth-delegator"
+  }
+  role_ref {
+    api_group = "rbac.authorization.k8s.io"
+    kind      = "ClusterRole"
+    name      = "system:auth-delegator"
+  }
+  subject {
+    kind      = "ServiceAccount"
+    name      = data.kubernetes_service_account_v1.vault_auth.metadata[0].name
+    namespace = data.kubernetes_service_account_v1.vault_auth.metadata[0].namespace
+  }
+}

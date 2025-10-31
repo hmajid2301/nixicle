@@ -95,7 +95,6 @@ return {
 		after = function(plugin)
 			require("mini.surround").setup()
 			require("mini.comment").setup()
-			require("mini.files").setup()
 			require("mini.pairs").setup({
 				-- INFO: Taken from here: https://github.com/desdic/neovim/blob/main/lua/plugins/mini-pairs.lua
 				modes = { insert = true, command = false, terminal = false },
@@ -177,7 +176,26 @@ return {
 				markdown = true,
 			})
 			require("mini.trailspace").setup()
-			vim.keymap.set("n", "<leader>e", "<cmd>lua MiniFiles.open()<CR>")
+		end,
+	},
+	{
+		"fyler.nvim",
+		for_cat = "general.editor",
+		event = "DeferredUIEnter",
+		load = function(name)
+			vim.cmd.packadd(name)
+		end,
+		after = function(plugin)
+			require("fyler").setup({
+				close_on_select = false,
+				confirm_simple = true,
+				default_explorer = false,
+				delete_to_trash = true,
+			})
+
+			vim.keymap.set("n", "<leader>e", function()
+				require("fyler").toggle()
+			end, { desc = "Toggle file explorer" })
 		end,
 	},
 	-- {
@@ -248,11 +266,10 @@ return {
 		"smart-splits.nvim",
 		for_cat = "general.editor",
 		event = "DeferredUIEnter",
-		load = function(name)
-			vim.cmd.packadd(name)
-		end,
 		after = function(plugin)
-			require("smart-splits").setup()
+			require("smart-splits").setup({
+				-- multiplexer_integration = "zellij",
+			})
 
 			local smart_splits = require("smart-splits")
 			-- vim.keymap.set("n", "<leader>mr", smart_splits.start_resize_mode)
@@ -322,13 +339,6 @@ return {
 					end
 				end,
 			})
-
-			vim.api.nvim_create_autocmd("User", {
-				pattern = "MiniFilesActionRename",
-				callback = function(event)
-					Snacks.rename.on_rename_file(event.data.from, event.data.to)
-				end,
-			})
 		end,
 	},
 	{
@@ -380,6 +390,14 @@ return {
 		},
 		after = function(plugin)
 			vim.keymap.set({ "n", "v" }, "<leader>rE", "<cmd>InlineEdit<cr>", { noremap = true, silent = true })
+		end,
+	},
+	{
+		"neoscroll.nvim",
+		for_cat = "general.editor",
+		event = "DeferredUIEnter",
+		after = function(plugin)
+			require("neoscroll").setup({})
 		end,
 	},
 }

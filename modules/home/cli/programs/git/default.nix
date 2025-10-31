@@ -20,14 +20,20 @@ in
 
     programs.git = {
       enable = true;
-      userName = "Haseeb Majid";
-      userEmail = cfg.email;
 
-      extraConfig = {
-        gpg.format = "ssh";
-        gpg.ssh.allowedSignersFile = "~/.ssh/allowed_signers";
+      settings = {
+        user = {
+          name = "Haseeb Majid";
+          email = cfg.email;
+          signingkey = "~/.ssh/id_ed25519.pub";
+        };
+
+        gpg = {
+          format = "ssh";
+          ssh.allowedSignersFile = "~/.ssh/allowed_signers";
+        };
+
         commit.gpgsign = true;
-        user.signingkey = "~/.ssh/id_ed25519.pub";
 
         core = {
           editor = "nvim";

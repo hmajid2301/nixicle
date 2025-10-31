@@ -173,7 +173,7 @@ in
             neonixdev = with pkgs.vimPlugins; [ lazydev-nvim ];
             general = {
               ai = with pkgs.vimPlugins; [
-                inputs.mcphub-nvim.packages.${pkgs.system}.default
+                sidekick-nvim
               ];
               cmp = with pkgs.vimPlugins; [
                 blink-cmp
@@ -214,6 +214,7 @@ in
               diagnostics = with pkgs.vimPlugins; [ trouble-nvim ];
               editor = with pkgs.vimPlugins; [
                 mini-nvim
+                fyler-nvim
                 refactoring-nvim
                 arrow-nvim
                 vim-illuminate
@@ -224,6 +225,7 @@ in
                 yanky-nvim
                 inc-rename-nvim
                 snacks-nvim
+                neoscroll-nvim
                 pkgs.neovimPlugins.gx-nvim
                 pkgs.neovimPlugins.templ-goto-definition
                 pkgs.neovimPlugins.tiny-code-actions
@@ -238,6 +240,7 @@ in
               ];
               notes = with pkgs.vimPlugins; [
                 obsidian-nvim
+                markview-nvim
               ];
               ui = with pkgs.vimPlugins; [
                 indent-blankline-nvim
