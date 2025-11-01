@@ -16,21 +16,23 @@ require("lze").load({
 		load = function(name)
 			vim.cmd.packadd(name)
 			vim.cmd.packadd("neotest-golang")
+			vim.cmd.packadd("plenary.nvim")
 		end,
 		after = function(plugin)
 			require("neotest").setup({
 				adapters = {
 					require("neotest-golang")({
-						go_test_args = { "-v", "-x", "-count=1", "-tags=dev,integration" },
-						go_list_args = { "-tags=dev,integration" },
-						dap_go_opts = {
-							delve = {
-								build_flags = { "-tags=dev,integration" },
-							},
-						},
+						go_test_args = { "-v", "-count=1" },
+						go_list_args = {},
+						runner = "gotestsum",
+						log_level = vim.log.levels.DEBUG,
 					}),
 				},
 				output = { open_on_run = true },
+				discovery = {
+					enabled = true,
+					concurrent = 10,
+				},
 			})
 
 			local neotest = require("neotest")
