@@ -163,8 +163,11 @@ in
               debugmaster-nvim
             ];
             test = with pkgs.vimPlugins; [
-              neotest
-              neotest-golang
+              # Use latest neotest with PR #548 fix
+              pkgs.neovimPlugins.neotest
+              # neotest-golang
+              pkgs.neovimPlugins.neotest-golang
+              nvim-nio
               nvim-coverage
               vim-dotenv
             ];
@@ -194,6 +197,9 @@ in
               ];
               treesitter = with pkgs.vimPlugins; [
                 nvim-treesitter-textobjects
+                # Using nvim-treesitter main branch via overlay for neotest-golang v2+ compatibility
+                # See: https://fredrikaverpil.github.io/neotest-golang/install/
+                # Overlay from: https://github.com/iofq/nvim-treesitter-main
                 nvim-treesitter.withAllGrammars
               ];
               telescope = with pkgs.vimPlugins; [
@@ -320,6 +326,7 @@ in
               diagnostics = true;
               editor = true;
               debug = true;
+              notes = true;
               test = true;
               lint = true;
               format = true;
@@ -375,6 +382,7 @@ in
               diagnostics = true;
               editor = true;
               debug = true;
+              notes = true;
               test = true;
               lint = true;
               format = true;

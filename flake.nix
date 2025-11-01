@@ -160,6 +160,21 @@
       url = "github:AndrewRadev/inline_edit.vim";
       flake = false;
     };
+
+    plugins-neotest-golang = {
+      url = "github:fredrikaverpil/neotest-golang";
+      flake = false;
+    };
+
+    plugins-neotest = {
+      url = "github:nvim-neotest/neotest";
+      flake = false;
+    };
+
+    nvim-treesitter-main = {
+      url = "github:iofq/nvim-treesitter-main";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -207,6 +222,7 @@
         nixgl.overlay
         nur.overlays.default
         nix-topology.overlays.default
+        nvim-treesitter-main.overlays.default
       ];
 
       deploy = lib.mkDeploy { inherit (inputs) self; };

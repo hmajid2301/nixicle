@@ -1,6 +1,28 @@
 -- NOTE: various, non-plugin config
 require("myLuaConf.opts_and_keys")
 
+-- NOTE: Enable treesitter highlighting for main branch
+-- Must be in init.lua because treesitter plugin loads on DeferredUIEnter,
+-- but we need highlighting to work for files opened at startup
+vim.api.nvim_create_autocmd("FileType", {
+	pattern = "*",
+	callback = function(args) 
+		-- Add error handling to prevent crashes during session restore
+		local success, err = pcall(function()
+			-- Check if parser is available before starting
+			local lang = vim.bo[args.buf].filetype
+			local ts_lang = vim.treesitter.language.get_lang(lang)
+			if ts_lang then
+				vim.treesitter.start(args.buf)
+			end
+		end)
+		if not success then
+			-- Silently fail if treesitter can't start for this buffer
+			vim.notify("Treesitter failed to start for " .. vim.bo[args.buf].filetype .. ": " .. err, vim.log.levels.DEBUG)
+		end
+	end,
+})
+
 -- NOTE: register an extra lze handler with the spec_field 'for_cat'
 -- that makes enabling an lze spec for a category slightly nicer
 require("lze").register_handlers(require("nixCatsUtils.lzUtils").for_cat)
