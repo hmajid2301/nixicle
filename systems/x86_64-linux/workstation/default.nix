@@ -103,6 +103,27 @@
     ];
   };
 
+  # Additional SMB mount for Data directory with thumbnail-friendly options
+  fileSystems."/mnt/data" = {
+    device = "//192.168.1.153/main/Data";
+    fsType = "cifs";
+    options = [
+      "credentials=/etc/samba/credentials"
+      "vers=3.0"
+      "iocharset=utf8"
+      "uid=1000"
+      "gid=100"
+      "file_mode=0644"
+      "dir_mode=0755"
+      "cache=strict"  # Better for thumbnails
+      "x-systemd.automount"
+      "noauto"
+      "x-systemd.idle-timeout=60"
+      "x-systemd.device-timeout=5s"
+      "x-systemd.mount-timeout=5s"
+    ];
+  };
+
   boot = {
     kernelParams = [ "resume_offset=533760" ];
     blacklistedKernelModules = [
