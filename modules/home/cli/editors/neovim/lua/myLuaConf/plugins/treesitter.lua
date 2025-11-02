@@ -10,28 +10,6 @@ return {
 		after = function(plugin)
 			require("nvim-treesitter").setup()
 
-			vim.api.nvim_create_autocmd("FileType", {
-				pattern = "*",
-				callback = function(args)
-					-- Add error handling to prevent crashes during session restore
-					local success, err = pcall(function()
-						-- Check if parser is available before starting
-						local lang = vim.bo[args.buf].filetype
-						local ts_lang = vim.treesitter.language.get_lang(lang)
-						if ts_lang then
-							vim.treesitter.start(args.buf)
-						end
-					end)
-					if not success then
-						-- Silently fail if treesitter can't start for this buffer
-						vim.notify(
-							"Treesitter failed to start for " .. vim.bo[args.buf].filetype .. ": " .. err,
-							vim.log.levels.DEBUG
-						)
-					end
-				end,
-			})
-
 			vim.keymap.set("x", "<c-space>", function()
 				vim.lsp.buf.selection_range("outer")
 			end, { desc = "Expand selection (incremental)" })
@@ -72,6 +50,7 @@ return {
 					set_jumps = true,
 				},
 			})
+
 
 			-- Set up select keymaps using the new API
 			vim.keymap.set({ "x", "o" }, "af", function()
@@ -116,7 +95,11 @@ return {
 			vim.keymap.set({ "x", "o" }, "im", function()
 				require("nvim-treesitter-textobjects.select").select_textobject("@call.inner", "textobjects")
 			end)
+<<<<<<< HEAD
 
+=======
+			
+>>>>>>> 32e4968 (work)
 			-- Move keymaps using the new API
 			vim.keymap.set({ "n", "x", "o" }, "]m", function()
 				require("nvim-treesitter-textobjects.move").goto_next_start("@function.outer", "textobjects")
