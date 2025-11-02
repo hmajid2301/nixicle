@@ -298,11 +298,6 @@ return {
 		end,
 	},
 	{
-		"inc-rename.nvim",
-		for_cat = "general.editor",
-		keys = {
-			{ "<leader>rn", mode = { "n" }, desc = "LSP: Rename" },
-		},
 		cmd = { "IncRename" },
 		load = function(name)
 			vim.cmd.packadd(name)
@@ -350,17 +345,6 @@ return {
 		end,
 		after = function(plugin)
 			require("templ-goto-definition").setup()
-		end,
-	},
-	{
-		"undotree",
-		for_cat = "general.editor",
-		event = "DeferredUIEnter",
-		keys = {
-			{ "<leader>ut", mode = { "n" }, desc = " show undo tree" },
-		},
-		after = function(plugin)
-			vim.keymap.set("n", "<leader>ut", vim.cmd.UndotreeToggle, { desc = "Toggle Undotree" })
 		end,
 	},
 	{
