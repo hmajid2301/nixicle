@@ -33,7 +33,7 @@ in
 
       # System monitoring and utilities
       duf
-      du-dust
+      dust
       dysk
       gdu
       procs
@@ -68,3 +68,4 @@ in
     ];
   };
 }
+
