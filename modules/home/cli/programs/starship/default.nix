@@ -1,8 +1,15 @@
-{ config, lib, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 with lib;
 with lib.nixicle;
-let cfg = config.cli.programs.starship;
-in {
+let
+  cfg = config.cli.programs.starship;
+in
+{
   options.cli.programs.starship = with types; {
     enable = mkBoolOpt false "Whether or not to enable starship";
   };
@@ -10,8 +17,13 @@ in {
   config = mkIf cfg.enable {
     programs.starship = {
       enable = true;
-      enableFishIntegration = true;
+      enableFishIntegration = false;
       settings = { };
     };
+
+    # TODO: Check if this fixes issues.
+    programs.fish.interactiveShellInit = ''
+      starship init fish | source
+    '';
   };
 }
