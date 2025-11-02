@@ -86,13 +86,13 @@ in
 
           providers = lib.mkIf config.services.k3s.enable {
             kubernetesIngress = {
-              endpoint = "https://127.0.0.1:6443";
+              endpoint = "https://vps:6443";
               token = config.sops.secrets.k8s_traefik_token.path;
               certAuthFilePath = config.sops.secrets.k8s_traefik_ca.path;
               ingressClass = "traefik";
             };
             kubernetesCRD = {
-              endpoint = "https://127.0.0.1:6443";
+              endpoint = "https://vps:6443";
               token = config.sops.secrets.k8s_traefik_token.path;
               certAuthFilePath = config.sops.secrets.k8s_traefik_ca.path;
             };
