@@ -78,6 +78,7 @@ require("catppuccin").setup({
 		illuminate = { enabled = true },
 		flash = true,
 		indent_blankline = { enabled = true },
+		markview = true,
 		mini = { enabled = true },
 		navic = { enabled = true },
 		telescope = { enabled = true },

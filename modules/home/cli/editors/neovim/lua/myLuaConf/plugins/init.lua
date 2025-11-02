@@ -21,5 +21,6 @@ require("lze").load({
 	{ import = "myLuaConf.plugins.file_explorer" },
 	{ import = "myLuaConf.plugins.git" },
 	{ import = "myLuaConf.plugins.ai" },
+	{ import = "myLuaConf.plugins.notes" },
 	{ import = "myLuaConf.plugins.ui" },
 })
