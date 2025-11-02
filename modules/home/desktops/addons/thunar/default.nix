@@ -22,6 +22,23 @@ in {
       ffmpegthumbnailer  # Video thumbnails
       libgsf            # Office document thumbnails  
       poppler           # PDF thumbnails
+      gst_all_1.gst-libav  # Additional video format support
+      gdk-pixbuf        # Image thumbnails
     ];
+
+    # Configure tumbler (Thunar's thumbnail service) for better SMB performance
+    xdg.configFile."tumbler/tumbler.rc".text = ''
+      [General]
+      LogLevel=1
+      ThumbnailLifetime=2592000
+
+      [Cache]
+      CleanupInterval=86400
+
+      [FFmpegThumbnailer]
+      EnableThumbnailing=true
+      MaxFileSize=1073741824
+      WorkArounds=
+    '';
   };
 }

@@ -48,6 +48,7 @@ in {
           executable-text-activation = "ask";
           always-use-location-entry = false;
           default-folder-viewer = "icon-view";
+          thumbnail-cache-time = 30; # Cache thumbnails for 30 days
         };
         "org/gnome/desktop/thumbnailers" = {
           disable-all = false;
