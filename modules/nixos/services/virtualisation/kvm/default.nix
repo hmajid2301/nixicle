@@ -5,9 +5,11 @@
   ...
 }:
 with lib;
-with lib.nixicle; let
+with lib.nixicle;
+let
   cfg = config.services.virtualisation.kvm;
-in {
+in
+{
   options.services.virtualisation.kvm = {
     enable = lib.mkEnableOption "enable kvm virtualisation";
   };
@@ -15,7 +17,7 @@ in {
   config = lib.mkIf cfg.enable {
     environment.systemPackages = with pkgs; [
       libguestfs
-      win-virtio
+      virtio-win
       win-spice
       virt-manager
       virt-viewer
