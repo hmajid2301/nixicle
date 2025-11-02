@@ -58,7 +58,7 @@ in
         cdi = "zi";
         cp = "xcp";
         grep = "rg";
-        dig = "dog";
+        dig = "doggo";
         cat = "bat";
         curl = "curlie";
         rm = "gomi";
