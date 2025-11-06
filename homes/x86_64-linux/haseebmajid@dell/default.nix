@@ -46,7 +46,7 @@ in
       # INFO: Packages stylix usually installs but doesn't work with gnome 46 at the moment.
       # So we are installing them here and we will manually set them.
       pkgs.nixicle.monolisa
-      pkgs.noto-fonts-color-emoj
+      pkgs.noto-fonts-color-emoji
       pkgs.noto-fonts
       pkgs.source-serif
       pkgs.nerd-fonts.symbols-only
