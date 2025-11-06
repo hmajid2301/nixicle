@@ -95,11 +95,6 @@ return {
 			vim.keymap.set({ "x", "o" }, "im", function()
 				require("nvim-treesitter-textobjects.select").select_textobject("@call.inner", "textobjects")
 			end)
-<<<<<<< HEAD
-
-=======
-			
->>>>>>> 32e4968 (work)
 			-- Move keymaps using the new API
 			vim.keymap.set({ "n", "x", "o" }, "]m", function()
 				require("nvim-treesitter-textobjects.move").goto_next_start("@function.outer", "textobjects")

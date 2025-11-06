@@ -6,20 +6,54 @@ require("myLuaConf.opts_and_keys")
 -- but we need highlighting to work for files opened at startup
 vim.api.nvim_create_autocmd("FileType", {
 	pattern = "*",
-	callback = function(args) 
+	callback = function(args)
+		-- Skip special filetypes that don't have parsers or cause issues
+		local filetype = vim.bo[args.buf].filetype
+		local excluded_filetypes = {
+			"blink-cmp-menu",
+			"fidget",
+			"gitrebase",
+			"gitcommit",
+			"gitconfig",
+			"oil",
+			"lazy",
+			"mason",
+			"help",
+			"checkhealth",
+			"TelescopePrompt",
+			"TelescopeResults",
+			"",
+		}
+
+		for _, ft in ipairs(excluded_filetypes) do
+			if filetype == ft then
+				return
+			end
+		end
+
 		-- Add error handling to prevent crashes during session restore
 		local success, err = pcall(function()
 			-- Check if parser is available before starting
-			local lang = vim.bo[args.buf].filetype
-			local ts_lang = vim.treesitter.language.get_lang(lang)
-			if ts_lang then
-				vim.treesitter.start(args.buf)
+			local ts_lang = vim.treesitter.language.get_lang(filetype)
+			if not ts_lang then
+				return
 			end
+
+			-- Try to add the language (this will fail gracefully if parser is not installed)
+			local parser_ok, _ = pcall(vim.treesitter.language.add, ts_lang)
+			if not parser_ok then
+				return
+			end
+
+			-- Verify we can actually get a parser before starting
+			local has_parser = pcall(vim.treesitter.get_parser, args.buf, ts_lang)
+			if not has_parser then
+				return
+			end
+
+			-- Now try to start treesitter for this buffer
+			vim.treesitter.start(args.buf)
 		end)
-		if not success then
-			-- Silently fail if treesitter can't start for this buffer
-			vim.notify("Treesitter failed to start for " .. vim.bo[args.buf].filetype .. ": " .. err, vim.log.levels.DEBUG)
-		end
 	end,
 })
 
