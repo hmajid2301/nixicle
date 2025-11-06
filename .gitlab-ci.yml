@@ -78,6 +78,6 @@ deploy:homelab:
     matrix:
       - HOST: [ms01, s100, vps]
   script:
-    - nix profile install github:XYenon/deploy-rs/fix/nix-2-32
+    - nix profile install github:serokell/deploy-rs
     - deploy ".#$HOST" --hostname $HOST --ssh-user nixos --skip-checks --confirm-timeout "600" --remote-build
 
