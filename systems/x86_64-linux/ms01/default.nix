@@ -65,7 +65,7 @@
       };
       immich.enable = true;
       jellyfin.enable = true;
-      # karakeep.enable = true;
+      karakeep.enable = true;
       logging.enable = true;
       monitoring.enable = true;
       minio.enable = true;

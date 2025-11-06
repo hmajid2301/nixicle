@@ -10,3 +10,8 @@ kubernetes_host = ""
 access_token = ""
 remote_state_address = ""
 username = ""
+
+# Authentik
+authentik_url = "https://authentik.haseebmajid.dev"
+authentik_token = "your-authentik-api-token"
+authentik_domain = "authentik.haseebmajid.dev"
