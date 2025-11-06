@@ -109,6 +109,15 @@ return {
 				markdown_inline = {
 					enable = true,
 				},
+				yaml = {
+					properties = {
+						["^id$"] = {
+							use_types = false,
+							text = " ",
+							hl = "MarkviewIcon1",
+						},
+					},
+				},
 			})
 
 			require("markview.extras.checkboxes").setup()
