@@ -298,12 +298,12 @@ return {
 		end,
 	},
 	{
+		"inc-rename.nvim",
 		cmd = { "IncRename" },
-		load = function(name)
-			vim.cmd.packadd(name)
-		end,
 		after = function(plugin)
-			require("inc_rename").setup({})
+			require("inc_rename").setup({
+				input_buffer_type = "snacks",
+			})
 
 			vim.keymap.set({ "n", "v" }, "<leader>rn", function()
 				return ":IncRename " .. vim.fn.expand("<cword>")
@@ -314,9 +314,6 @@ return {
 		"snacks.nvim",
 		for_cat = "general.editor",
 		event = "DeferredUIEnter",
-		load = function(name)
-			vim.cmd.packadd(name)
-		end,
 		after = function(plugin)
 			require("snacks").setup({
 				bigfile = { enabled = true },
@@ -374,14 +371,6 @@ return {
 		},
 		after = function(plugin)
 			vim.keymap.set({ "n", "v" }, "<leader>rE", "<cmd>InlineEdit<cr>", { noremap = true, silent = true })
-		end,
-	},
-	{
-		"neoscroll.nvim",
-		for_cat = "general.editor",
-		event = "DeferredUIEnter",
-		after = function(plugin)
-			require("neoscroll").setup({})
 		end,
 	},
 }
