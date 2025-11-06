@@ -82,10 +82,8 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # TODO: Switch back to official deploy-rs once Nix 2.32 support is merged
-    # https://github.com/serokell/deploy-rs/issues/XXX
     deploy-rs = {
-      url = "github:XYenon/deploy-rs/fix/nix-2-32";
+      url = "github:serokell/deploy-rs";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
