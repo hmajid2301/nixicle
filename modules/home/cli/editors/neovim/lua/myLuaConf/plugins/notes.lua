@@ -94,7 +94,7 @@ return {
 			require("markview").setup({
 				preview = {
 					modes = { "n", "i", "v", "V", "no", "c" },
-					hybrid_modes = { "i" },
+					hybrid_modes = { "n", "i" },
 					callbacks = {
 						on_attach = function(buf, wins)
 							vim.api.nvim_set_option_value("conceallevel", 2, { buf = buf })
