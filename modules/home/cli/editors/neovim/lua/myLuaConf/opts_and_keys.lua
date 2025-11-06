@@ -69,7 +69,7 @@ vim.opt.ruler = false
 
 -- Decrease update time
 vim.o.updatetime = 250
-vim.o.timeoutlen = 1000
+vim.o.timeoutlen = 500
 
 -- Set completeopt to have a better completion experience
 vim.o.completeopt = "menu,preview,noselect"

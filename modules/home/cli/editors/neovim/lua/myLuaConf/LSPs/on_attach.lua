@@ -10,12 +10,12 @@ return function(_, bufnr)
 		vim.keymap.set("n", keys, func, { buffer = bufnr, desc = desc })
 	end
 
-	nmap("<leader>cr", vim.lsp.buf.rename, "[R]e[n]ame")
-	nmap("<leader>gd", vim.lsp.buf.definition, "[G]oto [D]efinition")
-	nmap("<leader>gdx", "<cmd>belowright split | lua vim.lsp.buf.definition()<CR>", "[G]oto [D]efinition in split")
-	nmap("<leader>gdv", "<cmd>vsplit | lua vim.lsp.buf.definition()<CR>", "[G]oto [D]efinition [V]ertical")
-	nmap("<leader>gdt", "<cmd>tab split | lua vim.lsp.buf.definition()<CR>", "[G]oto [D]efinition in [T]ab")
 	-- vim.keymap.set({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, { desc = "Code Actions" })
+	nmap("<leader>cr", vim.lsp.buf.rename, "[R]e[n]ame")
+	nmap("gd", vim.lsp.buf.definition, "[G]oto [D]efinition")
+	nmap("gds", "<cmd>split | lua vim.lsp.buf.definition()<CR>", "[G]oto [D]efinition in [S]plit")
+	nmap("gdv", "<cmd>vsplit | lua vim.lsp.buf.definition()<CR>", "[G]oto [D]efinition [V]ertical")
+	nmap("gdt", "<cmd>tab split | lua vim.lsp.buf.definition()<CR>", "[G]oto [D]efinition in [T]ab")
 	nmap("<leader>lR", "<cmd>LspRestart<cr>", "Restart LSP")
 
 	-- NOTE: why are these functions that call the telescope builtin?
