@@ -17,6 +17,8 @@ return {
 			{ "<leader>f.", mode = { "n" }, desc = "Find recent files" },
 			{ "<leader>fb", mode = { "n" }, desc = "Find buffer" },
 			{ "<leader>fc", mode = { "n" }, desc = "Find command" },
+			{ "<leader>fn", mode = { "n" }, desc = "Find notes files" },
+			{ "<leader>fN", mode = { "n" }, desc = "Find notes grep" },
 		},
 		load = function(name)
 			vim.cmd.packadd(name)
@@ -112,6 +114,27 @@ return {
 			vim.keymap.set("n", "<leader>ff", function()
 				builtin.find_files({ hidden = true, follow = true })
 			end, { desc = "Find all files" })
+
+			-- Notes directory keybindings
+			local notes_dir = vim.fn.expand("~/projects/notes")
+			vim.keymap.set("n", "<leader>fn", function()
+				builtin.find_files({
+					prompt_title = "Notes Files",
+					cwd = notes_dir,
+					hidden = true,
+					follow = true,
+				})
+			end, { desc = "Find notes files" })
+
+			vim.keymap.set("n", "<leader>fN", function()
+				builtin.live_grep({
+					prompt_title = "Search Notes",
+					cwd = notes_dir,
+					additional_args = function()
+						return { "--hidden" }
+					end,
+				})
+			end, { desc = "Find notes grep" })
 		end,
 	},
 }
