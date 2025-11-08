@@ -56,11 +56,21 @@ in
             };
           };
 
+          middlewares = {
+            attic-timeout = {
+              buffering = {
+                maxRequestBodyBytes = 10737418240; # 10GB
+                memRequestBodyBytes = 1073741824; # 1GB
+              };
+            };
+          };
+
           routers = {
             attic = {
               entryPoints = [ "websecure" ];
               rule = "Host(`attic.homelab.haseebmajid.dev`)";
               service = "attic";
+              middlewares = [ "attic-timeout" ];
               tls.certResolver = "letsencrypt";
             };
           };
