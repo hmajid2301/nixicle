@@ -75,6 +75,30 @@
 
     caelestia.url = "github:caelestia-dots/shell";
 
+    # DankMaterialShell
+
+    dgop = {
+      url = "github:AvengeMedia/dgop";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    dms-cli = {
+      url = "github:AvengeMedia/danklinux";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    dankMaterialShell = {
+      url = "github:AvengeMedia/DankMaterialShell";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.dgop.follows = "dgop";
+      inputs.dms-cli.follows = "dms-cli";
+    };
+
+    danksearch = {
+      url = "github:AvengeMedia/danksearch";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # Homelab
 
     nix-topology = {
@@ -214,6 +238,8 @@
 
       homes.modules = with inputs; [
         impermanence.nixosModules.home-manager.impermanence
+        dankMaterialShell.homeModules.dankMaterialShell.default
+        caelestia.homeManagerModules.default
       ];
 
       overlays = with inputs; [

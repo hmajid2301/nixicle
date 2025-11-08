@@ -1,0 +1,261 @@
+{
+  "currentThemeName": "cat-mauve",
+  "customThemeFile": "",
+  "matugenScheme": "scheme-dynamic-contrast",
+  "runUserMatugenTemplates": true,
+  "matugenTargetMonitor": "",
+  "dankBarTransparency": 1,
+  "dankBarWidgetTransparency": 1,
+  "popupTransparency": 1,
+  "dockTransparency": 1,
+  "widgetBackgroundColor": "sch",
+  "surfaceBase": "s",
+  "cornerRadius": 12,
+  "use24HourClock": true,
+  "showSeconds": true,
+  "useFahrenheit": false,
+  "nightModeEnabled": true,
+  "animationSpeed": 1,
+  "customAnimationDuration": 500,
+  "wallpaperFillMode": "Fill",
+  "blurredWallpaperLayer": false,
+  "blurWallpaperOnOverview": false,
+  "showLauncherButton": true,
+  "showWorkspaceSwitcher": true,
+  "showFocusedWindow": true,
+  "showWeather": true,
+  "showMusic": true,
+  "showClipboard": true,
+  "showCpuUsage": true,
+  "showMemUsage": true,
+  "showCpuTemp": true,
+  "showGpuTemp": true,
+  "selectedGpuIndex": 0,
+  "enabledGpuPciIds": [],
+  "showSystemTray": true,
+  "showClock": true,
+  "showNotificationButton": true,
+  "showBattery": true,
+  "showControlCenterButton": true,
+  "controlCenterShowNetworkIcon": true,
+  "controlCenterShowBluetoothIcon": true,
+  "controlCenterShowAudioIcon": true,
+  "controlCenterWidgets": [
+    {
+      "id": "volumeSlider",
+      "enabled": true,
+      "width": 50
+    },
+    {
+      "id": "brightnessSlider",
+      "enabled": true,
+      "width": 50
+    },
+    {
+      "id": "wifi",
+      "enabled": true,
+      "width": 50
+    },
+    {
+      "id": "bluetooth",
+      "enabled": true,
+      "width": 50
+    },
+    {
+      "id": "audioOutput",
+      "enabled": true,
+      "width": 50
+    },
+    {
+      "id": "audioInput",
+      "enabled": true,
+      "width": 50
+    },
+    {
+      "id": "nightMode",
+      "enabled": true,
+      "width": 50
+    },
+    {
+      "id": "darkMode",
+      "enabled": true,
+      "width": 50
+    }
+  ],
+  "showWorkspaceIndex": false,
+  "showWorkspacePadding": false,
+  "workspaceScrolling": false,
+  "showWorkspaceApps": true,
+  "maxWorkspaceIcons": 3,
+  "workspacesPerMonitor": true,
+  "dwlShowAllTags": false,
+  "workspaceNameIcons": {},
+  "waveProgressEnabled": true,
+  "clockCompactMode": false,
+  "focusedWindowCompactMode": false,
+  "runningAppsCompactMode": true,
+  "keyboardLayoutNameCompactMode": false,
+  "runningAppsCurrentWorkspace": true,
+  "runningAppsGroupByApp": false,
+  "clockDateFormat": "",
+  "lockDateFormat": "",
+  "mediaSize": 1,
+  "dankBarLeftWidgets": [
+    "workspaceSwitcher",
+    {
+      "id": "focusedWindow",
+      "enabled": false
+    }
+  ],
+  "dankBarCenterWidgets": [
+    {
+      "id": "music",
+      "enabled": false
+    },
+    {
+      "id": "clock",
+      "enabled": true
+    },
+    {
+      "id": "idleInhibitor",
+      "enabled": true
+    },
+    {
+      "id": "weather",
+      "enabled": false
+    }
+  ],
+  "dankBarRightWidgets": [
+    {
+      "id": "systemTray",
+      "enabled": true
+    },
+    {
+      "id": "clipboard",
+      "enabled": true
+    },
+    {
+      "id": "cpuUsage",
+      "enabled": true
+    },
+    {
+      "id": "notificationButton",
+      "enabled": true
+    },
+    {
+      "id": "privacyIndicator",
+      "enabled": true
+    },
+    {
+      "id": "controlCenterButton",
+      "enabled": true
+    }
+  ],
+  "dankBarWidgetOrder": [],
+  "appLauncherViewMode": "list",
+  "spotlightModalViewMode": "list",
+  "sortAppsAlphabetically": false,
+  "weatherLocation": "London, England",
+  "weatherCoordinates": "51.4893335,-0.1440551",
+  "useAutoLocation": false,
+  "weatherEnabled": true,
+  "networkPreference": "auto",
+  "vpnLastConnected": "",
+  "iconTheme": "System Default",
+  "launcherLogoMode": "os",
+  "launcherLogoCustomPath": "",
+  "launcherLogoColorOverride": "surface",
+  "launcherLogoColorInvertOnMode": false,
+  "launcherLogoBrightness": 0.5,
+  "launcherLogoContrast": 1,
+  "launcherLogoSizeOffset": 0,
+  "fontFamily": "Inter Variable",
+  "monoFontFamily": "MonoLisa",
+  "fontWeight": 400,
+  "fontScale": 1,
+  "dankBarFontScale": 1.1,
+  "notepadUseMonospace": true,
+  "notepadFontFamily": "",
+  "notepadFontSize": 14,
+  "notepadShowLineNumbers": false,
+  "notepadTransparencyOverride": -1,
+  "notepadLastCustomTransparency": 0.7,
+  "soundsEnabled": true,
+  "useSystemSoundTheme": true,
+  "soundNewNotification": true,
+  "soundVolumeChanged": true,
+  "soundPluggedIn": true,
+  "acMonitorTimeout": 300,
+  "acLockTimeout": 300,
+  "acSuspendTimeout": 1800,
+  "acSuspendBehavior": 1,
+  "batteryMonitorTimeout": 0,
+  "batteryLockTimeout": 0,
+  "batterySuspendTimeout": 0,
+  "batterySuspendBehavior": 0,
+  "lockBeforeSuspend": false,
+  "loginctlLockIntegration": true,
+  "launchPrefix": "",
+  "brightnessDevicePins": {},
+  "gtkThemingEnabled": false,
+  "qtThemingEnabled": false,
+  "syncModeWithPortal": true,
+  "showDock": false,
+  "dockAutoHide": false,
+  "dockGroupByApp": false,
+  "dockOpenOnOverview": false,
+  "dockPosition": 1,
+  "dockSpacing": 4,
+  "dockBottomGap": 0,
+  "dockIconSize": 40,
+  "dockIndicatorStyle": "circle",
+  "notificationOverlayEnabled": false,
+  "dankBarAutoHide": false,
+  "dankBarOpenOnOverview": false,
+  "dankBarVisible": true,
+  "dankBarSpacing": 4,
+  "dankBarBottomGap": 0,
+  "dankBarInnerPadding": 4,
+  "dankBarPosition": 0,
+  "dankBarSquareCorners": false,
+  "dankBarNoBackground": false,
+  "dankBarGothCornersEnabled": false,
+  "dankBarGothCornerRadiusOverride": false,
+  "dankBarGothCornerRadiusValue": 12,
+  "dankBarBorderEnabled": false,
+  "dankBarBorderColor": "surfaceText",
+  "dankBarBorderOpacity": 1,
+  "dankBarBorderThickness": 1,
+  "popupGapsAuto": true,
+  "popupGapsManual": 4,
+  "modalDarkenBackground": true,
+  "lockScreenShowPowerActions": true,
+  "enableFprint": false,
+  "maxFprintTries": 3,
+  "hideBrightnessSlider": false,
+  "notificationTimeoutLow": 5000,
+  "notificationTimeoutNormal": 5000,
+  "notificationTimeoutCritical": 0,
+  "notificationPopupPosition": 0,
+  "osdAlwaysShowValue": false,
+  "powerActionConfirm": true,
+  "customPowerActionLock": "",
+  "customPowerActionLogout": "",
+  "customPowerActionSuspend": "",
+  "customPowerActionHibernate": "",
+  "customPowerActionReboot": "",
+  "customPowerActionPowerOff": "",
+  "updaterUseCustomCommand": false,
+  "updaterCustomCommand": "",
+  "updaterTerminalAdditionalParams": "",
+  "screenPreferences": {
+    "systemTray": [
+      "all"
+    ],
+    "notepad": [
+      "all"
+    ]
+  },
+  "showOnLastDisplay": {},
+  "configVersion": 1
+}
