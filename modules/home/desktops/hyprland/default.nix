@@ -2,8 +2,10 @@
 with lib;
 with lib.nixicle;
 with types;
-let cfg = config.desktops.hyprland;
-in {
+let
+  cfg = config.desktops.hyprland;
+in
+{
   imports = lib.snowfall.fs.get-non-default-nix-files ./.;
 
   options.desktops.hyprland = {
@@ -22,16 +24,16 @@ in {
     desktops.addons = {
       kanshi.enable = true;
       rofi.enable = true;
-      swaync.enable = true;
-      waybar.enable = true;
-      wlogout.enable = true;
+      dankMaterialShell.enable = true;
       wlsunset.enable = true;
-      thunar.enable = true;
+      hypridle.enable = true;
 
       # pyprland.enable = true;
-      hyprpaper.enable = true;
-      hyprlock.enable = true;
-      hypridle.enable = true;
+      # swaync.enable = true;
+      # waybar.enable = true;
+      # wlogout.enable = true;
+      # hyprpaper.enable = true;
+      # hyprlock.enable = true;
     };
   };
 }
