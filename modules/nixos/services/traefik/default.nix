@@ -139,6 +139,13 @@ in
                   }
                 ];
               };
+              transport = {
+                respondingTimeouts = {
+                  readTimeout = "10m";
+                  writeTimeout = "10m";
+                  idleTimeout = "10m";
+                };
+              };
             };
           };
         };

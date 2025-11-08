@@ -32,11 +32,28 @@ in
       dynamicConfigOptions = {
         http = {
           services = {
-            attic.loadBalancer.servers = [
-              {
-                url = "http://localhost:8899";
-              }
-            ];
+            attic.loadBalancer = {
+              servers = [
+                {
+                  url = "http://localhost:8899";
+                }
+              ];
+              responseForwarding = {
+                flushInterval = "100ms";
+              };
+              serversTransport = "attic-transport";
+            };
+          };
+
+          serversTransports = {
+            attic-transport = {
+              forwardingTimeouts = {
+                dialTimeout = "30s";
+                responseHeaderTimeout = "10m";
+                idleConnTimeout = "10m";
+              };
+              maxIdleConnsPerHost = 100;
+            };
           };
 
           routers = {
