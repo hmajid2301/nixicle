@@ -17,9 +17,11 @@ in
   config = {
 
     xdg.configFile."nvim/queries/go/injections.scm".text =
-      builtins.readFile ./lua/myLuaConf/syntax/go.scm;
+      builtins.readFile ./lua/config/syntax/go.scm;
     xdg.configFile."nvim/queries/templ/injections.scm".text =
-      builtins.readFile ./lua/myLuaConf/syntax/html.scm;
+      builtins.readFile ./lua/config/syntax/html.scm;
+    xdg.configFile."nvim/doc/nixicle.txt".text =
+      builtins.readFile ./doc/nixicle.txt;
 
     # this value, nixCats is the defaultPackageName you pass to mkNixosModules
     # it will be the namespace for your options.
@@ -251,7 +253,7 @@ in
                 lualine-nvim
                 dropbar-nvim
                 helpview-nvim
-                tailwind-tools-nvim
+                nvim-highlight-colors
               ];
             };
           };

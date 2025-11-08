@@ -191,10 +191,15 @@ return {
 				confirm_simple = true,
 				default_explorer = false,
 				delete_to_trash = true,
+				win = {
+					kind = "split_left_most",
+				},
 			})
 
 			vim.keymap.set("n", "<leader>e", function()
-				require("fyler").toggle()
+				require("fyler").toggle({
+					kind = "split_left_most",
+				})
 			end, { desc = "Toggle file explorer" })
 		end,
 	},
