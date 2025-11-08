@@ -1,0 +1,226 @@
+*nixicle.txt*  Personal Neovim Configuration
+
+==============================================================================
+CONTENTS                                                    *nixicle-contents*
+
+  1. Introduction ............................ |nixicle-intro|
+  2. Leaders ................................. |nixicle-leaders|
+  3. Navigation .............................. |nixicle-navigation|
+  4. File Management ......................... |nixicle-files|
+  5. LSP & Code .............................. |nixicle-lsp|
+  6. Git ..................................... |nixicle-git|
+  7. Search & Replace ........................ |nixicle-search|
+  8. Testing & Debugging ..................... |nixicle-testing|
+  9. Notes & Documentation ................... |nixicle-notes|
+  10. Window Management ...................... |nixicle-windows|
+
+==============================================================================
+INTRODUCTION                                                   *nixicle-intro*
+
+This is a personal Neovim configuration built with nixCats and lze for lazy
+loading. The configuration is managed via Nix and supports both NixOS and
+non-Nix environments.
+
+Repository: ~/nixicle/modules/home/cli/editors/neovim
+
+==============================================================================
+LEADERS                                                      *nixicle-leaders*
+
+<leader>     = <Space>
+<localleader> = ,
+
+==============================================================================
+NAVIGATION                                                *nixicle-navigation*
+
+Basic Movement~
+  j/k              Move up/down (wraps on soft-wrapped lines)
+  <C-d>/<C-u>      Half-page down/up (keeps cursor centered)
+  n/N              Next/previous search (keeps cursor centered)
+
+Buffer Navigation~
+  <leader><leader>[ Previous buffer
+  <leader><leader>] Next buffer
+  <leader><leader>l Last (alternate) buffer
+  <leader><leader>d Delete current buffer
+
+Split Navigation~
+  <C-h>            Move to left split
+  <C-j>            Move to down split
+  <C-k>            Move to up split
+  <C-l>            Move to right split
+  <C-\>            Move to previous split
+
+Split Swapping~
+  <leader><leader>h Swap buffer left
+  <leader><leader>j Swap buffer down
+  <leader><leader>k Swap buffer up
+  <leader><leader>l Swap buffer right
+
+Quickfix/Location Lists~
+  <C-n>            Next quickfix item
+  <C-p>            Previous quickfix item
+  <leader>j        Previous location list item
+  <leader>k        Next location list item
+  xq               Close quickfix/location list
+
+==============================================================================
+FILE MANAGEMENT                                              *nixicle-files*
+
+File Explorer~
+  <leader>e        Toggle file explorer (fyler)
+  -                Open oil.nvim (when in buffer)
+
+Telescope~
+  <leader>ff       Find files
+  <leader>fg       Live grep
+  <leader>fb       Find buffers
+  <leader>fh       Find help
+  <leader>fm       Find keymaps
+  <leader>fs       Find telescopes
+  <leader>fw       Find current word
+  <leader>fd       Find diagnostics
+  <leader>fr       Find resume
+  <leader>f.       Find recent files
+  <leader>fc       Find command history
+  <leader>fn       Find in notes directory
+  <leader>fN       Find in Nix config
+  <leader>p        Yank history (yanky)
+
+Session Management~
+  Automatically saves and restores sessions per directory
+
+==============================================================================
+LSP & CODE                                                      *nixicle-lsp*
+
+LSP Commands~
+  gd               Go to definition
+  gr               Go to references
+  gI               Go to implementation
+  <leader>D        Type definition
+  <leader>ds       Document symbols
+  <leader>ws       Workspace symbols
+  K                Hover documentation
+  gK               Signature help
+
+Diagnostics~
+  [d               Previous diagnostic
+  ]d               Next diagnostic
+  <leader>cd       Open diagnostic float
+  <leader>q        Diagnostics to location list
+
+Code Actions~
+  <leader>ca       Code actions (tiny-code-action)
+  <leader>rn       Rename symbol (inc-rename)
+  <leader>rE       Inline edit
+
+Refactoring~
+  <leader>re       Extract (visual mode)
+  <leader>rf       Extract to file (visual mode)
+  <leader>rv       Extract variable (visual mode)
+  <leader>ri       Inline variable
+  <leader>rI       Inline function
+  <leader>rb       Extract block
+  <leader>rbf      Extract block to file
+
+Formatting & Linting~
+  Formatting happens via conform.nvim on save
+  Linting happens via nvim-lint automatically
+
+==============================================================================
+GIT                                                              *nixicle-git*
+
+Git Signs~
+  ]h               Next hunk
+  [h               Previous hunk
+  <leader>hs       Stage hunk
+  <leader>hr       Reset hunk
+  <leader>hS       Stage buffer
+  <leader>hu       Undo stage hunk
+  <leader>hR       Reset buffer
+  <leader>hp       Preview hunk
+  <leader>hb       Blame line
+  <leader>hd       Diff this
+  <leader>hD       Diff this ~
+
+Git Tools~
+  <leader>gg       Neogit
+  <leader>gd       DiffView
+  <leader>gl       Git log
+  <leader>gs       Advanced git search
+
+==============================================================================
+SEARCH & REPLACE                                             *nixicle-search*
+
+Search~
+  <Esc>            Clear search highlight
+  /                Search forward
+  ?                Search backward
+
+Replace~
+  <leader>sr       Open grug-far (search & replace)
+  <leader>sw       Replace current word
+  <leader>sp       Replace in current buffer (visual mode)
+
+==============================================================================
+TESTING & DEBUGGING                                         *nixicle-testing*
+
+Neotest~
+  <leader>tt       Run nearest test
+  <leader>tf       Run test file
+  <leader>ts       Test summary
+  <leader>to       Test output panel
+
+Coverage~
+  <leader>tc       Toggle coverage
+  <leader>tcs      Coverage summary
+
+DAP (Debug Adapter Protocol)~
+  <leader>db       Toggle breakpoint
+  <leader>dc       Continue
+  <leader>di       Step into
+  <leader>do       Step over
+  <leader>dO       Step out
+  <leader>dr       Repl
+  <leader>dl       Run last
+
+==============================================================================
+NOTES & DOCUMENTATION                                         *nixicle-notes*
+
+Markview~
+  Markdown preview enabled automatically for .md files
+  YAML frontmatter with custom icons (id, tags, etc.)
+
+Features~
+  - Live markdown preview
+  - Hybrid mode (edit and preview simultaneously)
+  - Callout support
+  - Checkbox rendering
+  - Math support (LaTeX)
+
+==============================================================================
+WINDOW MANAGEMENT                                            *nixicle-windows*
+
+Split Creation~
+  <leader>|        Split window right
+  <leader>-        Split window below
+
+General~
+  <C-s>            Save file
+  <leader>mj       Move line down
+  <leader>mk       Move line up
+  J                Join line (visual mode moves selection)
+  K                Move selection up (visual mode)
+
+Indentation~
+  >                Indent right (stays in visual mode)
+  <                Indent left (stays in visual mode)
+
+Editing~
+  <C-p>            Paste from clipboard (insert mode)
+  J                Join line (keeps cursor position)
+
+Miscellaneous~
+  <leader>u        Toggle undotree
+
+==============================================================================
+vim:tw=78:ts=8:ft=help:norl:
