@@ -29,6 +29,8 @@ in
         confirm-close-surface = false;
         keybind = [
           "ctrl+shift+plus=increase_font_size:1"
+          # Claude Code Shift+Enter binding
+          "shift+enter=text:\u001b[13;2u"
         ];
       };
     };
