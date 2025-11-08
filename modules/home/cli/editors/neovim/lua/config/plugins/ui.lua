@@ -17,24 +17,6 @@ return {
 		end,
 	},
 	{
-		"tailwind-tools.nvim",
-		event = "DeferredUIEnter",
-		for_cat = "general.ui",
-		after = function(plugin)
-			require("tailwind-tools").setup({
-				server = {
-					override = false,
-				},
-				document_color = {
-					enabled = true,
-					kind = "inline",
-					debounce = 200,
-					inline_symbol = "󱓻 ",
-				},
-			})
-		end,
-	},
-	{
 		"indent-blankline.nvim",
 		for_cat = "general.ui",
 		event = "DeferredUIEnter",
@@ -251,9 +233,24 @@ return {
 	{
 		"helpview.nvim",
 		for_cat = "general.ui",
+		ft = "help",
 		event = "DeferredUIEnter",
 		after = function(plugin)
 			require("helpview").setup({})
+		end,
+	},
+	{
+		"nvim-highlight-colors",
+		event = "DeferredUIEnter",
+		for_cat = "general.ui",
+		after = function(plugin)
+			require("nvim-highlight-colors").setup({
+				render = "virtual",
+				virtual_symbol = "󰝤",
+				virtual_symbol_prefix = "",
+				virtual_symbol_suffix = " ",
+				enable_tailwind = true,
+			})
 		end,
 	},
 }
