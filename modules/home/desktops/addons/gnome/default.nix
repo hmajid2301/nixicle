@@ -3,9 +3,11 @@
   lib,
   ...
 }:
-with lib; let
+with lib;
+let
   cfg = config.desktops.addons.gnome;
-in {
+in
+{
   options.desktops.addons.gnome = {
     enable = mkEnableOption "enable gnome extras to work with home-manager";
   };
@@ -19,5 +21,16 @@ in {
       ];
     };
     targets.genericLinux.enable = true;
+
+    dconf.settings = {
+      "org/gnome/desktop/thumbnailers" = {
+        disable-all = false;
+      };
+
+      "org/gnome/desktop/thumbnail-cache" = {
+        maximum-age = -1;
+        maximum-size = -1;
+      };
+    };
   };
 }
