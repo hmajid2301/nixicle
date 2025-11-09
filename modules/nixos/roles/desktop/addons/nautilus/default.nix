@@ -48,13 +48,21 @@ in
     snowfallorg.users.${config.user.name}.home.config = {
       dconf.settings = {
         "org/gnome/nautilus/preferences" = {
-          show-image-thumbnails = "always";
-          thumbnail-limit = 10;
+          show-image-thumbnails = "always"; # Show thumbnails: local-only, always, never
+          thumbnail-limit = 10; # Maximum file size (MB) to thumbnail
           show-directory-item-counts = "always";
           executable-text-activation = "ask";
           always-use-location-entry = false;
           default-folder-viewer = "icon-view";
           thumbnail-cache-time = 30;
+        };
+        # Icon view settings for performance
+        "org/gnome/nautilus/icon-view" = {
+          captions = [ "size" "date_modified" "none" ];
+        };
+        # List view settings
+        "org/gnome/nautilus/list-view" = {
+          use-tree-view = false;
         };
         "org/gnome/desktop/thumbnailers" = {
           disable-all = false;
