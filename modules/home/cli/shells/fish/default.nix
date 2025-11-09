@@ -334,6 +334,24 @@ in
             sha256 = "sha256-kHpdCQdYcpvi9EFM/uZXv93mZqlk1zCi2DRhWaDyK5g=";
           };
         }
+        {
+          name = "hm-generation-reload";
+          src = pkgs.writeTextDir "conf.d/hm-generation-reload.fish" ''
+            # Auto-reload fish when home-manager generation changes
+            function __hm_generation_reload --on-event fish_prompt
+              set -l hm_gen_file ~/.local/state/home-manager/gcroots/current-home
+              if test -L $hm_gen_file
+                set -l current_gen (readlink $hm_gen_file)
+                if set -q __hm_last_generation; and test "$__hm_last_generation" != "$current_gen"
+                  echo "🔄 Home Manager generation changed, reloading fish..."
+                  set -e __hm_last_generation
+                  exec fish
+                end
+                set -g __hm_last_generation $current_gen
+              end
+            end
+          '';
+        }
       ];
     };
   };

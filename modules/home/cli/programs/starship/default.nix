@@ -17,13 +17,8 @@ in
   config = mkIf cfg.enable {
     programs.starship = {
       enable = true;
-      enableFishIntegration = false;
+      enableFishIntegration = true;
       settings = { };
     };
-
-    # TODO: Check if this fixes issues.
-    programs.fish.interactiveShellInit = ''
-      starship init fish | source
-    '';
   };
 }
