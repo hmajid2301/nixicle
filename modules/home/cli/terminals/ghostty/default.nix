@@ -27,6 +27,11 @@ in
         copy-on-select = "clipboard";
         cursor-style = "block";
         confirm-close-surface = false;
+
+        # Override bright green to have better contrast with light text
+        # This fixes the readability issue with pre-commit "Passed" messages
+        palette = "2=#40a02b"; # Green with better contrast
+
         keybind = [
           "ctrl+shift+plus=increase_font_size:1"
           # Claude Code Shift+Enter binding
