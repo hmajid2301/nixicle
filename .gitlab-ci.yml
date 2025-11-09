@@ -53,7 +53,9 @@ build:flake:
     - echo "Building and pushing all system configurations to Attic..."
     - for host in framework ms01 s100 vm vps workstation; do
         echo "Building nixosConfigurations.$host...";
-        nix build ".#nixosConfigurations.$host.config.system.build.toplevel" --print-out-paths | attic push homelab:main;
+        nix build ".#nixosConfigurations.$host.config.system.build.toplevel" --print-out-paths | while read path; do
+          nix-store -qR "$path" | grep -vE "(davinci-resolve|blender|steam|wine|nvidia-x11)" | attic push homelab:main --stdin || true;
+        done
       done
     - echo "Building and pushing packages to Attic..."
     - nix build ".#packages.x86_64-linux.install" --print-out-paths | attic push homelab:main
