@@ -4,17 +4,29 @@
   lib,
   ...
 }:
-with lib; let
+with lib;
+let
   cfg = config.roles.social;
-in {
+in
+{
   options.roles.social = {
     enable = mkEnableOption "Enable social suite";
   };
 
   config = mkIf cfg.enable {
-    programs = {
-      discord.enable = true;
-      shotwell.enable = true;
+    xdg.configFile."BetterDiscord/data/stable/custom.css" = {
+      source = ./custom.css;
     };
+
+    programs = {
+      discord = {
+        enable = true;
+        package = pkgs.goofcord;
+      };
+    };
+
+    home.packages = with pkgs; [
+      shotwell
+    ];
   };
 }
