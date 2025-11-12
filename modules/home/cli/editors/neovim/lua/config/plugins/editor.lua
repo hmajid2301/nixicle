@@ -323,6 +323,7 @@ return {
 			require("snacks").setup({
 				bigfile = { enabled = true },
 				gitbrowse = { enabled = true },
+				gh = { enabled = true },
 				rename = { enabled = true },
 				image = { enabled = true },
 				quickfile = { enabled = true },
