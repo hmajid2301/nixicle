@@ -31,9 +31,9 @@ in
       # pyprland.enable = true;
       # swaync.enable = true;
       # waybar.enable = true;
-      # wlogout.enable = true;
-      # hyprpaper.enable = true;
-      # hyprlock.enable = true;
+      wlogout.enable = true;
+      hyprpaper.enable = true;
+      hyprlock.enable = true;
     };
   };
 }
