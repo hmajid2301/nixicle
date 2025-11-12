@@ -22,24 +22,15 @@ in {
     # Create necessary directories in /persist on boot
     systemd.tmpfiles.rules = [
       "d /persist 0755 root root -"
-      "d /persist/home 0755 root root -"
+      "d /persist/root 0700 root root -"
       "d /persist/var/lib 0755 root root -"
       "d /persist/var/log 0755 root root -"
       "d /persist/etc/NetworkManager/system-connections 0700 root root -"
-    ] ++ lib.optionals (builtins.hasAttr "haseeb" config.users.users) [
-      "d /persist/home/haseeb 0755 haseeb users -"
     ];
 
     # Make sure critical directories exist
     system.activationScripts.impermanence = lib.mkBefore ''
-      mkdir -p /persist/{home,var/lib,var/log,etc/NetworkManager/system-connections}
-      
-      # Only create user directories if user exists
-      if id haseeb >/dev/null 2>&1; then
-        mkdir -p /persist/home/haseeb/{Documents,Downloads,Pictures,Videos,Music,.ssh,.config,.local,.cache}
-        chown haseeb:users /persist/home/haseeb 2>/dev/null || true
-        chown -R haseeb:users /persist/home/haseeb/{Documents,Downloads,Pictures,Videos,Music,.ssh,.config,.local,.cache} 2>/dev/null || true
-      fi
+      mkdir -p /persist/{root,var/lib,var/log,etc/NetworkManager/system-connections}
     '';
 
     # This script does the actual wipe of the system
@@ -151,38 +142,23 @@ in {
     environment.persistence."/persist" = {
       hideMounts = true;
       directories = [
-        # Don't persist /home as a whole - use user-specific directories instead
+        # Note: /home is a separate btrfs subvolume, not a bind mount
         "/srv"
         "/.cache/nix/"
         "/etc/NetworkManager/system-connections"
         "/var/cache/"
         "/var/db/sudo/"
         "/var/lib/"
+        "/root"  # Persist root user home
       ];
       files = [
         "/etc/machine-id"
+        "/etc/adjtime"  # System clock
         "/etc/ssh/ssh_host_ed25519_key"
         "/etc/ssh/ssh_host_ed25519_key.pub"
         "/etc/ssh/ssh_host_rsa_key"
         "/etc/ssh/ssh_host_rsa_key.pub"
       ];
-      users.haseeb = {
-        directories = [
-          "Documents"
-          "Downloads"
-          "Pictures"
-          "Videos"
-          "Music"
-          ".ssh"
-          ".config"
-          ".local"
-          ".cache"
-        ];
-        files = [
-          ".bash_history"
-          ".zsh_history"
-        ];
-      };
     };
   };
 }
