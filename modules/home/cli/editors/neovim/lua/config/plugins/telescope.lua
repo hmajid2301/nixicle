@@ -26,6 +26,7 @@ return {
 			vim.cmd.packadd("telescope-media-files")
 			vim.cmd.packadd("advanced-git-search.nvim")
 			vim.cmd.packadd("telescope-ui-select.nvim")
+			vim.cmd.packadd("git-worktree.nvim")
 		end,
 		after = function(plugin)
 			require("telescope").setup({
@@ -91,6 +92,7 @@ return {
 			pcall(require("telescope").load_extension, "media_files")
 			pcall(require("telescope").load_extension, "advanced_git_search")
 			pcall(require("telescope").load_extension, "ui-select")
+			pcall(require("telescope").load_extension, "git_worktree")
 			-- require("telescope").extensions.dap.configurations()
 
 			local builtin = require("telescope.builtin")
@@ -135,6 +137,15 @@ return {
 					end,
 				})
 			end, { desc = "Find notes grep" })
+
+			-- Git worktree keybindings
+			vim.keymap.set("n", "<leader>gw", function()
+				require("telescope").extensions.git_worktree.git_worktrees()
+			end, { desc = "Git Worktrees (switch)" })
+
+			vim.keymap.set("n", "<leader>gW", function()
+				require("telescope").extensions.git_worktree.create_git_worktree()
+			end, { desc = "Git Worktrees (create)" })
 		end,
 	},
 }
