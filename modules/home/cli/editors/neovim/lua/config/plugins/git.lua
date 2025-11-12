@@ -85,7 +85,7 @@ return {
 		-- colorscheme = "",
 		after = function(plugin)
 			local actions = require("diffview.actions")
-			
+
 			require("diffview").setup({
 				diff_binaries = false,
 				enhanced_diff_hl = true, -- Enhanced diff highlighting for cleaner visuals
@@ -106,7 +106,7 @@ return {
 					folder_closed = "",
 					folder_open = "",
 				},
-				
+
 				-- Better visual signs
 				signs = {
 					fold_closed = "",
@@ -122,7 +122,7 @@ return {
 						winbar_info = true,
 					},
 					merge_tool = {
-						layout = "diff3_horizontal", 
+						layout = "diff3_horizontal",
 						disable_diagnostics = true,
 					},
 				},
@@ -175,7 +175,7 @@ return {
 						vim.opt_local.colorcolumn = ""
 						vim.opt_local.number = false
 						vim.opt_local.relativenumber = false
-						
+
 						-- Enhanced diff colors for Catppuccin
 						vim.api.nvim_set_hl(0, "DiffAdd", { bg = "#a6e3a1", fg = "#11111b", bold = true })
 						vim.api.nvim_set_hl(0, "DiffChange", { bg = "#89b4fa", fg = "#11111b", bold = true })
@@ -267,60 +267,23 @@ return {
 		"git-worktree.nvim",
 		for_cat = "general.git",
 		event = "DeferredUIEnter",
+		load = function(name)
+			vim.cmd.packadd(name)
+		end,
 		after = function(plugin)
-			local ok, worktree = pcall(require, "git-worktree")
-			if not ok then
-				return
-			end
+			-- git-worktree.nvim v2+ does not require setup()
+			-- Configure using hooks if needed
+			local ok, Hooks = pcall(require, "git-worktree.hooks")
+			if ok then
+				local update_on_switch = Hooks.builtins.update_current_buffer_on_switch
 
-			-- Setup if the function exists
-			if type(worktree.setup) == "function" then
-				worktree.setup({
-					change_directory_command = "cd",
-					update_on_change = true,
-					update_on_change_command = "e .",
-					clearjumps_on_change = true,
-					autopush = false,
-				})
-			end
+				Hooks.register(Hooks.type.SWITCH, function(path, prev_path)
+					update_on_switch(path, prev_path)
+				end)
 
-			-- Hook to create/switch zellij session when creating a worktree
-			if type(worktree.on_tree_change) == "function" then
-				worktree.on_tree_change(function(op, metadata)
-				if op == worktree.Operations.Create then
-					-- Get the worktree path
-					local worktree_path = metadata.path
-					local session_name = vim.fn.fnamemodify(worktree_path, ":t")
-
-					-- Check if we're inside zellij
-					if vim.env.ZELLIJ then
-						-- We're inside zellij - just notify the user
-						vim.notify(
-							string.format(
-								"Worktree created at: %s\nTo switch to it, exit nvim and run: sesh %s",
-								worktree_path,
-								worktree_path
-							),
-							vim.log.levels.INFO
-						)
-					else
-						-- We're outside zellij - create/switch session automatically
-						vim.fn.jobstart({ "sesh", worktree_path }, {
-							detach = true,
-							on_exit = function(_, exit_code)
-								if exit_code == 0 then
-									vim.notify(
-										"Zellij session created/attached: " .. session_name,
-										vim.log.levels.INFO
-									)
-								else
-									vim.notify("Failed to create zellij session for worktree", vim.log.levels.WARN)
-								end
-							end,
-						})
-					end
-				end
-			end)
+				Hooks.register(Hooks.type.DELETE, function()
+					vim.cmd("e .")
+				end)
 			end
 		end,
 	},
