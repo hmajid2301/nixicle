@@ -23,7 +23,7 @@ in
       crush
 
       # Amazon Q Developer (uncomment when confirmed available in nixpkgs)
-      # amazon-q-developer
+      amazon-q-cli
     ];
-  };
+   };
 }
