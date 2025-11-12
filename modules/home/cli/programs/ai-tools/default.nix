@@ -16,13 +16,10 @@ in
 
   config = mkIf cfg.enable {
     home.packages = with pkgs; [
-      # AI coding assistants
       opencode
       claude-code
       gemini-cli
       crush
-
-      # Amazon Q Developer (uncomment when confirmed available in nixpkgs)
       amazon-q-cli
     ];
    };
