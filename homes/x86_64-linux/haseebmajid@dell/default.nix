@@ -131,6 +131,24 @@ in
       PATH="$PATH:${config.home.homeDirectory}/.nix-profile/bin"
     '';
 
+    # Override desktop entry to use NixGL-wrapped ghostty
+    desktopEntries.ghostty = {
+      name = "Ghostty";
+      comment = "A terminal emulator";
+      exec = "${config.home.homeDirectory}/.nix-profile/bin/ghostty";
+      icon = "com.mitchellh.ghostty";
+      categories = [ "System" "TerminalEmulator" ];
+      terminal = false;
+      startupNotify = true;
+      settings = {
+        StartupWMClass = "com.mitchellh.ghostty";
+        Keywords = "terminal;tty;pty;";
+        X-GNOME-UsesNotifications = "true";
+        DBusActivatable = "true";
+      };
+    };
+  };
+
     configFile."fontconfig/conf.d/99-custom-fonts.conf".text = ''
       <?xml version="1.0"?>
       <!DOCTYPE fontconfig SYSTEM "urn:fontconfig:fonts.dtd">
