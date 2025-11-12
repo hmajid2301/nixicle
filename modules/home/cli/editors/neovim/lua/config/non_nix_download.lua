@@ -51,7 +51,7 @@ require("nixCatsUtils.catPacker").setup({
 	{ "sindrets/diffview.nvim", opt = true },
 	{ "aaronhallaert/advanced-git-search.nvim", opt = true },
 	{ "NeogitOrg/neogit", opt = true },
-	{ "ThePrimeagen/git-worktree.nvim", opt = true },
+	{ "brandoncc/git-worktree.nvim", branch = "catch-and-handle-telescope-related-error", opt = true },
 	{ "pabloariasal/webify.nvim", opt = true },
 
 	{ "folke/trouble.nvim", opt = true },
