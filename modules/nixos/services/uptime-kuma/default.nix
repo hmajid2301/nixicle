@@ -47,6 +47,7 @@ in {
                 rule = "Host(`uptime.homelab.haseebmajid.dev`)";
                 service = "uptime-kuma";
                 tls.certResolver = "letsencrypt";
+                middlewares = ["authentik"];
               };
             };
           };
