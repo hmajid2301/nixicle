@@ -9,5 +9,8 @@
     name = "haseeb";
   };
 
+  # Disable keychain for VM to avoid SSH key errors on fresh installs
+  cli.programs.ssh.enableKeychain = false;
+
   home.stateVersion = "23.11";
 }
