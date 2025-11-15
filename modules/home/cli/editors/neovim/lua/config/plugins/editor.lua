@@ -327,6 +327,47 @@ return {
 				rename = { enabled = true },
 				image = { enabled = true },
 				quickfile = { enabled = true },
+				styles = {
+					input = {
+						border = "rounded",
+						title_pos = "center",
+						backdrop = 60,
+					},
+					notification = {
+						border = "rounded",
+						wo = {
+							winblend = 0,
+							wrap = false,
+						},
+					},
+					picker = {
+						border = "rounded",
+						title_pos = "center",
+						backdrop = 60,
+					},
+					["picker.input"] = {
+						border = "rounded",
+						title_pos = "center",
+					},
+					["picker.list"] = {
+						border = "rounded",
+						title_pos = "center",
+					},
+					["picker.preview"] = {
+						border = "rounded",
+						title_pos = "center",
+					},
+				},
+				input = {
+					icon = "   ",
+					icon_hl = "SnacksInputIcon",
+					prompt_pos = "top",
+					border = "rounded",
+				},
+				picker = {
+					prompt_pos = "top",
+					layout = "telescope",
+				},
 			})
 
 			vim.api.nvim_create_autocmd("User", {
