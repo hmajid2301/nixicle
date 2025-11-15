@@ -8,69 +8,6 @@
 with lib;
 let
   cfg = config.roles.desktop;
-  elgato-fix = pkgs.writeScriptBin "elgato-fix" ''
-    #!/usr/bin/env bash
-
-    # Inspired by: https://gist.github.com/agners/48521cc7677d3134d9861ea0484724f4
-
-    # Getting Elgato Wave:3 Microphone input "unstuck" on Linux & PipeWire
-    # Replace <card-name> with your microphone's card name (check "pactl list cards")
-    # It looks something like "alsa_card.usb-Elgato_Systems_Elgato_Wave_3_<serial>-00"
-    card_name="alsa_card.usb-Elgato_Systems_Elgato_Wave_3_BS35M1A01828-00"
-
-    ${pkgs.pulseaudio}/bin/pactl set-card-profile $card_name output:analog-stereo
-    ${pkgs.pulseaudio}/bin/pactl set-card-profile $card_name input:mono-fallback
-  '';
-
-  toggle-headphones = pkgs.writeScriptBin "toggle-headphones" ''
-    #!/bin/sh
-    SOURCE1="alsa_output.usb-SteelSeries_Arctis_Nova_Pro_Wireless-00.analog-stereo"
-    SOURCE2="alsa_output.usb-ACTIONS_Pebble_V3-00.analog-stereo"
-
-    # Get the current default sink
-    CURRENT_SINK=$(${pkgs.pulseaudio}/bin/pactl get-default-sink)
-
-    # Toggle between the two sinks
-    if [ "$CURRENT_SINK" = "$SOURCE1" ]; then
-        ${pkgs.pulseaudio}/bin/pactl set-default-sink "$SOURCE2"
-        echo "Switched to Pebble V3"
-    else
-        ${pkgs.pulseaudio}/bin/pactl set-default-sink "$SOURCE1"
-        echo "Switched to Arctis Nova Pro Wireless"
-    fi
-  '';
-
-  toggle-monitor-input = pkgs.writeScriptBin "toggle-monitor-input" ''
-    #!/bin/sh
-    # Toggle Gigabyte M32U monitor between DisplayPort and USB-C inputs
-    # Monitor: GIGA-BYTE TECHNOLOGY CO. LTD. Gigabyte M32U (Serial: 21351B000087)
-
-    MONITOR_MODEL="Gigabyte M32U"
-    DISPLAYPORT_INPUT="0f"  # DisplayPort input code for Gigabyte M32U
-    USBC_INPUT="1b"         # USB-C input code for Gigabyte M32U
-
-    # Get current input source
-    echo "Checking current input source..."
-    CURRENT_VCP=$(${pkgs.ddcutil}/bin/ddcutil getvcp 60 2>/dev/null | grep -oP '(?<=current value =\s+)\w+' | tr '[:upper:]' '[:lower:]')
-
-    if [ -z "$CURRENT_VCP" ]; then
-        echo "Failed to read current input source. Using DisplayPort as fallback."
-        CURRENT_VCP="0f"
-    fi
-
-    # Toggle based on current input
-    if [ "$CURRENT_VCP" = "0f" ]; then
-        # Currently DisplayPort, switch to USB-C
-        echo "Switching $MONITOR_MODEL from DisplayPort to USB-C..."
-        ${pkgs.ddcutil}/bin/ddcutil setvcp 60 0x$USBC_INPUT
-        echo "Monitor switched to USB-C input"
-    else
-        # Currently not DisplayPort (assume USB-C or other), switch to DisplayPort
-        echo "Switching $MONITOR_MODEL to DisplayPort..."
-        ${pkgs.ddcutil}/bin/ddcutil setvcp 60 0x$DISPLAYPORT_INPUT
-        echo "Monitor switched to DisplayPort input"
-    fi
-  '';
 in
 {
   options.roles.desktop = {
@@ -105,22 +42,18 @@ in
       MANPAGER = "nixCats +Man!";
     };
 
-    # TODO: move this to somewhere
+    # Desktop utilities
     home.packages = with pkgs; [
-      elgato-fix
-      toggle-headphones
-      toggle-monitor-input
-
-      ddcutil
-      mplayer
-      mtpfs
-      jmtpfs
-      brightnessctl
-      xdg-utils
-      wl-clipboard
-      clipse
-      pamixer
-      playerctl
+      ddcutil # Monitor control via DDC/CI
+      mplayer # Media player
+      mtpfs # MTP filesystem support
+      jmtpfs # Java MTP filesystem
+      brightnessctl # Brightness control
+      xdg-utils # XDG utilities
+      wl-clipboard # Wayland clipboard utilities
+      clipse # Clipboard manager
+      pamixer # PulseAudio mixer
+      playerctl # Media player controller
 
       grimblast
       slurp

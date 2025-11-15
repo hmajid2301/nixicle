@@ -65,6 +65,15 @@ in
 
       # Markdown viewer
       glow
+
+      # Core Unix utilities
+      (hiPrio parallel) # GNU parallel - prioritize over moreutils version
+      moreutils # Additional Unix utilities (sponge, vidir, etc)
+      unzip # Archive extraction
+      gnupg # GPG encryption and signing
+
+      # Nix utilities
+      optinix # Nix flake utilities
     ];
   };
 }
