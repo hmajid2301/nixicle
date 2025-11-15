@@ -147,9 +147,11 @@ in
   };
 
   config = mkIf cfg.enable {
-    # Install DankSearch (dsearch)
+    # Install DankSearch (dsearch) and icon theme fallbacks
     home.packages = [
       inputs.danksearch.packages.${pkgs.system}.default
+      pkgs.hicolor-icon-theme  # Fallback icon theme for missing icons
+      pkgs.adwaita-icon-theme  # Additional fallback with better coverage
     ];
 
     programs.dankMaterialShell = {
