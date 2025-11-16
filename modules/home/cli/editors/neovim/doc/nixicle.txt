@@ -61,7 +61,11 @@ Quickfix/Location Lists~
   <C-p>            Previous quickfix item
   <leader>j        Previous location list item
   <leader>k        Next location list item
-  xq               Close quickfix/location list
+  <leader>q        Toggle quickfix (quicker.nvim)
+  <leader>l        Toggle location list (quicker.nvim)
+  <leader>Q        Toggle quickfix without focus
+  >                Expand quickfix context (in quickfix window)
+  <                Collapse quickfix context (in quickfix window)
 
 ==============================================================================
 FILE MANAGEMENT                                              *nixicle-files*
@@ -85,6 +89,12 @@ Telescope~
   <leader>fn       Find in notes directory
   <leader>fN       Find in Nix config
   <leader>p        Yank history (yanky)
+
+Scratch Buffers~
+  <leader>.        Toggle scratch buffer (snacks.nvim)
+  <leader>S        Select scratch buffer
+  q                Close scratch buffer (in scratch window)
+  <Esc>            Close scratch buffer (in scratch window)
 
 Session Management~
   Automatically saves and restores sessions per directory
