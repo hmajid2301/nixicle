@@ -38,7 +38,7 @@ in
     cli = {
       multiplexers.zellij.enable = true;
 
-      programs = {
+      tools = {
         attic.enable = true;
         atuin.enable = true;
         bat.enable = true;
@@ -53,12 +53,13 @@ in
         modern-unix.enable = true;
         network-tools.enable = true;
         nix-index.enable = true;
-        docker.enable = true;
         ssh.enable = true;
         starship.enable = true;
         yazi.enable = true;
         zoxide.enable = true;
       };
     };
+
+    development.containers.docker.enable = true;
   };
 }
