@@ -16,7 +16,7 @@
     routers.${name} = lib.mkMerge [
       {
         inherit entryPoints;
-        rule = "Host(`${subdomain}.${domain}`)";
+        rule = lib.mkDefault "Host(`${subdomain}.${domain}`)";
         service = name;
         tls.certResolver = certResolver;
         middlewares = middlewares;
@@ -49,7 +49,7 @@
     routers.${name} = lib.mkMerge [
       {
         inherit entryPoints;
-        rule = "Host(`${subdomain}.${domain}`)";
+        rule = lib.mkDefault "Host(`${subdomain}.${domain}`)";
         service = name;
         tls.certResolver = certResolver;
         middlewares = middlewares ++ ["authentik"];
