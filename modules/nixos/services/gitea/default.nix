@@ -18,34 +18,35 @@ in
     enable = mkEnableOption "Enable gitea self hosted git server";
   };
 
-  config = mkIf cfg.enable {
-    sops.secrets.gitea_smtp_password = {
-      sopsFile = ../secrets.yaml;
-      owner = "gitea";
-    };
-
-    systemd.services = {
-      gitea = {
-        preStart =
-          let
-            inherit (config.services.gitea) stateDir;
-          in
-          mkAfter ''
-            rm -rf ${stateDir}/custom/public/assets
-            mkdir -p ${stateDir}/custom/public/assets
-            ln -sf ${theme} ${stateDir}/custom/public/assets/css
-          '';
+  config = mkIf cfg.enable (mkMerge [
+    {
+      sops.secrets.gitea_smtp_password = {
+        sopsFile = ../secrets.yaml;
+        owner = "gitea";
       };
-    };
 
-    systemd.tmpfiles.rules = [
-      "d /mnt/n1/gitea 0775 gitea gitea -"
-      "d /mnt/n1/gitea/backups 0775 gitea gitea -"
+      systemd.services = {
+        gitea = {
+          preStart =
+            let
+              inherit (config.services.gitea) stateDir;
+            in
+            mkAfter ''
+              rm -rf ${stateDir}/custom/public/assets
+              mkdir -p ${stateDir}/custom/public/assets
+              ln -sf ${theme} ${stateDir}/custom/public/assets/css
+            '';
+        };
+      };
 
-    ];
+      systemd.tmpfiles.rules = [
+        "d /mnt/n1/gitea 0775 gitea gitea -"
+        "d /mnt/n1/gitea/backups 0775 gitea gitea -"
 
-    services = {
-      gitea = {
+      ];
+
+      services = {
+        gitea = {
         enable = true;
         user = "gitea";
         group = "gitea";
@@ -82,32 +83,25 @@ in
         };
       };
 
-      postgresql = {
-        ensureDatabases = [ "gitea" ];
-        ensureUsers = [
-          {
-            name = "gitea";
-            ensureDBOwnership = true;
-          }
-        ];
-      };
-
-      traefik = {
-        dynamicConfigOptions = {
-          http = {
-            services.gitea.loadBalancer.servers = [ { url = "http://localhost:5705"; } ];
-
-            routers = {
-              gitea = {
-                entryPoints = [ "websecure" ];
-                rule = "Host(`git.homelab.haseebmajid.dev`)";
-                service = "gitea";
-                tls.certResolver = "letsencrypt";
-              };
-            };
-          };
+        postgresql = {
+          ensureDatabases = [ "gitea" ];
+          ensureUsers = [
+            {
+              name = "gitea";
+              ensureDBOwnership = true;
+            }
+          ];
         };
       };
-    };
-  };
+    }
+
+    # Traefik reverse proxy configuration
+    {
+      services.traefik.dynamicConfigOptions.http = lib.nixicle.mkTraefikService {
+        name = "gitea";
+        port = 5705;
+        subdomain = "git";
+      };
+    }
+  ]);
 }

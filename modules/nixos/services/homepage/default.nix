@@ -39,7 +39,7 @@ in
 
     # Traefik reverse proxy configuration
     {
-      services.traefik.dynamicConfigOptions.http = config.lib.traefik.mkAuthenticatedTraefikService {
+      services.traefik.dynamicConfigOptions.http = lib.nixicle.mkAuthenticatedTraefikService {
         name = "homepage";
         port = 8173;
       };

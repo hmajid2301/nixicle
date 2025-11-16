@@ -14,7 +14,8 @@ in
     enable = mkBoolOpt false "Whether or not to enable OpenBao";
   };
 
-  config = mkIf cfg.enable {
+  config = mkIf cfg.enable (mkMerge [
+  {
     systemd.tmpfiles.rules = [
       "d /var/log/openbao 0755 openbao openbao -"
     ];
@@ -124,28 +125,17 @@ in
 
     # TODO: Configure environment variable for admin password (for future self-init)
     # systemd.services.openbao.serviceConfig.EnvironmentFile = config.sops.secrets.openbao_admin_password.path;
+  }
 
-    services.traefik = {
-      dynamicConfigOptions = {
-        http = {
-          services = {
-            openbao.loadBalancer.servers = [
-              {
-                url = "http://100.117.131.57:8200";
-              }
-            ];
-          };
-
-          routers = {
-            openbao = {
-              entryPoints = [ "websecure" ];
-              rule = "Host(`openbao.homelab.haseebmajid.dev`)";
-              service = "openbao";
-              tls.certResolver = "letsencrypt";
-            };
-          };
-        };
+  # Traefik reverse proxy configuration
+  {
+    services.traefik.dynamicConfigOptions.http = lib.nixicle.mkTraefikService {
+      name = "openbao";
+      port = 8200;
+      extraServiceConfig = {
+        loadBalancer.servers = [{url = "http://100.117.131.57:8200";}];
       };
     };
-  };
+  }
+  ]);
 }

@@ -10,36 +10,21 @@ in {
     enable = mkEnableOption "Enable the deluge downloader";
   };
 
-  config = mkIf cfg.enable {
-    services = {
-      deluge = {
+  config = mkIf cfg.enable (mkMerge [
+    {
+      services.deluge = {
         enable = true;
         web.enable = true;
         group = "media";
       };
+    }
 
-      traefik = {
-        dynamicConfigOptions = {
-          http = {
-            services = {
-              deluge.loadBalancer.servers = [
-                {
-                  url = "http://localhost:8112";
-                }
-              ];
-            };
-
-            routers = {
-              deluge = {
-                entryPoints = ["websecure"];
-                rule = "Host(`deluge.homelab.haseebmajid.dev`)";
-                service = "deluge";
-                tls.certResolver = "letsencrypt";
-              };
-            };
-          };
-        };
+    # Traefik reverse proxy configuration
+    {
+      services.traefik.dynamicConfigOptions.http = lib.nixicle.mkTraefikService {
+        name = "deluge";
+        port = 8112;
       };
-    };
-  };
+    }
+  ]);
 }

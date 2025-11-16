@@ -13,47 +13,24 @@ in
     enable = mkEnableOption "Enable the otel collector service";
   };
 
-  config = mkIf cfg.enable {
-    sops.secrets = {
-      otel_betterstack_token = {
-        sopsFile = ../secrets.yaml;
-      };
-    };
-
-    systemd.services.opentelemetry-collector = {
-      serviceConfig = {
-        EnvironmentFile = [
-          config.sops.secrets.otel_betterstack_token.path
-        ];
-        SupplementaryGroups = [ "systemd-journal" ];
-      };
-    };
-
-    services = {
-      traefik = {
-        dynamicConfigOptions = {
-          http = {
-            services = {
-              otel-collector.loadBalancer.servers = [
-                {
-                  url = "http://localhost:3333";
-                }
-              ];
-            };
-
-            routers = {
-              otel-collector = {
-                entryPoints = [ "websecure" ];
-                rule = "Host(`otel-collector.homelab.haseebmajid.dev`)";
-                service = "otel-collector";
-                tls.certResolver = "letsencrypt";
-              };
-            };
-          };
+  config = mkIf cfg.enable (mkMerge [
+    {
+      sops.secrets = {
+        otel_betterstack_token = {
+          sopsFile = ../secrets.yaml;
         };
       };
 
-      opentelemetry-collector = {
+      systemd.services.opentelemetry-collector = {
+        serviceConfig = {
+          EnvironmentFile = [
+            config.sops.secrets.otel_betterstack_token.path
+          ];
+          SupplementaryGroups = [ "systemd-journal" ];
+        };
+      };
+
+      services.opentelemetry-collector = {
         enable = true;
         package = pkgs.opentelemetry-collector-contrib;
         settings = {
@@ -149,7 +126,14 @@ in
           };
         };
       };
+    }
 
-    };
-  };
+    # Traefik reverse proxy configuration
+    {
+      services.traefik.dynamicConfigOptions.http = lib.nixicle.mkTraefikService {
+        name = "otel-collector";
+        port = 3333;
+      };
+    }
+  ]);
 }
