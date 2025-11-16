@@ -235,7 +235,7 @@ in
     '';
   };
 
-  cli.programs = {
+  cli.tools = {
     git = {
       allowedSigners = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDUF0LHH63pGkd1m7FGdbZirVXULDS5WSDzerJ0sskoq haseeb.majid@nala.money";
       email = "haseeb.majid@nala.money";
