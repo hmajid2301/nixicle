@@ -11,9 +11,9 @@ in {
     enable = mkEnableOption "Enable the syncthing service";
   };
 
-  config = mkIf cfg.enable {
-    services = {
-      syncthing = {
+  config = mkIf cfg.enable (mkMerge [
+    {
+      services.syncthing = {
         enable = true;
         guiAddress = "0.0.0.0:8384";
         # dataDir = "/mnt/share/syncthing";
@@ -23,30 +23,14 @@ in {
           enable = true;
         };
       };
+    }
 
-      traefik = {
-        dynamicConfigOptions = {
-          http = {
-            services = {
-              syncthing.loadBalancer.servers = [
-                {
-                  url = "http://localhost:8384";
-                }
-              ];
-            };
-
-            routers = {
-              syncthing = {
-                entryPoints = ["websecure"];
-                rule = "Host(`syncthing.homelab.haseebmajid.dev`)";
-                service = "syncthing";
-                tls.certResolver = "letsencrypt";
-                middlewares = ["authentik"];
-              };
-            };
-          };
-        };
+    # Traefik reverse proxy configuration
+    {
+      services.traefik.dynamicConfigOptions.http = lib.nixicle.mkAuthenticatedTraefikService {
+        name = "syncthing";
+        port = 8384;
       };
-    };
-  };
+    }
+  ]);
 }

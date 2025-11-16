@@ -11,35 +11,19 @@ in {
     enable = mkEnableOption "Enable the netdata service";
   };
 
-  config = mkIf cfg.enable {
-    services = {
-      netdata = {
+  config = mkIf cfg.enable (mkMerge [
+    {
+      services.netdata = {
         enable = true;
       };
+    }
 
-      traefik = {
-        dynamicConfigOptions = {
-          http = {
-            services = {
-              netdata.loadBalancer.servers = [
-                {
-                  url = "http://localhost:19999";
-                }
-              ];
-            };
-
-            routers = {
-              netdata = {
-                entryPoints = ["websecure"];
-                rule = "Host(`netdata.homelab.haseebmajid.dev`)";
-                service = "netdata";
-                tls.certResolver = "letsencrypt";
-                middlewares = ["authentik"];
-              };
-            };
-          };
-        };
+    # Traefik reverse proxy configuration
+    {
+      services.traefik.dynamicConfigOptions.http = lib.nixicle.mkAuthenticatedTraefikService {
+        name = "netdata";
+        port = 19999;
       };
-    };
-  };
+    }
+  ]);
 }

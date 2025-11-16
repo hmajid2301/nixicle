@@ -1,7 +1,7 @@
 {lib, ...}: {
   # Create a standardized Traefik service configuration
   # Returns router and service config that should be assigned to dynamicConfigOptions.http
-  # Usage in modules: services.traefik.dynamicConfigOptions.http = lib.nixicle.traefik.mkTraefikService { ... };
+  # Usage in modules: services.traefik.dynamicConfigOptions.http = lib.nixicle.mkTraefikService { ... };
   mkTraefikService = {
     name,
     port,

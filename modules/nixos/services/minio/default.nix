@@ -13,48 +13,31 @@ in
     enable = mkEnableOption "Enable the minio";
   };
 
-  config = mkIf cfg.enable {
-    services = {
-      minio = {
+  config = mkIf cfg.enable (mkMerge [
+    {
+      services.minio = {
         enable = true;
         listenAddress = ":9055";
         consoleAddress = ":9056";
         dataDir = [ "/mnt/n1/minio" ];
       };
+    }
 
-      traefik = {
-        dynamicConfigOptions = {
-          http = {
-            services = {
-              console-minio.loadBalancer.servers = [
-                {
-                  url = "http://localhost:9056";
-                }
-              ];
-              minio.loadBalancer.servers = [
-                {
-                  url = "http://localhost:9055";
-                }
-              ];
-            };
+    # Traefik reverse proxy configuration - MinIO API
+    {
+      services.traefik.dynamicConfigOptions.http = mkMerge [
+        (lib.nixicle.mkTraefikService {
+          name = "minio";
+          port = 9055;
+        })
 
-            routers = {
-              minio = {
-                entryPoints = [ "websecure" ];
-                rule = "Host(`minio.homelab.haseebmajid.dev`)";
-                service = "minio";
-                tls.certResolver = "letsencrypt";
-              };
-              console-minio = {
-                entryPoints = [ "websecure" ];
-                rule = "Host(`console.minio.homelab.haseebmajid.dev`)";
-                service = "console-minio";
-                tls.certResolver = "letsencrypt";
-              };
-            };
-          };
-        };
-      };
-    };
-  };
+        # Traefik reverse proxy configuration - MinIO Console
+        (lib.nixicle.mkTraefikService {
+          name = "console-minio";
+          port = 9056;
+          subdomain = "console.minio";
+        })
+      ];
+    }
+  ]);
 }

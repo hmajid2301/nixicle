@@ -12,36 +12,23 @@ in {
   };
 
   # TODO: need a way to configure the settings file
-  config = mkIf cfg.enable {
-    services = {
-      stirling-pdf = {
+  config = mkIf cfg.enable (mkMerge [
+    {
+      services.stirling-pdf = {
         enable = true;
         environment = {
           SERVER_PORT = 8783;
           SECURITY_ENABLE_LOGIN = "true";
         };
       };
+    }
 
-      traefik = {
-        dynamicConfigOptions = {
-          http = {
-            services.pdf.loadBalancer.servers = [
-              {
-                url = "http://localhost:8783";
-              }
-            ];
-
-            routers = {
-              pdf = {
-                entryPoints = ["websecure"];
-                rule = "Host(`pdf.homelab.haseebmajid.dev`)";
-                service = "pdf";
-                tls.certResolver = "letsencrypt";
-              };
-            };
-          };
-        };
+    # Traefik reverse proxy configuration
+    {
+      services.traefik.dynamicConfigOptions.http = lib.nixicle.mkTraefikService {
+        name = "pdf";
+        port = 8783;
       };
-    };
-  };
+    }
+  ]);
 }

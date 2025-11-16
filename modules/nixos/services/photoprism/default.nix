@@ -10,19 +10,19 @@ in {
     enable = mkEnableOption "Enable photo prism";
   };
 
-  config = mkIf cfg.enable {
-    networking.firewall = {
-      allowedTCPPorts = [
-        2342
-      ];
-    };
+  config = mkIf cfg.enable (mkMerge [
+    {
+      networking.firewall = {
+        allowedTCPPorts = [
+          2342
+        ];
+      };
 
-    sops.secrets.photoprism_admin_password = {
-      sopsFile = ../secrets.yaml;
-    };
+      sops.secrets.photoprism_admin_password = {
+        sopsFile = ../secrets.yaml;
+      };
 
-    services = {
-      photoprism = {
+      services.photoprism = {
         enable = true;
         originalsPath = "/mnt/share/photoprism";
         passwordFile = config.sops.secrets.photoprism_admin_password.path;
@@ -30,27 +30,14 @@ in {
           PHOTOPRISM_GID = "989";
         };
       };
+    }
 
-      traefik = {
-        dynamicConfigOptions = {
-          http = {
-            services.photos.loadBalancer.servers = [
-              {
-                url = "http://localhost:2342";
-              }
-            ];
-
-            routers = {
-              photos = {
-                entryPoints = ["websecure"];
-                rule = "Host(`photos.homelab.haseebmajid.dev`)";
-                service = "photos";
-                tls.certResolver = "letsencrypt";
-              };
-            };
-          };
-        };
+    # Traefik reverse proxy configuration
+    {
+      services.traefik.dynamicConfigOptions.http = lib.nixicle.mkTraefikService {
+        name = "photos";
+        port = 2342;
       };
-    };
-  };
+    }
+  ]);
 }

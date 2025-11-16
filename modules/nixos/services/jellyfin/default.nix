@@ -13,43 +13,34 @@ in
     enable = mkEnableOption "Enable jellyfin service";
   };
 
-  config = mkIf cfg.enable {
-    nixpkgs.config.packageOverrides = pkgs: {
-      vaapiIntel = pkgs.vaapiIntel.override { enableHybridCodec = true; };
-    };
-
-    hardware.graphics = {
-      enable = true;
-      extraPackages = with pkgs; [
-        intel-vaapi-driver # previously vaapiIntel
-        libva-vdpau-driver
-        intel-compute-runtime # OpenCL filter support (hardware tonemapping and subtitle burn-in)
-        vpl-gpu-rt # QSV on 11th gen or newer
-      ];
-    };
-
-    services = {
-      jellyfin.enable = true;
-      jellyfin.openFirewall = true;
-
-      traefik = {
-        dynamicConfigOptions = {
-          http = {
-            services = {
-              jellyfin.loadBalancer.servers = [ { url = "http://localhost:8096"; } ];
-            };
-
-            routers = {
-              jellyfin = {
-                entryPoints = [ "websecure" ];
-                rule = "Host(`jellyfin.homelab.haseebmajid.dev`)";
-                service = "jellyfin";
-                tls.certResolver = "letsencrypt";
-              };
-            };
-          };
-        };
+  config = mkIf cfg.enable (mkMerge [
+    {
+      nixpkgs.config.packageOverrides = pkgs: {
+        vaapiIntel = pkgs.vaapiIntel.override { enableHybridCodec = true; };
       };
-    };
-  };
+
+      hardware.graphics = {
+        enable = true;
+        extraPackages = with pkgs; [
+          intel-vaapi-driver # previously vaapiIntel
+          libva-vdpau-driver
+          intel-compute-runtime # OpenCL filter support (hardware tonemapping and subtitle burn-in)
+          vpl-gpu-rt # QSV on 11th gen or newer
+        ];
+      };
+
+      services = {
+        jellyfin.enable = true;
+        jellyfin.openFirewall = true;
+      };
+    }
+
+    # Traefik reverse proxy configuration
+    {
+      services.traefik.dynamicConfigOptions.http = lib.nixicle.mkTraefikService {
+        name = "jellyfin";
+        port = 8096;
+      };
+    }
+  ]);
 }
