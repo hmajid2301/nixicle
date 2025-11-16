@@ -567,4 +567,47 @@ return {
 			vim.keymap.set({ "n", "v" }, "<leader>rE", "<cmd>InlineEdit<cr>", { noremap = true, silent = true })
 		end,
 	},
+
+	-- Zk note-taking
+	{
+		"zk-nvim",
+		for_cat = "general.notes",
+		event = "DeferredUIEnter",
+		after = function(plugin)
+			require("zk").setup({
+				picker = "telescope",
+				lsp = {
+					config = {
+						cmd = { "zk", "lsp" },
+						name = "zk",
+					},
+					auto_attach = {
+						enabled = true,
+						filetypes = { "markdown" },
+					},
+				},
+			})
+
+			local opts = { noremap = true, silent = false }
+
+			-- Create a new note
+			vim.keymap.set("n", "<leader>zn", "<cmd>ZkNew { title = vim.fn.input('Title: ') }<cr>", opts)
+
+			-- Open note picker
+			vim.keymap.set("n", "<leader>zo", "<cmd>ZkNotes { sort = { 'modified' } }<cr>", opts)
+
+			-- Search notes by tags
+			vim.keymap.set("n", "<leader>zt", "<cmd>ZkTags<cr>", opts)
+
+			-- Search notes
+			vim.keymap.set("n", "<leader>zf", "<cmd>ZkNotes { sort = { 'modified' }, match = { vim.fn.input('Search: ') } }<cr>", opts)
+
+			-- Create note from visual selection
+			vim.keymap.set("v", "<leader>znt", ":'<,'>ZkNewFromTitleSelection<cr>", opts)
+			vim.keymap.set("v", "<leader>znc", ":'<,'>ZkNewFromContentSelection<cr>", opts)
+
+			-- Insert link
+			vim.keymap.set("n", "<leader>zi", "<cmd>ZkInsertLink<cr>", opts)
+		end,
+	},
 }
