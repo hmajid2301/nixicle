@@ -177,27 +177,19 @@ return {
 		end,
 	},
 	{
-		"fyler.nvim",
+		"mini.nvim",
 		for_cat = "general.editor",
 		event = "DeferredUIEnter",
-		load = function(name)
-			vim.cmd.packadd(name)
-		end,
 		after = function(plugin)
-			require("fyler").setup({
-				close_on_select = false,
-				confirm_simple = true,
-				default_explorer = false,
-				delete_to_trash = true,
-				win = {
-					kind = "split_left_most",
+			require("mini.files").setup({
+				windows = {
+					preview = true,
+					width_preview = 50,
 				},
 			})
 
 			vim.keymap.set("n", "<leader>e", function()
-				require("fyler").toggle({
-					kind = "split_left_most",
-				})
+				require("mini.files").open(vim.api.nvim_buf_get_name(0))
 			end, { desc = "Toggle file explorer" })
 		end,
 	},
