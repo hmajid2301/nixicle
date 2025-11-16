@@ -23,6 +23,7 @@ in
       terminals.foot.enable = true;
       terminals.ghostty.enable = true;
       tools.core-tools.enable = true;
+      tools.zk.enable = true;
       shells.fish.enable = true;
     };
 
