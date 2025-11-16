@@ -1,3 +1,6 @@
+-- Get stylix colors from nixCats if available
+local stylixColors = nixCats("colors") or {}
+
 local colors = {
 	white = "#D9E0EE",
 	darker_black = "#191828",
@@ -39,22 +42,23 @@ local colors = {
 	surface1 = "#45475a",
 	surface0 = "#313244",
 
-	base00 = "#1E1D2D",
-	base01 = "#282737",
-	base02 = "#2f2e3e",
-	base03 = "#383747",
-	base04 = "#414050",
-	base05 = "#bfc6d4",
-	base06 = "#ccd3e1",
-	base07 = "#D9E0EE",
-	base08 = "#F38BA8",
-	base09 = "#F8BD96",
-	base0A = "#FAE3B0",
-	base0B = "#ABE9B3",
-	base0C = "#89DCEB",
-	base0D = "#89B4FA",
-	base0E = "#CBA6F7",
-	base0F = "#F38BA8",
+	-- Use stylix colors for base16 scheme if available, otherwise fallback to Catppuccin Mocha
+	base00 = stylixColors.base00 or "#1E1D2D",
+	base01 = stylixColors.base01 or "#282737",
+	base02 = stylixColors.base02 or "#2f2e3e",
+	base03 = stylixColors.base03 or "#383747",
+	base04 = stylixColors.base04 or "#414050",
+	base05 = stylixColors.base05 or "#bfc6d4",
+	base06 = stylixColors.base06 or "#ccd3e1",
+	base07 = stylixColors.base07 or "#D9E0EE",
+	base08 = stylixColors.base08 or "#F38BA8",
+	base09 = stylixColors.base09 or "#F8BD96",
+	base0A = stylixColors.base0A or "#FAE3B0",
+	base0B = stylixColors.base0B or "#ABE9B3",
+	base0C = stylixColors.base0C or "#89DCEB",
+	base0D = stylixColors.base0D or "#89B4FA",
+	base0E = stylixColors.base0E or "#CBA6F7",
+	base0F = stylixColors.base0F or "#F38BA8",
 }
 
 local colorschemeName = nixCats("colorscheme")
