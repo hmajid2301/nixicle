@@ -57,7 +57,6 @@ require("nixCatsUtils.catPacker").setup({
 	{ "folke/trouble.nvim", opt = true },
 
 	{ "echasnovski/mini.nvim", opt = true },
-	{ "Rolv-Apneseth/fyler.nvim", opt = true },
 	{ "ThePrimeagen/refactoring.nvim", opt = true },
 	{ "otavioschwanck/arrow.nvim", opt = true },
 	{ "RRethy/vim-illuminate", opt = true },
