@@ -27,7 +27,7 @@
     services.${name} = lib.mkMerge [
       {
         loadBalancer = {
-          servers = [{url = "http://localhost:${toString port}";}];
+          servers = lib.mkDefault [{url = "http://localhost:${toString port}";}];
         };
       }
       extraServiceConfig
@@ -60,7 +60,7 @@
     services.${name} = lib.mkMerge [
       {
         loadBalancer = {
-          servers = [{url = "http://localhost:${toString port}";}];
+          servers = lib.mkDefault [{url = "http://localhost:${toString port}";}];
         };
       }
       extraServiceConfig
