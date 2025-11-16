@@ -88,7 +88,6 @@
       diagnostics = with pkgs.vimPlugins; [ trouble-nvim ];
       editor = with pkgs.vimPlugins; [
         mini-nvim
-        fyler-nvim
         refactoring-nvim
         arrow-nvim
         vim-illuminate
@@ -114,6 +113,7 @@
       ];
       notes = with pkgs.vimPlugins; [
         markview-nvim
+        zk-nvim
       ];
       ui = with pkgs.vimPlugins; [
         indent-blankline-nvim
