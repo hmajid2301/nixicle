@@ -72,35 +72,7 @@ in
     base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-mocha.yaml";
   };
 
-  programs.ghostty = lib.mkForce {
-    enable = true;
-    enableFishIntegration = true;
-    package = config.lib.nixGL.wrap pkgs.ghostty;
-
-    settings = {
-      "font-family" = [
-        "MonoLisa" # Primary font
-        "Symbols Nerd Font" # Glyph fallback
-        "Noto Color Emoji" # Emoji fallback
-      ];
-
-      theme = "Catppuccin Mocha";
-
-      command = "fish";
-      gtk-titlebar = false;
-      gtk-tabs-location = "hidden";
-      gtk-single-instance = true;
-      font-size = 14;
-      window-padding-x = 6;
-      window-padding-y = 6;
-      copy-on-select = "clipboard";
-      cursor-style = "block";
-      confirm-close-surface = false;
-      keybind = [
-        "ctrl+shift+plus=increase_font_size:1"
-      ];
-    };
-  };
+  programs.ghostty.package = config.lib.nixGL.wrap pkgs.ghostty;
 
   desktops = {
     hyprland = {
@@ -137,17 +109,34 @@ in
       comment = "A terminal emulator";
       exec = "${config.home.homeDirectory}/.nix-profile/bin/ghostty";
       icon = "com.mitchellh.ghostty";
-      categories = [ "System" "TerminalEmulator" ];
+      categories = [
+        "System"
+        "TerminalEmulator"
+      ];
       terminal = false;
       startupNotify = true;
       settings = {
         StartupWMClass = "com.mitchellh.ghostty";
         Keywords = "terminal;tty;pty;";
         X-GNOME-UsesNotifications = "true";
-        DBusActivatable = "true";
       };
     };
-  };
+
+    # Override desktop entry to use NixGL-wrapped totem
+    # Using dataFile to override the existing desktop file from the totem package
+    dataFile."applications/org.gnome.Totem.desktop".text = ''
+      [Desktop Entry]
+      Name=Videos
+      Comment=Play movies
+      Exec=${config.home.homeDirectory}/.nix-profile/bin/totem %U
+      Icon=org.gnome.Totem
+      Terminal=false
+      Type=Application
+      Categories=GNOME;GTK;AudioVideo;Player;Video;
+      MimeType=application/ogg;application/x-ogg;audio/ogg;audio/vorbis;audio/x-vorbis;audio/x-vorbis+ogg;video/ogg;video/x-ogm;video/x-ogm+ogg;video/x-theora+ogg;video/x-theora;application/x-extension-m4a;application/x-extension-mp4;audio/aac;audio/m4a;audio/mp1;audio/mp2;audio/mp3;audio/mpeg;audio/mpeg2;audio/mpeg3;audio/mpegurl;audio/mpg;audio/rn-mpeg;audio/scpls;audio/x-m4a;audio/x-mp1;audio/x-mp2;audio/x-mp3;audio/x-mpeg;audio/x-mpeg2;audio/x-mpeg3;audio/x-mpegurl;audio/x-mpg;audio/x-scpls;video/3gp;video/3gpp;video/3gpp2;video/avi;video/divx;video/dv;video/fli;video/flv;video/mp2t;video/mp4;video/mp4v-es;video/mpeg;video/msvideo;video/quicktime;video/vnd.divx;video/vnd.mpegurl;video/vnd.rn-realvideo;video/webm;video/x-avi;video/x-flc;video/x-fli;video/x-flv;video/x-m4v;video/x-matroska;video/x-mpeg2;video/x-mpeg3;video/x-ms-afs;video/x-ms-asf;video/x-msvideo;video/x-ms-wmv;video/x-ms-wmx;video/x-ms-wvxvideo;video/x-nsv;video/x-theora+ogg;video/x-totem-stream;application/vnd.rn-realmedia;application/vnd.rn-realmedia-vbr;
+      StartupNotify=true
+      X-GNOME-UsesNotifications=true
+    '';
 
     configFile."fontconfig/conf.d/99-custom-fonts.conf".text = ''
       <?xml version="1.0"?>
