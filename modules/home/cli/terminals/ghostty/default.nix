@@ -34,6 +34,8 @@ in
 
         keybind = [
           "ctrl+shift+plus=increase_font_size:1"
+          "ctrl+shift+minus=decrease_font_size:1"
+          "ctrl+shift+0=reset_font_size"
           # Claude Code Shift+Enter binding
           "shift+enter=text:\u001b[13;2u"
         ];
