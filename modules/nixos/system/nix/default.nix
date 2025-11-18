@@ -20,6 +20,8 @@ in {
         experimental-features = ["nix-command" "flakes"];
         warn-dirty = false;
         system-features = ["kvm" "big-parallel" "nixos-test"];
+        # Disable global flake registry (old URL is 404)
+        flake-registry = "";
       };
 
       # flake-utils-plus
