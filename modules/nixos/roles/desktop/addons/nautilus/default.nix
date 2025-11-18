@@ -55,10 +55,14 @@ in
           always-use-location-entry = false;
           default-folder-viewer = "icon-view";
           thumbnail-cache-time = 30;
+          recursive-search = "always"; # Search in subfolders: local-only, always, never
         };
         # Icon view settings for performance
         "org/gnome/nautilus/icon-view" = {
-          captions = [ "size" "date_modified" "none" ];
+          captions = [
+            "size"
+            "none"
+          ];
         };
         # List view settings
         "org/gnome/nautilus/list-view" = {
