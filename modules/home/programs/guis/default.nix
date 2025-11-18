@@ -14,6 +14,12 @@ in
   };
 
   config = mkIf cfg.enable {
+    # Add nautilus gsettings schemas to XDG_DATA_DIRS so gsettings can find them
+    # This is required for Nautilus Preferences GUI to work properly
+    xdg.systemDirs.data = [
+      "${pkgs.nautilus}/share/gsettings-schemas/${pkgs.nautilus.name}"
+    ];
+
     home.packages = with pkgs; [
       trayscale
 
