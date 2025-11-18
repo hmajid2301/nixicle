@@ -1814,6 +1814,22 @@
         "type": "github"
       }
     },
+    "plugins-warp-nvim": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1754800373,
+        "narHash": "sha256-IQehFgMIkYBPbDtdygXd7H9peW15I1votifl3lJ3uio=",
+        "owner": "y3owk1n",
+        "repo": "warp.nvim",
+        "rev": "a8759228957a7be7f45656fb97dfb96638b785e0",
+        "type": "github"
+      },
+      "original": {
+        "owner": "y3owk1n",
+        "repo": "warp.nvim",
+        "type": "github"
+      }
+    },
     "plugins-webify-nvim": {
       "flake": false,
       "locked": {
@@ -2042,6 +2058,7 @@
         "plugins-nvim-dap-view": "plugins-nvim-dap-view",
         "plugins-templ-goto-definition": "plugins-templ-goto-definition",
         "plugins-tiny-code-actions": "plugins-tiny-code-actions",
+        "plugins-warp-nvim": "plugins-warp-nvim",
         "plugins-webify-nvim": "plugins-webify-nvim",
         "pyprland": "pyprland",
         "snowfall-lib": "snowfall-lib",

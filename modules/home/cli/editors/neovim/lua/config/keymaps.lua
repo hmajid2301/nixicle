@@ -49,3 +49,27 @@ vim.keymap.set("n", "<C-n>", "<cmd>cnext<CR>zz", { desc = "Go to next item in qu
 vim.keymap.set("n", "<C-p>", "<cmd>cprev<CR>zz", { desc = "Go to previous item in quickfix list" })
 vim.keymap.set("n", "<leader>k", "<cmd>lnext<CR>zz", { desc = "Go to next item in location list" })
 vim.keymap.set("n", "<leader>j", "<cmd>lprev<CR>zz", { desc = "Go to previous item in location list" })
+
+-- Open current file in external terminal (useful for image preview)
+vim.keymap.set("n", "<leader>tt", function()
+	local current_file = vim.fn.expand("%:p")
+	local line = vim.fn.line(".")
+	local col = vim.fn.col(".")
+
+	if current_file == "" or vim.bo.buftype ~= "" then
+		vim.notify("No file to open in external terminal", vim.log.levels.WARN)
+		return
+	end
+
+	local script = vim.fn.expand("$HOME/.local/bin/open-in-terminal")
+	local cmd
+
+	if vim.fn.executable(script) == 1 then
+		cmd = string.format("%s '%s' %d %d &", script, current_file, line, col)
+	else
+		cmd = string.format("ghostty -e nvim '+call cursor(%d,%d)' '%s' &", line, col, current_file)
+	end
+
+	vim.fn.system(cmd)
+	vim.notify("Opened in new terminal: " .. vim.fn.fnamemodify(current_file, ":t"), vim.log.levels.INFO)
+end, { desc = "Open current file in new terminal" })

@@ -1,92 +1,4 @@
 return {
-	-- {
-	-- 	"obsidian.nvim",
-	-- 	for_cat = "general.notes",
-	-- 	event = "DeferredUIEnter",
-	-- 	load = function(name)
-	-- 		vim.cmd.packadd(name)
-	-- 	end,
-	-- 	after = function(plugin)
-	-- 		require("obsidian").setup({
-	-- 			workspaces = {
-	-- 				{
-	-- 					name = "main",
-	-- 					path = "~/projects/notes",
-	-- 				},
-	-- 			},
-	--
-	-- 			-- Modern command interface
-	-- 			legacy_commands = false,
-	--
-	-- 			-- Note management
-	-- 			notes_subdir = "notes",
-	-- 			new_notes_location = "notes_subdir",
-	--
-	-- 			-- Daily notes
-	-- 			daily_notes = {
-	-- 				folder = "daily",
-	-- 				date_format = "%Y-%m-%d",
-	-- 				alias_format = "%B %-d, %Y",
-	-- 				default_tags = { "daily-notes" },
-	-- 			},
-	--
-	-- 			-- Completion settings
-	-- 			completion = {
-	-- 				nvim_cmp = true,
-	-- 				min_chars = 2,
-	-- 			},
-	--
-	-- 			-- Key mappings
-	-- 			mappings = {
-	-- 				-- Override 'gf' to work on markdown/wiki links
-	-- 				["gf"] = {
-	-- 					action = function()
-	-- 						return require("obsidian").util.gf_passthrough()
-	-- 					end,
-	-- 					opts = { noremap = false, expr = true, buffer = true },
-	-- 				},
-	-- 				-- Toggle checkboxes
-	-- 				["<leader>ch"] = {
-	-- 					action = function()
-	-- 						return require("obsidian").util.toggle_checkbox()
-	-- 					end,
-	-- 					opts = { buffer = true },
-	-- 				},
-	-- 				-- Smart action (follow link or toggle checkbox)
-	-- 				["<cr>"] = {
-	-- 					action = function()
-	-- 						return require("obsidian").util.smart_action()
-	-- 					end,
-	-- 					opts = { buffer = true, expr = true },
-	-- 				},
-	-- 			},
-	--
-	-- 			-- Templates
-	-- 			templates = {
-	-- 				folder = "templates",
-	-- 				date_format = "%Y-%m-%d",
-	-- 				time_format = "%H:%M",
-	-- 			},
-	--
-	-- 			-- Picker settings (you use telescope)
-	-- 			picker = {
-	-- 				name = "telescope.nvim",
-	-- 				note_mappings = {
-	-- 					new = "<C-x>",
-	-- 					insert_link = "<C-l>",
-	-- 				},
-	-- 				tag_mappings = {
-	-- 					tag_note = "<C-x>",
-	-- 					insert_tag = "<C-l>",
-	-- 				},
-	-- 			},
-	--
-	-- 			-- Search settings
-	-- 			sort_by = "modified",
-	-- 			sort_reversed = true,
-	-- 		})
-	-- 	end,
-	-- },
 	{
 		"markview.nvim",
 		ft = { "markdown", "quarto", "rmd", "md" },
@@ -116,6 +28,11 @@ return {
 							text = " ",
 							hl = "MarkviewIcon1",
 						},
+						["^title$"] = {
+							use_types = false,
+							text = "󰈙 ",
+							hl = "MarkviewIcon1",
+						},
 					},
 				},
 			})
@@ -123,6 +40,79 @@ return {
 			require("markview.extras.checkboxes").setup()
 			require("markview.extras.editor").setup()
 			require("markview.extras.headings").setup()
+		end,
+	},
+	{
+		"zk-nvim",
+		for_cat = "general.notes",
+		keys = {
+			{ "<leader>zn", mode = { "n" }, desc = "New note" },
+			{ "<leader>zo", mode = { "n" }, desc = "Open notes" },
+			{ "<leader>zt", mode = { "n" }, desc = "Search tags" },
+			{ "<leader>zf", mode = { "n" }, desc = "Search notes" },
+			{ "<leader>znt", mode = { "v" }, desc = "New note from title" },
+			{ "<leader>znc", mode = { "v" }, desc = "New note from content" },
+			{ "<leader>zi", mode = { "n" }, desc = "Insert link" },
+		},
+		after = function(plugin)
+			require("zk").setup({
+				picker = "telescope",
+				lsp = {
+					config = {
+						cmd = { "zk", "lsp" },
+						name = "zk",
+					},
+					auto_attach = {
+						enabled = true,
+						filetypes = { "markdown" },
+					},
+				},
+			})
+
+			local opts = { noremap = true, silent = false }
+
+			vim.keymap.set("n", "<leader>zn", "<cmd>ZkNew { title = vim.fn.input('Title: ') }<cr>", opts)
+			vim.keymap.set("n", "<leader>zo", "<cmd>ZkNotes { sort = { 'modified' } }<cr>", opts)
+			vim.keymap.set("n", "<leader>zt", "<cmd>ZkTags<cr>", opts)
+			vim.keymap.set(
+				"n",
+				"<leader>zf",
+				"<cmd>ZkNotes { sort = { 'modified' }, match = { vim.fn.input('Search: ') } }<cr>",
+				opts
+			)
+			vim.keymap.set("v", "<leader>znt", ":'<,'>ZkNewFromTitleSelection<cr>", opts)
+			vim.keymap.set("v", "<leader>znc", ":'<,'>ZkNewFromContentSelection<cr>", opts)
+			vim.keymap.set("n", "<leader>zi", "<cmd>ZkInsertLink<cr>", opts)
+		end,
+	},
+	{
+		"img-clip.nvim",
+		for_cat = "general.notes",
+		keys = {
+			{ "<leader>ip", mode = { "n" }, desc = "Paste image from clipboard" },
+		},
+		after = function(plugin)
+			require("img-clip").setup({
+				default = {
+					relative_to_current_file = true,
+					prompt_for_dir_path = true,
+					dir_path = "assets",
+					file_name = "%Y-%m-%d-%H-%M-%S",
+					prompt_for_file_name = true,
+					template = "![$FILE_NAME]($FILE_PATH)",
+				},
+				filetypes = {
+					markdown = {
+						template = "![$FILE_NAME]($FILE_PATH)",
+						prompt_for_dir_path = true,
+						dir_path = function()
+							return vim.fn.input("Directory: ", "assets/", "dir")
+						end,
+					},
+				},
+			})
+
+			vim.keymap.set("n", "<leader>ip", "<cmd>PasteImage<cr>", { desc = "Paste image from clipboard" })
 		end,
 	},
 }
