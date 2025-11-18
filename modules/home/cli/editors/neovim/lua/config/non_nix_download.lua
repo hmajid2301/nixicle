@@ -78,6 +78,8 @@ require("nixCatsUtils.catPacker").setup({
 	{ "kndndrj/nvim-dbee", opt = true },
 
 	{ "OXY2DEV/markview.nvim", opt = true },
+	{ "HakonHarnes/img-clip.nvim", opt = true },
+	{ "y3owk1n/warp.nvim", opt = true },
 
 	{ "lukas-reineke/indent-blankline.nvim", opt = true },
 	{ "nvim-lualine/lualine.nvim", opt = true },
