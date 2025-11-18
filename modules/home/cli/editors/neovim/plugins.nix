@@ -103,6 +103,7 @@
         pkgs.neovimPlugins.templ-goto-definition
         pkgs.neovimPlugins.tiny-code-actions
         pkgs.neovimPlugins.inline-edit
+        pkgs.neovimPlugins.warp-nvim
       ];
       extra = with pkgs.vimPlugins; [
         fidget-nvim
@@ -114,6 +115,7 @@
       notes = with pkgs.vimPlugins; [
         markview-nvim
         zk-nvim
+        img-clip-nvim
       ];
       ui = with pkgs.vimPlugins; [
         indent-blankline-nvim

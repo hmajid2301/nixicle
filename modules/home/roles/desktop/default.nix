@@ -45,7 +45,6 @@ in
     # Desktop utilities
     home.packages = with pkgs; [
       ddcutil # Monitor control via DDC/CI
-      mplayer # Media player
       mtpfs # MTP filesystem support
       jmtpfs # Java MTP filesystem
       brightnessctl # Brightness control

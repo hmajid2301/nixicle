@@ -193,6 +193,11 @@
       flake = false;
     };
 
+    plugins-warp-nvim = {
+      url = "github:y3owk1n/warp.nvim";
+      flake = false;
+    };
+
     nvim-treesitter-main = {
       url = "github:iofq/nvim-treesitter-main";
       inputs.nixpkgs.follows = "nixpkgs";
