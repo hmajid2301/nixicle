@@ -13,6 +13,7 @@ CONTENTS                                                    *nixicle-contents*
   8. Testing & Debugging ..................... |nixicle-testing|
   9. Notes & Documentation ................... |nixicle-notes|
   10. Window Management ...................... |nixicle-windows|
+  11. File Bookmarks ......................... |nixicle-bookmarks|
 
 ==============================================================================
 INTRODUCTION                                                   *nixicle-intro*
@@ -71,8 +72,9 @@ Quickfix/Location Lists~
 FILE MANAGEMENT                                              *nixicle-files*
 
 File Explorer~
-  <leader>e        Toggle file explorer (fyler)
-  -                Open oil.nvim (when in buffer)
+  <leader>e        Toggle file explorer (mini.files)
+  -                Open oil.nvim (parent directory)
+  <leader>r-       Open nvim root directory (oil.nvim)
 
 Telescope~
   <leader>ff       Find files
@@ -196,6 +198,18 @@ DAP (Debug Adapter Protocol)~
 ==============================================================================
 NOTES & DOCUMENTATION                                         *nixicle-notes*
 
+Zk (Zettelkasten Notes)~
+  <leader>zn       Create new note
+  <leader>zo       Open notes picker
+  <leader>zt       Search by tags
+  <leader>zf       Search notes content
+  <leader>znt      New note from title (visual)
+  <leader>znc      New note from content (visual)
+  <leader>zi       Insert link to note
+
+Img-clip~
+  <leader>ip       Paste image from clipboard
+
 Markview~
   Markdown preview enabled automatically for .md files
   YAML frontmatter with custom icons (id, tags, etc.)
@@ -231,6 +245,21 @@ Editing~
 
 Miscellaneous~
   <leader>u        Toggle undotree
+  <leader>tt       Open current file in new terminal
+
+==============================================================================
+FILE BOOKMARKS                                              *nixicle-bookmarks*
+
+Warp.nvim (similar to harpoon)~
+  <leader>ha       Add file to warp
+  <leader>he       Show warp list
+  <leader>hd       Remove file from warp
+  <leader>1        Go to warp file 1
+  <leader>2        Go to warp file 2
+  <leader>3        Go to warp file 3
+  <leader>4        Go to warp file 4
+  <leader>hn       Next warp file
+  <leader>hp       Previous warp file
 
 ==============================================================================
 vim:tw=78:ts=8:ft=help:norl:
