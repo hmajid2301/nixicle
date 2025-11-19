@@ -1,21 +1,19 @@
-{
-  config,
-  pkgs,
-  lib,
-  ...
-}:
-with lib;
-with lib.nixicle;
-let
-  cfg = config.desktops.addons.rofi;
-  inherit (config.lib.stylix) colors;
-in
-{
-  options.desktops.addons.rofi = {
-    enable = mkEnableOption "Enable rofi app manager";
+{delib, ...}:
+delib.module {
+  name = "desktops-addons-rofi";
+
+  options.desktops.addons.rofi = with delib; {
+    enable = boolOption false;
   };
 
-  config = mkIf cfg.enable {
+  home.always = {config, lib, pkgs, ...}:
+  with lib;
+  with lib.nixicle;
+  let
+    cfg = config.desktops.addons.rofi;
+    inherit (config.lib.stylix) colors;
+  in
+  mkIf cfg.enable {
     programs.rofi = {
       enable = true;
       package = pkgs.rofi;
@@ -27,8 +25,8 @@ in
         location = 0;
         disable-history = false;
         hide-scrollbar = true;
-        display-drun = "   Apps ";
-        display-run = "   Run ";
+        display-drun = "   Apps ";
+        display-run = "   Run ";
         display-window = " 﩯  Window";
         display-Network = " 󰤨  Network";
         sidebar-mode = true;
@@ -84,7 +82,6 @@ in
 
           "textbox-prompt-colon" = {
             expand = false;
-            #str =  mkLiteral ":";
           };
 
           "entry" = {

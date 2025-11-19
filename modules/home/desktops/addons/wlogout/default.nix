@@ -1,17 +1,17 @@
-{
-  config,
-  lib,
-  pkgs,
-  ...
-}:
-with lib; let
-  cfg = config.desktops.addons.wlogout;
-in {
-  options.desktops.addons.wlogout = {
-    enable = mkEnableOption "Enable wlogout screen for managing sessions.";
+{delib, ...}:
+delib.module {
+  name = "desktops-addons-wlogout";
+
+  options.desktops.addons.wlogout = with delib; {
+    enable = boolOption false;
   };
 
-  config = mkIf cfg.enable {
+  home.always = {config, lib, pkgs, ...}:
+  with lib;
+  let
+    cfg = config.desktops.addons.wlogout;
+  in
+  mkIf cfg.enable {
     programs.wlogout = {
       enable = true;
       layout = [

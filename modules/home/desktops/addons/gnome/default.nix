@@ -1,18 +1,17 @@
-{
-  config,
-  lib,
-  ...
-}:
-with lib;
-let
-  cfg = config.desktops.addons.gnome;
-in
-{
-  options.desktops.addons.gnome = {
-    enable = mkEnableOption "enable gnome extras to work with home-manager";
+{delib, ...}:
+delib.module {
+  name = "desktops-addons-gnome";
+
+  options.desktops.addons.gnome = with delib; {
+    enable = boolOption false;
   };
 
-  config = mkIf cfg.enable {
+  home.always = {config, lib, ...}:
+  with lib;
+  let
+    cfg = config.desktops.addons.gnome;
+  in
+  mkIf cfg.enable {
     xdg = {
       mime.enable = true;
       systemDirs.data = [

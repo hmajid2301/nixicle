@@ -1,20 +1,18 @@
-{
-  pkgs,
-  config,
-  lib,
-  ...
-}:
-with lib;
-with lib.nixicle;
-let
-  cfg = config.development.cloud.k8s;
-in
-{
-  options.development.cloud.k8s = with types; {
-    enable = mkBoolOpt false "Whether or not to manage kubernetes";
+{delib, ...}:
+delib.module {
+  name = "development-cloud-k8s";
+
+  options.development.cloud.k8s = with delib; {
+    enable = boolOption false;
   };
 
-  config = mkIf cfg.enable {
+  home.always = {config, lib, pkgs, ...}:
+  with lib;
+  with lib.nixicle;
+  let
+    cfg = config.development.cloud.k8s;
+  in
+  mkIf cfg.enable {
     programs = {
       k9s = {
         enable = true;

@@ -1,20 +1,18 @@
-{
-  pkgs,
-  config,
-  lib,
-  ...
-}:
-with lib;
-with lib.nixicle;
-let
-  cfg = config.cli.tools.attic;
-in
-{
-  options.cli.tools.attic = with types; {
-    enable = mkBoolOpt false "Whether or not to enable attic";
+{delib, ...}:
+delib.module {
+  name = "cli-tools-attic";
+
+  options.cli.tools.attic = with delib; {
+    enable = boolOption false;
   };
 
-  config = mkIf cfg.enable {
+  home.always = {config, lib, pkgs, ...}:
+  with lib;
+  with lib.nixicle;
+  let
+    cfg = config.cli.tools.attic;
+  in
+  mkIf cfg.enable {
     sops.secrets.netrc = {
       sopsFile = ../../../secrets.yaml;
     };

@@ -1,21 +1,22 @@
-{
-  config,
-  lib,
-  pkgs,
-  ...
-}:
-with lib;
-with lib.nixicle; let
-  cfg = config.desktops.addons.swaylock;
-in {
-  options.desktops.addons.swaylock = {
-    enable = mkEnableOption "Enable swaylock lock management";
-    blur = mkOpt (types.nullOr types.str) "7x5" "radius x times blur the image.";
-    vignette = mkOpt (types.nullOr types.str) "0.5x0.5" "base:factor apply vignette effect.";
-    binary = mkOpt (types.nullOr types.str) "${pkgs.swaylock-effects}/bin/swaylock" "Location of the binary to use for swaylock.";
+{delib, ...}:
+delib.module {
+  name = "desktops-addons-swaylock";
+
+  options.desktops.addons.swaylock = with delib; {
+    enable = boolOption false;
+    blur = nullableOption lib.types.str "7x5";
+    vignette = nullableOption lib.types.str "0.5x0.5";
+    binary = nullableOption lib.types.str null;
   };
 
-  config = mkIf cfg.enable {
+  home.always = {config, lib, pkgs, ...}:
+  with lib;
+  with lib.nixicle;
+  let
+    cfg = config.desktops.addons.swaylock;
+    binary = if cfg.binary != null then cfg.binary else "${pkgs.swaylock-effects}/bin/swaylock";
+  in
+  mkIf cfg.enable {
     programs.swaylock = {
       enable = true;
       package = pkgs.swaylock-effects;
@@ -42,11 +43,11 @@ in {
       events = [
         {
           event = "before-sleep";
-          command = "${cfg.binary} -fF";
+          command = "${binary} -fF";
         }
         {
           event = "lock";
-          command = "${cfg.binary} -fF";
+          command = "${binary} -fF";
         }
       ];
       timeouts = [

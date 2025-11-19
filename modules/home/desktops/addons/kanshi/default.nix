@@ -1,17 +1,17 @@
-{
-  pkgs,
-  config,
-  lib,
-  ...
-}:
-with lib; let
-  cfg = config.desktops.addons.kanshi;
-in {
-  options.desktops.addons.kanshi = {
-    enable = mkEnableOption "Enable kanshi display addon";
+{delib, ...}:
+delib.module {
+  name = "desktops-addons-kanshi";
+
+  options.desktops.addons.kanshi = with delib; {
+    enable = boolOption false;
   };
 
-  config = mkIf cfg.enable {
+  home.always = {config, lib, pkgs, ...}:
+  with lib;
+  let
+    cfg = config.desktops.addons.kanshi;
+  in
+  mkIf cfg.enable {
     home.packages = with pkgs; [
       kanshi
     ];

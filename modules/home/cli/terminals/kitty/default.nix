@@ -1,17 +1,18 @@
-{
-  config,
-  lib,
-  ...
-}:
-with lib;
-with lib.nixicle; let
-  cfg = config.cli.terminals.kitty;
-in {
-  options.cli.terminals.kitty = with types; {
-    enable = mkBoolOpt false "enable kitty terminal emulator";
+{delib, ...}:
+delib.module {
+  name = "cli-terminals-kitty";
+
+  options.cli.terminals.kitty = with delib; {
+    enable = boolOption false;
   };
 
-  config = mkIf cfg.enable {
+  home.always = {config, lib, ...}:
+  with lib;
+  with lib.nixicle;
+  let
+    cfg = config.cli.terminals.kitty;
+  in
+  mkIf cfg.enable {
     programs.kitty = {
       enable = true;
 

@@ -1,19 +1,17 @@
-{
-  lib,
-  config,
-  pkgs,
-  ...
-}:
-with lib;
-let
-  cfg = config.roles.development;
-in
-{
-  options.roles.development = {
-    enable = mkEnableOption "Enable development configuration";
+{delib, ...}:
+delib.module {
+  name = "roles-development";
+
+  options.roles.development = with delib; {
+    enable = boolOption false;
   };
 
-  config = mkIf cfg.enable {
+  home.always = {config, lib, pkgs, ...}:
+  with lib;
+  let
+    cfg = config.roles.development;
+  in
+  mkIf cfg.enable {
 
     xdg.desktopEntries = lib.optionalAttrs pkgs.stdenv.isLinux {
       neovim = {

@@ -1,39 +1,37 @@
-{
-  lib,
-  config,
-  pkgs,
-  ...
-}:
-with lib;
-with lib.nixicle;
-let
-  cfg = config.cli.tools.atuin;
+{delib, ...}:
+delib.module {
+  name = "cli-tools-atuin";
 
-  atuin-export-fish = pkgs.buildGoModule rec {
-    pname = "atuin-export-fish-history";
-    version = "0.1.0";
+  options.cli.tools.atuin = with delib; {
+    enable = boolOption false;
+  };
 
-    src = pkgs.fetchFromGitLab {
-      owner = "hmajid2301";
-      repo = pname;
-      rev = "v${version}";
-      sha256 = "sha256-2egZYLnaekcYm2IzPdWAluAZogdi4Nf/oXWLw8+AnMk=";
+  home.always = {config, lib, pkgs, ...}:
+  with lib;
+  with lib.nixicle;
+  let
+    cfg = config.cli.tools.atuin;
+
+    atuin-export-fish = pkgs.buildGoModule rec {
+      pname = "atuin-export-fish-history";
+      version = "0.1.0";
+
+      src = pkgs.fetchFromGitLab {
+        owner = "hmajid2301";
+        repo = pname;
+        rev = "v${version}";
+        sha256 = "sha256-2egZYLnaekcYm2IzPdWAluAZogdi4Nf/oXWLw8+AnMk=";
+      };
+
+      vendorHash = "sha256-hLEmRq7Iw0hHEAla0Ehwk1EfmpBv6ddBuYtq12XdhVc=";
+
+      ldflags = [
+        "-s"
+        "-w"
+      ];
     };
-
-    vendorHash = "sha256-hLEmRq7Iw0hHEAla0Ehwk1EfmpBv6ddBuYtq12XdhVc=";
-
-    ldflags = [
-      "-s"
-      "-w"
-    ];
-  };
-in
-{
-  options.cli.tools.atuin = with types; {
-    enable = mkBoolOpt false "Whether or not to enable atuin";
-  };
-
-  config = mkIf cfg.enable {
+  in
+  mkIf cfg.enable {
     home.packages = [ atuin-export-fish ];
 
     programs.atuin = {

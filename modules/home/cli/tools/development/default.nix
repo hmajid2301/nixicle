@@ -1,20 +1,18 @@
-{
-  pkgs,
-  config,
-  lib,
-  ...
-}:
-with lib;
-with lib.nixicle;
-let
-  cfg = config.cli.tools.development;
-in
-{
-  options.cli.tools.development = with types; {
-    enable = mkBoolOpt false "Whether or not to enable development tools";
+{delib, ...}:
+delib.module {
+  name = "cli-tools-development";
+
+  options.cli.tools.development = with delib; {
+    enable = boolOption false;
   };
 
-  config = mkIf cfg.enable {
+  home.always = {config, lib, pkgs, ...}:
+  with lib;
+  with lib.nixicle;
+  let
+    cfg = config.cli.tools.development;
+  in
+  mkIf cfg.enable {
     home.packages = with pkgs; [
       # Go development
       go

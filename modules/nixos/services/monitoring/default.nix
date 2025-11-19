@@ -27,12 +27,12 @@ let
 in
 {
   imports = [
-    ./prometheus.nix
-    ./scrape-configs.nix
-    ./alertmanager.nix
-    ./grafana.nix
-    ./tempo.nix
-    ./traefik.nix
+    ./prometheus.nix.helper
+    ./scrape-configs.nix.helper
+    ./alertmanager.nix.helper
+    ./grafana.nix.helper
+    ./tempo.nix.helper
+    ./traefik.nix.helper
   ];
 
   options.services.nixicle.monitoring = {

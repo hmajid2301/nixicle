@@ -1,20 +1,19 @@
-{
-  config,
-  lib,
-  ...
-}:
-with lib;
-with lib.nixicle;
-let
-  cfg = config.cli.tools.ssh;
-in
-{
-  options.cli.tools.ssh = with types; {
-    enable = mkBoolOpt false "Whether or not to enable ssh";
-    enableKeychain = mkBoolOpt true "Whether to enable keychain for SSH key management";
+{delib, ...}:
+delib.module {
+  name = "cli-tools-ssh";
+
+  options.cli.tools.ssh = with delib; {
+    enable = boolOption false;
+    enableKeychain = boolOption true;
   };
 
-  config = mkIf cfg.enable {
+  home.always = {config, lib, ...}:
+  with lib;
+  with lib.nixicle;
+  let
+    cfg = config.cli.tools.ssh;
+  in
+  mkIf cfg.enable {
     programs.keychain = mkIf cfg.enableKeychain {
       enable = true;
       keys = [ "id_ed25519" ];

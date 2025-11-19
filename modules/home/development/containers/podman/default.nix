@@ -1,19 +1,18 @@
-{
-  pkgs,
-  lib,
-  config,
-  ...
-}:
-with lib;
-with lib.nixicle;
-let
-  cfg = config.development.containers.podman;
-in
-{
-  options.development.containers.podman = with types; {
-    enable = mkBoolOpt false "Whether or not to manage podman";
+{delib, ...}:
+delib.module {
+  name = "development-containers-podman";
+
+  options.development.containers.podman = with delib; {
+    enable = boolOption false;
   };
-  config = mkIf cfg.enable {
+
+  home.always = {config, lib, pkgs, ...}:
+  with lib;
+  with lib.nixicle;
+  let
+    cfg = config.development.containers.podman;
+  in
+  mkIf cfg.enable {
     home.packages = with pkgs; [
       arion
       podman

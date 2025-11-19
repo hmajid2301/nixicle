@@ -1,13 +1,18 @@
-{ config, lib, pkgs, ... }:
-with lib;
-with lib.nixicle;
-let cfg = config.desktops.addons.thunar;
-in {
-  options.desktops.addons.thunar = with types; {
-    enable = mkBoolOpt false "Whether to enable Thunar file manager configuration.";
+{delib, ...}:
+delib.module {
+  name = "desktops-addons-thunar";
+
+  options.desktops.addons.thunar = with delib; {
+    enable = boolOption false;
   };
 
-  config = mkIf cfg.enable {
+  home.always = {config, lib, pkgs, ...}:
+  with lib;
+  with lib.nixicle;
+  let
+    cfg = config.desktops.addons.thunar;
+  in
+  mkIf cfg.enable {
     # XDG file associations - set Thunar as default file manager
     xdg.mimeApps = {
       enable = true;
@@ -20,7 +25,7 @@ in {
     # Additional packages for enhanced thumbnail support
     home.packages = with pkgs; [
       ffmpegthumbnailer  # Video thumbnails
-      libgsf            # Office document thumbnails  
+      libgsf            # Office document thumbnails
       poppler           # PDF thumbnails
       gst_all_1.gst-libav  # Additional video format support
       gdk-pixbuf        # Image thumbnails

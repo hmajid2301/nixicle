@@ -1,17 +1,18 @@
-{
-  config,
-  lib,
-  ...
-}:
-with lib;
-with lib.nixicle; let
-  cfg = config.desktops.addons.xdg;
-in {
-  options.desktops.addons.xdg = with types; {
-    enable = mkBoolOpt false "manage xdg config";
+{delib, ...}:
+delib.module {
+  name = "desktops-addons-xdg";
+
+  options.desktops.addons.xdg = with delib; {
+    enable = boolOption false;
   };
 
-  config = mkIf cfg.enable {
+  home.always = {config, lib, ...}:
+  with lib;
+  with lib.nixicle;
+  let
+    cfg = config.desktops.addons.xdg;
+  in
+  mkIf cfg.enable {
     home.sessionVariables = {
       HISTFILE = lib.mkForce "${config.xdg.stateHome}/bash/history";
       #GNUPGHOME = lib.mkForce "${config.xdg.dataHome}/gnupg";

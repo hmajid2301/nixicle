@@ -1,22 +1,19 @@
-{
-  config,
-  lib,
-  inputs,
-  ...
-}:
-with lib;
-with lib.nixicle; let
-  cfg = config.security.sops;
-in {
-  options.security.sops = with types; {
-    enable = mkBoolOpt false "Whether to enable sop for secrets management.";
+{delib, ...}:
+delib.module {
+  name = "security-sops";
+
+  options.security.sops = with delib; {
+    enable = boolOption false;
   };
 
-  imports = with inputs; [
-    sops-nix.homeManagerModules.sops
-  ];
-
-  config = mkIf cfg.enable {
+  # Note: sops-nix home module is imported via flake extraModules
+  home.always = {config, lib, inputs, ...}:
+  with lib;
+  with lib.nixicle;
+  let
+    cfg = config.security.sops;
+  in
+  mkIf cfg.enable {
     sops = {
       age = {
         generateKey = true;

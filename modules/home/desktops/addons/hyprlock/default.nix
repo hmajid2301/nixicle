@@ -1,18 +1,18 @@
-{
-  config,
-  lib,
-  pkgs,
-  ...
-}:
-with lib;
-with lib.nixicle; let
-  cfg = config.desktops.addons.hyprlock;
-in {
-  options.desktops.addons.hyprlock = with types; {
-    enable = mkBoolOpt false "Whether to enable the hyprlock";
+{delib, ...}:
+delib.module {
+  name = "desktops-addons-hyprlock";
+
+  options.desktops.addons.hyprlock = with delib; {
+    enable = boolOption false;
   };
 
-  config = mkIf cfg.enable {
+  home.always = {config, lib, pkgs, ...}:
+  with lib;
+  with lib.nixicle;
+  let
+    cfg = config.desktops.addons.hyprlock;
+  in
+  mkIf cfg.enable {
     programs.hyprlock = {
       enable = true;
       settings = {

@@ -1,17 +1,17 @@
-{
-  pkgs,
-  config,
-  lib,
-  ...
-}:
-with lib; let
-  cfg = config.desktops.addons.gtk;
-in {
-  options.desktops.addons.gtk = {
-    enable = mkEnableOption "enable gtk theme management";
+{delib, ...}:
+delib.module {
+  name = "desktops-addons-gtk";
+
+  options.desktops.addons.gtk = with delib; {
+    enable = boolOption false;
   };
 
-  config = mkIf cfg.enable {
+  home.always = {config, lib, pkgs, ...}:
+  with lib;
+  let
+    cfg = config.desktops.addons.gtk;
+  in
+  mkIf cfg.enable {
     gtk = lib.mkForce {
       enable = true;
       theme = {

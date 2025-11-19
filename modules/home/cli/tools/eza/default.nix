@@ -1,18 +1,18 @@
-{
-  pkgs,
-  config,
-  lib,
-  ...
-}:
-with lib;
-with lib.nixicle; let
-  cfg = config.cli.tools.eza;
-in {
-  options.cli.tools.eza = with types; {
-    enable = mkBoolOpt false "Whether or not to enable eza";
+{delib, ...}:
+delib.module {
+  name = "cli-tools-eza";
+
+  options.cli.tools.eza = with delib; {
+    enable = boolOption false;
   };
 
-  config = mkIf cfg.enable {
+  home.always = {config, lib, pkgs, ...}:
+  with lib;
+  with lib.nixicle;
+  let
+    cfg = config.cli.tools.eza;
+  in
+  mkIf cfg.enable {
     programs.eza = {
       enable = true;
     };

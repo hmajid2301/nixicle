@@ -1,18 +1,16 @@
-{
-  lib,
-  pkgs,
-  config,
-  ...
-}:
-let
-  cfg = config.roles.common;
-in
-{
-  options.roles.common = {
-    enable = lib.mkEnableOption "Enable common configuration";
+{delib, ...}:
+delib.module {
+  name = "roles-common";
+
+  options.roles.common = with delib; {
+    enable = boolOption false;
   };
 
-  config = lib.mkIf cfg.enable {
+  home.always = {config, lib, pkgs, ...}:
+  let
+    cfg = config.roles.common;
+  in
+  lib.mkIf cfg.enable {
     browsers.firefox.enable = true;
 
     system = {

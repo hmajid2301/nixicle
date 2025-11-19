@@ -1,17 +1,18 @@
-{
-  config,
-  lib,
-  ...
-}:
-with lib;
-with lib.nixicle; let
-  cfg = config.desktops.addons.hypridle;
-in {
-  options.desktops.addons.hypridle = with types; {
-    enable = mkBoolOpt false "Whether to enable the hypridle";
+{delib, ...}:
+delib.module {
+  name = "desktops-addons-hypridle";
+
+  options.desktops.addons.hypridle = with delib; {
+    enable = boolOption false;
   };
 
-  config = mkIf cfg.enable {
+  home.always = {config, lib, ...}:
+  with lib;
+  with lib.nixicle;
+  let
+    cfg = config.desktops.addons.hypridle;
+  in
+  mkIf cfg.enable {
     services.hypridle = {
       enable = true;
       settings = {

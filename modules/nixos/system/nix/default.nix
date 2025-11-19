@@ -23,11 +23,6 @@ in {
         # Disable global flake registry (old URL is 404)
         flake-registry = "";
       };
-
-      # flake-utils-plus
-      generateRegistryFromInputs = true;
-      generateNixPathFromInputs = true;
-      linkInputs = true;
     };
   };
 }

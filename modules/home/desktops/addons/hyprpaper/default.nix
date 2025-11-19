@@ -1,17 +1,18 @@
-{
-  config,
-  lib,
-  ...
-}:
-with lib;
-with lib.nixicle; let
-  cfg = config.desktops.addons.hyprpaper;
-in {
-  options.desktops.addons.hyprpaper = with types; {
-    enable = mkBoolOpt false "Whether to enable the hyprpaper config";
+{delib, ...}:
+delib.module {
+  name = "desktops-addons-hyprpaper";
+
+  options.desktops.addons.hyprpaper = with delib; {
+    enable = boolOption false;
   };
 
-  config = mkIf cfg.enable {
+  home.always = {config, lib, ...}:
+  with lib;
+  with lib.nixicle;
+  let
+    cfg = config.desktops.addons.hyprpaper;
+  in
+  mkIf cfg.enable {
     services.hyprpaper = {
       enable = true;
     };

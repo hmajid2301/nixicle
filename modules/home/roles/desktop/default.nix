@@ -1,20 +1,17 @@
-{
-  pkgs,
-  config,
-  lib,
-  inputs,
-  ...
-}:
-with lib;
-let
-  cfg = config.roles.desktop;
-in
-{
-  options.roles.desktop = {
-    enable = mkEnableOption "Enable desktop suite";
+{delib, ...}:
+delib.module {
+  name = "roles-desktop";
+
+  options.roles.desktop = with delib; {
+    enable = boolOption false;
   };
 
-  config = mkIf cfg.enable {
+  home.always = {config, lib, pkgs, inputs, ...}:
+  with lib;
+  let
+    cfg = config.roles.desktop;
+  in
+  mkIf cfg.enable {
     roles = {
       common.enable = true;
       development.enable = true;

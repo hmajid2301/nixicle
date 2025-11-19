@@ -1,20 +1,18 @@
-{
-  pkgs,
-  config,
-  lib,
-  ...
-}:
-with lib;
-with lib.nixicle;
-let
-  cfg = config.cli.tools.homelab;
-in
-{
-  options.cli.tools.homelab = with types; {
-    enable = mkBoolOpt false "Whether or not to enable homelab and infrastructure tools";
+{delib, ...}:
+delib.module {
+  name = "cli-tools-homelab";
+
+  options.cli.tools.homelab = with delib; {
+    enable = boolOption false;
   };
 
-  config = mkIf cfg.enable {
+  home.always = {config, lib, pkgs, ...}:
+  with lib;
+  with lib.nixicle;
+  let
+    cfg = config.cli.tools.homelab;
+  in
+  mkIf cfg.enable {
     home.packages = with pkgs; [
       # Database tools
       pgcli

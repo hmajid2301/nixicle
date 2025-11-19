@@ -1,19 +1,17 @@
-{
-  config,
-  pkgs,
-  lib,
-  ...
-}:
-with lib;
-let
-  cfg = config.programs.guis;
-in
-{
-  options.programs.guis = {
-    enable = mkEnableOption "Enable gnome adwaita GUI applications";
+{delib, ...}:
+delib.module {
+  name = "programs-guis";
+
+  options.programs.guis = with delib; {
+    enable = boolOption false;
   };
 
-  config = mkIf cfg.enable {
+  home.always = {config, lib, pkgs, ...}:
+  with lib;
+  let
+    cfg = config.programs.guis;
+  in
+  mkIf cfg.enable {
     # Add nautilus gsettings schemas to XDG_DATA_DIRS so gsettings can find them
     # This is required for Nautilus Preferences GUI to work properly
     xdg.systemDirs.data = [

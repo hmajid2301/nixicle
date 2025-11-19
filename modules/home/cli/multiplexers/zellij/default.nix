@@ -12,28 +12,26 @@
 # - statusbar.nix: Styled status bar template using zjstatus plugin
 # - layouts.nix: Layout definitions (default and dev layouts)
 
-{
-  pkgs,
-  lib,
-  config,
-  ...
-}:
-with lib;
-with lib.nixicle;
-let
-  cfg = config.cli.multiplexers.zellij;
+{delib, ...}:
+delib.module {
+  name = "cli-multiplexers-zellij";
 
-  # Import the sub-modules
-  sesh = import ./sesh.nix { inherit pkgs; };
-  statusbar = import ./statusbar.nix { inherit config pkgs; };
-  layouts = import ./layouts.nix { inherit statusbar; };
-in
-{
-  options.cli.multiplexers.zellij = with types; {
-    enable = mkBoolOpt false "enable zellij multiplexer";
+  options.cli.multiplexers.zellij = with delib; {
+    enable = boolOption false;
   };
 
-  config = mkIf cfg.enable {
+  home.always = {config, lib, pkgs, ...}:
+  with lib;
+  with lib.nixicle;
+  let
+    cfg = config.cli.multiplexers.zellij;
+
+    # Import the sub-modules
+    sesh = import ./sesh.nix.helper { inherit pkgs; };
+    statusbar = import ./statusbar.nix.helper { inherit config pkgs; };
+    layouts = import ./layouts.nix.helper { inherit statusbar; };
+  in
+  mkIf cfg.enable {
     home.packages = [
       pkgs.tmate
       sesh

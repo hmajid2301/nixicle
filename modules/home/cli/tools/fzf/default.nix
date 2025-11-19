@@ -1,17 +1,18 @@
-{
-  config,
-  lib,
-  ...
-}:
-with lib;
-with lib.nixicle; let
-  cfg = config.cli.tools.fzf;
-in {
-  options.cli.tools.fzf = with types; {
-    enable = mkBoolOpt false "Whether or not to enable fzf";
+{delib, ...}:
+delib.module {
+  name = "cli-tools-fzf";
+
+  options.cli.tools.fzf = with delib; {
+    enable = boolOption false;
   };
 
-  config = mkIf cfg.enable {
+  home.always = {config, lib, ...}:
+  with lib;
+  with lib.nixicle;
+  let
+    cfg = config.cli.tools.fzf;
+  in
+  mkIf cfg.enable {
     programs.fzf = {
       enable = true;
       enableFishIntegration = false;

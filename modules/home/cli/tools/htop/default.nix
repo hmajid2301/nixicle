@@ -1,17 +1,18 @@
-{
-  lib,
-  config,
-  ...
-}:
-with lib;
-with lib.nixicle; let
-  cfg = config.cli.tools.htop;
-in {
-  options.cli.tools.htop = with types; {
-    enable = mkBoolOpt false "Whether or not to enable htop";
+{delib, ...}:
+delib.module {
+  name = "cli-tools-htop";
+
+  options.cli.tools.htop = with delib; {
+    enable = boolOption false;
   };
 
-  config = mkIf cfg.enable {
+  home.always = {config, lib, ...}:
+  with lib;
+  with lib.nixicle;
+  let
+    cfg = config.cli.tools.htop;
+  in
+  mkIf cfg.enable {
     programs.htop = {
       enable = true;
       settings = {

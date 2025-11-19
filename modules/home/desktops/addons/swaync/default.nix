@@ -1,16 +1,17 @@
-{
-  config,
-  lib,
-  ...
-}:
-with lib; let
-  cfg = config.desktops.addons.swaync;
-in {
-  options.desktops.addons.swaync = {
-    enable = mkEnableOption "Enable sway notification center";
+{delib, ...}:
+delib.module {
+  name = "desktops-addons-swaync";
+
+  options.desktops.addons.swaync = with delib; {
+    enable = boolOption false;
   };
 
-  config = mkIf cfg.enable {
+  home.always = {config, lib, ...}:
+  with lib;
+  let
+    cfg = config.desktops.addons.swaync;
+  in
+  mkIf cfg.enable {
     services.swaync = {
       enable = true;
       settings = {};

@@ -1,21 +1,20 @@
-{
-  config,
-  lib,
-  ...
-}:
-with lib;
-with lib.nixicle;
-let
-  cfg = config.cli.tools.git;
-in
-{
-  options.cli.tools.git = with types; {
-    enable = mkBoolOpt false "Whether or not to enable git.";
-    email = mkOpt (nullOr str) "hello@haseebmajid.dev" "The email to use with git.";
-    allowedSigners = mkOpt str "" "The public key used for signing commits";
+{delib, ...}:
+delib.module {
+  name = "cli-tools-git";
+
+  options.cli.tools.git = with delib; {
+    enable = boolOption false;
+    email = strOption "hello@haseebmajid.dev";
+    allowedSigners = strOption "";
   };
 
-  config = mkIf cfg.enable {
+  home.always = {config, lib, ...}:
+  with lib;
+  with lib.nixicle;
+  let
+    cfg = config.cli.tools.git;
+  in
+  mkIf cfg.enable {
     home.file.".ssh/allowed_signers".text = "* ${cfg.allowedSigners}";
 
     programs.git = {

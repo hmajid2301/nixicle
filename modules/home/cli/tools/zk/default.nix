@@ -1,16 +1,18 @@
-{
-  config,
-  lib,
-  pkgs,
-  ...
-}:
-with lib;
-with lib.nixicle; {
-  options.cli.tools.zk = with types; {
-    enable = mkBoolOpt false "Whether to enable zk note-taking tool";
+{delib, ...}:
+delib.module {
+  name = "cli-tools-zk";
+
+  options.cli.tools.zk = with delib; {
+    enable = boolOption false;
   };
 
-  config = mkIf config.cli.tools.zk.enable {
+  home.always = {config, lib, pkgs, ...}:
+  with lib;
+  with lib.nixicle;
+  let
+    cfg = config.cli.tools.zk;
+  in
+  mkIf cfg.enable {
     programs.zk = {
       enable = true;
 

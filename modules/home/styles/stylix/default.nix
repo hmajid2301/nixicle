@@ -1,24 +1,17 @@
-{
-  lib,
-  pkgs,
-  config,
-  inputs,
-  ...
-}:
-let
-  cfg = config.styles.stylix;
-in
-{
-  imports = with inputs; [
-    stylix.homeModules.stylix
-    catppuccin.homeModules.catppuccin
-  ];
+{delib, ...}:
+delib.module {
+  name = "styles-stylix";
 
-  options.styles.stylix = {
-    enable = lib.mkEnableOption "Enable stylix";
+  options.styles.stylix = with delib; {
+    enable = boolOption false;
   };
 
-  config = lib.mkIf cfg.enable {
+  # Note: stylix and catppuccin home modules are imported via flake extraModules
+  home.always = {config, lib, pkgs, inputs, ...}:
+  let
+    cfg = config.styles.stylix;
+  in
+  lib.mkIf cfg.enable {
     fonts.fontconfig.enable = true;
     home.packages = with pkgs; [
       nerd-fonts.symbols-only

@@ -1,20 +1,18 @@
-{
-  config,
-  lib,
-  pkgs,
-  ...
-}:
-with lib;
-with lib.nixicle;
-let
-  cfg = config.cli.tools.starship;
-in
-{
-  options.cli.tools.starship = with types; {
-    enable = mkBoolOpt false "Whether or not to enable starship";
+{delib, ...}:
+delib.module {
+  name = "cli-tools-starship";
+
+  options.cli.tools.starship = with delib; {
+    enable = boolOption false;
   };
 
-  config = mkIf cfg.enable {
+  home.always = {config, lib, pkgs, ...}:
+  with lib;
+  with lib.nixicle;
+  let
+    cfg = config.cli.tools.starship;
+  in
+  mkIf cfg.enable {
     programs.starship = {
       enable = true;
       enableFishIntegration = true;

@@ -1,13 +1,18 @@
-{ pkgs, config, lib, ... }:
-with lib;
-with lib.nixicle;
-let cfg = config.cli.tools.gpg;
-in {
-  options.cli.tools.gpg = with types; {
-    enable = mkBoolOpt false "Whether or not to enable gpg";
+{delib, ...}:
+delib.module {
+  name = "cli-tools-gpg";
+
+  options.cli.tools.gpg = with delib; {
+    enable = boolOption false;
   };
 
-  config = mkIf cfg.enable {
+  home.always = {config, lib, pkgs, ...}:
+  with lib;
+  with lib.nixicle;
+  let
+    cfg = config.cli.tools.gpg;
+  in
+  mkIf cfg.enable {
     home.packages = [ pkgs.seahorse ];
 
     services.gnome-keyring.enable = true;

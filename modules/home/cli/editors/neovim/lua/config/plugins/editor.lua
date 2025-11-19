@@ -144,7 +144,7 @@ return {
 		end,
 	},
 	{
-		"warp.nvim",
+		"warp-nvim",
 		for_cat = "general.editor",
 		keys = {
 			{ "<leader>ha", mode = { "n" }, desc = "Add file to warp" },

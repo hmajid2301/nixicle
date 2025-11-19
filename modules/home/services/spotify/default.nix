@@ -1,16 +1,17 @@
-{
-  config,
-  lib,
-  ...
-}:
-with lib; let
-  cfg = config.services.spotify;
-in {
-  options.services.spotify = {
-    enable = mkEnableOption "Enable spotify service";
+{delib, ...}:
+delib.module {
+  name = "services-spotify";
+
+  options.services.spotify = with delib; {
+    enable = boolOption false;
   };
 
-  config = mkIf cfg.enable {
+  home.always = {config, lib, pkgs, ...}:
+  with lib;
+  let
+    cfg = config.services.spotify;
+  in
+  mkIf cfg.enable {
     home.packages = with pkgs; [
       # spotify-tui
     ];

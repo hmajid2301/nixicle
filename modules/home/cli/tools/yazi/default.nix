@@ -1,18 +1,18 @@
-{
-  pkgs,
-  config,
-  lib,
-  ...
-}:
-with lib;
-with lib.nixicle; let
-  cfg = config.cli.tools.yazi;
-in {
-  options.cli.tools.yazi = with types; {
-    enable = mkBoolOpt false "Whether or not to enable yazi";
+{delib, ...}:
+delib.module {
+  name = "cli-tools-yazi";
+
+  options.cli.tools.yazi = with delib; {
+    enable = boolOption false;
   };
 
-  config = mkIf cfg.enable {
+  home.always = {config, lib, pkgs, ...}:
+  with lib;
+  with lib.nixicle;
+  let
+    cfg = config.cli.tools.yazi;
+  in
+  mkIf cfg.enable {
     programs.yazi = {
       enable = true;
       enableFishIntegration = true;

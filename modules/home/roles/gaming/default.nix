@@ -1,20 +1,18 @@
-{
-  config,
-  pkgs,
-  lib,
-  ...
-}:
-with lib;
-with lib.nixicle;
-let
-  cfg = config.roles.gaming;
-in
-{
-  options.roles.gaming = with types; {
-    enable = mkBoolOpt false "Whether or not to manage gaming configuration";
+{delib, ...}:
+delib.module {
+  name = "roles-gaming";
+
+  options.roles.gaming = with delib; {
+    enable = boolOption false;
   };
 
-  config = mkIf cfg.enable {
+  home.always = {config, lib, pkgs, ...}:
+  with lib;
+  with lib.nixicle;
+  let
+    cfg = config.roles.gaming;
+  in
+  mkIf cfg.enable {
     programs.mangohud = {
       enable = false;
       enableSessionWide = true;

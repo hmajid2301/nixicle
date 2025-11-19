@@ -1,18 +1,18 @@
-{
-  config,
-  pkgs,
-  lib,
-  ...
-}:
-with lib;
-with lib.nixicle; let
-  cfg = config.services.nixicle.kdeconnect;
-in {
-  options.services.nixicle.kdeconnect = with types; {
-    enable = mkBoolOpt false "Whether or not to manage kdeconnect";
+{delib, ...}:
+delib.module {
+  name = "services-kdeconnect";
+
+  options.services.nixicle.kdeconnect = with delib; {
+    enable = boolOption false;
   };
 
-  config = mkIf cfg.enable {
+  home.always = {config, lib, pkgs, ...}:
+  with lib;
+  with lib.nixicle;
+  let
+    cfg = config.services.nixicle.kdeconnect;
+  in
+  mkIf cfg.enable {
     # Hide all .desktop, except for org.kde.kdeconnect.settings
     xdg.desktopEntries = {
       "org.kde.kdeconnect.sms" = {

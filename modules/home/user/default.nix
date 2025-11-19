@@ -1,19 +1,20 @@
-{
-  config,
-  lib,
-  ...
-}:
-with lib;
-with lib.nixicle; let
-  cfg = config.nixicle.user;
-in {
-  options.nixicle.user = {
-    enable = mkOpt types.bool false "Whether to configure the user account.";
-    home = mkOpt (types.nullOr types.str) "/home/${cfg.name}" "The user's home directory.";
-    name = mkOpt (types.nullOr types.str) config.snowfallorg.user.name "The user account.";
+{delib, ...}:
+delib.module {
+  name = "user";
+
+  options.nixicle.user = with delib; {
+    enable = boolOption false;
+    home = noDefault (nullOrOption strOption);
+    name = noDefault (nullOrOption strOption);
   };
 
-  config = mkIf cfg.enable (mkMerge [
+  home.always = {config, lib, ...}:
+  with lib;
+  with lib.nixicle;
+  let
+    cfg = config.nixicle.user;
+  in
+  mkIf cfg.enable (mkMerge [
     {
       assertions = [
         {
@@ -23,7 +24,7 @@ in {
       ];
 
       home = {
-        homeDirectory = mkDefault cfg.home;
+        homeDirectory = mkDefault (if cfg.home != null then cfg.home else "/home/${cfg.name}");
         username = mkDefault cfg.name;
       };
     }

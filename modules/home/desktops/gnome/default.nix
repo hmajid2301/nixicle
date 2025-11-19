@@ -1,12 +1,17 @@
-{ config, pkgs, lib, ... }:
-with lib;
-let cfg = config.desktops.gnome;
-in {
-  imports = lib.snowfall.fs.get-non-default-nix-files ./.;
+{delib, ...}:
+delib.module {
+  name = "desktops-gnome";
 
-  options.desktops.gnome = { enable = mkEnableOption "enable gnome DE"; };
+  options.desktops.gnome = with delib; {
+    enable = boolOption false;
+  };
 
-  config = mkIf cfg.enable {
+  home.always = {config, lib, pkgs, ...}:
+  with lib;
+  let
+    cfg = config.desktops.gnome;
+  in
+  mkIf cfg.enable {
     # services.nixicle.kdeconnect.enable = lib.mkForce false;
 
     home.packages = with pkgs; [

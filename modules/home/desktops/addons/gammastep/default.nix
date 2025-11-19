@@ -1,16 +1,17 @@
-{
-  config,
-  lib,
-  ...
-}:
-with lib; let
-  cfg = config.desktops.addons.gammastep;
-in {
-  options.desktops.addons.gammastep = {
-    enable = mkEnableOption "Enable gammastep night light";
+{delib, ...}:
+delib.module {
+  name = "desktops-addons-gammastep";
+
+  options.desktops.addons.gammastep = with delib; {
+    enable = boolOption false;
   };
 
-  config = mkIf cfg.enable {
+  home.always = {config, lib, ...}:
+  with lib;
+  let
+    cfg = config.desktops.addons.gammastep;
+  in
+  mkIf cfg.enable {
     services.gammastep = {
       enable = true;
       provider = "geoclue2";

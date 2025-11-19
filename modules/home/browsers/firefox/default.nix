@@ -1,20 +1,17 @@
-{
-  lib,
-  config,
-  pkgs,
-  host,
-  ...
-}:
-with lib;
-let
-  cfg = config.browsers.firefox;
-in
-{
-  options.browsers.firefox = {
-    enable = mkEnableOption "enable firefox browser";
+{delib, ...}:
+delib.module {
+  name = "browsers-firefox";
+
+  options.browsers.firefox = with delib; {
+    enable = boolOption false;
   };
 
-  config = mkIf cfg.enable {
+  home.always = {config, lib, pkgs, host, ...}:
+  with lib;
+  let
+    cfg = config.browsers.firefox;
+  in
+  mkIf cfg.enable {
     xdg.mimeApps.defaultApplications = {
       "text/html" = [ "firefox.desktop" ];
       "text/xml" = [ "firefox.desktop" ];

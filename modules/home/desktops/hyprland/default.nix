@@ -1,19 +1,19 @@
-{ config, lib, ... }:
-with lib;
-with lib.nixicle;
-with types;
-let
-  cfg = config.desktops.hyprland;
-in
-{
-  imports = lib.snowfall.fs.get-non-default-nix-files ./.;
+{delib, ...}:
+delib.module {
+  name = "desktops-hyprland";
 
-  options.desktops.hyprland = {
-    enable = mkEnableOption "Enable hyprland window manager";
-    execOnceExtras = mkOpt (listOf str) [ ] "Extra programs to exec once";
+  options.desktops.hyprland = with delib; {
+    enable = boolOption false;
+    execOnceExtras = listOfOption lib.types.str [];
   };
 
-  config = mkIf cfg.enable {
+  home.always = {config, lib, ...}:
+  with lib;
+  with lib.nixicle;
+  let
+    cfg = config.desktops.hyprland;
+  in
+  mkIf cfg.enable {
     nix.settings = {
       trusted-substituters = [ "https://hyprland.cachix.org" ];
       trusted-public-keys = [

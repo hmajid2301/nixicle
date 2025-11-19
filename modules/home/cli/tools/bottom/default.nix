@@ -1,17 +1,18 @@
-{
-  config,
-  lib,
-  ...
-}:
-with lib;
-with lib.nixicle; let
-  cfg = config.cli.tools.bottom;
-in {
-  options.cli.tools.bottom = with types; {
-    enable = mkBoolOpt false "Whether or not to enable bottom";
+{delib, ...}:
+delib.module {
+  name = "cli-tools-bottom";
+
+  options.cli.tools.bottom = with delib; {
+    enable = boolOption false;
   };
 
-  config = mkIf cfg.enable {
+  home.always = {config, lib, ...}:
+  with lib;
+  with lib.nixicle;
+  let
+    cfg = config.cli.tools.bottom;
+  in
+  mkIf cfg.enable {
     programs.bottom = {
       enable = true;
     };

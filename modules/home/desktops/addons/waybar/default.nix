@@ -1,19 +1,17 @@
-{
-  config,
-  lib,
-  pkgs,
-  ...
-}:
-with lib;
-let
-  cfg = config.desktops.addons.waybar;
-in
-{
-  options.desktops.addons.waybar = {
-    enable = mkEnableOption "Enable waybar";
+{delib, ...}:
+delib.module {
+  name = "desktops-addons-waybar";
+
+  options.desktops.addons.waybar = with delib; {
+    enable = boolOption false;
   };
 
-  config = mkIf cfg.enable {
+  home.always = {config, lib, pkgs, ...}:
+  with lib;
+  let
+    cfg = config.desktops.addons.waybar;
+  in
+  mkIf cfg.enable {
     programs.waybar = {
       enable = true;
       systemd.enable = true;
@@ -44,15 +42,15 @@ in
             active-only = false;
             format-icons = {
               "1" = " 󰲌 ";
-              "2" = "  ";
+              "2" = "  ";
               "3" = " 󰎞 ";
-              "4" = "  ";
-              "5" = "  ";
+              "4" = "  ";
+              "5" = "  ";
               "6" = " 󰺵 ";
-              "7" = "  ";
-              urgent = "  ";
-              focused = "  ";
-              default = "  ";
+              "7" = "  ";
+              urgent = "  ";
+              focused = "  ";
+              default = "  ";
             };
             on-click = "activate";
           };
@@ -80,13 +78,13 @@ in
             format = "{} {icon}";
             "format-icons" = {
               notification = "󱅫";
-              none = "";
-              "dnd-notification" = " ";
+              none = "";
+              "dnd-notification" = " ";
               "dnd-none" = "󰂛";
-              "inhibited-notification" = " ";
-              "inhibited-none" = "";
-              "dnd-inhibited-notification" = " ";
-              "dnd-inhibited-none" = " ";
+              "inhibited-notification" = " ";
+              "inhibited-none" = "";
+              "dnd-inhibited-notification" = " ";
+              "dnd-inhibited-none" = " ";
             };
             "return-type" = "json";
             "exec-if" = "which swaync-client";
@@ -98,12 +96,12 @@ in
           "idle_inhibitor" = {
             format = "{icon}";
             format-icons = {
-              activated = "  ";
-              deactivated = "  ";
+              activated = "  ";
+              deactivated = "  ";
             };
           };
           backlight = {
-            format = " {percent}%";
+            format = " {percent}%";
           };
           battery = {
             states = {
@@ -113,7 +111,7 @@ in
             };
             format = "{icon} {capacity}%";
             format-alt = "{time}";
-            format-charging = "  {capacity}%";
+            format-charging = "  {capacity}%";
             format-icons = [
               "󰁻 "
               "󰁽 "
@@ -124,7 +122,7 @@ in
           };
           network = {
             interval = 1;
-            format-wifi = "  {essid}";
+            format-wifi = "  {essid}";
             format-ethernet = " 󰈀 ";
             format-disconnected = " 󱚵  ";
             tooltip-format = ''
@@ -138,14 +136,14 @@ in
           pulseaudio = {
             scroll-step = 2;
             format = "{icon} {volume}%";
-            format-bluetooth = " {icon} {volume}%";
-            format-muted = "  ";
+            format-bluetooth = " {icon} {volume}%";
+            format-muted = "  ";
             format-icons = {
-              headphone = "  ";
-              headset = "  ";
+              headphone = "  ";
+              headset = "  ";
               default = [
-                "  "
-                "  "
+                "  "
+                "  "
               ];
             };
           };
@@ -153,17 +151,6 @@ in
             icon-size = 16;
             spacing = 8;
           };
-          # "power-profiles-daemon" = {
-          #   format = "{icon}";
-          #   tooltip-format = "Power profile: {profile}\nDriver: {driver}";
-          #   tooltip = true;
-          #   format-icons = {
-          #     "default" = "󰾅";
-          #     "performance" = "󰓅";
-          #     "balanced" = "󰾅";
-          #     "power-saver" = "󰾆";
-          #   };
-          # };
         }
       ];
 

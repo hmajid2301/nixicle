@@ -1,18 +1,18 @@
-{
-  pkgs,
-  config,
-  lib,
-  ...
-}:
-with lib;
-with lib.nixicle; let
-  cfg = config.cli.tools.zoxide;
-in {
-  options.cli.tools.zoxide = with types; {
-    enable = mkBoolOpt false "Whether or not to enable zoxide";
+{delib, ...}:
+delib.module {
+  name = "cli-tools-zoxide";
+
+  options.cli.tools.zoxide = with delib; {
+    enable = boolOption false;
   };
 
-  config = mkIf cfg.enable {
+  home.always = {config, lib, pkgs, ...}:
+  with lib;
+  with lib.nixicle;
+  let
+    cfg = config.cli.tools.zoxide;
+  in
+  mkIf cfg.enable {
     programs.zoxide = {
       enable = true;
       enableFishIntegration = true;

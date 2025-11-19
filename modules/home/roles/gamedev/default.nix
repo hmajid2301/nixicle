@@ -1,18 +1,18 @@
-{
-  config,
-  pkgs,
-  lib,
-  ...
-}:
-with lib;
-with lib.nixicle; let
-  cfg = config.roles.gamedev;
-in {
-  options.roles.gamedev = with types; {
-    enable = mkBoolOpt false "Whether or not to manage game dev configuration";
+{delib, ...}:
+delib.module {
+  name = "roles-gamedev";
+
+  options.roles.gamedev = with delib; {
+    enable = boolOption false;
   };
 
-  config = mkIf cfg.enable {
+  home.always = {config, lib, pkgs, ...}:
+  with lib;
+  with lib.nixicle;
+  let
+    cfg = config.roles.gamedev;
+  in
+  mkIf cfg.enable {
     home.packages = with pkgs; [
       godot_4
       aseprite

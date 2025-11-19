@@ -1,16 +1,17 @@
-{
-  config,
-  lib,
-  ...
-}:
-with lib; let
-  cfg = config.cli.terminals.wezterm;
-in {
-  options.cli.terminals.wezterm = {
-    enable = mkEnableOption "enable wezterm terminal emulator";
+{delib, ...}:
+delib.module {
+  name = "cli-terminals-wezterm";
+
+  options.cli.terminals.wezterm = with delib; {
+    enable = boolOption false;
   };
 
-  config = mkIf cfg.enable {
+  home.always = {config, lib, ...}:
+  with lib;
+  let
+    cfg = config.cli.terminals.wezterm;
+  in
+  mkIf cfg.enable {
     programs.wezterm = {
       enable = true;
       extraConfig = builtins.readFile ./config.lua;

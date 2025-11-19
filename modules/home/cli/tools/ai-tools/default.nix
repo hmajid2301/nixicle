@@ -1,20 +1,18 @@
-{
-  pkgs,
-  config,
-  lib,
-  ...
-}:
-with lib;
-with lib.nixicle;
-let
-  cfg = config.cli.tools.ai-tools;
-in
-{
-  options.cli.tools.ai-tools = with types; {
-    enable = mkBoolOpt false "Whether or not to enable AI tools and assistants";
+{delib, ...}:
+delib.module {
+  name = "cli-tools-ai-tools";
+
+  options.cli.tools.ai-tools = with delib; {
+    enable = boolOption false;
   };
 
-  config = mkIf cfg.enable {
+  home.always = {config, lib, pkgs, ...}:
+  with lib;
+  with lib.nixicle;
+  let
+    cfg = config.cli.tools.ai-tools;
+  in
+  mkIf cfg.enable {
     home.packages = with pkgs; [
       opencode
       claude-code

@@ -14,28 +14,25 @@
 # - plugins.nix: Startup and optional plugins with their dependencies
 # - package-definitions.nix: Package configurations (nixCats and regularCats)
 
-{
-  config,
-  lib,
-  pkgs,
-  inputs,
-  ...
-}:
-let
-  inherit (inputs.nixCats) utils;
+{delib, inputs, ...}:
+delib.module {
+  name = "cli-editors-neovim";
 
-  # Import the sub-modules
-  configModule = import ./config.nix { inherit config lib pkgs inputs; };
-  lspAndToolsModule = import ./lsp-and-tools.nix { inherit pkgs; };
-  pluginsModule = import ./plugins.nix;
-  packageDefinitionsModule = import ./package-definitions.nix { inherit config inputs; };
-in
-{
   imports = [
     inputs.nixCats.homeModule
   ];
 
-  config = {
+  home.always = {config, lib, pkgs, inputs, ...}:
+  let
+    inherit (inputs.nixCats) utils;
+
+    # Import the sub-modules
+    configModule = import ./config.nix.helper { inherit config lib pkgs inputs; };
+    lspAndToolsModule = import ./lsp-and-tools.nix.helper { inherit pkgs; };
+    pluginsModule = import ./plugins.nix.helper;
+    packageDefinitionsModule = import ./package-definitions.nix.helper { inherit config inputs; };
+  in
+  {
     # Include XDG config and basic nixCats setup
     xdg = configModule.xdg;
 

@@ -1,16 +1,17 @@
-{
-  config,
-  lib,
-  ...
-}:
-with lib; let
-  cfg = config.desktops.addons.wlsunset;
-in {
-  options.desktops.addons.wlsunset = {
-    enable = mkEnableOption "Enable wlsunset night light";
+{delib, ...}:
+delib.module {
+  name = "desktops-addons-wlsunset";
+
+  options.desktops.addons.wlsunset = with delib; {
+    enable = boolOption false;
   };
 
-  config = mkIf cfg.enable {
+  home.always = {config, lib, ...}:
+  with lib;
+  let
+    cfg = config.desktops.addons.wlsunset;
+  in
+  mkIf cfg.enable {
     services.wlsunset = {
       enable = true;
       latitude = "51.5072";

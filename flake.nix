@@ -9,13 +9,14 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    nur = {
-      url = "github:nix-community/NUR";
+    denix = {
+      url = "github:yunfachi/denix";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.home-manager.follows = "home-manager";
     };
 
-    snowfall-lib = {
-      url = "github:snowfallorg/lib";
-      inputs.nixpkgs.follows = "nixpkgs";
+    nur = {
+      url = "github:nix-community/NUR";
     };
 
     nixos-hardware = {
@@ -204,73 +205,115 @@
     };
   };
 
-  outputs =
-    inputs:
-    let
-      lib = inputs.snowfall-lib.mkLib {
-        inherit inputs;
-        src = ./.;
+  outputs = inputs @ {
+    self,
+    nixpkgs,
+    denix,
+    deploy-rs,
+    nix-topology,
+    ...
+  }: let
+    # Custom library functions (replacement for snowfall-lib)
+    nixicleLib = nixpkgs.lib.extend (final: prev: {
+      nixicle = import ./lib/module {lib = final;};
+    });
 
-        snowfall = {
-          metadata = "nixicle";
-          namespace = "nixicle";
-          meta = {
-            name = "nixicle";
-            title = "Haseeb's Nix Flake";
-          };
+    # Helper to create configurations for each system type
+    mkConfigurations = moduleSystem:
+      denix.lib.configurations {
+        homeManagerUser = "haseeb";
+        inherit moduleSystem;
+        paths =
+          if moduleSystem == "nixos"
+          then [./hosts ./modules/config ./modules/nixos ./rices]
+          else if moduleSystem == "home"
+          then [./hosts ./modules/config ./modules/home ./rices]
+          else [./hosts ./modules ./rices];
+        specialArgs = {
+          inherit inputs;
+          lib = nixicleLib;
         };
+        # Add external modules based on system type
+        extraModules =
+          if moduleSystem == "nixos"
+          then
+            with inputs; [
+              stylix.nixosModules.stylix
+              home-manager.nixosModules.home-manager
+              disko.nixosModules.disko
+              lanzaboote.nixosModules.lanzaboote
+              impermanence.nixosModules.impermanence
+              sops-nix.nixosModules.sops
+              nix-topology.nixosModules.default
+              authentik-nix.nixosModules.default
+            ]
+          else if moduleSystem == "home"
+          then
+            with inputs; [
+              impermanence.homeManagerModules.impermanence
+              dankMaterialShell.homeModules.dankMaterialShell.default
+              caelestia.homeManagerModules.default
+              stylix.homeModules.stylix
+              catppuccin.homeModules.catppuccin
+              sops-nix.homeManagerModules.sops
+            ]
+          else [];
       };
-    in
-    lib.mkFlake {
-      channels-config = {
-        allowUnfree = true;
-      };
 
-      systems.modules.nixos = with inputs; [
-        stylix.nixosModules.stylix
-        home-manager.nixosModules.home-manager
-        disko.nixosModules.disko
-        lanzaboote.nixosModules.lanzaboote
-        impermanence.nixosModules.impermanence
-        sops-nix.nixosModules.sops
-        nix-topology.nixosModules.default
-        authentik-nix.nixosModules.default
-      ];
-
-      systems.hosts.framework.modules = with inputs; [
-        nixos-hardware.nixosModules.framework-13-7040-amd
-      ];
-
-      homes.modules = with inputs; [
-        impermanence.nixosModules.home-manager.impermanence
-        dankMaterialShell.homeModules.dankMaterialShell.default
-        caelestia.homeManagerModules.default
-      ];
-
-      overlays = with inputs; [
-        nixgl.overlay
-        nur.overlays.default
-        nix-topology.overlays.default
-        nvim-treesitter-main.overlays.default
-      ];
-
-      deploy = lib.mkDeploy { inherit (inputs) self; };
-
-      checks = builtins.mapAttrs (
-        system: deploy-lib: deploy-lib.deployChecks inputs.self.deploy
-      ) inputs.deploy-rs.lib;
-
-      topology =
-        with inputs;
-        let
-          host = self.nixosConfigurations.${builtins.head (builtins.attrNames self.nixosConfigurations)};
-        in
-        import nix-topology {
-          inherit (host) pkgs;
-          modules = [
-            (import ./topology { inherit (host) config; })
-            { inherit (self) nixosConfigurations; }
-          ];
-        };
+    # Nixpkgs configuration
+    nixpkgsConfig = {
+      allowUnfree = true;
     };
+
+    # System-specific package sets
+    forAllSystems = nixpkgs.lib.genAttrs ["x86_64-linux" "aarch64-linux"];
+    pkgsFor = forAllSystems (system:
+      import nixpkgs {
+        inherit system;
+        config = nixpkgsConfig;
+        overlays = with inputs; [
+          nixgl.overlay
+          nur.overlays.default
+          nix-topology.overlays.default
+          nvim-treesitter-main.overlays.default
+        ];
+      });
+  in {
+    nixosConfigurations = mkConfigurations "nixos";
+    homeConfigurations = mkConfigurations "home";
+
+    # Overlays
+    overlays = import ./overlays {inherit inputs;};
+
+    # Packages
+    packages = forAllSystems (system: import ./packages {pkgs = pkgsFor.${system};});
+
+    # Dev shells
+    devShells = forAllSystems (system: import ./shells {
+      pkgs = pkgsFor.${system};
+      inherit inputs;
+    });
+
+    # Deploy-rs configuration
+    deploy = import ./lib/deploy {
+      inherit self inputs;
+      lib = nixpkgs.lib;
+    };
+
+    checks = builtins.mapAttrs (
+      system: deploy-lib: deploy-lib.deployChecks self.deploy
+    ) deploy-rs.lib;
+
+    # Topology visualization
+    topology = let
+      host = self.nixosConfigurations.${builtins.head (builtins.attrNames self.nixosConfigurations)};
+    in
+      import nix-topology {
+        inherit (host) pkgs;
+        modules = [
+          (import ./topology {inherit (host) config;})
+          {inherit (self) nixosConfigurations;}
+        ];
+      };
+  };
 }

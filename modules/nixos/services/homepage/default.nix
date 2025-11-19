@@ -31,9 +31,9 @@ in
         environmentFile = config.sops.secrets.homepage_env.path;
         listenPort = 8173;
         bookmarks = [ ];
-        services = import ./services.nix;
-        settings = import ./settings.nix;
-        widgets = import ./widgets.nix;
+        services = import ./services.nix.helper;
+        settings = import ./settings.nix.helper;
+        widgets = import ./widgets.nix.helper;
       };
     }
 

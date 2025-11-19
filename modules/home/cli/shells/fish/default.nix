@@ -1,21 +1,18 @@
-{
-  pkgs,
-  lib,
-  config,
-  host,
-  ...
-}:
-with lib;
-with lib.nixicle;
-let
-  cfg = config.cli.shells.fish;
-in
-{
-  options.cli.shells.fish = with types; {
-    enable = mkBoolOpt false "enable fish shell";
+{delib, ...}:
+delib.module {
+  name = "cli-shells-fish";
+
+  options.cli.shells.fish = with delib; {
+    enable = boolOption false;
   };
 
-  config = mkIf cfg.enable {
+  home.always = {config, lib, pkgs, host, ...}:
+  with lib;
+  with lib.nixicle;
+  let
+    cfg = config.cli.shells.fish;
+  in
+  mkIf cfg.enable {
     stylix.targets.fish.enable = false;
     programs.carapace.enable = true;
     programs.fish = {

@@ -1,18 +1,17 @@
-{
-  config,
-  lib,
-  ...
-}:
-with lib;
-let
-  cfg = config.cli.terminals.ghostty;
-in
-{
-  options.cli.terminals.ghostty = {
-    enable = mkEnableOption "enable ghostty terminal emulator";
+{delib, ...}:
+delib.module {
+  name = "cli-terminals-ghostty";
+
+  options.cli.terminals.ghostty = with delib; {
+    enable = boolOption false;
   };
 
-  config = mkIf cfg.enable {
+  home.always = {config, lib, ...}:
+  with lib;
+  let
+    cfg = config.cli.terminals.ghostty;
+  in
+  mkIf cfg.enable {
     programs.ghostty = {
       enable = true;
       enableFishIntegration = true;

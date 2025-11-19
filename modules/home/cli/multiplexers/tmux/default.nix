@@ -1,29 +1,29 @@
-{
-  pkgs,
-  config,
-  lib,
-  ...
-}:
-with lib;
-with lib.nixicle; let
-  cfg = config.cli.multiplexers.tmux;
+{delib, ...}:
+delib.module {
+  name = "cli-multiplexers-tmux";
 
-  tmux-floax = pkgs.tmuxPlugins.mkTmuxPlugin {
-    pluginName = "tmux-floax";
-    version = "08-05-2024";
-    src = pkgs.fetchFromGitHub {
-      owner = "omerxx";
-      repo = "tmux-floax";
-      rev = "ecc0507a792a9f55529952c806e849c11093a168";
-      sha256 = "sha256-lX5P1l4yHV8jiuHsa7GkbgGT+wk0BdyvSSUu/L6G4eQ=";
+  options.cli.multiplexers.tmux = with delib; {
+    enable = boolOption false;
+  };
+
+  home.always = {config, lib, pkgs, ...}:
+  with lib;
+  with lib.nixicle;
+  let
+    cfg = config.cli.multiplexers.tmux;
+
+    tmux-floax = pkgs.tmuxPlugins.mkTmuxPlugin {
+      pluginName = "tmux-floax";
+      version = "08-05-2024";
+      src = pkgs.fetchFromGitHub {
+        owner = "omerxx";
+        repo = "tmux-floax";
+        rev = "ecc0507a792a9f55529952c806e849c11093a168";
+        sha256 = "sha256-lX5P1l4yHV8jiuHsa7GkbgGT+wk0BdyvSSUu/L6G4eQ=";
+      };
     };
-  };
-in {
-  options.cli.multiplexers.tmux = with types; {
-    enable = mkBoolOpt false "enable tmux multiplexer";
-  };
-
-  config = mkIf cfg.enable {
+  in
+  mkIf cfg.enable {
     home.packages = with pkgs; [
       sesh
       lsof
@@ -90,8 +90,8 @@ in {
             set -g @catppuccin_window_current_text "#W"
 
             set -g @catppuccin_status_modules "application session date_time"
-            set -g @catppuccin_status_left_separator  ""
-            set -g @catppuccin_status_right_separator ""
+            set -g @catppuccin_status_left_separator  ""
+            set -g @catppuccin_status_right_separator ""
             set -g @catppuccin_status_right_separator_inverse "no"
             set -g @catppuccin_status_fill "icon"
             #set -g @catppuccin_status_connect_separator "no"

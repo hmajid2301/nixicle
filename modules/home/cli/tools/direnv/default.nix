@@ -1,18 +1,18 @@
-{
-  pkgs,
-  config,
-  lib,
-  ...
-}:
-with lib;
-with lib.nixicle; let
-  cfg = config.cli.tools.direnv;
-in {
-  options.cli.tools.direnv = with types; {
-    enable = mkBoolOpt false "Whether or not to enable direnv";
+{delib, ...}:
+delib.module {
+  name = "cli-tools-direnv";
+
+  options.cli.tools.direnv = with delib; {
+    enable = boolOption false;
   };
 
-  config = mkIf cfg.enable {
+  home.always = {config, lib, pkgs, ...}:
+  with lib;
+  with lib.nixicle;
+  let
+    cfg = config.cli.tools.direnv;
+  in
+  mkIf cfg.enable {
     programs.direnv = {
       enable = true;
       nix-direnv.enable = true;

@@ -1,17 +1,18 @@
-{
-  config,
-  lib,
-  ...
-}:
-with lib;
-with lib.nixicle; let
-  cfg = config.cli.terminals.alacritty;
-in {
-  options.cli.terminals.alacritty = with types; {
-    enable = mkBoolOpt false "enable alacritty terminal emulator";
+{delib, ...}:
+delib.module {
+  name = "cli-terminals-alacritty";
+
+  options.cli.terminals.alacritty = with delib; {
+    enable = boolOption false;
   };
 
-  config = mkIf cfg.enable {
+  home.always = {config, lib, ...}:
+  with lib;
+  with lib.nixicle;
+  let
+    cfg = config.cli.terminals.alacritty;
+  in
+  mkIf cfg.enable {
     programs.alacritty = {
       enable = true;
 

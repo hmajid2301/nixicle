@@ -1,20 +1,18 @@
-{
-  config,
-  pkgs,
-  lib,
-  ...
-}:
-with lib;
-with lib.nixicle;
-let
-  cfg = config.system.nix;
-in
-{
-  options.system.nix = with types; {
-    enable = mkBoolOpt false "Whether or not to manage nix configuration";
+{delib, ...}:
+delib.module {
+  name = "systems-nix";
+
+  options.system.nix = with delib; {
+    enable = boolOption false;
   };
 
-  config = mkIf cfg.enable {
+  home.always = {config, lib, pkgs, ...}:
+  with lib;
+  with lib.nixicle;
+  let
+    cfg = config.system.nix;
+  in
+  mkIf cfg.enable {
     home.packages = with pkgs; [
       nixgl.nixGLIntel
       nvd

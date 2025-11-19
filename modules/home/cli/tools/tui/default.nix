@@ -1,20 +1,18 @@
-{
-  pkgs,
-  config,
-  lib,
-  ...
-}:
-with lib;
-with lib.nixicle;
-let
-  cfg = config.cli.tools.tui;
-in
-{
-  options.cli.tools.tui = with types; {
-    enable = mkBoolOpt false "Whether or not to enable terminal UI applications";
+{delib, ...}:
+delib.module {
+  name = "cli-tools-tui";
+
+  options.cli.tools.tui = with delib; {
+    enable = boolOption false;
   };
 
-  config = mkIf cfg.enable {
+  home.always = {config, lib, pkgs, ...}:
+  with lib;
+  with lib.nixicle;
+  let
+    cfg = config.cli.tools.tui;
+  in
+  mkIf cfg.enable {
     home.packages = with pkgs; [
       # GitHub TUI
       gh-dash

@@ -45,7 +45,7 @@ in
       ];
     };
 
-    snowfallorg.users.${config.user.name}.home.config = {
+    home-manager.users.${config.user.name} = {
       dconf.settings = {
         "org/gnome/nautilus/preferences" = {
           show-image-thumbnails = "always"; # Show thumbnails: local-only, always, never

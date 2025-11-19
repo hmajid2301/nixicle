@@ -3,6 +3,15 @@
   lib,
   ...
 }: let
+  # Helper to get filename without extension (replacement for lib.snowfall.path.get-file-name-without-extension)
+  getFileNameWithoutExtension = path: let
+    baseName = builtins.baseNameOf (toString path);
+    parts = lib.splitString "." baseName;
+  in
+    if builtins.length parts > 1
+    then lib.concatStringsSep "." (lib.init parts)
+    else baseName;
+
   images = builtins.attrNames (builtins.readDir ./wallpapers);
   mkWallpaper = name: src: let
     fileName = builtins.baseNameOf src;
@@ -19,15 +28,11 @@
     };
   in
     pkg;
-  names = builtins.map (lib.snowfall.path.get-file-name-without-extension) images;
+  names = builtins.map getFileNameWithoutExtension images;
   wallpapers =
     lib.foldl
     (acc: image: let
-      # fileName = builtins.baseNameOf image;
-      # lib.getFileName is a helper to get the basename of
-      # the file and then take the name before the file extension.
-      # eg. mywallpaper.png -> mywallpaper
-      name = lib.snowfall.path.get-file-name-without-extension image;
+      name = getFileNameWithoutExtension image;
     in
       acc // {"${name}" = mkWallpaper name (./wallpapers + "/${image}");})
     {}

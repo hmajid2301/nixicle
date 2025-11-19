@@ -1,49 +1,22 @@
-{
-  config,
-  lib,
-  pkgs,
-  ...
-}:
-with lib;
-let
-  cfg = config.desktops.addons.caelestia;
-in
-{
-  options.desktops.addons.caelestia = {
-    enable = mkEnableOption "Enable Caelestia shell";
+{delib, ...}:
+delib.module {
+  name = "desktops-addons-caelestia";
 
-    enableSystemd = mkOption {
-      type = types.bool;
-      default = false;
-      description = "Enable systemd service for auto-start";
-    };
-
-    systemdTarget = mkOption {
-      type = types.str;
-      default = "graphical-session.target";
-      description = "Systemd target to bind to";
-    };
-
-    enableCli = mkOption {
-      type = types.bool;
-      default = true;
-      description = "Enable caelestia-cli";
-    };
-
-    wallpaperDir = mkOption {
-      type = types.str;
-      default = "~/Pictures/Wallpapers";
-      description = "Directory containing wallpapers";
-    };
-
-    settings = mkOption {
-      type = types.attrs;
-      default = { };
-      description = "Additional settings to merge with the default configuration";
-    };
+  options.desktops.addons.caelestia = with delib; {
+    enable = boolOption false;
+    enableSystemd = boolOption false;
+    systemdTarget = strOption "graphical-session.target";
+    enableCli = boolOption true;
+    wallpaperDir = strOption "~/Pictures/Wallpapers";
+    settings = attrsOption {};
   };
 
-  config = mkIf cfg.enable {
+  home.always = {config, lib, pkgs, ...}:
+  with lib;
+  let
+    cfg = config.desktops.addons.caelestia;
+  in
+  mkIf cfg.enable {
     # Copy the shell.json configuration to the appropriate location
     xdg.configFile."caelestia/shell.json".text = let
       defaultConfig = builtins.fromJSON (builtins.readFile ./shell.json);

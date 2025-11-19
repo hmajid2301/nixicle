@@ -1,16 +1,17 @@
-{
-  config,
-  lib,
-  ...
-}:
-with lib; let
-  cfg = config.services.nixicle.syncthing;
-in {
-  options.services.nixicle.syncthing = {
-    enable = mkEnableOption "Enable syncthing service";
+{delib, ...}:
+delib.module {
+  name = "services-syncthing";
+
+  options.services.nixicle.syncthing = with delib; {
+    enable = boolOption false;
   };
 
-  config = mkIf cfg.enable {
+  home.always = {config, lib, ...}:
+  with lib;
+  let
+    cfg = config.services.nixicle.syncthing;
+  in
+  mkIf cfg.enable {
     services.syncthing = {
       enable = true;
       tray.enable = true;

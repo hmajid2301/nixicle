@@ -1,17 +1,18 @@
-{
-  config,
-  lib,
-  ...
-}:
-with lib;
-with lib.nixicle; let
-  cfg = config.cli.terminals.foot;
-in {
-  options.cli.terminals.foot = with types; {
-    enable = mkBoolOpt false "enable foot terminal emulator";
+{delib, ...}:
+delib.module {
+  name = "cli-terminals-foot";
+
+  options.cli.terminals.foot = with delib; {
+    enable = boolOption false;
   };
 
-  config = mkIf cfg.enable {
+  home.always = {config, lib, ...}:
+  with lib;
+  with lib.nixicle;
+  let
+    cfg = config.cli.terminals.foot;
+  in
+  mkIf cfg.enable {
     programs.foot = {
       enable = true;
 

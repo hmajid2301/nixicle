@@ -1,14 +1,18 @@
-{ inputs, config, pkgs, lib, ... }:
-with lib;
-with lib.nixicle;
-let cfg = config.roles.video;
-in {
-  options.roles.video = with types; {
-    enable =
-      mkBoolOpt false "Whether or not to manage video editting and recording";
+{delib, ...}:
+delib.module {
+  name = "roles-video";
+
+  options.roles.video = with delib; {
+    enable = boolOption false;
   };
 
-  config = mkIf cfg.enable {
+  home.always = {config, lib, pkgs, inputs, ...}:
+  with lib;
+  with lib.nixicle;
+  let
+    cfg = config.roles.video;
+  in
+  mkIf cfg.enable {
     xdg.configFile."obs-studio/themes".source =
       "${inputs.catppuccin-obs}/themes";
 
