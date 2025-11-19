@@ -5,7 +5,7 @@
   ...
 }:
 with lib;
-with lib.nixicle; let
+ let
   cfg = config.roles.server;
 in {
   options.roles.server = {

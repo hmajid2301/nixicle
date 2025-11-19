@@ -2,10 +2,14 @@
   config,
   pkgs,
   lib,
+mkOpt ? null,
+mkBoolOpt ? null,
+enabled ? null,
+disabled ? null,
   ...
 }:
 with lib;
-with lib.nixicle; let
+ let
   cfg = config.services.nixicle.kdeconnect;
 in {
   options.services.nixicle.kdeconnect = with types; {

@@ -1,6 +1,6 @@
 { config, lib, ... }:
 with lib;
-with lib.nixicle;
+
 let
   cfg = config.services.nixicle.paperless;
 in

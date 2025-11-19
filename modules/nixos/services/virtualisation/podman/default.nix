@@ -1,6 +1,10 @@
 {
   config,
   lib,
+mkOpt ? null,
+mkBoolOpt ? null,
+enabled ? null,
+disabled ? null,
   ...
 }:
 with lib;

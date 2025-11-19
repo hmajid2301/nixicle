@@ -2,10 +2,14 @@
   config,
   lib,
   pkgs,
+mkOpt ? null,
+mkBoolOpt ? null,
+enabled ? null,
+disabled ? null,
   ...
 }:
 with lib;
-with lib.nixicle; {
+ {
   options.cli.tools.zk = with types; {
     enable = mkBoolOpt false "Whether to enable zk note-taking tool";
   };

@@ -4,7 +4,7 @@
   ...
 }:
 with lib;
-with lib.nixicle; let
+ let
   cfg = config.services.nixicle.gotify;
 in {
   options.services.nixicle.gotify = {

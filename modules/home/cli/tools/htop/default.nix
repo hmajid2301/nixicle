@@ -1,10 +1,14 @@
 {
   lib,
   config,
+mkOpt ? null,
+mkBoolOpt ? null,
+enabled ? null,
+disabled ? null,
   ...
 }:
 with lib;
-with lib.nixicle; let
+ let
   cfg = config.cli.tools.htop;
 in {
   options.cli.tools.htop = with types; {

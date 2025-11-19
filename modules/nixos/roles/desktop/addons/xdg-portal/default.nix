@@ -1,6 +1,15 @@
-{ config, lib, pkgs, ... }:
+{
+config,
+  lib,
+  pkgs,
+  mkOpt ? null,
+  mkBoolOpt ? null,
+  enabled ? null,
+  disabled ? null,
+  ...
+}:
 with lib;
-with lib.nixicle;
+
 let cfg = config.roles.desktop.addons.xdg-portal;
 in {
   options.roles.desktop.addons.xdg-portal = with types; {

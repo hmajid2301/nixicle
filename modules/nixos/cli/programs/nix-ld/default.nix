@@ -2,10 +2,14 @@
   config,
   lib,
   pkgs,
+mkOpt ? null,
+mkBoolOpt ? null,
+enabled ? null,
+disabled ? null,
   ...
 }:
 with lib;
-with lib.nixicle; let
+ let
   cfg = config.cli.programs.nix-ld;
 in {
   options.cli.programs.nix-ld = with types; {

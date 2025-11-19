@@ -5,7 +5,7 @@
   ...
 }:
 with lib;
-with lib.nixicle; let
+ let
   cfg = config.hardware.raspberry-pi-5;
 in {
   options.hardware.raspberry-pi-5 = {

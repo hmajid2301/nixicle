@@ -2,10 +2,14 @@
   lib,
   pkgs,
   config,
+mkOpt ? null,
+mkBoolOpt ? null,
+enabled ? null,
+disabled ? null,
   ...
 }:
 with lib;
-with lib.nixicle; let
+ let
   inherit (lib) types mkOption mkEnableOption optional optionals;
   cfg = config.services.virtualisation.vfio;
 

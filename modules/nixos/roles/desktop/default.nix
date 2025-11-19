@@ -4,7 +4,7 @@
   ...
 }:
 with lib;
-with lib.nixicle;
+
 let
   cfg = config.roles.desktop;
 in
@@ -18,10 +18,6 @@ in
 
     roles = {
       common.enable = true;
-
-      desktop.addons = {
-        nautilus.enable = true;
-      };
     };
 
     hardware = {

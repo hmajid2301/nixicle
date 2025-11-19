@@ -2,10 +2,14 @@
   pkgs,
   lib,
   config,
+mkOpt ? null,
+mkBoolOpt ? null,
+enabled ? null,
+disabled ? null,
   ...
 }:
 with lib;
-with lib.nixicle; let
+ let
   cfg = config.development.containers.docker;
 in {
   options.development.containers.docker = with types; {

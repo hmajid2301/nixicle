@@ -3,10 +3,14 @@
   lib,
   config,
   host,
+mkOpt ? null,
+mkBoolOpt ? null,
+enabled ? null,
+disabled ? null,
   ...
 }:
 with lib;
-with lib.nixicle; let
+ let
   cfg = config.cli.shells.zsh;
 in {
   options.cli.shells.zsh = with types; {
