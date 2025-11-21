@@ -10,6 +10,8 @@
     ./disks.nix
   ];
 
+  networking.hostName = "ms01";
+
   sops.secrets = {
     cloudflared_ms01 = {
       sopsFile = ../../modules/nixos/services/secrets.yaml;

@@ -10,6 +10,8 @@
     ./disks.nix
   ];
 
+  networking.hostName = "vps";
+
   boot.loader.grub.enable = true;
   system.boot.enable = lib.mkForce false;
 

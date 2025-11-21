@@ -329,19 +329,23 @@
               # Module to extend lib with nixicle functions while preserving lib.hm
               (
                 { lib, ... }:
+                let
+                  nixicleLib = import ./lib {
+                    inherit inputs;
+                    lib = nixpkgs.lib;
+                  };
+                  extendedLib = lib.extend (
+                    self: super: {
+                      nixicle = nixicleLib;
+                    }
+                  );
+                in
                 {
                   _module.args = {
                     # Extend the existing lib (which has lib.hm) with our nixicle namespace
-                    lib = lib.extend (
-                      self: super: {
-                        nixicle = import ./lib {
-                          inherit inputs;
-                          lib = self;
-                        };
-                      }
-                    );
+                    lib = extendedLib;
                     # Also make helper functions available directly as arguments for convenience
-                    inherit (lib.nixicle)
+                    inherit (nixicleLib)
                       mkOpt
                       mkOpt'
                       mkOpt_
@@ -391,19 +395,23 @@
                   # Module to extend lib with nixicle functions while preserving lib.hm
                   (
                     { lib, ... }:
+                    let
+                      nixicleLib = import ./lib {
+                        inherit inputs;
+                        lib = nixpkgs.lib;
+                      };
+                      extendedLib = lib.extend (
+                        self: super: {
+                          nixicle = nixicleLib;
+                        }
+                      );
+                    in
                     {
                       _module.args = {
                         # Extend the existing lib (which has lib.hm) with our nixicle namespace
-                        lib = lib.extend (
-                          self: super: {
-                            nixicle = import ./lib {
-                              inherit inputs;
-                              lib = self;
-                            };
-                          }
-                        );
+                        lib = extendedLib;
                         # Also make helper functions available directly as arguments for convenience
-                        inherit (lib.nixicle)
+                        inherit (nixicleLib)
                           mkOpt
                           mkOpt'
                           mkOpt_
@@ -528,7 +536,8 @@
               sops
               age
               ssh-to-age
-            ];
+            ]
+            ++ [ inputs.home-manager.packages.${system}.default ];
           };
         }
       );
