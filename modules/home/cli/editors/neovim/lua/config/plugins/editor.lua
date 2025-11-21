@@ -59,9 +59,6 @@ return {
 		init = function()
 			vim.g.netrw_nogx = 1
 		end,
-		load = function(name)
-			vim.cmd.packadd(name)
-		end,
 		after = function(plugin)
 			require("gx").setup()
 		end,
@@ -144,7 +141,7 @@ return {
 		end,
 	},
 	{
-		"warp.nvim",
+		"warp-nvim",
 		for_cat = "general.editor",
 		keys = {
 			{ "<leader>ha", mode = { "n" }, desc = "Add file to warp" },

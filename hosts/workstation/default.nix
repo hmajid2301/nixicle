@@ -12,6 +12,8 @@
     { config.facter.reportPath = ./facter.json; }
   ];
 
+  networking.hostName = "workstation";
+
   environment.pathsToLink = [ "/share/fish" ];
 
   system.boot.plymouth = lib.mkForce false;

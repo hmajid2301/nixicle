@@ -2,6 +2,10 @@
   config,
   lib,
   pkgs,
+mkOpt ? null,
+mkBoolOpt ? null,
+enabled ? null,
+disabled ? null,
   ...
 }: let
   inherit (lib) mkIf;

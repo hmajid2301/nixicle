@@ -2,10 +2,14 @@
   pkgs,
   config,
   lib,
+mkOpt ? null,
+mkBoolOpt ? null,
+enabled ? null,
+disabled ? null,
   ...
 }:
 with lib;
-with lib.nixicle; let
+ let
   cfg = config.cli.tools.db;
 in {
   options.cli.tools.db = with types; {

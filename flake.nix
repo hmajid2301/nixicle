@@ -13,11 +13,6 @@
       url = "github:nix-community/NUR";
     };
 
-    snowfall-lib = {
-      url = "github:snowfallorg/lib";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     nixos-hardware = {
       url = "github:nixos/nixos-hardware";
     };
@@ -205,67 +200,361 @@
   };
 
   outputs =
-    inputs:
+    inputs@{
+      self,
+      nixpkgs,
+      home-manager,
+      ...
+    }:
     let
-      lib = inputs.snowfall-lib.mkLib {
-        inherit inputs;
-        src = ./.;
+      supportedSystems = [
+        "x86_64-linux"
+        "aarch64-linux"
+      ];
+      forAllSystems = nixpkgs.lib.genAttrs supportedSystems;
 
-        snowfall = {
-          metadata = "nixicle";
-          namespace = "nixicle";
-          meta = {
-            name = "nixicle";
-            title = "Haseeb's Nix Flake";
+      # Extended lib with nixicle namespace (thursdaddy-style)
+      lib = nixpkgs.lib.extend (
+        self: super: {
+          nixicle = import ./lib {
+            inherit inputs;
+            lib = self;
+          };
+        }
+      );
+
+      # Overlays
+      overlays = [
+        inputs.nixgl.overlay
+        inputs.nur.overlays.default
+        inputs.nix-topology.overlays.default
+        inputs.nvim-treesitter-main.overlays.default
+        # Custom overlays
+        (final: prev: {
+          zjstatus = inputs.zjstatus.packages.${prev.system}.default;
+        })
+        # Custom packages overlay - auto-import all packages
+        (final: prev: {
+          nixicle = lib.nixicle.importPackages final ./packages;
+        })
+      ];
+
+      # Create pkgs for a given system
+      mkPkgs =
+        system:
+        import nixpkgs {
+          inherit system overlays;
+          config.allowUnfree = true;
+        };
+
+      # Common NixOS modules
+      commonNixosModules = [
+        inputs.stylix.nixosModules.stylix
+        home-manager.nixosModules.home-manager
+        inputs.disko.nixosModules.disko
+        inputs.lanzaboote.nixosModules.lanzaboote
+        inputs.impermanence.nixosModules.impermanence
+        inputs.sops-nix.nixosModules.sops
+        inputs.nix-topology.nixosModules.default
+        inputs.authentik-nix.nixosModules.default
+        # Auto-import all custom NixOS modules via import.nix
+        ./modules/nixos/import.nix
+      ];
+
+      # Common home-manager modules
+      commonHomeModules = [
+        inputs.impermanence.nixosModules.home-manager.impermanence
+        inputs.dankMaterialShell.homeModules.dankMaterialShell.default
+        inputs.caelestia.homeManagerModules.default
+        inputs.sops-nix.homeManagerModules.sops
+        inputs.stylix.homeModules.stylix
+        inputs.catppuccin.homeModules.catppuccin
+        inputs.nix-index-database.homeModules.nix-index
+        # Auto-import all custom home modules via import.nix
+        ./modules/home/import.nix
+      ];
+
+      # Helper to create a NixOS system
+      mkSystem =
+        {
+          hostname,
+          system ? "x86_64-linux",
+          extraModules ? [ ],
+        }:
+        nixpkgs.lib.nixosSystem {
+          inherit system;
+          pkgs = mkPkgs system;
+          specialArgs = {
+            inherit inputs lib;
+            # Make nixicle helper functions available as module arguments
+            inherit (lib.nixicle)
+              mkOpt
+              mkOpt'
+              mkOpt_
+              mkBoolOpt
+              mkBoolOpt'
+              mkPackageOpt
+              mkPackageOpt'
+              enabled
+              disabled
+              ;
+          };
+          modules =
+            commonNixosModules
+            ++ extraModules
+            ++ [
+              ./hosts/${hostname}
+              {
+                nixpkgs.hostPlatform = system;
+              }
+            ];
+        };
+
+      # Helper to create a home-manager configuration (standalone)
+      mkHome =
+        {
+          username,
+          hostname,
+          system ? "x86_64-linux",
+          extraModules ? [ ],
+        }:
+        home-manager.lib.homeManagerConfiguration {
+          pkgs = mkPkgs system;
+          extraSpecialArgs = {
+            inherit inputs;
+            host = hostname; # Make hostname available as 'host' argument
+          };
+          modules =
+            [
+              # Module to extend lib with nixicle functions while preserving lib.hm
+              (
+                { lib, ... }:
+                let
+                  nixicleLib = import ./lib {
+                    inherit inputs;
+                    lib = nixpkgs.lib;
+                  };
+                  extendedLib = lib.extend (
+                    self: super: {
+                      nixicle = nixicleLib;
+                    }
+                  );
+                in
+                {
+                  _module.args = {
+                    # Extend the existing lib (which has lib.hm) with our nixicle namespace
+                    lib = extendedLib;
+                    # Also make helper functions available directly as arguments for convenience
+                    inherit (nixicleLib)
+                      mkOpt
+                      mkOpt'
+                      mkOpt_
+                      mkBoolOpt
+                      mkBoolOpt'
+                      mkPackageOpt
+                      mkPackageOpt'
+                      enabled
+                      disabled
+                      ;
+                  };
+                }
+              )
+            ]
+            ++ commonHomeModules
+            ++ extraModules
+            ++ [
+              (./hosts + "/${hostname}/home.nix")
+              {
+                home = {
+                  username = username;
+                  homeDirectory = "/home/${username}";
+                };
+              }
+            ];
+        };
+
+      # Helper to create home-manager module for NixOS integration
+      mkHomeModule =
+        {
+          username,
+          hostname,
+          system ? "x86_64-linux",
+          extraModules ? [ ],
+        }:
+        {
+          home-manager = {
+            useGlobalPkgs = true;
+            useUserPackages = true;
+            extraSpecialArgs = {
+              inherit inputs;
+              host = hostname; # Make hostname available as 'host' argument
+            };
+            users.${username} = {
+              imports =
+                [
+                  # Module to extend lib with nixicle functions while preserving lib.hm
+                  (
+                    { lib, ... }:
+                    let
+                      nixicleLib = import ./lib {
+                        inherit inputs;
+                        lib = nixpkgs.lib;
+                      };
+                      extendedLib = lib.extend (
+                        self: super: {
+                          nixicle = nixicleLib;
+                        }
+                      );
+                    in
+                    {
+                      _module.args = {
+                        # Extend the existing lib (which has lib.hm) with our nixicle namespace
+                        lib = extendedLib;
+                        # Also make helper functions available directly as arguments for convenience
+                        inherit (nixicleLib)
+                          mkOpt
+                          mkOpt'
+                          mkOpt_
+                          mkBoolOpt
+                          mkBoolOpt'
+                          mkPackageOpt
+                          mkPackageOpt'
+                          enabled
+                          disabled
+                          ;
+                      };
+                    }
+                  )
+                ]
+                ++ commonHomeModules
+                ++ extraModules
+                ++ [
+                  (./hosts + "/${hostname}/home.nix")
+                ];
+            };
           };
         };
-      };
+
     in
-    lib.mkFlake {
-      channels-config = {
-        allowUnfree = true;
+    {
+      # NixOS configurations
+      nixosConfigurations = {
+        framework = mkSystem {
+          hostname = "framework";
+          extraModules = [
+            inputs.nixos-hardware.nixosModules.framework-13-7040-amd
+            (mkHomeModule {
+              username = "haseeb";
+              hostname = "framework";
+            })
+          ];
+        };
+
+        workstation = mkSystem {
+          hostname = "workstation";
+          extraModules = [
+            (mkHomeModule {
+              username = "haseeb";
+              hostname = "workstation";
+            })
+          ];
+        };
+
+        vm = mkSystem {
+          hostname = "vm";
+          extraModules = [
+            (mkHomeModule {
+              username = "haseeb";
+              hostname = "vm";
+            })
+          ];
+        };
+
+        ms01 = mkSystem {
+          hostname = "ms01";
+        };
+
+        s100 = mkSystem {
+          hostname = "s100";
+        };
+
+        vps = mkSystem {
+          hostname = "vps";
+        };
       };
 
-      systems.modules.nixos = with inputs; [
-        stylix.nixosModules.stylix
-        home-manager.nixosModules.home-manager
-        disko.nixosModules.disko
-        lanzaboote.nixosModules.lanzaboote
-        impermanence.nixosModules.impermanence
-        sops-nix.nixosModules.sops
-        nix-topology.nixosModules.default
-        authentik-nix.nixosModules.default
-      ];
+      # Standalone home-manager configurations (for non-NixOS systems and standalone use on NixOS)
+      homeConfigurations = {
+        # Standalone home-manager only (non-NixOS)
+        "haseebmajid@dell" = mkHome {
+          username = "haseebmajid";
+          hostname = "dell";
+        };
 
-      systems.hosts.framework.modules = with inputs; [
-        nixos-hardware.nixosModules.framework-13-7040-amd
-      ];
+        "deck@steamdeck" = mkHome {
+          username = "deck";
+          hostname = "steamdeck";
+        };
 
-      homes.modules = with inputs; [
-        impermanence.nixosModules.home-manager.impermanence
-        dankMaterialShell.homeModules.dankMaterialShell.default
-        caelestia.homeManagerModules.default
-      ];
+        # Standalone home-manager for NixOS systems (can be used instead of NixOS integration)
+        "haseeb@workstation" = mkHome {
+          username = "haseeb";
+          hostname = "workstation";
+        };
 
-      overlays = with inputs; [
-        nixgl.overlay
-        nur.overlays.default
-        nix-topology.overlays.default
-        nvim-treesitter-main.overlays.default
-      ];
+        "haseeb@framework" = mkHome {
+          username = "haseeb";
+          hostname = "framework";
+        };
 
-      deploy = lib.mkDeploy { inherit (inputs) self; };
+        "haseeb@vm" = mkHome {
+          username = "haseeb";
+          hostname = "vm";
+        };
+      };
+
+      # Packages
+      packages = forAllSystems (
+        system:
+        let
+          pkgs = mkPkgs system;
+        in
+        pkgs.nixicle
+      );
+
+      # Dev shells
+      devShells = forAllSystems (
+        system:
+        let
+          pkgs = mkPkgs system;
+        in
+        {
+          default = pkgs.mkShell {
+            packages = with pkgs; [
+              nil
+              nixfmt-rfc-style
+              sops
+              age
+              ssh-to-age
+            ]
+            ++ [ inputs.home-manager.packages.${system}.default ];
+          };
+        }
+      );
+
+      # Deploy-rs configuration
+      deploy = lib.nixicle.mkDeploy { inherit self; };
 
       checks = builtins.mapAttrs (
-        system: deploy-lib: deploy-lib.deployChecks inputs.self.deploy
+        system: deploy-lib: deploy-lib.deployChecks self.deploy
       ) inputs.deploy-rs.lib;
 
+      # Topology
       topology =
-        with inputs;
         let
           host = self.nixosConfigurations.${builtins.head (builtins.attrNames self.nixosConfigurations)};
         in
-        import nix-topology {
+        import inputs.nix-topology {
           inherit (host) pkgs;
           modules = [
             (import ./topology { inherit (host) config; })

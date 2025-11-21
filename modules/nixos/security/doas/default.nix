@@ -1,10 +1,14 @@
 {
   config,
   lib,
+mkOpt ? null,
+mkBoolOpt ? null,
+enabled ? null,
+disabled ? null,
   ...
 }:
 with lib;
-with lib.nixicle; let
+ let
   cfg = config.security.nixicle.doas;
 in {
   options.security.nixicle.doas = {

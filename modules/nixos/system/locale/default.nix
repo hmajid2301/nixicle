@@ -2,10 +2,14 @@
   options,
   config,
   lib,
+mkOpt ? null,
+mkBoolOpt ? null,
+enabled ? null,
+disabled ? null,
   ...
 }:
 with lib;
-with lib.nixicle; let
+ let
   cfg = config.system.locale;
 in {
   options.system.locale = with types; {

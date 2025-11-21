@@ -2,10 +2,14 @@
   pkgs,
   config,
   lib,
+mkOpt ? null,
+mkBoolOpt ? null,
+enabled ? null,
+disabled ? null,
   ...
 }:
 with lib;
-with lib.nixicle;
+
 let
   cfg = config.development.cloud.k8s;
 in

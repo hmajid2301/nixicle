@@ -2,10 +2,14 @@
   config,
   lib,
   pkgs,
+mkOpt ? null,
+mkBoolOpt ? null,
+enabled ? null,
+disabled ? null,
   ...
 }:
 with lib;
-with lib.nixicle;
+
 let
   cfg = config.roles.desktop.addons.nautilus;
 in
@@ -45,52 +49,15 @@ in
       ];
     };
 
-    snowfallorg.users.${config.user.name}.home.config = {
-      dconf.settings = {
-        "org/gnome/nautilus/preferences" = {
-          show-image-thumbnails = "always"; # Show thumbnails: local-only, always, never
-          thumbnail-limit = 10; # Maximum file size (MB) to thumbnail
-          show-directory-item-counts = "always";
-          executable-text-activation = "ask";
-          always-use-location-entry = false;
-          default-folder-viewer = "icon-view";
-          thumbnail-cache-time = 30;
-          recursive-search = "always"; # Search in subfolders: local-only, always, never
-        };
-        # Icon view settings for performance
-        "org/gnome/nautilus/icon-view" = {
-          captions = [
-            "size"
-            "none"
-          ];
-        };
-        # List view settings
-        "org/gnome/nautilus/list-view" = {
-          use-tree-view = false;
-        };
-        "org/gnome/desktop/thumbnailers" = {
-          disable-all = false;
-        };
-        # Ensure all thumbnailer types are enabled
-        "org/gnome/desktop/thumbnailers/gstreamer" = {
-          enable = true;
-        };
-        "org/gnome/desktop/thumbnailers/gdk-pixbuf" = {
-          enable = true;
-        };
-        "org/gnome/desktop/thumbnailers/ffmpegthumbnailer" = {
-          enable = true;
-        };
-
-        "org/gnome/desktop/privacy" = {
-          remember-recent-files = false;
-          disable-camera = false;
-          disable-microphone = false;
-        };
-        "com/github/stunkymonkey/nautilus-open-any-terminal" = {
-          terminal = "ghostty";
-        };
-      };
-    };
+    # NOTE: dconf settings for nautilus should be configured in home-manager
+    # via the home modules (e.g., in the user's home configuration)
+    # Example settings that should be in home-manager:
+    # dconf.settings = {
+    #   "org/gnome/nautilus/preferences" = {
+    #     show-image-thumbnails = "always";
+    #     thumbnail-limit = 10;
+    #     ...
+    #   };
+    # };
   };
 }

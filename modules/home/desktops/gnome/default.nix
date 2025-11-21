@@ -1,8 +1,17 @@
-{ config, pkgs, lib, ... }:
+{
+config,
+  pkgs,
+  lib,
+  mkOpt ? null,
+  mkBoolOpt ? null,
+  enabled ? null,
+  disabled ? null,
+  ...
+}:
 with lib;
 let cfg = config.desktops.gnome;
 in {
-  imports = lib.snowfall.fs.get-non-default-nix-files ./.;
+  # No sub-modules to import in this directory
 
   options.desktops.gnome = { enable = mkEnableOption "enable gnome DE"; };
 

@@ -3,6 +3,10 @@
   lib,
   pkgs,
   inputs,
+mkOpt ? null,
+mkBoolOpt ? null,
+enabled ? null,
+disabled ? null,
   ...
 }:
 with lib;

@@ -10,6 +10,8 @@
     ./disks.nix
   ];
 
+  networking.hostName = "vps";
+
   boot.loader.grub.enable = true;
   system.boot.enable = lib.mkForce false;
 
@@ -20,15 +22,15 @@
 
   sops.secrets = {
     cloudflared_vps = {
-      sopsFile = ../../../modules/nixos/services/secrets.yaml;
+      sopsFile = ../../modules/nixos/services/secrets.yaml;
     };
 
     gitlab_runner_env_vps = {
-      sopsFile = ../../../modules/nixos/services/secrets.yaml;
+      sopsFile = ../../modules/nixos/services/secrets.yaml;
     };
 
     b2_application_key = {
-      sopsFile = ../../../modules/nixos/services/secrets.yaml;
+      sopsFile = ../../modules/nixos/services/secrets.yaml;
     };
   };
 

@@ -2,7 +2,11 @@
   lib,
   config,
   pkgs,
-  host,
+  host ? "unknown",
+  mkOpt ? null,
+  mkBoolOpt ? null,
+  enabled ? null,
+  disabled ? null,
   ...
 }:
 with lib;

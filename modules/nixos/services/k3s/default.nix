@@ -1,10 +1,14 @@
 {
   config,
   lib,
+mkOpt ? null,
+mkBoolOpt ? null,
+enabled ? null,
+disabled ? null,
   ...
 }:
 with lib;
-with lib.nixicle;
+
 let
   cfg = config.services.nixicle.k3s;
 in

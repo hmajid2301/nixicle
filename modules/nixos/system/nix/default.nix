@@ -1,10 +1,14 @@
 {
   config,
   lib,
+mkOpt ? null,
+mkBoolOpt ? null,
+enabled ? null,
+disabled ? null,
   ...
 }:
 with lib;
-with lib.nixicle; let
+ let
   cfg = config.system.nix;
 in {
   options.system.nix = with types; {
@@ -24,10 +28,11 @@ in {
         flake-registry = "";
       };
 
-      # flake-utils-plus
-      generateRegistryFromInputs = true;
-      generateNixPathFromInputs = true;
-      linkInputs = true;
+      gc = {
+        automatic = lib.mkDefault true;
+        dates = lib.mkDefault "weekly";
+        options = lib.mkDefault "--delete-older-than 7d";
+      };
     };
   };
 }

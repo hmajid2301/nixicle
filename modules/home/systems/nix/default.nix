@@ -2,10 +2,14 @@
   config,
   pkgs,
   lib,
+mkOpt ? null,
+mkBoolOpt ? null,
+enabled ? null,
+disabled ? null,
   ...
 }:
 with lib;
-with lib.nixicle;
+
 let
   cfg = config.system.nix;
 in
@@ -30,7 +34,11 @@ in
       NH_FLAKE = "/home/${config.nixicle.user.name}/nixicle";
     };
 
-    nix = {
+    # Only configure nix for standalone home-manager (non-NixOS systems)
+    # On NixOS, nix is managed by the system configuration
+    nix = lib.mkIf (config.targets.genericLinux.enable or false) {
+      package = lib.mkDefault pkgs.nix;
+      
       settings = {
         trusted-substituters = [
           "https://cache.nixos.org"

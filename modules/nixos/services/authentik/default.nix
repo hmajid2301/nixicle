@@ -4,7 +4,7 @@
   ...
 }:
 with lib;
-with lib.nixicle; let
+ let
   cfg = config.services.nixicle.authentik;
 in {
   options.services.nixicle.authentik = {

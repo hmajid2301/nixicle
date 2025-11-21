@@ -4,7 +4,7 @@
   ...
 }:
 with lib;
-with lib.nixicle; let
+ let
   cfg = config.services.nixicle.netdata;
 in {
   options.services.nixicle.netdata = {

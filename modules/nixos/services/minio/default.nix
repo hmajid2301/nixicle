@@ -4,7 +4,7 @@
   ...
 }:
 with lib;
-with lib.nixicle;
+
 let
   cfg = config.services.nixicle.minio;
 in

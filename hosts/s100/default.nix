@@ -8,6 +8,8 @@
     ./disks.nix
   ];
 
+  networking.hostName = "s100";
+
   roles = {
     server.enable = true;
   };

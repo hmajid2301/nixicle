@@ -2,10 +2,14 @@
   config,
   lib,
   pkgs,
+mkOpt ? null,
+mkBoolOpt ? null,
+enabled ? null,
+disabled ? null,
   ...
 }:
 with lib;
-with lib.nixicle; let
+ let
   cfg = config.desktops.addons.swaylock;
 in {
   options.desktops.addons.swaylock = {

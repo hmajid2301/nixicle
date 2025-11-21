@@ -2,10 +2,14 @@
   config,
   lib,
   inputs,
+mkOpt ? null,
+mkBoolOpt ? null,
+enabled ? null,
+disabled ? null,
   ...
 }:
 with lib;
-with lib.nixicle; let
+ let
   cfg = config.security.sops;
 in {
   options.security.sops = with types; {

@@ -3,10 +3,14 @@
   config,
   pkgs,
   lib,
+mkOpt ? null,
+mkBoolOpt ? null,
+enabled ? null,
+disabled ? null,
   ...
 }:
 with lib;
-with lib.nixicle; let
+ let
   cfg = config.services.nixicle.printing;
 in {
   options.services.nixicle.printing = with types; {

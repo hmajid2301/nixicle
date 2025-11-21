@@ -1,6 +1,12 @@
-{ pkgs, config, lib, ... }:
+{ 
+  pkgs, 
+  config, 
+  lib, 
+  mkBoolOpt ? null,
+  ...
+}:
 with lib;
-with lib.nixicle;
+
 let cfg = config.cli.tools.gpg;
 in {
   options.cli.tools.gpg = with types; {

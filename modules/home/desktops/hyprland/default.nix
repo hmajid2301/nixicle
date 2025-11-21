@@ -1,12 +1,21 @@
-{ config, lib, ... }:
+{ 
+  config, 
+  lib,
+  mkOpt ? null,
+  ...
+}:
 with lib;
-with lib.nixicle;
+
 with types;
 let
   cfg = config.desktops.hyprland;
 in
 {
-  imports = lib.snowfall.fs.get-non-default-nix-files ./.;
+  imports = [
+    ./config.nix
+    ./keybindings.nix
+    ./windowrules.nix
+  ];
 
   options.desktops.hyprland = {
     enable = mkEnableOption "Enable hyprland window manager";

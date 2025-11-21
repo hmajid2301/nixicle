@@ -1,6 +1,15 @@
-{ config, lib, pkgs, ... }:
+{
+config,
+  lib,
+  pkgs,
+  mkOpt ? null,
+  mkBoolOpt ? null,
+  enabled ? null,
+  disabled ? null,
+  ...
+}:
 with lib;
-with lib.nixicle;
+
 let cfg = config.desktops.addons.thunar;
 in {
   options.desktops.addons.thunar = with types; {
