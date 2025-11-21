@@ -45,6 +45,7 @@ return {
 	{
 		"zk-nvim",
 		for_cat = "general.notes",
+		cmd = { "ZkNew", "ZkNotes", "ZkTags" },
 		keys = {
 			{ "<leader>zn", mode = { "n" }, desc = "New note" },
 			{ "<leader>zo", mode = { "n" }, desc = "Open notes" },

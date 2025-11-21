@@ -59,9 +59,6 @@ return {
 		init = function()
 			vim.g.netrw_nogx = 1
 		end,
-		load = function(name)
-			vim.cmd.packadd(name)
-		end,
 		after = function(plugin)
 			require("gx").setup()
 		end,
