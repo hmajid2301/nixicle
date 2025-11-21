@@ -148,8 +148,6 @@
   };
 
   networking = {
-    hostName = "ms01";
-
     interfaces = {
       enp2s0f0.wakeOnLan.enable = true;
       enp2s0f1.wakeOnLan.enable = true;
