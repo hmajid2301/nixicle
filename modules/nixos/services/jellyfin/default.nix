@@ -15,9 +15,11 @@ in
 
   config = mkIf cfg.enable (mkMerge [
     {
-      nixpkgs.config.packageOverrides = pkgs: {
-        vaapiIntel = pkgs.vaapiIntel.override { enableHybridCodec = true; };
-      };
+      nixpkgs.overlays = [
+        (final: prev: {
+          vaapiIntel = prev.vaapiIntel.override { enableHybridCodec = true; };
+        })
+      ];
 
       hardware.graphics = {
         enable = true;
