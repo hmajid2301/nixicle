@@ -9,10 +9,7 @@ let
   cfg = config.styles.stylix;
 in
 {
-  imports = with inputs; [
-    stylix.homeModules.stylix
-    catppuccin.homeModules.catppuccin
-  ];
+  # stylix and catppuccin are already imported globally in commonHomeModules
 
   options.styles.stylix = {
     enable = lib.mkEnableOption "Enable stylix";

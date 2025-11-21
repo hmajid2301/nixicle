@@ -27,7 +27,10 @@
 
   roles = {
     desktop.enable = true;
-    desktop.addons.gnome.enable = true;
+    desktop.addons = {
+      gnome.enable = false;  # Disable gnome
+      # niri.enable = true;    # Enable niri instead (module doesn't exist yet)
+    };
   };
 
   boot = {

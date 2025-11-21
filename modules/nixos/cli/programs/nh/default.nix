@@ -2,10 +2,14 @@
   config,
   lib,
   pkgs,
+mkOpt ? null,
+mkBoolOpt ? null,
+enabled ? null,
+disabled ? null,
   ...
 }:
 with lib;
-with lib.nixicle;
+
 let
   cfg = config.cli.programs.nh;
 in
@@ -33,6 +37,9 @@ in
         });
       })
     ];
+
+    # Disable nix.gc.automatic to avoid conflict with nh clean
+    nix.gc.automatic = lib.mkForce false;
 
     programs.nh = {
       enable = true;

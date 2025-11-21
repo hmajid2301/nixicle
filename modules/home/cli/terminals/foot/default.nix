@@ -1,10 +1,14 @@
 {
   config,
   lib,
+mkOpt ? null,
+mkBoolOpt ? null,
+enabled ? null,
+disabled ? null,
   ...
 }:
 with lib;
-with lib.nixicle; let
+ let
   cfg = config.cli.terminals.foot;
 in {
   options.cli.terminals.foot = with types; {

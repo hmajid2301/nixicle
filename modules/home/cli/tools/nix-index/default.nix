@@ -2,19 +2,21 @@
   lib,
   config,
   inputs,
+mkOpt ? null,
+mkBoolOpt ? null,
+enabled ? null,
+disabled ? null,
   ...
 }:
 with lib;
-with lib.nixicle; let
+ let
   cfg = config.cli.tools.nix-index;
 in {
   options.cli.tools.nix-index = with types; {
     enable = mkBoolOpt false "Whether or not to nix index";
   };
 
-  imports = with inputs; [
-    nix-index-database.hmModules.nix-index
-  ];
+  # nix-index-database is already imported globally in commonHomeModules
 
   config = mkIf cfg.enable {
     programs.nix-index = {
