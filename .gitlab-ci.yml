@@ -68,6 +68,7 @@ build:changed:
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
+    - nix-env -iA nixpkgs.cacert nixpkgs.attic-client
     - attic login homelab https://attic.haseebmajid.dev $ATTIC_AUTH_KEY
     - attic use homelab:main
     - mkdir -p /etc/nix
