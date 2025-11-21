@@ -63,11 +63,24 @@ build:flake:
     - nix build ".#packages.x86_64-linux.octopus-energy" --print-out-paths | attic push homelab:main
 
 build:changed:
-  extends: .base_setup
+  # extends: .base_setup
   stage: build
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
+    - attic login homelab https://attic.haseebmajid.dev $ATTIC_AUTH_KEY
+    - attic use homelab:main
+    - mkdir -p /etc/nix
+    - mkdir -p /var/lib/papirus-folders
+    - |
+      cat >> /etc/nix/nix.conf << EOF
+      experimental-features = nix-command flakes
+      extra-platforms = x86_64-linux i686-linux
+      system-features = benchmark big-parallel nixos-test i686
+      substituters = https://attic.homelab.haseebmajid.dev/system?priority=43 https://nix-community.cachix.org?priority=41 https://numtide.cachix.org?priority=42 https://cache.nixos.org/
+      trusted-public-keys = cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY= system:5M8uBPjS68HTadSbeCs0Jiu0Z1tJBNdahtKBCXhl+Z0= nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs= numtide.cachix.org-1:2ps1kLBUWjxIneOy1Ik6cQjb41X0iXVXeHigGmycPPE=
+      EOF
+    - echo "machine attic.haseebmajid.dev password $ATTIC_AUTH_KEY" > /etc/nix/netrc
     - echo "Building changed configurations and pushing to Attic..."
     - nix run github:Mic92/nix-fast-build -- --skip-cached --no-nom --attic-cache homelab:main
 
