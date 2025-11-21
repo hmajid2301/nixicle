@@ -200,18 +200,28 @@
   };
 
   outputs =
-    inputs@{ self, nixpkgs, home-manager, ... }:
+    inputs@{
+      self,
+      nixpkgs,
+      home-manager,
+      ...
+    }:
     let
-      supportedSystems = [ "x86_64-linux" "aarch64-linux" ];
+      supportedSystems = [
+        "x86_64-linux"
+        "aarch64-linux"
+      ];
       forAllSystems = nixpkgs.lib.genAttrs supportedSystems;
 
-      # Custom lib with recursive import helpers
-      nixicleLib = import ./lib { lib = nixpkgs.lib; inherit inputs; };
-
-      # Extended lib with nixicle namespace
-      lib = nixpkgs.lib.extend (final: prev: {
-        nixicle = nixicleLib;
-      });
+      # Extended lib with nixicle namespace (thursdaddy-style)
+      lib = nixpkgs.lib.extend (
+        self: super: {
+          nixicle = import ./lib {
+            inherit inputs;
+            lib = self;
+          };
+        }
+      );
 
       # Overlays
       overlays = [
@@ -225,12 +235,13 @@
         })
         # Custom packages overlay - auto-import all packages
         (final: prev: {
-          nixicle = nixicleLib.importPackages final ./packages;
+          nixicle = lib.nixicle.importPackages final ./packages;
         })
       ];
 
       # Create pkgs for a given system
-      mkPkgs = system:
+      mkPkgs =
+        system:
         import nixpkgs {
           inherit system overlays;
           config.allowUnfree = true;
@@ -246,9 +257,9 @@
         inputs.sops-nix.nixosModules.sops
         inputs.nix-topology.nixosModules.default
         inputs.authentik-nix.nixosModules.default
-      ] 
-      # Auto-import all custom NixOS modules recursively
-      ++ (nixicleLib.importModulesRecursive ./modules/nixos);
+        # Auto-import all custom NixOS modules via import.nix
+        ./modules/nixos/import.nix
+      ];
 
       # Common home-manager modules
       commonHomeModules = [
@@ -259,94 +270,159 @@
         inputs.stylix.homeModules.stylix
         inputs.catppuccin.homeModules.catppuccin
         inputs.nix-index-database.homeModules.nix-index
-      ]
-      # Auto-import all custom home modules recursively
-      ++ (nixicleLib.importModulesRecursive ./modules/home);
+        # Auto-import all custom home modules via import.nix
+        ./modules/home/import.nix
+      ];
 
       # Helper to create a NixOS system
       mkSystem =
-        { hostname
-        , system ? "x86_64-linux"
-        , extraModules ? [ ]
+        {
+          hostname,
+          system ? "x86_64-linux",
+          extraModules ? [ ],
         }:
         nixpkgs.lib.nixosSystem {
           inherit system;
           pkgs = mkPkgs system;
-          specialArgs = { 
+          specialArgs = {
             inherit inputs lib;
-            # Make nixicle lib functions available to NixOS modules
-            inherit (nixicleLib) mkOpt mkOpt' mkBoolOpt mkBoolOpt' mkPackageOpt mkPackageOpt' enabled disabled;
+            # Make nixicle helper functions available as module arguments
+            inherit (lib.nixicle)
+              mkOpt
+              mkOpt'
+              mkOpt_
+              mkBoolOpt
+              mkBoolOpt'
+              mkPackageOpt
+              mkPackageOpt'
+              enabled
+              disabled
+              ;
           };
-          modules = commonNixosModules ++ extraModules ++ [
-            ./systems/${system}/${hostname}
-            {
-              nixpkgs.hostPlatform = system;
-            }
-          ];
+          modules =
+            commonNixosModules
+            ++ extraModules
+            ++ [
+              ./hosts/${hostname}
+              {
+                nixpkgs.hostPlatform = system;
+              }
+            ];
         };
 
       # Helper to create a home-manager configuration (standalone)
       mkHome =
-        { username
-        , hostname
-        , system ? "x86_64-linux"
-        , extraModules ? [ ]
+        {
+          username,
+          hostname,
+          system ? "x86_64-linux",
+          extraModules ? [ ],
         }:
-        let
-          # Create a module that extends lib with our nixicle functions
-          # This module extends whatever lib is already available (including home-manager's extensions)
-          nixicleLibModule = { lib, ... }: {
-            _module.args.lib = lib.extend (final: prev: {
-              nixicle = nixicleLib;
-            });
-          };
-        in
         home-manager.lib.homeManagerConfiguration {
           pkgs = mkPkgs system;
-          extraSpecialArgs = { 
+          extraSpecialArgs = {
             inherit inputs;
+            host = hostname; # Make hostname available as 'host' argument
           };
-          modules = [
-            # Make nixicle helper functions available in all modules via _module.args
-            {
-              _module.args = {
-                inherit (nixicleLib) mkOpt mkOpt' mkBoolOpt mkBoolOpt' mkPackageOpt mkPackageOpt' enabled disabled;
-                host = hostname;  # Make hostname available as 'host' argument
-              };
-            }
-          ] ++ commonHomeModules ++ extraModules ++ [
-            (./homes + "/${system}/${username}@${hostname}")
-            {
-              home = {
-                username = username;
-                homeDirectory = "/home/${username}";
-              };
-            }
-          ];
+          modules =
+            [
+              # Module to extend lib with nixicle functions while preserving lib.hm
+              (
+                { lib, ... }:
+                {
+                  _module.args = {
+                    # Extend the existing lib (which has lib.hm) with our nixicle namespace
+                    lib = lib.extend (
+                      self: super: {
+                        nixicle = import ./lib {
+                          inherit inputs;
+                          lib = self;
+                        };
+                      }
+                    );
+                    # Also make helper functions available directly as arguments for convenience
+                    inherit (lib.nixicle)
+                      mkOpt
+                      mkOpt'
+                      mkOpt_
+                      mkBoolOpt
+                      mkBoolOpt'
+                      mkPackageOpt
+                      mkPackageOpt'
+                      enabled
+                      disabled
+                      ;
+                  };
+                }
+              )
+            ]
+            ++ commonHomeModules
+            ++ extraModules
+            ++ [
+              (./hosts + "/${hostname}/home.nix")
+              {
+                home = {
+                  username = username;
+                  homeDirectory = "/home/${username}";
+                };
+              }
+            ];
         };
 
       # Helper to create home-manager module for NixOS integration
       mkHomeModule =
-        { username
-        , hostname
-        , system ? "x86_64-linux"
-        , extraModules ? [ ]
+        {
+          username,
+          hostname,
+          system ? "x86_64-linux",
+          extraModules ? [ ],
         }:
         {
           home-manager = {
             useGlobalPkgs = true;
             useUserPackages = true;
-            extraSpecialArgs = { 
+            extraSpecialArgs = {
               inherit inputs;
-              # Don't pass lib here - it breaks home-manager's lib.hm extensions
-              # Make nixicle lib functions directly available as arguments
-              inherit (nixicleLib) mkOpt mkOpt' mkBoolOpt mkBoolOpt' mkPackageOpt mkPackageOpt' enabled disabled;
-              host = hostname;  # Make hostname available as 'host' argument
+              host = hostname; # Make hostname available as 'host' argument
             };
             users.${username} = {
-              imports = commonHomeModules ++ extraModules ++ [
-                (./homes + "/${system}/${username}@${hostname}")
-              ];
+              imports =
+                [
+                  # Module to extend lib with nixicle functions while preserving lib.hm
+                  (
+                    { lib, ... }:
+                    {
+                      _module.args = {
+                        # Extend the existing lib (which has lib.hm) with our nixicle namespace
+                        lib = lib.extend (
+                          self: super: {
+                            nixicle = import ./lib {
+                              inherit inputs;
+                              lib = self;
+                            };
+                          }
+                        );
+                        # Also make helper functions available directly as arguments for convenience
+                        inherit (lib.nixicle)
+                          mkOpt
+                          mkOpt'
+                          mkOpt_
+                          mkBoolOpt
+                          mkBoolOpt'
+                          mkPackageOpt
+                          mkPackageOpt'
+                          enabled
+                          disabled
+                          ;
+                      };
+                    }
+                  )
+                ]
+                ++ commonHomeModules
+                ++ extraModules
+                ++ [
+                  (./hosts + "/${hostname}/home.nix")
+                ];
             };
           };
         };
@@ -359,21 +435,30 @@
           hostname = "framework";
           extraModules = [
             inputs.nixos-hardware.nixosModules.framework-13-7040-amd
-            (mkHomeModule { username = "haseeb"; hostname = "framework"; })
+            (mkHomeModule {
+              username = "haseeb";
+              hostname = "framework";
+            })
           ];
         };
 
         workstation = mkSystem {
           hostname = "workstation";
           extraModules = [
-            (mkHomeModule { username = "haseeb"; hostname = "workstation"; })
+            (mkHomeModule {
+              username = "haseeb";
+              hostname = "workstation";
+            })
           ];
         };
 
         vm = mkSystem {
           hostname = "vm";
           extraModules = [
-            (mkHomeModule { username = "haseeb"; hostname = "vm"; })
+            (mkHomeModule {
+              username = "haseeb";
+              hostname = "vm";
+            })
           ];
         };
 
@@ -392,11 +477,18 @@
 
       # Standalone home-manager configurations (for non-NixOS systems and standalone use on NixOS)
       homeConfigurations = {
+        # Standalone home-manager only (non-NixOS)
         "haseebmajid@dell" = mkHome {
           username = "haseebmajid";
           hostname = "dell";
         };
 
+        "deck@steamdeck" = mkHome {
+          username = "deck";
+          hostname = "steamdeck";
+        };
+
+        # Standalone home-manager for NixOS systems (can be used instead of NixOS integration)
         "haseeb@workstation" = mkHome {
           username = "haseeb";
           hostname = "workstation";
@@ -414,15 +506,21 @@
       };
 
       # Packages
-      packages = forAllSystems (system:
-        let pkgs = mkPkgs system;
-        in pkgs.nixicle
+      packages = forAllSystems (
+        system:
+        let
+          pkgs = mkPkgs system;
+        in
+        pkgs.nixicle
       );
 
       # Dev shells
-      devShells = forAllSystems (system:
-        let pkgs = mkPkgs system;
-        in {
+      devShells = forAllSystems (
+        system:
+        let
+          pkgs = mkPkgs system;
+        in
+        {
           default = pkgs.mkShell {
             packages = with pkgs; [
               nil
@@ -432,10 +530,11 @@
               ssh-to-age
             ];
           };
-        });
+        }
+      );
 
       # Deploy-rs configuration
-      deploy = nixicleLib.mkDeploy { inherit self; };
+      deploy = lib.nixicle.mkDeploy { inherit self; };
 
       checks = builtins.mapAttrs (
         system: deploy-lib: deploy-lib.deployChecks self.deploy

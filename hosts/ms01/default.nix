@@ -12,15 +12,15 @@
 
   sops.secrets = {
     cloudflared_ms01 = {
-      sopsFile = ../../../modules/nixos/services/secrets.yaml;
+      sopsFile = ../../modules/nixos/services/secrets.yaml;
     };
 
     gitlab_runner_env_ms01 = {
-      sopsFile = ../../../modules/nixos/services/secrets.yaml;
+      sopsFile = ../../modules/nixos/services/secrets.yaml;
     };
 
     b2_application_key = {
-      sopsFile = ../../../modules/nixos/services/secrets.yaml;
+      sopsFile = ../../modules/nixos/services/secrets.yaml;
     };
   };
 
