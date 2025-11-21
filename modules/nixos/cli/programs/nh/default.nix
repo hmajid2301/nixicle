@@ -38,6 +38,9 @@ in
       })
     ];
 
+    # Disable nix.gc.automatic to avoid conflict with nh clean
+    nix.gc.automatic = lib.mkForce false;
+
     programs.nh = {
       enable = true;
       clean.enable = true;
