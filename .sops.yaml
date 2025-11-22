@@ -20,12 +20,14 @@ keys:
     - &haseeb_workstation age1vmnnywhflwymjcgllmp5sgf05dn3qvamd2ylhxquwcuvlrm8ma3sc882mp
     - &haseeb_framework age1nfkkq86jk3yhhzgk3jt0kjzfpzv4qee3uheellawzgrmd296gczqa68yt7
     - &haseebmajid_dell age1s6rx9whkkf35t7qaju9vvla8tl2nstt0drx722ca4qadqfx66g0slxyxd0
+    - &haseeb_vm age1x4x5ujnd9em23jhs53lgwqcmw9t6hx64xtdt3x0u4n66fsuygf9s4njjla
   - &hosts:
     - &framework age16lkhqtnle3z62gy0tk9x4tn3w43st2cnvdpl8r84xpzkn2f7jv8qxl5a9q
     - &workstation age1vsjjdkgrv72tr3uftryj2szt3n0xk8h3ce54kzyfsmxtymxu6s4qgu5yuk
     - &ms01 age1uswlqzs3pf99r6e8qq5d3eh44sufe5tdczmfqygeam7vfr96fugqa0pps7
     - &s100 age19pl6jt7ekljfjww4g9anzafdxj0e52mnfnsyd26u5xdemfksqpwsnfwrs5
     - &vps age16gdrw4z5ryphlzulqj9eeamypex98fastk03jlvu9cp9ktzgcagstqtdzk
+    - &vm age1pc0qdk5d2fen55cstvtch588wcqgzemgavlsvsc5dm0r4uw00vrq297et7
 
 creation_rules:
   - path_regex: modules/nixos/roles/kubernetes/secrets.ya?ml$
@@ -36,8 +38,10 @@ creation_rules:
       - *ms01
       - *s100
       - *vps
+      - *vm
       - *haseeb_workstation
       - *haseeb_framework
+      - *haseeb_vm
       - *haseebmajid_dell
 
   - path_regex: modules/nixos/secrets.ya?ml$
@@ -48,8 +52,10 @@ creation_rules:
       - *ms01
       - *s100
       - *vps
+      - *vm
       - *haseeb_workstation
       - *haseeb_framework
+      - *haseeb_vm
       - *haseebmajid_dell
 
   - path_regex: modules/nixos/services/secrets.ya?ml$
@@ -60,8 +66,10 @@ creation_rules:
       - *ms01
       - *s100
       - *vps
+      - *vm
       - *haseeb_workstation
       - *haseeb_framework
+      - *haseeb_vm
       - *haseebmajid_dell
 
   - path_regex: modules/home/secrets.ya?ml$
@@ -69,4 +77,5 @@ creation_rules:
     - age:
       - *haseeb_workstation
       - *haseeb_framework
+      - *haseeb_vm
       - *haseebmajid_dell
