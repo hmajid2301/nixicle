@@ -70,6 +70,18 @@
 
     caelestia.url = "github:caelestia-dots/shell";
 
+    # Niri
+    niri = {
+      url = "github:sodiboo/niri-flake";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    # Noctalia Shell
+    noctalia = {
+      url = "github:noctalia-dev/noctalia-shell";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # DankMaterialShell
 
     dgop = {
@@ -229,6 +241,7 @@
         inputs.nur.overlays.default
         inputs.nix-topology.overlays.default
         inputs.nvim-treesitter-main.overlays.default
+        inputs.niri.overlays.niri
         # Custom overlays
         (final: prev: {
           zjstatus = inputs.zjstatus.packages.${prev.system}.default;
@@ -266,6 +279,9 @@
         inputs.impermanence.nixosModules.home-manager.impermanence
         inputs.dankMaterialShell.homeModules.dankMaterialShell.default
         inputs.caelestia.homeManagerModules.default
+        inputs.niri.homeModules.niri
+        inputs.niri.homeModules.stylix
+        inputs.noctalia.homeModules.default
         inputs.sops-nix.homeManagerModules.sops
         inputs.stylix.homeModules.stylix
         inputs.catppuccin.homeModules.catppuccin
