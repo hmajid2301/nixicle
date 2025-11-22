@@ -12,6 +12,8 @@
   networking.hostName = "vm";
   system.boot.plymouth = lib.mkForce false;
 
+  home-manager.backupFileExtension = "backup";
+
   system.impermanence.enable = true;
 
   services.ssh.enable = true;
@@ -29,7 +31,7 @@
     desktop.enable = true;
     desktop.addons = {
       gnome.enable = false;  # Disable gnome
-      # niri.enable = true;    # Enable niri instead (module doesn't exist yet)
+      niri.enable = true;    # Enable niri instead
     };
   };
 

@@ -1,4 +1,19 @@
 {
+  desktops.niri = {
+    enable = true;
+  };
+
+  desktops.addons = {
+    noctalia = {
+      enable = true;
+      niri = {
+        enableKeybinds = true;
+        enableSpawn = true;
+      };
+    };
+    rofi.enable = true;
+  };
+
   roles = {
     desktop.enable = true;
     gaming.enable = true;
@@ -9,7 +24,6 @@
     name = "haseeb";
   };
 
-  # Disable keychain for VM to avoid SSH key errors on fresh installs
   cli.tools.ssh.enableKeychain = false;
 
   home.stateVersion = "23.11";
