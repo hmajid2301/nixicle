@@ -2,13 +2,10 @@
   pkgs,
   config,
   lib,
-mkOpt ? null,
-mkBoolOpt ? null,
-enabled ? null,
-disabled ? null,
   ...
 }:
 with lib;
+with lib.nixicle;
 
 let
   cfg = config.cli.tools.ai-tools;
@@ -26,5 +23,5 @@ in
       crush
       amazon-q-cli
     ];
-   };
+  };
 }

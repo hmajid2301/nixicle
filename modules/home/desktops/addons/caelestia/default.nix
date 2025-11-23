@@ -2,13 +2,10 @@
   config,
   lib,
   pkgs,
-mkOpt ? null,
-mkBoolOpt ? null,
-enabled ? null,
-disabled ? null,
   ...
 }:
 with lib;
+with lib.nixicle;
 let
   cfg = config.desktops.addons.caelestia;
 in
@@ -49,16 +46,16 @@ in
 
   config = mkIf cfg.enable {
     # Copy the shell.json configuration to the appropriate location
-    xdg.configFile."caelestia/shell.json".text = let
-      defaultConfig = builtins.fromJSON (builtins.readFile ./shell.json);
-      # Merge user settings with defaults
-      mergedConfig = recursiveUpdate defaultConfig (recursiveUpdate
-        {
-          paths.wallpaperDir = cfg.wallpaperDir;
-        }
-        cfg.settings
-      );
-    in
+    xdg.configFile."caelestia/shell.json".text =
+      let
+        defaultConfig = builtins.fromJSON (builtins.readFile ./shell.json);
+        # Merge user settings with defaults
+        mergedConfig = recursiveUpdate defaultConfig (
+          recursiveUpdate {
+            paths.wallpaperDir = cfg.wallpaperDir;
+          } cfg.settings
+        );
+      in
       builtins.toJSON mergedConfig;
 
     programs.caelestia = {

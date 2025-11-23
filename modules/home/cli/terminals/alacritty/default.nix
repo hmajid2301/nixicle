@@ -1,16 +1,14 @@
 {
   config,
   lib,
-mkOpt ? null,
-mkBoolOpt ? null,
-enabled ? null,
-disabled ? null,
   ...
 }:
 with lib;
- let
+with lib.nixicle;
+let
   cfg = config.cli.terminals.alacritty;
-in {
+in
+{
   options.cli.terminals.alacritty = with types; {
     enable = mkBoolOpt false "enable alacritty terminal emulator";
   };

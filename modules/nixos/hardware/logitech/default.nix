@@ -3,16 +3,14 @@
   lib,
   options,
   config,
-mkOpt ? null,
-mkBoolOpt ? null,
-enabled ? null,
-disabled ? null,
   ...
 }:
 with lib;
- let
+with lib.nixicle;
+let
   cfg = config.hardware.logitechMouse;
-in {
+in
+{
   options.hardware.logitechMouse = with types; {
     enable = mkBoolOpt false "Enable logitech mouse hardware for their mice";
   };

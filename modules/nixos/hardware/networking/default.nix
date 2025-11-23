@@ -1,16 +1,14 @@
 {
   config,
   lib,
-mkOpt ? null,
-mkBoolOpt ? null,
-enabled ? null,
-disabled ? null,
   ...
 }:
 with lib;
- let
+with lib.nixicle;
+let
   cfg = config.hardware.networking;
-in {
+in
+{
   options.hardware.networking = with types; {
     enable = mkBoolOpt false "Enable networkmanager";
   };

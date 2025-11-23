@@ -2,10 +2,10 @@
   config,
   lib,
   pkgs,
-  mkBoolOpt ? null,
   ...
 }:
 with lib;
+with lib.nixicle;
 
 let
   cfg = config.roles.desktop.addons.niri;

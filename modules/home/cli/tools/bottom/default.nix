@@ -1,16 +1,14 @@
 {
   config,
   lib,
-mkOpt ? null,
-mkBoolOpt ? null,
-enabled ? null,
-disabled ? null,
   ...
 }:
 with lib;
- let
+with lib.nixicle;
+let
   cfg = config.cli.tools.bottom;
-in {
+in
+{
   options.cli.tools.bottom = with types; {
     enable = mkBoolOpt false "Whether or not to enable bottom";
   };

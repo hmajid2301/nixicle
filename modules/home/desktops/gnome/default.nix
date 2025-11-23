@@ -1,19 +1,20 @@
 {
-config,
+  config,
   pkgs,
   lib,
-  mkOpt ? null,
-  mkBoolOpt ? null,
-  enabled ? null,
-  disabled ? null,
   ...
 }:
 with lib;
-let cfg = config.desktops.gnome;
-in {
+with lib.nixicle;
+let
+  cfg = config.desktops.gnome;
+in
+{
   # No sub-modules to import in this directory
 
-  options.desktops.gnome = { enable = mkEnableOption "enable gnome DE"; };
+  options.desktops.gnome = {
+    enable = mkEnableOption "enable gnome DE";
+  };
 
   config = mkIf cfg.enable {
     # services.nixicle.kdeconnect.enable = lib.mkForce false;
@@ -33,21 +34,24 @@ in {
       gnomeExtensions.launch-new-instance
     ];
 
-    desktops.addons = { gnome.enable = true; };
+    desktops.addons = {
+      gnome.enable = true;
+    };
 
     dconf.settings = {
       "org/gnome/desktop/applications/terminal" = {
         exec = "${pkgs.ghostty}/bin/ghostty";
       };
 
-      "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0" =
-        {
-          binding = "<Super>Return";
-          command = "ghostty";
-          name = "Open Terminal";
-        };
+      "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0" = {
+        binding = "<Super>Return";
+        command = "ghostty";
+        name = "Open Terminal";
+      };
 
-      "org/gnome/desktop/interface" = { enable-hot-corners = false; };
+      "org/gnome/desktop/interface" = {
+        enable-hot-corners = false;
+      };
 
       "org/gnome/shell" = {
         disable-user-extensions = false;
@@ -71,15 +75,21 @@ in {
         legacy-tray-enabled = true;
       };
 
-      "org/gnome/desktop/wm/preferences" = { focus-mode = "sloppy"; };
+      "org/gnome/desktop/wm/preferences" = {
+        focus-mode = "sloppy";
+      };
 
-      "org/gnome/desktop/wm/keybindings" = { close = [ "<Super>q" ]; };
+      "org/gnome/desktop/wm/keybindings" = {
+        close = [ "<Super>q" ];
+      };
 
       "com/github/stunkymonkey/nautilus-open-any-terminal" = {
         terminal = "ghostty";
       };
 
-      "org/gnome/shell/keybindings/toggle-application-view" = { "@as" = [ ]; };
+      "org/gnome/shell/keybindings/toggle-application-view" = {
+        "@as" = [ ];
+      };
 
       # "org/gnome/desktop/background" = {
       #   picture-uri-dark = "file:///${pkgs.nixicle.wallpapers.Kurzgesagt-Galaxy_2}";

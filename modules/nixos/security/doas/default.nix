@@ -1,16 +1,14 @@
 {
   config,
   lib,
-mkOpt ? null,
-mkBoolOpt ? null,
-enabled ? null,
-disabled ? null,
   ...
 }:
 with lib;
- let
+with lib.nixicle;
+let
   cfg = config.security.nixicle.doas;
-in {
+in
+{
   options.security.nixicle.doas = {
     enable = mkBoolOpt false "Whether or not to replace sudo with doas.";
   };
@@ -24,7 +22,7 @@ in {
       enable = true;
       extraRules = [
         {
-          users = [config.user.name];
+          users = [ config.user.name ];
           noPass = true;
           keepEnv = true;
         }
@@ -32,6 +30,8 @@ in {
     };
 
     # Add an alias to the shell for backward-compat and convenience.
-    environment.shellAliases = {sudo = "doas";};
+    environment.shellAliases = {
+      sudo = "doas";
+    };
   };
 }

@@ -2,13 +2,10 @@
   config,
   lib,
   pkgs,
-mkOpt ? null,
-mkBoolOpt ? null,
-enabled ? null,
-disabled ? null,
   ...
 }:
 with lib;
+with lib.nixicle;
 let
   cfg = config.services.nixicle.otel-collector;
 in
@@ -55,7 +52,7 @@ in
           };
           processors = {
             batch = { };
-            
+
             # Transform processor to create environment and service labels
             transform = {
               metric_statements = [
@@ -98,12 +95,18 @@ in
             pipelines = {
               "metrics/betterstack" = {
                 receivers = [ "otlp" ];
-                processors = [ "batch" "transform" ];
+                processors = [
+                  "batch"
+                  "transform"
+                ];
                 exporters = [ "otlphttp/betterstack" ];
               };
               "metrics/prometheus" = {
                 receivers = [ "otlp" ];
-                processors = [ "batch" "transform" ];
+                processors = [
+                  "batch"
+                  "transform"
+                ];
                 exporters = [ "prometheus" ];
               };
               "logs/betterstack" = {
@@ -112,7 +115,10 @@ in
                 exporters = [ "otlphttp/betterstack" ];
               };
               "logs/loki" = {
-                receivers = [ "otlp" "journald" ];
+                receivers = [
+                  "otlp"
+                  "journald"
+                ];
                 processors = [ "batch" ];
                 exporters = [ "loki" ];
               };
