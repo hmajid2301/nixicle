@@ -45,6 +45,7 @@
     desktop = {
       enable = true;
       addons = {
+        niri.enable = true;
         hyprland.enable = true;
         gnome.enable = true;
       };

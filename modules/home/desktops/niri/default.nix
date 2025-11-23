@@ -29,9 +29,10 @@ in
   };
 
   config = mkIf cfg.enable {
-    programs.niri.enable = true;
     stylix.targets.niri.enable = lib.mkDefault true;
 
+    desktops.addons.noctalia.enable = true;
+    programs.niri.enable = true;
     programs.niri.settings = {
       input = {
         keyboard.xkb = { };

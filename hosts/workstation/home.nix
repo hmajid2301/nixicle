@@ -7,6 +7,9 @@
       enable = true;
       execOnceExtras = [ "${pkgs.trayscale}/bin/trayscale" ];
     };
+
+    niri.enable = true;
+
     gnome = {
       enable = true;
     };
