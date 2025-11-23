@@ -1,25 +1,23 @@
 {
   config,
   lib,
-mkOpt ? null,
-mkBoolOpt ? null,
-enabled ? null,
-disabled ? null,
   ...
 }:
 with lib;
- let
+with lib.nixicle;
+let
   cfg = config.services.ssh;
-in {
+in
+{
   options.services.ssh = with types; {
     enable = mkBoolOpt false "Enable ssh";
-    authorizedKeys = mkOpt (listOf str) [] "The public keys to apply.";
+    authorizedKeys = mkOpt (listOf str) [ ] "The public keys to apply.";
   };
 
   config = mkIf cfg.enable {
     services.openssh = {
       enable = true;
-      ports = [22];
+      ports = [ 22 ];
 
       settings = {
         PasswordAuthentication = false;

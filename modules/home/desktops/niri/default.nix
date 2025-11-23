@@ -2,11 +2,10 @@
   config,
   lib,
   pkgs,
-  mkOpt ? null,
-  mkBoolOpt ? null,
   ...
 }:
 with lib;
+with lib.nixicle;
 with types;
 let
   cfg = config.desktops.niri;

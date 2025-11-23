@@ -3,13 +3,10 @@
   config,
   pkgs,
   host ? "unknown",
-  mkOpt ? null,
-  mkBoolOpt ? null,
-  enabled ? null,
-  disabled ? null,
   ...
 }:
 with lib;
+with lib.nixicle;
 let
   cfg = config.browsers.firefox;
 in

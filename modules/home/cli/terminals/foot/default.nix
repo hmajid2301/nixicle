@@ -1,16 +1,14 @@
 {
   config,
   lib,
-mkOpt ? null,
-mkBoolOpt ? null,
-enabled ? null,
-disabled ? null,
   ...
 }:
 with lib;
- let
+with lib.nixicle;
+let
   cfg = config.cli.terminals.foot;
-in {
+in
+{
   options.cli.terminals.foot = with types; {
     enable = mkBoolOpt false "enable foot terminal emulator";
   };

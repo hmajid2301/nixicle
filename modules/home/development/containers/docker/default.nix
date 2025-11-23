@@ -2,16 +2,14 @@
   pkgs,
   lib,
   config,
-mkOpt ? null,
-mkBoolOpt ? null,
-enabled ? null,
-disabled ? null,
   ...
 }:
 with lib;
- let
+with lib.nixicle;
+let
   cfg = config.development.containers.docker;
-in {
+in
+{
   options.development.containers.docker = with types; {
     enable = mkBoolOpt false "Whether or not to manage docker";
   };

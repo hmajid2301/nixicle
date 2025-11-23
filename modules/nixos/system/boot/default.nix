@@ -2,17 +2,15 @@
   config,
   lib,
   pkgs,
-mkOpt ? null,
-mkBoolOpt ? null,
-enabled ? null,
-disabled ? null,
   ...
-}: let
+}:
+let
   inherit (lib) mkIf;
   inherit (lib.nixicle) mkBoolOpt;
 
   cfg = config.system.boot;
-in {
+in
+{
   options.system.boot = {
     enable = mkBoolOpt false "Whether or not to enable booting.";
     plymouth = mkBoolOpt false "Whether or not to enable plymouth boot splash.";
@@ -20,18 +18,24 @@ in {
   };
 
   config = mkIf cfg.enable {
-    environment.systemPackages = with pkgs;
+    environment.systemPackages =
+      with pkgs;
       [
         efibootmgr
         efitools
         efivar
         fwupd
       ]
-      ++ lib.optionals cfg.secureBoot [sbctl];
+      ++ lib.optionals cfg.secureBoot [ sbctl ];
 
     boot = {
       # TODO: if plymouth on
-      kernelParams = lib.optionals cfg.plymouth ["quiet" "splash" "loglevel=3" "udev.log_level=0"];
+      kernelParams = lib.optionals cfg.plymouth [
+        "quiet"
+        "splash"
+        "loglevel=3"
+        "udev.log_level=0"
+      ];
       # initrd.verbose = lib.optionals cfg.plymouth false;
       # consoleLogLevel = lib.optionals cfg.plymouth 0;
       initrd.systemd.enable = true;

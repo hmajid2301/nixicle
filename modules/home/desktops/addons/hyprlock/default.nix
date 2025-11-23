@@ -2,16 +2,14 @@
   config,
   lib,
   pkgs,
-mkOpt ? null,
-mkBoolOpt ? null,
-enabled ? null,
-disabled ? null,
   ...
 }:
 with lib;
- let
+with lib.nixicle;
+let
   cfg = config.desktops.addons.hyprlock;
-in {
+in
+{
   options.desktops.addons.hyprlock = with types; {
     enable = mkBoolOpt false "Whether to enable the hyprlock";
   };

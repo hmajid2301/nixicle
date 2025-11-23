@@ -1,16 +1,14 @@
 {
   config,
   lib,
-mkOpt ? null,
-mkBoolOpt ? null,
-enabled ? null,
-disabled ? null,
   ...
 }:
 with lib;
- let
+with lib.nixicle;
+let
   cfg = config.desktops.addons.hypridle;
-in {
+in
+{
   options.desktops.addons.hypridle = with types; {
     enable = mkBoolOpt false "Whether to enable the hypridle";
   };

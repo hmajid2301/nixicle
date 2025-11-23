@@ -2,16 +2,14 @@
   config,
   lib,
   pkgs,
-mkOpt ? null,
-mkBoolOpt ? null,
-enabled ? null,
-disabled ? null,
   ...
 }:
 with lib;
- let
+with lib.nixicle;
+let
   cfg = config.cli.programs.nix-ld;
-in {
+in
+{
   options.cli.programs.nix-ld = with types; {
     enable = mkBoolOpt false "Whether or not to enable nix-ld.";
   };

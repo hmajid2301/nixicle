@@ -2,16 +2,14 @@
   pkgs,
   config,
   lib,
-mkOpt ? null,
-mkBoolOpt ? null,
-enabled ? null,
-disabled ? null,
   ...
 }:
 with lib;
- let
+with lib.nixicle;
+let
   cfg = config.cli.tools.db;
-in {
+in
+{
   options.cli.tools.db = with types; {
     enable = mkBoolOpt false "Whether or not to manage db";
   };

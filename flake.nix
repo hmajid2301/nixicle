@@ -302,18 +302,6 @@
           pkgs = mkPkgs system;
           specialArgs = {
             inherit inputs lib;
-            # Make nixicle helper functions available as module arguments
-            inherit (lib.nixicle)
-              mkOpt
-              mkOpt'
-              mkOpt_
-              mkBoolOpt
-              mkBoolOpt'
-              mkPackageOpt
-              mkPackageOpt'
-              enabled
-              disabled
-              ;
           };
           modules =
             commonNixosModules
@@ -334,49 +322,26 @@
           system ? "x86_64-linux",
           extraModules ? [ ],
         }:
+        let
+          # Extend lib with nixicle namespace before passing to home-manager
+          extendedLib = lib.extend (
+            self: super: {
+              nixicle = import ./lib {
+                inherit inputs;
+                lib = self;
+              };
+            }
+          );
+        in
         home-manager.lib.homeManagerConfiguration {
+          lib = extendedLib;
           pkgs = mkPkgs system;
           extraSpecialArgs = {
             inherit inputs;
             host = hostname; # Make hostname available as 'host' argument
           };
           modules =
-            [
-              # Module to extend lib with nixicle functions while preserving lib.hm
-              (
-                { lib, ... }:
-                let
-                  nixicleLib = import ./lib {
-                    inherit inputs;
-                    lib = nixpkgs.lib;
-                  };
-                  extendedLib = lib.extend (
-                    self: super: {
-                      nixicle = nixicleLib;
-                    }
-                  );
-                in
-                {
-                  _module.args = {
-                    # Extend the existing lib (which has lib.hm) with our nixicle namespace
-                    lib = extendedLib;
-                    # Also make helper functions available directly as arguments for convenience
-                    inherit (nixicleLib)
-                      mkOpt
-                      mkOpt'
-                      mkOpt_
-                      mkBoolOpt
-                      mkBoolOpt'
-                      mkPackageOpt
-                      mkPackageOpt'
-                      enabled
-                      disabled
-                      ;
-                  };
-                }
-              )
-            ]
-            ++ commonHomeModules
+            commonHomeModules
             ++ extraModules
             ++ [
               (./hosts + "/${hostname}/home.nix")
@@ -406,47 +371,30 @@
               host = hostname; # Make hostname available as 'host' argument
             };
             users.${username} = {
-              imports =
-                [
-                  # Module to extend lib with nixicle functions while preserving lib.hm
-                  (
-                    { lib, ... }:
-                    let
-                      nixicleLib = import ./lib {
-                        inherit inputs;
-                        lib = nixpkgs.lib;
-                      };
-                      extendedLib = lib.extend (
-                        self: super: {
-                          nixicle = nixicleLib;
-                        }
-                      );
-                    in
-                    {
-                      _module.args = {
-                        # Extend the existing lib (which has lib.hm) with our nixicle namespace
-                        lib = extendedLib;
-                        # Also make helper functions available directly as arguments for convenience
-                        inherit (nixicleLib)
-                          mkOpt
-                          mkOpt'
-                          mkOpt_
-                          mkBoolOpt
-                          mkBoolOpt'
-                          mkPackageOpt
-                          mkPackageOpt'
-                          enabled
-                          disabled
-                          ;
-                      };
-                    }
-                  )
-                ]
-                ++ commonHomeModules
-                ++ extraModules
-                ++ [
-                  (./hosts + "/${hostname}/home.nix")
-                ];
+              imports = [
+                # Module to extend lib with nixicle functions while preserving lib.hm
+                (
+                  { lib, ... }:
+                  let
+                    extendedLib = lib.extend (
+                      self: super: {
+                        nixicle = import ./lib {
+                          inherit inputs;
+                          lib = self;
+                        };
+                      }
+                    );
+                  in
+                  {
+                    _module.args.lib = lib.mkForce extendedLib;
+                  }
+                )
+              ]
+              ++ commonHomeModules
+              ++ extraModules
+              ++ [
+                (./hosts + "/${hostname}/home.nix")
+              ];
             };
           };
         };
@@ -546,14 +494,16 @@
         in
         {
           default = pkgs.mkShell {
-            packages = with pkgs; [
-              nil
-              nixfmt-rfc-style
-              sops
-              age
-              ssh-to-age
-            ]
-            ++ [ inputs.home-manager.packages.${system}.default ];
+            packages =
+              with pkgs;
+              [
+                nil
+                nixfmt-rfc-style
+                sops
+                age
+                ssh-to-age
+              ]
+              ++ [ inputs.home-manager.packages.${system}.default ];
           };
         }
       );

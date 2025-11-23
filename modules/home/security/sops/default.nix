@@ -2,16 +2,14 @@
   config,
   lib,
   inputs,
-mkOpt ? null,
-mkBoolOpt ? null,
-enabled ? null,
-disabled ? null,
   ...
 }:
 with lib;
- let
+with lib.nixicle;
+let
   cfg = config.security.sops;
-in {
+in
+{
   options.security.sops = with types; {
     enable = mkBoolOpt false "Whether to enable sop for secrets management.";
   };
@@ -25,7 +23,7 @@ in {
       age = {
         generateKey = true;
         keyFile = "/home/${config.nixicle.user.name}/.config/sops/age/keys.txt";
-        sshKeyPaths = ["/home/${config.nixicle.user.name}/.ssh/id_ed25519"];
+        sshKeyPaths = [ "/home/${config.nixicle.user.name}/.ssh/id_ed25519" ];
       };
 
       defaultSymlinkPath = "/run/user/1000/secrets";

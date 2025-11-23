@@ -1,16 +1,14 @@
 {
   config,
   lib,
-mkOpt ? null,
-mkBoolOpt ? null,
-enabled ? null,
-disabled ? null,
   ...
 }:
 with lib;
- let
+with lib.nixicle;
+let
   cfg = config.nixicle.user;
-in {
+in
+{
   options.nixicle.user = {
     enable = mkOpt types.bool false "Whether to configure the user account.";
     home = mkOpt (types.nullOr types.str) "/home/${cfg.name}" "The user's home directory.";

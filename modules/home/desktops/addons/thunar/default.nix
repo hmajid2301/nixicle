@@ -1,17 +1,16 @@
 {
-config,
+  config,
   lib,
   pkgs,
-  mkOpt ? null,
-  mkBoolOpt ? null,
-  enabled ? null,
-  disabled ? null,
   ...
 }:
 with lib;
+with lib.nixicle;
 
-let cfg = config.desktops.addons.thunar;
-in {
+let
+  cfg = config.desktops.addons.thunar;
+in
+{
   options.desktops.addons.thunar = with types; {
     enable = mkBoolOpt false "Whether to enable Thunar file manager configuration.";
   };
@@ -28,11 +27,11 @@ in {
 
     # Additional packages for enhanced thumbnail support
     home.packages = with pkgs; [
-      ffmpegthumbnailer  # Video thumbnails
-      libgsf            # Office document thumbnails  
-      poppler           # PDF thumbnails
-      gst_all_1.gst-libav  # Additional video format support
-      gdk-pixbuf        # Image thumbnails
+      ffmpegthumbnailer # Video thumbnails
+      libgsf # Office document thumbnails
+      poppler # PDF thumbnails
+      gst_all_1.gst-libav # Additional video format support
+      gdk-pixbuf # Image thumbnails
     ];
 
     # Configure tumbler (Thunar's thumbnail service) for better SMB performance

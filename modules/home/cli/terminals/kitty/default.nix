@@ -1,16 +1,14 @@
 {
   config,
   lib,
-mkOpt ? null,
-mkBoolOpt ? null,
-enabled ? null,
-disabled ? null,
   ...
 }:
 with lib;
- let
+with lib.nixicle;
+let
   cfg = config.cli.terminals.kitty;
-in {
+in
+{
   options.cli.terminals.kitty = with types; {
     enable = mkBoolOpt false "enable kitty terminal emulator";
   };

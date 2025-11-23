@@ -1,14 +1,15 @@
 {
   config,
   lib,
-  mkBoolOpt ? null,
-  enabled ? null,
   ...
 }:
 with lib;
+with lib.nixicle;
 
-let cfg = config.roles.desktop.addons.hyprland;
-in {
+let
+  cfg = config.roles.desktop.addons.hyprland;
+in
+{
   options.roles.desktop.addons.hyprland = with types; {
     enable = mkBoolOpt false "Enable or disable the hyprland window manager.";
   };

@@ -2,16 +2,14 @@
   lib,
   config,
   inputs,
-mkOpt ? null,
-mkBoolOpt ? null,
-enabled ? null,
-disabled ? null,
   ...
 }:
 with lib;
- let
+with lib.nixicle;
+let
   cfg = config.cli.tools.nix-index;
-in {
+in
+{
   options.cli.tools.nix-index = with types; {
     enable = mkBoolOpt false "Whether or not to nix index";
   };

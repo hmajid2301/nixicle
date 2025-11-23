@@ -1,14 +1,16 @@
-{ 
-  pkgs, 
-  config, 
-  lib, 
-  mkBoolOpt ? null,
+{
+  pkgs,
+  config,
+  lib,
   ...
 }:
 with lib;
+with lib.nixicle;
 
-let cfg = config.cli.tools.gpg;
-in {
+let
+  cfg = config.cli.tools.gpg;
+in
+{
   options.cli.tools.gpg = with types; {
     enable = mkBoolOpt false "Whether or not to enable gpg";
   };

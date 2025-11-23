@@ -2,13 +2,10 @@
   config,
   lib,
   pkgs,
-mkOpt ? null,
-mkBoolOpt ? null,
-enabled ? null,
-disabled ? null,
   ...
 }:
 with lib;
+with lib.nixicle;
 
 let
   cfg = config.roles.gaming;
@@ -32,7 +29,7 @@ in
           libvdpau-va-gl
           vulkan-loader
           vulkan-validation-layers
-# amdvlk removed - RADV enabled by default
+          # amdvlk removed - RADV enabled by default
           mesa.opencl # Enables Rusticl (OpenCL) support
           rocmPackages.clr.icd
         ];

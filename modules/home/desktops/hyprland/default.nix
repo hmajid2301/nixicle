@@ -2,10 +2,10 @@
   config,
   lib,
   pkgs,
-  mkOpt ? null,
   ...
 }:
 with lib;
+with lib.nixicle;
 
 with types;
 let

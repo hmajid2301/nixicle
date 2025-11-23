@@ -2,21 +2,21 @@
   config,
   lib,
   pkgs,
-mkOpt ? null,
-mkBoolOpt ? null,
-enabled ? null,
-disabled ? null,
   ...
 }:
 with lib;
- let
+with lib.nixicle;
+let
   cfg = config.desktops.addons.swaylock;
-in {
+in
+{
   options.desktops.addons.swaylock = {
     enable = mkEnableOption "Enable swaylock lock management";
     blur = mkOpt (types.nullOr types.str) "7x5" "radius x times blur the image.";
     vignette = mkOpt (types.nullOr types.str) "0.5x0.5" "base:factor apply vignette effect.";
-    binary = mkOpt (types.nullOr types.str) "${pkgs.swaylock-effects}/bin/swaylock" "Location of the binary to use for swaylock.";
+    binary =
+      mkOpt (types.nullOr types.str) "${pkgs.swaylock-effects}/bin/swaylock"
+        "Location of the binary to use for swaylock.";
   };
 
   config = mkIf cfg.enable {
