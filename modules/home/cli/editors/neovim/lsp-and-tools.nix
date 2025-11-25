@@ -43,6 +43,7 @@
     markdown = with pkgs; [
       marksman
       markdownlint-cli2
+      harper
     ];
     nix = with pkgs; [
       nixd
