@@ -77,17 +77,20 @@ require("lze").load({
 					formatters = { ignoreComments = true },
 					signatureHelp = { enabled = true },
 					diagnostics = {
-						globals = { "nixCats", "vim" },
-						disable = { "missing-fields" },
+						globals = { "nixCats", "vim", "Snacks" },
+						disable = { "missing-fields", "undefined-global" },
+						libraryFiles = "Disable",
+					},
+					runtime_diagnostics = {
+						enable = false,
 					},
 					library = {
-						vim.env.VIMRUNTIME, -- Neovim runtime files
-						-- Add other Lua paths if needed:
-						-- "${3rd}/luv/library",
-						-- "${3rd}/busted/library",
+						vim.env.VIMRUNTIME,
+						"${3rd}/luv/library",
 					},
 					workspace = {
 						checkThirdParty = false,
+						ignoreDir = { ".git" },
 					},
 					telemetry = { enabled = false },
 				},
@@ -175,6 +178,28 @@ require("lze").load({
 	{ "docker_compose_language_service", lsp = {} },
 	{ "pyright", lsp = {} },
 	{ "marksman", lsp = {} },
+	{
+		"harper_ls",
+		lsp = {
+			filetypes = { "markdown", "text" },
+			settings = {
+				["harper-ls"] = {
+					linters = {
+						spell_check = true,
+						spelled_numbers = false,
+						an_a = true,
+						sentence_capitalization = true,
+						unclosed_quotes = true,
+						wrong_quotes = false,
+						long_sentences = true,
+						repeated_words = true,
+						spaces = true,
+						matcher = true,
+					},
+				},
+			},
+		},
+	},
 	{ "ts_ls", lsp = {} },
 	{ "svelte", lsp = {} },
 	{ "terraformls", lsp = {
