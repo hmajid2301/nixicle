@@ -5,23 +5,6 @@
   lib,
   ...
 }:
-let
-  screensharing = pkgs.writeScriptBin "screensharing" ''
-    #!/usr/bin/env bash
-    sleep 1
-    killall -e xdg-desktop-portal-hyprland 2>/dev/null || true
-    killall -e xdg-desktop-portal-wlr 2>/dev/null || true
-    killall xdg-desktop-portal 2>/dev/null || true
-    # Use NixOS paths instead of hardcoded /usr/libexec
-    if command -v xdg-desktop-portal-hyprland >/dev/null 2>&1; then
-      xdg-desktop-portal-hyprland &
-    fi
-    sleep 2
-    if command -v xdg-desktop-portal >/dev/null 2>&1; then
-      xdg-desktop-portal &
-    fi
-  '';
-in
 {
   nixGL = {
     inherit (inputs.nixgl) packages;
@@ -31,10 +14,6 @@ in
   programs = {
     firefox.package = config.lib.nixGL.wrap pkgs.firefox;
     # ghostty.package = config.lib.nixGL.wrap pkgs.ghostty;
-  };
-
-  roles = {
-    desktop.enable = true;
   };
 
   home = {
@@ -52,8 +31,6 @@ in
       pkgs.nerd-fonts.symbols-only
       pkgs.dejavu_fonts
       pkgs.liberation_ttf
-      screensharing
-      nwg-displays
       (lib.hiPrio (config.lib.nixGL.wrap totem))
     ];
   };
@@ -72,20 +49,42 @@ in
     base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-mocha.yaml";
   };
 
-  programs.ghostty.package = config.lib.nixGL.wrap pkgs.ghostty;
+  programs.ghostty = lib.mkForce {
+    enable = true;
+    enableFishIntegration = true;
+    package = config.lib.nixGL.wrap pkgs.ghostty;
 
-  desktops = {
-    hyprland = {
-      enable = true;
-      execOnceExtras = [
-        "warp-taskbar"
-        "blueman-applet"
-        "${screensharing}/bin/screensharing"
-        "nm-applet"
+    settings = {
+      "font-family" = [
+        "MonoLisa" # Primary font
+        "Symbols Nerd Font" # Glyph fallback
+        "Noto Color Emoji" # Emoji fallback
+      ];
+
+      theme = "Catppuccin Mocha";
+
+      command = "fish";
+      gtk-titlebar = false;
+      gtk-tabs-location = "hidden";
+      gtk-single-instance = true;
+      font-size = 14;
+      window-padding-x = 6;
+      window-padding-y = 6;
+      copy-on-select = "clipboard";
+      cursor-style = "block";
+      confirm-close-surface = false;
+      keybind = [
+        "ctrl+shift+plus=increase_font_size:1"
       ];
     };
+  };
 
-    # gnome.enable = true;
+  roles = {
+    desktop.enable = true;
+  };
+
+  desktops = {
+    niri.enable = true;
   };
 
   fonts.fontconfig.enable = true;
