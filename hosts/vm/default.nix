@@ -18,20 +18,15 @@
 
   services.ssh.enable = true;
 
-  # Enable QEMU guest agent for better VM integration
   services.qemuGuest.enable = true;
-
-  # Enable SPICE vdagent for clipboard sharing between host and guest
   services.spice-vdagentd.enable = true;
-
-  # Allow passwordless sudo for wheel group (needed for deploy-rs)
   security.sudo.wheelNeedsPassword = false;
 
   roles = {
     desktop.enable = true;
     desktop.addons = {
-      gnome.enable = false;  # Disable gnome
-      niri.enable = true;    # Enable niri instead
+      gnome.enable = false;
+      niri.enable = true;
     };
   };
 

@@ -4,13 +4,7 @@
   };
 
   desktops.addons = {
-    noctalia = {
-      enable = true;
-      niri = {
-        enableKeybinds = true;
-        enableSpawn = true;
-      };
-    };
+    noctalia.enable = true;
     rofi.enable = true;
   };
 
