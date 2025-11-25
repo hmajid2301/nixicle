@@ -21,6 +21,7 @@ return {
 			{ "<leader>fN", mode = { "n" }, desc = "Find notes grep" },
 			{ "<leader>gc", mode = { "n" }, desc = "Git commits" },
 			{ "<leader>gS", mode = { "n" }, desc = "Git status" },
+			{ "<leader>go", mode = { "n", "v" }, desc = "Git browse (open in browser)" },
 			{ "<leader>ds", mode = { "n" }, desc = "Document symbols" },
 			{ "<leader>ws", mode = { "n" }, desc = "Workspace symbols" },
 		},
@@ -34,7 +35,6 @@ return {
 				quickfile = { enabled = true },
 				scratch = {
 					enabled = true,
-					-- NvChad-style borderless theming
 					win = {
 						border = "single",
 						title_pos = "center",
@@ -43,7 +43,6 @@ return {
 					},
 					icon = "   ",
 					icon_hl = "SnacksScratchIcon",
-					-- Scratch-specific options
 					name = "Scratch",
 					ft = "markdown",
 					filekey = {
@@ -68,7 +67,7 @@ return {
 					},
 					scratch = {
 						border = "single",
-						title_pos = "center",
+						title_pos = "left",
 						backdrop = 60,
 						relative = "editor",
 						height = 0.8,
@@ -89,36 +88,33 @@ return {
 					},
 					["picker.input"] = {
 						border = "single",
-						title_pos = "center",
+						title_pos = "left",
 					},
 					["picker.list"] = {
 						border = "single",
-						title_pos = "center",
+						title_pos = "left",
 					},
 					["picker.preview"] = {
 						border = "single",
-						title_pos = "center",
+						title_pos = "left",
 					},
 				},
 				input = {
 					enabled = true,
 					icon = "   ",
 					icon_hl = "SnacksInputIcon",
-					prompt_pos = "top",
 					border = "single",
-					-- NvChad-style theming with telescope highlight groups
 					win = {
 						relative = "cursor",
 						row = 1,
 						col = 0,
 						border = "single",
-						title_pos = "center",
+						title_pos = "left",
 						wo = {
 							winhighlight = "NormalFloat:TelescopeNormal,FloatBorder:TelescopeBorder",
 							winblend = 0,
 						},
 					},
-					-- Input-specific keymaps
 					keys = {
 						i_esc = { "<esc>", { "cmp_close", "cancel" }, mode = "i" },
 						i_cr = { "<cr>", "confirm", mode = "i" },
@@ -130,12 +126,93 @@ return {
 				picker = {
 					enabled = true,
 					prompt_pos = "top",
-					prompt = " ",
+					prompt = "  ",
+					layout = "my_default_layout",
+					win = {
+						input = {
+							keys = {
+								["<c-f>"] = false,
+							},
+						},
+					},
+					layouts = {
+						my_default_layout = {
+							layout = {
+								box = "vertical",
+								width = 0.9,
+								height = 0.9,
+								border = "none",
+								{
+									win = "input",
+									height = 1,
+									border = "single",
+									title = " {title} ",
+									title_pos = "center",
+								},
+								{
+									box = "horizontal",
+									{
+										win = "list",
+										border = { "🭽", "▔", "🭾", "▕", "🭿", "▁", "🭼", "▏" },
+									},
+									{
+										win = "preview",
+										border = { "🭽", "▔", "🭾", "▕", "🭿", "▁", "🭼", "▏" },
+										width = 0.6,
+										title = "{preview}",
+										title_pos = "center",
+									},
+								},
+							},
+						},
+						my_vertical_layout = {
+							layout = {
+								box = "vertical",
+								width = 0.8,
+								height = 0.9,
+								border = "none",
+								{
+									win = "input",
+									border = "single",
+									height = 1,
+									title = " {title} ",
+									title_pos = "center",
+								},
+								{
+									win = "list",
+									border = "none",
+									height = 8,
+								},
+								{
+									win = "preview",
+									border = { "🭽", "▔", "🭾", "▕", "🭿", "▁", "🭼", "▏" },
+									title = "{preview}",
+									title_pos = "center",
+								},
+							},
+						},
+						vscode = {
+							layout = {
+								width = 0.5,
+							},
+						},
+					},
+					sources = {
+						buffers = { layout = { preset = "my_vertical_layout" } },
+						keymaps = { layout = { preset = "vscode" } },
+						recent = {
+							layout = { preset = "my_vertical_layout" },
+							title = "Recent Files",
+						},
+					},
+					formatters = {
+						file = {
+							filename_first = false,
+						},
+					},
 				},
 			})
 
-			-- Scratch keymaps with NvChad-style leader bindings
-			-- Use a new buffer as scratch instead of the scratch() function
 			vim.keymap.set("n", "<leader>.", function()
 				vim.cmd("enew")
 				vim.bo.buftype = "nofile"
@@ -148,8 +225,6 @@ return {
 				Snacks.scratch.select()
 			end, { desc = "Select Scratch Buffer" })
 
-			-- Custom highlight for Snacks picker to match Telescope theme
-			-- Using stylix colors from Nix if available, otherwise fallback to Catppuccin Mocha
 			local colors = nixCats("colors")
 			local red = (colors and colors.base08) or "#F38BA8"
 			local black = (colors and colors.base00) or "#1E1D2D"
@@ -158,10 +233,8 @@ return {
 			local green = (colors and colors.base0B) or "#ABE9B3"
 			local blue = (colors and colors.base0D) or "#89B4FA"
 
-			-- Snacks Picker highlights matching Telescope
 			vim.api.nvim_set_hl(0, "SnacksPickerTitle", { fg = black, bg = red, bold = true })
 			vim.api.nvim_set_hl(0, "FloatTitle", { fg = black, bg = red, bold = true })
-			vim.api.nvim_set_hl(0, "SnacksPickerPromptIcon", { fg = red, bg = black2 })
 			vim.api.nvim_set_hl(0, "SnacksPickerPromptTitle", { fg = black, bg = red, bold = true })
 			vim.api.nvim_set_hl(0, "SnacksPickerPrompt", { fg = white, bg = black2 })
 			vim.api.nvim_set_hl(0, "SnacksPickerPromptBorder", { fg = black2, bg = black2 })
@@ -179,7 +252,6 @@ return {
 				end,
 			})
 
-			-- Snacks picker keybindings (replacing telescope)
 			vim.keymap.set("n", "<leader>ff", function()
 				Snacks.picker.files({ hidden = true, follow = true })
 			end, { desc = "Find files" })
@@ -224,7 +296,6 @@ return {
 				Snacks.picker.pickers()
 			end, { desc = "Find pickers" })
 
-			-- Notes directory keybindings
 			local notes_dir = vim.fn.expand("~/projects/notes")
 			vim.keymap.set("n", "<leader>fn", function()
 				Snacks.picker.files({
@@ -241,7 +312,6 @@ return {
 				})
 			end, { desc = "Find notes grep" })
 
-			-- Git pickers
 			vim.keymap.set("n", "<leader>gc", function()
 				Snacks.picker.git_log()
 			end, { desc = "Git commits" })
@@ -250,7 +320,10 @@ return {
 				Snacks.picker.git_status()
 			end, { desc = "Git status" })
 
-			-- LSP pickers
+			vim.keymap.set({ "n", "v" }, "<leader>go", function()
+				Snacks.gitbrowse.open()
+			end, { desc = "Git browse (open in browser)" })
+
 			vim.keymap.set("n", "<leader>ds", function()
 				Snacks.picker.lsp_symbols()
 			end, { desc = "Document symbols" })
