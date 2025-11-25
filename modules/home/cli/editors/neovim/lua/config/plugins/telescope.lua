@@ -4,22 +4,6 @@ return {
 		for_cat = "general.telescope",
 		cmd = { "Telescope", "LiveGrepGitRoot", "AdvancedGitSearch" },
 		on_require = { "telescope" },
-		keys = {
-			{ "<leader>fh", mode = { "n" }, desc = "Find help" },
-			{ "<leader>ff", mode = { "n" }, desc = "Find files" },
-			{ "<leader>fa", mode = { "n" }, desc = "Find all files" },
-			{ "<leader>fm", mode = { "n" }, desc = "Find keymaps" },
-			{ "<leader>fs", mode = { "n" }, desc = "Find telescopes" },
-			{ "<leader>fw", mode = { "n" }, desc = "Find current word" },
-			{ "<leader>fg", mode = { "n" }, desc = "Find grep search" },
-			{ "<leader>fd", mode = { "n" }, desc = "Find diagnostics" },
-			{ "<leader>fr", mode = { "n" }, desc = "Find resume" },
-			{ "<leader>f.", mode = { "n" }, desc = "Find recent files" },
-			{ "<leader>fb", mode = { "n" }, desc = "Find buffer" },
-			{ "<leader>fc", mode = { "n" }, desc = "Find command" },
-			{ "<leader>fn", mode = { "n" }, desc = "Find notes files" },
-			{ "<leader>fN", mode = { "n" }, desc = "Find notes grep" },
-		},
 		load = function(name)
 			vim.cmd.packadd(name)
 			vim.cmd.packadd("telescope-fzf-native.nvim")
@@ -94,49 +78,6 @@ return {
 			pcall(require("telescope").load_extension, "ui-select")
 			pcall(require("telescope").load_extension, "git_worktree")
 			-- require("telescope").extensions.dap.configurations()
-
-			local builtin = require("telescope.builtin")
-			vim.keymap.set("n", "<leader>fh", builtin.help_tags, { desc = "Find help" })
-			-- vim.keymap.set("n", "<leader>ff", builtin.find_files, { desc = "Find files" })
-			vim.keymap.set("n", "<leader>fm", builtin.keymaps, { desc = "Find keymaps" })
-			vim.keymap.set("n", "<leader>fs", builtin.builtin, { desc = "Find telescopes" })
-			vim.keymap.set("n", "<leader>fw", builtin.grep_string, { desc = "Find current word" })
-			vim.keymap.set("n", "<leader>fg", function()
-				builtin.live_grep({
-					additional_args = function()
-						return {"--hidden"}
-					end
-				})
-			end, { desc = "Find grep search" })
-			vim.keymap.set("n", "<leader>fd", builtin.diagnostics, { desc = "Find diagnostics" })
-			vim.keymap.set("n", "<leader>fr", builtin.resume, { desc = "Find resume" })
-			vim.keymap.set("n", "<leader>f.", builtin.oldfiles, { desc = "Find recent files" })
-			vim.keymap.set("n", "<leader>fb", builtin.buffers, { desc = "Find buffer" })
-			vim.keymap.set("n", "<leader>fc", builtin.command_history, { desc = "Find command" })
-			vim.keymap.set("n", "<leader>ff", function()
-				builtin.find_files({ hidden = true, follow = true })
-			end, { desc = "Find all files" })
-
-			-- Notes directory keybindings
-			local notes_dir = vim.fn.expand("~/projects/notes")
-			vim.keymap.set("n", "<leader>fn", function()
-				builtin.find_files({
-					prompt_title = "Notes Files",
-					cwd = notes_dir,
-					hidden = true,
-					follow = true,
-				})
-			end, { desc = "Find notes files" })
-
-			vim.keymap.set("n", "<leader>fN", function()
-				builtin.live_grep({
-					prompt_title = "Search Notes",
-					cwd = notes_dir,
-					additional_args = function()
-						return { "--hidden" }
-					end,
-				})
-			end, { desc = "Find notes grep" })
 
 			-- Git worktree keybindings
 			vim.keymap.set("n", "<leader>gw", function()

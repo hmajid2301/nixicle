@@ -36,7 +36,11 @@ in
   ];
 
   config = {
-    # Include XDG config and basic nixCats setup
+    nix.settings = {
+      extra-substituters = [ "https://nvim-treesitter-main.cachix.org" ];
+      extra-trusted-public-keys = [ "nvim-treesitter-main.cachix.org-1:cbwE6blfW5+BkXXyeAXoVSu1gliqPLHo2m98E4hWfZQ=" ];
+    };
+
     xdg = configModule.xdg;
 
     nixCats = configModule.nixCats // {
