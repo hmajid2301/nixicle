@@ -23,11 +23,32 @@ with lib.nixicle;
 
 let
   cfg = config.cli.multiplexers.zellij;
+  inherit (config.lib.stylix) colors;
 
   # Import the sub-modules
   sesh = import ./sesh.nix { inherit pkgs; };
   statusbar = import ./statusbar.nix { inherit config pkgs; };
   layouts = import ./layouts.nix { inherit statusbar; };
+
+  # Custom theme using Stylix colors
+  # Using mauve/purple (base0E) as the primary accent for Catppuccin style
+  stylixTheme = ''
+    themes {
+      stylix {
+        bg "#${colors.base01}"
+        fg "#${colors.base05}"
+        red "#${colors.base08}"
+        green "#${colors.base0E}"
+        blue "#${colors.base0D}"
+        yellow "#${colors.base0A}"
+        magenta "#${colors.base0E}"
+        orange "#${colors.base09}"
+        cyan "#${colors.base0C}"
+        black "#${colors.base00}"
+        white "#${colors.base07}"
+      }
+    }
+  '';
 in
 {
   options.cli.multiplexers.zellij = with types; {
@@ -40,7 +61,10 @@ in
       sesh
     ];
 
-    xdg.configFile."zellij/config.kdl".source = ./config.kdl;
+    xdg.configFile."zellij/config.kdl".text = ''
+      ${stylixTheme}
+      ${builtins.readFile ./config.kdl}
+    '';
     xdg.configFile."zellij/layouts/dev.kdl".text = layouts.dev;
     xdg.configFile."zellij/layouts/default.kdl".text = layouts.default;
 
