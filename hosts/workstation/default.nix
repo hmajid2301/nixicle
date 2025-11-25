@@ -19,14 +19,14 @@
   system.boot.plymouth = lib.mkForce false;
 
   # TODO: when merged in: https://github.com/systemd/systemd/issues/34304
-  systemd.package = pkgs.systemd.overrideAttrs (old: {
-    patches = old.patches ++ [
-      (pkgs.fetchurl {
-        url = "https://github.com/wrvsrx/systemd/compare/tag_fix-hibernate-resume%5E...tag_fix-hibernate-resume.patch";
-        hash = "sha256-Z784xysVUOYXCoTYJDRb3ppGiR8CgwY5CNV8jJSLOXU=";
-      })
-    ];
-  });
+  # systemd.package = pkgs.systemd.overrideAttrs (old: {
+  #   patches = old.patches ++ [
+  #     (pkgs.fetchurl {
+  #       url = "https://github.com/wrvsrx/systemd/compare/tag_fix-hibernate-resume%5E...tag_fix-hibernate-resume.patch";
+  #       hash = "sha256-Z784xysVUOYXCoTYJDRb3ppGiR8CgwY5CNV8jJSLOXU=";
+  #     })
+  #   ];
+  # });
 
   hardware.nixicle.ddcci.enable = true;
 
@@ -45,8 +45,9 @@
     desktop = {
       enable = true;
       addons = {
-        hyprland.enable = true;
-        gnome.enable = true;
+        niri.enable = true;
+        # hyprland.enable = true;
+        # gnome.enable = true;
       };
     };
   };
