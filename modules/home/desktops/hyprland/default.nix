@@ -24,10 +24,17 @@ in
   };
 
   config = mkIf cfg.enable {
+    nix.settings = {
+      extra-substituters = [ "https://hyprland.cachix.org" ];
+      extra-trusted-public-keys = [
+        "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
+      ];
+    };
+
     desktops.addons = {
       kanshi.enable = true;
       rofi.enable = true;
-      dankMaterialShell.enable = true;
+      dms.enable = true;
       wlsunset.enable = true;
       hypridle.enable = true;
 
