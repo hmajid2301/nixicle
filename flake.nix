@@ -68,41 +68,24 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    caelestia.url = "github:caelestia-dots/shell";
-
     # Niri
+
     niri = {
       url = "github:sodiboo/niri-flake";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # Noctalia Shell
-    noctalia = {
-      url = "github:noctalia-dev/noctalia-shell";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    # DankMaterialShell
-
-    dgop = {
-      url = "github:AvengeMedia/dgop";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    dms-cli = {
-      url = "github:AvengeMedia/danklinux";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    # Quickshell
 
     dankMaterialShell = {
       url = "github:AvengeMedia/DankMaterialShell";
       inputs.nixpkgs.follows = "nixpkgs";
-      inputs.dgop.follows = "dgop";
-      inputs.dms-cli.follows = "dms-cli";
     };
 
-    danksearch = {
-      url = "github:AvengeMedia/danksearch";
+    caelestia.url = "github:caelestia-dots/shell";
+
+    noctalia = {
+      url = "github:noctalia-dev/noctalia-shell";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -244,7 +227,7 @@
         inputs.niri.overlays.niri
         # Custom overlays
         (final: prev: {
-          zjstatus = inputs.zjstatus.packages.${prev.system}.default;
+          zjstatus = inputs.zjstatus.packages.${prev.stdenv.hostPlatform.system}.default;
         })
         # Custom packages overlay - auto-import all packages
         (final: prev: {
@@ -494,22 +477,58 @@
         in
         {
           default = pkgs.mkShell {
-            packages =
-              with pkgs;
-              [
-                nil
-                nixfmt-rfc-style
-                sops
-                age
-                ssh-to-age
-              ]
-              ++ [ inputs.home-manager.packages.${system}.default ];
+            NIX_CONFIG = "extra-experimental-features = nix-command flakes";
+
+            packages = with pkgs; [
+              (pkgs.nh.override {
+                nix-output-monitor = pkgs.nix-output-monitor.overrideAttrs (old: {
+                  postPatch = old.postPatch or "" + ''
+                    substituteInPlace lib/NOM/Print.hs \
+                      --replace 'down = "↓"' 'down = "\xf072e"' \
+                      --replace 'up = "↑"' 'up = "\xf0737"' \
+                      --replace 'clock = "⏱"' 'clock = "\xf520"' \
+                      --replace 'running = "⏵"' 'running = "\xf04b"' \
+                      --replace 'done = "✔"' 'done = "\xf00c"' \
+                      --replace 'todo = "⏸"' 'todo = "\xf04d"' \
+                      --replace 'warning = "⚠"' 'warning = "\xf071"' \
+                      --replace 'average = "∅"' 'average = "\xf1da"' \
+                      --replace 'bigsum = "∑"' 'bigsum = "\xf04a0"'
+                  '';
+                });
+              })
+              inputs.nixos-anywhere.packages.${pkgs.stdenv.hostPlatform.system}.nixos-anywhere
+              inputs.deploy-rs.packages.${pkgs.stdenv.hostPlatform.system}.default
+
+              statix
+              deadnix
+              alejandra
+              inputs.home-manager.packages.${pkgs.stdenv.hostPlatform.system}.default
+              git
+              sops
+              ssh-to-age
+              gnupg
+              age
+              opentofu
+              mc
+            ];
           };
         }
       );
 
       # Deploy-rs configuration
-      deploy = lib.nixicle.mkDeploy { inherit self; };
+      deploy = lib.nixicle.mkDeploy {
+        inherit self;
+        overrides = {
+          # Server hosts use 'nixos' user
+          ms01.profiles.system.sshUser = "nixos";
+          s100.profiles.system.sshUser = "nixos";
+          vps.profiles.system.sshUser = "nixos";
+          # Workstation hosts use 'haseeb' user
+          framework.profiles.system.sshUser = "haseeb";
+          workstation.profiles.system.sshUser = "haseeb";
+          vm.profiles.system.sshUser = "haseeb";
+        };
+      };
 
       checks = builtins.mapAttrs (
         system: deploy-lib: deploy-lib.deployChecks self.deploy
