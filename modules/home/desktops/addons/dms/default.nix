@@ -2,13 +2,12 @@
   config,
   lib,
   pkgs,
-  inputs,
   ...
 }:
 with lib;
 with lib.nixicle;
 let
-  cfg = config.desktops.addons.dankMaterialShell;
+  cfg = config.desktops.addons.dms;
 
   # Generate color theme from Stylix colors
   # Based on: https://github.com/nix-community/stylix/pull/1932
@@ -63,82 +62,8 @@ let
     };
 in
 {
-  options.desktops.addons.dankMaterialShell = {
+  options.desktops.addons.dms = {
     enable = mkEnableOption "Enable DankMaterialShell";
-
-    enableSystemd = mkOption {
-      type = types.bool;
-      default = true;
-      description = "Enable systemd service for auto-start";
-    };
-
-    enableSystemMonitoring = mkOption {
-      type = types.bool;
-      default = true;
-      description = "Enable system monitoring widgets (dgop)";
-    };
-
-    enableClipboard = mkOption {
-      type = types.bool;
-      default = true;
-      description = "Enable clipboard history manager";
-    };
-
-    enableVPN = mkOption {
-      type = types.bool;
-      default = false;
-      description = "Enable VPN management widget";
-    };
-
-    enableBrightnessControl = mkOption {
-      type = types.bool;
-      default = true;
-      description = "Enable backlight/brightness controls";
-    };
-
-    enableColorPicker = mkOption {
-      type = types.bool;
-      default = true;
-      description = "Enable color picker tool";
-    };
-
-    enableDynamicTheming = mkOption {
-      type = types.bool;
-      default = true;
-      description = "Enable wallpaper-based theming (matugen)";
-    };
-
-    enableAudioWavelength = mkOption {
-      type = types.bool;
-      default = false;
-      description = "Enable audio visualizer (cava)";
-    };
-
-    enableCalendarEvents = mkOption {
-      type = types.bool;
-      default = false;
-      description = "Enable calendar integration (khal)";
-    };
-
-    enableSystemSound = mkOption {
-      type = types.bool;
-      default = true;
-      description = "Enable system sound effects";
-    };
-
-    hyprland = {
-      enableKeybinds = mkOption {
-        type = types.bool;
-        default = false;
-        description = "Enable automatic keybinding configuration for hyprland";
-      };
-
-      enableSpawn = mkOption {
-        type = types.bool;
-        default = false;
-        description = "Auto-start DMS with hyprland";
-      };
-    };
 
     settings = mkOption {
       type = types.attrs;
@@ -148,28 +73,16 @@ in
   };
 
   config = mkIf cfg.enable {
-    # Install DankSearch (dsearch) and icon theme fallbacks
     home.packages = [
-      inputs.danksearch.packages.${pkgs.system}.default
-      pkgs.hicolor-icon-theme # Fallback icon theme for missing icons
-      pkgs.adwaita-icon-theme # Additional fallback with better coverage
+      pkgs.hicolor-icon-theme
+      pkgs.adwaita-icon-theme
     ];
 
     programs.dankMaterialShell = {
       enable = true;
-      systemd.enable = cfg.enableSystemd;
-      enableSystemMonitoring = cfg.enableSystemMonitoring;
-      enableClipboard = cfg.enableClipboard;
-      enableVPN = cfg.enableVPN;
-      enableBrightnessControl = cfg.enableBrightnessControl;
-      enableColorPicker = cfg.enableColorPicker;
-      enableDynamicTheming = cfg.enableDynamicTheming;
-      enableAudioWavelength = cfg.enableAudioWavelength;
-      enableCalendarEvents = cfg.enableCalendarEvents;
-      enableSystemSound = cfg.enableSystemSound;
+      systemd.enable = true;
 
       default.settings = mkMerge [
-        # Embed Stylix theme directly
         {
           currentThemeName = "custom";
           customThemeFile = pkgs.writeText "dankMaterialShell-stylix-theme.json" (
@@ -240,7 +153,6 @@ in
           ];
         }
 
-        # User custom settings override
         cfg.settings
       ];
     };
