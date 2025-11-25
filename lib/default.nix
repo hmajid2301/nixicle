@@ -91,10 +91,8 @@ rec {
     enable = false;
   };
 
-  # Deploy-rs helper
   inherit (import ./deploy { inherit lib inputs; }) mkDeploy;
 
-  # Traefik helpers
   inherit (import ./traefik { inherit lib; }) mkTraefikService mkAuthenticatedTraefikService;
 
   # Recursively import all modules from a directory
