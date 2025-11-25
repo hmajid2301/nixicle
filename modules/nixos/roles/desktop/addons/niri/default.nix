@@ -16,12 +16,18 @@ in
   };
 
   config = mkIf cfg.enable {
+    nix.settings = {
+      substituters = [ "https://niri.cachix.org" ];
+      trusted-public-keys = [ "niri.cachix.org-1:Wv0OmO7PsuocRKzfDoJ3mulSl7Z6oezYhGhR+3W2964=" ];
+    };
+
     programs.niri = {
       enable = true;
       package = pkgs.niri-unstable.overrideAttrs (old: {
         doCheck = false;
       });
     };
+
 
     environment.sessionVariables = {
       NIXOS_OZONE_WL = "1";
@@ -42,14 +48,15 @@ in
         xdg-desktop-portal-gnome
       ];
       config.niri = {
-        default = [ "gtk" ];
-        "org.freedesktop.impl.portal.Screencast" = [ "gnome" ];
-        "org.freedesktop.impl.portal.Screenshot" = [ "gnome" ];
+        default = [ "gnome" "gtk" ];
       };
+      xdgOpenUsePortal = true;
     };
 
     roles.desktop.addons.greetd.enable = true;
+    roles.desktop.addons.nautilus.enable = true;
     programs.xwayland.enable = true;
-    security.polkit.enable = true;
+    security.nixicle.polkit-gnome.enable = true;
+    services.nixicle.evolution.enable = true;
   };
 }
