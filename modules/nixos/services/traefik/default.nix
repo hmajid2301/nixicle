@@ -33,8 +33,12 @@ in
         EnvironmentFile = [ config.sops.secrets.cloudflare_api_key.path ];
         SupplementaryGroups = lib.mkIf config.services.k3s.enable [ "k3s" ];
       };
-      after = lib.mkIf config.services.k3s.enable [ "k3s.service" ];
-      wants = lib.mkIf config.services.k3s.enable [ "k3s.service" ];
+      after =
+        [ "tailscaled.service" ]
+        ++ lib.optionals config.services.k3s.enable [ "k3s.service" ];
+      wants =
+        [ "tailscaled.service" ]
+        ++ lib.optionals config.services.k3s.enable [ "k3s.service" ];
       requires = lib.mkIf config.services.k3s.enable [ "k3s.service" ];
     };
 
