@@ -76,6 +76,7 @@ nix build .#containers-ci
 
 Some features of my config:
 
+- Using **snowfall-lib** to structure the nix config.
 - Structured to allow multiple **NixOS configurations**, including **desktop**, **laptop** and **homelab**
 - **Custom** live ISO for installing NixOS
 - **Styling** with stylix
@@ -83,7 +84,7 @@ Some features of my config:
 - **Encrypted BTRFS partition**
 - **sops-nix** for secrets management
 - Different environments like **hyprland** and **gnome**
-- Custom **Neovim** setup declaratively using **nixvim**
+- Custom **Neovim** setup declaratively using **NixCats**
 - Homelab all configured in nix.
 
 ## 🏠 Configurations
