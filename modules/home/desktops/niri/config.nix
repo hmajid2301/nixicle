@@ -21,11 +21,14 @@ in
   config = mkIf cfg.enable {
     programs.niri.enable = true;
     programs.niri.settings = {
-      outputs = {
-        "*" = {
-          scale = 1.0;
-        };
-      };
+      outputs = mkMerge [
+        {
+          "*" = {
+            scale = 1.0;
+          };
+        }
+        cfg.outputs
+      ];
 
       input = {
         keyboard.xkb = { };
@@ -39,7 +42,10 @@ in
 
       hotkey-overlay.skip-at-startup = true;
 
+      gestures.hot-corners.enable = false;
+
       layout = {
+        default-column-width = { proportion = 0.5; };
         preset-column-widths = [
           { proportion = 0.25; }
           { proportion = 0.33333; }
