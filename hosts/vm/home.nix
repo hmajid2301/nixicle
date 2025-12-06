@@ -3,11 +3,6 @@
     enable = true;
   };
 
-  desktops.addons = {
-    noctalia.enable = true;
-    rofi.enable = true;
-  };
-
   roles = {
     desktop.enable = true;
     gaming.enable = true;
