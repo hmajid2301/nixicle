@@ -1,44 +1,43 @@
 {
   config,
   pkgs,
-  inputs,
   lib,
   ...
 }:
 {
-  nixGL = {
-    inherit (inputs.nixgl) packages;
-    defaultWrapper = "mesa";
+  roles = {
+    desktop.enable = true;
+    non-nixos.enable = true;
   };
 
-  programs = {
-    firefox.package = config.lib.nixGL.wrap pkgs.firefox;
-    # ghostty.package = config.lib.nixGL.wrap pkgs.ghostty;
-  };
+  # Fix PAM authentication for non-NixOS systems using pam_shim
+  # See: https://github.com/nix-community/home-manager/issues/7027
+  # See: https://github.com/Cu3PO42/pam_shim
+  pamShim.enable = true;
 
-  home = {
-    packages = with pkgs; [
-      semgrep
-      pre-commit
-      bun
+  nix.package = lib.mkDefault pkgs.nix;
 
-      # INFO: Packages stylix usually installs but doesn't work with gnome 46 at the moment.
-      # So we are installing them here and we will manually set them.
-      pkgs.nixicle.monolisa
-      pkgs.noto-fonts-color-emoji
-      pkgs.noto-fonts
-      pkgs.source-serif
-      pkgs.nerd-fonts.symbols-only
-      pkgs.dejavu_fonts
-      pkgs.liberation_ttf
-      (lib.hiPrio (config.lib.nixGL.wrap totem))
-    ];
-  };
+  home.packages = with pkgs; [
+    semgrep
+    pre-commit
+    bun
 
-  # TODO: Don't hardcode UID - use dynamic resolution like: "/run/user/${toString config.users.users.${config.home.username}.uid}/secrets"
-  # This breaks if user gets different UID on different systems
+    # TODO: stylix doesn't work with gnome 46 at the moment
+    pkgs.nixicle.monolisa
+    pkgs.noto-fonts-color-emoji
+    pkgs.noto-fonts
+    pkgs.source-serif
+    pkgs.nerd-fonts.symbols-only
+    pkgs.dejavu_fonts
+    pkgs.liberation_ttf
+  ];
+
+  # TODO: Don't hardcode UID - use dynamic resolution
   sops.defaultSymlinkPath = lib.mkForce "/run/user/1003/secrets";
   sops.defaultSecretsMountPoint = lib.mkForce "/run/user/1003/secrets.d";
+
+  # TODO: Disable stylix for now (doesn't work with GNOME 46)
+  styles.stylix.enable = lib.mkForce false;
 
   stylix = lib.mkForce {
     enable = false;
@@ -56,13 +55,12 @@
 
     settings = {
       "font-family" = [
-        "MonoLisa" # Primary font
-        "Symbols Nerd Font" # Glyph fallback
-        "Noto Color Emoji" # Emoji fallback
+        "MonoLisa"
+        "Symbols Nerd Font"
+        "Noto Color Emoji"
       ];
 
       theme = "Catppuccin Mocha";
-
       command = "fish";
       gtk-titlebar = false;
       gtk-tabs-location = "hidden";
@@ -73,18 +71,116 @@
       copy-on-select = "clipboard";
       cursor-style = "block";
       confirm-close-surface = false;
-      keybind = [
-        "ctrl+shift+plus=increase_font_size:1"
-      ];
+      keybind = [ "ctrl+shift+plus=increase_font_size:1" ];
     };
   };
 
-  roles = {
-    desktop.enable = true;
+  desktops = {
+    niri = {
+      enable = true;
+      outputs = {
+        "eDP-1" = {
+          position = {
+            x = 0;
+            y = 0;
+          };
+        };
+        "HDMI-A-2" = {
+          position = {
+            x = 1536;
+            y = 0;
+          };
+        };
+      };
+    };
+
+    addons = {
+      noctalia = {
+        standalone = true;
+        laptop = true;
+      };
+    };
   };
 
-  desktops = {
-    niri.enable = true;
+  systemd.user.services.noctalia-shell = lib.mkIf config.desktops.addons.noctalia.enable (
+    let
+      # Apply PAM shim to quickshell for non-NixOS PAM compatibility
+      shimmedQuickshell = config.lib.pamShim.replacePam pkgs.quickshell;
+    in
+    {
+      Service = {
+        ExecStart = lib.mkForce "${pkgs.writeShellScript "noctalia-nixgl" ''
+          export PATH="${pkgs.wlsunset}/bin:${pkgs.wl-clipboard}/bin:${pkgs.cliphist}/bin:${pkgs.coreutils}/bin:${pkgs.gnugrep}/bin:${pkgs.gnused}/bin:${pkgs.bash}/bin:/run/wrappers/bin:${config.home.profileDirectory}/bin:/usr/bin:/bin"
+          exec ${config.lib.nixGL.wrap shimmedQuickshell}/bin/quickshell -p ${config.programs.noctalia-shell.package}/share/noctalia-shell
+        ''}";
+      };
+    }
+  );
+
+  home.activation.maskConflictingServices = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    # Mask waybar and swaync services to prevent conflicts with noctalia
+    $DRY_RUN_CMD mkdir -p $HOME/.config/systemd/user
+    $DRY_RUN_CMD ln -sf /dev/null $HOME/.config/systemd/user/waybar.service
+    $DRY_RUN_CMD ln -sf /dev/null $HOME/.config/systemd/user/swaync.service
+    $DRY_RUN_CMD ${pkgs.systemd}/bin/systemctl --user daemon-reload || true
+  '';
+
+  systemd.user.services.swayidle = lib.mkIf config.desktops.addons.swayidle.enable (
+    let
+      shimmedQuickshell = config.lib.pamShim.replacePam pkgs.quickshell;
+    in
+    {
+      Unit = {
+        After = lib.mkForce [
+          "graphical-session.target"
+          "niri-env-setup.service"
+        ];
+      };
+      Service = {
+        ExecStart = lib.mkForce ''
+          ${pkgs.swayidle}/bin/swayidle -w \
+            timeout 300 '${shimmedQuickshell}/bin/qs ipc --newest call lockScreen lock' \
+            timeout 330 'niri msg action power-off-monitors' \
+              resume 'niri msg action power-on-monitors' \
+            timeout 1800 '${pkgs.systemd}/bin/systemctl suspend' \
+            before-sleep '${pkgs.systemd}/bin/loginctl lock-session'
+        '';
+      };
+    }
+  );
+
+  systemd.user.services.niri-env-setup = {
+    Unit = {
+      Description = "Import NIRI_SOCKET into systemd user environment";
+      After = [ "graphical-session.target" ];
+      PartOf = [ "graphical-session.target" ];
+      ConditionEnvironment = "XDG_CURRENT_DESKTOP=niri";
+    };
+    Service = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+      ExecStart = "${pkgs.writeShellScript "niri-env-setup" ''
+        sleep 2
+
+        NIRI_SOCKET=$(ls /run/user/$(id -u)/niri.sock* 2>/dev/null | head -1)
+
+        if [ -n "$NIRI_SOCKET" ]; then
+          ${pkgs.systemd}/bin/systemctl --user set-environment NIRI_SOCKET="$NIRI_SOCKET"
+          echo "Set NIRI_SOCKET=$NIRI_SOCKET"
+        else
+          echo "Warning: NIRI_SOCKET not found, retrying..."
+          sleep 3
+          NIRI_SOCKET=$(ls /run/user/$(id -u)/niri.sock* 2>/dev/null | head -1)
+          if [ -n "$NIRI_SOCKET" ]; then
+            ${pkgs.systemd}/bin/systemctl --user set-environment NIRI_SOCKET="$NIRI_SOCKET"
+            echo "Set NIRI_SOCKET=$NIRI_SOCKET"
+          fi
+        fi
+      ''}";
+    };
+    Install = {
+      WantedBy = [ "graphical-session.target" ];
+    };
   };
 
   fonts.fontconfig.enable = true;
@@ -97,45 +193,6 @@
       "x-scheme-handler/about" = [ "google-chrome.desktop" ];
       "x-scheme-handler/unknown" = [ "google-chrome.desktop" ];
     };
-
-    configFile."environment.d/envvars.conf".text = ''
-      PATH="$PATH:${config.home.homeDirectory}/.nix-profile/bin"
-    '';
-
-    # Override desktop entry to use NixGL-wrapped ghostty
-    desktopEntries.ghostty = {
-      name = "Ghostty";
-      comment = "A terminal emulator";
-      exec = "${config.home.homeDirectory}/.nix-profile/bin/ghostty";
-      icon = "com.mitchellh.ghostty";
-      categories = [
-        "System"
-        "TerminalEmulator"
-      ];
-      terminal = false;
-      startupNotify = true;
-      settings = {
-        StartupWMClass = "com.mitchellh.ghostty";
-        Keywords = "terminal;tty;pty;";
-        X-GNOME-UsesNotifications = "true";
-      };
-    };
-
-    # Override desktop entry to use NixGL-wrapped totem
-    # Using dataFile to override the existing desktop file from the totem package
-    dataFile."applications/org.gnome.Totem.desktop".text = ''
-      [Desktop Entry]
-      Name=Videos
-      Comment=Play movies
-      Exec=${config.home.homeDirectory}/.nix-profile/bin/totem %U
-      Icon=org.gnome.Totem
-      Terminal=false
-      Type=Application
-      Categories=GNOME;GTK;AudioVideo;Player;Video;
-      MimeType=application/ogg;application/x-ogg;audio/ogg;audio/vorbis;audio/x-vorbis;audio/x-vorbis+ogg;video/ogg;video/x-ogm;video/x-ogm+ogg;video/x-theora+ogg;video/x-theora;application/x-extension-m4a;application/x-extension-mp4;audio/aac;audio/m4a;audio/mp1;audio/mp2;audio/mp3;audio/mpeg;audio/mpeg2;audio/mpeg3;audio/mpegurl;audio/mpg;audio/rn-mpeg;audio/scpls;audio/x-m4a;audio/x-mp1;audio/x-mp2;audio/x-mp3;audio/x-mpeg;audio/x-mpeg2;audio/x-mpeg3;audio/x-mpegurl;audio/x-mpg;audio/x-scpls;video/3gp;video/3gpp;video/3gpp2;video/avi;video/divx;video/dv;video/fli;video/flv;video/mp2t;video/mp4;video/mp4v-es;video/mpeg;video/msvideo;video/quicktime;video/vnd.divx;video/vnd.mpegurl;video/vnd.rn-realvideo;video/webm;video/x-avi;video/x-flc;video/x-fli;video/x-flv;video/x-m4v;video/x-matroska;video/x-mpeg2;video/x-mpeg3;video/x-ms-afs;video/x-ms-asf;video/x-msvideo;video/x-ms-wmv;video/x-ms-wmx;video/x-ms-wvxvideo;video/x-nsv;video/x-theora+ogg;video/x-totem-stream;application/vnd.rn-realmedia;application/vnd.rn-realmedia-vbr;
-      StartupNotify=true
-      X-GNOME-UsesNotifications=true
-    '';
 
     configFile."fontconfig/conf.d/99-custom-fonts.conf".text = ''
       <?xml version="1.0"?>
@@ -209,7 +266,6 @@
           </edit>
         </match>
 
-
         <!-- Force emoji rendering -->
         <match target="pattern">
           <test name="family">
@@ -223,11 +279,9 @@
     '';
   };
 
-  cli.tools = {
-    git = {
-      allowedSigners = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDUF0LHH63pGkd1m7FGdbZirVXULDS5WSDzerJ0sskoq haseeb.majid@nala.money";
-      email = "haseeb.majid@nala.money";
-    };
+  cli.tools.git = {
+    allowedSigners = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDUF0LHH63pGkd1m7FGdbZirVXULDS5WSDzerJ0sskoq haseeb.majid@nala.money";
+    email = "haseeb.majid@nala.money";
   };
 
   nixicle.user = {
