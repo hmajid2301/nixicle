@@ -12,6 +12,18 @@ in
   options.desktops.addons.noctalia = {
     enable = mkEnableOption "Enable Noctalia Shell";
 
+    standalone = mkOption {
+      type = types.bool;
+      default = false;
+      description = "Run noctalia-shell standalone without binding to niri.service (useful for non-NixOS systems)";
+    };
+
+    laptop = mkOption {
+      type = types.bool;
+      default = false;
+      description = "Enable laptop-specific widgets (battery, brightness, WiFi)";
+    };
+
     settings = mkOption {
       type = types.attrs;
       default = { };
@@ -23,6 +35,7 @@ in
     home.packages = [
       pkgs.hicolor-icon-theme
       pkgs.adwaita-icon-theme
+      pkgs.quickshell # Ensure qs command is available in PATH
     ];
 
     programs.noctalia-shell = {
@@ -73,8 +86,6 @@ in
           };
 
           bar = {
-            position = "top";
-            exclusive = true;
             floating = true;
             marginHorizontal = 0.25;
             marginVertical = 0.25;
@@ -82,8 +93,6 @@ in
               left = [
                 {
                   id = "Workspace";
-                  labelMode = "index";
-                  hideUnoccupied = false;
                   characterCount = 2;
                 }
               ];
@@ -97,80 +106,112 @@ in
                   id = "KeepAwake";
                 }
               ];
-              right = [
-                {
-                  id = "Tray";
-                  drawerEnabled = true;
-                }
-                {
-                  id = "NotificationHistory";
-                  showUnreadBadge = true;
-                  hideWhenZero = true;
-                }
-                {
-                  id = "Volume";
-                  displayMode = "onhover";
-                }
-                {
-                  id = "ControlCenter";
-                  icon = "noctalia";
-                }
+              right = mkMerge [
+                # Base widgets for all systems
+                [
+                  {
+                    id = "Tray";
+                  }
+                  {
+                    id = "NotificationHistory";
+                    hideWhenZero = true;
+                  }
+                ]
+                # Laptop-specific widgets (WiFi, Bluetooth, brightness, battery)
+                (mkIf cfg.laptop [
+                  {
+                    id = "WiFi";
+                    displayMode = "icon";
+                  }
+                  {
+                    id = "Bluetooth";
+                    displayMode = "icon";
+                  }
+                  {
+                    id = "Brightness";
+                    displayMode = "onhover";
+                  }
+                  {
+                    id = "Battery";
+                  }
+                ])
+                # Volume and control center for all systems
+                [
+                  {
+                    id = "Volume";
+                    displayMode = "onhover";
+                  }
+                  {
+                    id = "ControlCenter";
+                    icon = "noctalia";
+                  }
+                ]
               ];
             };
           };
 
           wallpaper = {
-            enabled = true;
             directory = "/home/${config.home.username}/nixicle/packages/wallpapers/wallpapers";
-            fillMode = "crop";
           };
 
           osd = {
             monitors = [ "DP-1" ];
           };
 
-          sessionMenu = {
-            position = "center";
-            enableCountdown = true;
-          };
-
-          notifications = {
-            enabled = true;
-            location = "top_right";
-          };
-
-          dock = {
-            enabled = false;
-          };
-
           controlCenter = {
-            position = "center";
             shortcuts = {
-              left = [
-                { id = "WiFi"; }
-                { id = "Bluetooth"; }
-                { id = "ScreenRecorder"; }
-                { id = "WallpaperSelector"; }
+              left = mkMerge [
+                # WiFi always included (for all setups)
+                [
+                  { id = "WiFi"; }
+                  { id = "Bluetooth"; }
+                ]
+                # Common shortcuts
+                [
+                  { id = "ScreenRecorder"; }
+                  { id = "WallpaperSelector"; }
+                ]
               ];
-              right = [
-                { id = "Notifications"; }
-                { id = "PowerProfile"; }
-                { id = "KeepAwake"; }
-                { id = "NightLight"; }
+              right = mkMerge [
+                (mkIf cfg.laptop [
+                  { id = "PowerProfile"; }
+                ])
+                [
+                  { id = "Notifications"; }
+                  { id = "KeepAwake"; }
+                  { id = "NightLight"; }
+                ]
               ];
             };
-            cards = [
-              { enabled = true; id = "profile-card"; }
-              { enabled = true; id = "shortcuts-card"; }
-              { enabled = true; id = "audio-card"; }
-              { enabled = true; id = "weather-card"; }
-              { enabled = true; id = "media-sysmon-card"; }
-            ];
           };
         }
 
         cfg.settings
       ];
     };
+
+    systemd.user.services.noctalia-shell =
+      if (!cfg.standalone) then
+        {
+          Unit = {
+            BindsTo = [ "niri.service" ];
+            After = [ "niri.service" ];
+            PartOf = lib.mkForce [ "niri.service" ];
+          };
+          Install = {
+            WantedBy = lib.mkForce [ ];
+          };
+        }
+      else
+        {
+          Unit = {
+            Description = lib.mkForce "Noctalia Shell - Wayland desktop shell (standalone)";
+            PartOf = lib.mkForce [ "graphical-session.target" ];
+            After = lib.mkForce [ "graphical-session.target" ];
+          };
+          Install = {
+            WantedBy = lib.mkForce [ "graphical-session.target" ];
+          };
+        };
   };
 }
