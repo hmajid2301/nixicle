@@ -28,6 +28,13 @@
     nixgl.url = "github:nix-community/nixGL";
     nix-index-database.url = "github:nix-community/nix-index-database";
 
+    # PAM shim for non-NixOS systems
+    # Using 'next' branch for full libpam.so.0 API coverage
+    pam-shim = {
+      url = "github:Cu3PO42/pam_shim/next";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     disko = {
       url = "github:nix-community/disko";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -192,6 +199,8 @@
       url = "github:iofq/nvim-treesitter-main";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    import-tree.url = "github:vic/import-tree";
   };
 
   outputs =
@@ -253,8 +262,8 @@
         inputs.sops-nix.nixosModules.sops
         inputs.nix-topology.nixosModules.default
         inputs.authentik-nix.nixosModules.default
-        # Auto-import all custom NixOS modules via import.nix
-        ./modules/nixos/import.nix
+        # Auto-import all custom NixOS modules via import-tree (only default.nix files)
+        (inputs.import-tree.match ".*/default\\.nix" ./modules/nixos)
       ];
 
       # Common home-manager modules
@@ -269,8 +278,9 @@
         inputs.stylix.homeModules.stylix
         inputs.catppuccin.homeModules.catppuccin
         inputs.nix-index-database.homeModules.nix-index
-        # Auto-import all custom home modules via import.nix
-        ./modules/home/import.nix
+        inputs.pam-shim.homeModules.default
+        # Auto-import all custom home modules via import-tree (only default.nix files)
+        (inputs.import-tree.match ".*/default\\.nix" ./modules/home)
       ];
 
       # Helper to create a NixOS system
