@@ -99,6 +99,8 @@
         inc-rename-nvim
         snacks-nvim
         quicker-nvim
+        flash-nvim
+        zen-mode-nvim
         pkgs.neovimPlugins.gx-nvim
         pkgs.neovimPlugins.templ-goto-definition
         pkgs.neovimPlugins.tiny-code-actions
