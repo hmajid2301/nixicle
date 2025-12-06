@@ -22,13 +22,14 @@ in
 
     extraPackages = mkOpt (listOf package) [ ] "Extra packages to install for niri";
     extraStartupApps = mkOpt (listOf (listOf str)) [ ] "Extra applications to spawn at startup";
+    
+    outputs = mkOpt attrs { } "Output-specific configuration (monitors/displays)";
   };
 
   config = mkIf cfg.enable {
-    nix.package = lib.mkDefault pkgs.nix;
     nix.settings = {
-      extra-substituters = [ "https://niri.cachix.org" ];
-      extra-trusted-public-keys = [ "niri.cachix.org-1:Wv0OmO7PsuocRKzfDoJ3mulSl7Z6oezYhGhR+3W2964=" ];
+      substituters = [ "https://niri.cachix.org" ];
+      trusted-public-keys = [ "niri.cachix.org-1:Wv0OmO7PsuocRKzfDoJ3mulSl7Z6oezYhGhR+3W2964=" ];
     };
 
     stylix.targets.niri.enable = lib.mkDefault true;
@@ -36,11 +37,11 @@ in
     desktops.addons = {
       rofi.enable = true;
       wlsunset.enable = true;
-      hypridle.enable = true;
       noctalia.enable = true;
       wlogout.enable = true;
       cliphist.enable = true;
       cava.enable = true;
+      swayidle.enable = lib.mkDefault true;
     };
   };
 }
