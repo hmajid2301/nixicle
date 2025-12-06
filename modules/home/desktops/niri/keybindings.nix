@@ -79,11 +79,24 @@ in
         "Mod+Shift+9".action.move-column-to-workspace = 9;
         "Mod+Shift+0".action.move-column-to-workspace = 10;
 
+        # Use niri's built-in screenshot UI (select area interactively)
         "Print".action.spawn = [
-          "grimblast"
-          "--notify"
-          "copysave"
-          "area"
+          "niri"
+          "msg"
+          "action"
+          "screenshot"
+        ];
+        "Shift+Print".action.spawn = [
+          "niri"
+          "msg"
+          "action"
+          "screenshot-screen"
+        ];
+        "Mod+Print".action.spawn = [
+          "niri"
+          "msg"
+          "action"
+          "screenshot-window"
         ];
 
         "XF86AudioRaiseVolume".action.spawn = noctalia "volume increase";
