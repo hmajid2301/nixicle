@@ -63,3 +63,36 @@ vim.diagnostic.config({
 		source = "if_many",
 	},
 })
+
+-- Custom markdown fold expression based on header levels
+-- This provides hierarchical folding for markdown headers
+function _G.MarkdownFold()
+	local line = vim.fn.getline(vim.v.lnum)
+	
+	-- ATX-style headers (# Header)
+	local atx_match = line:match("^(#+)%s")
+	if atx_match then
+		return ">" .. #atx_match
+	end
+	
+	-- Setext-style headers (underlined with = or -)
+	local next_line = vim.fn.getline(vim.v.lnum + 1)
+	if next_line:match("^=+%s*$") then
+		return ">1"
+	elseif next_line:match("^-+%s*$") then
+		return ">2"
+	end
+	
+	return "="
+end
+
+-- Markdown folding configuration
+vim.api.nvim_create_autocmd("FileType", {
+	pattern = "markdown",
+	callback = function()
+		vim.opt_local.foldmethod = "expr"
+		vim.opt_local.foldexpr = "v:lua.MarkdownFold()"
+		-- Simpler foldtext that shows the header content
+		vim.opt_local.foldtext = ""
+	end,
+})
