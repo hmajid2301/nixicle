@@ -56,5 +56,17 @@ in
       };
       gamma = mkIf (cfg.gamma != null) cfg.gamma;
     };
+
+    # Override systemd service to only start with niri
+    systemd.user.services.wlsunset = {
+      Unit = {
+        BindsTo = [ "niri.service" ];
+        After = [ "niri.service" ];
+        PartOf = lib.mkForce [ "niri.service" ];
+      };
+      Install = {
+        WantedBy = lib.mkForce [ ];
+      };
+    };
   };
 }
