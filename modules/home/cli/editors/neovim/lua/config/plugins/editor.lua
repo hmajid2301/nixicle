@@ -52,7 +52,7 @@ return {
 		end,
 	},
 	{
-		"gx.nvim",
+		"gx-nvim",
 		for_cat = "general.editor",
 		cmd = { "Browse" },
 		keys = { { "gx", "<cmd>Browse<cr>", mode = { "n", "x" } } },
@@ -60,7 +60,7 @@ return {
 			vim.g.netrw_nogx = 1
 		end,
 		after = function(plugin)
-			require("gx").setup()
+			require("gx-nvim").setup()
 		end,
 	},
 	{
@@ -168,6 +168,112 @@ return {
 			vim.keymap.set("n", "<leader>4", "<cmd>WarpGoToIndex 4<cr>", { desc = "Go to warp file 4" })
 			vim.keymap.set("n", "<leader>hn", "<cmd>WarpGoToIndex next<cr>", { desc = "Next warp file" })
 			vim.keymap.set("n", "<leader>hp", "<cmd>WarpGoToIndex prev<cr>", { desc = "Prev warp file" })
+		end,
+	},
+	{
+		"flash.nvim",
+		for_cat = "general.editor",
+		keys = {
+			{ "s", mode = { "n", "x", "o" }, desc = "Flash" },
+			{ "S", mode = { "n", "x", "o" }, desc = "Flash Treesitter" },
+			{ "r", mode = "o", desc = "Remote Flash" },
+			{ "R", mode = { "o", "x" }, desc = "Treesitter Search" },
+			{ "<c-s>", mode = { "c" }, desc = "Toggle Flash Search" },
+		},
+		after = function(plugin)
+			require("flash").setup({
+				labels = "asdfghjklqwertyuiopzxcvbnm",
+				search = {
+					multi_window = true,
+					forward = true,
+					wrap = true,
+					mode = "exact",
+					incremental = false,
+				},
+				jump = {
+					jumplist = true,
+					pos = "start",
+					history = false,
+					register = false,
+					nohlsearch = false,
+					autojump = false,
+				},
+				label = {
+					uppercase = true,
+					rainbow = {
+						enabled = false,
+						shade = 5,
+					},
+				},
+				modes = {
+					search = {
+						enabled = false,
+					},
+					char = {
+						enabled = true,
+						jump_labels = true,
+					},
+				},
+			})
+
+			vim.keymap.set({ "n", "x", "o" }, "s", function()
+				require("flash").jump()
+			end, { desc = "Flash" })
+
+			vim.keymap.set({ "n", "x", "o" }, "S", function()
+				require("flash").treesitter()
+			end, { desc = "Flash Treesitter" })
+
+			vim.keymap.set("o", "r", function()
+				require("flash").remote()
+			end, { desc = "Remote Flash" })
+
+			vim.keymap.set({ "o", "x" }, "R", function()
+				require("flash").treesitter_search()
+			end, { desc = "Treesitter Search" })
+
+			vim.keymap.set("c", "<c-s>", function()
+				require("flash").toggle()
+			end, { desc = "Toggle Flash Search" })
+		end,
+	},
+	{
+		"zen-mode.nvim",
+		for_cat = "general.editor",
+		cmd = { "ZenMode" },
+		keys = {
+			{ "<leader>z", mode = { "n" }, desc = "Toggle Zen Mode" },
+		},
+		after = function(plugin)
+			require("zen-mode").setup({
+				window = {
+					backdrop = 0.95,
+					width = 120,
+					height = 1,
+					options = {
+						signcolumn = "no",
+						number = false,
+						relativenumber = false,
+						cursorline = false,
+						cursorcolumn = false,
+						foldcolumn = "0",
+						list = false,
+					},
+				},
+				plugins = {
+					options = {
+						enabled = true,
+						ruler = false,
+						showcmd = false,
+						laststatus = 0,
+					},
+					twilight = { enabled = false },
+					gitsigns = { enabled = false },
+					tmux = { enabled = false },
+				},
+			})
+
+			vim.keymap.set("n", "<leader>z", "<cmd>ZenMode<cr>", { desc = "Toggle Zen Mode" })
 		end,
 	},
 }
