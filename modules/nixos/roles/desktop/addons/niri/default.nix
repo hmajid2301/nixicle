@@ -23,11 +23,11 @@ in
 
     programs.niri = {
       enable = true;
-      package = pkgs.niri-unstable.overrideAttrs (old: {
-        doCheck = false;
-      });
+      # package = pkgs.niri-unstable.overrideAttrs (old: {
+      #   doCheck = false;
+      # });
+      package = pkgs.niri-unstable;
     };
-
 
     environment.sessionVariables = {
       NIXOS_OZONE_WL = "1";
@@ -48,7 +48,10 @@ in
         xdg-desktop-portal-gnome
       ];
       config.niri = {
-        default = [ "gnome" "gtk" ];
+        default = [
+          "gnome"
+          "gtk"
+        ];
       };
       xdgOpenUsePortal = true;
     };

@@ -7,15 +7,6 @@
 with lib;
 let
   cfg = config.desktops.niri;
-
-  noctalia =
-    cmd:
-    [
-      "noctalia-shell"
-      "ipc"
-      "call"
-    ]
-    ++ (pkgs.lib.splitString " " cmd);
 in
 {
   config = mkIf cfg.enable {
@@ -45,7 +36,9 @@ in
       gestures.hot-corners.enable = false;
 
       layout = {
-        default-column-width = { proportion = 0.5; };
+        default-column-width = {
+          proportion = 0.5;
+        };
         preset-column-widths = [
           { proportion = 0.25; }
           { proportion = 0.33333; }
@@ -81,11 +74,10 @@ in
         }
       ];
 
-      spawn-at-startup =
-        [
-          { command = [ "xwayland-satellite" ]; }
-        ]
-        ++ (map (cmd: { command = cmd; }) cfg.extraStartupApps);
+      spawn-at-startup = [
+        { command = [ "xwayland-satellite" ]; }
+      ]
+      ++ (map (cmd: { command = cmd; }) cfg.extraStartupApps);
     };
 
     home.packages =

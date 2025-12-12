@@ -35,27 +35,59 @@ in
         "Mod+V".action.spawn = noctalia "launcher clipboard";
 
         "Mod+Q".action = close-window;
-        "Mod+F".action = fullscreen-window;
+        "Mod+F".action = maximize-column;
+        "Mod+Shift+F".action = fullscreen-window;
         "Mod+T".action = toggle-window-floating;
         "Mod+O".action = toggle-overview;
+        "Mod+C".action = center-column;
+        "Mod+M".action = maximize-column;
 
         "Mod+H".action = focus-column-or-monitor-left;
         "Mod+L".action = focus-column-or-monitor-right;
         "Mod+J".action = focus-window-or-workspace-down;
         "Mod+K".action = focus-window-or-workspace-up;
 
+        # Navigate workspaces sequentially
+        "Mod+Ctrl+J".action = focus-workspace-down;
+        "Mod+Ctrl+K".action = focus-workspace-up;
+
         "Mod+Shift+H".action = move-column-left;
         "Mod+Shift+L".action = move-column-right;
         "Mod+Shift+J".action = move-window-down;
         "Mod+Shift+K".action = move-window-up;
 
+        # Move windows into/out of columns
+        "Mod+Ctrl+H".action = consume-or-expel-window-left;
+        "Mod+Ctrl+L".action = consume-or-expel-window-right;
+
         "Mod+R".action = switch-preset-column-width;
         "Mod+Shift+R".action = switch-preset-column-width-back;
 
-        "Mod+Ctrl+H".action = focus-monitor-left;
-        "Mod+Ctrl+L".action = focus-monitor-right;
-        "Mod+Ctrl+J".action = focus-monitor-down;
-        "Mod+Ctrl+K".action = focus-monitor-up;
+        # Adjust column width incrementally
+        "Mod+Equal".action.set-column-width = "+10%";
+        "Mod+Minus".action.set-column-width = "-10%";
+
+        # Adjust window height incrementally
+        "Mod+Shift+Equal".action.set-window-height = "+10%";
+        "Mod+Shift+Minus".action.set-window-height = "-10%";
+
+        # Focus monitors
+        "Mod+Ctrl+Shift+H".action = focus-monitor-left;
+        "Mod+Ctrl+Shift+L".action = focus-monitor-right;
+        "Mod+Ctrl+Shift+J".action = focus-monitor-down;
+        "Mod+Ctrl+Shift+K".action = focus-monitor-up;
+
+        # Move window to monitor
+        "Mod+Shift+Ctrl+Left".action = move-window-to-monitor-left;
+        "Mod+Shift+Ctrl+Right".action = move-window-to-monitor-right;
+        "Mod+Shift+Ctrl+Down".action = move-window-to-monitor-down;
+        "Mod+Shift+Ctrl+Up".action = move-window-to-monitor-up;
+
+        # Move column to monitor
+        "Mod+Alt+H".action = move-column-to-monitor-left;
+        "Mod+Alt+L".action = move-column-to-monitor-right;
+        "Mod+Alt+J".action = move-column-to-monitor-down;
+        "Mod+Alt+K".action = move-column-to-monitor-up;
 
         "Mod+1".action.focus-workspace = 1;
         "Mod+2".action.focus-workspace = 2;
@@ -68,16 +100,29 @@ in
         "Mod+9".action.focus-workspace = 9;
         "Mod+0".action.focus-workspace = 10;
 
-        "Mod+Shift+1".action.move-column-to-workspace = 1;
-        "Mod+Shift+2".action.move-column-to-workspace = 2;
-        "Mod+Shift+3".action.move-column-to-workspace = 3;
-        "Mod+Shift+4".action.move-column-to-workspace = 4;
-        "Mod+Shift+5".action.move-column-to-workspace = 5;
-        "Mod+Shift+6".action.move-column-to-workspace = 6;
-        "Mod+Shift+7".action.move-column-to-workspace = 7;
-        "Mod+Shift+8".action.move-column-to-workspace = 8;
-        "Mod+Shift+9".action.move-column-to-workspace = 9;
-        "Mod+Shift+0".action.move-column-to-workspace = 10;
+        # Move only window to workspace (not whole column)
+        "Mod+Shift+1".action.move-window-to-workspace = 1;
+        "Mod+Shift+2".action.move-window-to-workspace = 2;
+        "Mod+Shift+3".action.move-window-to-workspace = 3;
+        "Mod+Shift+4".action.move-window-to-workspace = 4;
+        "Mod+Shift+5".action.move-window-to-workspace = 5;
+        "Mod+Shift+6".action.move-window-to-workspace = 6;
+        "Mod+Shift+7".action.move-window-to-workspace = 7;
+        "Mod+Shift+8".action.move-window-to-workspace = 8;
+        "Mod+Shift+9".action.move-window-to-workspace = 9;
+        "Mod+Shift+0".action.move-window-to-workspace = 10;
+
+        # Move whole column to workspace
+        "Mod+Ctrl+Shift+1".action.move-column-to-workspace = 1;
+        "Mod+Ctrl+Shift+2".action.move-column-to-workspace = 2;
+        "Mod+Ctrl+Shift+3".action.move-column-to-workspace = 3;
+        "Mod+Ctrl+Shift+4".action.move-column-to-workspace = 4;
+        "Mod+Ctrl+Shift+5".action.move-column-to-workspace = 5;
+        "Mod+Ctrl+Shift+6".action.move-column-to-workspace = 6;
+        "Mod+Ctrl+Shift+7".action.move-column-to-workspace = 7;
+        "Mod+Ctrl+Shift+8".action.move-column-to-workspace = 8;
+        "Mod+Ctrl+Shift+9".action.move-column-to-workspace = 9;
+        "Mod+Ctrl+Shift+0".action.move-column-to-workspace = 10;
 
         # Use niri's built-in screenshot UI (select area interactively)
         "Print".action.spawn = [
