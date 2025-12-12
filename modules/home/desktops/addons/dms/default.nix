@@ -9,33 +9,33 @@ with lib.nixicle;
 let
   cfg = config.desktops.addons.dms;
 
-  # Generate color theme from Stylix colors
-  # Based on: https://github.com/nix-community/stylix/pull/1932
+  # Generate color theme from Stylix colors matching noctalia's theme
+  # Based on noctalia configuration and Catppuccin Mocha
   stylixColorTheme =
     let
       colors = config.lib.stylix.colors.withHashtag;
     in
     {
       dark = {
-        name = "Stylix generated dark theme";
-        primary = colors.base0D;
-        primaryText = colors.base00;
+        name = "Stylix generated dark theme (Catppuccin-inspired)";
+        primary = colors.base0E; # mauve/lavender
+        primaryText = "#11111b"; # crust (not in base16)
         primaryContainer = colors.base0C;
-        secondary = colors.base0E;
-        surface = colors.base01;
-        surfaceText = colors.base05;
-        surfaceVariant = colors.base02;
-        surfaceVariantText = colors.base04;
-        surfaceTint = colors.base0D;
+        secondary = colors.base09; # peach
+        surface = colors.base00; # base
+        surfaceText = colors.base05; # text
+        surfaceVariant = colors.base02; # surface0
+        surfaceVariantText = colors.base07; # lavender
+        surfaceTint = colors.base0E;
         background = colors.base00;
         backgroundText = colors.base05;
-        outline = colors.base03;
+        outline = colors.base04; # surface2
         surfaceContainer = colors.base01;
         surfaceContainerHigh = colors.base02;
-        surfaceContainerHighest = colors.base03;
-        error = colors.base08;
+        surfaceContainerHighest = colors.base03; # surface1
+        error = colors.base08; # red
         warning = colors.base0A;
-        info = colors.base0C;
+        info = colors.base0C; # teal
       };
 
       light = {
@@ -81,6 +81,17 @@ in
     programs.dankMaterialShell = {
       enable = true;
       systemd.enable = true;
+
+      # Core features
+      enableSystemMonitoring = true; # System monitoring widgets (dgop)
+      enableVPN = true; # VPN management widget
+      enableDynamicTheming = true; # Wallpaper-based theming (matugen)
+      enableAudioWavelength = true; # Audio visualizer (cava)
+      enableCalendarEvents = false; # Calendar integration (khal) - disabled by default
+      # enableSystemSound - now built-in
+      # enableClipboard - now built-in
+      # enableColorPicker - now built-in
+      # enableBrightnessControl - now built-in
 
       default.settings = mkMerge [
         {
