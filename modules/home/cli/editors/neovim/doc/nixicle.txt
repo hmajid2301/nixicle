@@ -111,14 +111,16 @@ LSP Commands~
   <leader>D        Type definition
   <leader>ds       Document symbols
   <leader>ws       Workspace symbols
-  K                Hover documentation
+  K                Fancy LSP hover (OXY2DEV)
   gK               Signature help
 
 Diagnostics~
   [d               Previous diagnostic
   ]d               Next diagnostic
+  gD               Fancy diagnostics hover (OXY2DEV)
   <leader>cd       Open diagnostic float
   <leader>q        Diagnostics to location list
+  q                Close hover/diagnostic window (when focused)
 
 Code Actions~
   <leader>ca       Code actions (tiny-code-action)

@@ -17,6 +17,12 @@ in
   xdg.configFile."nvim/doc/nixicle.txt".text =
     builtins.readFile ./doc/nixicle.txt;
 
+  # OXY2DEV fancy scripts
+  xdg.configFile."nvim/lua/scripts/lsp_hover.lua".source =
+    "${inputs.oxy2dev-nvim-scripts}/lua/scripts/lsp_hover.lua";
+  xdg.configFile."nvim/lua/scripts/diagnostics.lua".source =
+    "${inputs.oxy2dev-nvim-scripts}/lua/scripts/diagnostics.lua";
+
   # NixCats configuration
   nixCats = {
     enable = true;
