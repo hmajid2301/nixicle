@@ -27,4 +27,5 @@ require("lze").load({
 	{ import = "config.plugins.ai" },
 	{ import = "config.plugins.notes" },
 	{ import = "config.plugins.ui" },
+	{ import = "config.plugins.oxy_hover" },
 })
