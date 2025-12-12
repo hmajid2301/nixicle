@@ -16,6 +16,10 @@ in
 
   config = mkIf cfg.enable {
     nix = {
+      # Disable NIX_PATH and channels since we're using flakes
+      channel.enable = false;
+      nixPath = [ "nixpkgs=flake:nixpkgs" ];
+
       settings = {
         trusted-users = [
           "@wheel"

@@ -24,7 +24,7 @@ let
             else "echo 'No compositor-specific dpms off command'";
 
   lockCmd = if isHyprland then "${pkgs.hyprlock}/bin/hyprlock"
-            else if (isNiri && isNoctalia) then "${pkgs.quickshell}/bin/qs ipc --newest call lockScreen lock"
+            else if (isNiri && isNoctalia) then "${pkgs.quickshell}/bin/qs ipc --path ${config.programs.noctalia-shell.package}/share/noctalia-shell --newest call lockScreen lock"
             else "${pkgs.systemd}/bin/loginctl lock-session";
 in
 {
@@ -61,7 +61,7 @@ in
             timeout ${toString cfg.timeouts.dpms} '${dpmsOff}' \
               resume '${dpmsOn}' \
             timeout ${toString cfg.timeouts.suspend} '${pkgs.systemd}/bin/systemctl suspend' \
-            before-sleep '${pkgs.systemd}/bin/loginctl lock-session'
+            before-sleep '${lockCmd}'
         '';
         Restart = "on-failure";
         RestartSec = 1;

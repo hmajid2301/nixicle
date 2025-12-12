@@ -25,7 +25,27 @@ in
     };
 
     home.packages = with pkgs; [
-      lutris
+      (lutris.override {
+        extraPkgs = pkgs: [
+          # GStreamer plugins and dependencies for Wine
+          pkgs.gst_all_1.gstreamer
+          pkgs.gst_all_1.gst-plugins-base
+          pkgs.gst_all_1.gst-plugins-good
+          pkgs.gst_all_1.gst-plugins-bad
+          pkgs.gst_all_1.gst-plugins-ugly
+          pkgs.gst_all_1.gst-libav
+          
+          # Missing libraries that Wine needs
+          pkgs.libgudev
+          pkgs.speex
+          pkgs.libtheora
+          pkgs.flac
+          
+          # Additional useful libraries
+          pkgs.libva
+          pkgs.libvdpau
+        ];
+      })
       bottles
     ];
   };

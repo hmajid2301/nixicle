@@ -12,12 +12,6 @@ in
   options.desktops.addons.noctalia = {
     enable = mkEnableOption "Enable Noctalia Shell";
 
-    standalone = mkOption {
-      type = types.bool;
-      default = false;
-      description = "Run noctalia-shell standalone without binding to niri.service (useful for non-NixOS systems)";
-    };
-
     laptop = mkOption {
       type = types.bool;
       default = false;
@@ -43,7 +37,7 @@ in
       systemd.enable = true;
 
       # TODO: use stylix only colours here.
-      colors = with config.lib.stylix.colors.withHashtag; {
+      colors = with config.lib.stylix.colors.withHashtag; mkDefault {
         mPrimary = base0E; # #cba6f7 (mauve/lavender)
         mOnPrimary = "#11111b"; # crust (not in base16)
         mSecondary = base09; # #fab387 (peach)
@@ -83,6 +77,10 @@ in
           general = {
             lockOnSuspend = true;
             avatarImage = "/home/${config.home.username}/.face";
+          };
+
+          dock = {
+            enabled = false;
           };
 
           bar = {
@@ -152,6 +150,7 @@ in
 
           wallpaper = {
             directory = "/home/${config.home.username}/nixicle/packages/wallpapers/wallpapers";
+            enableOverviewWallpaper = true;
           };
 
           osd = {
@@ -189,29 +188,5 @@ in
         cfg.settings
       ];
     };
-
-    systemd.user.services.noctalia-shell =
-      if (!cfg.standalone) then
-        {
-          Unit = {
-            BindsTo = [ "niri.service" ];
-            After = [ "niri.service" ];
-            PartOf = lib.mkForce [ "niri.service" ];
-          };
-          Install = {
-            WantedBy = lib.mkForce [ ];
-          };
-        }
-      else
-        {
-          Unit = {
-            Description = lib.mkForce "Noctalia Shell - Wayland desktop shell (standalone)";
-            PartOf = lib.mkForce [ "graphical-session.target" ];
-            After = lib.mkForce [ "graphical-session.target" ];
-          };
-          Install = {
-            WantedBy = lib.mkForce [ "graphical-session.target" ];
-          };
-        };
   };
 }
