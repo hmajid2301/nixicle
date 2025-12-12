@@ -49,6 +49,7 @@ in
         fzf.enable = true;
         git.enable = true;
         gpg.enable = true;
+        gsesh.enable = true;
         htop.enable = true;
         modern-unix.enable = true;
         network-tools.enable = true;
