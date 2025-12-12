@@ -82,6 +82,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    nfsm = {
+      url = "github:gvolpe/nfsm";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # Quickshell
 
     dankMaterialShell = {
@@ -94,6 +99,12 @@
     noctalia = {
       url = "github:noctalia-dev/noctalia-shell";
       inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    # Zellij plugins
+    zellij-pane-tracker = {
+      url = "github:theslyprofessor/zellij-pane-tracker";
+      flake = false;
     };
 
     # Homelab
@@ -133,6 +144,11 @@
 
     neovim-nightly-overlay = {
       url = "github:nix-community/neovim-nightly-overlay";
+    };
+
+    oxy2dev-nvim-scripts = {
+      url = "github:OXY2DEV/nvim";
+      flake = false;
     };
 
     plugins-cmp-dbee = {
