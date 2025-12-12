@@ -1,0 +1,428 @@
+#!/usr/bin/env bash
+# gsesh - Git session manager for worktrees + zellij
+# Creates/switches between zellij sessions based on git branches using worktrees
+
+set -euo pipefail
+
+# Colors for output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+NC='\033[0m' # No Color
+
+# Configuration
+WORKTREE_BASE="${WORKTREE_BASE:-$HOME/worktrees}"
+CLAUDE_CODE_SESSION_PREFIX="${CLAUDE_CODE_SESSION_PREFIX:-claude}"
+
+# Helper functions
+error() {
+    echo -e "${RED}Error: $1${NC}" >&2
+    exit 1
+}
+
+info() {
+    echo -e "${BLUE}Info: $1${NC}" >&2
+}
+
+success() {
+    echo -e "${GREEN}Success: $1${NC}" >&2
+}
+
+warn() {
+    echo -e "${YELLOW}Warning: $1${NC}" >&2
+}
+
+# Check if we're in a git repository
+check_git_repo() {
+    if ! git rev-parse --git-dir > /dev/null 2>&1; then
+        error "Not in a git repository"
+    fi
+}
+
+# Get the project name (repository name)
+get_project_name() {
+    basename "$(git rev-parse --show-toplevel)"
+}
+
+# Get the main worktree path
+get_main_worktree() {
+    git rev-parse --show-toplevel
+}
+
+# Fetch latest branches from remote
+fetch_branches() {
+    info "Fetching latest branches from remote..."
+    git fetch --all --prune --quiet || warn "Failed to fetch from remote"
+}
+
+# List remote branches only
+list_branches() {
+    # Get remote branches only, remove origin/ prefix
+    git branch -r --format='%(refname:short)' | sed 's|^origin/||' | grep -v '^HEAD$' || true
+}
+
+# Get current branch
+get_current_branch() {
+    git rev-parse --abbrev-ref HEAD 2>/dev/null || echo ""
+}
+
+# Check if a worktree exists for a branch
+worktree_exists() {
+    local branch="$1"
+    git worktree list | grep -q "\\[$branch\\]$"
+}
+
+# Get worktree path for a branch
+get_worktree_path() {
+    local branch="$1"
+    local project="$2"
+
+    # Check if worktree already exists
+    local existing
+    existing=$(git worktree list --porcelain | grep -A 2 "branch refs/heads/$branch" | grep "worktree" | cut -d' ' -f2 || echo "")
+
+    if [[ -n "$existing" ]]; then
+        echo "$existing"
+    else
+        echo "$WORKTREE_BASE/$project/$branch"
+    fi
+}
+
+# Create a worktree for a branch
+create_worktree() {
+    local branch="$1"
+    local worktree_path="$2"
+
+    info "Creating worktree for branch '$branch' at '$worktree_path'..."
+
+    # Create parent directory
+    mkdir -p "$(dirname "$worktree_path")"
+
+    # Check if branch exists locally
+    if git show-ref --verify --quiet "refs/heads/$branch"; then
+        # Local branch exists
+        git worktree add "$worktree_path" "$branch"
+    elif git show-ref --verify --quiet "refs/remotes/origin/$branch"; then
+        # Remote branch exists, create local tracking branch
+        git worktree add "$worktree_path" -b "$branch" "origin/$branch"
+    else
+        # New branch - create it
+        info "Branch '$branch' doesn't exist. Creating new branch..."
+        git worktree add "$worktree_path" -b "$branch"
+    fi
+
+    success "Worktree created at '$worktree_path'"
+}
+
+# Get or create zellij session name
+get_session_name() {
+    local project="$1"
+    local branch="$2"
+
+    # Sanitize branch name for session (replace / with -)
+    local sanitized_branch="${branch//\//-}"
+    echo "$project-$sanitized_branch"
+}
+
+# Check if zellij session exists
+session_exists() {
+    local session_name="$1"
+    zellij list-sessions 2>/dev/null | grep -q "^$session_name$"
+}
+
+# Create or attach to zellij session
+attach_session() {
+    local session_name="$1"
+    local worktree_path="$2"
+
+    if session_exists "$session_name"; then
+        info "Attaching to existing session '$session_name'..."
+        zellij attach "$session_name"
+    else
+        info "Creating new session '$session_name' in '$worktree_path'..."
+        cd "$worktree_path"
+        zellij attach -c "$session_name"
+    fi
+}
+
+# Create Claude Code session hint file
+create_claude_session_hint() {
+    local project="$1"
+    local branch="$2"
+    local worktree_path="$3"
+
+    local claude_session_name="$CLAUDE_CODE_SESSION_PREFIX-$project-${branch//\//-}"
+    local hint_file="$worktree_path/.claude-session-name"
+
+    echo "$claude_session_name" > "$hint_file"
+    info "Claude Code session name hint: $claude_session_name"
+}
+
+# List existing worktrees with their sessions
+list_existing_worktrees() {
+    local project="$1"
+
+    # Get all worktrees except the main one
+    git worktree list --porcelain | awk '
+        /^worktree / { path=$2 }
+        /^branch / {
+            branch=$2
+            gsub("refs/heads/", "", branch)
+            if (branch != "") print path "|" branch
+        }
+    ' | while IFS='|' read -r path branch; do
+        # Skip main worktree
+        if [[ "$path" == "$(get_main_worktree)" ]]; then
+            continue
+        fi
+
+        local session_name
+        session_name=$(get_session_name "$project" "$branch")
+
+        # Check if session exists
+        if session_exists "$session_name"; then
+            echo "$branch|$path|$session_name|active"
+        else
+            echo "$branch|$path|$session_name|inactive"
+        fi
+    done
+}
+
+# Interactive worktree/session selection
+select_existing_worktree() {
+    local project="$1"
+
+    info "Loading existing worktrees..."
+
+    local worktrees
+    worktrees=$(list_existing_worktrees "$project")
+
+    if [[ -z "$worktrees" ]]; then
+        warn "No existing worktrees found. Use gsesh without --list to create one."
+        exit 0
+    fi
+
+    # Format for display
+    local formatted
+    formatted=$(echo "$worktrees" | while IFS='|' read -r branch path session status; do
+        if [[ "$status" == "active" ]]; then
+            echo "✓ $branch (session: $session)"
+        else
+            echo "  $branch (no session)"
+        fi
+    done)
+
+    # Use gum to select
+    local selected
+    selected=$(echo "$formatted" | gum filter --placeholder="Select a worktree..." --height=15)
+
+    # Extract branch name
+    local branch
+    if [[ "$selected" == ✓* ]]; then
+        branch=$(echo "$selected" | sed 's/^✓ //' | sed 's/ (session:.*)$//')
+    else
+        branch=$(echo "$selected" | sed 's/^  //' | sed 's/ (no session)$//')
+    fi
+
+    # Find the matching entry
+    echo "$worktrees" | while IFS='|' read -r b p s status; do
+        if [[ "$b" == "$branch" ]]; then
+            echo "$branch|$p|$s"
+            break
+        fi
+    done
+}
+
+# Interactive branch selection with gum
+select_branch_interactive() {
+    local current_branch="$1"
+
+    info "Loading branches..."
+
+    # Get all branches
+    local branches
+    branches=$(list_branches)
+
+    if [[ -z "$branches" ]]; then
+        error "No branches found"
+    fi
+
+    # Highlight current branch
+    local branches_with_current
+    branches_with_current=$(echo "$branches" | while read -r branch; do
+        if [[ "$branch" == "$current_branch" ]]; then
+            echo "* $branch (current)"
+        else
+            echo "  $branch"
+        fi
+    done)
+
+    # Add option to create new branch
+    branches_with_current="+ Create new branch
+$branches_with_current"
+
+    # Use gum to filter/select
+    local selected
+    selected=$(echo "$branches_with_current" | gum filter --placeholder="Select or search for a branch..." --height=15)
+
+    if [[ "$selected" == "+ Create new branch" ]]; then
+        # Prompt for new branch name
+        local new_branch
+        new_branch=$(gum input --placeholder="Enter new branch name...")
+        if [[ -z "$new_branch" ]]; then
+            error "Branch name cannot be empty"
+        fi
+        echo "$new_branch"
+    else
+        # Remove the prefix (*, or spaces) and "(current)" suffix
+        echo "$selected" | sed 's/^[* ] *//' | sed 's/ (current)$//'
+    fi
+}
+
+# Main workflow
+main() {
+    local branch=""
+    local fetch=true
+    local list_mode=false
+
+    # Parse arguments
+    while [[ $# -gt 0 ]]; do
+        case $1 in
+            --no-fetch)
+                fetch=false
+                shift
+                ;;
+            --branch|-b)
+                branch="$2"
+                shift 2
+                ;;
+            --list|-l)
+                list_mode=true
+                shift
+                ;;
+            --help|-h)
+                cat << EOF
+Usage: gsesh [OPTIONS]
+
+Git session manager for worktrees + zellij
+
+OPTIONS:
+    --no-fetch       Don't fetch latest branches from remote
+    --branch, -b     Specify branch name directly (skip interactive selection)
+    --list, -l       List and switch to existing worktrees/sessions
+    --help, -h       Show this help message
+
+ENVIRONMENT VARIABLES:
+    WORKTREE_BASE                Base directory for worktrees (default: ~/worktrees)
+    CLAUDE_CODE_SESSION_PREFIX   Prefix for Claude Code session names (default: claude)
+
+EXAMPLES:
+    gsesh                    # Interactive remote branch selection
+    gsesh -l                 # List and switch to existing worktrees
+    gsesh -b feature/auth    # Switch to feature/auth branch directly
+    gsesh --no-fetch         # Skip fetching from remote
+
+MODES:
+    Default mode (no --list):
+        1. Fetch latest remote branches (unless --no-fetch)
+        2. Let you select a remote branch (or create new one)
+        3. Create/switch to git worktree for that branch
+        4. Create/attach to zellij session named <project>-<branch>
+        5. Create .claude-session-name hint file for Claude Code
+
+    List mode (--list):
+        1. Show existing worktrees with their session status
+        2. Let you select an existing worktree
+        3. Attach to existing session or create new one
+EOF
+                exit 0
+                ;;
+            *)
+                error "Unknown option: $1. Use --help for usage information."
+                ;;
+        esac
+    done
+
+    # Check dependencies
+    for cmd in git gum zellij; do
+        if ! command -v "$cmd" &> /dev/null; then
+            error "$cmd is not installed. Please install it first."
+        fi
+    done
+
+    # Ensure we're in a git repository
+    check_git_repo
+
+    # Get project name
+    local project
+    project=$(get_project_name)
+    info "Project: $project"
+
+    # List mode - select from existing worktrees
+    if [[ "$list_mode" == true ]]; then
+        local selection
+        selection=$(select_existing_worktree "$project")
+
+        if [[ -z "$selection" ]]; then
+            error "No worktree selected"
+        fi
+
+        # Parse selection
+        IFS='|' read -r branch worktree_path session_name <<< "$selection"
+
+        info "Selected existing worktree: $branch"
+
+        # Attach to session
+        attach_session "$session_name" "$worktree_path"
+        exit 0
+    fi
+
+    # Default mode - create/switch to branch
+    # Fetch branches if needed
+    if [[ "$fetch" == true ]]; then
+        fetch_branches
+    fi
+
+    # Get current branch
+    local current_branch
+    current_branch=$(get_current_branch)
+
+    # Select branch (interactive or direct)
+    if [[ -z "$branch" ]]; then
+        branch=$(select_branch_interactive "$current_branch")
+    fi
+
+    info "Selected branch: $branch"
+
+    # Get worktree path
+    local worktree_path
+    worktree_path=$(get_worktree_path "$branch" "$project")
+
+    # Get session name
+    local session_name
+    session_name=$(get_session_name "$project" "$branch")
+
+    # Check if session already exists
+    if session_exists "$session_name"; then
+        info "Session '$session_name' already exists. Attaching..."
+        attach_session "$session_name" "$worktree_path"
+        exit 0
+    fi
+
+    # Create worktree if it doesn't exist
+    if ! worktree_exists "$branch"; then
+        create_worktree "$branch" "$worktree_path"
+    else
+        info "Worktree already exists at '$worktree_path'"
+    fi
+
+    # Create Claude Code session hint
+    create_claude_session_hint "$project" "$branch" "$worktree_path"
+
+    # Attach to session
+    attach_session "$session_name" "$worktree_path"
+}
+
+# Run main function
+main "$@"
