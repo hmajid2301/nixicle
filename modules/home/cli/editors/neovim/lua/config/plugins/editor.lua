@@ -67,7 +67,7 @@ return {
 			vim.g.netrw_nogx = 1
 		end,
 		after = function(plugin)
-			require("gx-nvim").setup()
+			require("gx").setup({})
 		end,
 	},
 	{
@@ -181,8 +181,8 @@ return {
 		"flash.nvim",
 		for_cat = "general.editor",
 		keys = {
-			{ "s", mode = { "n", "x", "o" }, desc = "Flash" },
-			{ "S", mode = { "n", "x", "o" }, desc = "Flash Treesitter" },
+			{ "<leader>j", mode = { "n", "x", "o" }, desc = "Flash Jump" },
+			{ "<leader>J", mode = { "n", "x", "o" }, desc = "Flash Treesitter" },
 			{ "r", mode = "o", desc = "Remote Flash" },
 			{ "R", mode = { "o", "x" }, desc = "Treesitter Search" },
 			{ "<c-s>", mode = { "c" }, desc = "Toggle Flash Search" },
@@ -223,11 +223,11 @@ return {
 				},
 			})
 
-			vim.keymap.set({ "n", "x", "o" }, "s", function()
+			vim.keymap.set({ "n", "x", "o" }, "<leader>j", function()
 				require("flash").jump()
-			end, { desc = "Flash" })
+			end, { desc = "Flash Jump" })
 
-			vim.keymap.set({ "n", "x", "o" }, "S", function()
+			vim.keymap.set({ "n", "x", "o" }, "<leader>J", function()
 				require("flash").treesitter()
 			end, { desc = "Flash Treesitter" })
 
