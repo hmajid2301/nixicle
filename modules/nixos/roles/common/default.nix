@@ -22,6 +22,10 @@ in {
     security = {
       sops.enable = true;
       yubikey.enable = true;
+      # Ensure sudo preserves PATH for nix commands
+      sudo.extraConfig = ''
+        Defaults secure_path="/run/wrappers/bin:/run/current-system/sw/bin:/nix/var/nix/profiles/default/bin:/usr/local/bin:/usr/bin:/bin"
+      '';
     };
 
     system = {

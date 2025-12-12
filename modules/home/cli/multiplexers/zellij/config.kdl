@@ -187,9 +187,13 @@ keybinds {
         bind "Alt u" { SwitchToMode "Locked"; }
 
         bind "Alt q" { Quit; }
-        bind "Alt n" { NewPane; }
+
+        // Tab navigation - using Alt+Shift to avoid conflicts with Neovim Ctrl+n/p
+        bind "Alt N" { GoToNextTab; }
+        bind "Alt P" { GoToPreviousTab; }
 
         // // Smart navigation with vim-zellij-navigator
+        // // Note: Commented out in favor of smart-splits.nvim integration
         // bind "Ctrl h" {
         //     MessagePlugin "https://github.com/hiasr/vim-zellij-navigator/releases/download/0.3.0/vim-zellij-navigator.wasm" {
         //         name "move_focus";
@@ -222,9 +226,6 @@ keybinds {
         //         use_arrow_keys "false";
         //     };
         // }
-
-        bind "Alt h" { MoveFocusOrTab "Left"; }
-        bind "Alt l" { MoveFocusOrTab "Right"; }
 
         bind "Alt =" "Alt +" { Resize "Increase"; }
         bind "Alt -" { Resize "Decrease"; }

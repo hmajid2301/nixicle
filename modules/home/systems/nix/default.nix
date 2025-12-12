@@ -31,10 +31,10 @@ in
       NH_FLAKE = "/home/${config.nixicle.user.name}/nixicle";
     };
 
-    nix = lib.mkIf (config.targets.genericLinux.enable or false) {
+    nix = {
       package = lib.mkDefault pkgs.nix;
 
-      settings = {
+      settings = lib.mkIf (config.targets.genericLinux.enable or false) {
         trusted-substituters = [
           "https://cache.nixos.org"
           "https://nix-community.cachix.org"
@@ -61,5 +61,13 @@ in
       json = lib.mkForce { };
       entries = lib.mkForce [ ];
     };
+
+    # Clean up dead symlinks in systemd user directory
+    home.activation.cleanupDeadSymlinks = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+      if [ -d "$HOME/.config/systemd/user" ]; then
+        $DRY_RUN_CMD ${pkgs.findutils}/bin/find "$HOME/.config/systemd/user" -maxdepth 1 -xtype l -delete
+        $VERBOSE_ECHO "Cleaned up dead symlinks in systemd user directory"
+      fi
+    '';
   };
 }

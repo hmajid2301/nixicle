@@ -21,6 +21,8 @@ in
     security.sudo.extraConfig = ''
       # rollback results in sudo lectures after each reboot
       Defaults lecture = never
+      # Preserve PATH for nix commands
+      Defaults secure_path="/run/wrappers/bin:/run/current-system/sw/bin:/nix/var/nix/profiles/default/bin:/usr/local/bin:/usr/bin:/bin"
     '';
 
     programs.fuse.userAllowOther = true;
