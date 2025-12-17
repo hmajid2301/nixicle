@@ -82,7 +82,7 @@ in
 
         nd = "nix develop";
         nfu = "nix flake update";
-        hms = "home-manager switch --flake ~/nixicle#${config.nixicle.user.name}@${host}";
+        hms = "home-manager switch --flake ~/nixicle#${config.home.username}@${host}";
         nrs = "sudo nixos-rebuild switch --flake ~/nixicle#${host}";
 
         # new commands
