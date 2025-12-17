@@ -13,23 +13,24 @@ in
   };
 
   config = mkIf cfg.enable {
-    services = {
-      atuin = {
-        enable = true;
-        openRegistration = false;
-        maxHistoryLength = 99999999;
-        port = 8890;
-      };
+    services.atuin = {
+      enable = true;
+      openRegistration = false;
+      maxHistoryLength = 99999999;
+      port = 8890;
+    };
 
-      cloudflared = {
-        tunnels = {
-          "0e845de6-544a-47f2-a1d5-c76be02ce153" = {
-            ingress = {
-              "atuin.haseebmajid.dev" = "http://localhost:8890";
-            };
-            default = "http_status:404";
-          };
-        };
+    services.cloudflared.tunnels = mkIf config.services.nixicle.cloudflare.enable {
+      ${config.services.nixicle.cloudflare.tunnelId}.ingress = {
+        "atuin.haseebmajid.dev" = "http://localhost:8890";
+      };
+    };
+
+    environment.persistence = mkIf config.system.impermanence.enable {
+      "/persist" = {
+        directories = [
+          "/var/lib/atuin"
+        ];
       };
     };
   };
