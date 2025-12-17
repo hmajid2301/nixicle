@@ -1,0 +1,75 @@
+version: '3'
+
+vars:
+  HOSTS: "framework workstation vm ms01 s100 vps framebox"
+
+tasks:
+  deploy:
+    desc: "Deploy to host interactively"
+    cmds:
+      - |
+        HOST=$(gum choose {{.HOSTS}})
+        echo "Deploying to $HOST..."
+        deploy .#$HOST --hostname $HOST --ssh-user root --skip-checks --remote-build
+
+  "deploy:local":
+    desc: "Deploy to host with local build"
+    cmds:
+      - |
+        HOST=$(gum choose {{.HOSTS}})
+        echo "Deploying to $HOST (local build)..."
+        deploy .#$HOST --hostname $HOST --ssh-user root --skip-checks
+
+  install:
+    desc: "Install host with nixos-anywhere"
+    cmds:
+      - |
+        HOST=$(gum choose {{.HOSTS}})
+        echo "Installing $HOST with nixos-anywhere..."
+        nixos-anywhere --flake .#$HOST root@$HOST
+
+  sync:
+    desc: "Sync config to host"
+    cmds:
+      - |
+        HOST=$(gum choose {{.HOSTS}})
+        echo "Syncing to $HOST..."
+        rsync -av --exclude='.git' --exclude='result*' ./ haseeb@$HOST:~/nixicle/
+
+  rebuild:
+    desc: "Rebuild on host"
+    cmds:
+      - |
+        HOST=$(gum choose {{.HOSTS}})
+        echo "Rebuilding $HOST..."
+        rsync -av --exclude='.git' --exclude='result*' ./ haseeb@$HOST:~/nixicle/
+        ssh haseeb@$HOST "cd ~/nixicle && sudo nixos-rebuild switch --flake .#$HOST"
+
+  "sops:update":
+    desc: "Update SOPS keys"
+    cmds:
+      - sops updatekeys modules/nixos/secrets.yaml
+      - sops updatekeys modules/home/secrets.yaml
+      - sops updatekeys modules/nixos/services/secrets.yaml
+      - sops updatekeys modules/nixos/roles/kubernetes/secrets.yaml
+
+  "build:iso":
+    desc: "Build graphical ISO"
+    cmds:
+      - nix build .#nixosConfigurations.iso-graphical.config.system.build.isoImage
+
+  check:
+    desc: "Check flake"
+    cmds:
+      - nix flake check
+
+  fmt:
+    desc: "Format Nix files"
+    cmds:
+      - nix fmt
+
+  hosts:
+    desc: "List available hosts"
+    cmds:
+      - echo "Available hosts:"
+      - echo "{{.HOSTS}}" | tr ' ' '\n' | sort
