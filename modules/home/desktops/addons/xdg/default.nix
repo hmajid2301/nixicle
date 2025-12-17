@@ -15,9 +15,39 @@ in
 
   config = mkIf cfg.enable {
     home.sessionVariables = {
+      # XDG compliance for various tools
       HISTFILE = lib.mkForce "${config.xdg.stateHome}/bash/history";
-      #GNUPGHOME = lib.mkForce "${config.xdg.dataHome}/gnupg";
       GTK2_RC_FILES = lib.mkForce "${config.xdg.configHome}/gtk-2.0/gtkrc";
+
+      # Node.js
+      NODE_REPL_HISTORY = "${config.xdg.stateHome}/node_repl_history";
+
+      # npm
+      NPM_CONFIG_USERCONFIG = "${config.xdg.configHome}/npm/npmrc";
+      NPM_CONFIG_CACHE = "${config.xdg.cacheHome}/npm";
+      NPM_CONFIG_TMP = "\${XDG_RUNTIME_DIR}/npm";
+
+      # Docker
+      DOCKER_CONFIG = "${config.xdg.configHome}/docker";
+
+      # Android
+      ANDROID_USER_HOME = "${config.xdg.dataHome}/android";
+
+      # PostgreSQL
+      PSQL_HISTORY = "${config.xdg.stateHome}/psql_history";
+
+      # Redis
+      REDISCLI_HISTFILE = "${config.xdg.stateHome}/redis/rediscli_history";
+
+      # Parallel
+      PARALLEL_HOME = "${config.xdg.configHome}/parallel";
+
+      # TLDR cache
+      TLDR_CACHE_DIR = "${config.xdg.cacheHome}/tldr";
+
+      # X resources
+      XCOMPOSEFILE = "${config.xdg.configHome}/X11/xcompose";
+      XCOMPOSECACHE = "${config.xdg.cacheHome}/X11/xcompose";
     };
 
     xdg = {
