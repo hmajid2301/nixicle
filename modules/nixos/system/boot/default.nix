@@ -25,6 +25,7 @@ in
         efitools
         efivar
         fwupd
+        sbctl
       ]
       ++ lib.optionals cfg.secureBoot [ sbctl ];
 
@@ -43,6 +44,11 @@ in
       lanzaboote = mkIf cfg.secureBoot {
         enable = true;
         pkiBundle = "/etc/secureboot";
+
+        autoGenerateKeys.enable = true;
+        autoEnrollKeys = {
+          enable = true;
+        };
       };
 
       loader = {
@@ -63,5 +69,13 @@ in
     };
 
     # services.fwupd.enable = true;
+
+    environment.persistence = mkIf (cfg.secureBoot && config.system.impermanence.enable) {
+      "/persist" = {
+        directories = [
+          "/etc/secureboot"
+        ];
+      };
+    };
   };
 }
