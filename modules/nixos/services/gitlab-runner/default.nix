@@ -20,7 +20,7 @@ in
   };
 
   config = mkIf cfg.enable {
-    boot.kernel.sysctl."net.ipv4.ip_forward" = true;
+    # IP forwarding enabled by Docker module
     virtualisation.docker = {
       enable = true;
       liveRestore = false; # Required for Docker Swarm mode
