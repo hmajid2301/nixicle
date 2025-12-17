@@ -27,6 +27,10 @@ in
     home.packages = with pkgs; [
       (lutris.override {
         extraPkgs = pkgs: [
+          # Performance tools
+          pkgs.gamemode
+          pkgs.mangohud
+          
           # GStreamer plugins and dependencies for Wine
           pkgs.gst_all_1.gstreamer
           pkgs.gst_all_1.gst-plugins-base

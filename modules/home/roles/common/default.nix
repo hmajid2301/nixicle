@@ -13,6 +13,10 @@ in
   };
 
   config = lib.mkIf cfg.enable {
+    home.sessionVariables = {
+      NH_SEARCH_CHANNEL = "nixos-unstable";
+    };
+
     browsers.firefox.enable = true;
 
     system = {

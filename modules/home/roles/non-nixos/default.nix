@@ -44,15 +44,17 @@ in
         package = config.lib.nixGL.wrap pkgs.ghostty;
       };
 
-      google-chrome = {
-        enable = true;
-        package = config.lib.nixGL.wrap pkgs.google-chrome;
-        commandLineArgs = [
-          "--enable-features=UseOzonePlatform"
-          "--ozone-platform=wayland"
-          "--enable-wayland-ime"
-        ];
-      };
+      # TODO: fix this
+      #   google-chrome = {
+      #     enable = true;
+      #     package = config.lib.nixGL.wrap pkgs.google-chrome;
+      #     commandLineArgs = [
+      #       "--disable-setuid-sandbox"
+      #       "--enable-features=UseOzonePlatform"
+      #       "--ozone-platform=wayland"
+      #       "--enable-wayland-ime"
+      #     ];
+      #   };
     };
 
     # Noctalia shell with PAM shim for lock screen authentication
@@ -148,32 +150,34 @@ in
       Exec=nixGLIntel ${config.home.homeDirectory}/.nix-profile/bin/ghostty
     '';
 
-    xdg.dataFile."applications/google-chrome.desktop" = {
-      force = true;
-      text = ''
-        [Desktop Entry]
-        Version=1.0
-        Name=Google Chrome
-        GenericName=Web Browser
-        Comment=Access the Internet
-        Exec=nixGLIntel ${config.home.homeDirectory}/.nix-profile/bin/google-chrome-stable --enable-features=UseOzonePlatform --ozone-platform=wayland --enable-wayland-ime %U
-        StartupNotify=true
-        Terminal=false
-        Icon=google-chrome
-        Type=Application
-        Categories=Network;WebBrowser;
-        MimeType=text/html;text/xml;application/xhtml+xml;x-scheme-handler/http;x-scheme-handler/https;
-        Actions=new-window;new-private-window;
-
-        [Desktop Action new-window]
-        Name=New Window
-        Exec=nixGLIntel ${config.home.homeDirectory}/.nix-profile/bin/google-chrome-stable --enable-features=UseOzonePlatform --ozone-platform=wayland --enable-wayland-ime
-
-        [Desktop Action new-private-window]
-        Name=New Incognito Window
-        Exec=nixGLIntel ${config.home.homeDirectory}/.nix-profile/bin/google-chrome-stable --enable-features=UseOzonePlatform --ozone-platform=wayland --enable-wayland-ime --incognito
-      '';
-    };
+    # TODO: fix this
+    # xdg.dataFile."applications/google-chrome.desktop" = {
+    #   force = true;
+    #   text = ''
+    #     [Desktop Entry]
+    #     Version=1.0
+    #     Name=Google Chrome
+    #     GenericName=Web Browser
+    #     Comment=Access the Internet
+    #     Exec=nixGLIntel ${config.home.homeDirectory}/.nix-profile/bin/google-chrome-stable --disable-setuid-sandbox --enable-features=UseOzonePlatform --ozone-platform=wayland --enable-wayland-ime %U
+    #     StartupNotify=true
+    #     Terminal=false
+    #     Icon=google-chrome
+    #     Type=Application
+    #     Categories=Network;WebBrowser;
+    #     MimeType=text/html;text/xml;application/xhtml+xml;x-scheme-handler/http;x-scheme-handler/https;
+    #     Actions=new-window;new-private-window;
+    #
+    #     [Desktop Action new-window]
+    #     Name=New Window
+    #     Exec=nixGLIntel ${config.home.homeDirectory}/.nix-profile/bin/google-chrome-stable --disable-setuid-sandbox --enable-features=UseOzonePlatform --ozone-platform=wayland --enable-wayland-ime
+    #
+    #     [Desktop Action new-private-window]
+    #     Name=New Incognito Window
+    #     Exec=nixGLIntel ${config.home.homeDirectory}/.nix-profile/bin/google-chrome-stable --disable-setuid-sandbox --enable-features=UseOzonePlatform --ozone-platform=wayland --enable-wayland-ime --incognito
+    #   '';
+    # };
+    #
 
     # Chrome/Chromium flags for better Wayland/OpenGL support
     xdg.configFile."chrome-flags.conf".text = ''
@@ -190,6 +194,10 @@ in
       XDG_CURRENT_DESKTOP=niri
       XDG_SESSION_TYPE=wayland
       MOZ_ENABLE_WAYLAND=1
+      # Intel GPU stability settings for video conferencing
+      MESA_LOADER_DRIVER_OVERRIDE=iris
+      # Prevent aggressive power management during video calls
+      intel_idle.max_cstate=1
     '';
   };
 }
