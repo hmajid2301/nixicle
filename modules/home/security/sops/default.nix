@@ -22,8 +22,8 @@ in
     sops = {
       age = {
         generateKey = true;
-        keyFile = "/home/${config.nixicle.user.name}/.config/sops/age/keys.txt";
-        sshKeyPaths = [ "/home/${config.nixicle.user.name}/.ssh/id_ed25519" ];
+        keyFile = "/home/${config.home.username}/.config/sops/age/keys.txt";
+        sshKeyPaths = [ "/home/${config.home.username}/.ssh/id_ed25519" ];
       };
 
       defaultSymlinkPath = "/run/user/1000/secrets";
