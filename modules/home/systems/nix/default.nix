@@ -28,7 +28,7 @@ in
     };
 
     home.sessionVariables = {
-      NH_FLAKE = "/home/${config.nixicle.user.name}/nixicle";
+      NH_FLAKE = "/home/${config.home.username}/nixicle";
     };
 
     nix = {
