@@ -23,7 +23,9 @@
     };
 
     impermanence.url = "github:nix-community/impermanence";
-    lanzaboote.url = "github:nix-community/lanzaboote";
+    lanzaboote.url = "github:tomwrw/lanzaboote";
+    # TODO: when this is merged https://github.com/nix-community/lanzaboote/pull/523/changes
+    # lanzaboote.url = "github:nix-community/lanzaboote";
 
     nixgl.url = "github:nix-community/nixGL";
     nix-index-database.url = "github:nix-community/nix-index-database";
@@ -233,7 +235,6 @@
       ];
       forAllSystems = nixpkgs.lib.genAttrs supportedSystems;
 
-      # Extended lib with nixicle namespace (thursdaddy-style)
       lib = nixpkgs.lib.extend (
         self: super: {
           nixicle = import ./lib {
@@ -243,24 +244,20 @@
         }
       );
 
-      # Overlays
       overlays = [
         inputs.nixgl.overlay
         inputs.nur.overlays.default
         inputs.nix-topology.overlays.default
         inputs.nvim-treesitter-main.overlays.default
         inputs.niri.overlays.niri
-        # Custom overlays
         (final: prev: {
           zjstatus = inputs.zjstatus.packages.${prev.stdenv.hostPlatform.system}.default;
         })
-        # Custom packages overlay - auto-import all packages
         (final: prev: {
           nixicle = lib.nixicle.importPackages final ./packages;
         })
       ];
 
-      # Create pkgs for a given system
       mkPkgs =
         system:
         import nixpkgs {
@@ -268,7 +265,6 @@
           config.allowUnfree = true;
         };
 
-      # Common NixOS modules
       commonNixosModules = [
         inputs.stylix.nixosModules.stylix
         home-manager.nixosModules.home-manager
@@ -278,11 +274,9 @@
         inputs.sops-nix.nixosModules.sops
         inputs.nix-topology.nixosModules.default
         inputs.authentik-nix.nixosModules.default
-        # Auto-import all custom NixOS modules via import-tree (only default.nix files)
         (inputs.import-tree.match ".*/default\\.nix" ./modules/nixos)
       ];
 
-      # Common home-manager modules
       commonHomeModules = [
         inputs.impermanence.nixosModules.home-manager.impermanence
         inputs.dankMaterialShell.homeModules.dankMaterialShell.default
@@ -295,11 +289,9 @@
         inputs.catppuccin.homeModules.catppuccin
         inputs.nix-index-database.homeModules.nix-index
         inputs.pam-shim.homeModules.default
-        # Auto-import all custom home modules via import-tree (only default.nix files)
         (inputs.import-tree.match ".*/default\\.nix" ./modules/home)
       ];
 
-      # Helper to create a NixOS system
       mkSystem =
         {
           hostname,
@@ -323,7 +315,6 @@
             ];
         };
 
-      # Helper to create a home-manager configuration (standalone)
       mkHome =
         {
           username,
@@ -332,7 +323,6 @@
           extraModules ? [ ],
         }:
         let
-          # Extend lib with nixicle namespace before passing to home-manager
           extendedLib = lib.extend (
             self: super: {
               nixicle = import ./lib {
@@ -347,7 +337,7 @@
           pkgs = mkPkgs system;
           extraSpecialArgs = {
             inherit inputs;
-            host = hostname; # Make hostname available as 'host' argument
+            host = hostname;
           };
           modules =
             commonHomeModules
@@ -363,7 +353,6 @@
             ];
         };
 
-      # Helper to create home-manager module for NixOS integration
       mkHomeModule =
         {
           username,
@@ -377,11 +366,10 @@
             useUserPackages = true;
             extraSpecialArgs = {
               inherit inputs;
-              host = hostname; # Make hostname available as 'host' argument
+              host = hostname;
             };
             users.${username} = {
               imports = [
-                # Module to extend lib with nixicle functions while preserving lib.hm
                 (
                   { lib, ... }:
                   let
@@ -410,7 +398,6 @@
 
     in
     {
-      # NixOS configurations
       nixosConfigurations = {
         framework = mkSystem {
           hostname = "framework";
@@ -454,11 +441,22 @@
         vps = mkSystem {
           hostname = "vps";
         };
+
+        framebox = mkSystem {
+          hostname = "framebox";
+          extraModules = [
+            inputs.nixos-hardware.nixosModules.framework-desktop-amd-ai-max-300-series
+            (mkHomeModule {
+              username = "haseeb";
+              hostname = "framebox";
+            })
+          ];
+        };
+
+
       };
 
-      # Standalone home-manager configurations (for non-NixOS systems and standalone use on NixOS)
       homeConfigurations = {
-        # Standalone home-manager only (non-NixOS)
         "haseebmajid@dell" = mkHome {
           username = "haseebmajid";
           hostname = "dell";
@@ -469,7 +467,6 @@
           hostname = "steamdeck";
         };
 
-        # Standalone home-manager for NixOS systems (can be used instead of NixOS integration)
         "haseeb@workstation" = mkHome {
           username = "haseeb";
           hostname = "workstation";
@@ -484,18 +481,37 @@
           username = "haseeb";
           hostname = "vm";
         };
+
+        "haseeb@framebox" = mkHome {
+          username = "haseeb";
+          hostname = "framebox";
+        };
       };
 
-      # Packages
       packages = forAllSystems (
         system:
         let
           pkgs = mkPkgs system;
         in
-        pkgs.nixicle
+        pkgs.nixicle // {
+          # ISO images using nixos-generators
+          iso-graphical = inputs.nixos-generators.nixosGenerate {
+            inherit system;
+            modules = [
+              commonNixosModules
+              ./iso/graphical
+              {
+                nixpkgs.hostPlatform = system;
+                # Use GNOME live environment
+                isoImage.isoBaseName = "nixicle-graphical";
+                isoImage.volumeID = "nixicle-${lib.substring 0 8 (self.lastModifiedDate or self.lastModified or "19700101")}";
+              }
+            ];
+            format = "iso";
+          };
+        }
       );
 
-      # Dev shells
       devShells = forAllSystems (
         system:
         let
@@ -536,20 +552,20 @@
               age
               opentofu
               mc
+              go-task
+              gum
             ];
           };
         }
       );
 
-      # Deploy-rs configuration
       deploy = lib.nixicle.mkDeploy {
         inherit self;
         overrides = {
-          # Server hosts use 'nixos' user
           ms01.profiles.system.sshUser = "nixos";
           s100.profiles.system.sshUser = "nixos";
           vps.profiles.system.sshUser = "nixos";
-          # Workstation hosts use 'haseeb' user
+
           framework.profiles.system.sshUser = "haseeb";
           workstation.profiles.system.sshUser = "haseeb";
           vm.profiles.system.sshUser = "haseeb";
@@ -560,7 +576,6 @@
         system: deploy-lib: deploy-lib.deployChecks self.deploy
       ) inputs.deploy-rs.lib;
 
-      # Topology
       topology =
         let
           host = self.nixosConfigurations.${builtins.head (builtins.attrNames self.nixosConfigurations)};
