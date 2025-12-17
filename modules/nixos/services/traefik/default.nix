@@ -19,42 +19,18 @@ in
       443
     ];
 
-    users.groups.k3s = lib.mkIf config.services.k3s.enable { };
-
-    users.users.traefik = lib.mkIf config.services.k3s.enable {
-      extraGroups = [ "k3s" ];
-    };
-
     systemd.services.traefik = {
       environment = {
         CF_API_EMAIL = "hello@haseebmajid.dev";
       };
       serviceConfig = {
-        EnvironmentFile = [ config.sops.secrets.cloudflare_api_key.path ];
-        SupplementaryGroups = lib.mkIf config.services.k3s.enable [ "k3s" ];
+        EnvironmentFile = config.sops.secrets.cloudflare_api_key.path;
       };
-      after =
-        [ "tailscaled.service" ]
-        ++ lib.optionals config.services.k3s.enable [ "k3s.service" ];
-      wants =
-        [ "tailscaled.service" ]
-        ++ lib.optionals config.services.k3s.enable [ "k3s.service" ];
-      requires = lib.mkIf config.services.k3s.enable [ "k3s.service" ];
     };
 
     sops.secrets = {
       cloudflare_api_key = {
         sopsFile = ../secrets.yaml;
-      };
-      k8s_traefik_token = lib.mkIf config.services.k3s.enable {
-        sopsFile = ../secrets.yaml;
-        owner = "traefik";
-        group = "traefik";
-      };
-      k8s_traefik_ca = lib.mkIf config.services.k3s.enable {
-        sopsFile = ../secrets.yaml;
-        owner = "traefik";
-        group = "traefik";
       };
     };
 
@@ -85,20 +61,6 @@ in
                   provider = "cloudflare";
                 };
               };
-            };
-          };
-
-          providers = lib.mkIf config.services.k3s.enable {
-            kubernetesIngress = {
-              endpoint = "https://vps:6443";
-              token = config.sops.secrets.k8s_traefik_token.path;
-              certAuthFilePath = config.sops.secrets.k8s_traefik_ca.path;
-              ingressClass = "traefik";
-            };
-            kubernetesCRD = {
-              endpoint = "https://vps:6443";
-              token = config.sops.secrets.k8s_traefik_token.path;
-              certAuthFilePath = config.sops.secrets.k8s_traefik_ca.path;
             };
           };
 
