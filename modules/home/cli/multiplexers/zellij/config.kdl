@@ -13,7 +13,6 @@ ui {
     }
 }
 
-// If you'd like to override the default keybindings completely, be sure to change "keybinds" to "keybinds clear-defaults=true"
 keybinds {
     unbind "Ctrl q"
     normal {
@@ -188,44 +187,58 @@ keybinds {
 
         bind "Alt q" { Quit; }
 
-        // Tab navigation - using Alt+Shift to avoid conflicts with Neovim Ctrl+n/p
-        bind "Alt N" { GoToNextTab; }
-        bind "Alt P" { GoToPreviousTab; }
+        bind "Ctrl h" {
+            MessagePlugin "https://github.com/hiasr/vim-zellij-navigator/releases/download/0.3.0/vim-zellij-navigator.wasm" {
+                name "move_focus_or_tab";
+                payload "left";
+            };
+        }
+        bind "Ctrl j" {
+            MessagePlugin "https://github.com/hiasr/vim-zellij-navigator/releases/download/0.3.0/vim-zellij-navigator.wasm" {
+                name "move_focus";
+                payload "down";
+            };
+        }
+        bind "Ctrl k" {
+            MessagePlugin "https://github.com/hiasr/vim-zellij-navigator/releases/download/0.3.0/vim-zellij-navigator.wasm" {
+                name "move_focus";
+                payload "up";
+            };
+        }
+        bind "Ctrl l" {
+            MessagePlugin "https://github.com/hiasr/vim-zellij-navigator/releases/download/0.3.0/vim-zellij-navigator.wasm" {
+                name "move_focus_or_tab";
+                payload "right";
+            };
+        }
 
-        // // Smart navigation with vim-zellij-navigator
-        // // Note: Commented out in favor of smart-splits.nvim integration
-        // bind "Ctrl h" {
-        //     MessagePlugin "https://github.com/hiasr/vim-zellij-navigator/releases/download/0.3.0/vim-zellij-navigator.wasm" {
-        //         name "move_focus";
-        //         payload "left";
-        //         move_mod "ctrl";
-        //         use_arrow_keys "false";
-        //     };
-        // }
-        // bind "Ctrl j" {
-        //     MessagePlugin "https://github.com/hiasr/vim-zellij-navigator/releases/download/0.3.0/vim-zellij-navigator.wasm" {
-        //         name "move_focus";
-        //         payload "down";
-        //         move_mod "ctrl";
-        //         use_arrow_keys "false";
-        //     };
-        // }
-        // bind "Ctrl k" {
-        //     MessagePlugin "https://github.com/hiasr/vim-zellij-navigator/releases/download/0.3.0/vim-zellij-navigator.wasm" {
-        //         name "move_focus";
-        //         payload "up";
-        //         move_mod "ctrl";
-        //         use_arrow_keys "false";
-        //     };
-        // }
-        // bind "Ctrl l" {
-        //     MessagePlugin "https://github.com/hiasr/vim-zellij-navigator/releases/download/0.3.0/vim-zellij-navigator.wasm" {
-        //         name "move_focus";
-        //         payload "right";
-        //         move_mod "ctrl";
-        //         use_arrow_keys "false";
-        //     };
-        // }
+        bind "Ctrl n" { GoToNextTab; }
+        bind "Ctrl p" { GoToPreviousTab; }
+
+        bind "Alt h" {
+            MessagePlugin "https://github.com/hiasr/vim-zellij-navigator/releases/download/0.3.0/vim-zellij-navigator.wasm" {
+                name "resize";
+                payload "left";
+            };
+        }63
+        bind "Alt j" {
+            MessagePlugin "https://github.com/hiasr/vim-zellij-navigator/releases/download/0.3.0/vim-zellij-navigator.wasm" {
+                name "resize";
+                payload "down";
+            };
+        }
+        bind "Alt k" {
+            MessagePlugin "https://github.com/hiasr/vim-zellij-navigator/releases/download/0.3.0/vim-zellij-navigator.wasm" {
+                name "resize";
+                payload "up";
+            };
+        }
+        bind "Alt l" {
+            MessagePlugin "https://github.com/hiasr/vim-zellij-navigator/releases/download/0.3.0/vim-zellij-navigator.wasm" {
+                name "resize";
+                payload "right";
+            };
+        }
 
         bind "Alt =" "Alt +" { Resize "Increase"; }
         bind "Alt -" { Resize "Decrease"; }
