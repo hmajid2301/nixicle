@@ -8,7 +8,7 @@ in
           plugin location="file://${pkgs.zjstatus}/bin/zjstatus.wasm" {
               format_left   "{mode}#[bg=#${colors.base00}] {tabs}"
               format_center ""
-              format_right  "#[bg=#${colors.base00},fg=#${colors.base0D}]#[bg=#${colors.base0D},fg=#${colors.base01},bold] #[bg=#${colors.base02},fg=#${colors.base05},bold] {session} #[bg=#${colors.base03},fg=#${colors.base05},bold]"
+              forrmat_right  "#[bg=#${colors.base00},fg=#${colors.base0D}]#[bg=#${colors.base0D},fg=#${colors.base01},bold] #[bg=#${colors.base02},fg=#${colors.base05},bold] {session} #[bg=#${colors.base03},fg=#${colors.base05},bold]"
               format_space  ""
               format_hide_on_overlength "true"
               format_precedence "crl"
@@ -43,7 +43,7 @@ in
 
               tab_separator           "#[bg=#${colors.base00}] "
 
-              tab_sync_indicator       " "
+              tab_sync_indicator       " "
               tab_fullscreen_indicator " 󰊓"
               tab_floating_indicator   " 󰹙"
 
