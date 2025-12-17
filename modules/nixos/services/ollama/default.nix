@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  pkgs,
   ...
 }:
 with lib; let
@@ -13,8 +14,8 @@ in {
   config = mkIf cfg.enable {
     services.ollama = {
       enable = true;
-      # acceleration = "rocm";
-      # rocmOverrideGfx = "11.0.0";
+      package = pkgs.ollama-rocm;  # AMD GPU package
+      rocmOverrideGfx = "11.0.0";  # RX 7900 XTX (RDNA 3) support
     };
 
     services.open-webui = {
