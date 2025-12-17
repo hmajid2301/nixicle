@@ -71,31 +71,12 @@
   desktops = {
     niri = {
       enable = true;
-      outputs = {
-        "eDP-1" = {
-          position = {
-            x = 0;
-            y = 0;
-          };
-        };
-        "HDMI-A-2" = {
-          position = {
-            x = 1536;
-            y = 0;
-          };
-        };
-      };
     };
 
     addons = {
       noctalia = {
         laptop = true;
       };
-      # DMS ready to use with laptop mode
-      # dms = {
-      #   enable = true;
-      #   laptop = true;
-      # };
     };
   };
 
@@ -218,10 +199,7 @@
     email = "haseeb.majid@nala.money";
   };
 
-  nixicle.user = {
-    enable = true;
-    name = "haseebmajid";
-  };
+
 
   home.stateVersion = "23.11";
 }
