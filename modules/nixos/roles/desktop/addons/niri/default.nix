@@ -48,10 +48,10 @@ in
         xdg-desktop-portal-gnome
       ];
       config.niri = {
-        default = [
-          "gnome"
-          "gtk"
-        ];
+        default = [ "gnome" ];
+        # Use GNOME portal for screencasting (niri wiki recommendation)
+        "org.freedesktop.impl.portal.ScreenCast" = [ "gnome" ];
+        "org.freedesktop.impl.portal.Screenshot" = [ "gnome" ];
       };
       xdgOpenUsePortal = true;
     };
