@@ -19,21 +19,7 @@ in {
           };
         };
 
-        cloudflared = {
-          enable = true;
-          tunnels = {
-            "ec0b6af0-a823-4616-a08b-b871fd2c7f58" = {
-              ingress = {
-                "navidrome.haseebmajid.dev" = {
-                  service = "https://localhost";
-                  originRequest = {
-                    originServerName = "navidrome.haseebmajid.dev";
-                  };
-                };
-              };
-            };
-          };
-        };
+
       };
     }
 
@@ -43,6 +29,19 @@ in {
         name = "navidrome";
         port = 4533;
         domain = "haseebmajid.dev";
+      };
+    }
+
+    {
+      services.cloudflared.tunnels = mkIf config.services.nixicle.cloudflare.enable {
+        ${config.services.nixicle.cloudflare.tunnelId}.ingress = {
+          "navidrome.haseebmajid.dev" = {
+            service = "https://localhost";
+            originRequest = {
+              originServerName = "navidrome.haseebmajid.dev";
+            };
+          };
+        };
       };
     }
   ]);
