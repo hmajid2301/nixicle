@@ -19,6 +19,8 @@ return {
 			{ "<leader>fs", mode = { "n" }, desc = "Find pickers" },
 			{ "<leader>fn", mode = { "n" }, desc = "Find notes files" },
 			{ "<leader>fN", mode = { "n" }, desc = "Find notes grep" },
+			{ "<leader>ft", mode = { "n" }, desc = "Find latest TODOs" },
+			{ "<leader>fT", mode = { "n" }, desc = "Grep latest TODOs" },
 			{ "<leader>gc", mode = { "n" }, desc = "Git commits" },
 			{ "<leader>gS", mode = { "n" }, desc = "Git status" },
 			{ "<leader>go", mode = { "n", "v" }, desc = "Git browse (open in browser)" },
@@ -331,6 +333,18 @@ return {
 			vim.keymap.set("n", "<leader>ws", function()
 				Snacks.picker.lsp_workspace_symbols()
 			end, { desc = "Workspace symbols" })
+
+			-- Latest TODOs pickers
+			local todos = require("config.todos")
+			todos.setup() -- Create user commands
+
+			vim.keymap.set("n", "<leader>ft", function()
+				todos.search_latest_todos()
+			end, { desc = "Find latest TODOs" })
+
+			vim.keymap.set("n", "<leader>fT", function()
+				todos.grep_latest_todos()
+			end, { desc = "Grep latest TODOs" })
 		end,
 	},
 }
