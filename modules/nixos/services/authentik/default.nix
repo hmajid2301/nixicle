@@ -35,15 +35,7 @@ in {
           };
         };
 
-        cloudflared = {
-          tunnels = {
-            "ec0b6af0-a823-4616-a08b-b871fd2c7f58" = {
-              ingress = {
-                "authentik.haseebmajid.dev" = "http://localhost:9000";
-              };
-            };
-          };
-        };
+
 
         traefik = {
           dynamicConfigOptions = {
@@ -83,6 +75,14 @@ in {
         domain = "haseebmajid.dev";
         extraRouterConfig = {
           rule = "Host(`authentik.haseebmajid.dev`) || HostRegexp(`{subdomain:[a-z0-9]+}.homelab.haseebmajid.com`) && PathPrefix(`/outpost.goauthentik.io/`)";
+        };
+      };
+    }
+
+    {
+      services.cloudflared.tunnels = mkIf config.services.nixicle.cloudflare.enable {
+        ${config.services.nixicle.cloudflare.tunnelId}.ingress = {
+          "authentik.haseebmajid.dev" = "http://localhost:9000";
         };
       };
     }

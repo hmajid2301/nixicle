@@ -46,16 +46,7 @@ in {
 
         jellyseerr.enable = true;
 
-        cloudflared = {
-          enable = true;
-          tunnels = {
-            "ec0b6af0-a823-4616-a08b-b871fd2c7f58" = {
-              ingress = {
-                "jellyseerr.haseebmajid.dev" = "http://localhost:5055";
-              };
-            };
-          };
-        };
+
       };
     }
 
@@ -104,6 +95,14 @@ in {
           port = 5055;
         })
       ];
+    }
+
+    {
+      services.cloudflared.tunnels = mkIf config.services.nixicle.cloudflare.enable {
+        ${config.services.nixicle.cloudflare.tunnelId}.ingress = {
+          "jellyseerr.haseebmajid.dev" = "http://localhost:5055";
+        };
+      };
     }
   ]);
 }
