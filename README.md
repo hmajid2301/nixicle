@@ -54,7 +54,7 @@ nh os switch
 nh home switch
 
 # Build ISO in result/ folder
-nix build .#install-isoConfigurations.graphical
+nix build .#iso-graphical
 
 # Deploy my to remote server i.e. Home Lab (using SSH)
 deploy .#ms01 --hostname ms01 --ssh-user nixos --skip-checks
@@ -76,46 +76,23 @@ nix build .#containers-ci
 
 Some features of my config:
 
-- Using **snowfall-lib** to structure the nix config.
 - Structured to allow multiple **NixOS configurations**, including **desktop**, **laptop** and **homelab**
 - **Custom** live ISO for installing NixOS
 - **Styling** with stylix
 - **Opt-in persistance** through impermanence + blank snapshot
 - **Encrypted BTRFS partition**
+- **Secure Boot** with lanzaboote
 - **sops-nix** for secrets management
-- Different environments like **hyprland** and **gnome**
+- Different environments like **niri**, **hyprland** and **gnome**
 - Custom **Neovim** setup declaratively using **NixCats**
 - Homelab all configured in nix.
-
-## 🏠 Configurations
-
-
-|   Hostname                                 |            Board                                          |               CPU                                                   |  RAM          |         Primary GPU                                    |  Role | OS  | State |
-| :---------:                                | :-------------------------:                               | :----------------------------:                                      | :---:         | :-------------------------:                            |  :--: | :-: | :---: |
-| `workstation`                                | X671E AORUS PRO X                                         | AMD Ryzen 9 7950X                                                   | 64GB          | AMD Spectral White 7900 XTX                            | 🖥️     | ❄️   | ✅    |
-| `framework`                                  | Framework 13th Gen AMD                                    | Intel® Core™ i7-1370P                                               | 32GB          | Intel Iris Graphics                                    | 💻️    | ❄️   | ✅    |
-| `dell`                                     | Framework 13th Gen AMD                                    | Intel® Core™ i7-1370P                                               | 32GB          | Intel Iris Graphics                                    | 💻️    | ❄️   | ✅    |
-| `vm`                                         | QEMU                                                      | -                                                                   | -             | VirGL                                                  |  🐄   | ❄️   | ✅    |
-| `steamdeck`                                  | -                                                         | Zen 2                                                               | 16GB          | 8 RDNA 2 CUs                                           |  🎮️   | 🐧  | ✅    |
-| `ms01`                                       |  MS-01                                                    |  i9-13900H                                                          | 64GB          | Iris Xe Graphics                                       |  ☁️    | ❄️   | ✅    |
-| `s100`                                       |  S100                                                     |  N100                                                               | 8GB           | Iris Xe Graphics                                       |  ☁️    | ❄️   | ✅    |
-| `vps`                                        | QEMU (Hetzner shared)                                     | 2 VCPU                                                              | 2GB           | VirGL                                                  |  🐄   | ❄️   | ✅    |
-
-**Key**
-
-- 🖥️ : Desktop
-- 💻️ : Laptop
-- 🎮️ : Games Machine
-- 🐄 : Virtual Machine
-- ☁️ : Server
-
 
 ## 🖼️ Showcase
 
 ### Desktop
 
 ![terminal](images/terminal.png)
-![swaync](images/swaync.png)
+![notifications](images/notifications.png)
 ![wallpaper](images/wallpaper.png)
 ![monkeytype](images/monkeytype.png)
 
