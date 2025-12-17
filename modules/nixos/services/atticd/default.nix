@@ -60,8 +60,8 @@ in
           middlewares = {
             attic-timeout = {
               buffering = {
-                maxRequestBodyBytes = 10737418240; # 10GB
-                memRequestBodyBytes = 1073741824; # 1GB
+                maxRequestBodyBytes = 10737418240;
+                memRequestBodyBytes = 1073741824;
               };
             };
           };
@@ -76,6 +76,14 @@ in
             };
           };
         };
+      };
+    };
+
+    environment.persistence = mkIf config.system.impermanence.enable {
+      "/persist" = {
+        directories = [
+          "/var/lib/atticd"
+        ];
       };
     };
   };
