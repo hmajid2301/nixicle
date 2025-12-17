@@ -8,10 +8,7 @@
     gaming.enable = true;
   };
 
-  nixicle.user = {
-    enable = true;
-    name = "haseeb";
-  };
+
 
   cli.tools.ssh.enableKeychain = false;
 
