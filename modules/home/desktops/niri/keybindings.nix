@@ -35,8 +35,7 @@ in
         "Mod+V".action.spawn = noctalia "launcher clipboard";
 
         "Mod+Q".action = close-window;
-        "Mod+F".action = maximize-column;
-        "Mod+Shift+F".action = fullscreen-window;
+        "Mod+F".action = fullscreen-window;
         "Mod+T".action = toggle-window-floating;
         "Mod+O".action = toggle-overview;
         "Mod+C".action = center-column;
@@ -47,7 +46,7 @@ in
         "Mod+J".action = focus-window-or-workspace-down;
         "Mod+K".action = focus-window-or-workspace-up;
 
-        # Navigate workspaces sequentially
+        # Navigate workspaces63 sequentially
         "Mod+Ctrl+J".action = focus-workspace-down;
         "Mod+Ctrl+K".action = focus-workspace-up;
 

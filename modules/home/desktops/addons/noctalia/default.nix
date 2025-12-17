@@ -150,7 +150,33 @@ in
 
           wallpaper = {
             directory = "/home/${config.home.username}/nixicle/packages/wallpapers/wallpapers";
-            enableOverviewWallpaper = true;
+            overviewEnabled = true;
+          };
+
+          location = {
+            name = "london";
+            showCalendarWeather = true;
+          };
+
+          calendar = {
+            cards = [
+              {
+                enabled = true;
+                id = "calendar-header-card";
+              }
+              {
+                enabled = true;
+                id = "calendar-month-card";
+              }
+              {
+                enabled = false;
+                id = "timer-card";
+              }
+              {
+                enabled = true;
+                id = "weather-card";
+              }
+            ];
           };
 
           osd = {
