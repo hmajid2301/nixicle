@@ -11,11 +11,10 @@ let
 in
 {
   options.system.impermanence = with types; {
-    enable = mkBoolOpt false "Enable impermanence - WARNING: Only use on VMs or test systems!";
+    enable = mkBoolOpt false "Enable impermanence";
   };
 
   config = mkIf cfg.enable {
-    # Required for the rollback service to work properly
     boot.initrd.systemd.enable = true;
 
     security.sudo.extraConfig = ''
@@ -27,10 +26,10 @@ in
 
     programs.fuse.userAllowOther = true;
 
-    # Create necessary directories in /persist on boot
     systemd.tmpfiles.rules = [
       "d /persist 0755 root root -"
       "d /persist/root 0700 root root -"
+      "d /persist/etc 0755 root root -"
       "d /persist/etc/nixos 0755 root root -"
       "d /persist/srv 0755 root root -"
       "d /persist/var/spool 0755 root root -"
@@ -47,28 +46,29 @@ in
       "d /persist/var/db/sudo 0700 root root -"
       "d /persist/etc/NetworkManager/system-connections 0700 root root -"
       "d /persist/etc/ssh 0755 root root -"
+
     ];
 
-    # Make sure critical directories exist
-    system.activationScripts.impermanence = lib.mkBefore ''
+    system.activationScripts.impermanence = ''
       mkdir -p /persist/{root,srv,etc/nixos,etc/ssh}
       mkdir -p /persist/var/{spool,cache,db}
       mkdir -p /persist/var/lib/{nixos,systemd,dbus,bluetooth,NetworkManager}
       mkdir -p /persist/var/lib/systemd/{coredump,timers,timesync}
-      mkdir -p /persist/var/db/sudo
-      mkdir -p /persist/etc/NetworkManager/system-connections
+       mkdir -p /persist/var/db/sudo
+       mkdir -p /persist/etc/NetworkManager/system-connections
+       mkdir -p /persist/etc/ssh
+       ${lib.optionalString config.system.boot.secureBoot "mkdir -p /persist/etc/secureboot"}
     '';
 
-    # Configure SSH to generate and use keys directly in /persist
-    services.openssh.hostKeys = [
+    services.openssh.hostKeys = lib.mkForce [
       {
-        type = "ed25519";
         path = "/persist/etc/ssh/ssh_host_ed25519_key";
+        type = "ed25519";
       }
       {
+        path = "/persist/etc/ssh/ssh_host_rsa_key";
         type = "rsa";
         bits = 4096;
-        path = "/persist/etc/ssh/ssh_host_rsa_key";
       }
     ];
 
@@ -78,7 +78,6 @@ in
     boot.initrd.systemd.services.rollback = {
       description = "Rollback BTRFS root subvolume to a pristine state";
       wantedBy = [ "initrd.target" ];
-      # make sure it's done after encryption and before mounting
       after = [
         "systemd-cryptsetup@enc.service"
         "systemd-cryptsetup@cryptroot.service"
@@ -94,7 +93,6 @@ in
 
         echo "Starting impermanence rollback..."
 
-        # Find the encrypted device (try common names)
         LUKS_DEVICE=""
         for device in /dev/mapper/enc /dev/mapper/cryptroot; do
           if [[ -b "$device" ]]; then
@@ -112,13 +110,11 @@ in
 
         mkdir -p /mnt
 
-        # Mount the btrfs root to /mnt so we can manipulate subvolumes
         if ! mount -o subvol=/ "$LUKS_DEVICE" /mnt; then
           echo "Error: Failed to mount root filesystem"
           exit 1
         fi
 
-        # Check if root-blank snapshot exists
         if [[ ! -d "/mnt/root-blank" ]]; then
           echo "Error: /mnt/root-blank snapshot not found, skipping rollback"
           umount /mnt || true
@@ -127,7 +123,6 @@ in
 
         echo "Found root-blank snapshot, proceeding with rollback"
 
-        # List and delete nested subvolumes first
         if [[ -d "/mnt/root" ]]; then
           echo "Removing nested subvolumes..."
           btrfs subvolume list -o /mnt/root | cut -f9 -d' ' | while read -r subvolume; do
@@ -157,17 +152,7 @@ in
       '';
     };
 
-    # Safety check: Only enable impermanence on systems that explicitly request it
-    # and have proper btrfs setup with root-blank snapshot
     assertions = [
-      {
-        assertion = config.networking.hostName != "workstation";
-        message = "ERROR: Impermanence is disabled on workstation for safety! Only use on VMs or test systems.";
-      }
-      {
-        assertion = config.networking.hostName != "framework";
-        message = "ERROR: Impermanence is disabled on framework laptop for safety! Only use on VMs or test systems.";
-      }
       {
         assertion = config.fileSystems."/persist".fsType or null == "btrfs";
         message = "Impermanence requires /persist to be mounted as btrfs";
@@ -183,29 +168,29 @@ in
     environment.persistence."/persist" = {
       hideMounts = true;
       directories = [
-        # Note: /home is a separate btrfs subvolume, not a bind mount
-        # Note: /var/log is also a separate btrfs subvolume, not persisted here
-        "/etc/nixos" # NixOS configuration for recovery
+        "/etc/nixos"
         "/srv"
-        "/var/spool" # Mail and print spooling
+        "/var/spool"
         "/.cache/nix/"
         "/etc/NetworkManager/system-connections"
-        "/etc/ssh"
         "/var/cache/"
         "/var/db/sudo/"
-        # Instead of persisting all of /var/lib/, persist specific subdirectories
-        "/var/lib/nixos" # Critical: UIDs/GIDs for systemd dynamic users
+        "/var/lib/nixos"
         "/var/lib/systemd/coredump"
         "/var/lib/systemd/timers"
-        "/var/lib/systemd/timesync" # System time sync (critical for systems without RTC)
+        "/var/lib/systemd/timesync"
         "/var/lib/bluetooth"
-        "/var/lib/NetworkManager" # Network leases and full NM state
-        "/var/lib/dbus" # D-Bus machine UUID
-        "/root" # Persist root user home
+        "/var/lib/NetworkManager"
+        "/var/lib/dbus"
+        "/root"
       ];
       files = [
         "/etc/machine-id"
-        "/etc/adjtime" # System clock
+        "/etc/adjtime"
+        "/etc/ssh/ssh_host_ed25519_key"
+        "/etc/ssh/ssh_host_ed25519_key.pub"
+        "/etc/ssh/ssh_host_rsa_key"
+        "/etc/ssh/ssh_host_rsa_key.pub"
       ];
     };
   };
