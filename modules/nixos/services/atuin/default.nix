@@ -15,7 +15,7 @@ in
   config = mkIf cfg.enable {
     services.atuin = {
       enable = true;
-      openRegistration = false;
+      openRegistration = true;
       maxHistoryLength = 99999999;
       port = 8890;
     };
