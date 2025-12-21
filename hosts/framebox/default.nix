@@ -13,7 +13,20 @@
     inputs.nixos-hardware.nixosModules.framework-desktop-amd-ai-max-300-series
   ];
 
-  networking.hostName = "framebox";
+  sops.secrets = {
+    gitlab_runner_env = {
+      sopsFile = ./secrets.yaml;
+    };
+    cloudflared = {
+      sopsFile = ./secrets.yaml;
+    };
+    user_password = {
+      sopsFile = ./secrets.yaml;
+      neededForUsers = true;
+    };
+  };
+
+  user.passwordSecretFile = config.sops.secrets.user_password.path;
 
   system = {
     impermanence.enable = true;
@@ -23,27 +36,28 @@
     };
   };
 
-  sops.secrets = {
-    gitlab_runner_env = {
-      sopsFile = ./secrets.yaml;
-    };
-  };
-
   services = {
+    power-profiles-daemon.enable = true;
     nixicle = {
+      authentik.enable = true;
       atuin.enable = true;
       atticd.enable = true;
+      cloudflare = {
+        enable = true;
+        tunnelId = "ecef5dbb-834e-43ed-84c6-355a2ac53e59";
+        credentialsFile = config.sops.secrets.cloudflared.path;
+      };
       ollama.enable = true;
+      gitea.enable = true;
       gitlab-runner = {
         enable = true;
         sopsFile = config.sops.secrets.gitlab_runner_env.path;
       };
-      cloudflare = {
-        enable = true;
-        tunnelId = "ecef5dbb-834e-43ed-84c6-355a2ac53e59";
-        credentialsFile = "/home/${config.user.name}/.cloudflared/ecef5dbb-834e-43ed-84c6-355a2ac53e59.json";
-      };
+      karakeep.enable = true;
+      tandoor.enable = true;
       traefik.enable = true;
+      postgresql.enable = true;
+      tailscale.enable = true;
     };
   };
 
@@ -54,12 +68,10 @@
         niri.enable = true;
       };
     };
+    gaming.enable = true;
   };
 
-  boot = {
-    kernelPackages = pkgs.linuxPackages_latest;
-    resumeDevice = "/dev/disk/by-label/nixos";
-  };
+  networking.hostName = "framebox";
 
   system.stateVersion = "24.05";
 }
