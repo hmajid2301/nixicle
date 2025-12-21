@@ -17,7 +17,7 @@ in
 
   config = mkIf cfg.enable {
     # NixGL configuration
-    nixGL = {
+    targets.genericLinux.nixGL = {
       inherit (inputs.nixgl) packages;
       defaultWrapper = "mesa";
     };
@@ -194,6 +194,8 @@ in
       XDG_CURRENT_DESKTOP=niri
       XDG_SESSION_TYPE=wayland
       MOZ_ENABLE_WAYLAND=1
+      # Java AWT compatibility with tiling window managers
+      _JAVA_AWT_WM_NONREPARENTING=1
       # Intel GPU stability settings for video conferencing
       MESA_LOADER_DRIVER_OVERRIDE=iris
       # Prevent aggressive power management during video calls
