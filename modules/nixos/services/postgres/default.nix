@@ -40,7 +40,7 @@ in
     services = {
       postgresql = {
         enable = true;
-        package = pkgs.postgresql_17;
+        package = pkgs.postgresql_18;
         authentication = pkgs.lib.mkOverride 10 ''
           #...
           #type database DBuser origin-address auth-method
@@ -84,6 +84,15 @@ in
             };
           };
         };
+      };
+    };
+
+    environment.persistence = mkIf config.system.impermanence.enable {
+      "/persist" = {
+        directories = [
+          "/var/lib/postgresql"
+          "/var/backup/postgresql"
+        ];
       };
     };
   };

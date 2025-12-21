@@ -117,5 +117,13 @@ in
         };
       };
     };
+
+    environment.persistence = mkIf config.system.impermanence.enable {
+      "/persist" = {
+        directories = [
+          "/var/lib/traefik"
+        ];
+      };
+    };
   };
 }
