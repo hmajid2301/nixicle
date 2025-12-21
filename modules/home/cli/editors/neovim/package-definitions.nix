@@ -1,7 +1,7 @@
 { config, inputs, ... }:
 let
   # Access stylix colors for passing to Neovim
-  stylixColors = config.lib.stylix.colors.withHashtag or {};
+  stylixColors = config.lib.stylix.colors.withHashtag or { };
 in
 {
   packageDefinitions.replace = {
@@ -14,7 +14,7 @@ in
           suffix-LD = true;
           aliases = [ "nvim" ];
           configDirName = "nvim";
-          # neovim-unwrapped = inputs.neovim-nightly-overlay.packages.${pkgs.system}.neovim;
+          neovim-unwrapped = inputs.neovim-nightly-overlay.packages.${pkgs.stdenv.hostPlatform.system}.neovim;
         };
         categories = {
           general = true;
@@ -73,7 +73,7 @@ in
           suffix-LD = true;
           unwrappedCfgPath = "${config.home.homeDirectory}/nixicle/modules/home/cli/editors/neovim";
           configDirName = "nvim";
-          neovim-unwrapped = inputs.neovim-nightly-overlay.packages.${pkgs.system}.neovim;
+          neovim-unwrapped = inputs.neovim-nightly-overlay.packages.${pkgs.stdenv.hostPlatform.system}.neovim;
         };
         categories = {
           general = true;

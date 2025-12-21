@@ -1,18 +1,5 @@
--- TODO: lazyload this
-vim.o.sessionoptions = "blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal,localoptions"
-
-require("auto-session").setup({
-	pre_save_cmds = {
-		function()
-			vim.cmd([[
-                noautocmd windo set winbar=
-                noautocmd windo setlocal winbar=
-            ]])
-		end,
-	},
-})
-
 require("lze").load({
+	{ import = "config.plugins.auto-session" },
 	{ import = "config.plugins.telescope" },
 	{ import = "config.plugins.treesitter" },
 	{ import = "config.plugins.completion" },

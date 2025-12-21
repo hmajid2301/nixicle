@@ -42,6 +42,9 @@ return {
 		end,
 		after = function(plugin)
 			require("smart-splits").setup({
+				-- Enable Zellij integration
+				multiplexer_integration = "zellij",
+				-- Enable move to tab when at edge for Zellij
 				zellij_move_focus_or_tab = true,
 				ignored_buftypes = {
 					"nofile",
