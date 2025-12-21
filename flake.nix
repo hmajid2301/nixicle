@@ -72,11 +72,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    pyprland = {
-      url = "github:hyprland-community/pyprland";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     # Niri
 
     niri = {
@@ -99,7 +94,7 @@
     caelestia.url = "github:caelestia-dots/shell";
 
     noctalia = {
-      url = "github:noctalia-dev/noctalia-shell";
+      url = "path:/home/haseeb/projects/noctalia-shell";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -279,7 +274,7 @@
 
       commonHomeModules = [
         inputs.impermanence.nixosModules.home-manager.impermanence
-        inputs.dankMaterialShell.homeModules.dankMaterialShell.default
+        inputs.dankMaterialShell.homeModules.dank-material-shell
         inputs.caelestia.homeManagerModules.default
         inputs.niri.homeModules.niri
         inputs.niri.homeModules.stylix
@@ -402,7 +397,6 @@
         framework = mkSystem {
           hostname = "framework";
           extraModules = [
-            inputs.nixos-hardware.nixosModules.framework-13-7040-amd
             (mkHomeModule {
               username = "haseeb";
               hostname = "framework";
@@ -430,29 +424,15 @@
           ];
         };
 
-        ms01 = mkSystem {
-          hostname = "ms01";
-        };
-
-        s100 = mkSystem {
-          hostname = "s100";
-        };
-
-        vps = mkSystem {
-          hostname = "vps";
-        };
-
         framebox = mkSystem {
           hostname = "framebox";
           extraModules = [
-            inputs.nixos-hardware.nixosModules.framework-desktop-amd-ai-max-300-series
             (mkHomeModule {
               username = "haseeb";
               hostname = "framebox";
             })
           ];
         };
-
 
       };
 
@@ -493,7 +473,8 @@
         let
           pkgs = mkPkgs system;
         in
-        pkgs.nixicle // {
+        pkgs.nixicle
+        // {
           # ISO images using nixos-generators
           iso-graphical = inputs.nixos-generators.nixosGenerate {
             inherit system;
@@ -504,7 +485,9 @@
                 nixpkgs.hostPlatform = system;
                 # Use GNOME live environment
                 isoImage.isoBaseName = "nixicle-graphical";
-                isoImage.volumeID = "nixicle-${lib.substring 0 8 (self.lastModifiedDate or self.lastModified or "19700101")}";
+                isoImage.volumeID = "nixicle-${
+                  lib.substring 0 8 (self.lastModifiedDate or self.lastModified or "19700101")
+                }";
               }
             ];
             format = "iso";
