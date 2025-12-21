@@ -36,15 +36,25 @@ in
         environmentFile = config.sops.secrets.karakeep_oauth.path;
       };
 
-      cloudflared = {
-        enable = true;
-        tunnels = {
-          "ec0b6af0-a823-4616-a08b-b871fd2c7f58" = {
-            ingress = {
-              "karakeep.haseebmajid.dev" = "http://localhost:3035";
-            };
-          };
+      cloudflared.tunnels = mkIf config.services.nixicle.cloudflare.enable {
+        ${config.services.nixicle.cloudflare.tunnelId}.ingress = {
+          "karakeep.haseebmajid.dev" = "http://localhost:3035";
         };
+      };
+
+      traefik.dynamicConfigOptions.http = lib.nixicle.mkTraefikService {
+        name = "karakeep";
+        port = 3035;
+        subdomain = "karakeep";
+        domain = "haseebmajid.dev";
+      };
+    };
+
+    environment.persistence = mkIf config.system.impermanence.enable {
+      "/persist" = {
+        directories = [
+          { directory = "/var/lib/karakeep"; user = "karakeep"; group = "karakeep"; mode = "0750"; }
+        ];
       };
     };
   };
