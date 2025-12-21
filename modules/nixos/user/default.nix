@@ -11,7 +11,7 @@ in
 {
   options.user = with types; {
     name = mkOpt str "haseeb" "The name of the user's account";
-    initialPassword = mkOpt str "1" "The initial password to use";
+    passwordSecretFile = mkOpt (nullOr path) null "Path to sops secret file containing hashed password";
     extraGroups = mkOpt (listOf str) [ ] "Groups for the user to be assigned.";
     extraOptions = mkOpt attrs { } "Extra options passed to users.users.<name>";
   };
@@ -20,11 +20,11 @@ in
     users.mutableUsers = false;
     users.users.${cfg.name} = {
       isNormalUser = true;
-      inherit (cfg) name initialPassword;
+      inherit (cfg) name;
+      hashedPasswordFile = cfg.passwordSecretFile;
       home = "/home/${cfg.name}";
       group = "users";
 
-      # TODO: set in modules
       extraGroups = [
         "wheel"
         "audio"
