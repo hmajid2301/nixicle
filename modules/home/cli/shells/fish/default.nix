@@ -68,7 +68,7 @@ in
         sl = "eza";
         l = "eza --group --header --group-directories-first --long --git --all --binary --all --icons always";
         tree = "eza --tree";
-        sudo = "sudo -E -s";
+        sudo = "sudo -E";
         k = "kubectl";
         kgp = "kubectl get pods";
 
@@ -93,6 +93,7 @@ in
         tldrf = ''${pkgs.tldr}/bin/tldr --list | fzf --preview "${pkgs.tldr}/bin/tldr {1} --color" --preview-window=right,70% | xargs tldr'';
 
         wcat = "wellcat";
+        imp = "sudo ${pkgs.fd}/bin/fd --one-file-system --base-directory / --type f --hidden --exclude '{tmp,etc/passwd,var/lib/systemd/coredump,proc,sys,dev,run,nix,boot}'";
       };
 
       functions = {
