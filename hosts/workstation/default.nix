@@ -38,6 +38,7 @@
     virtualisation.docker.enable = true;
     virtualisation.podman.enable = lib.mkForce false;
     hardware.openrgb.enable = true;
+
   };
 
   roles = {
