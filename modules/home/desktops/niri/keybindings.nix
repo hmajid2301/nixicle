@@ -35,7 +35,7 @@ in
         "Mod+V".action.spawn = noctalia "launcher clipboard";
 
         "Mod+Q".action = close-window;
-        "Mod+F".action = fullscreen-window;
+        "Mod+F".action.spawn = "nfsm-cli";
         "Mod+T".action = toggle-window-floating;
         "Mod+O".action = toggle-overview;
         "Mod+C".action = center-column;
@@ -50,10 +50,11 @@ in
         "Mod+Ctrl+J".action = focus-workspace-down;
         "Mod+Ctrl+K".action = focus-workspace-up;
 
-        "Mod+Shift+H".action = move-column-left;
-        "Mod+Shift+L".action = move-column-right;
-        "Mod+Shift+J".action = move-window-down;
-        "Mod+Shift+K".action = move-window-up;
+        # Smart movement: move within monitor, then to adjacent monitor when at edge
+        "Mod+Shift+H".action = move-column-to-monitor-left;
+        "Mod+Shift+L".action = move-column-to-monitor-right;
+        "Mod+Shift+J".action = move-window-to-monitor-down;
+        "Mod+Shift+K".action = move-window-to-monitor-up;
 
         # Move windows into/out of columns
         "Mod+Ctrl+H".action = consume-or-expel-window-left;
@@ -76,17 +77,17 @@ in
         "Mod+Ctrl+Shift+J".action = focus-monitor-down;
         "Mod+Ctrl+Shift+K".action = focus-monitor-up;
 
-        # Move window to monitor
-        "Mod+Shift+Ctrl+Left".action = move-window-to-monitor-left;
-        "Mod+Shift+Ctrl+Right".action = move-window-to-monitor-right;
-        "Mod+Shift+Ctrl+Down".action = move-window-to-monitor-down;
-        "Mod+Shift+Ctrl+Up".action = move-window-to-monitor-up;
+        # Direct monitor movement (force move to specific monitor)
+        "Mod+Alt+Shift+H".action = move-window-to-monitor-left;
+        "Mod+Alt+Shift+L".action = move-window-to-monitor-right;
+        "Mod+Alt+Shift+J".action = move-window-to-monitor-down;
+        "Mod+Alt+Shift+K".action = move-window-to-monitor-up;
 
-        # Move column to monitor
-        "Mod+Alt+H".action = move-column-to-monitor-left;
-        "Mod+Alt+L".action = move-column-to-monitor-right;
-        "Mod+Alt+J".action = move-column-to-monitor-down;
-        "Mod+Alt+K".action = move-column-to-monitor-up;
+        # Local movement only (within current monitor/workspace)
+        "Mod+Alt+H".action = move-column-left;
+        "Mod+Alt+L".action = move-column-right;
+        "Mod+Alt+J".action = move-window-down;
+        "Mod+Alt+K".action = move-window-up;
 
         "Mod+1".action.focus-workspace = 1;
         "Mod+2".action.focus-workspace = 2;

@@ -43,7 +43,7 @@ in
       swayidle.enable = true;
     };
 
-    home.packages = with inputs.nfsm.packages.${pkgs.system}; [
+    home.packages = with inputs.nfsm.packages.${pkgs.stdenv.hostPlatform.system}; [
       nfsm
       nfsm-cli
     ];
