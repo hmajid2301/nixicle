@@ -49,16 +49,29 @@ in
 
     ];
 
-    system.activationScripts.impermanence = ''
-      mkdir -p /persist/{root,srv,etc/nixos,etc/ssh}
-      mkdir -p /persist/var/{spool,cache,db}
-      mkdir -p /persist/var/lib/{nixos,systemd,dbus,bluetooth,NetworkManager}
-      mkdir -p /persist/var/lib/systemd/{coredump,timers,timesync}
-       mkdir -p /persist/var/db/sudo
-       mkdir -p /persist/etc/NetworkManager/system-connections
-       mkdir -p /persist/etc/ssh
-       ${lib.optionalString config.system.boot.secureBoot "mkdir -p /persist/etc/secureboot"}
-    '';
+    system.activationScripts = {
+      "var-lib-private-permissions" = {
+        deps = [ "specialfs" ];
+        text = ''
+          mkdir -p /persist/var/lib/private
+          chmod 0700 /persist/var/lib/private
+        '';
+      };
+      
+      "impermanence" = {
+        deps = [ "var-lib-private-permissions" "users" "groups" ];
+        text = ''
+          mkdir -p /persist/{root,srv,etc/nixos,etc/ssh}
+          mkdir -p /persist/var/{spool,cache,db}
+          mkdir -p /persist/var/lib/{nixos,systemd,dbus,bluetooth,NetworkManager}
+          mkdir -p /persist/var/lib/systemd/{coredump,timers,timesync}
+          mkdir -p /persist/var/db/sudo
+          mkdir -p /persist/etc/NetworkManager/system-connections
+          mkdir -p /persist/etc/ssh
+          ${lib.optionalString config.system.boot.secureBoot "mkdir -p /persist/etc/secureboot"}
+        '';
+      };
+    };
 
     services.openssh.hostKeys = lib.mkForce [
       {
