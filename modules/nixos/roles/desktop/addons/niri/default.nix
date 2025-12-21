@@ -23,9 +23,6 @@ in
 
     programs.niri = {
       enable = true;
-      # package = pkgs.niri-unstable.overrideAttrs (old: {
-      #   doCheck = false;
-      # });
       package = pkgs.niri-unstable;
     };
 
@@ -48,15 +45,20 @@ in
         xdg-desktop-portal-gnome
       ];
       config.niri = {
-        default = [ "gnome" ];
-        # Use GNOME portal for screencasting (niri wiki recommendation)
+        default = [
+          "gnome"
+          "gtk"
+        ];
         "org.freedesktop.impl.portal.ScreenCast" = [ "gnome" ];
         "org.freedesktop.impl.portal.Screenshot" = [ "gnome" ];
       };
       xdgOpenUsePortal = true;
     };
 
-    roles.desktop.addons.greetd.enable = true;
+    roles.desktop.addons.greetd = {
+      enable = true;
+      autologin = false;
+    };
     roles.desktop.addons.nautilus.enable = true;
     programs.xwayland.enable = true;
     security.nixicle.polkit-gnome.enable = true;
