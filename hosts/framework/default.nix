@@ -1,45 +1,45 @@
 {
   pkgs,
-  lib,
   inputs,
+  config,
   ...
 }:
 {
   imports = [
     ./hardware-configuration.nix
     ./disks.nix
+    inputs.nixos-facter-modules.nixosModules.facter
+    { config.facter.reportPath = ./facter.json; }
+    inputs.nixos-hardware.nixosModules.framework-13-7040-amd
   ];
 
-  environment.systemPackages = with pkgs; [
-    inputs.caelestia.packages.${pkgs.system}.default
-    inputs.caelestia.inputs.caelestia-cli.packages.${pkgs.system}.default
-  ];
+  sops.secrets = {
+    user_password = {
+      sopsFile = ./secrets.yaml;
+      neededForUsers = true;
+    };
+  };
 
-  services = {
-    virtualisation.kvm.enable = true;
-    virtualisation.docker.enable = true;
+  user.passwordSecretFile = config.sops.secrets.user_password.path;
+
+  system = {
+    impermanence.enable = true;
+    boot = {
+      enable = true;
+      secureBoot = true;
+    };
   };
 
   roles = {
-    gaming.enable = true;
     desktop = {
       enable = true;
       addons = {
-        hyprland.enable = true;
+        niri.enable = true;
       };
     };
   };
 
   networking.hostName = "framework";
-
-  boot = {
-    kernelParams = [
-      "resume_offset=533760"
-    ];
-    supportedFilesystems = lib.mkForce [ "btrfs" ];
-    kernelPackages = pkgs.linuxPackages_latest;
-    resumeDevice = "/dev/disk/by-label/nixos";
-  };
 
   system.stateVersion = "23.11";
 }
