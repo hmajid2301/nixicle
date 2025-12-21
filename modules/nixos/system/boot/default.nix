@@ -30,6 +30,9 @@ in
       ++ lib.optionals cfg.secureBoot [ sbctl ];
 
     boot = {
+      kernelPackages = pkgs.linuxPackages_latest;
+      resumeDevice = "/dev/disk/by-label/nixos";
+
       # TODO: if plymouth on
       kernelParams = lib.optionals cfg.plymouth [
         "quiet"
@@ -40,7 +43,7 @@ in
       # initrd.verbose = lib.optionals cfg.plymouth false;
       # consoleLogLevel = lib.optionals cfg.plymouth 0;
       initrd.systemd.enable = true;
-
+      initrd.systemd.emergencyAccess = true;
       lanzaboote = mkIf cfg.secureBoot {
         enable = true;
         pkiBundle = "/etc/secureboot";
@@ -68,7 +71,7 @@ in
       };
     };
 
-    # services.fwupd.enable = true;
+    services.fwupd.enable = true;
 
     environment.persistence = mkIf (cfg.secureBoot && config.system.impermanence.enable) {
       "/persist" = {
