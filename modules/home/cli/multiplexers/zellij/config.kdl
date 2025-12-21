@@ -220,7 +220,7 @@ keybinds {
                 name "resize";
                 payload "left";
             };
-        }63
+        }
         bind "Alt j" {
             MessagePlugin "https://github.com/hiasr/vim-zellij-navigator/releases/download/0.3.0/vim-zellij-navigator.wasm" {
                 name "resize";
