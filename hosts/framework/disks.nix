@@ -18,6 +18,9 @@
                 mountpoint = "/boot";
                 mountOptions = [
                   "defaults"
+                  "umask=0077"
+                  "dmask=0077"
+                  "fmask=0177"
                 ];
               };
             };
@@ -27,16 +30,19 @@
               content = {
                 type = "luks";
                 name = "cryptroot";
+                passwordFile = "/tmp/disk-encryption.key";
                 extraOpenArgs = [
                   "--allow-discards"
                   "--perf-no_read_workqueue"
                   "--perf-no_write_workqueue"
                 ];
-                # https://0pointer.net/blog/unlocking-luks2-volumes-with-tpm2-fido2-pkcs11-security-hardware-on-systemd-248.html
                 settings = {
+                  allowDiscards = true;
                   crypttabExtraOpts = [
-                    "fido2-device=auto"
                     "token-timeout=10"
+                    "tpm2-device=auto"
+                    "tpm2-measure-pcr=yes"
+                    "x-initrd.attach"
                   ];
                 };
                 content = {
@@ -46,6 +52,28 @@
                     "nixos"
                     "-f"
                   ];
+                  postCreateHook = ''
+                    mount -t btrfs /dev/disk/by-label/nixos /mnt
+
+                    # Create the blank snapshot for impermanence rollback
+                    btrfs subvolume snapshot -r /mnt/root /mnt/root-blank
+
+                    # Pre-create critical directories in /persist for first boot
+                    # This is essential for nixos-anywhere + impermanence to work
+                    mkdir -p /mnt/persist/{root,srv,etc/nixos,etc/ssh}
+                    mkdir -p /mnt/persist/var/{spool,cache,db}
+                    mkdir -p /mnt/persist/var/lib/{nixos,systemd,dbus,bluetooth,NetworkManager}
+                    mkdir -p /mnt/persist/var/lib/systemd/{coredump,timers,timesync}
+                    mkdir -p /mnt/persist/var/db/sudo
+                    mkdir -p /mnt/persist/etc/NetworkManager/system-connections
+
+                    # Set proper permissions
+                    chmod 700 /mnt/persist/root
+                    chmod 700 /mnt/persist/var/db/sudo
+                    chmod 700 /mnt/persist/etc/NetworkManager/system-connections
+
+                    umount /mnt
+                  '';
                   subvolumes = {
                     "/root" = {
                       mountpoint = "/";
