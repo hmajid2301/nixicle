@@ -28,6 +28,122 @@ tasks:
         echo "Installing $HOST with nixos-anywhere..."
         nixos-anywhere --flake .#$HOST root@$HOST
 
+  "sbctl:prepare":
+    desc: "Prepare Secure Boot keys (internal task)"
+    internal: true
+    cmds:
+      - |
+        if [ -d /var/lib/sbctl ]; then
+          sudo mv /var/lib/sbctl /var/lib/sbctl.bak
+        fi
+        sudo sbctl create-keys
+        export MY_KEYS=$(mktemp -d)
+        mkdir -p "${MY_KEYS}/persist/var/lib"
+        sudo cp -r /var/lib/sbctl "${MY_KEYS}/persist/var/lib/sbctl"
+        sudo cp -r "${MY_KEYS}/persist/var" "${MY_KEYS}/"
+        sudo chown -R "$(id -u):$(id -g)" "$MY_KEYS"
+        echo "$MY_KEYS" > /tmp/.nixicle-sbctl-keys
+
+  "sbctl:cleanup":
+    desc: "Cleanup Secure Boot keys (internal task)"
+    internal: true
+    cmds:
+      - |
+        if [ -f /tmp/.nixicle-sbctl-keys ]; then
+          MY_KEYS=$(cat /tmp/.nixicle-sbctl-keys)
+          rm -rf "$MY_KEYS"
+          rm -f /tmp/.nixicle-sbctl-keys
+        fi
+        if [ -d /var/lib/sbctl.bak ]; then
+          sudo rm -rf /var/lib/sbctl
+          sudo mv /var/lib/sbctl.bak /var/lib/sbctl
+        fi
+
+  "sbctl:generate":
+    desc: "Generate Secure Boot keys for manual use"
+    cmds:
+      - task: sbctl:prepare
+      - |
+        MY_KEYS=$(cat /tmp/.nixicle-sbctl-keys)
+        echo "Keys generated at: $MY_KEYS"
+        echo "Export with: export MY_KEYS=\"$MY_KEYS\""
+        echo ""
+        echo "Note: Keys will be cleaned up after this shell session"
+        echo "Run 'task sbctl:cleanup' when done"
+
+  "install:secure":
+    desc: "Install host with Secure Boot and TPM auto-unlock"
+    cmds:
+      - |
+        # Select host and target
+        HOST=$(gum choose {{.HOSTS}})
+        TARGET=$(gum input --placeholder "Target host (e.g. nixos@192.168.1.100)")
+
+        # Create password file
+        export MY_PASS=$(mktemp)
+        PASSWORD=$(gum input --password --placeholder "Enter LUKS password")
+        echo "$PASSWORD" > $MY_PASS
+
+        # Store for later cleanup
+        echo "$HOST" > /tmp/.nixicle-deploy-host
+        echo "$TARGET" > /tmp/.nixicle-deploy-target
+        echo "$MY_PASS" > /tmp/.nixicle-deploy-pass
+
+      - |
+        HOST=$(cat /tmp/.nixicle-deploy-host)
+
+        # Check if host has Secure Boot enabled and prepare keys
+        if grep -q 'secureBoot.*=.*true' "hosts/$HOST/default.nix"; then
+          echo "Secure Boot enabled, generating keys..."
+          task sbctl:prepare
+        fi
+
+      - |
+        HOST=$(cat /tmp/.nixicle-deploy-host)
+        TARGET=$(cat /tmp/.nixicle-deploy-target)
+        MY_PASS=$(cat /tmp/.nixicle-deploy-pass)
+
+        # Build base command
+        CMD="nix run github:nix-community/nixos-anywhere -- --flake \".#$HOST\""
+
+        # Add Secure Boot keys if enabled
+        if grep -q 'secureBoot.*=.*true' "hosts/$HOST/default.nix"; then
+          MY_KEYS=$(cat /tmp/.nixicle-sbctl-keys)
+          CMD="$CMD --extra-files \"$MY_KEYS\""
+        fi
+
+        # Add disk encryption keys
+        CMD="$CMD --disk-encryption-keys /tmp/disk-encryption.key \"$MY_PASS\""
+
+        # Add target host
+        CMD="$CMD --target-host \"$TARGET\""
+
+        # Execute
+        eval $CMD
+
+      - task: sbctl:cleanup
+      - |
+        HOST=$(cat /tmp/.nixicle-deploy-host)
+        TARGET=$(cat /tmp/.nixicle-deploy-target)
+        MY_PASS=$(cat /tmp/.nixicle-deploy-pass)
+
+        # Cleanup temp files
+        rm -f "$MY_PASS"
+        rm -f /tmp/.nixicle-deploy-host
+        rm -f /tmp/.nixicle-deploy-target
+        rm -f /tmp/.nixicle-deploy-pass
+
+        echo ""
+        echo "Deployment complete!"
+        echo ""
+        if grep -q 'secureBoot.*=.*true' "hosts/$HOST/default.nix"; then
+          echo "Post-deployment steps required:"
+          echo "1. ssh $TARGET"
+          echo "2. sudo sbctl enroll-keys --microsoft"
+          echo "3. sudo systemd-cryptenroll /dev/nvme0n1p2 --tpm2-device=auto --tpm2-pcrs=0+2+7 --tpm2-pcrs=15:sha256=0000000000000000000000000000000000000000000000000000000000000000"
+          echo "4. sudo reboot"
+        fi
+
   sync:
     desc: "Sync config to host"
     cmds:
