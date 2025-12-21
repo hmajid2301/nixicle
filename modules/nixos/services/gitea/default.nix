@@ -40,48 +40,49 @@ in
       };
 
       systemd.tmpfiles.rules = [
-        "d /mnt/n1/gitea 0775 gitea gitea -"
-        "d /mnt/n1/gitea/backups 0775 gitea gitea -"
-
+        "d /var/lib/gitea 0750 gitea gitea -"
+        "d /var/lib/gitea/custom 0750 gitea gitea -"
+        "d /var/lib/gitea/custom/conf 0750 gitea gitea -"
+        "d /var/lib/gitea/backups 0775 gitea gitea -"
       ];
 
       services = {
         gitea = {
-        enable = true;
-        user = "gitea";
-        group = "gitea";
-        mailerPasswordFile = config.sops.secrets.gitea_smtp_password.path;
-        database = {
-          socket = "/run/postgresql";
-          type = "postgres";
-        };
-        settings = {
-          server = {
-            HTTP_PORT = 5705;
-            DOMAIN = "git.homelab.haseebmajid.dev";
-            ROOT_URL = "https://git.homelab.haseebmajid.dev/";
+          enable = true;
+          user = "gitea";
+          group = "gitea";
+          mailerPasswordFile = config.sops.secrets.gitea_smtp_password.path;
+          database = {
+            socket = "/run/postgresql";
+            type = "postgres";
           };
-          mailer = {
-            ENABLED = true;
-            PROTOCOL = "smtps";
-            SMTP_PORT = 587;
-            SMTP_ADDRESS = "smtp.mailgun.org";
-            FROM = "do-not-reply@haseebmajid.dev";
-            USER = "postmaster@sandbox92beea2c073042199273861834e24d1f.mailgun.org";
-            SENDMAIL_PATH = "${pkgs.system-sendmail}/bin/sendmail";
+          settings = {
+            server = {
+              HTTP_PORT = 5705;
+              DOMAIN = "git.homelab.haseebmajid.dev";
+              ROOT_URL = "https://git.homelab.haseebmajid.dev/";
+            };
+            mailer = {
+              ENABLED = true;
+              PROTOCOL = "smtps";
+              SMTP_PORT = 587;
+              SMTP_ADDRESS = "smtp.mailgun.org";
+              FROM = "do-not-reply@haseebmajid.dev";
+              USER = "postmaster@sandbox92beea2c073042199273861834e24d1f.mailgun.org";
+              SENDMAIL_PATH = "${pkgs.system-sendmail}/bin/sendmail";
+            };
+            ui = {
+              DEFAULT_THEME = "catppuccin-mocha-lavendar";
+            };
           };
-          ui = {
-            DEFAULT_THEME = "catppuccin-mocha-lavendar";
+          dump = {
+            backupDir = "/var/lib/gitea/backups";
+            enable = false;
+            interval = "hourly";
+            file = "gitea-dump";
+            type = "tar.zst";
           };
         };
-        dump = {
-          backupDir = "/mnt/n1/gitea/backups";
-          enable = false;
-          interval = "hourly";
-          file = "gitea-dump";
-          type = "tar.zst";
-        };
-      };
 
         postgresql = {
           ensureDatabases = [ "gitea" ];
@@ -93,9 +94,20 @@ in
           ];
         };
       };
-    }
 
-    # Traefik reverse proxy configuration
+      environment.persistence = mkIf config.system.impermanence.enable {
+        "/persist" = {
+          directories = [
+            {
+              directory = "/var/lib/gitea";
+              user = "gitea";
+              group = "gitea";
+              mode = "0750";
+            }
+          ];
+        };
+      };
+    }
     {
       services.traefik.dynamicConfigOptions.http = lib.nixicle.mkTraefikService {
         name = "gitea";

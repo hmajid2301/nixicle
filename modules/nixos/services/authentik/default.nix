@@ -4,9 +4,10 @@
   ...
 }:
 with lib;
- let
+let
   cfg = config.services.nixicle.authentik;
-in {
+in
+{
   options.services.nixicle.authentik = {
     enable = mkEnableOption "Enable the authentik auth service";
   };
@@ -34,8 +35,6 @@ in {
             avatars = "initials";
           };
         };
-
-
 
         traefik = {
           dynamicConfigOptions = {
@@ -66,7 +65,6 @@ in {
       };
     }
 
-    # Traefik reverse proxy configuration
     {
       services.traefik.dynamicConfigOptions.http = lib.nixicle.mkTraefikService {
         name = "auth";
@@ -83,6 +81,16 @@ in {
       services.cloudflared.tunnels = mkIf config.services.nixicle.cloudflare.enable {
         ${config.services.nixicle.cloudflare.tunnelId}.ingress = {
           "authentik.haseebmajid.dev" = "http://localhost:9000";
+        };
+      };
+    }
+
+    {
+      environment.persistence = mkIf config.system.impermanence.enable {
+        "/persist" = {
+          directories = [
+            { directory = "/var/lib/private/authentik"; user = "authentik"; group = "authentik"; mode = "0750"; defaultPerms.mode = "0700"; }
+          ];
         };
       };
     }
