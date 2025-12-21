@@ -61,6 +61,142 @@ in
             top-right = 12.0;
           };
         }
+        # Google Meet popup windows
+        {
+          matches = [
+            {
+              app-id = "^google-chrome$";
+              title = ".*Meet.*";
+            }
+            {
+              app-id = "^google-chrome$";
+              title = ".*meet\\.google\\.com.*";
+            }
+            {
+              app-id = "^google-chrome$";
+              title = ".*Google Meet.*";
+            }
+          ];
+          default-column-width = { };
+          open-on-output = "";
+          open-maximized = false;
+          open-fullscreen = false;
+        }
+        # Zoom popup windows
+        {
+          matches = [
+            {
+              app-id = "^google-chrome$";
+              title = ".*Zoom.*";
+            }
+            {
+              app-id = "^google-chrome$";
+              title = ".*zoom\\.us.*";
+            }
+            {
+              app-id = "^google-chrome$";
+              title = ".*Join Zoom Meeting.*";
+            }
+          ];
+          default-column-width = { };
+          open-on-output = "";
+          open-maximized = false;
+          open-fullscreen = false;
+        }
+        # Chrome popup dialogs (general)
+        {
+          matches = [
+            {
+              app-id = "^google-chrome$";
+              title = "^$";  # Empty title often indicates popup
+            }
+          ];
+          default-column-width = { };
+          open-on-output = "";
+          open-maximized = false;
+          open-fullscreen = false;
+        }
+        # Firefox popup windows (PayPal, banking, etc.)
+        {
+          matches = [
+            {
+              app-id = "^firefox$";
+              title = ".*PayPal.*";
+            }
+            {
+              app-id = "^firefox$";
+              title = ".*popup.*";
+            }
+            {
+              app-id = "^firefox$";
+              title = ".*Authentication.*";
+            }
+            {
+              app-id = "^firefox$";
+              title = ".*Login.*";
+            }
+            {
+              app-id = "^firefox$";
+              title = ".*Security.*";
+            }
+            {
+              app-id = "^org.mozilla.firefox$";
+              title = ".*PayPal.*";
+            }
+            {
+              app-id = "^org.mozilla.firefox$";
+              title = ".*popup.*";
+            }
+          ];
+          default-column-width = { };
+          open-on-output = "";
+          open-maximized = false;
+          open-fullscreen = false;
+        }
+        # Bitwarden popup/extension windows
+        {
+          matches = [
+            {
+              app-id = "^firefox$";
+              title = ".*Bitwarden.*";
+            }
+            {
+              app-id = "^org.mozilla.firefox$";
+              title = ".*Bitwarden.*";
+            }
+            {
+              app-id = "^firefox$";
+              title = ".*Extension.*Bitwarden.*";
+            }
+            {
+              app-id = "^bitwarden$";
+            }
+            {
+              app-id = "^com.bitwarden.desktop$";
+            }
+          ];
+          default-column-width = { };
+          open-on-output = "";
+          open-maximized = false;
+          open-fullscreen = false;
+        }
+        # Firefox authentication popups (general)
+        {
+          matches = [
+            {
+              app-id = "^firefox$";
+              title = "^$";  # Empty title Firefox popups
+            }
+            {
+              app-id = "^org.mozilla.firefox$";
+              title = "^$";
+            }
+          ];
+          default-column-width = { };
+          open-on-output = "";
+          open-maximized = false;
+          open-fullscreen = false;
+        }
       ];
 
       layer-rules = [
