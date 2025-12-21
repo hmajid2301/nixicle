@@ -9,6 +9,7 @@
     desktop.enable = true;
     development.enable = true;
     gaming.enable = true;
+    social.enable = true;
   };
 
   desktops = {

@@ -1,27 +1,18 @@
-{pkgs, ...}: {
-  desktops = {
-    hyprland = {
-      enable = true;
-      execOnceExtras = [
-        "${pkgs.trayscale}/bin/trayscale"
-        "${pkgs.networkmanagerapplet}/bin/nm-applet"
-        "${pkgs.blueman}/bin/blueman-applet"
-      ];
-    };
+{
+  home = {
+    username = "haseeb";
+    homeDirectory = "/home/haseeb";
+    stateVersion = "24.05";
   };
-
-  home.packages = with pkgs; [
-    nwg-displays
-  ];
 
   roles = {
     desktop.enable = true;
     development.enable = true;
+    gaming.enable = true;
     social.enable = true;
-    video.enable = true;
   };
 
-
-
-  home.stateVersion = "23.11";
+  desktops = {
+    niri.enable = true;
+  };
 }
