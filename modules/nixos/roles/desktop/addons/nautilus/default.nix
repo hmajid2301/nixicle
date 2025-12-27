@@ -37,12 +37,14 @@ in
       pathsToLink = [ "/share/nautilus-python/extensions" ];
 
       systemPackages = with pkgs; [
-        ffmpegthumbnailer # thumbnails
-        gst_all_1.gst-libav # thumbnails
-        gdk-pixbuf # image thumbnails
-        webp-pixbuf-loader # webp thumbnails
+        ffmpegthumbnailer
+        gst_all_1.gst-libav
+        gdk-pixbuf
+        webp-pixbuf-loader
         nautilus-open-any-terminal
         nautilus-python
+        gvfs
+        nfs-utils
       ];
     };
 
