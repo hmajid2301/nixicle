@@ -1,0 +1,10 @@
+version: '3'
+
+tasks:
+  update:
+    desc: "Update SOPS keys"
+    cmds:
+      - sops updatekeys modules/nixos/secrets.yaml
+      - sops updatekeys modules/home/secrets.yaml
+      - sops updatekeys modules/nixos/services/secrets.yaml
+      - sops updatekeys modules/nixos/roles/kubernetes/secrets.yaml
