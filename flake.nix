@@ -260,16 +260,19 @@
           config.allowUnfree = true;
         };
 
-      commonNixosModules = [
+      baseNixosModules = [
         inputs.stylix.nixosModules.stylix
         home-manager.nixosModules.home-manager
-        inputs.disko.nixosModules.disko
         inputs.lanzaboote.nixosModules.lanzaboote
         inputs.impermanence.nixosModules.impermanence
         inputs.sops-nix.nixosModules.sops
-        inputs.nix-topology.nixosModules.default
         inputs.authentik-nix.nixosModules.default
         (inputs.import-tree.match ".*/default\\.nix" ./modules/nixos)
+      ];
+
+      commonNixosModules = baseNixosModules ++ [
+        inputs.disko.nixosModules.disko
+        inputs.nix-topology.nixosModules.default
       ];
 
       commonHomeModules = [
@@ -404,16 +407,6 @@
           ];
         };
 
-        workstation = mkSystem {
-          hostname = "workstation";
-          extraModules = [
-            (mkHomeModule {
-              username = "haseeb";
-              hostname = "workstation";
-            })
-          ];
-        };
-
         vm = mkSystem {
           hostname = "vm";
           extraModules = [
@@ -442,16 +435,6 @@
           hostname = "dell";
         };
 
-        "deck@steamdeck" = mkHome {
-          username = "deck";
-          hostname = "steamdeck";
-        };
-
-        "haseeb@workstation" = mkHome {
-          username = "haseeb";
-          hostname = "workstation";
-        };
-
         "haseeb@framework" = mkHome {
           username = "haseeb";
           hostname = "framework";
@@ -475,23 +458,36 @@
         in
         pkgs.nixicle
         // {
-          # ISO images using nixos-generators
-          iso-graphical = inputs.nixos-generators.nixosGenerate {
-            inherit system;
-            modules = [
-              commonNixosModules
-              ./iso/graphical
-              {
-                nixpkgs.hostPlatform = system;
-                # Use GNOME live environment
-                isoImage.isoBaseName = "nixicle-graphical";
-                isoImage.volumeID = "nixicle-${
-                  lib.substring 0 8 (self.lastModifiedDate or self.lastModified or "19700101")
-                }";
-              }
-            ];
-            format = "iso";
-          };
+          iso-graphical =
+            let
+              extendedLib = lib.extend (
+                self: super: {
+                  nixicle = import ./lib {
+                    inherit inputs;
+                    lib = self;
+                  };
+                }
+              );
+            in
+            inputs.nixos-generators.nixosGenerate {
+              inherit system;
+              specialArgs = {
+                lib = extendedLib;
+              };
+              modules = baseNixosModules ++ [
+                ./iso/graphical
+                {
+                  nixpkgs.hostPlatform = system;
+                  nixpkgs.overlays = overlays;
+                  # Use GNOME live environment
+                  image.baseName = lib.mkForce "nixicle-graphical";
+                  isoImage.volumeID = lib.mkForce "nixicle-${
+                    lib.substring 0 8 (self.lastModifiedDate or self.lastModified or "19700101")
+                  }";
+                }
+              ];
+              format = "iso";
+            };
         }
       );
 
@@ -545,12 +541,8 @@
       deploy = lib.nixicle.mkDeploy {
         inherit self;
         overrides = {
-          ms01.profiles.system.sshUser = "nixos";
-          s100.profiles.system.sshUser = "nixos";
-          vps.profiles.system.sshUser = "nixos";
-
+          framebox.profiles.system.sshUser = "haseeb";
           framework.profiles.system.sshUser = "haseeb";
-          workstation.profiles.system.sshUser = "haseeb";
           vm.profiles.system.sshUser = "haseeb";
         };
       };
