@@ -27,7 +27,7 @@ in rec {
       (result: name: let
         host = hosts.${name};
         user = host.config.user.name or null;
-        inherit (host.pkgs) system;
+        system = host.pkgs.stdenv.hostPlatform.system;
       in
         result
         // {
