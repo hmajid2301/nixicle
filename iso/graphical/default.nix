@@ -1,59 +1,51 @@
 {
   lib,
   pkgs,
-  config,
+  modulesPath,
   ...
-}: {
-  # Boot configuration for ISO
-  boot.loader.systemd-boot.enable = lib.mkDefault true;
-  boot.loader.efi.canTouchEfiVariables = lib.mkDefault true;
+}:
+{
+  imports = [
+    "${modulesPath}/profiles/installation-device.nix"
+  ];
 
-  # Network configuration
+  boot.loader.systemd-boot.enable = true;
+  boot.loader.efi.canTouchEfiVariables = true;
+
   networking.wireless.enable = lib.mkForce false;
-  networking.networkmanager.enable = true;
 
-  # Enable SSH using our custom SSH module
-  services.ssh.enable = true;
+  roles = {
+    desktop.addons.gnome.enable = true;
+  };
 
-  # Basic locale setup for ISO
-  i18n.defaultLocale = "en_US.UTF-8";
+  nix.enable = true;
 
-  # Auto-login for convenience
+  system = {
+    locale.enable = true;
+  };
+
   services.displayManager.autoLogin = {
     enable = true;
     user = "nixos";
   };
 
-  # User configuration - only for ISO builds
-  users.users = lib.mkIf false {
-    nixos = {
-      isNormalUser = true;
-      group = "nixos";
-      extraGroups = ["networkmanager"];
-      openssh.authorizedKeys.keys = [
-        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKuM4bCeJq0XQ1vd/iNK650Bu3wPVKQTSB0k2gsMKhdE hello@haseebmajid.dev"
-        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINP5gqbEEj+pykK58djSI1vtMtFiaYcygqhHd3mzPbSt hello@haseebmajid.dev"
-      ];
-    };
-    root.openssh.authorizedKeys.keys = [
-      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKuM4bCeJq0XQ1vd/iNK650Bu3wPVKQTSB0k2gsMKhdE hello@haseebmajid.dev"
-      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINP5gqbEEj+pykK58djSI1vtMtFiaYcygqhHd3mzPbSt hello@haseebmajid.dev"
-    ];
-  };
+  services.openssh.enable = true;
 
-  users.groups = lib.mkIf false {
-    nixos = {};
-  };
+  users.users.nixos.openssh.authorizedKeys.keys = [
+    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKuM4bCeJq0XQ1vd/iNK650Bu3wPVKQTSB0k2gsMKhdE hello@haseebmajid.dev"
+    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINP5gqbEEj+pykK58djSI1vtMtFiaYcygqhHd3mzPbSt hello@haseebmajid.dev"
+  ];
 
-  # Essential packages for the live ISO
+  security.sudo.wheelNeedsPassword = false;
+
   environment.systemPackages = with pkgs; [
+    gparted
     git
     vim
     htop
-    wget
     curl
-    firefox
+    wget
   ];
 
-  system.stateVersion = "24.05";
+  system.stateVersion = "23.11";
 }
