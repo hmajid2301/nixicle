@@ -25,8 +25,7 @@ in
         ${pkgs.nix-your-shell}/bin/nix-your-shell fish | source
         set -x GOPATH $XDG_DATA_HOME/go
         set -x GOPRIVATE "github.com/NalaMoney"
-        set -gx PATH /usr/local/bin /usr/bin ~/.local/bin $GOPATH/bin/ $PATH $HOME/.krew/bin
-
+        set -gx PATH /usr/local/bin /usr/bin ~/.local/bin $GOPATH/bin/ $PATH  
         # fifc setup
         set -Ux fifc_editor nvim
         set -U fifc_keybinding \cx
@@ -52,9 +51,8 @@ in
       };
       shellAbbrs = {
         # abbr existing commands
-        vim = "regularCats";
-        n = "regularCats";
-        nvim = "regularCats";
+        vim = "nvim";
+        n = "nvim";
         cd = "z";
         cdi = "zi";
         cp = "xcp";
