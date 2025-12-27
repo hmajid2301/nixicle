@@ -21,10 +21,34 @@ in
 
       settings = {
         PasswordAuthentication = false;
+        PermitRootLogin = "prohibit-password";
         StreamLocalBindUnlink = "yes";
         GatewayPorts = "clientspecified";
+
+        KexAlgorithms = [
+          "curve25519-sha256"
+          "curve25519-sha256@libssh.org"
+        ];
+
+        Ciphers = [
+          "chacha20-poly1305@openssh.com"
+          "aes256-gcm@openssh.com"
+          "aes128-gcm@openssh.com"
+        ];
+
+        Macs = [
+          "hmac-sha2-512-etm@openssh.com"
+          "hmac-sha2-256-etm@openssh.com"
+        ];
       };
+
+      extraConfig = mkIf config.services.nixicle.tailscale.enable ''
+        Match Address 100.64.0.0/10
+          AllowTcpForwarding yes
+          AllowAgentForwarding yes
+      '';
     };
+
     users.users = {
       ${config.user.name}.openssh.authorizedKeys.keys = [
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKuM4bCeJq0XQ1vd/iNK650Bu3wPVKQTSB0k2gsMKhdE hello@haseebmajid.dev"
