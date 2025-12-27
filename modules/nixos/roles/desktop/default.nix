@@ -29,7 +29,6 @@ in
 
     services = {
       nixicle.avahi.enable = true;
-      backup.enable = true;
       vpn.enable = true;
       virtualisation.docker.enable = true;
     };

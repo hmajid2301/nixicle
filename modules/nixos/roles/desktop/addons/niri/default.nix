@@ -57,7 +57,7 @@ in
 
     roles.desktop.addons.greetd = {
       enable = true;
-      autologin = false;
+      # autologin = true;
     };
     roles.desktop.addons.nautilus.enable = true;
     programs.xwayland.enable = true;

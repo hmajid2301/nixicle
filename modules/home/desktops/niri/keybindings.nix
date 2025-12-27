@@ -40,6 +40,7 @@ in
         "Mod+O".action = toggle-overview;
         "Mod+C".action = center-column;
         "Mod+M".action = maximize-column;
+        "Mod+W".action = toggle-column-tabbed-display;
 
         "Mod+H".action = focus-column-or-monitor-left;
         "Mod+L".action = focus-column-or-monitor-right;
