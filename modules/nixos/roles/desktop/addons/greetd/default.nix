@@ -19,7 +19,11 @@ let
     else
       "Hyprland &> /dev/null";
 
-  greeterCommand = "${pkgs.tuigreet}/bin/tuigreet --time --cmd ${cfg.command}";
+  greeterCommand =
+    let
+      theme = with config.lib.stylix.colors.withHashtag; "border=${base0D};text=${base05};prompt=${base0E};time=${base04};action=${base0B};button=${base0C};container=${base00};input=${base02}";
+    in
+    "${pkgs.tuigreet}/bin/tuigreet --time --remember --remember-session --cmd '${cfg.command}' --theme '${theme}'";
 in
 {
   options.roles.desktop.addons.greetd = with types; {
@@ -37,12 +41,9 @@ in
   };
 
   config = mkIf cfg.enable {
-    environment.systemPackages = mkIf (!cfg.autologin) [
-      pkgs.tuigreet
-    ];
-
     services.greetd = {
       enable = true;
+      useTextGreeter = mkIf (!cfg.autologin) true;
       settings = rec {
         default_session = {
           command = if cfg.autologin then cfg.command else greeterCommand;
@@ -50,6 +51,12 @@ in
         };
         initial_session = mkIf cfg.autologin default_session;
       };
+    };
+
+    environment.persistence."/persist" = mkIf config.system.impermanence.enable {
+      directories = [
+        "/var/cache/tuigreet"
+      ];
     };
   };
 }
