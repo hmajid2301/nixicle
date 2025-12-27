@@ -53,16 +53,24 @@ return {
 				},
 			})
 
-			vim.keymap.set("n", "<A-h>", require("smart-splits").resize_left, { desc = "Resize split left" })
-			vim.keymap.set("n", "<A-j>", require("smart-splits").resize_down, { desc = "Resize split down" })
-			vim.keymap.set("n", "<A-k>", require("smart-splits").resize_up, { desc = "Resize split up" })
-			vim.keymap.set("n", "<A-l>", require("smart-splits").resize_right, { desc = "Resize split right" })
+			-- Resize splits with Ctrl+Alt+hjkl
+			vim.keymap.set("n", "<C-A-h>", require("smart-splits").resize_left, { desc = "Resize split left" })
+			vim.keymap.set("n", "<C-A-j>", require("smart-splits").resize_down, { desc = "Resize split down" })
+			vim.keymap.set("n", "<C-A-k>", require("smart-splits").resize_up, { desc = "Resize split up" })
+			vim.keymap.set("n", "<C-A-l>", require("smart-splits").resize_right, { desc = "Resize split right" })
 
-			vim.keymap.set("n", "<C-h>", require("smart-splits").move_cursor_left)
-			vim.keymap.set("n", "<C-j>", require("smart-splits").move_cursor_down)
-			vim.keymap.set("n", "<C-k>", require("smart-splits").move_cursor_up)
-			vim.keymap.set("n", "<C-l>", require("smart-splits").move_cursor_right)
-			vim.keymap.set("n", "<C-\\>", require("smart-splits").move_cursor_previous)
+			-- Move between splits with Alt+hjkl
+			vim.keymap.set("n", "<A-h>", require("smart-splits").move_cursor_left)
+			vim.keymap.set("n", "<A-j>", require("smart-splits").move_cursor_down)
+			vim.keymap.set("n", "<A-k>", require("smart-splits").move_cursor_up)
+			vim.keymap.set("n", "<A-l>", require("smart-splits").move_cursor_right)
+			vim.keymap.set("n", "<A-\\>", require("smart-splits").move_cursor_previous)
+
+			-- Swap splits with leader+hjkl
+			vim.keymap.set("n", "<leader><leader>h", require("smart-splits").swap_buf_left, { desc = "Swap split left" })
+			vim.keymap.set("n", "<leader><leader>j", require("smart-splits").swap_buf_down, { desc = "Swap split down" })
+			vim.keymap.set("n", "<leader><leader>k", require("smart-splits").swap_buf_up, { desc = "Swap split up" })
+			vim.keymap.set("n", "<leader><leader>l", require("smart-splits").swap_buf_right, { desc = "Swap split right" })
 
 			vim.keymap.set("n", "<C-n>", "<cmd>tabnext<cr>", { desc = "Next tab" })
 			vim.keymap.set("n", "<C-p>", "<cmd>tabprevious<cr>", { desc = "Previous tab" })

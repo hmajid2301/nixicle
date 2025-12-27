@@ -219,7 +219,20 @@ require("lze").load({
 	},
 	{
 		"yamlls",
-		lsp = {},
+		lsp = {
+			settings = {
+				yaml = {
+					schemas = {
+						["https://taskfile.dev/schema.json"] = {
+							"Taskfile.yml",
+							"Taskfile.yaml",
+							"tasks/*.yml",
+							"tasks/*.yaml",
+						},
+					},
+				},
+			},
+		},
 	},
 	{
 		"tailwindcss",
