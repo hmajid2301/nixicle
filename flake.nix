@@ -23,9 +23,7 @@
     };
 
     impermanence.url = "github:nix-community/impermanence";
-    lanzaboote.url = "github:tomwrw/lanzaboote";
-    # TODO: when this is merged https://github.com/nix-community/lanzaboote/pull/523/changes
-    # lanzaboote.url = "github:nix-community/lanzaboote";
+    lanzaboote.url = "github:nix-community/lanzaboote";
 
     nixgl.url = "github:nix-community/nixGL";
     nix-index-database.url = "github:nix-community/nix-index-database";
