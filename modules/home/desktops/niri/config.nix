@@ -25,7 +25,10 @@ in
         keyboard.xkb = { };
         touchpad.tap = true;
         touchpad.natural-scroll = true;
-        focus-follows-mouse.enable = true;
+        focus-follows-mouse = {
+          enable = true;
+          max-scroll-amount = "95%";
+        };
         workspace-auto-back-and-forth = true;
       };
 
@@ -36,6 +39,7 @@ in
       gestures.hot-corners.enable = false;
 
       layout = {
+        gaps = 8;
         default-column-width = {
           proportion = 0.5;
         };
@@ -55,13 +59,12 @@ in
         {
           clip-to-geometry = true;
           geometry-corner-radius = {
-            bottom-left = 12.0;
-            bottom-right = 12.0;
-            top-left = 12.0;
-            top-right = 12.0;
+            bottom-left = 10.0;
+            bottom-right = 10.0;
+            top-left = 10.0;
+            top-right = 10.0;
           };
         }
-        # Google Meet popup windows
         {
           matches = [
             {
@@ -82,7 +85,6 @@ in
           open-maximized = false;
           open-fullscreen = false;
         }
-        # Zoom popup windows
         {
           matches = [
             {
@@ -103,12 +105,11 @@ in
           open-maximized = false;
           open-fullscreen = false;
         }
-        # Chrome popup dialogs (general)
         {
           matches = [
             {
               app-id = "^google-chrome$";
-              title = "^$";  # Empty title often indicates popup
+              title = "^$";
             }
           ];
           default-column-width = { };
@@ -116,7 +117,6 @@ in
           open-maximized = false;
           open-fullscreen = false;
         }
-        # Firefox popup windows (PayPal, banking, etc.)
         {
           matches = [
             {
@@ -153,7 +153,6 @@ in
           open-maximized = false;
           open-fullscreen = false;
         }
-        # Bitwarden popup/extension windows
         {
           matches = [
             {
@@ -180,12 +179,11 @@ in
           open-maximized = false;
           open-fullscreen = false;
         }
-        # Firefox authentication popups (general)
         {
           matches = [
             {
               app-id = "^firefox$";
-              title = "^$";  # Empty title Firefox popups
+              title = "^$";
             }
             {
               app-id = "^org.mozilla.firefox$";
