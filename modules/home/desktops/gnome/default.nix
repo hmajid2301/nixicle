@@ -39,10 +39,6 @@ in
     };
 
     dconf.settings = {
-      "org/gnome/desktop/applications/terminal" = {
-        exec = "${pkgs.ghostty}/bin/ghostty";
-      };
-
       "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0" = {
         binding = "<Super>Return";
         command = "ghostty";
@@ -81,10 +77,6 @@ in
 
       "org/gnome/desktop/wm/keybindings" = {
         close = [ "<Super>q" ];
-      };
-
-      "com/github/stunkymonkey/nautilus-open-any-terminal" = {
-        terminal = "ghostty";
       };
 
       "org/gnome/shell/keybindings/toggle-application-view" = {
