@@ -47,7 +47,6 @@
         tunnelId = "ecef5dbb-834e-43ed-84c6-355a2ac53e59";
         credentialsFile = config.sops.secrets.cloudflared.path;
       };
-      ollama.enable = true;
       gitea.enable = true;
       gitlab-runner = {
         enable = true;
@@ -55,9 +54,13 @@
       };
       karakeep.enable = true;
       tandoor.enable = true;
+      redis.enable = true;
       traefik.enable = true;
       postgresql.enable = true;
       tailscale.enable = true;
+      llama-cpp.enable = true;
+      open-webui.enable = true;
+      crowdsec.enable = true;
     };
   };
 
@@ -72,6 +75,21 @@
   };
 
   networking.hostName = "framebox";
+
+  services.rpcbind.enable = true;
+  fileSystems."/mnt/truenas" = {
+    device = "192.168.1.152:/mnt/main/main";
+    fsType = "nfs";
+    options = [
+      "nfsvers=4"
+      "noatime"
+      "nofail"
+      "x-systemd.automount"
+      "x-systemd.idle-timeout=60"
+      "x-systemd.device-timeout=5s"
+      "x-systemd.mount-timeout=5s"
+    ];
+  };
 
   system.stateVersion = "24.05";
 }
