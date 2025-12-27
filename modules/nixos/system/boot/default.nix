@@ -51,6 +51,7 @@ in
         autoGenerateKeys.enable = true;
         autoEnrollKeys = {
           enable = true;
+          autoReboot = true;
         };
       };
 
@@ -61,7 +62,7 @@ in
 
         systemd-boot = {
           enable = !cfg.secureBoot;
-          configurationLimit = 20;
+          configurationLimit = 50;
           editor = false;
         };
       };
