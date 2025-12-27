@@ -11,6 +11,8 @@ let
   cfg = config.roles.non-nixos;
 in
 {
+  imports = [ ../../system/nix ];
+
   options.roles.non-nixos = {
     enable = mkEnableOption "Enable non-NixOS system configurations (Ubuntu, Debian, Fedora, etc.)";
   };

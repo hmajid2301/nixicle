@@ -35,6 +35,7 @@ in
 
     programs = {
       guis.enable = true;
+      nautilus.enable = true;
     };
 
     security = {
