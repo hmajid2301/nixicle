@@ -14,8 +14,10 @@ in
 
   config = mkIf cfg.enable (mkMerge [
     {
-      sops.secrets.authenik_env = {
-        sopsFile = ../secrets.yaml;
+      sops.secrets = mkIf cfg.enable {
+        authenik_env = {
+          sopsFile = ../secrets.yaml;
+        };
       };
 
       services = {
@@ -89,7 +91,13 @@ in
       environment.persistence = mkIf config.system.impermanence.enable {
         "/persist" = {
           directories = [
-            { directory = "/var/lib/private/authentik"; user = "authentik"; group = "authentik"; mode = "0750"; defaultPerms.mode = "0700"; }
+            {
+              directory = "/var/lib/private/authentik";
+              user = "authentik";
+              group = "authentik";
+              mode = "0750";
+              defaultPerms.mode = "0700";
+            }
           ];
         };
       };

@@ -21,11 +21,10 @@ in
     services = {
       ollama = {
         enable = true;
-        package = pkgs.ollama-rocm;
+        package = pkgs.ollama;
         environmentVariables = {
           OLLAMA_NUM_PARALLEL = "32";
           OLLAMA_MAX_LOADED_MODELS = "8";
-          OLLAMA_GPU_OVERHEAD = "2048";
           OLLAMA_MAX_QUEUE = "1024";
         };
         host = "0.0.0.0";
