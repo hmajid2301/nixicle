@@ -41,10 +41,10 @@ keybinds {
     pane clear-defaults=true {
         bind "Alt p" "Esc" "Ctrl {" { SwitchToMode "Normal"; }
 
-        bind "Alt h" "h" "Left" { MoveFocus "Left"; }
-        bind "Alt l" "l" "Right" { MoveFocus "Right"; }
-        bind "Alt j" "j" "Down" { MoveFocus "Down"; }
-        bind "Alt k" "k" "Up" { MoveFocus "Up"; }
+        bind "h" "Left" { MoveFocus "Left"; }
+        bind "l" "Right" { MoveFocus "Right"; }
+        bind "j" "Down" { MoveFocus "Down"; }
+        bind "k" "Up" { MoveFocus "Up"; }
         bind "p" { SwitchFocus; }
         bind "n" { SwitchToMode "Normal"; }
         bind "-" { NewPane "Down"; SwitchToMode "Normal"; }
@@ -187,56 +187,64 @@ keybinds {
 
         bind "Alt q" { Quit; }
 
-        bind "Ctrl h" {
+        bind "Alt h" {
             MessagePlugin "https://github.com/hiasr/vim-zellij-navigator/releases/download/0.3.0/vim-zellij-navigator.wasm" {
                 name "move_focus_or_tab";
                 payload "left";
+                move_mod "alt";
             };
         }
-        bind "Ctrl j" {
+        bind "Alt j" {
             MessagePlugin "https://github.com/hiasr/vim-zellij-navigator/releases/download/0.3.0/vim-zellij-navigator.wasm" {
                 name "move_focus";
                 payload "down";
+                move_mod "alt";
             };
         }
-        bind "Ctrl k" {
+        bind "Alt k" {
             MessagePlugin "https://github.com/hiasr/vim-zellij-navigator/releases/download/0.3.0/vim-zellij-navigator.wasm" {
                 name "move_focus";
                 payload "up";
+                move_mod "alt";
             };
         }
-        bind "Ctrl l" {
+        bind "Alt l" {
             MessagePlugin "https://github.com/hiasr/vim-zellij-navigator/releases/download/0.3.0/vim-zellij-navigator.wasm" {
                 name "move_focus_or_tab";
                 payload "right";
+                move_mod "alt";
             };
         }
 
         bind "Ctrl n" { GoToNextTab; }
         bind "Ctrl p" { GoToPreviousTab; }
 
-        bind "Alt h" {
+        bind "Ctrl Alt h" {
             MessagePlugin "https://github.com/hiasr/vim-zellij-navigator/releases/download/0.3.0/vim-zellij-navigator.wasm" {
                 name "resize";
                 payload "left";
+                resize_mod "ctrl+alt";
             };
         }
-        bind "Alt j" {
+        bind "Ctrl Alt j" {
             MessagePlugin "https://github.com/hiasr/vim-zellij-navigator/releases/download/0.3.0/vim-zellij-navigator.wasm" {
                 name "resize";
                 payload "down";
+                resize_mod "ctrl+alt";
             };
         }
-        bind "Alt k" {
+        bind "Ctrl Alt k" {
             MessagePlugin "https://github.com/hiasr/vim-zellij-navigator/releases/download/0.3.0/vim-zellij-navigator.wasm" {
                 name "resize";
                 payload "up";
+                resize_mod "ctrl+alt";
             };
         }
-        bind "Alt l" {
+        bind "Ctrl Alt l" {
             MessagePlugin "https://github.com/hiasr/vim-zellij-navigator/releases/download/0.3.0/vim-zellij-navigator.wasm" {
                 name "resize";
                 payload "right";
+                resize_mod "ctrl+alt";
             };
         }
 
