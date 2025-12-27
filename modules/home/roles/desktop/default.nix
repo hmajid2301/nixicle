@@ -42,17 +42,17 @@ in
       MANPAGER = "nixCats +Man!";
     };
 
-    # Desktop utilities
     home.packages = with pkgs; [
-      ddcutil # Monitor control via DDC/CI
-      mtpfs # MTP filesystem support
-      jmtpfs # Java MTP filesystem
-      brightnessctl # Brightness control
-      xdg-utils # XDG utilities
-      wl-clipboard # Wayland clipboard utilities
-      clipse # Clipboard manager
-      pamixer # PulseAudio mixer
-      playerctl # Media player controller
+      ddcutil
+      mtpfs
+      jmtpfs
+      brightnessctl
+      xdg-utils
+      wl-clipboard
+      clipse
+      pamixer
+      playerctl
+      impression
 
       grimblast
       slurp
