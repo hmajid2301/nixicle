@@ -33,6 +33,11 @@ return {
 							text = "󰈙 ",
 							hl = "MarkviewIcon1",
 						},
+						["^canonicalURL$"] = {
+							use_types = false,
+							text = "󰌷 ",
+							hl = "MarkviewIcon1",
+						},
 					},
 				},
 			})

@@ -40,7 +40,6 @@ vim.opt.cmdheight = 1
 vim.opt.colorcolumn = "120"
 vim.opt.splitbelow = true
 vim.opt.splitright = true
-vim.opt.undofile = true
 vim.opt.ruler = false
 
 vim.o.updatetime = 250
