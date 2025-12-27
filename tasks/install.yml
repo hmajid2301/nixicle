@@ -1,0 +1,121 @@
+version: '3'
+
+tasks:
+  basic:
+    desc: "Install host with nixos-anywhere"
+    cmds:
+      - |
+        HOST=$(ls -1 hosts/ | gum choose)
+        echo "Installing $HOST with nixos-anywhere..."
+        nixos-anywhere --flake .#$HOST root@$HOST
+
+  secure:
+    desc: "Install host with Secure Boot and TPM auto-unlock"
+    cmds:
+      - |
+        gum style --border rounded --padding "1 2" --border-foreground 212 "NixOS Anywhere Installer"
+        echo ""
+
+        HOST=$(ls -1 hosts/ | gum choose --header "Select host to install")
+        gum spin --spinner dot --title "Loading host configuration..." -- sleep 1
+
+        SCAN_NETWORK=$(gum choose --header "How to find target IP?" "Enter manually" "Scan network for $HOST")
+
+        if [ "$SCAN_NETWORK" = "Scan network for $HOST" ]; then
+          SUBNET=$(gum input --placeholder "Network subnet (e.g. 192.168.1.0/24)" --value "192.168.1.0/24")
+          gum spin --spinner dot --title "Scanning network for hosts..." -- nmap -sn "$SUBNET" -oG - | grep "Up" | awk '{print $2}' > /tmp/hosts.txt
+
+          if [ -s /tmp/hosts.txt ]; then
+            TARGET=$(cat /tmp/hosts.txt | gum choose --header "Select target IP")
+          else
+            gum style --foreground 196 "No hosts found on network"
+            TARGET=$(gum input --placeholder "Enter target IP manually")
+          fi
+          rm -f /tmp/hosts.txt
+        else
+          TARGET=$(gum input --placeholder "Target IP (e.g. 192.168.1.100)")
+        fi
+
+        gum confirm "Install $HOST to $TARGET?" || exit 0
+
+        USER=$(gum input --placeholder "SSH user" --value "nixos")
+
+        gum style --foreground 212 "Testing SSH connection..."
+        if ssh -o ConnectTimeout=5 -o StrictHostKeyChecking=no "$USER@$TARGET" "echo 'Connection successful'" >/dev/null 2>&1; then
+          gum style --foreground 2 "✓ SSH connection successful"
+        else
+          gum style --foreground 196 "✗ SSH connection failed"
+          gum confirm "Continue anyway?" || exit 1
+        fi
+
+        echo ""
+        MY_PASS=$(mktemp)
+        PASSWORD=$(gum input --password --placeholder "Enter LUKS encryption password")
+        PASSWORD_CONFIRM=$(gum input --password --placeholder "Confirm LUKS password")
+
+        if [ "$PASSWORD" != "$PASSWORD_CONFIRM" ]; then
+          gum style --foreground 196 "Passwords do not match!"
+          exit 1
+        fi
+        echo "$PASSWORD" > $MY_PASS
+
+        SSH_KEYS=$(mktemp -d)
+        mkdir -p "$SSH_KEYS/persist/etc/ssh"
+
+        if [ -f "/persist/etc/ssh/ssh_host_ed25519_key" ]; then
+          gum input --password --placeholder "Enter sudo password" | sudo -S true
+
+          gum spin --spinner dot --title "Copying SSH host keys from current system..." -- bash -c "
+            sudo cp /persist/etc/ssh/ssh_host_ed25519_key '$SSH_KEYS/persist/etc/ssh/' && \
+            sudo cp /persist/etc/ssh/ssh_host_ed25519_key.pub '$SSH_KEYS/persist/etc/ssh/' && \
+            sudo cp /persist/etc/ssh/ssh_host_rsa_key '$SSH_KEYS/persist/etc/ssh/' 2>/dev/null && \
+            sudo cp /persist/etc/ssh/ssh_host_rsa_key.pub '$SSH_KEYS/persist/etc/ssh/' 2>/dev/null
+          " && gum style --foreground 2 "✓ SSH keys copied from current system" || { gum style --foreground 196 "✗ Failed to copy keys"; exit 1; }
+        else
+          gum style --foreground 196 "✗ No SSH keys found at /persist/etc/ssh/"
+          gum confirm "Continue without copying keys?" || exit 1
+        fi
+
+        sudo chmod 600 "$SSH_KEYS/persist/etc/ssh"/ssh_host_*_key 2>/dev/null || true
+        sudo chown -R $(id -u):$(id -g) "$SSH_KEYS"
+
+        echo ""
+        gum style --border double --padding "1 2" --border-foreground 212 "Starting installation..."
+        echo ""
+        gum style "Host: $HOST" "Target: $TARGET" "User: $USER"
+        echo ""
+
+        nixos-anywhere \
+          --flake ".#$HOST" \
+          --disk-encryption-keys /tmp/disk-encryption.key "$MY_PASS" \
+          --extra-files "$SSH_KEYS" \
+          --build-on-remote \
+          "$USER@$TARGET"
+
+        INSTALL_STATUS=$?
+
+        rm -f "$MY_PASS"
+        rm -rf "$SSH_KEYS"
+
+        echo ""
+        if [ $INSTALL_STATUS -eq 0 ]; then
+          gum style --border rounded --padding "1 2" --border-foreground 2 "✓ Deployment complete!"
+          echo ""
+
+          if grep -q 'secureBoot.*=.*true' "hosts/$HOST/default.nix"; then
+            gum style --foreground 212 "Post-deployment steps for TPM unlock:"
+            echo ""
+            echo "After the system reboots:"
+            echo "  1. ssh $TARGET"
+            echo "  2. sudo systemd-cryptenroll /dev/nvme0n1p2 --tpm2-device=auto --tpm2-pcrs=0+2+7+15"
+            echo "  3. sudo reboot"
+          fi
+        else
+          gum style --border rounded --padding "1 2" --border-foreground 196 "✗ Installation failed!"
+          exit 1
+        fi
+
+  iso:
+    desc: "Build graphical ISO"
+    cmds:
+      - nix build .#iso-graphical
