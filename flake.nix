@@ -91,10 +91,10 @@
 
     caelestia.url = "github:caelestia-dots/shell";
 
-    # noctalia = {
-    #   url = "path:/home/haseeb/projects/noctalia-shell";
-    #   inputs.nixpkgs.follows = "nixpkgs";
-    # };
+    noctalia = {
+      url = "github:noctalia-dev/noctalia-shell";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     # Zellij plugins
     zellij-pane-tracker = {
@@ -279,7 +279,7 @@
         inputs.caelestia.homeManagerModules.default
         inputs.niri.homeModules.niri
         inputs.niri.homeModules.stylix
-        # inputs.noctalia.homeModules.default
+        inputs.noctalia.homeModules.default
         inputs.sops-nix.homeManagerModules.sops
         inputs.stylix.homeModules.stylix
         inputs.catppuccin.homeModules.catppuccin
