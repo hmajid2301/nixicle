@@ -31,6 +31,7 @@ in
       nixicle.avahi.enable = true;
       vpn.enable = true;
       virtualisation.docker.enable = true;
+      upower.enable = true;
     };
 
     system = {

@@ -56,6 +56,10 @@
       tandoor.enable = true;
       redis.enable = true;
       traefik.enable = true;
+      paperless = {
+        enable = true;
+        mediaDir = "/mnt/truenas/homelab/paperless/media";
+      };
       postgresql.enable = true;
       tailscale.enable = true;
       llama-cpp.enable = true;
@@ -78,7 +82,7 @@
 
   services.rpcbind.enable = true;
   fileSystems."/mnt/truenas" = {
-    device = "192.168.1.152:/mnt/main/main";
+    device = "192.168.1.152:/mnt/main/main-encrypted";
     fsType = "nfs";
     options = [
       "nfsvers=4"
