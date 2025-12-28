@@ -37,16 +37,17 @@ in
       systemd.services.paperless-web = {
         serviceConfig = {
           EnvironmentFile = [ config.sops.secrets.paperless.path ];
-          # Bind mount NFS share into the mount namespace
           BindPaths = mkIf (hasPrefix "/mnt/" cfg.mediaDir) [ "/mnt/truenas" ];
         };
         requires = optional (hasPrefix "/mnt/truenas" cfg.mediaDir) "mnt-truenas.mount";
-        after = [ "postgresql.service" ] ++ (optional (hasPrefix "/mnt/truenas" cfg.mediaDir) "mnt-truenas.mount");
+        after = [
+          "postgresql.service"
+        ]
+        ++ (optional (hasPrefix "/mnt/truenas" cfg.mediaDir) "mnt-truenas.mount");
       };
 
       systemd.services.paperless-scheduler = {
         serviceConfig = {
-          # Bind mount NFS share into the mount namespace
           BindPaths = mkIf (hasPrefix "/mnt/" cfg.mediaDir) [ "/mnt/truenas" ];
         };
         requires = optional (hasPrefix "/mnt/truenas" cfg.mediaDir) "mnt-truenas.mount";
@@ -55,7 +56,6 @@ in
 
       systemd.services.paperless-consumer = {
         serviceConfig = {
-          # Bind mount NFS share into the mount namespace
           BindPaths = mkIf (hasPrefix "/mnt/" cfg.mediaDir) [ "/mnt/truenas" ];
         };
         requires = optional (hasPrefix "/mnt/truenas" cfg.mediaDir) "mnt-truenas.mount";
@@ -64,7 +64,6 @@ in
 
       systemd.services.paperless-task-queue = {
         serviceConfig = {
-          # Bind mount NFS share into the mount namespace
           BindPaths = mkIf (hasPrefix "/mnt/" cfg.mediaDir) [ "/mnt/truenas" ];
         };
         requires = optional (hasPrefix "/mnt/truenas" cfg.mediaDir) "mnt-truenas.mount";

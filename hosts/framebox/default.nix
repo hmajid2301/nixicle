@@ -56,10 +56,10 @@
       tandoor.enable = true;
       redis.enable = true;
       traefik.enable = true;
-      paperless = {
-        enable = true;
-        mediaDir = "/mnt/truenas/homelab/paperless/media";
-      };
+      # paperless = {
+      #   enable = true;
+      #   mediaDir = "/mnt/truenas/homelab/paperless/media";
+      # };
       postgresql.enable = true;
       tailscale.enable = true;
       llama-cpp.enable = true;
