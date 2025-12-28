@@ -14,5 +14,11 @@
 
   desktops = {
     niri.enable = true;
+    addons = {
+      noctalia = {
+        enable = true;
+        laptop = true;
+      };
+    };
   };
 }

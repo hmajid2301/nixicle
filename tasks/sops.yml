@@ -2,9 +2,24 @@ version: '3'
 
 tasks:
   update:
-    desc: "Update SOPS keys"
+    desc: "Update SOPS keys for all encrypted files"
     cmds:
-      - sops updatekeys modules/nixos/secrets.yaml
-      - sops updatekeys modules/home/secrets.yaml
-      - sops updatekeys modules/nixos/services/secrets.yaml
-      - sops updatekeys modules/nixos/roles/kubernetes/secrets.yaml
+      - |
+        echo "🔑 Updating SOPS keys for all encrypted files..."
+
+        yq eval '.creation_rules[].path_regex' .sops.yaml | while read -r pattern; do
+          if [ -n "$pattern" ]; then
+            search_pattern=$(echo "$pattern" | sed 's/\^//g' | sed 's/\$//g' | sed 's/\.ya?ml\$/\.yaml/g' | sed 's/\.ya?ml\$/\.yml/g')
+
+            echo "📁 Searching for files matching: $pattern"
+
+            find . -type f \( -name "*.yaml" -o -name "*.yml" \) | grep -E "$pattern" | while read -r file; do
+              if [ -f "$file" ]; then
+                echo "  🔄 Updating: $file"
+                sops updatekeys -y "$file" || echo "  ⚠️  Failed to update: $file"
+              fi
+            done
+          fi
+        done
+
+        echo "✅ SOPS key update complete!"
