@@ -65,6 +65,36 @@
       llama-cpp.enable = true;
       open-webui.enable = true;
       crowdsec.enable = true;
+      btrbk = {
+        enable = true;
+        instances.local = {
+          onCalendar = "weekly";
+          subvolumes = {
+            "/persist" = {
+              target = "/mnt/truenas/backups/framebox/persist";
+              snapshot_dir = ".snapshots";
+            };
+            "/home" = {
+              target = "/mnt/truenas/backups/framebox/home";
+              snapshot_dir = ".snapshots";
+            };
+          };
+          retention = {
+            weekly = 2;
+            monthly = 6;
+          };
+        };
+        backblaze = {
+          enable = true;
+          bucket = "Majiy00Homelab";
+          endpoint = "s3.us-west-004.backblazeb2.com";
+          paths = [
+            "/persist/.snapshots"
+            "/home/.snapshots"
+          ];
+          onCalendar = "weekly";
+        };
+      };
     };
   };
 
