@@ -23,7 +23,7 @@ in
     # IP forwarding enabled by Docker module
     virtualisation.docker = {
       enable = true;
-      liveRestore = false; # Required for Docker Swarm mode
+      liveRestore = false;
     };
 
     services.gitlab-runner = {
@@ -39,8 +39,10 @@ in
           dockerPrivileged = true;
           dockerVolumes = [
             "/cache"
-            "/lib/modules:/lib/modules:ro"
           ];
+          environmentVariables = {
+            FF_NETWORK_PER_BUILD = "1";
+          };
         };
       };
     };
