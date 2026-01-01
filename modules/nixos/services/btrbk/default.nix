@@ -112,8 +112,12 @@ in
 
           volume = mapAttrs (
             subvol: subvolCfg: {
-              snapshot_dir = subvolCfg.snapshot_dir;
-              target = subvolCfg.target;
+              subvolume = {
+                "." = {
+                  snapshot_dir = subvolCfg.snapshot_dir;
+                  target = subvolCfg.target;
+                };
+              };
             }
           ) instanceCfg.subvolumes;
         };
@@ -145,7 +149,8 @@ in
               "${path}" \
               "s3://${cfg.backblaze.bucket}/${config.networking.hostName}/$(basename ${path})/" \
               --storage-class GLACIER \
-              --exclude "*.tmp"
+              --exclude "*.tmp" \
+              --exclude "*/.config/gtk-*/*"
           fi
         '') cfg.backblaze.paths}
 
@@ -162,14 +167,15 @@ in
       };
     };
 
-    sops.secrets.b2_access_key = mkIf cfg.backblaze.enable {
-      sopsFile = ../../secrets.yaml;
-    };
+    sops.secrets.b2_access_key = mkIf cfg.backblaze.enable { };
 
-    sops.secrets.b2_secret_key = mkIf cfg.backblaze.enable {
-      sopsFile = ../../secrets.yaml;
-    };
+    sops.secrets.b2_secret_key = mkIf cfg.backblaze.enable { };
 
     environment.systemPackages = [ pkgs.btrbk ];
+
+    systemd.tmpfiles.rules = [
+      "d /home/.snapshots 0755 root root -"
+      "d /persist/.snapshots 0755 root root -"
+    ];
   };
 }

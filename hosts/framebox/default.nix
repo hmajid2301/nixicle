@@ -1,5 +1,4 @@
 {
-  pkgs,
   inputs,
   config,
   ...
@@ -23,6 +22,12 @@
     user_password = {
       sopsFile = ./secrets.yaml;
       neededForUsers = true;
+    };
+    b2_access_key = {
+      sopsFile = ./secrets.yaml;
+    };
+    b2_secret_key = {
+      sopsFile = ./secrets.yaml;
     };
   };
 
@@ -56,15 +61,43 @@
       tandoor.enable = true;
       redis.enable = true;
       traefik.enable = true;
-      # paperless = {
-      #   enable = true;
-      #   mediaDir = "/mnt/truenas/homelab/paperless/media";
-      # };
       postgresql.enable = true;
       tailscale.enable = true;
       llama-cpp.enable = true;
       open-webui.enable = true;
-      crowdsec.enable = true;
+      # banterbus = {
+      #   enable = true;
+      #   instances = {
+      #     prod = {
+      #       version = "main";
+      #       hash = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
+      #       port = 8083;
+      #       domain = "banterbus.games";
+      #       jwt = {
+      #         jwksUrl = "https://auth.majiy00.com/application/o/banterbus/jwks/";
+      #         adminGroup = "BanterBus Admin";
+      #       };
+      #     };
+      #     dev = {
+      #       version = "main";
+      #       hash = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
+      #       port = 8084;
+      #       domain = "dev.banterbus.games";
+      #       jwt = {
+      #         jwksUrl = "https://auth.majiy00.com/application/o/banterbus/jwks/";
+      #         adminGroup = "BanterBus Admin";
+      #       };
+      #     };
+      #   };
+      # };
+
+      # paperless = {
+      #   enable = true;
+      #   mediaDir = "/mnt/truenas/homelab/paperless/media";
+      # };
+      # crowdsec.enable = true;
+
+      # TODO: refactor this out.
       btrbk = {
         enable = true;
         instances.local = {
@@ -110,6 +143,7 @@
 
   networking.hostName = "framebox";
 
+  # TODO: refactor this also.
   services.rpcbind.enable = true;
   fileSystems."/mnt/truenas" = {
     device = "192.168.1.152:/mnt/main/main-encrypted";

@@ -16,9 +16,7 @@ in
   config = mkIf cfg.enable {
     services.crowdsec = {
       enable = true;
-      settings.general.api.server = {
-        listen_uri = "127.0.0.1:6060";
-      };
+      settings.api.server.listen_uri = "127.0.0.1:6060";
       localConfig.acquisitions = [
         {
           source = "journalctl";
@@ -28,24 +26,7 @@ in
       ];
     };
 
-    # Install firewall bouncer
-    systemd.services.crowdsec-firewall-bouncer = {
-      description = "CrowdSec Firewall Bouncer";
-      after = [ "crowdsec.service" ];
-      wants = [ "crowdsec.service" ];
-      wantedBy = [ "multi-user.target" ];
-
-      serviceConfig = {
-        Type = "simple";
-        ExecStart = "${pkgs.crowdsec-firewall-bouncer}/bin/crowdsec-firewall-bouncer -c /etc/crowdsec/bouncers/crowdsec-firewall-bouncer.yaml";
-        Restart = "on-failure";
-      };
-    };
-
-    environment.systemPackages = with pkgs; [
-      crowdsec
-      crowdsec-firewall-bouncer
-    ];
+    services.crowdsec-firewall-bouncer.enable = true;
 
     environment.persistence."/persist" = mkIf config.system.impermanence.enable {
       directories = [
