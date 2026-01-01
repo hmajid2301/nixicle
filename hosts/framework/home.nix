@@ -19,6 +19,15 @@
         enable = true;
         laptop = true;
       };
+      swayidle = {
+        enable = true;
+        timeouts = {
+          lock = 300;
+          dpms = 330;
+          suspend = 0;
+          hibernate = 900;
+        };
+      };
     };
   };
 }

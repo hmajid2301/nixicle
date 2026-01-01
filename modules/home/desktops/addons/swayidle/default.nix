@@ -47,6 +47,7 @@ in
         lock = 300;
         dpms = 330;
         suspend = 1800;
+        hibernate = 0;
       };
       description = "Timeout values in seconds";
     };
@@ -72,6 +73,10 @@ in
       ++ optional (cfg.timeouts.suspend > 0) {
         timeout = cfg.timeouts.suspend;
         command = "${pkgs.systemd}/bin/systemctl suspend";
+      }
+      ++ optional (cfg.timeouts.hibernate > 0) {
+        timeout = cfg.timeouts.hibernate;
+        command = "${pkgs.systemd}/bin/systemctl hibernate";
       };
     };
   };
