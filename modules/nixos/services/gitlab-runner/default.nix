@@ -39,9 +39,10 @@ in
           dockerPrivileged = true;
           dockerVolumes = [
             "/cache"
+            "/certs/client"
           ];
           environmentVariables = {
-            FF_NETWORK_PER_BUILD = "1";
+            DOCKER_TLS_CERTDIR = "/certs";
           };
         };
       };

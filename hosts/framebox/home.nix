@@ -22,6 +22,7 @@
           lock = 300;
           dpms = 330;
           suspend = 0;
+          hibernate = 0;
         };
       };
     };

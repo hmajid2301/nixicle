@@ -18,6 +18,11 @@
       noctalia = {
         enable = true;
         laptop = true;
+        settings = {
+          osd = {
+            monitors = [ "eDP-1" ];
+          };
+        };
       };
       swayidle = {
         enable = true;
