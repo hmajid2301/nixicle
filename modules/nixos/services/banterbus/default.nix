@@ -2,6 +2,7 @@
   config,
   lib,
   pkgs,
+  inputs,
   ...
 }:
 with lib;
@@ -9,33 +10,41 @@ with lib.nixicle;
 let
   cfg = config.services.nixicle.banterbus;
 
-  mkInstance = name: instanceCfg: {
-    banterbusSrc = pkgs.fetchFromGitLab {
-      owner = "hmajid2301";
-      repo = "banterbus";
-      rev = instanceCfg.version;
-      hash = instanceCfg.hash;
+  mkInstance = name: instanceCfg:
+    let
+      banterbus = inputs.banterbus.packages.${pkgs.system}.default;
+    in
+    {
+      inherit banterbus;
     };
-    banterbus = (import (mkInstance name instanceCfg).banterbusSrc { inherit pkgs; }).packages.${pkgs.system}.default;
-  };
 in
 {
   options.services.nixicle.banterbus = with types; {
     enable = mkBoolOpt false "Whether or not to enable BanterBus service";
 
+    jwksUrl = mkOption {
+      type = str;
+      default = "https://authentik.haseebmajid.dev/application/o/budibase/.well-known/openid-configuration";
+      description = "JWKS URL for JWT verification";
+    };
+
+    adminGroup = mkOption {
+      type = str;
+      default = "Admin";
+      description = "JWT group for admin access";
+    };
+
+    redis = {
+      address = mkOption {
+        type = str;
+        default = "localhost:6379";
+        description = "Redis server address";
+      };
+    };
+
     instances = mkOption {
       type = attrsOf (submodule {
         options = {
-          version = mkOption {
-            type = str;
-            description = "Git revision to use";
-          };
-
-          hash = mkOption {
-            type = str;
-            description = "Hash of the source";
-          };
-
           port = mkOption {
             type = int;
             description = "Port to run BanterBus on";
@@ -44,27 +53,6 @@ in
           domain = mkOption {
             type = str;
             description = "Domain for this instance";
-          };
-
-          redis = {
-            address = mkOption {
-              type = str;
-              default = "localhost:6379";
-              description = "Redis server address";
-            };
-          };
-
-          jwt = {
-            jwksUrl = mkOption {
-              type = str;
-              description = "JWKS URL for JWT verification";
-            };
-
-            adminGroup = mkOption {
-              type = str;
-              default = "admin";
-              description = "JWT group for admin access";
-            };
           };
         };
       });
@@ -97,8 +85,8 @@ in
         nameValuePair "banterbus_${name}" {
           description = "BanterBus ${name} trivia game service";
           wantedBy = [ "multi-user.target" ];
-          after = [ "network.target" "postgresql.service" "redis.service" ];
-          requires = [ "postgresql.service" "redis.service" ];
+          after = [ "network.target" "postgresql.service" "redis-main.service" ];
+          requires = [ "postgresql.service" "redis-main.service" ];
 
           serviceConfig = {
             Type = "simple";
@@ -113,10 +101,10 @@ in
               "BANTERBUS_DB_HOST=/run/postgresql"
               "BANTERBUS_DB_PORT=5432"
               "BANTERBUS_DB_NAME=banterbus_${name}"
-              "BANTERBUS_REDIS_ADDRESS=${instanceCfg.redis.address}"
-              "BANTERBUS_JWKS_URL=${instanceCfg.jwt.jwksUrl}"
-              "BANTERBUS_JWT_ADMIN_GROUP=${instanceCfg.jwt.adminGroup}"
-              "BANTERBUS_SERVER_PORT=${toString instanceCfg.port}"
+              "BANTERBUS_REDIS_ADDRESS=${cfg.redis.address}"
+              "BANTERBUS_JWKS_URL=${cfg.jwksUrl}"
+              "BANTERBUS_JWT_ADMIN_GROUP=${cfg.adminGroup}"
+              "BANTERBUS_WEBSERVER_PORT=${toString instanceCfg.port}"
             ];
 
             PrivateTmp = true;

@@ -55,14 +55,17 @@
         "pre-commit-hooks": "pre-commit-hooks"
       },
       "locked": {
-        "lastModified": 1767102339,
-        "narHash": "sha256-3ih++HOHz15O/3+omcqB0nrQLyqk6/ohu/eRFyZQJ8c=",
-        "path": "/home/haseeb/projects/banterbus",
-        "type": "path"
+        "lastModified": 1767289662,
+        "narHash": "sha256-DLruLo1P4il9tmeEilMF5pXE3PGNmN7naMp/CsP0C70=",
+        "owner": "hmajid2301",
+        "repo": "banterbus",
+        "rev": "c85c6113b3ff2f5c66c8d22012bd8625be6a5c0d",
+        "type": "gitlab"
       },
       "original": {
-        "path": "/home/haseeb/projects/banterbus",
-        "type": "path"
+        "owner": "hmajid2301",
+        "repo": "banterbus",
+        "type": "gitlab"
       }
     },
     "base16": {

@@ -96,6 +96,13 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # Services
+
+    banterbus = {
+      url = "gitlab:hmajid2301/banterbus";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # Zellij plugins
     zellij-pane-tracker = {
       url = "github:theslyprofessor/zellij-pane-tracker";
@@ -212,13 +219,6 @@
     };
 
     import-tree.url = "github:vic/import-tree";
-
-    # External projects
-    banterbus = {
-      url = "path:/home/haseeb/projects/banterbus";
-      flake = true;
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
   };
 
   outputs =

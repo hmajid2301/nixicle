@@ -32,10 +32,18 @@ in
           {
             name = "all";
             webhook_configs = [
-              { url = "http://127.0.0.1:11000/alert"; } # matrix-hook
-              { url = with config.services.gotify; "http://s100:8051"; } # alertmanger-ntfy
+              { url = "http://127.0.0.1:11000/alert"; }
+              # { url = with config.services.gotify; "http://s100:8051"; }
             ];
           }
+        ];
+      };
+    };
+
+    environment.persistence = mkIf config.system.impermanence.enable {
+      "/persist" = {
+        directories = [
+          { directory = "/var/lib/alertmanager"; user = "alertmanager"; group = "alertmanager"; mode = "0755"; }
         ];
       };
     };

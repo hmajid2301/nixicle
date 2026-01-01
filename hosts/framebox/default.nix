@@ -47,6 +47,19 @@
       authentik.enable = true;
       atuin.enable = true;
       atticd.enable = true;
+      banterbus = {
+        enable = true;
+        instances = {
+          dev = {
+            port = 8084;
+            domain = "dev.banterbus.games";
+          };
+          prod = {
+            port = 8083;
+            domain = "banterbus.games";
+          };
+        };
+      };
       cloudflare = {
         enable = true;
         tunnelId = "ecef5dbb-834e-43ed-84c6-355a2ac53e59";
@@ -58,38 +71,15 @@
         sopsFile = config.sops.secrets.gitlab_runner_env.path;
       };
       karakeep.enable = true;
+      llama-cpp.enable = true;
+      monitoring.enable = true;
+      open-webui.enable = true;
+      otel-collector.enable = true;
       tandoor.enable = true;
       redis.enable = true;
       traefik.enable = true;
       postgresql.enable = true;
       tailscale.enable = true;
-      llama-cpp.enable = true;
-      open-webui.enable = true;
-      # banterbus = {
-      #   enable = true;
-      #   instances = {
-      #     prod = {
-      #       version = "main";
-      #       hash = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
-      #       port = 8083;
-      #       domain = "banterbus.games";
-      #       jwt = {
-      #         jwksUrl = "https://auth.majiy00.com/application/o/banterbus/jwks/";
-      #         adminGroup = "BanterBus Admin";
-      #       };
-      #     };
-      #     dev = {
-      #       version = "main";
-      #       hash = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
-      #       port = 8084;
-      #       domain = "dev.banterbus.games";
-      #       jwt = {
-      #         jwksUrl = "https://auth.majiy00.com/application/o/banterbus/jwks/";
-      #         adminGroup = "BanterBus Admin";
-      #       };
-      #     };
-      #   };
-      # };
 
       # paperless = {
       #   enable = true;

@@ -44,11 +44,18 @@ in
       };
     };
 
-    # Configure tempo service with proper state directory
     systemd.services.tempo = {
       serviceConfig = {
         StateDirectory = "tempo";
         StateDirectoryMode = "0755";
+      };
+    };
+
+    environment.persistence = mkIf config.system.impermanence.enable {
+      "/persist" = {
+        directories = [
+          { directory = "/var/lib/tempo"; user = "tempo"; group = "tempo"; mode = "0755"; }
+        ];
       };
     };
   };

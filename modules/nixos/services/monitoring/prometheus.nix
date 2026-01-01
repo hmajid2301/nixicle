@@ -44,5 +44,13 @@ in
         };
       };
     };
+
+    environment.persistence = mkIf config.system.impermanence.enable {
+      "/persist" = {
+        directories = [
+          { directory = "/var/lib/prometheus2"; user = "prometheus"; group = "prometheus"; mode = "0755"; }
+        ];
+      };
+    };
   };
 }

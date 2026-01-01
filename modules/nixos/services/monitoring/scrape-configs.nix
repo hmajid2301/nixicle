@@ -10,16 +10,16 @@ in
 {
   config = mkIf cfg.enable {
     services.prometheus.scrapeConfigs = [
-      {
-        job_name = "home-assistant";
-        metrics_path = "/api/prometheus";
-        bearer_token_file = config.sops.secrets.home_assistant_token.path;
-        static_configs = [
-          {
-            targets = [ "s100:8123" ];
-          }
-        ];
-      }
+      # {
+      #   job_name = "home-assistant";
+      #   metrics_path = "/api/prometheus";
+      #   bearer_token_file = config.sops.secrets.home_assistant_token.path;
+      #   static_configs = [
+      #     {
+      #       targets = [ "s100:8123" ];
+      #     }
+      #   ];
+      # }
 
       {
         job_name = "redis";

@@ -69,35 +69,21 @@ in
           settings = {
             datasources = [
               {
-                name = "Prometheus (ms01)";
+                name = "Prometheus";
                 type = "prometheus";
                 access = "proxy";
                 editable = true;
                 url = "http://127.0.0.1:${toString config.services.prometheus.port}";
               }
               {
-                name = "Loki (ms01)";
+                name = "Loki";
                 type = "loki";
                 access = "proxy";
                 editable = true;
                 url = "http://127.0.0.1:${toString config.services.loki.configuration.server.http_listen_port}";
               }
               {
-                name = "Loki (s100)";
-                type = "loki";
-                access = "proxy";
-                editable = true;
-                url = "http://s100:3030";
-              }
-              {
-                name = "Loki (vps)";
-                type = "loki";
-                access = "proxy";
-                editable = true;
-                url = "http://vps:3030";
-              }
-              {
-                name = "Tempo (ms01)";
+                name = "Tempo";
                 type = "tempo";
                 access = "proxy";
                 editable = true;
@@ -106,6 +92,14 @@ in
             ];
           };
         };
+      };
+    };
+
+    environment.persistence = mkIf config.system.impermanence.enable {
+      "/persist" = {
+        directories = [
+          { directory = "/var/lib/grafana"; user = "grafana"; group = "grafana"; mode = "0755"; }
+        ];
       };
     };
   };
