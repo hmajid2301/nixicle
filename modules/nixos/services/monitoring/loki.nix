@@ -82,7 +82,7 @@ in
     environment.persistence = mkIf config.system.impermanence.enable {
       "/persist" = {
         directories = [
-          { directory = "/var/lib/loki"; user = "loki"; group = "loki"; mode = "0755"; }
+          { directory = "/var/lib/loki"; mode = "0755"; }
         ];
       };
     };

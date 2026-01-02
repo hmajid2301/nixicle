@@ -43,7 +43,7 @@ in
     environment.persistence = mkIf config.system.impermanence.enable {
       "/persist" = {
         directories = [
-          { directory = "/var/lib/alertmanager"; user = "alertmanager"; group = "alertmanager"; mode = "0755"; }
+          { directory = "/var/lib/private/alertmanager"; mode = "0750"; }
         ];
       };
     };

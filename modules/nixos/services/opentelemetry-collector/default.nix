@@ -88,17 +88,10 @@ in
       };
     };
 
-    systemd.services.opentelemetry-collector = {
-      serviceConfig = {
-        StateDirectory = "otelcol";
-        StateDirectoryMode = "0755";
-      };
-    };
-
     environment.persistence = mkIf config.system.impermanence.enable {
       "/persist" = {
         directories = [
-          { directory = "/var/lib/otelcol"; user = "otelcol-contrib"; group = "otelcol-contrib"; mode = "0755"; }
+          { directory = "/var/lib/private/opentelemetry-collector"; mode = "0755"; }
         ];
       };
     };

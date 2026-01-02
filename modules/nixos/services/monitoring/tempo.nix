@@ -54,7 +54,10 @@ in
     environment.persistence = mkIf config.system.impermanence.enable {
       "/persist" = {
         directories = [
-          { directory = "/var/lib/tempo"; user = "tempo"; group = "tempo"; mode = "0755"; }
+          {
+            directory = "/var/lib/private/tempo";
+            mode = "0750";
+          }
         ];
       };
     };

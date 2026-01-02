@@ -98,7 +98,7 @@ in
     environment.persistence = mkIf config.system.impermanence.enable {
       "/persist" = {
         directories = [
-          { directory = "/var/lib/grafana"; user = "grafana"; group = "grafana"; mode = "0755"; }
+          { directory = "/var/lib/grafana"; mode = "0755"; }
         ];
       };
     };
