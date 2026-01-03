@@ -43,6 +43,7 @@
 
   services = {
     power-profiles-daemon.enable = true;
+    virtualisation.kvm.enable = true;
     nixicle = {
       authentik.enable = true;
       atuin.enable = true;
@@ -135,8 +136,22 @@
 
   # TODO: refactor this also.
   services.rpcbind.enable = true;
-  fileSystems."/mnt/truenas" = {
+  fileSystems."/mnt/homelab" = {
     device = "192.168.1.152:/mnt/main/main-encrypted";
+    fsType = "nfs";
+    options = [
+      "nfsvers=4"
+      "noatime"
+      "nofail"
+      "x-systemd.automount"
+      "x-systemd.idle-timeout=60"
+      "x-systemd.device-timeout=5s"
+      "x-systemd.mount-timeout=5s"
+    ];
+  };
+
+  fileSystems."/mnt/truenas" = {
+    device = "192.168.1.152:/mnt/main/main";
     fsType = "nfs";
     options = [
       "nfsvers=4"
