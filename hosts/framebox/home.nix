@@ -10,6 +10,7 @@
     development.enable = true;
     gaming.enable = true;
     social.enable = true;
+    video.enable = true;
   };
 
   desktops = {

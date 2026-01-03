@@ -60,7 +60,7 @@ in
           middlewares = {
             attic-timeout = {
               buffering = {
-                maxRequestBodyBytes = 10737418240;
+                maxRequestBodyBytes = 21474836480;
                 memRequestBodyBytes = 1073741824;
               };
             };

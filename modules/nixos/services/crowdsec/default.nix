@@ -14,9 +14,24 @@ in
   };
 
   config = mkIf cfg.enable {
+    sops.secrets.crowdsec_enroll_key = {
+      sopsFile = ../secrets.yaml;
+    };
+
     services.crowdsec = {
       enable = true;
-      settings.api.server.listen_uri = "127.0.0.1:6060";
+      settings = {
+        api.server.listen_uri = "127.0.0.1:6060";
+        console = {
+          tokenFile = config.sops.secrets.crowdsec_enroll_key.path;
+          configuration = {
+            share_manual_decisions = true;
+            share_tainted = true;
+            share_custom = true;
+            share_context = true;
+          };
+        };
+      };
       localConfig.acquisitions = [
         {
           source = "journalctl";
