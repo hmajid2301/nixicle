@@ -81,6 +81,7 @@
       traefik.enable = true;
       postgresql.enable = true;
       tailscale.enable = true;
+      unbound.enable = true;
       adguard.enable = true;
 
       # paperless = {
