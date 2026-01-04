@@ -15,6 +15,8 @@ stages:
       system-features = benchmark big-parallel nixos-test i686
       substituters = https://attic.homelab.haseebmajid.dev/system?priority=43 https://nix-community.cachix.org?priority=41 https://numtide.cachix.org?priority=42 https://cache.nixos.org/
       trusted-public-keys = cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY= system:5M8uBPjS68HTadSbeCs0Jiu0Z1tJBNdahtKBCXhl+Z0= nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs= numtide.cachix.org-1:2ps1kLBUWjxIneOy1Ik6cQjb41X0iXVXeHigGmycPPE=
+      max-jobs = 4
+      cores = 2
       EOF
     - echo "machine attic.homelab.haseebmajid.dev password $ATTIC_AUTH_KEY" > /etc/nix/netrc
     - mkdir -p ~/.ssh /etc/ssh
@@ -89,9 +91,9 @@ build:flake:
     - if: '$CI_PIPELINE_SOURCE == "schedule"'
   script:
     - nix flake update
-    - nix run github:Mic92/nix-fast-build -- --skip-cached --no-nom --attic-cache homelab:main
+    - nix run github:Mic92/nix-fast-build -- --skip-cached --no-nom --max-jobs 4 --attic-cache homelab:main
     - echo "Building and pushing all system configurations to Attic..."
-    - for host in framework ms01 s100 vm vps workstation; do
+    - for host in framework vm framebox; do
         echo "Building nixosConfigurations.$host...";
         nix build ".#nixosConfigurations.$host.config.system.build.toplevel" --print-out-paths | while read path; do
           nix-store -qR "$path" | grep -vE "(davinci-resolve|blender|steam|wine|nvidia-x11)" | attic push homelab:main --stdin || true;
@@ -109,4 +111,4 @@ build:changed:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - echo "Building changed configurations and pushing to Attic..."
-    - nix run github:Mic92/nix-fast-build -- --skip-cached --no-nom --attic-cache homelab:main
+    - nix run github:Mic92/nix-fast-build -- --skip-cached --no-nom --max-jobs 4 --attic-cache homelab:main
