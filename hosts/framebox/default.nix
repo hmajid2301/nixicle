@@ -33,6 +33,12 @@
 
   user.passwordSecretFile = config.sops.secrets.user_password.path;
 
+  users.groups.media = {
+    gid = 3000;
+  };
+
+  users.users.haseeb.extraGroups = [ "media" ];
+
   system = {
     impermanence.enable = true;
     boot = {
@@ -45,6 +51,7 @@
     power-profiles-daemon.enable = true;
     virtualisation.kvm.enable = true;
     nixicle = {
+      adguard.enable = true;
       authentik.enable = true;
       atuin.enable = true;
       atticd.enable = true;
@@ -61,35 +68,6 @@
           };
         };
       };
-      cloudflare = {
-        enable = true;
-        tunnelId = "ecef5dbb-834e-43ed-84c6-355a2ac53e59";
-        credentialsFile = config.sops.secrets.cloudflared.path;
-      };
-      gitea.enable = true;
-      gitlab-runner = {
-        enable = true;
-        sopsFile = config.sops.secrets.gitlab_runner_env.path;
-      };
-      karakeep.enable = true;
-      llama-cpp.enable = true;
-      monitoring.enable = true;
-      open-webui.enable = true;
-      otel-collector.enable = true;
-      tandoor.enable = true;
-      redis.enable = true;
-      traefik.enable = true;
-      postgresql.enable = true;
-      tailscale.enable = true;
-      unbound.enable = true;
-      adguard.enable = true;
-      # dokploy.enable = true;
-
-      # paperless = {
-      #   enable = true;
-      #   mediaDir = "/mnt/truenas/homelab/paperless/media";
-      # };
-      # crowdsec.enable = true;
 
       # TODO: refactor this out.
       btrbk = {
@@ -122,6 +100,35 @@
           onCalendar = "weekly";
         };
       };
+
+      cloudflare = {
+        enable = true;
+        tunnelId = "ecef5dbb-834e-43ed-84c6-355a2ac53e59";
+        credentialsFile = config.sops.secrets.cloudflared.path;
+      };
+      crowdsec.enable = true;
+      gitea.enable = true;
+      gitlab-runner = {
+        enable = true;
+        sopsFile = config.sops.secrets.gitlab_runner_env.path;
+      };
+
+      karakeep.enable = true;
+      llama-cpp.enable = true;
+      monitoring.enable = true;
+      open-webui.enable = true;
+      otel-collector.enable = true;
+      redis.enable = true;
+      postgresql.enable = true;
+      paperless = {
+        enable = true;
+        mediaDir = "/mnt/homelab/homelab/paperless/media";
+      };
+
+      tandoor.enable = true;
+      traefik.enable = true;
+      tailscale.enable = true;
+      unbound.enable = true;
     };
   };
 
@@ -140,7 +147,7 @@
   # TODO: refactor this also.
   services.rpcbind.enable = true;
   fileSystems."/mnt/homelab" = {
-    device = "192.168.1.152:/mnt/main/main-encrypted/homelab";
+    device = "192.168.1.152:/mnt/main/main-encrypted";
     fsType = "nfs";
     options = [
       "nfsvers=4"

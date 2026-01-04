@@ -37,37 +37,37 @@ in
       systemd.services.paperless-web = {
         serviceConfig = {
           EnvironmentFile = [ config.sops.secrets.paperless.path ];
-          BindPaths = mkIf (hasPrefix "/mnt/" cfg.mediaDir) [ "/mnt/truenas" ];
+          BindPaths = mkIf (hasPrefix "/mnt/homelab" cfg.mediaDir) [ "/mnt/homelab" ];
         };
-        requires = optional (hasPrefix "/mnt/truenas" cfg.mediaDir) "mnt-truenas.mount";
+        requires = optional (hasPrefix "/mnt/homelab" cfg.mediaDir) "mnt-homelab.mount";
         after = [
           "postgresql.service"
         ]
-        ++ (optional (hasPrefix "/mnt/truenas" cfg.mediaDir) "mnt-truenas.mount");
+        ++ (optional (hasPrefix "/mnt/homelab" cfg.mediaDir) "mnt-homelab.mount");
       };
 
       systemd.services.paperless-scheduler = {
         serviceConfig = {
-          BindPaths = mkIf (hasPrefix "/mnt/" cfg.mediaDir) [ "/mnt/truenas" ];
+          BindPaths = mkIf (hasPrefix "/mnt/homelab" cfg.mediaDir) [ "/mnt/homelab" ];
         };
-        requires = optional (hasPrefix "/mnt/truenas" cfg.mediaDir) "mnt-truenas.mount";
-        after = optional (hasPrefix "/mnt/truenas" cfg.mediaDir) "mnt-truenas.mount";
+        requires = optional (hasPrefix "/mnt/homelab" cfg.mediaDir) "mnt-homelab.mount";
+        after = optional (hasPrefix "/mnt/homelab" cfg.mediaDir) "mnt-homelab.mount";
       };
 
       systemd.services.paperless-consumer = {
         serviceConfig = {
-          BindPaths = mkIf (hasPrefix "/mnt/" cfg.mediaDir) [ "/mnt/truenas" ];
+          BindPaths = mkIf (hasPrefix "/mnt/homelab" cfg.mediaDir) [ "/mnt/homelab" ];
         };
-        requires = optional (hasPrefix "/mnt/truenas" cfg.mediaDir) "mnt-truenas.mount";
-        after = optional (hasPrefix "/mnt/truenas" cfg.mediaDir) "mnt-truenas.mount";
+        requires = optional (hasPrefix "/mnt/homelab" cfg.mediaDir) "mnt-homelab.mount";
+        after = optional (hasPrefix "/mnt/homelab" cfg.mediaDir) "mnt-homelab.mount";
       };
 
       systemd.services.paperless-task-queue = {
         serviceConfig = {
-          BindPaths = mkIf (hasPrefix "/mnt/" cfg.mediaDir) [ "/mnt/truenas" ];
+          BindPaths = mkIf (hasPrefix "/mnt/homelab" cfg.mediaDir) [ "/mnt/homelab" ];
         };
-        requires = optional (hasPrefix "/mnt/truenas" cfg.mediaDir) "mnt-truenas.mount";
-        after = optional (hasPrefix "/mnt/truenas" cfg.mediaDir) "mnt-truenas.mount";
+        requires = optional (hasPrefix "/mnt/homelab" cfg.mediaDir) "mnt-homelab.mount";
+        after = optional (hasPrefix "/mnt/homelab" cfg.mediaDir) "mnt-homelab.mount";
       };
 
       services = {

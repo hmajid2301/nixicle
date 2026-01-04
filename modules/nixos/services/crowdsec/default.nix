@@ -18,20 +18,38 @@ in
       sopsFile = ../secrets.yaml;
     };
 
+    systemd.tmpfiles.rules = [
+      "d /var/lib/crowdsec 0755 crowdsec crowdsec - -"
+      "f /var/lib/crowdsec/online_api_credentials.yaml 0750 crowdsec crowdsec - -"
+    ];
+
     services.crowdsec = {
       enable = true;
+
       settings = {
-        api.server.listen_uri = "127.0.0.1:6060";
+        general.api = {
+          client.credentials_path = "/var/lib/crowdsec/local_api_credentials.yaml";
+          server = {
+            enable = true;
+            listen_uri = "127.0.0.1:8081";
+          };
+        };
+
+        lapi.credentialsFile = "/var/lib/crowdsec/local_api_credentials.yaml";
+        capi.credentialsFile = "/var/lib/crowdsec/online_api_credentials.yaml";
+
         console = {
           tokenFile = config.sops.secrets.crowdsec_enroll_key.path;
           configuration = {
             share_manual_decisions = true;
             share_tainted = true;
             share_custom = true;
+            console_management = false;
             share_context = true;
           };
         };
       };
+
       localConfig.acquisitions = [
         {
           source = "journalctl";
