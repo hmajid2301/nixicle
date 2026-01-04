@@ -51,8 +51,13 @@ in
     environment.persistence = mkIf config.system.impermanence.enable {
       "/persist" = {
         directories = [
-          { directory = "/var/lib/private/gitlab-runner"; user = "gitlab-runner"; group = "gitlab-runner"; mode = "0750"; defaultPerms.mode = "0700"; }
-          { directory = "/var/lib/docker"; user = "root"; group = "root"; mode = "0710"; }
+          {
+            directory = "/var/lib/private/gitlab-runner";
+            user = "gitlab-runner";
+            group = "gitlab-runner";
+            mode = "0750";
+            defaultPerms.mode = "0700";
+          }
         ];
       };
     };

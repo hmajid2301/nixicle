@@ -9,31 +9,40 @@ let
   cfg = config.services.nixicle.dokploy;
 in
 {
+  imports = [
+    inputs.nix-dokploy.nixosModules.dokploy
+  ];
+
   options.services.nixicle.dokploy = {
     enable = mkEnableOption "Enable Dokploy self-hosted PaaS";
   };
 
   config = mkIf cfg.enable {
-    imports = [
-      inputs.nix-dokploy.nixosModules.dokploy
-    ];
+    virtualisation.docker.rootless.enable = lib.mkForce false;
 
     services.dokploy = {
       enable = true;
-      database.useHostPostgres = true;
+      database = {
+        useHostPostgres = true;
+        password = "";
+      };
+      port = "3100:3000";
+      traefik.enable = false;
     };
 
     services.postgresql = {
       ensureDatabases = [ "dokploy" ];
-      ensureUsers = [{
-        name = "dokploy";
-        ensureDBOwnership = true;
-      }];
+      ensureUsers = [
+        {
+          name = "dokploy";
+          ensureDBOwnership = true;
+        }
+      ];
     };
 
     services.traefik.dynamicConfigOptions.http = lib.nixicle.mkTraefikService {
       name = "dokploy";
-      port = 3000;
+      port = 3100;
       subdomain = "dokploy";
     };
 

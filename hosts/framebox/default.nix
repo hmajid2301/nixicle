@@ -83,7 +83,7 @@
       tailscale.enable = true;
       unbound.enable = true;
       adguard.enable = true;
-      dokploy.enable = true;
+      # dokploy.enable = true;
 
       # paperless = {
       #   enable = true;

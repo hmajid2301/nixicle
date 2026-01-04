@@ -35,5 +35,18 @@ in
     boot.kernel.sysctl = {
       "net.ipv4.ip_forward" = 1;
     };
+
+    environment.persistence = mkIf config.system.impermanence.enable {
+      "/persist" = {
+        directories = [
+          {
+            directory = "/var/lib/docker";
+            user = "root";
+            group = "root";
+            mode = "0755";
+          }
+        ];
+      };
+    };
   };
 }
