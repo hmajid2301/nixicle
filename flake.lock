@@ -1225,14 +1225,18 @@
         ]
       },
       "locked": {
-        "lastModified": 1767530651,
-        "narHash": "sha256-gcrnS34ElIon0zo+6VvoUiVBxDgAB5VqMk6t9G5fyfw=",
-        "path": "/home/haseeb/projects/nix-dokploy",
-        "type": "path"
+        "lastModified": 1767532252,
+        "narHash": "sha256-JfX8BYgGFDoNRYo51S4p6DKtinIWKc1UvhW0EVydoeY=",
+        "owner": "hmajid2301",
+        "repo": "nix-dokploy",
+        "rev": "7e99aefd099f7400aa2f02cd316481c38a793a8d",
+        "type": "github"
       },
       "original": {
-        "path": "/home/haseeb/projects/nix-dokploy",
-        "type": "path"
+        "owner": "hmajid2301",
+        "ref": "ports-configurable",
+        "repo": "nix-dokploy",
+        "type": "github"
       }
     },
     "nix-index-database": {
