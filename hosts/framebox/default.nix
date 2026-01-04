@@ -139,7 +139,7 @@
   # TODO: refactor this also.
   services.rpcbind.enable = true;
   fileSystems."/mnt/homelab" = {
-    device = "192.168.1.152:/mnt/main/main-encrypted";
+    device = "192.168.1.152:/mnt/main/main-encrypted/homelab";
     fsType = "nfs";
     options = [
       "nfsvers=4"
