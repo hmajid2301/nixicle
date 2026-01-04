@@ -103,6 +103,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    nix-dokploy = {
+      url = "github:hmajid2301/nix-dokploy/ports-configurable";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # Zellij plugins
     zellij-pane-tracker = {
       url = "github:theslyprofessor/zellij-pane-tracker";
