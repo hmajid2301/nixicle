@@ -16,6 +16,7 @@
   pkgs,
   lib,
   config,
+  inputs,
   ...
 }:
 with lib;
@@ -59,14 +60,28 @@ in
     home.packages = [
       pkgs.tmate
       sesh
+      # zjdump helper script for zellij pane-tracker MCP
+      (pkgs.writeShellScriptBin "zjdump" ''
+        ${pkgs.zellij}/bin/zellij action dump-layout | ${pkgs.yq-go}/bin/yq -oj
+      '')
     ];
 
     xdg.configFile."zellij/config.kdl".text = ''
       ${stylixTheme}
+
+      load_plugins {
+          "file:~/.config/zellij/plugins/pane-tracker.wasm"
+      }
+
       ${builtins.readFile ./config.kdl}
     '';
     xdg.configFile."zellij/layouts/dev.kdl".text = layouts.dev;
     xdg.configFile."zellij/layouts/default.kdl".text = layouts.default;
+
+    # Zellij pane-tracker plugin for MCP integration
+    xdg.configFile."zellij/plugins/pane-tracker.wasm" = {
+      source = "${inputs.zellij-pane-tracker}/target/wasm32-wasip1/release/pane-tracker.wasm";
+    };
 
     programs.zellij = {
       enable = true;

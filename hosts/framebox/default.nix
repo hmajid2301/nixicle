@@ -113,8 +113,14 @@
         sopsFile = config.sops.secrets.gitlab_runner_env.path;
       };
 
+      immich = {
+        enable = true;
+        mediaLocation = "/mnt/homelab/homelab/immich";
+      };
+
       karakeep.enable = true;
       llama-cpp.enable = true;
+      jellyfin.enable = true;
       monitoring.enable = true;
       open-webui.enable = true;
       otel-collector.enable = true;

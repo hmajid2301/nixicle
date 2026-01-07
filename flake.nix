@@ -98,6 +98,11 @@
 
     # Services
 
+    tangled = {
+      url = "git+https://tangled.sh/@tangled.sh/core";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     banterbus = {
       url = "gitlab:hmajid2301/banterbus";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -286,7 +291,6 @@
       ];
 
       commonHomeModules = [
-        inputs.impermanence.nixosModules.home-manager.impermanence
         inputs.dankMaterialShell.homeModules.dank-material-shell
         inputs.caelestia.homeManagerModules.default
         inputs.niri.homeModules.niri
