@@ -17,39 +17,22 @@
 # sops updatekeys secrets/secrets.yaml
 keys:
   - &users:
-    - &haseeb_workstation age1vmnnywhflwymjcgllmp5sgf05dn3qvamd2ylhxquwcuvlrm8ma3sc882mp
     - &haseeb_framework age1nfkkq86jk3yhhzgk3jt0kjzfpzv4qee3uheellawzgrmd296gczqa68yt7
     - &haseebmajid_dell age1s6rx9whkkf35t7qaju9vvla8tl2nstt0drx722ca4qadqfx66g0slxyxd0
     - &haseeb_framebox age1zm36rngg07hrm8nj3r8wj5ucz85njxzfwsxftsx3gtdmzkgw3peqh8vf55
     - &haseeb_vm age1x4x5ujnd9em23jhs53lgwqcmw9t6hx64xtdt3x0u4n66fsuygf9s4njjla
   - &hosts:
     - &framework age16lkhqtnle3z62gy0tk9x4tn3w43st2cnvdpl8r84xpzkn2f7jv8qxl5a9q
-    - &workstation age1vsjjdkgrv72tr3uftryj2szt3n0xk8h3ce54kzyfsmxtymxu6s4qgu5yuk
     - &vm age1pc0qdk5d2fen55cstvtch588wcqgzemgavlsvsc5dm0r4uw00vrq297et7
     - &framebox age199ny6lhask8zc65auwygqhj0svjkpp5kr7lhht8hvj947vaclecqrt4yg7
 
 creation_rules:
-  - path_regex: modules/nixos/roles/kubernetes/secrets.ya?ml$
-    key_groups:
-    - age:
-      - *workstation
-      - *framework
-      - *framebox
-      - *vm
-      - *haseeb_workstation
-      - *haseeb_framework
-      - *haseeb_framebox
-      - *haseeb_vm
-      - *haseebmajid_dell
-
   - path_regex: modules/nixos/secrets.ya?ml$
     key_groups:
     - age:
-      - *workstation
       - *framework
       - *framebox
       - *vm
-      - *haseeb_workstation
       - *haseeb_framework
       - *haseeb_framebox
       - *haseeb_vm
@@ -58,11 +41,9 @@ creation_rules:
   - path_regex: modules/nixos/services/secrets.ya?ml$
     key_groups:
     - age:
-      - *workstation
       - *framework
       - *framebox
       - *vm
-      - *haseeb_workstation
       - *haseeb_framework
       - *haseeb_framebox
       - *haseeb_vm
@@ -71,33 +52,25 @@ creation_rules:
   - path_regex: hosts/framebox/secrets.ya?ml$
     key_groups:
     - age:
-      - *workstation
       - *framework
       - *framebox
       - *vm
-      - *haseeb_workstation
       - *haseeb_framework
       - *haseeb_framebox
-      - *haseeb_vm
       - *haseebmajid_dell
 
   - path_regex: hosts/framework/secrets.ya?ml$
     key_groups:
     - age:
-      - *workstation
       - *framework
       - *framebox
-      - *vm
-      - *haseeb_workstation
       - *haseeb_framework
       - *haseeb_framebox
-      - *haseeb_vm
       - *haseebmajid_dell
 
   - path_regex: modules/home/secrets.ya?ml$
     key_groups:
     - age:
-      - *haseeb_workstation
       - *haseeb_framework
       - *haseeb_framebox
       - *haseeb_vm
