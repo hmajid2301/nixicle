@@ -26,11 +26,13 @@ in
       enableDefaultConfig = false;
       matchBlocks."*" = {
         addKeysToAgent = "yes";
-        # Common default SSH options
         identitiesOnly = true;
         serverAliveInterval = 60;
         serverAliveCountMax = 3;
       };
+      extraConfig = ''
+        KexAlgorithms sntrup761x25519-sha512@openssh.com,curve25519-sha256,curve25519-sha256@libssh.org
+      '';
     };
   };
 }
