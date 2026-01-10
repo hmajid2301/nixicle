@@ -5,6 +5,7 @@
     "https://numtide.cachix.org"
     "https://niri.cachix.org"
     "https://neovim-nightly.cachix.org"
+    "https://nvim-treesitter-main.cachix.org"
   ];
 
   trusted-public-keys = [
@@ -13,6 +14,7 @@
     "numtide.cachix.org-1:2ps1kLBUWjxIneOy1Ik6cQjb41X0iXVXeHigGmycPPE="
     "niri.cachix.org-1:Wv0OmO7PsuocRKzfDoJ3mulSl7Z6oezYhGhR+3W2964="
     "neovim-nightly.cachix.org-1:feIuDPLhR/aPVYbOpdXSFd/4MDI9MPdPq7RArY0e8HY="
+    "nvim-treesitter-main.cachix.org-1:cbwE6blfW5+BkXXyeAXoVSu1gliqPLHo2m98E4hWfZQ="
   ];
 
   experimental-features = [
