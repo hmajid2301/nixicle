@@ -15,29 +15,59 @@ in
 
   config = mkIf cfg.enable (mkMerge [
     {
-      nixpkgs.overlays = [
-        (final: prev: {
-          vaapiIntel = prev.vaapiIntel.override { enableHybridCodec = true; };
-        })
-      ];
-
       hardware.graphics = {
         enable = true;
         extraPackages = with pkgs; [
-          intel-vaapi-driver # previously vaapiIntel
           libva-vdpau-driver
-          intel-compute-runtime # OpenCL filter support (hardware tonemapping and subtitle burn-in)
-          vpl-gpu-rt # QSV on 11th gen or newer
+          libvdpau-va-gl
+          rocmPackages.clr.icd
         ];
       };
 
+      users.users.jellyfin.extraGroups = [
+        "render"
+        "video"
+        "media"
+      ];
+
       services = {
-        jellyfin.enable = true;
-        jellyfin.openFirewall = true;
+        jellyfin = {
+          enable = true;
+          openFirewall = true;
+
+          hardwareAcceleration = {
+            enable = true;
+            type = "vaapi";
+            device = "/dev/dri/renderD128";
+          };
+
+          transcoding = {
+            throttleTranscoding = false;
+            threadCount = 0;
+            enableHardwareEncoding = true;
+            enableToneMapping = true;
+            enableSubtitleExtraction = true;
+            h264Crf = 23;
+            h265Crf = 28;
+
+            hardwareDecodingCodecs = {
+              h264 = true;
+              hevc = true;
+              hevc10bit = true;
+              av1 = true;
+              vp9 = true;
+              vp8 = true;
+              mpeg2 = true;
+              vc1 = true;
+            };
+
+            hardwareEncodingCodecs = {
+              hevc = true;
+            };
+          };
+        };
       };
     }
-
-    # Traefik reverse proxy configuration
     {
       services.traefik.dynamicConfigOptions.http = lib.nixicle.mkTraefikService {
         name = "jellyfin";
