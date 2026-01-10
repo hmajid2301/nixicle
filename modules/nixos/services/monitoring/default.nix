@@ -31,6 +31,7 @@ in
     ./scrape-configs.nix
     ./alertmanager.nix
     ./grafana.nix
+    ./loki.nix
     ./tempo.nix
     ./traefik.nix
   ];
