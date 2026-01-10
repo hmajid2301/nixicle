@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  pkgs,
   utils,
   ...
 }:
@@ -46,6 +47,8 @@ in
 
   config = mkIf cfg.enable {
     boot.kernelParams = [ "rd.luks=no" ];
+
+    boot.initrd.systemd.extraBin.jq = "${pkgs.jq}/bin/jq";
 
     boot.initrd.systemd.services = {
       check-pcrs = mkIf (cfg.expectedPcr15 != null) {
