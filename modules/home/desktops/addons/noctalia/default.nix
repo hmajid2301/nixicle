@@ -178,10 +178,6 @@ in
             ];
           };
 
-          osd = {
-            monitors = [ "DP-1" ];
-          };
-
           controlCenter = {
             shortcuts = {
               left = mkMerge [

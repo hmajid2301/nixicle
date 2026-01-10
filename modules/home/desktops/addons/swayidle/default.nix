@@ -17,7 +17,7 @@ let
     if isHyprland then
       "${pkgs.hyprland}/bin/hyprctl dispatch dpms on"
     else if isNiri then
-      "${config.programs.niri.package}/bin/niri msg action power-on-monitors"
+      "${config.programs.niri.package}/bin/niri msg action power-on-monitors && ${pkgs.pamixer}/bin/pamixer --unmute"
     else
       "echo 'No compositor-specific dpms on command'";
 
@@ -25,7 +25,7 @@ let
     if isHyprland then
       "${pkgs.hyprland}/bin/hyprctl dispatch dpms off"
     else if isNiri then
-      "${config.programs.niri.package}/bin/niri msg action power-off-monitors"
+      "${config.programs.niri.package}/bin/niri msg action power-off-monitors && ${pkgs.pamixer}/bin/pamixer --mute"
     else
       "echo 'No compositor-specific dpms off command'";
 
@@ -47,6 +47,7 @@ in
         lock = 300;
         dpms = 330;
         suspend = 1800;
+        hibernate = 0;
       };
       description = "Timeout values in seconds";
     };
@@ -72,6 +73,10 @@ in
       ++ optional (cfg.timeouts.suspend > 0) {
         timeout = cfg.timeouts.suspend;
         command = "${pkgs.systemd}/bin/systemctl suspend";
+      }
+      ++ optional (cfg.timeouts.hibernate > 0) {
+        timeout = cfg.timeouts.hibernate;
+        command = "${pkgs.systemd}/bin/systemctl hibernate";
       };
     };
   };

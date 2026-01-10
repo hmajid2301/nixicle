@@ -35,7 +35,8 @@ in
         "Mod+V".action.spawn = noctalia "launcher clipboard";
 
         "Mod+Q".action = close-window;
-        "Mod+F".action.spawn = "nfsm-cli";
+        "Mod+F".action = fullscreen-window;
+        "Mod+Shift+F".action.spawn = "nfsm-cli";
         "Mod+T".action = toggle-window-floating;
         "Mod+O".action = toggle-overview;
         "Mod+C".action = center-column;
