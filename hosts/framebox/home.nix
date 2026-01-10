@@ -10,6 +10,7 @@
     development.enable = true;
     gaming.enable = true;
     social.enable = true;
+    video.enable = true;
   };
 
   desktops = {
@@ -19,9 +20,10 @@
       swayidle = {
         enable = true;
         timeouts = {
-          lock = 300;     # Lock after 5 minutes
-          dpms = 330;     # Turn off monitors after 5.5 minutes
-          suspend = 0;    # Never auto-suspend
+          lock = 300;
+          dpms = 330;
+          suspend = 0;
+          hibernate = 0;
         };
       };
     };
