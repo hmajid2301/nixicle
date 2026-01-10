@@ -33,6 +33,32 @@ in
       };
     };
 
+    home.sessionVariables = {
+      QT_QPA_PLATFORMTHEME = "qt5ct";
+      QT_STYLE_OVERRIDE = mkIf config.stylix.enable "kvantum";
+    };
+
+    qt = {
+      enable = true;
+      platformTheme.name = mkIf config.stylix.enable "kvantum";
+      style.name = mkIf config.stylix.enable "kvantum";
+    };
+
+    xdg.configFile.kdeglobals = mkIf config.stylix.enable {
+      source =
+        let
+          themePackage = builtins.head (
+            builtins.filter (
+              p: builtins.match ".*stylix-kde-theme.*" (builtins.baseNameOf p) != null
+            ) config.home.packages
+          );
+          colorSchemeSlug = lib.concatStrings (
+            lib.filter lib.isString (builtins.split "[^a-zA-Z]" config.lib.stylix.colors.scheme)
+          );
+        in
+        "${themePackage}/share/color-schemes/${colorSchemeSlug}.colors";
+    };
+
     services.kdeconnect = {
       enable = true;
       indicator = true;
