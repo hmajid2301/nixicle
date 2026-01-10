@@ -23,6 +23,8 @@ in
             openFirewall = true;
             port = 6380;
             bind = "0.0.0.0";
+            unixSocket = "/run/redis-main/redis.sock";
+            unixSocketPerm = 770;
           };
         };
       };
