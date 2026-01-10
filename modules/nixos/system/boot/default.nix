@@ -30,7 +30,6 @@ in
       ++ lib.optionals cfg.secureBoot [ sbctl ];
 
     boot = {
-      kernelPackages = pkgs.linuxPackages_latest;
       resumeDevice = "/dev/disk/by-label/nixos";
 
       # TODO: if plymouth on
