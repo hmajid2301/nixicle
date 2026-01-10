@@ -92,7 +92,24 @@
     caelestia.url = "github:caelestia-dots/shell";
 
     noctalia = {
-      url = "path:/home/haseeb/projects/noctalia-shell";
+      url = "github:noctalia-dev/noctalia-shell";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    # Services
+
+    tangled = {
+      url = "git+https://tangled.sh/@tangled.sh/core";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    banterbus = {
+      url = "gitlab:hmajid2301/banterbus";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    nix-dokploy = {
+      url = "github:hmajid2301/nix-dokploy/ports-configurable";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -274,7 +291,6 @@
       ];
 
       commonHomeModules = [
-        inputs.impermanence.nixosModules.home-manager.impermanence
         inputs.dankMaterialShell.homeModules.dank-material-shell
         inputs.caelestia.homeManagerModules.default
         inputs.niri.homeModules.niri
@@ -425,6 +441,10 @@
           ];
         };
 
+        vps = mkSystem {
+          hostname = "vps";
+        };
+
       };
 
       homeConfigurations = {
@@ -542,6 +562,7 @@
           framebox.profiles.system.sshUser = "haseeb";
           framework.profiles.system.sshUser = "haseeb";
           vm.profiles.system.sshUser = "haseeb";
+          vps.profiles.system.sshUser = "nixos";
         };
       };
 
