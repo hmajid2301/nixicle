@@ -1,6 +1,8 @@
 {
   config,
   lib,
+  inputs,
+  pkgs,
   ...
 }:
 with lib;
@@ -54,6 +56,17 @@ in
         model = "anthropic/claude-sonnet-4-20250514";
         autoshare = false;
         autoupdate = false;
+        mcp = {
+          zellij = {
+            type = "local";
+            command = [
+              "${pkgs.bun}/bin/bun"
+              "run"
+              "${inputs.zellij-pane-tracker}/mcp-server/index.ts"
+            ];
+            enabled = true;
+          };
+        };
         provider = {
           ollama = {
             npm = "@ai-sdk/openai-compatible";
