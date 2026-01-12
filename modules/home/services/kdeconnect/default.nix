@@ -33,10 +33,13 @@ in
       };
     };
 
-    home.sessionVariables = {
-      QT_QPA_PLATFORMTHEME = "qt5ct";
-      QT_STYLE_OVERRIDE = mkIf config.stylix.enable "kvantum";
-    };
+    home.sessionVariables =
+      {
+        QT_QPA_PLATFORMTHEME = "qt5ct";
+      }
+      // (lib.optionalAttrs config.stylix.enable {
+        QT_STYLE_OVERRIDE = "kvantum";
+      });
 
     qt = {
       enable = true;
