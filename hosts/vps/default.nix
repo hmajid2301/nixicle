@@ -14,6 +14,9 @@
 
   system.boot.enable = lib.mkForce false;
 
+  # VPS doesn't use impermanence, so use standard SSH key path for SOPS
+  sops.age.sshKeyPaths = lib.mkForce [ "/etc/ssh/ssh_host_ed25519_key" ];
+
   roles.common.enable = true;
 
   user.name = "nixos";
@@ -43,6 +46,11 @@
 
       immich.loadBalancer = {
         servers = [ { url = "http://framebox:2283"; } ];
+        passHostHeader = true;
+      };
+
+      attic.loadBalancer = {
+        servers = [ { url = "http://framebox:8899"; } ];
         passHostHeader = true;
       };
     };
@@ -89,10 +97,19 @@
         middlewares = [ "immich-headers" ];
         tls.certResolver = "letsencrypt";
       };
+
+      attic = {
+        entryPoints = [ "websecure" ];
+        rule = "Host(`attic.haseebmajid.dev`)";
+        service = "attic";
+        tls.certResolver = "letsencrypt";
+      };
     };
   };
 
   networking.hostName = "vps";
+  networking.useDHCP = lib.mkDefault true;
+  networking.interfaces.ens3.useDHCP = lib.mkDefault true;
 
   system.stateVersion = "24.05";
 }
