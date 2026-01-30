@@ -51,7 +51,6 @@
     power-profiles-daemon.enable = true;
     virtualisation.kvm.enable = true;
     nixicle = {
-      adguard.enable = true;
       authentik.enable = true;
       atuin.enable = true;
       atticd.enable = true;
@@ -120,6 +119,7 @@
 
       karakeep.enable = true;
       llama-cpp.enable = true;
+      ollama.enable = true;
       jellyfin.enable = true;
       monitoring.enable = true;
       open-webui.enable = true;
@@ -131,10 +131,13 @@
         mediaDir = "/mnt/homelab/homelab/paperless/media";
       };
 
+      tangled.enable = true;
       tandoor.enable = true;
       traefik.enable = true;
       tailscale.enable = true;
-      unbound.enable = true;
+
+      # adguard.enable = true;
+      # unbound.enable = true;
     };
   };
 
@@ -153,7 +156,7 @@
   # TODO: refactor this also.
   services.rpcbind.enable = true;
   fileSystems."/mnt/homelab" = {
-    device = "192.168.1.152:/mnt/main/main-encrypted";
+    device = "truenas:/mnt/main/main-encrypted";
     fsType = "nfs";
     options = [
       "nfsvers=4"
@@ -163,11 +166,13 @@
       "x-systemd.idle-timeout=60"
       "x-systemd.device-timeout=5s"
       "x-systemd.mount-timeout=5s"
+      "x-systemd.requires=tailscaled.service"
+      "x-systemd.after=tailscaled.service"
     ];
   };
 
   fileSystems."/mnt/truenas" = {
-    device = "192.168.1.152:/mnt/main/main";
+    device = "truenas:/mnt/main/main";
     fsType = "nfs";
     options = [
       "nfsvers=4"
@@ -177,6 +182,8 @@
       "x-systemd.idle-timeout=60"
       "x-systemd.device-timeout=5s"
       "x-systemd.mount-timeout=5s"
+      "x-systemd.requires=tailscaled.service"
+      "x-systemd.after=tailscaled.service"
     ];
   };
 
