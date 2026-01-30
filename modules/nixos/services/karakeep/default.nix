@@ -32,6 +32,10 @@ in
           OAUTH_WELLKNOWN_URL = "https://authentik.haseebmajid.dev/application/o/karakeep/.well-known/openid-configuration";
           DISABLE_PASSWORD_AUTH = "true";
           DISABLE_SIGNUPS = "true";
+
+          OLLAMA_BASE_URL = "http://localhost:11434";
+          INFERENCE_TEXT_MODEL = "gemma2";
+          INFERENCE_IMAGE_MODEL = "llava";
         };
         environmentFile = config.sops.secrets.karakeep_oauth.path;
       };
@@ -53,7 +57,12 @@ in
     environment.persistence = mkIf config.system.impermanence.enable {
       "/persist" = {
         directories = [
-          { directory = "/var/lib/karakeep"; user = "karakeep"; group = "karakeep"; mode = "0750"; }
+          {
+            directory = "/var/lib/karakeep";
+            user = "karakeep";
+            group = "karakeep";
+            mode = "0750";
+          }
         ];
       };
     };
