@@ -12,7 +12,7 @@ let
 
   mkInstance = name: instanceCfg:
     let
-      banterbus = inputs.banterbus.packages.${pkgs.system}.default;
+      banterbus = inputs.banterbus.packages.${pkgs.stdenv.hostPlatform.system}.default;
     in
     {
       inherit banterbus;
