@@ -103,13 +103,13 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    banterbus = {
-      url = "gitlab:hmajid2301/banterbus";
-      inputs.nixpkgs.follows = "nixpkgs";
+    nixery = {
+      url = "github:tazjin/nixery";
+      flake = false;
     };
 
-    nix-dokploy = {
-      url = "github:hmajid2301/nix-dokploy/ports-configurable";
+    banterbus = {
+      url = "gitlab:hmajid2301/banterbus";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -254,19 +254,21 @@
         }
       );
 
-      overlays = [
-        inputs.nixgl.overlay
-        inputs.nur.overlays.default
-        inputs.nix-topology.overlays.default
-        inputs.nvim-treesitter-main.overlays.default
-        inputs.niri.overlays.niri
-        (final: prev: {
-          zjstatus = inputs.zjstatus.packages.${prev.stdenv.hostPlatform.system}.default;
-        })
-        (final: prev: {
-          nixicle = lib.nixicle.importPackages final ./packages;
-        })
-      ];
+      overlays =
+        [
+          inputs.nixgl.overlay
+          inputs.nur.overlays.default
+          inputs.nix-topology.overlays.default
+          inputs.nvim-treesitter-main.overlays.default
+          inputs.niri.overlays.niri
+          (final: prev: {
+            zjstatus = inputs.zjstatus.packages.${prev.stdenv.hostPlatform.system}.default;
+          })
+          (final: prev: {
+            nixicle = lib.nixicle.importPackages final ./packages;
+          })
+        ]
+        ++ (map (path: import path { inherit inputs; }) (lib.nixicle.importOverlays ./overlays));
 
       mkPkgs =
         system:
@@ -282,6 +284,8 @@
         inputs.impermanence.nixosModules.impermanence
         inputs.sops-nix.nixosModules.sops
         inputs.authentik-nix.nixosModules.default
+        inputs.tangled.nixosModules.knot
+        inputs.tangled.nixosModules.spindle
         (inputs.import-tree.match ".*/default\\.nix" ./modules/nixos)
       ];
 
@@ -490,6 +494,7 @@
             inputs.nixos-generators.nixosGenerate {
               inherit system;
               specialArgs = {
+                inherit inputs;
                 lib = extendedLib;
               };
               modules = baseNixosModules ++ [
