@@ -41,8 +41,8 @@ func main() {
 			&cli.StringFlag{
 				Name:    "worktree-base",
 				EnvVars: []string{"WORKTREE_BASE"},
-				Value:   os.Getenv("HOME") + "/worktrees",
-				Usage:   "Base directory for worktrees",
+				Value:   ".worktrees",
+				Usage:   "Base directory for worktrees (relative to repo root)",
 			},
 			&cli.StringFlag{
 				Name:    "claude-prefix",
