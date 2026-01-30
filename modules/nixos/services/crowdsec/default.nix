@@ -61,6 +61,23 @@ in
 
     services.crowdsec-firewall-bouncer.enable = true;
 
+    # Fix credential loading issue: bouncer needs to run as crowdsec user to access
+    # the API key file created by the registration service
+    systemd.services.crowdsec-firewall-bouncer.serviceConfig = {
+      DynamicUser = lib.mkForce false;
+      User = "crowdsec";
+      Group = "crowdsec";
+    };
+
+    # Allow DynamicUser for the register service - it will create its own state directory
+    # On impermanence systems, the directory will be recreated and bouncer re-registered
+    systemd.services.crowdsec-firewall-bouncer-register.serviceConfig = {
+      # Ensure the ExecStartPre checks if we need to delete the old bouncer
+      ExecStartPre = lib.mkBefore [
+        ''${pkgs.bash}/bin/bash -c "if ${pkgs.coreutils}/bin/test ! -f /var/lib/crowdsec-firewall-bouncer-register/api-key.cred; then /run/current-system/sw/bin/cscli bouncers delete crowdsec-firewall-bouncer || true; fi"''
+      ];
+    };
+
     environment.persistence."/persist" = mkIf config.system.impermanence.enable {
       directories = [
         {
@@ -73,6 +90,8 @@ in
           directory = "/etc/crowdsec";
           mode = "0755";
         }
+        # Don't persist crowdsec-firewall-bouncer-register - let DynamicUser recreate it
+        # The bouncer will be re-registered on each boot via the register service
       ];
     };
   };
