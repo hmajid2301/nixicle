@@ -186,6 +186,17 @@ func getWorktreePath(branch, project, worktreeBase string) (string, error) {
 		}
 	}
 
+	// Get repository root to make worktree base relative to it
+	repoRoot, err := getMainWorktree()
+	if err != nil {
+		return "", fmt.Errorf("failed to get repository root: %w", err)
+	}
+
+	// Make worktree base absolute if it's relative
+	if !filepath.IsAbs(worktreeBase) {
+		worktreeBase = filepath.Join(repoRoot, worktreeBase)
+	}
+
 	// Validate worktree base exists and is a directory
 	info, err := os.Stat(worktreeBase)
 	if err != nil {
@@ -202,7 +213,7 @@ func getWorktreePath(branch, project, worktreeBase string) (string, error) {
 
 	// Doesn't exist, return new path with sanitized branch name
 	sanitizedBranch := sanitizeName(branch)
-	newPath := filepath.Join(worktreeBase, project, sanitizedBranch)
+	newPath := filepath.Join(worktreeBase, sanitizedBranch)
 
 	return newPath, nil
 }
