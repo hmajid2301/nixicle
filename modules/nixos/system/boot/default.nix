@@ -73,6 +73,14 @@ in
 
     services.fwupd.enable = true;
 
+    # fwupd-efi service needs root access to read Secure Boot keys when signing
+    systemd.services.fwupd-efi = mkIf cfg.secureBoot {
+      serviceConfig = {
+        # Remove sandboxing to allow access to /etc/secureboot keys
+        User = lib.mkForce "root";
+      };
+    };
+
     environment.persistence = mkIf (cfg.secureBoot && config.system.impermanence.enable) {
       "/persist" = {
         directories = [
