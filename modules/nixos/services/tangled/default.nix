@@ -2,7 +2,7 @@
   config,
   lib,
   pkgs,
-  inputs,
+  inputs ? null,
   ...
 }:
 with lib;
@@ -11,70 +11,78 @@ let
   cfg = config.services.nixicle.tangled;
 in
 {
-  imports = [
-    ./knot.nix
-    ./spindle.nix
-  ];
-
   options.services.nixicle.tangled = {
     enable = mkBoolOpt false "Enable Tangled services (knot and spindle)";
-
-    owner = mkOption {
-      type = types.str;
-      example = "did:plc:qfpnj4og54vl56wngdriaxug";
-      description = "DID of owner for all Tangled services";
-    };
-
-    hostname = mkOption {
-      type = types.str;
-      example = "tangled.example.com";
-      description = "Base hostname for Tangled services";
-    };
-
-    knotPackage = mkOption {
-      type = types.package;
-      default = inputs.tangled.packages.${pkgs.system}.knot or pkgs.tangled-knot;
-      description = "Package to use for knot";
-    };
-
-    spindlePackage = mkOption {
-      type = types.package;
-      default = inputs.tangled.packages.${pkgs.system}.spindle or pkgs.tangled-spindle;
-      description = "Package to use for spindle";
-    };
   };
 
-  config = mkIf cfg.enable (mkMerge [
-    {
-      services.nixicle.tangled.knot = {
+  config = mkIf cfg.enable {
+    services = {
+      tangled.knot = {
         enable = true;
-        package = cfg.knotPackage;
+        package = inputs.tangled.packages.${pkgs.stdenv.hostPlatform.system}.knot;
         server = {
-          owner = cfg.owner;
-          hostname = cfg.hostname;
+          owner = "did:plc:reouqbpvl2kbkhvok2pwhlzg";
+          hostname = "tangled.haseebmajid.dev";
         };
       };
 
-      services.nixicle.tangled.spindle = {
+      tangled.spindle = {
         enable = true;
-        package = cfg.spindlePackage;
+        package = inputs.tangled.packages.${pkgs.stdenv.hostPlatform.system}.spindle;
         server = {
-          owner = cfg.owner;
-          hostname = "spindle.${cfg.hostname}";
+          owner = "did:plc:reouqbpvl2kbkhvok2pwhlzg";
+          hostname = "spindle.haseebmajid.dev";
+          secrets = {
+            provider = "openbao";
+            openbao = {
+              proxyAddr = "http://127.0.0.1:8202";
+              mount = "spindle";
+            };
+          };
         };
       };
-    }
-    {
-      services.traefik.dynamicConfigOptions.http = mkMerge [
-        (lib.nixicle.mkTraefikService {
-          name = "tangled-knot";
-          port = 5555;
-        })
-        (lib.nixicle.mkTraefikService {
-          name = "tangled-spindle";
-          port = 6555;
-        })
+
+      nixicle.nixery = {
+        enable = true;
+        port = 8091;
+        channel = "nixos-unstable";
+      };
+
+      nixicle.openbao = {
+        enable = true;
+        proxy.enable = true;
+      };
+
+      cloudflared.tunnels = mkIf config.services.nixicle.cloudflare.enable {
+        ${config.services.nixicle.cloudflare.tunnelId}.ingress = {
+          "tangled.haseebmajid.dev" = {
+            service = "http://localhost:5555";
+          };
+          "spindle.haseebmajid.dev" = {
+            service = "http://localhost:6555";
+          };
+          "git.haseebmajid.dev" = {
+            service = "ssh://localhost:22";
+          };
+        };
+      };
+    };
+
+    environment.persistence."/persist" = mkIf config.system.impermanence.enable {
+      directories = [
+        {
+          directory = "/home/git";
+          user = "git";
+          group = "git";
+          mode = "0750";
+        }
+        {
+          directory = "/var/lib/spindle";
+          user = "root";
+          group = "root";
+          mode = "0755";
+        }
       ];
-    }
-  ]);
+    };
+  };
 }
