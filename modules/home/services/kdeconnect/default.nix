@@ -33,16 +33,11 @@ in
       };
     };
 
-    home.sessionVariables = {
-      QT_QPA_PLATFORMTHEME = "qt5ct";
-      QT_STYLE_OVERRIDE = mkIf config.stylix.enable "kvantum";
+    home.sessionVariables = mkIf config.stylix.enable {
+      QT_STYLE_OVERRIDE = "kvantum";
     };
 
-    qt = {
-      enable = true;
-      platformTheme.name = mkIf config.stylix.enable "kvantum";
-      style.name = mkIf config.stylix.enable "kvantum";
-    };
+    qt.enable = true;
 
     xdg.configFile.kdeglobals = mkIf config.stylix.enable {
       source =
