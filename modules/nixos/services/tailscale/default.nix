@@ -13,7 +13,13 @@ in
   };
 
   config = mkIf cfg.enable {
-    services.tailscale.enable = true;
+    services.tailscale = {
+      enable = true;
+      useRoutingFeatures = "both";
+    };
+
+    # Accept DNS from Tailscale (MagicDNS)
+    services.resolved.enable = true;
 
     # INFO: https://github.com/tailscale/tailscale/issues/4432#issuecomment-1112819111
     networking.firewall.checkReversePath = "loose";

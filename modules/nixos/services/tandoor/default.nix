@@ -20,12 +20,12 @@ in
 
       systemd.services.tandoor-recipes = {
         serviceConfig = {
-          EnvironmentFile = [config.sops.secrets.tandoor.path];
+          EnvironmentFile = [ config.sops.secrets.tandoor.path ];
         };
-        after = ["postgresql.service"];
+        after = [ "postgresql.service" ];
       };
 
-      users.users.nginx.extraGroups = ["tandoor_recipes"];
+      users.users.nginx.extraGroups = [ "tandoor_recipes" ];
 
       services = {
         tandoor-recipes = {
@@ -38,11 +38,12 @@ in
             POSTGRES_DB = "tandoor_recipes";
             SOCIAL_DEFAULT_GROUP = "user";
             SOCIAL_PROVIDERS = "allauth.socialaccount.providers.openid_connect";
+            MEDIA_URL = "https://tandoor-recipes-media.haseebmajid.dev/media/";
           };
         };
 
         postgresql = {
-          ensureDatabases = ["tandoor_recipes"];
+          ensureDatabases = [ "tandoor_recipes" ];
           ensureUsers = [
             {
               name = "tandoor_recipes";
@@ -74,7 +75,12 @@ in
       environment.persistence = mkIf config.system.impermanence.enable {
         "/persist" = {
           directories = [
-            { directory = "/var/lib/tandoor-recipes"; user = "tandoor_recipes"; group = "tandoor_recipes"; mode = "0750"; }
+            {
+              directory = "/var/lib/tandoor-recipes";
+              user = "tandoor_recipes";
+              group = "tandoor_recipes";
+              mode = "0750";
+            }
           ];
         };
       };
@@ -83,19 +89,33 @@ in
     {
       services.cloudflared.tunnels = mkIf config.services.nixicle.cloudflare.enable {
         ${config.services.nixicle.cloudflare.tunnelId}.ingress = {
-          "tandoor-recipes.haseebmajid.dev/media/" = "http://localhost:8100";
+          "tandoor-recipes-media.haseebmajid.dev" = "http://localhost:8100";
           "tandoor-recipes.haseebmajid.dev" = "http://localhost:8099";
         };
       };
     }
 
     {
-      services.traefik.dynamicConfigOptions.http = lib.nixicle.mkTraefikService {
-        name = "tandoor";
-        port = 8099;
-        subdomain = "tandoor-recipes";
-        domain = "haseebmajid.dev";
-      };
+      services.traefik.dynamicConfigOptions.http = mkMerge [
+        (lib.nixicle.mkTraefikService {
+          name = "tandoor";
+          port = 8099;
+          subdomain = "tandoor-recipes";
+          domain = "haseebmajid.dev";
+        })
+        {
+          services.tandoor-media.loadBalancer.servers = [
+            { url = "http://localhost:8100"; }
+          ];
+          routers.tandoor-media = {
+            entryPoints = [ "websecure" ];
+            rule = "Host(`tandoor-recipes-media.haseebmajid.dev`) && PathPrefix(`/media/`)";
+            service = "tandoor-media";
+            priority = 100;
+            tls.certResolver = "letsencrypt";
+          };
+        }
+      ];
     }
   ]);
 }

@@ -45,6 +45,9 @@ in
             "fd00::/8"
             "fe80::/10"
           ];
+
+          # Allow Tailscale CGNAT range
+          private-domain = [ "ts.net" ];
         };
       };
     };

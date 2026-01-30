@@ -43,7 +43,6 @@ in
 
           transcoding = {
             throttleTranscoding = false;
-            threadCount = 0;
             enableHardwareEncoding = true;
             enableToneMapping = true;
             enableSubtitleExtraction = true;
@@ -72,6 +71,18 @@ in
       services.traefik.dynamicConfigOptions.http = lib.nixicle.mkTraefikService {
         name = "jellyfin";
         port = 8096;
+      };
+    }
+    {
+      environment.persistence."/persist" = mkIf config.system.impermanence.enable {
+        directories = [
+          {
+            directory = "/var/lib/jellyfin";
+            user = "jellyfin";
+            group = "jellyfin";
+            mode = "0750";
+          }
+        ];
       };
     }
   ]);
