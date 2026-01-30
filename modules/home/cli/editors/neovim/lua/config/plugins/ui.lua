@@ -10,7 +10,16 @@ return {
 			vim.cmd.packadd(name)
 		end,
 		after = function(plugin)
-			require("dropbar").setup()
+			require("dropbar").setup({
+				general = {
+					enable = function(buf, win)
+						return vim.fn.win_gettype(win) == ""
+							and vim.wo[win].winbar == ""
+							and vim.bo[buf].buftype == ""
+							and (vim.bo[buf].filetype ~= "")
+					end,
+				},
+			})
 			vim.keymap.set("n", "<leader>nb", function()
 				require("dropbar.api").pick()
 			end, { desc = "Show dropbar picker" })
