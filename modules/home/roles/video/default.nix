@@ -25,7 +25,7 @@ in
 
     home.packages = with pkgs; [
       audacity
-      kdePackages.kdenlive
+      # kdePackages.kdenlive
       davinci-resolve-studio
     ];
   };
