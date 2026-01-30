@@ -2,6 +2,9 @@
 .direnv
 .env
 
+# git worktrees
+.worktrees
+
 # pre-commit
 .pre-commit-config.yaml
 
