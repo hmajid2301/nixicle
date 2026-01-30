@@ -1,0 +1,46 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended",
+    ":semanticCommits",
+    ":dependencyDashboard"
+  ],
+  "nix": {
+    "enabled": true
+  },
+  "dependencyDashboard": true,
+  "dependencyDashboardTitle": "🤖 Dependency Updates",
+  "suppressNotifications": ["prIgnoreNotification"],
+  "rebaseWhen": "conflicted",
+  "schedule": ["after 10pm every weekday", "before 5am every weekday", "every weekend"],
+  "timezone": "Europe/London",
+  "prConcurrentLimit": 10,
+  "prHourlyLimit": 0,
+  "labels": ["dependencies", "renovate"],
+  "lockFileMaintenance": {
+    "enabled": true,
+    "automerge": false,
+    "schedule": ["before 6am on monday"],
+    "commitMessageAction": "chore",
+    "commitMessageTopic": "Update flake.lock"
+  },
+  "separateMajorMinor": true,
+  "separateMultipleMajor": true,
+  "separateMinorPatch": false,
+  "packageRules": [
+    {
+      "description": "Group all non-major Nix flake dependencies",
+      "matchManagers": ["nix"],
+      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
+      "groupName": "nix flake dependencies (non-major)",
+      "automerge": false
+    },
+    {
+      "description": "Separate major Nix flake updates",
+      "matchManagers": ["nix"],
+      "matchUpdateTypes": ["major"],
+      "groupName": "nix flake dependencies (major)",
+      "automerge": false
+    }
+  ]
+}
