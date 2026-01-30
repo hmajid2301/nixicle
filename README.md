@@ -103,6 +103,61 @@ Some features of my config:
 ![Go Code](images/nvim/go-code.png)
 ![CMP](images/nvim/cmp.png)
 
+## 🔐 OpenBao Setup
+
+After deploying the system, OpenBao requires manual setup for AppRole authentication:
+
+### 1. Get Admin Token
+
+```bash
+# Login with admin credentials (password is in SOPS secrets.yaml)
+curl -X POST http://127.0.0.1:8200/v1/auth/userpass/login/admin \
+  -H "Content-Type: application/json" \
+  -d '{"password":"<OPENBAO_ADMIN_PASSWORD>"}' | jq -r '.auth.client_token'
+```
+
+### 2. Run Terraform
+
+```bash
+cd infra/tf
+mv backend.tf backend.tf.disabled  # Disable remote backend
+tofu init
+
+# Create terraform.tfvars with admin token
+cat > terraform.tfvars << EOF
+openbao_address = "http://127.0.0.1:8200"
+openbao_token = "<admin-token-from-step-1>"
+# ... add other required variables
+EOF
+
+# Apply Spindle AppRole resources
+tofu apply -target=vault_auth_backend.approle \
+  -target=vault_mount.spindle \
+  -target=vault_policy.spindle \
+  -target=vault_approle_auth_backend_role.spindle \
+  -target=vault_approle_auth_backend_role_secret_id.spindle
+```
+
+### 3. Add Credentials to SOPS
+
+```bash
+# Get the credentials from Terraform
+tofu output spindle_role_id
+tofu output -raw spindle_secret_id
+
+# Add to modules/nixos/services/secrets.yaml
+sops modules/nixos/services/secrets.yaml
+# Add: spindle_role_id and spindle_secret_id
+```
+
+### 4. Update Configuration & Rebuild
+
+Update `modules/nixos/services/openbao/proxy.nix` to use SOPS secrets, then rebuild:
+
+```bash
+nh os switch
+```
+
 ## Appendix
 
 - <a href="https://www.flaticon.com/free-icons/dot" title="dot icons">Dot icons created by Roundicons - Flaticon</a>

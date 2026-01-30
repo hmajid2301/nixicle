@@ -25,6 +25,7 @@ keys:
     - &framework age16lkhqtnle3z62gy0tk9x4tn3w43st2cnvdpl8r84xpzkn2f7jv8qxl5a9q
     - &vm age1pc0qdk5d2fen55cstvtch588wcqgzemgavlsvsc5dm0r4uw00vrq297et7
     - &framebox age199ny6lhask8zc65auwygqhj0svjkpp5kr7lhht8hvj947vaclecqrt4yg7
+    - &vps age150twmyqdklep32scvp7vpr2djture8d5pu5jv7kpc6gdz4mg6svsxxlm9c
 
 creation_rules:
   - path_regex: modules/nixos/secrets.ya?ml$
@@ -33,6 +34,7 @@ creation_rules:
       - *framework
       - *framebox
       - *vm
+      - *vps
       - *haseeb_framework
       - *haseeb_framebox
       - *haseeb_vm
@@ -44,6 +46,7 @@ creation_rules:
       - *framework
       - *framebox
       - *vm
+      - *vps
       - *haseeb_framework
       - *haseeb_framebox
       - *haseeb_vm

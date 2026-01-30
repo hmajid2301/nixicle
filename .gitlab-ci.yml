@@ -110,5 +110,5 @@ build:changed:
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
-    - echo "Building changed configurations and pushing to Attic..."
-    - nix run github:Mic92/nix-fast-build -- --skip-cached --no-nom --max-jobs 4 --attic-cache homelab:main
+    - echo "Building all NixOS configurations and pushing to Attic..."
+    - nix run github:Mic92/nix-fast-build -- --flake '.#nixosConfigurations' --skip-cached --no-nom --max-jobs 4 --attic-cache homelab:main
