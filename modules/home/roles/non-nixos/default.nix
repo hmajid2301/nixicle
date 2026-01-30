@@ -18,16 +18,13 @@ in
   };
 
   config = mkIf cfg.enable {
-    # NixGL configuration
     targets.genericLinux.nixGL = {
       inherit (inputs.nixgl) packages;
       defaultWrapper = "mesa";
     };
 
-    # PAM authentication fix for non-NixOS
     pamShim.enable = true;
 
-    # Override quickshell globally with PAM-shimmed version
     nixpkgs.overlays = [
       (final: prev: {
         quickshell = config.lib.pamShim.replacePam prev.quickshell;
@@ -37,6 +34,17 @@ in
     home.packages = with pkgs; [
       nixgl.nixGLIntel
       (lib.hiPrio (config.lib.nixGL.wrap totem))
+      (lib.hiPrio (
+        config.lib.nixGL.wrap (
+          pkgs.writeShellScriptBin "google-chrome" ''
+            exec ${pkgs.google-chrome}/bin/google-chrome-stable \
+              --no-sandbox \
+              --enable-features=UseOzonePlatform,VaapiVideoDecodeLinuxGL \
+              --ozone-platform=wayland \
+              "$@"
+          ''
+        )
+      ))
     ];
 
     programs = {
@@ -45,21 +53,8 @@ in
       ghostty = lib.mkForce {
         package = config.lib.nixGL.wrap pkgs.ghostty;
       };
-
-      # TODO: fix this
-      #   google-chrome = {
-      #     enable = true;
-      #     package = config.lib.nixGL.wrap pkgs.google-chrome;
-      #     commandLineArgs = [
-      #       "--disable-setuid-sandbox"
-      #       "--enable-features=UseOzonePlatform"
-      #       "--ozone-platform=wayland"
-      #       "--enable-wayland-ime"
-      #     ];
-      #   };
     };
 
-    # Noctalia shell with PAM shim for lock screen authentication
     systemd.user.services.noctalia-shell = mkIf config.desktops.addons.noctalia.enable (
       let
         shimmedQuickshell = config.lib.pamShim.replacePam pkgs.quickshell;
@@ -74,7 +69,6 @@ in
       }
     );
 
-    # Niri session launcher for GDM
     home.file.".local/bin/niri-session-nix" = {
       executable = true;
       text = ''
@@ -84,7 +78,6 @@ in
       '';
     };
 
-    # Niri socket environment setup
     systemd.user.services.niri-env-setup = {
       Unit = {
         Description = "Import NIRI_SOCKET into systemd user environment";
@@ -117,7 +110,6 @@ in
       };
     };
 
-    # Mask conflicting services
     home.activation.maskConflictingServices = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
       $DRY_RUN_CMD mkdir -p $HOME/.config/systemd/user
       $DRY_RUN_CMD ln -sf /dev/null $HOME/.config/systemd/user/waybar.service
@@ -125,7 +117,6 @@ in
       $DRY_RUN_CMD ${pkgs.systemd}/bin/systemctl --user daemon-reload || true
     '';
 
-    # Desktop entries with nixGL wrappers
     xdg.dataFile."applications/com.mitchellh.ghostty.desktop".text = ''
       [Desktop Entry]
       Version=1.0
@@ -152,43 +143,6 @@ in
       Exec=nixGLIntel ${config.home.homeDirectory}/.nix-profile/bin/ghostty
     '';
 
-    # TODO: fix this
-    # xdg.dataFile."applications/google-chrome.desktop" = {
-    #   force = true;
-    #   text = ''
-    #     [Desktop Entry]
-    #     Version=1.0
-    #     Name=Google Chrome
-    #     GenericName=Web Browser
-    #     Comment=Access the Internet
-    #     Exec=nixGLIntel ${config.home.homeDirectory}/.nix-profile/bin/google-chrome-stable --disable-setuid-sandbox --enable-features=UseOzonePlatform --ozone-platform=wayland --enable-wayland-ime %U
-    #     StartupNotify=true
-    #     Terminal=false
-    #     Icon=google-chrome
-    #     Type=Application
-    #     Categories=Network;WebBrowser;
-    #     MimeType=text/html;text/xml;application/xhtml+xml;x-scheme-handler/http;x-scheme-handler/https;
-    #     Actions=new-window;new-private-window;
-    #
-    #     [Desktop Action new-window]
-    #     Name=New Window
-    #     Exec=nixGLIntel ${config.home.homeDirectory}/.nix-profile/bin/google-chrome-stable --disable-setuid-sandbox --enable-features=UseOzonePlatform --ozone-platform=wayland --enable-wayland-ime
-    #
-    #     [Desktop Action new-private-window]
-    #     Name=New Incognito Window
-    #     Exec=nixGLIntel ${config.home.homeDirectory}/.nix-profile/bin/google-chrome-stable --disable-setuid-sandbox --enable-features=UseOzonePlatform --ozone-platform=wayland --enable-wayland-ime --incognito
-    #   '';
-    # };
-    #
-
-    # Chrome/Chromium flags for better Wayland/OpenGL support
-    xdg.configFile."chrome-flags.conf".text = ''
-      --enable-features=VaapiVideoDecoder
-      --use-gl=desktop
-      --enable-zero-copy
-    '';
-
-    # Wayland environment variables for systemd services
     xdg.configFile."environment.d/envvars.conf".text = ''
       PATH="$PATH:${config.home.homeDirectory}/.nix-profile/bin"
       XDG_DATA_DIRS="/usr/share/gnome:/usr/local/share:/usr/share:$XDG_DATA_DIRS"
@@ -203,5 +157,6 @@ in
       # Prevent aggressive power management during video calls
       intel_idle.max_cstate=1
     '';
+
   };
 }
