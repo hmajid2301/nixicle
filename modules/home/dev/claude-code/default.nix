@@ -2,6 +2,7 @@
   config,
   lib,
   pkgs,
+  inputs,
   ...
 }:
 with lib;
@@ -65,6 +66,11 @@ in
         nixos = {
           command = "uvx";
           args = [ "mcp-nixos" ];
+        };
+
+        zellij = {
+          command = "${pkgs.bun}/bin/bun";
+          args = [ "run" "${inputs.zellij-pane-tracker}/mcp-server/index.ts" ];
         };
       } // cfg.extraMcpServers;
     };
