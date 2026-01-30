@@ -91,6 +91,11 @@ resource "vault_auth_backend" "userpass" {
   path = "userpass"
 }
 
+resource "vault_auth_backend" "approle" {
+  type = "approle"
+  path = "approle"
+}
+
 # Get Kubernetes cluster info dynamically
 data "kubernetes_config_map" "kube_root_ca" {
   metadata {
@@ -358,6 +363,15 @@ resource "vault_mount" "kv" {
   description = "KV v2 secret mount"
 }
 
+resource "vault_mount" "spindle" {
+  path = "spindle"
+  type = "kv"
+  options = {
+    version = "2"
+  }
+  description = "KV v2 secret mount for Spindle"
+}
+
 resource "vault_mount" "kubernetes" {
   path        = "kubernetes"
   type        = "kubernetes"
@@ -408,4 +422,51 @@ resource "kubernetes_cluster_role_binding_v1" "vault_auth_delegator" {
     name      = data.kubernetes_service_account_v1.vault_auth.metadata[0].name
     namespace = data.kubernetes_service_account_v1.vault_auth.metadata[0].namespace
   }
+}
+
+resource "vault_policy" "spindle" {
+  name = "spindle-policy"
+
+  policy = <<EOT
+path "spindle/data/*" {
+  capabilities = ["create", "read", "update", "delete"]
+}
+
+path "spindle/metadata/*" {
+  capabilities = ["list", "read", "delete", "update"]
+}
+
+path "spindle/" {
+  capabilities = ["list"]
+}
+
+path "auth/token/lookup-self" {
+  capabilities = ["read"]
+}
+EOT
+}
+
+resource "vault_approle_auth_backend_role" "spindle" {
+  backend        = vault_auth_backend.approle.path
+  role_name      = "spindle"
+  token_policies = [vault_policy.spindle.name]
+  token_ttl      = 3600
+  token_max_ttl  = 14400
+  bind_secret_id = true
+  secret_id_ttl  = 0
+}
+
+output "spindle_role_id" {
+  value       = vault_approle_auth_backend_role.spindle.role_id
+  sensitive   = false
+}
+
+resource "vault_approle_auth_backend_role_secret_id" "spindle" {
+  backend   = vault_auth_backend.approle.path
+  role_name = vault_approle_auth_backend_role.spindle.role_name
+}
+
+output "spindle_secret_id" {
+  value       = vault_approle_auth_backend_role_secret_id.spindle.secret_id
+  sensitive   = true
 }
