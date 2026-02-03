@@ -120,7 +120,7 @@
       karakeep.enable = true;
       llama-cpp.enable = true;
       ollama.enable = true;
-      jellyfin.enable = true;
+      nixflix.enable = true;
       monitoring.enable = true;
       mybibliotheca.enable = true;
       open-webui.enable = true;

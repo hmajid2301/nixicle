@@ -1083,6 +1083,22 @@
         "url": "https://github.com/lucide-icons/lucide/releases/download/0.536.0/lucide-icons-0.536.0.zip"
       }
     },
+    "mkdocs-catppuccin": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1767028711,
+        "narHash": "sha256-YVIZAtQT2B4Xs2sBaszvyyukm+1klCJdRpsc/BYV1gw=",
+        "owner": "ruslanlap",
+        "repo": "mkdocs-catppuccin",
+        "rev": "fd8ac6106b5b6d32922cd80cbc3d221622a17408",
+        "type": "github"
+      },
+      "original": {
+        "owner": "ruslanlap",
+        "repo": "mkdocs-catppuccin",
+        "type": "github"
+      }
+    },
     "naersk": {
       "inputs": {
         "fenix": "fenix",
@@ -1337,6 +1353,27 @@
       "original": {
         "owner": "tazjin",
         "repo": "nixery",
+        "type": "github"
+      }
+    },
+    "nixflix": {
+      "inputs": {
+        "mkdocs-catppuccin": "mkdocs-catppuccin",
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1769979067,
+        "narHash": "sha256-L7cnB/xomd2NK+mRYLBysyuIHjHU5vZv4tt0c74e6/4=",
+        "owner": "kiriwalawren",
+        "repo": "nixflix",
+        "rev": "1112c49a29f054c3a52b2624da51e963b49ccb0b",
+        "type": "github"
+      },
+      "original": {
+        "owner": "kiriwalawren",
+        "repo": "nixflix",
         "type": "github"
       }
     },
@@ -2250,6 +2287,7 @@
         "nix-topology": "nix-topology",
         "nixCats": "nixCats",
         "nixery": "nixery",
+        "nixflix": "nixflix",
         "nixgl": "nixgl",
         "nixos-anywhere": "nixos-anywhere",
         "nixos-facter-modules": "nixos-facter-modules",

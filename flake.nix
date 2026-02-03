@@ -227,6 +227,11 @@
     };
 
     import-tree.url = "github:vic/import-tree";
+
+    nixflix = {
+      url = "github:kiriwalawren/nixflix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -283,6 +288,7 @@
         inputs.authentik-nix.nixosModules.default
         inputs.tangled.nixosModules.knot
         inputs.tangled.nixosModules.spindle
+        inputs.nixflix.nixosModules.nixflix
         (inputs.import-tree.match ".*/default\\.nix" ./modules/nixos)
       ];
 
