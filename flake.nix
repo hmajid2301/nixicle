@@ -89,8 +89,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    caelestia.url = "github:caelestia-dots/shell";
-
     noctalia = {
       url = "github:noctalia-dev/noctalia-shell";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -254,21 +252,20 @@
         }
       );
 
-      overlays =
-        [
-          inputs.nixgl.overlay
-          inputs.nur.overlays.default
-          inputs.nix-topology.overlays.default
-          inputs.nvim-treesitter-main.overlays.default
-          inputs.niri.overlays.niri
-          (final: prev: {
-            zjstatus = inputs.zjstatus.packages.${prev.stdenv.hostPlatform.system}.default;
-          })
-          (final: prev: {
-            nixicle = lib.nixicle.importPackages final ./packages;
-          })
-        ]
-        ++ (map (path: import path { inherit inputs; }) (lib.nixicle.importOverlays ./overlays));
+      overlays = [
+        inputs.nixgl.overlay
+        inputs.nur.overlays.default
+        inputs.nix-topology.overlays.default
+        inputs.nvim-treesitter-main.overlays.default
+        inputs.niri.overlays.niri
+        (final: prev: {
+          zjstatus = inputs.zjstatus.packages.${prev.stdenv.hostPlatform.system}.default;
+        })
+        (final: prev: {
+          nixicle = lib.nixicle.importPackages final ./packages;
+        })
+      ]
+      ++ (map (path: import path { inherit inputs; }) (lib.nixicle.importOverlays ./overlays));
 
       mkPkgs =
         system:
@@ -296,7 +293,6 @@
 
       commonHomeModules = [
         inputs.dankMaterialShell.homeModules.dank-material-shell
-        inputs.caelestia.homeManagerModules.default
         inputs.niri.homeModules.niri
         inputs.niri.homeModules.stylix
         inputs.noctalia.homeModules.default

@@ -12,7 +12,7 @@ in
           wrapRc = true;
           suffix-path = true;
           suffix-LD = true;
-          neovim-unwrapped = inputs.neovim-nightly-overlay.packages.${pkgs.stdenv.hostPlatform.system}.neovim;
+          neovim-unwrapped = pkgs.neovim-unwrapped;
         };
         categories = {
           general = true;
@@ -72,7 +72,7 @@ in
           aliases = [ "nvim" ];
           configDirName = "nvim";
           unwrappedCfgPath = "${config.home.homeDirectory}/nixicle/modules/home/cli/editors/neovim";
-          neovim-unwrapped = inputs.neovim-nightly-overlay.packages.${pkgs.stdenv.hostPlatform.system}.neovim;
+          neovim-unwrapped = pkgs.neovim-unwrapped;
         };
         categories = {
           general = true;

@@ -122,6 +122,7 @@
       ollama.enable = true;
       jellyfin.enable = true;
       monitoring.enable = true;
+      mybibliotheca.enable = true;
       open-webui.enable = true;
       otel-collector.enable = true;
       redis.enable = true;
