@@ -56,19 +56,41 @@ in
           sopsFile = ../secrets.yaml;
           owner = "prowlarr";
         };
+        "jellyseerr/api_key" = {
+          sopsFile = ../secrets.yaml;
+          owner = "jellyseerr";
+        };
+        "jellyfin/admin_password" = {
+          sopsFile = ../secrets.yaml;
+          owner = "jellyfin";
+        };
       };
 
       systemd.tmpfiles.rules = [
-        "d ${cfg.mediaDir} 0775 root media -"
-        "d ${cfg.mediaDir}/tv 0775 root media -"
-        "d ${cfg.mediaDir}/movies 0775 root media -"
-        "d ${cfg.mediaDir}/music 0775 root media -"
-        "d ${cfg.mediaDir}/books 0775 root media -"
+        # "d ${cfg.mediaDir} 0775 root media -"
+        # "d ${cfg.mediaDir}/tv 0775 root media -"
+        # "d ${cfg.mediaDir}/movies 0775 root media -"
+        # "d ${cfg.mediaDir}/music 0775 root media -"
+        # "d ${cfg.mediaDir}/books 0775 root media -"
+        "d /run/jellyfin 0755 jellyfin jellyfin -"
       ];
+
+      systemd.services.jellyfin-libraries = {
+        serviceConfig = {
+          User = "jellyfin";
+          Group = "media";
+        };
+      };
+
+      systemd.services.jellyseerr-setup = {
+        enable = false;
+      };
 
       nixflix = {
         enable = true;
         mediaDir = cfg.mediaDir;
+        mediaUsers = [ "haseeb" ];
+        postgres.enable = false;
 
         sonarr = {
           enable = true;
@@ -114,9 +136,75 @@ in
             };
           };
         };
-        jellyfin.enable = true;
-        jellyseerr.enable = true;
+        jellyfin = {
+          enable = true;
+          users.admin = {
+            mutable = false;
+            policy.isAdministrator = true;
+            password = {
+              _secret = config.sops.secrets."jellyfin/admin_password".path;
+            };
+          };
+          libraries = {
+            Movies = {
+              collectionType = "movies";
+              paths = [ "${cfg.mediaDir}/movies" ];
+            };
+            Shows = {
+              collectionType = "tvshows";
+              paths = [ "${cfg.mediaDir}/tv" ];
+            };
+            Music = {
+              collectionType = "music";
+              paths = [ "${cfg.mediaDir}/music" ];
+            };
+            Books = {
+              collectionType = "books";
+              paths = [ "${cfg.mediaDir}/books" ];
+            };
+          };
+        };
+        jellyseerr = {
+          enable = true;
+          apiKey = {
+            _secret = config.sops.secrets."jellyseerr/api_key".path;
+          };
+          # jellyfin = {
+          #   enableAllLibraries = true;
+          #   hostname = "127.0.0.1";
+          #   port = 8096;
+          #   useSsl = false;
+          # };
+          # sonarr.default = {
+          #   hostname = "127.0.0.1";
+          #   port = 8989;
+          #   useSsl = false;
+          #   apiKey = {
+          #     _secret = config.sops.secrets."sonarr/api_key".path;
+          #   };
+          #   activeDirectory = "${cfg.mediaDir}/tv";
+          #   enableSeasonFolders = true;
+          #   isDefault = true;
+          #   syncEnabled = true;
+          # };
+          # radarr.default = {
+          #   hostname = "127.0.0.1";
+          #   port = 7878;
+          #   useSsl = false;
+          #   apiKey = {
+          #     _secret = config.sops.secrets."radarr/api_key".path;
+          #   };
+          #   activeDirectory = "${cfg.mediaDir}/movies";
+          #   isDefault = true;
+          #   syncEnabled = true;
+          #   minimumAvailability = "released";
+          # };
+        };
         mullvad.enable = false;
+      };
+
+      systemd.services.jellyfin.environment = {
+        LIBVA_DRIVER_NAME = "radeonsi"; # AMD GPU
       };
 
       services.jellyfin = {
