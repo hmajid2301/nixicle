@@ -67,28 +67,22 @@ in
       };
 
       systemd.tmpfiles.rules = [
-        # "d ${cfg.mediaDir} 0775 root media -"
-        # "d ${cfg.mediaDir}/tv 0775 root media -"
-        # "d ${cfg.mediaDir}/movies 0775 root media -"
-        # "d ${cfg.mediaDir}/music 0775 root media -"
-        # "d ${cfg.mediaDir}/books 0775 root media -"
         "d /run/jellyfin 0755 jellyfin jellyfin -"
       ];
 
       systemd.services.jellyfin-libraries = {
+        enable = false;
         serviceConfig = {
           User = "jellyfin";
           Group = "media";
         };
       };
 
-      systemd.services.jellyseerr-setup = {
-        enable = false;
-      };
-
       nixflix = {
         enable = true;
+        stateDir = "/var/lib/nixflix";
         mediaDir = cfg.mediaDir;
+        # downloadDir = "/var/lib/nixflix/downloads";
         mediaUsers = [ "haseeb" ];
         postgres.enable = false;
 
@@ -201,34 +195,6 @@ in
           # };
         };
         mullvad.enable = false;
-      };
-
-      systemd.services.jellyfin.environment = {
-        LIBVA_DRIVER_NAME = "radeonsi"; # AMD GPU
-      };
-
-      services.jellyfin = {
-        openFirewall = true;
-        hardwareAcceleration = {
-          enable = true;
-          type = "vaapi";
-          device = "/dev/dri/renderD128";
-        };
-      };
-
-      users.users.jellyfin.extraGroups = [
-        "render"
-        "video"
-        "media"
-      ];
-
-      hardware.graphics = {
-        enable = true;
-        extraPackages = with pkgs; [
-          libva-vdpau-driver
-          libvdpau-va-gl
-          rocmPackages.clr.icd
-        ];
       };
     }
 

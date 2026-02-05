@@ -120,9 +120,8 @@
       karakeep.enable = true;
       llama-cpp.enable = true;
       ollama.enable = true;
-      nixflix.enable = true;
+      # nixflix.enable = true;
       monitoring.enable = true;
-      mybibliotheca.enable = true;
       open-webui.enable = true;
       otel-collector.enable = true;
       redis.enable = true;
