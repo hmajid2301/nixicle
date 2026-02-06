@@ -26,6 +26,10 @@ in
       package = pkgs.niri-unstable;
     };
 
+    # Disable home-manager integration from niri-flake NixOS module
+    # We handle niri config via home-manager modules directly
+    niri-flake.homeModules.enable = false;
+
     environment.sessionVariables = {
       NIXOS_OZONE_WL = "1";
     };

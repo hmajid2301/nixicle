@@ -289,6 +289,7 @@
         inputs.tangled.nixosModules.knot
         inputs.tangled.nixosModules.spindle
         inputs.nixflix.nixosModules.nixflix
+        inputs.niri.nixosModules.niri
         (inputs.import-tree.match ".*/default\\.nix" ./modules/nixos)
       ];
 
