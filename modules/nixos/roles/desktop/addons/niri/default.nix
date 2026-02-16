@@ -21,14 +21,7 @@ in
       trusted-public-keys = [ "niri.cachix.org-1:Wv0OmO7PsuocRKzfDoJ3mulSl7Z6oezYhGhR+3W2964=" ];
     };
 
-    programs.niri = {
-      enable = true;
-      package = pkgs.niri-unstable;
-    };
-
-    # Disable home-manager integration from niri-flake NixOS module
-    # We handle niri config via home-manager modules directly
-    niri-flake.homeModules.enable = false;
+    programs.niri.enable = true;
 
     environment.sessionVariables = {
       NIXOS_OZONE_WL = "1";

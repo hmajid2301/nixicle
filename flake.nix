@@ -221,11 +221,6 @@
       flake = false;
     };
 
-    nvim-treesitter-main = {
-      url = "github:iofq/nvim-treesitter-main";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     import-tree.url = "github:vic/import-tree";
 
     nixflix = {
@@ -261,7 +256,6 @@
         inputs.nixgl.overlay
         inputs.nur.overlays.default
         inputs.nix-topology.overlays.default
-        inputs.nvim-treesitter-main.overlays.default
         inputs.niri.overlays.niri
         (final: prev: {
           zjstatus = inputs.zjstatus.packages.${prev.stdenv.hostPlatform.system}.default;
@@ -300,8 +294,6 @@
 
       commonHomeModules = [
         inputs.dankMaterialShell.homeModules.dank-material-shell
-        inputs.niri.homeModules.niri
-        inputs.niri.homeModules.stylix
         inputs.noctalia.homeModules.default
         inputs.sops-nix.homeManagerModules.sops
         inputs.stylix.homeModules.stylix
@@ -309,6 +301,11 @@
         inputs.nix-index-database.homeModules.nix-index
         inputs.pam-shim.homeModules.default
         (inputs.import-tree.match ".*/default\\.nix" ./modules/home)
+      ];
+
+      standaloneHomeModules = commonHomeModules ++ [
+        inputs.niri.homeModules.niri
+        inputs.niri.homeModules.stylix
       ];
 
       mkSystem =
@@ -359,7 +356,7 @@
             host = hostname;
           };
           modules =
-            commonHomeModules
+            standaloneHomeModules
             ++ extraModules
             ++ [
               (./hosts + "/${hostname}/home.nix")

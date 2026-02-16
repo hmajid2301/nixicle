@@ -119,7 +119,15 @@
 
       karakeep.enable = true;
       llama-cpp.enable = true;
-      ollama.enable = true;
+      ollama = {
+        enable = true;
+        acceleration = "rocm";
+        vulkan = {
+          flashAttention = true;
+          kvCacheType = "q8_0";
+          contextLength = 64000;
+        };
+      };
       # nixflix.enable = true;
       monitoring.enable = true;
       open-webui.enable = true;

@@ -40,6 +40,8 @@ in
       traefik = {
         enable = true;
 
+        dynamic.dir = "/var/lib/traefik/dynamic";
+
         staticConfigOptions = {
           metrics = {
             prometheus = { };
