@@ -121,7 +121,7 @@
       llama-cpp.enable = true;
       ollama = {
         enable = true;
-        acceleration = "rocm";
+        acceleration = "vulkan";
         vulkan = {
           flashAttention = true;
           kvCacheType = "q8_0";
