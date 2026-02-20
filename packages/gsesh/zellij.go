@@ -34,7 +34,7 @@ func sessionExists(sessionName string) bool {
 
 // listAllSessions returns all zellij sessions
 func listAllSessions() ([]string, error) {
-	cmd := exec.Command("zellij", "list-sessions")
+	cmd := exec.Command("zellij", "list-sessions", "-s")
 	out, err := cmd.Output()
 	if err != nil {
 		return nil, fmt.Errorf("failed to list sessions: %w", err)

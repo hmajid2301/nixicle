@@ -316,9 +316,9 @@ func (i sessionItem) FilterValue() string { return i.info.Name }
 func (i sessionItem) Title() string       { return i.info.Name }
 func (i sessionItem) Description() string {
 	if i.info.Path != "" {
-		return fmt.Sprintf("📁 %s", i.info.Path)
+		return i.info.Path
 	}
-	return "No associated worktree"
+	return ""
 }
 
 type sessionPickerModel struct {
@@ -380,7 +380,7 @@ func (m sessionPickerModel) View() string {
 	if m.quitting {
 		return ""
 	}
-	return fmt.Sprintf("%s\n%s", m.list.View(), helpStyle.Render("Press q to quit"))
+	return fmt.Sprintf("%s\n%s", m.list.View(), helpStyle.Render("Press q to quit, / to search"))
 }
 
 func selectSession(sessions []SessionInfo) (SessionInfo, error) {
