@@ -89,8 +89,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    caelestia.url = "github:caelestia-dots/shell";
-
     noctalia = {
       url = "github:noctalia-dev/noctalia-shell";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -223,12 +221,12 @@
       flake = false;
     };
 
-    nvim-treesitter-main = {
-      url = "github:iofq/nvim-treesitter-main";
+    import-tree.url = "github:vic/import-tree";
+
+    nixflix = {
+      url = "github:kiriwalawren/nixflix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-
-    import-tree.url = "github:vic/import-tree";
   };
 
   outputs =
@@ -254,21 +252,19 @@
         }
       );
 
-      overlays =
-        [
-          inputs.nixgl.overlay
-          inputs.nur.overlays.default
-          inputs.nix-topology.overlays.default
-          inputs.nvim-treesitter-main.overlays.default
-          inputs.niri.overlays.niri
-          (final: prev: {
-            zjstatus = inputs.zjstatus.packages.${prev.stdenv.hostPlatform.system}.default;
-          })
-          (final: prev: {
-            nixicle = lib.nixicle.importPackages final ./packages;
-          })
-        ]
-        ++ (map (path: import path { inherit inputs; }) (lib.nixicle.importOverlays ./overlays));
+      overlays = [
+        inputs.nixgl.overlay
+        inputs.nur.overlays.default
+        inputs.nix-topology.overlays.default
+        inputs.niri.overlays.niri
+        (final: prev: {
+          zjstatus = inputs.zjstatus.packages.${prev.stdenv.hostPlatform.system}.default;
+        })
+        (final: prev: {
+          nixicle = lib.nixicle.importPackages final ./packages;
+        })
+      ]
+      ++ (map (path: import path { inherit inputs; }) (lib.nixicle.importOverlays ./overlays));
 
       mkPkgs =
         system:
@@ -286,6 +282,8 @@
         inputs.authentik-nix.nixosModules.default
         inputs.tangled.nixosModules.knot
         inputs.tangled.nixosModules.spindle
+        inputs.nixflix.nixosModules.nixflix
+        inputs.niri.nixosModules.niri
         (inputs.import-tree.match ".*/default\\.nix" ./modules/nixos)
       ];
 
@@ -296,9 +294,6 @@
 
       commonHomeModules = [
         inputs.dankMaterialShell.homeModules.dank-material-shell
-        inputs.caelestia.homeManagerModules.default
-        inputs.niri.homeModules.niri
-        inputs.niri.homeModules.stylix
         inputs.noctalia.homeModules.default
         inputs.sops-nix.homeManagerModules.sops
         inputs.stylix.homeModules.stylix
@@ -306,6 +301,11 @@
         inputs.nix-index-database.homeModules.nix-index
         inputs.pam-shim.homeModules.default
         (inputs.import-tree.match ".*/default\\.nix" ./modules/home)
+      ];
+
+      standaloneHomeModules = commonHomeModules ++ [
+        inputs.niri.homeModules.niri
+        inputs.niri.homeModules.stylix
       ];
 
       mkSystem =
@@ -356,7 +356,7 @@
             host = hostname;
           };
           modules =
-            commonHomeModules
+            standaloneHomeModules
             ++ extraModules
             ++ [
               (./hosts + "/${hostname}/home.nix")
