@@ -84,7 +84,7 @@
     routers = {
       jellyfin = {
         entryPoints = [ "websecure" ];
-        rule = "Host(`jelly.haseebmajid.dev`)";
+        rule = "Host(`jellyfin.haseebmajid.dev`)";
         service = "jellyfin";
         middlewares = [ "jellyfin-headers" ];
         tls.certResolver = "letsencrypt";
