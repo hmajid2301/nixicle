@@ -38,7 +38,7 @@ in
 
       polarity = "dark";
 
-      iconTheme = {
+      icons = {
         enable = true;
         package = pkgs.catppuccin-papirus-folders.override {
           flavor = "mocha";

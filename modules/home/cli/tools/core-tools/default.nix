@@ -104,7 +104,6 @@ in
       unzip # Archive extraction
       gnupg # GPG encryption and signing
 
-      # Nix utilities
       optinix # Nix flake utilities
     ];
   };
