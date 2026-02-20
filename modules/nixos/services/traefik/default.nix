@@ -41,6 +41,7 @@ in
         enable = true;
 
         staticConfigOptions = {
+          providers.file.directory = "/var/lib/traefik/dynamic";
           metrics = {
             prometheus = { };
           };
