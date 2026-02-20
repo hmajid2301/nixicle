@@ -45,18 +45,23 @@ in
 
   development.android.emulator.enable = true;
 
-  # TODO: Re-enable once import-tree issue is resolved
-  # cli.tools.envoluntary.config = {
-  #   # Install envoluntary with: cargo install envoluntary
-  #   entries = [
-  #     # Example: Load Node.js dev shell for website projects
-  #     # {
-  #     #   pattern = ".*/projects/my-website(/.*)?";
-  #     #   flake_reference = "~/nix-dev-shells/nodejs";
-  #     #   impure = true;
-  #     # }
-  #   ];
-  # };
+  cli.tools.envoluntary.config = {
+    # Install envoluntary with: cargo install envoluntary
+    entries = [
+      # Load Go dev shell with golangci-lint 1.64.8 for vault-plugins
+      {
+        pattern = "~/projects/vault-plugins(/.*)?";
+        flake_reference = "~/nix-dev-shells/vault-plugins";
+        impure = true;
+      }
+      # Load latest Terraform/AWS dev shell for terraform-aws projects
+      {
+        pattern = "~/projects/terraform-aws(/.*)?";
+        flake_reference = "~/nix-dev-shells/terraform-aws";
+        impure = true;
+      }
+    ];
+  };
 
   home.packages = with pkgs; [
     # Audio utility scripts
