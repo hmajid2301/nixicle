@@ -10,7 +10,6 @@ let
 in
 {
   config = mkIf cfg.enable {
-    programs.niri.enable = true;
     programs.niri.settings = {
       outputs = mkMerge [
         {
