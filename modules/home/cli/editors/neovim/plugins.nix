@@ -65,10 +65,7 @@
       ];
       treesitter = with pkgs.vimPlugins; [
         nvim-treesitter-textobjects
-        # Using nvim-treesitter main branch via overlay for neotest-golang v2+ compatibility
-        # See: https://fredrikaverpil.github.io/neotest-golang/install/
-        # Overlay from: https://github.com/iofq/nvim-treesitter-main
-        nvim-treesitter.withAllGrammars
+        (nvim-treesitter.withAllGrammars)
       ];
       telescope = with pkgs.vimPlugins; [
         telescope-fzf-native-nvim
