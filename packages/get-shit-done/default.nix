@@ -20,26 +20,19 @@ stdenvNoCC.mkDerivation rec {
   installPhase = ''
     runHook preInstall
 
-    mkdir -p $out/share/claude-code/get-shit-done
+    # Set up temporary home directory for install script
+    export HOME=$TMPDIR
+    mkdir -p $HOME/.config/opencode
+    mkdir -p $HOME/.claude
 
-    # Copy commands
-    cp -r commands/gsd $out/share/claude-code/get-shit-done/commands
+    mkdir -p $out/share/claude-code
+    mkdir -p $out/share/opencode
 
-    # Copy main skill
-    cp -r get-shit-done $out/share/claude-code/get-shit-done/
+    # Run install.js for Claude Code
+    node bin/install.js --claude --global --config-dir $out/share/claude-code
 
-    # Copy agents
-    cp -r agents $out/share/claude-code/get-shit-done/
-
-    # Copy hooks
-    mkdir -p $out/share/claude-code/get-shit-done/hooks
-    cp hooks/*.js $out/share/claude-code/get-shit-done/hooks/ 2>/dev/null || true
-
-    # Copy documentation
-    cp CHANGELOG.md $out/share/claude-code/get-shit-done/
-
-    # Create version file
-    echo "${version}" > $out/share/claude-code/get-shit-done/VERSION
+    # Run install.js for OpenCode
+    node bin/install.js --opencode --global --config-dir $out/share/opencode
 
     runHook postInstall
   '';

@@ -19,23 +19,23 @@ in
     home.packages = [ gsdPackage ];
 
     home.file = {
-      ".claude/commands/gsd".source = "${gsdPackage}/share/claude-code/get-shit-done/commands";
-      ".claude/get-shit-done".source = "${gsdPackage}/share/claude-code/get-shit-done/get-shit-done";
-      ".claude/agents/gsd" = {
-        source = "${gsdPackage}/share/claude-code/get-shit-done/agents";
+      ".claude/commands/gsd".source = "${gsdPackage}/share/claude-code/commands/gsd";
+      ".claude/get-shit-done".source = "${gsdPackage}/share/claude-code/get-shit-done";
+      ".claude/agents" = {
+        source = "${gsdPackage}/share/claude-code/agents";
         recursive = true;
       };
-      ".claude/hooks/gsd-check-update.js".source = "${gsdPackage}/share/claude-code/get-shit-done/hooks/gsd-check-update.js";
-      ".claude/hooks/gsd-statusline.js".source = "${gsdPackage}/share/claude-code/get-shit-done/hooks/gsd-statusline.js";
+      ".claude/hooks".source = "${gsdPackage}/share/claude-code/hooks";
 
-      ".config/opencode/commands/gsd".source = "${gsdPackage}/share/claude-code/get-shit-done/commands";
-      ".config/opencode/get-shit-done".source = "${gsdPackage}/share/claude-code/get-shit-done/get-shit-done";
-      ".config/opencode/agents/gsd" = {
-        source = "${gsdPackage}/share/claude-code/get-shit-done/agents";
+      ".config/opencode/command" = {
+        source = "${gsdPackage}/share/opencode/command";
         recursive = true;
       };
-      ".config/opencode/hooks/gsd-check-update.js".source = "${gsdPackage}/share/claude-code/get-shit-done/hooks/gsd-check-update.js";
-      ".config/opencode/hooks/gsd-statusline.js".source = "${gsdPackage}/share/claude-code/get-shit-done/hooks/gsd-statusline.js";
+      ".config/opencode/get-shit-done".source = "${gsdPackage}/share/opencode/get-shit-done";
+      ".config/opencode/agents" = {
+        source = "${gsdPackage}/share/opencode/agents";
+        recursive = true;
+      };
     };
 
     dev.claude-code.extraSettings = {
@@ -52,10 +52,14 @@ in
     };
 
     cli.tools.opencode.extraSettings = {
-      read = [
-        "${config.home.homeDirectory}/.config/opencode/get-shit-done/**"
-        "${config.home.homeDirectory}/.planning/**"
-      ];
+      permission = {
+        read = {
+          "${config.home.homeDirectory}/.config/opencode/get-shit-done/*" = "allow";
+        };
+        external_directory = {
+          "${config.home.homeDirectory}/.config/opencode/get-shit-done/*" = "allow";
+        };
+      };
     };
   };
 }
