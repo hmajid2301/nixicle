@@ -11,7 +11,7 @@ return {
 		end,
 		after = function(plugin)
 			require("dropbar").setup({
-				general = {
+				bar = {
 					enable = function(buf, win)
 						return vim.fn.win_gettype(win) == ""
 							and vim.wo[win].winbar == ""

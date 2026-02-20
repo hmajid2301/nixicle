@@ -259,9 +259,6 @@ return {
 		load = function(name)
 			vim.cmd.packadd(name)
 		end,
-		after = function(plugin)
-			require("webify").setup({})
-		end,
 	},
 	{
 		"git-worktree.nvim",

@@ -7,11 +7,7 @@ return {
 		load = function(name)
 			vim.cmd.packadd(name)
 			vim.cmd.packadd("telescope-fzf-native.nvim")
-<<<<<<< Updated upstream
 			vim.cmd.packadd("telescope-media-files.nvim")
-=======
-			vim.cmd.packadd("telescope-media-files-nvim")
->>>>>>> Stashed changes
 			vim.cmd.packadd("advanced-git-search.nvim")
 			vim.cmd.packadd("telescope-ui-select.nvim")
 			vim.cmd.packadd("git-worktree.nvim")
