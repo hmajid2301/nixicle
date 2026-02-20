@@ -19,6 +19,11 @@ in
         sopsFile = ../secrets.yaml;
         owner = "grafana";
       };
+
+      grafana_secret_key = {
+        sopsFile = ../secrets.yaml;
+        owner = "grafana";
+      };
     };
 
     services.postgresql = {
@@ -55,6 +60,10 @@ in
           api_url = "https://authentik.haseebmajid.dev/application/o/userinfo/";
           role_attribute_path = "contains(groups, 'Grafana Admins') && 'Admin' || contains(groups, 'Grafana Editors') && 'Editor' || 'Viewer'";
         };
+        security = {
+          secret_key = "$__file{${config.sops.secrets.grafana_secret_key.path}}";
+        };
+
         database = {
           host = "/run/postgresql";
           user = "grafana";
