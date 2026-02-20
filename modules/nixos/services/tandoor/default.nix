@@ -39,6 +39,7 @@ in
             SOCIAL_DEFAULT_GROUP = "user";
             SOCIAL_PROVIDERS = "allauth.socialaccount.providers.openid_connect";
             MEDIA_URL = "https://tandoor-recipes-media.haseebmajid.dev/media/";
+            MEDIA_ROOT = "/var/lib/tandoor-recipes/";
           };
         };
 

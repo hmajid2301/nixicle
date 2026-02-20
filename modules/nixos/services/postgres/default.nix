@@ -37,6 +37,13 @@ in
       owner = "postgres";
     };
 
+    systemd.targets.postgresql-ready = {
+      description = "PostgreSQL is ready";
+      after = ["postgresql.service"];
+      requires = ["postgresql.service"];
+      wantedBy = ["multi-user.target"];
+    };
+
     services = {
       postgresql = {
         enable = true;
