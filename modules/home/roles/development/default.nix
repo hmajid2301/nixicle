@@ -47,6 +47,7 @@ in
         direnv.enable = true;
         eza.enable = true;
         fzf.enable = true;
+        get-shit-done.enable = true;
         git.enable = true;
         gpg.enable = true;
         gsesh.enable = true;
