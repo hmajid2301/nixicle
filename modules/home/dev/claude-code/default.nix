@@ -34,6 +34,12 @@ in
         }
       '';
     };
+
+    extraSettings = mkOption {
+      type = types.attrs;
+      default = {};
+      description = "Additional settings for Claude Code settings.json";
+    };
   };
 
   config = mkIf cfg.enable {
@@ -51,7 +57,7 @@ in
 
         "includeCoAuthoredBy" = false;
         "alwaysThinkingEnabled" = false;
-      };
+      } // cfg.extraSettings;
 
       mcpServers = {
         filesystem = {
