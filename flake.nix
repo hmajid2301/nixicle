@@ -227,6 +227,16 @@
       url = "github:kiriwalawren/nixflix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    opencode-antigravity-auth = {
+      url = "github:NoeFabris/opencode-antigravity-auth/v1.6.0";
+      flake = false;
+    };
+
+    get-shit-done = {
+      url = "github:gsd-build/get-shit-done/v1.21.1";
+      flake = false;
+    };
   };
 
   outputs =
@@ -261,6 +271,7 @@
           zjstatus = inputs.zjstatus.packages.${prev.stdenv.hostPlatform.system}.default;
         })
         (final: prev: {
+          inherit (inputs) get-shit-done;
           nixicle = lib.nixicle.importPackages final ./packages;
         })
       ]

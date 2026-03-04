@@ -1,19 +1,14 @@
 {
   lib,
   stdenvNoCC,
-  fetchFromGitHub,
   nodejs,
+  get-shit-done,
 }:
 stdenvNoCC.mkDerivation rec {
   pname = "get-shit-done";
-  version = "0.1.0";
+  version = "1.21.1";
 
-  src = fetchFromGitHub {
-    owner = "gsd-build";
-    repo = "get-shit-done";
-    rev = "main";
-    hash = "sha256-m0kRPIP5XnoeAnIEj6TZ85C8pw36Y/zLEbnX9dyjAd4=";
-  };
+  src = get-shit-done;
 
   nativeBuildInputs = [ nodejs ];
 

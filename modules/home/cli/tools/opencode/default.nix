@@ -69,7 +69,7 @@ in
         };
 
         "$schema" = "https://opencode.ai/config.json";
-        plugin = [ "opencode-antigravity-auth@latest" ];
+        plugin = [ "${inputs.opencode-antigravity-auth}/plugin.js" ];
         provider.google.models = {
           antigravity-gemini-3-pro = {
             name = "Gemini 3 Pro (Antigravity)";
