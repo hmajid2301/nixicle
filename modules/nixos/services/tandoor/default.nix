@@ -40,6 +40,10 @@ in
             SOCIAL_PROVIDERS = "allauth.socialaccount.providers.openid_connect";
             MEDIA_URL = "https://tandoor-recipes-media.haseebmajid.dev/media/";
             MEDIA_ROOT = "/var/lib/tandoor-recipes/";
+            # AI Integration - enables AI features for spaces by default
+            SPACE_AI_ENABLED = "1";
+            SPACE_AI_CREDITS_MONTHLY = "1000";  # Higher limit for local Ollama
+            AI_RATELIMIT = "600/hour";  # Higher rate limit for local Ollama
           };
         };
 
