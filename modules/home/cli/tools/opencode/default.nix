@@ -57,15 +57,15 @@ in
         autoshare = false;
         autoupdate = false;
         mcp = {
-          zellij = {
-            type = "local";
-            command = [
-              "${pkgs.bun}/bin/bun"
-              "run"
-              "${inputs.zellij-pane-tracker}/mcp-server/index.ts"
-            ];
-            enabled = true;
-          };
+          # zellij = {
+          #   type = "local";
+          #   command = [
+          #     "${pkgs.bun}/bin/bun"
+          #     "run"
+          #     "${inputs.zellij-pane-tracker}/mcp-server/index.ts"
+          #   ];
+          #   enabled = true;
+          # };
         };
 
         "$schema" = "https://opencode.ai/config.json";

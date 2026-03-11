@@ -59,6 +59,7 @@ in
                 storage = "/var/lib/traefik/cert.json";
                 dnsChallenge = {
                   provider = "cloudflare";
+                  resolvers = ["1.1.1.1"];
                 };
               };
             };
@@ -94,6 +95,9 @@ in
                   {
                     main = "homelab.haseebmajid.dev";
                     sans = [ "*.homelab.haseebmajid.dev" ];
+                  }
+                  {
+                    main = "port8082.homelab.haseebmajid.dev";
                   }
                   {
                     main = "haseebmajid.dev";

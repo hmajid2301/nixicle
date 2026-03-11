@@ -111,10 +111,9 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # Zellij plugins
-    zellij-pane-tracker = {
-      url = "github:theslyprofessor/zellij-pane-tracker";
-      flake = false;
+    goroutinely = {
+      url = "gitlab:hmajid2301/go-routinely/feat/nixos-module";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
 
     # Homelab
@@ -274,6 +273,10 @@
           inherit (inputs) get-shit-done;
           nixicle = lib.nixicle.importPackages final ./packages;
         })
+        (final: prev: {
+          goroutinely = inputs.goroutinely.packages.${prev.stdenv.hostPlatform.system}.default;
+          goroutinely-sendreminders = inputs.goroutinely.packages.${prev.stdenv.hostPlatform.system}.default;
+        })
       ]
       ++ (map (path: import path { inherit inputs; }) (lib.nixicle.importOverlays ./overlays));
 
@@ -295,6 +298,7 @@
         inputs.tangled.nixosModules.spindle
         inputs.nixflix.nixosModules.nixflix
         inputs.niri.nixosModules.niri
+        inputs.goroutinely.nixosModules.default
         (inputs.import-tree.match ".*/default\\.nix" ./modules/nixos)
       ];
 

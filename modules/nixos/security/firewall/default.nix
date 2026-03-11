@@ -17,13 +17,11 @@ in
       enable = true;
       allowPing = true;
 
-      allowedTCPPorts = [ ];
       allowedUDPPorts = mkIf config.roles.desktop.enable [
-        5353  # mDNS
+        5353 # mDNS
       ];
 
-      trustedInterfaces = [ "lo" ]
-        ++ (optional config.services.nixicle.tailscale.enable "tailscale0");
+      trustedInterfaces = [ "lo" ] ++ (optional config.services.nixicle.tailscale.enable "tailscale0");
 
       interfaces = {
         "wl+" = mkIf config.roles.desktop.enable {
