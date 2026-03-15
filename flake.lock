@@ -940,11 +940,11 @@
         "playwright": "playwright_2"
       },
       "locked": {
-        "lastModified": 1773504144,
-        "narHash": "sha256-R9tVbX89VfzjjxvhBONWEkOPGxNNJZNv06Jj623gMrk=",
+        "lastModified": 1773550223,
+        "narHash": "sha256-DxJ/k6+974/q4qneAOmuONFDdpVBLQ99tMlljCFwRYk=",
         "owner": "hmajid2301",
         "repo": "go-routinely",
-        "rev": "866725f7f42c5f36f651e198e2d6901ae9c4ccdd",
+        "rev": "2d03d3d7e6d81e5d3b4149b20d3e34d7f196f04f",
         "type": "gitlab"
       },
       "original": {
