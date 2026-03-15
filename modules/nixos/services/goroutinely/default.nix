@@ -2,6 +2,7 @@
   config,
   lib,
   pkgs,
+  inputs,
   ...
 }:
 with lib;
@@ -16,38 +17,41 @@ in
   config = mkIf cfg.enable {
     sops.secrets.goroutinely = {
       sopsFile = ../secrets.yaml;
+      key = "goroutinely";
+      owner = config.services.goroutinely.user;
+      group = config.services.goroutinely.group;
+      mode = "0400";
     };
 
     services = {
       goroutinely = {
         enable = true;
-        port = 8234;
+        package = inputs.goroutinely.packages.${pkgs.system}.default;
+        sendremindersPackage = inputs.goroutinely.packages.${pkgs.system}.default;
+        port = 8235;
         host = "0.0.0.0";
         database.createLocally = true;
         notifications = {
           enable = true;
           vapidSubject = "mailto:admin@haseebmajid.dev";
+          vapidPublicKey = "BN91igKCVVyiiDggAN4poSUaEKL_-CNV_3mnioXKghZd00x5fFkjLra8HvAhfwZkHTymFsXHsRwVYpTqyGja-II";
         };
-        openFirewall = true;
         oauth = {
-          skipAuth = false;
-          jwksUrl = "https://authentik.haseebmajid.dev/application/o/go-routinely/.well-known/jwks.json";
-          clientId = "goroutinely";
-          authorizeUrl = "https://authentik.haseebmajid.dev/application/o/go-routinely/authorize/";
-          tokenUrl = "https://authentik.haseebmajid.dev/application/o/go-routinely/token/";
+          jwksUrl = "https://authentik.haseebmajid.dev/application/o/go-routinely/.well-known/openid-configuration";
+          clientId = "N3h5Y0H52Z96NqKfJn8fWasyPX5VRdtx5ps0uoWW";
         };
         secretsFile = config.sops.secrets.goroutinely.path;
       };
 
       cloudflared.tunnels = mkIf config.services.nixicle.cloudflare.enable {
         ${config.services.nixicle.cloudflare.tunnelId}.ingress = {
-          "goroutinely.haseebmajid.dev" = "http://localhost:8234";
+          "goroutinely.haseebmajid.dev" = "http://localhost:8235";
         };
       };
 
       traefik.dynamicConfigOptions.http = lib.nixicle.mkTraefikService {
         name = "goroutinely";
-        port = 8234;
+        port = 8235;
         subdomain = "goroutinely";
         domain = "haseebmajid.dev";
       };

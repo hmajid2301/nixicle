@@ -273,10 +273,6 @@
           inherit (inputs) get-shit-done;
           nixicle = lib.nixicle.importPackages final ./packages;
         })
-        (final: prev: {
-          goroutinely = inputs.goroutinely.packages.${prev.stdenv.hostPlatform.system}.default;
-          goroutinely-sendreminders = inputs.goroutinely.packages.${prev.stdenv.hostPlatform.system}.default;
-        })
       ]
       ++ (map (path: import path { inherit inputs; }) (lib.nixicle.importOverlays ./overlays));
 
