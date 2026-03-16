@@ -11,6 +11,13 @@
     { config.facter.reportPath = ./facter.json; }
   ];
 
+  sops.secrets = {
+    user_password = {
+      sopsFile = ./secrets.yaml;
+      neededForUsers = true;
+    };
+  };
+
   user.passwordSecretFile = config.sops.secrets.user_password.path;
 
   users.groups.media = {

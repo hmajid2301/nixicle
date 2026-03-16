@@ -19,6 +19,16 @@ in
       sopsFile = ../secrets.yaml;
     };
 
+    environment.etc."crowdsec/config.yaml".source = format.generate "crowdsec.yaml" config.services.crowdsec.settings.general;
+
+    systemd.services.crowdsec-firewall-bouncer.serviceConfig.DynamicUser = mkForce false;
+
+    systemd.services.crowdsec-firewall-bouncer-register.serviceConfig = {
+      DynamicUser = mkForce false;
+      User = config.services.crowdsec.user;
+      Group = config.services.crowdsec.group;
+    };
+
     services.crowdsec = {
       enable = true;
 

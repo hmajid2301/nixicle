@@ -456,6 +456,16 @@
           ];
         };
 
+        workstation = mkSystem {
+          hostname = "workstation";
+          extraModules = [
+            (mkHomeModule {
+              username = "haseeb";
+              hostname = "workstation";
+            })
+          ];
+        };
+
         vps = mkSystem {
           hostname = "vps";
         };
@@ -481,6 +491,11 @@
         "haseeb@framebox" = mkHome {
           username = "haseeb";
           hostname = "framebox";
+        };
+
+        "haseeb@workstation" = mkHome {
+          username = "haseeb";
+          hostname = "workstation";
         };
       };
 
@@ -577,6 +592,7 @@
         overrides = {
           framebox.profiles.system.sshUser = "haseeb";
           framework.profiles.system.sshUser = "haseeb";
+          workstation.profiles.system.sshUser = "haseeb";
           vm.profiles.system.sshUser = "haseeb";
           vps.profiles.system.sshUser = "nixos";
         };
