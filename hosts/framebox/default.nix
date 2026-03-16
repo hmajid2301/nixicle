@@ -160,20 +160,6 @@
     gaming.enable = true;
   };
 
-  services.traefik.dynamicConfigOptions.http = {
-    routers.port8082 = {
-      rule = "Host(`port8082.homelab.haseebmajid.dev`)";
-      service = "port8082";
-      tls = { };
-      entryPoints = [ "websecure" ];
-    };
-    services.port8082 = {
-      loadBalancer = {
-        servers = [ { url = "http://localhost:8082"; } ];
-      };
-    };
-  };
-
   networking.hostName = "framebox";
 
   # TODO: refactor this also.

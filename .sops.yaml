@@ -62,6 +62,16 @@ creation_rules:
       - *haseeb_framebox
       - *haseebmajid_dell
 
+  - path_regex: hosts/workstation/secrets.ya?ml$
+    key_groups:
+    - age:
+      - *framework
+      - *framebox
+      - *vm
+      - *haseeb_framework
+      - *haseeb_framebox
+      - *haseebmajid_dell
+
   - path_regex: hosts/framework/secrets.ya?ml$
     key_groups:
     - age:
