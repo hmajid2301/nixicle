@@ -36,27 +36,14 @@ func attachOrCreateWithAI(sessionName, worktreePath, layout string, startAI bool
 	}
 
 	if sessionExists(sessionName) {
-		info(fmt.Sprintf("Attaching to session '%s' with AI...", sessionName))
+		info(fmt.Sprintf("Attaching to session '%s'...", sessionName))
 	} else {
-		info(fmt.Sprintf("Creating session '%s' with AI...", sessionName))
+		info(fmt.Sprintf("Creating session '%s'...", sessionName))
 	}
 
 	if inZellij {
-		args := fmt.Sprintf("cwd=%s,name=%s", worktreePath, sessionName)
-		if layout != "" && layout != "default" {
-			args += fmt.Sprintf(",layout=%s", layout)
-		}
-
-		cmd := exec.Command("zellij", "pipe", "-p", "session-manager", "-n", "switch-session", "--args", args)
-		if err := cmd.Run(); err != nil {
-			warning("Pipe failed, using fallback")
-			return fallbackAttachWithAI(sessionName, worktreePath, startAI)
-		}
-
-		if startAI {
-			return startAIPane()
-		}
-		return nil
+		info(fmt.Sprintf("Detaching from '%s' to switch...", currentSession))
+		return fallbackAttachWithAI(sessionName, worktreePath, startAI, layout)
 	}
 
 	if err := os.Chdir(worktreePath); err != nil {
@@ -120,7 +107,7 @@ func createZellijSession(sessionName, worktreePath, layout string) error {
 	return cmd.Run()
 }
 
-func fallbackAttachWithAI(sessionName, worktreePath string, startAI bool) error {
+func fallbackAttachWithAI(sessionName, worktreePath string, startAI bool, layout string) error {
 	if err := exec.Command("zellij", "action", "detach").Run(); err != nil {
 		return fmt.Errorf("failed to detach: %w", err)
 	}
@@ -129,11 +116,16 @@ func fallbackAttachWithAI(sessionName, worktreePath string, startAI bool) error 
 		return fmt.Errorf("failed to change directory: %w", err)
 	}
 
-	if startAI {
-		return startZellijWithAI([]string{"attach", "-c", sessionName})
+	args := []string{"attach", "-c", sessionName}
+	if layout != "" && layout != "default" {
+		args = []string{"--layout", layout, "attach", "-c", sessionName}
 	}
 
-	cmd := exec.Command("zellij", "attach", "-c", sessionName)
+	if startAI {
+		return startZellijWithAI(args)
+	}
+
+	cmd := exec.Command("zellij", args...)
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr

@@ -76,34 +76,26 @@ func attachSession(sessionName, worktreePath string) error {
 		return nil
 	}
 
-	// If we're inside zellij, use pipe to switch sessions without nesting
+	// If we're inside zellij, detach and print instructions
 	if inZellij {
 		info(fmt.Sprintf("Switching from '%s' to '%s'...", currentSession, sessionName))
+		info("Detaching - run 'zellij attach " + sessionName + "' to connect")
 
-		// Use zellij pipe to communicate with session-manager plugin
-		// This avoids nesting by delegating session switching to zellij itself
-		args := fmt.Sprintf("cwd=%s,name=%s", worktreePath, sessionName)
-		cmd := exec.Command("zellij", "pipe", "-p", "session-manager", "-n", "switch-session", "--args", args)
-
-		if err := cmd.Run(); err != nil {
-			// Fallback to detach + attach if pipe fails
-			warning("Failed to use pipe, falling back to detach + attach")
-			if err := exec.Command("zellij", "action", "detach").Run(); err != nil {
-				return fmt.Errorf("failed to detach from current session: %w", err)
-			}
-
-			// Change directory before attaching
-			if err := os.Chdir(worktreePath); err != nil {
-				return fmt.Errorf("failed to change directory to %s: %w", worktreePath, err)
-			}
-
-			cmd := exec.Command("zellij", "attach", "-c", sessionName)
-			cmd.Stdin = os.Stdin
-			cmd.Stdout = os.Stdout
-			cmd.Stderr = os.Stderr
-			return cmd.Run()
+		// Detach from current session
+		if err := exec.Command("zellij", "action", "detach").Run(); err != nil {
+			return fmt.Errorf("failed to detach from current session: %w", err)
 		}
-		return nil
+
+		// After detach, we're outside zellij - attach to target
+		if err := os.Chdir(worktreePath); err != nil {
+			return fmt.Errorf("failed to change directory to %s: %w", worktreePath, err)
+		}
+
+		cmd := exec.Command("zellij", "attach", "-c", sessionName)
+		cmd.Stdin = os.Stdin
+		cmd.Stdout = os.Stdout
+		cmd.Stderr = os.Stderr
+		return cmd.Run()
 	}
 
 	// If not in zellij, just attach normally
@@ -119,7 +111,7 @@ func attachSession(sessionName, worktreePath string) error {
 	return cmd.Run()
 }
 
-// switchToSession switches to an existing zellij session using pipe
+// switchToSession switches to an existing zellij session
 func switchToSession(sessionName, workDir string) error {
 	inZellij := os.Getenv("ZELLIJ") != ""
 	currentSession := getCurrentSession()
@@ -130,28 +122,27 @@ func switchToSession(sessionName, workDir string) error {
 		return nil
 	}
 
-	// If we're inside zellij, use pipe to switch
+	// If we're inside zellij, detach then attach
 	if inZellij {
 		info(fmt.Sprintf("Switching from '%s' to '%s'...", currentSession, sessionName))
 
-		// Use zellij pipe to communicate with session-manager plugin
-		args := fmt.Sprintf("cwd=%s,name=%s", workDir, sessionName)
-		cmd := exec.Command("zellij", "pipe", "-p", "session-manager", "-n", "switch-session", "--args", args)
-
-		if err := cmd.Run(); err != nil {
-			// Fallback to detach + attach if pipe fails
-			warning("Failed to use pipe, falling back to detach + attach")
-			if err := exec.Command("zellij", "action", "detach").Run(); err != nil {
-				return fmt.Errorf("failed to detach from current session: %w", err)
-			}
-
-			cmd := exec.Command("zellij", "attach", sessionName)
-			cmd.Stdin = os.Stdin
-			cmd.Stdout = os.Stdout
-			cmd.Stderr = os.Stderr
-			return cmd.Run()
+		// Detach from current session
+		if err := exec.Command("zellij", "action", "detach").Run(); err != nil {
+			return fmt.Errorf("failed to detach from current session: %w", err)
 		}
-		return nil
+
+		// After detach, attach to target
+		if workDir != "" {
+			if err := os.Chdir(workDir); err != nil {
+				return fmt.Errorf("failed to change directory: %w", err)
+			}
+		}
+
+		cmd := exec.Command("zellij", "attach", sessionName)
+		cmd.Stdin = os.Stdin
+		cmd.Stdout = os.Stdout
+		cmd.Stderr = os.Stderr
+		return cmd.Run()
 	}
 
 	// If not in zellij, just attach

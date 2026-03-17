@@ -34,6 +34,11 @@
     };
   };
 
+  # security.nixicle.pcr-verification = {
+  #   enable = true;
+  #   expectedPcr15 = "6f29f4ec21f52202b07aa19ee8e122fe22db90559b6f65ab9515b214ece8d3e6";
+  # };
+
   services = {
     virtualisation.kvm.enable = true;
   };
