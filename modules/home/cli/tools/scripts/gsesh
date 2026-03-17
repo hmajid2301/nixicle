@@ -131,18 +131,66 @@ session_exists() {
     zellij list-sessions 2>/dev/null | grep -q "^$session_name$"
 }
 
+# Check if running inside a zellij session
+is_inside_zellij() {
+    [[ -n "${ZELLIJ:-}" ]]
+}
+
 # Create or attach to zellij session
 attach_session() {
     local session_name="$1"
     local worktree_path="$2"
 
     if session_exists "$session_name"; then
-        info "Attaching to existing session '$session_name'..."
-        zellij attach "$session_name"
+        if is_inside_zellij; then
+            success "Session '$session_name' ready!"
+            zellij action launch-or-focus-plugin --floating --move-to-focused-tab "zellij:session-manager" 2>/dev/null || {
+                echo "Press Alt+s then w to switch sessions"
+            }
+        else
+            zellij attach "$session_name"
+        fi
     else
-        info "Creating new session '$session_name' in '$worktree_path'..."
-        cd "$worktree_path"
-        zellij attach -c "$session_name"
+        if is_inside_zellij; then
+            info "Creating session '$session_name'..."
+            (cd "$worktree_path" && zellij attach -c "$session_name" &)
+            sleep 1
+            success "Session '$session_name' created!"
+            zellij action launch-or-focus-plugin --floating --move-to-focused-tab "zellij:session-manager" 2>/dev/null || {
+                echo "Press Alt+s then w to switch sessions"
+            }
+        else
+            cd "$worktree_path"
+            zellij attach -c "$session_name"
+        fi
+    fi
+}
+
+# Create or attach to zellij session
+attach_session() {
+    local session_name="$1"
+    local worktree_path="$2"
+
+    if session_exists "$session_name"; then
+        if is_inside_zellij; then
+            success "Session '$session_name' ready!"
+            zellij action write-chars ""
+            zellij action write-chars ":session-switcher"
+        else
+            zellij attach "$session_name"
+        fi
+    else
+        if is_inside_zellij; then
+            info "Creating session '$session_name'..."
+            (cd "$worktree_path" && zellij attach -c "$session_name" &)
+            sleep 0.8
+            success "Session '$session_name' created!"
+            zellij action write-chars ""
+            zellij action write-chars ":session-switcher"
+        else
+            cd "$worktree_path"
+            zellij attach -c "$session_name"
+        fi
     fi
 }
 
