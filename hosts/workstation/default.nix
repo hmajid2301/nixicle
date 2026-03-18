@@ -39,6 +39,11 @@
   #   expectedPcr15 = "6f29f4ec21f52202b07aa19ee8e122fe22db90559b6f65ab9515b214ece8d3e6";
   # };
 
+  boot = {
+    resumeDevice = "/dev/disk/by-label/nixos";
+    kernelParams = [ "resume_offset=269569" ];
+  };
+
   services = {
     virtualisation.kvm.enable = true;
     tailscale.enable = true;
