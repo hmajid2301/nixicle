@@ -41,6 +41,7 @@
 
   services = {
     virtualisation.kvm.enable = true;
+    tailscale.enable = true;
   };
 
   roles = {
