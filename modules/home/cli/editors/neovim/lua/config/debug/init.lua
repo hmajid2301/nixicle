@@ -161,6 +161,11 @@ require("lze").load({
 						hide = { "go" },
 					},
 				},
+				winbar = {
+					controls = {
+						enabled = true,
+					},
+				},
 			})
 		end,
 	},
