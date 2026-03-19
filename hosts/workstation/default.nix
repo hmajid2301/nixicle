@@ -40,7 +40,6 @@
   # };
 
   boot = {
-    resumeDevice = "/dev/disk/by-label/nixos";
     kernelParams = [ "resume_offset=269569" ];
   };
 

@@ -54,9 +54,14 @@ in
         "${themePackage}/share/color-schemes/${colorSchemeSlug}.colors";
     };
 
-    services.kdeconnect = {
-      enable = true;
-      indicator = true;
-    };
+    # services.kdeconnect = {
+    #   enable = true;
+    #   indicator = true;
+    # };
+
+    xdg.configFile."autostart/polkit-kde-authentication-agent-1.desktop".text = ''
+      [Desktop Entry]
+      Hidden=true
+    '';
   };
 }
