@@ -33,9 +33,11 @@
 
   default = ''
     layout {
-        pane
-
         ${statusbar}
+
+        tab {
+            pane
+        }
     }
   '';
 }

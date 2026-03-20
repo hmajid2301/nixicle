@@ -125,8 +125,8 @@ func (i layoutItem) Title() string       { return i.name }
 func (i layoutItem) Description() string { return "" }
 
 type layoutPickerModel struct {
-	list    list.Model
-	choice  string
+	list     list.Model
+	choice   string
 	quitting bool
 }
 
@@ -215,75 +215,35 @@ func attachSeshSession(sessionName, dir string) error {
 	inZellij := os.Getenv("ZELLIJ") != ""
 	currentSession := getCurrentSession()
 
+	debug(fmt.Sprintf("attachSeshSession: target=%q inZellij=%v currentSession=%q dir=%q", sessionName, inZellij, currentSession, dir))
+
 	// If we're already in the target session, do nothing
 	if inZellij && currentSession == sessionName {
 		info(fmt.Sprintf("Already in session '%s'", sessionName))
 		return nil
 	}
 
-	// If we're inside zellij, use pipe to switch sessions without nesting
+	// If we're inside zellij, use pipe to switch sessions
 	if inZellij {
 		info(fmt.Sprintf("Switching from '%s' to '%s'...", currentSession, sessionName))
-
-		// Use zellij pipe to communicate with session-manager plugin
-		args := fmt.Sprintf("cwd=%s,name=%s", dir, sessionName)
-		cmd := exec.Command("zellij", "pipe", "-p", "session-manager", "-n", "switch-session", "--args", args)
-
-		if err := cmd.Run(); err != nil {
-			// Fallback to detach + attach if pipe fails
-			warning("Failed to use pipe, falling back to detach + attach")
-			if err := exec.Command("zellij", "action", "detach").Run(); err != nil {
-				return fmt.Errorf("failed to detach from current session: %w", err)
-			}
-
-			cmd := exec.Command("zellij", "attach", sessionName)
-			cmd.Stdin = os.Stdin
-			cmd.Stdout = os.Stdout
-			cmd.Stderr = os.Stderr
-			return cmd.Run()
-		}
-		return nil
+		return switchViaPipe(sessionName, dir, "")
 	}
 
 	// If not in zellij, just attach normally
-	cmd := exec.Command("zellij", "attach", sessionName)
-	cmd.Stdin = os.Stdin
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-
-	return cmd.Run()
+	debug(fmt.Sprintf("attachSeshSession: running 'zellij attach %s' (not in zellij)", sessionName))
+	return attachZellij("attach", sessionName)
 }
 
 func createSeshSession(sessionName, dir, layout string) error {
 	inZellij := os.Getenv("ZELLIJ") != ""
 	currentSession := getCurrentSession()
 
-	// If we're inside zellij, use pipe to create session without nesting
+	debug(fmt.Sprintf("createSeshSession: target=%q inZellij=%v currentSession=%q dir=%q layout=%q", sessionName, inZellij, currentSession, dir, layout))
+
+	// If we're inside zellij, use pipe to switch sessions
 	if inZellij {
-		info(fmt.Sprintf("Creating new session '%s' (switching from '%s')...", sessionName, currentSession))
-
-		// Use zellij pipe to communicate with session-manager plugin
-		args := fmt.Sprintf("cwd=%s,name=%s,layout=%s", dir, sessionName, layout)
-		cmd := exec.Command("zellij", "pipe", "-p", "session-manager", "-n", "switch-session", "--args", args)
-
-		if err := cmd.Run(); err != nil {
-			// Fallback to detach + attach if pipe fails
-			warning("Failed to use pipe, falling back to detach + attach")
-			if err := exec.Command("zellij", "action", "detach").Run(); err != nil {
-				return fmt.Errorf("failed to detach from current session: %w", err)
-			}
-
-			if err := os.Chdir(dir); err != nil {
-				return fmt.Errorf("failed to change directory to %s: %w", dir, err)
-			}
-
-			cmd := exec.Command("zellij", "--layout", layout, "attach", "-c", sessionName)
-			cmd.Stdin = os.Stdin
-			cmd.Stdout = os.Stdout
-			cmd.Stderr = os.Stderr
-			return cmd.Run()
-		}
-		return nil
+		info(fmt.Sprintf("Switching from '%s' to new session '%s'...", currentSession, sessionName))
+		return switchViaPipe(sessionName, dir, layout)
 	}
 
 	// If not in zellij, just create normally
@@ -291,10 +251,7 @@ func createSeshSession(sessionName, dir, layout string) error {
 		return fmt.Errorf("failed to change directory to %s: %w", dir, err)
 	}
 
-	cmd := exec.Command("zellij", "--layout", layout, "attach", "-c", sessionName)
-	cmd.Stdin = os.Stdin
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-
-	return cmd.Run()
+	args := []string{"--layout", layout, "attach", "-c", sessionName}
+	debug(fmt.Sprintf("createSeshSession: running 'zellij %s' (not in zellij)", strings.Join(args, " ")))
+	return attachZellij(args...)
 }

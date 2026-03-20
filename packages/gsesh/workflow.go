@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"os"
 	"path/filepath"
 
 	"github.com/charmbracelet/lipgloss"
@@ -32,6 +33,29 @@ func success(msg string) {
 
 func warning(msg string) {
 	fmt.Println(errorStyle.Render("⚠ " + msg))
+}
+
+var debugLogFile *os.File
+
+func debug(msg string) {
+	if os.Getenv("GSESH_DEBUG") == "" {
+		return
+	}
+
+	if debugLogFile == nil {
+		logPath := os.Getenv("GSESH_DEBUG_LOG")
+		if logPath == "" {
+			logPath = "/tmp/gsesh-debug.log"
+		}
+		var err error
+		debugLogFile, err = os.OpenFile(logPath, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0644)
+		if err != nil {
+			return
+		}
+	}
+
+	fmt.Fprintf(debugLogFile, "[%s] %s\n", fmt.Sprintf("%d", os.Getpid()), msg)
+	debugLogFile.Sync()
 }
 
 func runListMode(c *cli.Context, project string) error {

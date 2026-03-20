@@ -12,12 +12,26 @@ var (
 )
 
 func main() {
+	// Check for --debug in args before CLI parsing so debug works anywhere
+	for _, arg := range os.Args {
+		if arg == "--debug" || arg == "-d" {
+			os.Setenv("GSESH_DEBUG", "1")
+			break
+		}
+	}
+
 	app := &cli.App{
 		Name:                 "gsesh",
 		Usage:                "Git session manager for worktrees + zellij",
 		Version:              version,
 		EnableBashCompletion: true,
 		Flags: []cli.Flag{
+			&cli.BoolFlag{
+				Name:    "debug",
+				Aliases: []string{"d"},
+				EnvVars: []string{"GSESH_DEBUG"},
+				Usage:   "Enable debug logging to /tmp/gsesh-debug.log",
+			},
 			&cli.BoolFlag{
 				Name:    "sesh",
 				Aliases: []string{"s"},

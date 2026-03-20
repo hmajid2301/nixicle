@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"os"
-	"os/exec"
 	"strings"
 
 	"github.com/urfave/cli/v2"
@@ -27,6 +26,8 @@ func attachOrCreateWithAI(sessionName, worktreePath, layout string, startAI bool
 	inZellij := os.Getenv("ZELLIJ") != ""
 	currentSession := getCurrentSession()
 
+	debug(fmt.Sprintf("attachOrCreateWithAI: target=%q inZellij=%v currentSession=%q worktreePath=%q layout=%q startAI=%v", sessionName, inZellij, currentSession, worktreePath, layout, startAI))
+
 	if inZellij && currentSession == sessionName {
 		info(fmt.Sprintf("Already in session '%s'", sessionName))
 		if startAI {
@@ -35,7 +36,8 @@ func attachOrCreateWithAI(sessionName, worktreePath, layout string, startAI bool
 		return nil
 	}
 
-	if sessionExists(sessionName) {
+	exists := sessionExists(sessionName)
+	if exists {
 		info(fmt.Sprintf("Attaching to session '%s'...", sessionName))
 	} else {
 		info(fmt.Sprintf("Creating session '%s'...", sessionName))
@@ -51,7 +53,7 @@ func attachOrCreateWithAI(sessionName, worktreePath, layout string, startAI bool
 	}
 
 	sessionArgs := []string{"attach", "-c", sessionName}
-	if layout != "" && layout != "default" {
+	if layout != "" {
 		sessionArgs = []string{"--layout", layout, "attach", "-c", sessionName}
 	}
 
@@ -59,16 +61,14 @@ func attachOrCreateWithAI(sessionName, worktreePath, layout string, startAI bool
 		return startZellijWithAI(sessionArgs)
 	}
 
-	cmd := exec.Command("zellij", sessionArgs...)
-	cmd.Stdin = os.Stdin
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-	return cmd.Run()
+	return attachZellij(sessionArgs...)
 }
 
 func createZellijSession(sessionName, worktreePath, layout string) error {
 	inZellij := os.Getenv("ZELLIJ") != ""
 	currentSession := getCurrentSession()
+
+	debug(fmt.Sprintf("createZellijSession: target=%q inZellij=%v currentSession=%q worktreePath=%q layout=%q", sessionName, inZellij, currentSession, worktreePath, layout))
 
 	if inZellij && currentSession == sessionName {
 		info(fmt.Sprintf("Already in session '%s'", sessionName))
@@ -76,19 +76,8 @@ func createZellijSession(sessionName, worktreePath, layout string) error {
 	}
 
 	if inZellij {
-		info(fmt.Sprintf("Creating session '%s'...", sessionName))
-
-		args := fmt.Sprintf("cwd=%s,name=%s", worktreePath, sessionName)
-		if layout != "" && layout != "default" {
-			args += fmt.Sprintf(",layout=%s", layout)
-		}
-
-		cmd := exec.Command("zellij", "pipe", "-p", "session-manager", "-n", "switch-session", "--args", args)
-		if err := cmd.Run(); err != nil {
-			warning("Pipe failed, using fallback")
-			return fallbackCreateSession(sessionName, worktreePath, layout)
-		}
-		return nil
+		info(fmt.Sprintf("Switching from '%s' to new session '%s'...", currentSession, sessionName))
+		return switchViaPipe(sessionName, worktreePath, layout)
 	}
 
 	if err := os.Chdir(worktreePath); err != nil {
@@ -96,61 +85,32 @@ func createZellijSession(sessionName, worktreePath, layout string) error {
 	}
 
 	args := []string{"attach", "-c", sessionName}
-	if layout != "" && layout != "default" {
+	if layout != "" {
 		args = []string{"--layout", layout, "attach", "-c", sessionName}
 	}
 
-	cmd := exec.Command("zellij", args...)
-	cmd.Stdin = os.Stdin
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-	return cmd.Run()
+	debug(fmt.Sprintf("createZellijSession: running 'zellij %s'", strings.Join(args, " ")))
+	return attachZellij(args...)
 }
 
 func fallbackAttachWithAI(sessionName, worktreePath string, startAI bool, layout string) error {
-	if err := exec.Command("zellij", "action", "detach").Run(); err != nil {
-		return fmt.Errorf("failed to detach: %w", err)
-	}
+	debug(fmt.Sprintf("fallbackAttachWithAI: target=%q worktreePath=%q startAI=%v layout=%q", sessionName, worktreePath, startAI, layout))
 
-	if err := os.Chdir(worktreePath); err != nil {
-		return fmt.Errorf("failed to change directory: %w", err)
-	}
-
-	args := []string{"attach", "-c", sessionName}
-	if layout != "" && layout != "default" {
-		args = []string{"--layout", layout, "attach", "-c", sessionName}
+	if err := switchViaPipe(sessionName, worktreePath, layout); err != nil {
+		return err
 	}
 
 	if startAI {
-		return startZellijWithAI(args)
+		debug("fallbackAttachWithAI: starting AI pane after switch")
+		return startAIPane()
 	}
 
-	cmd := exec.Command("zellij", args...)
-	cmd.Stdin = os.Stdin
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-	return cmd.Run()
+	return nil
 }
 
 func fallbackCreateSession(sessionName, worktreePath, layout string) error {
-	if err := exec.Command("zellij", "action", "detach").Run(); err != nil {
-		return fmt.Errorf("failed to detach: %w", err)
-	}
-
-	if err := os.Chdir(worktreePath); err != nil {
-		return fmt.Errorf("failed to change directory: %w", err)
-	}
-
-	args := []string{"attach", "-c", sessionName}
-	if layout != "" && layout != "default" {
-		args = []string{"--layout", layout, "attach", "-c", sessionName}
-	}
-
-	cmd := exec.Command("zellij", args...)
-	cmd.Stdin = os.Stdin
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-	return cmd.Run()
+	debug(fmt.Sprintf("fallbackCreateSession: target=%q worktreePath=%q layout=%q", sessionName, worktreePath, layout))
+	return switchViaPipe(sessionName, worktreePath, layout)
 }
 
 func startZellijWithAI(sessionArgs []string) error {
@@ -159,19 +119,17 @@ func startZellijWithAI(sessionArgs []string) error {
 
 	zellijArgs := append(sessionArgs, "--", "sh", "-c", fmt.Sprintf("%s; exec $SHELL", aiCommand))
 
-	cmd := exec.Command("zellij", zellijArgs...)
-	cmd.Stdin = os.Stdin
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-	return cmd.Run()
+	debug(fmt.Sprintf("startZellijWithAI: running 'zellij %s'", strings.Join(zellijArgs, " ")))
+	return attachZellij(zellijArgs...)
 }
 
 func startAIPane() error {
 	aiTool := getAITool()
 	aiCommand := buildAICommand(aiTool)
 
-	cmd := exec.Command("zellij", "action", "new-pane", "--", "sh", "-c", fmt.Sprintf("%s; exec $SHELL", aiCommand))
-	return cmd.Run()
+	debug(fmt.Sprintf("startAIPane: running 'zellij action new-pane -- sh -c \"%s; exec $SHELL\"'", aiCommand))
+	_, err := runZellij("action", "new-pane", "--", "sh", "-c", fmt.Sprintf("%s; exec $SHELL", aiCommand))
+	return err
 }
 
 func getAITool() string {
