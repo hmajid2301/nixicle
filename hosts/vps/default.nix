@@ -14,7 +14,6 @@
 
   system.boot.enable = lib.mkForce false;
 
-  # VPS doesn't use impermanence, so use standard SSH key path for SOPS
   sops.age.sshKeyPaths = lib.mkForce [ "/etc/ssh/ssh_host_ed25519_key" ];
 
   roles.common.enable = true;

@@ -117,6 +117,12 @@
                     };
                     "/swap" = {
                       mountpoint = "/swap";
+                      mountOptions = [
+                        "noatime"
+                        "compress=no"
+                        # btrfs swapfiles require compression disabled;
+                        # explicitly override the inherited compress=zstd from the parent mount
+                      ];
                       swap.swapfile.size = "32G";
                     };
                   };

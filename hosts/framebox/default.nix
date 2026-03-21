@@ -107,6 +107,7 @@
       };
       crowdsec.enable = true;
       gitea.enable = true;
+      goroutinely.enable = true;
       gitlab-runner = {
         enable = true;
         sopsFile = config.sops.secrets.gitlab_runner_env.path;
