@@ -39,8 +39,6 @@ in
         enable = true;
         host = "0.0.0.0";
         mediaLocation = cfg.mediaLocation;
-        database.enableVectors = false;
-        database.enableVectorChord = true;
         redis.host = config.services.redis.servers.main.unixSocket;
       };
 

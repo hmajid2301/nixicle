@@ -57,9 +57,13 @@ in
           chmod 0700 /persist/var/lib/private
         '';
       };
-      
+
       "impermanence" = {
-        deps = [ "var-lib-private-permissions" "users" "groups" ];
+        deps = [
+          "var-lib-private-permissions"
+          "users"
+          "groups"
+        ];
         text = ''
           mkdir -p /persist/{root,srv,etc/nixos,etc/ssh}
           mkdir -p /persist/var/{spool,cache,db}

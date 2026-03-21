@@ -82,7 +82,13 @@ in
     environment.persistence = mkIf config.system.impermanence.enable {
       "/persist" = {
         directories = [
-          { directory = "/var/lib/private/atticd"; user = "atticd"; group = "atticd"; mode = "0750"; defaultPerms.mode = "0700"; }
+          {
+            directory = "/var/lib/private/atticd";
+            user = "atticd";
+            group = "atticd";
+            mode = "0750";
+            defaultPerms.mode = "0700";
+          }
         ];
       };
     };
