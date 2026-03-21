@@ -50,7 +50,6 @@ in
 
         exec-once = [
           "${pkgs.kanshi}/bin/kanshi"
-          "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1"
           "${pkgs.clipse}/bin/clipse -listen"
           "${pkgs.solaar}/bin/solaar -w hide"
           "${pkgs.kdePackages.kdeconnect-kde}/bin/kdeconnect-indicator"

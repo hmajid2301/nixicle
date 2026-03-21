@@ -161,6 +161,11 @@ require("lze").load({
 						hide = { "go" },
 					},
 				},
+				winbar = {
+					controls = {
+						enabled = true,
+					},
+				},
 			})
 		end,
 	},
@@ -170,8 +175,27 @@ require("lze").load({
 		on_plugin = { "nvim-dap" },
 		after = function(plugin)
 			require("dap-go").setup({
-				dap_configurations = { { mode = "remote", name = "Attach remote", request = "attach", type = "go" } },
-				delve = { build_flags = "-tags=unit,integration,e2e,bdd,dind", path = "dlv", port = "40000" },
+				dap_configurations = {
+					{
+						type = "go",
+						name = "Attach remote",
+						mode = "remote",
+						request = "attach",
+						host = "127.0.0.1", -- Add this
+						port = 2345, -- Add this
+					},
+				},
+				-- dap_configurations = {
+				-- 	{
+				-- 		type = "go",
+				-- 		name = "Attach remote",
+				-- 		mode = "remote",
+				-- 		request = "attach",
+				-- 		host = "127.0.0.1",
+				-- 		port = 2345,
+				-- 	},
+				-- },
+				-- delve = { build_flags = "-tags=unit,integration,e2e,bdd,dind", path = "dlv", port = "2345" },
 			})
 		end,
 	},

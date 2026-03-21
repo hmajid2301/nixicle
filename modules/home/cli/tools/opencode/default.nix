@@ -57,19 +57,19 @@ in
         autoshare = false;
         autoupdate = false;
         mcp = {
-          zellij = {
-            type = "local";
-            command = [
-              "${pkgs.bun}/bin/bun"
-              "run"
-              "${inputs.zellij-pane-tracker}/mcp-server/index.ts"
-            ];
-            enabled = true;
-          };
+          # zellij = {
+          #   type = "local";
+          #   command = [
+          #     "${pkgs.bun}/bin/bun"
+          #     "run"
+          #     "${inputs.zellij-pane-tracker}/mcp-server/index.ts"
+          #   ];
+          #   enabled = true;
+          # };
         };
 
         "$schema" = "https://opencode.ai/config.json";
-        plugin = [ "opencode-antigravity-auth@latest" ];
+        plugin = [ "${inputs.opencode-antigravity-auth}/plugin.js" ];
         provider.google.models = {
           antigravity-gemini-3-pro = {
             name = "Gemini 3 Pro (Antigravity)";

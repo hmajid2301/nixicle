@@ -22,6 +22,7 @@ in
 
     extraPackages = mkOpt (listOf package) [ ] "Extra packages to install for niri";
     extraStartupApps = mkOpt (listOf (listOf str)) [ ] "Extra applications to spawn at startup";
+    xwaylandSatelliteCommand = mkOpt (listOf str) [ "xwayland-satellite" ] "Command to launch xwayland-satellite";
     outputs = mkOpt attrs { } "Output-specific configuration (monitors/displays)";
   };
 

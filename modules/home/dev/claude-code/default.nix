@@ -16,7 +16,7 @@ in
 
     extraMcpServers = mkOption {
       type = types.attrs;
-      default = {};
+      default = { };
       description = "Additional MCP servers to configure";
       example = literalExpression ''
         {
@@ -37,7 +37,7 @@ in
 
     extraSettings = mkOption {
       type = types.attrs;
-      default = {};
+      default = { };
       description = "Additional settings for Claude Code settings.json";
     };
   };
@@ -57,7 +57,8 @@ in
 
         "includeCoAuthoredBy" = false;
         "alwaysThinkingEnabled" = false;
-      } // cfg.extraSettings;
+      }
+      // cfg.extraSettings;
 
       mcpServers = {
         filesystem = {
@@ -74,11 +75,12 @@ in
           args = [ "mcp-nixos" ];
         };
 
-        zellij = {
-          command = "${pkgs.bun}/bin/bun";
-          args = [ "run" "${inputs.zellij-pane-tracker}/mcp-server/index.ts" ];
-        };
-      } // cfg.extraMcpServers;
+        # zellij = {
+        #   command = "${pkgs.bun}/bin/bun";
+        #   args = [ "run" "${inputs.zellij-pane-tracker}/mcp-server/index.ts" ];
+        # };
+      }
+      // cfg.extraMcpServers;
     };
 
     home.packages = with pkgs; [
