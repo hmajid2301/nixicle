@@ -12,12 +12,26 @@ var (
 )
 
 func main() {
+	// Check for --debug in args before CLI parsing so debug works anywhere
+	for _, arg := range os.Args {
+		if arg == "--debug" || arg == "-d" {
+			os.Setenv("GSESH_DEBUG", "1")
+			break
+		}
+	}
+
 	app := &cli.App{
 		Name:                 "gsesh",
 		Usage:                "Git session manager for worktrees + zellij",
 		Version:              version,
 		EnableBashCompletion: true,
 		Flags: []cli.Flag{
+			&cli.BoolFlag{
+				Name:    "debug",
+				Aliases: []string{"d"},
+				EnvVars: []string{"GSESH_DEBUG"},
+				Usage:   "Enable debug logging to /tmp/gsesh-debug.log",
+			},
 			&cli.BoolFlag{
 				Name:    "sesh",
 				Aliases: []string{"s"},
@@ -50,6 +64,22 @@ func main() {
 				Value:   "claude",
 				Usage:   "Prefix for Claude Code session names",
 			},
+			&cli.BoolFlag{
+				Name:    "ai",
+				Aliases: []string{"a"},
+				Usage:   "Start AI assistant (claude/opencode) in a split pane",
+			},
+			&cli.StringFlag{
+				Name:    "ai-tool",
+				EnvVars: []string{"GSESH_AI_TOOL"},
+				Value:   "opencode",
+				Usage:   "AI tool to use (claude or opencode)",
+			},
+			&cli.StringFlag{
+				Name:    "layout",
+				Aliases: []string{"L"},
+				Usage:   "Zellij layout to use for new sessions",
+			},
 		},
 		Commands: []*cli.Command{
 			{
@@ -76,6 +106,64 @@ func main() {
 				Aliases: []string{"sw"},
 				Usage:   "Switch to a zellij session using interactive UI",
 				Action:  runSwitchMode,
+			},
+			{
+				Name:    "jump",
+				Aliases: []string{"j"},
+				Usage:   "Jump to any project/worktree globally (via zoxide)",
+				Flags: []cli.Flag{
+					&cli.BoolFlag{
+						Name:    "ai",
+						Aliases: []string{"a"},
+						Usage:   "Start AI assistant in a split pane",
+					},
+				},
+				Action: runJumpMode,
+			},
+			{
+				Name:      "new",
+				Aliases:   []string{"n"},
+				Usage:     "Create new branch/worktree/session quickly",
+				ArgsUsage: "<branch-name>",
+				Flags: []cli.Flag{
+					&cli.BoolFlag{
+						Name:    "ai",
+						Aliases: []string{"a"},
+						Usage:   "Start AI assistant in a split pane",
+					},
+					&cli.StringFlag{
+						Name:    "base",
+						Aliases: []string{"B"},
+						Usage:   "Base branch to create from",
+						Value:   "",
+					},
+				},
+				Action: runNewMode,
+			},
+			{
+				Name:      "attach",
+				Aliases:   []string{"at"},
+				Usage:     "Attach to existing worktree/session quickly",
+				ArgsUsage: "<branch-name>",
+				Flags: []cli.Flag{
+					&cli.BoolFlag{
+						Name:    "ai",
+						Aliases: []string{"a"},
+						Usage:   "Start AI assistant in a split pane",
+					},
+				},
+				Action: runAttachMode,
+			},
+			{
+				Name:    "status",
+				Aliases: []string{"st"},
+				Usage:   "Show git status across all worktrees",
+				Action:  runStatusMode,
+			},
+			{
+				Name:   "context",
+				Usage:  "Show context files for current worktree",
+				Action: runContextMode,
 			},
 		},
 		Action: run,
