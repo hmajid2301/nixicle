@@ -21,11 +21,13 @@ keys:
     - &haseebmajid_dell age1s6rx9whkkf35t7qaju9vvla8tl2nstt0drx722ca4qadqfx66g0slxyxd0
     - &haseeb_framebox age1zm36rngg07hrm8nj3r8wj5ucz85njxzfwsxftsx3gtdmzkgw3peqh8vf55
     - &haseeb_vm age1x4x5ujnd9em23jhs53lgwqcmw9t6hx64xtdt3x0u4n66fsuygf9s4njjla
+    - &haseeb_workstation age1gvqf9yte70nt0pdpwkphnea68gy0mgj93mg6fjlu3vk03m2j9svqdzmj3p
   - &hosts:
     - &framework age16lkhqtnle3z62gy0tk9x4tn3w43st2cnvdpl8r84xpzkn2f7jv8qxl5a9q
     - &vm age1pc0qdk5d2fen55cstvtch588wcqgzemgavlsvsc5dm0r4uw00vrq297et7
     - &framebox age199ny6lhask8zc65auwygqhj0svjkpp5kr7lhht8hvj947vaclecqrt4yg7
     - &vps age150twmyqdklep32scvp7vpr2djture8d5pu5jv7kpc6gdz4mg6svsxxlm9c
+    - &workstation age199ny6lhask8zc65auwygqhj0svjkpp5kr7lhht8hvj947vaclecqrt4yg7
 
 creation_rules:
   - path_regex: modules/nixos/secrets.ya?ml$
@@ -35,10 +37,12 @@ creation_rules:
       - *framebox
       - *vm
       - *vps
+      - *workstation
       - *haseeb_framework
       - *haseeb_framebox
       - *haseeb_vm
       - *haseebmajid_dell
+      - *haseeb_workstation
 
   - path_regex: modules/nixos/services/secrets.ya?ml$
     key_groups:
@@ -47,10 +51,12 @@ creation_rules:
       - *framebox
       - *vm
       - *vps
+      - *workstation
       - *haseeb_framework
       - *haseeb_framebox
       - *haseeb_vm
       - *haseebmajid_dell
+      - *haseeb_workstation
 
   - path_regex: hosts/framebox/secrets.ya?ml$
     key_groups:
@@ -58,18 +64,34 @@ creation_rules:
       - *framework
       - *framebox
       - *vm
+      - *workstation
       - *haseeb_framework
       - *haseeb_framebox
       - *haseebmajid_dell
+      - *haseeb_workstation
+
+  - path_regex: hosts/workstation/secrets.ya?ml$
+    key_groups:
+    - age:
+      - *framework
+      - *framebox
+      - *vm
+      - *workstation
+      - *haseeb_framework
+      - *haseeb_framebox
+      - *haseebmajid_dell
+      - *haseeb_workstation
 
   - path_regex: hosts/framework/secrets.ya?ml$
     key_groups:
     - age:
       - *framework
       - *framebox
+      - *workstation
       - *haseeb_framework
       - *haseeb_framebox
       - *haseebmajid_dell
+      - *haseeb_workstation
 
   - path_regex: modules/home/secrets.ya?ml$
     key_groups:
@@ -78,3 +100,4 @@ creation_rules:
       - *haseeb_framebox
       - *haseeb_vm
       - *haseebmajid_dell
+      - *haseeb_workstation
