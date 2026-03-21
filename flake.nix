@@ -111,10 +111,9 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # Zellij plugins
-    zellij-pane-tracker = {
-      url = "github:theslyprofessor/zellij-pane-tracker";
-      flake = false;
+    goroutinely = {
+      url = "gitlab:hmajid2301/go-routinely/feat/nixos-module";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
 
     # Homelab
@@ -227,6 +226,16 @@
       url = "github:kiriwalawren/nixflix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    opencode-antigravity-auth = {
+      url = "github:NoeFabris/opencode-antigravity-auth/v1.6.0";
+      flake = false;
+    };
+
+    get-shit-done = {
+      url = "github:gsd-build/get-shit-done/v1.21.1";
+      flake = false;
+    };
   };
 
   outputs =
@@ -261,6 +270,7 @@
           zjstatus = inputs.zjstatus.packages.${prev.stdenv.hostPlatform.system}.default;
         })
         (final: prev: {
+          inherit (inputs) get-shit-done;
           nixicle = lib.nixicle.importPackages final ./packages;
         })
       ]
@@ -284,6 +294,7 @@
         inputs.tangled.nixosModules.spindle
         inputs.nixflix.nixosModules.nixflix
         inputs.niri.nixosModules.niri
+        inputs.goroutinely.nixosModules.default
         (inputs.import-tree.match ".*/default\\.nix" ./modules/nixos)
       ];
 
@@ -445,6 +456,16 @@
           ];
         };
 
+        workstation = mkSystem {
+          hostname = "workstation";
+          extraModules = [
+            (mkHomeModule {
+              username = "haseeb";
+              hostname = "workstation";
+            })
+          ];
+        };
+
         vps = mkSystem {
           hostname = "vps";
         };
@@ -470,6 +491,11 @@
         "haseeb@framebox" = mkHome {
           username = "haseeb";
           hostname = "framebox";
+        };
+
+        "haseeb@workstation" = mkHome {
+          username = "haseeb";
+          hostname = "workstation";
         };
       };
 
@@ -566,6 +592,7 @@
         overrides = {
           framebox.profiles.system.sshUser = "haseeb";
           framework.profiles.system.sshUser = "haseeb";
+          workstation.profiles.system.sshUser = "haseeb";
           vm.profiles.system.sshUser = "haseeb";
           vps.profiles.system.sshUser = "nixos";
         };
