@@ -6,6 +6,19 @@ copy_on_select true
 show_startup_tips false
 scrollback_editor "nixCats"
 
+plugins {
+    tab-bar location="zellij:tab-bar"
+    status-bar location="zellij:status-bar"
+    strider location="zellij:strider"
+    compact-bar location="zellij:compact-bar"
+    session-manager location="zellij:session-manager"
+    detach location="https://github.com/karlbunch/zellij-detach/releases/latest/download/zellij-detach.wasm"
+}
+
+load_plugins {
+    "detach"
+}
+
 ui {
     pane_frames {
         hide_session_name true

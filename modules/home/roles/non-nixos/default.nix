@@ -18,6 +18,17 @@ in
   };
 
   config = mkIf cfg.enable {
+    # Launch xwayland-satellite with clean library paths so Xwayland finds
+    # the system libgbm and initialises glamor/GLX for hardware-accelerated
+    # rendering in X11 clients (e.g. Android emulator).
+    desktops.niri.xwaylandSatelliteCommand = mkIf config.desktops.niri.enable [
+      "env"
+      "-u" "LD_LIBRARY_PATH"
+      "-u" "__EGL_VENDOR_LIBRARY_FILENAMES"
+      "-u" "LIBGL_DRIVERS_PATH"
+      "-u" "GBM_BACKENDS_PATH"
+      "xwayland-satellite"
+    ];
     targets.genericLinux.nixGL = {
       inherit (inputs.nixgl) packages;
       defaultWrapper = "mesa";
@@ -37,7 +48,9 @@ in
       (lib.hiPrio (
         config.lib.nixGL.wrap (
           pkgs.writeShellScriptBin "google-chrome" ''
-            exec ${pkgs.google-chrome}/bin/google-chrome-stable \
+            # Unset LIBVA_DRIVERS_PATH to avoid quoting issues with system Chrome
+            unset LIBVA_DRIVERS_PATH
+            exec /usr/bin/google-chrome-stable \
               --no-sandbox \
               --enable-features=UseOzonePlatform,VaapiVideoDecodeLinuxGL \
               --ozone-platform=wayland \

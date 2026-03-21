@@ -208,7 +208,7 @@ in
       ];
 
       spawn-at-startup = [
-        { command = [ "xwayland-satellite" ]; }
+        { command = cfg.xwaylandSatelliteCommand; }
       ]
       ++ (map (cmd: { command = cmd; }) cfg.extraStartupApps);
     };
