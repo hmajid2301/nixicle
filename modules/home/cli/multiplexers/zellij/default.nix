@@ -50,6 +50,17 @@ let
       }
     }
   '';
+
+  # Generate config with correct plugin path
+  zellijConfig = let
+    baseConfig = builtins.readFile ./config.kdl;
+    detachPluginPath = "${pkgs.nixicle.zellij-detach}/zellij-detach.wasm";
+  in
+    builtins.replaceStrings [
+      "https://github.com/karlbunch/zellij-detach/releases/latest/download/zellij-detach.wasm"
+    ] [
+      "file:${detachPluginPath}"
+    ] baseConfig;
 in
 {
   options.cli.multiplexers.zellij = with types; {
@@ -65,7 +76,7 @@ in
     xdg.configFile."zellij/config.kdl".text = ''
       ${stylixTheme}
 
-      ${builtins.readFile ./config.kdl}
+      ${zellijConfig}
     '';
 
     xdg.configFile."zellij/layouts/dev.kdl".text = layouts.dev;
