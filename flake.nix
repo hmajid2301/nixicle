@@ -53,6 +53,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    gomod2nix = {
+      url = "github:nix-community/gomod2nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     comma = {
       url = "github:nix-community/comma";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -148,6 +153,15 @@
       url = "github:dj95/zjstatus";
     };
 
+    zellij-detach = {
+      url = "github:karlbunch/zellij-detach";
+    };
+
+    fenix = {
+      url = "github:nix-community/fenix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # Neovim
     nixCats.url = "github:BirdeeHub/nixCats-nvim";
 
@@ -232,6 +246,21 @@
       flake = false;
     };
 
+    nix-playwright-mcp = {
+      url = "github:benjaminkitt/nix-playwright-mcp";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    zellij-mcp = {
+      url = "github:GitJuhb/zellij-mcp-server";
+      flake = false;
+    };
+
+    omerxx-dotfiles = {
+      url = "github:omerxx/dotfiles";
+      flake = false;
+    };
+
     get-shit-done = {
       url = "github:gsd-build/get-shit-done/v1.21.1";
       flake = false;
@@ -262,7 +291,7 @@
       );
 
       overlays = [
-        inputs.nixgl.overlay
+        inputs.gomod2nix.overlays.default
         inputs.nur.overlays.default
         inputs.nix-topology.overlays.default
         inputs.niri.overlays.niri
@@ -271,7 +300,17 @@
         })
         (final: prev: {
           inherit (inputs) get-shit-done;
-          nixicle = lib.nixicle.importPackages final ./packages;
+          nixicle = lib.nixicle.importPackages final ./packages // {
+            zellij-detach = prev.callPackage ./packages/zellij-detach { 
+              inputs = inputs; 
+              system = prev.stdenv.hostPlatform.system;
+              cargoLockFile = self + "/packages/zellij-detach/Cargo.lock";
+              src = ./packages/zellij-detach/src;
+            };
+            zellij-mcp = prev.callPackage ./packages/zellij-mcp { 
+              inherit inputs;
+            };
+          };
         })
       ]
       ++ (map (path: import path { inherit inputs; }) (lib.nixicle.importOverlays ./overlays));
