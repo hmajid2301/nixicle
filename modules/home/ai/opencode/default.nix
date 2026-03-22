@@ -9,6 +9,12 @@ with lib;
 with lib.nixicle;
 let
   cfg = config.cli.tools.opencode;
+  
+  agentDir = ../agents;
+  agentFiles = builtins.readDir agentDir;
+  agentConfig = builtins.mapAttrs (name: _: {
+    file = agentDir + "/${name}";
+  }) (lib.filterAttrs (name: type: type == "regular" && lib.hasSuffix ".md" name) agentFiles);
 in
 {
   options.cli.tools.opencode = {
@@ -57,16 +63,23 @@ in
         autoshare = false;
         autoupdate = false;
         mcp = {
-          # zellij = {
-          #   type = "local";
-          #   command = [
-          #     "${pkgs.bun}/bin/bun"
-          #     "run"
-          #     "${inputs.zellij-pane-tracker}/mcp-server/index.ts"
-          #   ];
-          #   enabled = true;
-          # };
+          playwright = {
+            type = "local";
+            command = [
+              "${inputs.nix-playwright-mcp.packages.${pkgs.stdenv.hostPlatform.system}.playwright-mcp-wrapper}/bin/playwright-mcp"
+            ];
+            enabled = true;
+          };
+          zellij = {
+            type = "local";
+            command = [
+              "${pkgs.nixicle.zellij-mcp}/bin/zellij-mcp"
+            ];
+            enabled = true;
+          };
         };
+
+        agents = agentConfig;
 
         "$schema" = "https://opencode.ai/config.json";
         plugin = [ "${inputs.opencode-antigravity-auth}/plugin.js" ];
