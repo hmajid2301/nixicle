@@ -144,6 +144,7 @@
       tandoor.enable = true;
       traefik.enable = true;
       tailscale.enable = true;
+      hortusfox.enable = true;
 
       # adguard.enable = true;
       # unbound.enable = true;

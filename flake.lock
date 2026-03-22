@@ -1018,16 +1018,16 @@
         "playwright": "playwright_2"
       },
       "locked": {
-        "lastModified": 1773953167,
-        "narHash": "sha256-C+q0x4gTM+gTgP6XU7OAJx9YDfjKjZYMmDqamQn8fwc=",
+        "lastModified": 1774652544,
+        "narHash": "sha256-oRNowJ2esS1dU/xWesp/rsNGjPbLyY21g6rRUYdjNAk=",
         "owner": "hmajid2301",
         "repo": "go-routinely",
-        "rev": "37d19e47815c216c4b314764d69abb9760888b75",
+        "rev": "9123f403b894179a1e14a368d6eea7d542d65840",
         "type": "gitlab"
       },
       "original": {
         "owner": "hmajid2301",
-        "ref": "feat/nixos-module",
+        "ref": "feat/negative-not-daily",
         "repo": "go-routinely",
         "type": "gitlab"
       }
@@ -2644,7 +2644,6 @@
         "sops-nix": "sops-nix",
         "stylix": "stylix",
         "tangled": "tangled",
-        "zellij-detach": "zellij-detach",
         "zellij-mcp": "zellij-mcp",
         "zjstatus": "zjstatus"
       }
@@ -3311,22 +3310,6 @@
       "original": {
         "owner": "Supreeeme",
         "repo": "xwayland-satellite",
-        "type": "github"
-      }
-    },
-    "zellij-detach": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1755133236,
-        "narHash": "sha256-W3s2mPIbzV7W5yqZR5rXCLyW+x33YrHCYXBL1LpdDZI=",
-        "owner": "karlbunch",
-        "repo": "zellij-detach",
-        "rev": "a9b548f7dbb29e6a0e62446aeb51d63d6146e377",
-        "type": "github"
-      },
-      "original": {
-        "owner": "karlbunch",
-        "repo": "zellij-detach",
         "type": "github"
       }
     },

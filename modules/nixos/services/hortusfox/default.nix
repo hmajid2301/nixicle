@@ -40,9 +40,10 @@ in
   config = mkIf cfg.enable (mkMerge [
     # Base configuration - containers and database
     {
-      # Enable podman/containers
+      # Enable podman/containers (disable docker to avoid conflict)
       virtualisation = {
         containers.enable = true;
+        docker.enable = lib.mkForce false;
         podman = {
           enable = true;
           dockerSocket.enable = true;
