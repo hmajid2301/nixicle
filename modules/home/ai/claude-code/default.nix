@@ -75,6 +75,16 @@ in
           args = [ "mcp-nixos" ];
         };
 
+        playwright = {
+          command = "${inputs.nix-playwright-mcp.packages.${pkgs.stdenv.hostPlatform.system}.playwright-mcp-wrapper}/bin/playwright-mcp";
+          args = [];
+        };
+
+        zellij = {
+          command = "${pkgs.nixicle.zellij-mcp}/bin/zellij-mcp";
+          args = [];
+        };
+
         # zellij = {
         #   command = "${pkgs.bun}/bin/bun";
         #   args = [ "run" "${inputs.zellij-pane-tracker}/mcp-server/index.ts" ];
@@ -86,5 +96,19 @@ in
     home.packages = with pkgs; [
       uv
     ];
+
+    # Copy agent definitions to Claude Code's agents directory
+    home.file = let
+      agentDir = ../agents;
+      agentFiles = builtins.readDir agentDir;
+      agentNames = builtins.attrNames (lib.filterAttrs (name: type: type == "regular" && lib.hasSuffix ".md" name) agentFiles);
+      mkAgentEntry = name: {
+        name = ".claude/agents/${name}";
+        value = {
+          source = agentDir + "/${name}";
+        };
+      };
+    in
+      builtins.listToAttrs (map mkAgentEntry agentNames);
   };
 }
