@@ -40,12 +40,12 @@
   # };
 
   boot = {
-    kernelParams = [ "resume_offset=269569" ];
+    kernelParams = [ "resume_offset=533760" ];
   };
 
   services = {
     virtualisation.kvm.enable = true;
-    tailscale.enable = true;
+    nixicle.tailscale.enable = true;
   };
 
   roles = {
