@@ -18,12 +18,10 @@
         }
 
         tab name="ai" {
-            pane split_direction="vertical" {
-                pane {
-                    name "claude-code"
-                    command "fish"
-                    args "-c" "echo 'AI Assistant Ready!' && echo 'Commands: claude-code, opencode' && fish"
-                }
+            pane {
+                name "ai-assistant"
+                command "fish"
+                args "-c" "set ai_tool (string lower $GSESH_AI_TOOL); if test \"$ai_tool\" = \"claude\"; claude -c; else; opencode -c; end; exec fish"
             }
         }
 
