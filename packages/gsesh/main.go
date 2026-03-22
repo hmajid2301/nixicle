@@ -165,6 +165,121 @@ func main() {
 				Usage:  "Show context files for current worktree",
 				Action: runContextMode,
 			},
+			{
+				Name:    "dashboard",
+				Aliases: []string{"d"},
+				Usage:   "Interactive TUI dashboard",
+				Action:  runDashboard,
+			},
+			{
+				Name:    "pr",
+				Aliases: []string{"p"},
+				Usage:   "Checkout GitHub PRs",
+				Action:  runPRMode,
+			},
+			{
+				Name:    "kill",
+				Aliases: []string{"k"},
+				Usage:   "Kill zellij sessions",
+				Action:  runKillMode,
+			},
+			{
+				Name:  "config",
+				Usage: "Manage gsesh configuration",
+				Subcommands: []*cli.Command{
+					{
+						Name:   "show",
+						Usage:  "Show current configuration",
+						Action: runConfigShowCmd,
+					},
+					{
+						Name:   "edit",
+						Usage:  "Edit configuration file",
+						Action: runConfigEditCmd,
+					},
+				},
+			},
+			{
+				Name:  "branch",
+				Usage: "Manage git branches",
+				Subcommands: []*cli.Command{
+					{
+						Name:      "create",
+						Usage:     "Create a new branch",
+						ArgsUsage: "<branch-name>",
+						Action:    runBranchCreate,
+					},
+					{
+						Name:      "delete",
+						Usage:     "Delete branches",
+						ArgsUsage: "<branch-name>",
+						Flags: []cli.Flag{
+							&cli.BoolFlag{
+								Name:    "force",
+								Aliases: []string{"f"},
+								Usage:   "Force delete",
+							},
+						},
+						Action: runBranchDelete,
+					},
+					{
+						Name:      "merge",
+						Usage:     "Merge a branch into current",
+						ArgsUsage: "<branch-name>",
+						Action:    runBranchMerge,
+					},
+					{
+						Name:  "list",
+						Usage: "List branches",
+						Flags: []cli.Flag{
+							&cli.BoolFlag{
+								Name:    "remote",
+								Aliases: []string{"r"},
+								Usage:   "List remote branches",
+							},
+						},
+						Action: runBranchList,
+					},
+				},
+			},
+			{
+				Name:  "session",
+				Usage: "Manage zellij sessions",
+				Subcommands: []*cli.Command{
+					{
+						Name:   "kill",
+						Usage:  "Kill sessions",
+						Action: runKillMode,
+					},
+					{
+						Name:      "rename",
+						Usage:     "Rename a session",
+						ArgsUsage: "<old-name> <new-name>",
+						Action:    runRenameSession,
+					},
+				},
+			},
+			{
+				Name:  "completion",
+				Usage: "Generate shell completions",
+				Subcommands: []*cli.Command{
+					{
+						Name:   "bash",
+						Usage:  "Generate bash completions",
+						Action: generateBashCompletion,
+					},
+					{
+						Name:   "zsh",
+						Usage:  "Generate zsh completions",
+						Action: generateZshCompletion,
+					},
+					{
+						Name:   "fish",
+						Usage:  "Generate fish completions",
+						Action: generateFishCompletion,
+					},
+				},
+			},
 		},
 		Action: run,
 	}

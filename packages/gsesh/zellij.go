@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"strings"
-	"time"
 )
 
 // runZellij runs a zellij command, captures output, and logs it for debugging.
@@ -42,7 +42,6 @@ func runZellij(args ...string) (string, error) {
 
 // attachZellij runs a zellij attach command with terminal passthrough (stdin/stdout/stderr).
 // This is required for interactive commands like attach that take over the terminal.
-// Clears ZELLIJ env vars so zellij doesn't think it's already inside a session.
 func attachZellij(args ...string) error {
 	debug(fmt.Sprintf("attaching: zellij %s", strings.Join(args, " ")))
 	debug(fmt.Sprintf("  env (before): ZELLIJ=%q ZELLIJ_SESSION_NAME=%q", os.Getenv("ZELLIJ"), os.Getenv("ZELLIJ_SESSION_NAME")))
@@ -60,15 +59,6 @@ func attachZellij(args ...string) error {
 		}
 	}
 	cmd.Env = newEnv
-
-	hasZellijEnv := false
-	for _, e := range newEnv {
-		if strings.HasPrefix(e, "ZELLIJ") {
-			hasZellijEnv = true
-			break
-		}
-	}
-	debug(fmt.Sprintf("  env (child): ZELLIJ env vars present: %v", hasZellijEnv))
 
 	err := cmd.Run()
 	if err != nil {
@@ -198,7 +188,7 @@ func switchToSession(sessionName, workDir string) error {
 }
 
 // switchViaPipe uses zellij pipe to the session-manager plugin to create sessions,
-// then uses the detach plugin to detach, and finally attaches to the new session.
+// then uses the detach plugin to detach and run the attach command.
 func switchViaPipe(sessionName, cwd, layout string) error {
 	// Step 1: Create the session via session-manager pipe
 	args := fmt.Sprintf("cwd=%s,name=%s", cwd, sessionName)
@@ -214,40 +204,39 @@ func switchViaPipe(sessionName, cwd, layout string) error {
 		return fmt.Errorf("pipe to session-manager failed: %w", err)
 	}
 
-	debug("switchViaPipe: session created, detaching via pipe")
+	debug("switchViaPipe: session created")
 
-	// Step 2: Detach from current session using the detach plugin
-	if _, err := runZellij("pipe", "detach"); err != nil {
-		debug(fmt.Sprintf("switchViaPipe: detach via pipe failed: %v, trying direct detach", err))
-		// Fallback: try direct command in case plugin isn't loaded
-		if _, err := runZellij("action", "detach"); err != nil {
-			debug(fmt.Sprintf("switchViaPipe: all detach methods failed"))
-			info(fmt.Sprintf("Session '%s' created. Switch manually with Alt+s then w", sessionName))
-			return nil // not a hard error, session was created
-		}
+	// Step 2: Use the detach plugin to switch sessions directly
+	// The plugin will use zellij's switch_session API
+	debug(fmt.Sprintf("switchViaPipe: switching to session: %s with cwd: %s", sessionName, cwd))
+
+	// Get the layout file path from XDG_CONFIG_HOME
+	configDir := os.Getenv("XDG_CONFIG_HOME")
+	if configDir == "" {
+		configDir = filepath.Join(os.Getenv("HOME"), ".config")
 	}
 
-	debug("switchViaPipe: detached successfully")
-
-	if err := os.Chdir(cwd); err != nil {
-		debug(fmt.Sprintf("switchViaPipe: chdir failed: %v", err))
-	}
-
-	attachArgs := []string{"attach", "-c", sessionName}
+	// Build payload: "switch:session_name:cwd:layout_path"
+	switchPayload := fmt.Sprintf("switch:%s:%s", sessionName, cwd)
 	if layout != "" {
-		attachArgs = []string{"--layout", layout, "attach", "-c", sessionName}
+		layoutPath := filepath.Join(configDir, "zellij", "layouts", layout+".kdl")
+		switchPayload = fmt.Sprintf("switch:%s:%s:%s", sessionName, cwd, layoutPath)
 	}
 
-	// Retry attach — detach is async and the client may not have fully
-	// disconnected before we attempt to attach to the new session.
-	debug(fmt.Sprintf("switchViaPipe: attaching to new session: zellij %s", strings.Join(attachArgs, " ")))
-	for i := 0; i < 5; i++ {
-		time.Sleep(200 * time.Millisecond)
-		err := attachZellij(attachArgs...)
-		if err == nil {
-			return nil
+	if _, err := runZellij("pipe", "--", switchPayload); err != nil {
+		debug(fmt.Sprintf("switchViaPipe: switch failed: %v, trying detach fallback", err))
+		// Fallback: try detach
+		if _, err := runZellij("pipe", "--", "detach"); err != nil {
+			debug(fmt.Sprintf("switchViaPipe: detach failed: %v", err))
+			if _, err := runZellij("action", "detach"); err != nil {
+				debug(fmt.Sprintf("switchViaPipe: all methods failed"))
+				attachCmd := fmt.Sprintf("zellij attach -c %s", sessionName)
+				info(fmt.Sprintf("Session '%s' created. Run: %s", sessionName, attachCmd))
+				return nil
+			}
 		}
-		debug(fmt.Sprintf("switchViaPipe: attach attempt %d failed: %v, retrying...", i+1, err))
 	}
-	return attachZellij(attachArgs...)
+
+	debug("switchViaPipe: detach initiated")
+	return nil
 }

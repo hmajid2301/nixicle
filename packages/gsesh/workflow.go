@@ -5,22 +5,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/charmbracelet/lipgloss"
 	"github.com/urfave/cli/v2"
-)
-
-var (
-	infoStyle = lipgloss.NewStyle().
-			Foreground(lipgloss.Color("39")).
-			Bold(true)
-
-	successStyle = lipgloss.NewStyle().
-			Foreground(lipgloss.Color("42")).
-			Bold(true)
-
-	errorStyle = lipgloss.NewStyle().
-			Foreground(lipgloss.Color("196")).
-			Bold(true)
 )
 
 func info(msg string) {
@@ -32,7 +17,7 @@ func success(msg string) {
 }
 
 func warning(msg string) {
-	fmt.Println(errorStyle.Render("⚠ " + msg))
+	fmt.Println(warningStyle.Render("⚠ " + msg))
 }
 
 var debugLogFile *os.File
@@ -92,7 +77,6 @@ func runDefaultMode(c *cli.Context, project string) error {
 }
 
 func runCleanMode(c *cli.Context) error {
-	// Check if we're in a git repository
 	isRepo, err := isGitRepo()
 	if err != nil {
 		return err
@@ -109,7 +93,6 @@ func runCleanMode(c *cli.Context) error {
 
 	info("Finding merged branches...")
 
-	// Get merged branches
 	mergedBranches, err := getMergedBranches()
 	if err != nil {
 		return fmt.Errorf("failed to get merged branches: %w", err)
@@ -120,15 +103,15 @@ func runCleanMode(c *cli.Context) error {
 		return nil
 	}
 
-	// Get all worktrees
 	worktrees, err := listWorktrees()
 	if err != nil {
 		return fmt.Errorf("failed to list worktrees: %w", err)
 	}
 
-	var removedCount int
+	var mergedWorktrees []multiSelectItem
+	var worktreePaths []string
+
 	for _, worktree := range worktrees {
-		// Check if worktree branch is merged
 		isMerged := false
 		for _, merged := range mergedBranches {
 			if worktree.Branch == merged {
@@ -137,31 +120,72 @@ func runCleanMode(c *cli.Context) error {
 			}
 		}
 
-		if !isMerged {
+		if isMerged {
+			mergedWorktrees = append(mergedWorktrees, multiSelectItem{
+				title:       worktree.Branch,
+				description: worktree.Path,
+				selected:    true,
+				value:       worktree.Branch,
+			})
+			worktreePaths = append(worktreePaths, worktree.Path)
+		}
+	}
+
+	if len(mergedWorktrees) == 0 {
+		success("No merged worktrees to clean")
+		return nil
+	}
+
+	info(fmt.Sprintf("Found %d merged worktree(s)", len(mergedWorktrees)))
+
+	selected, err := runMultiSelect("Select worktrees to remove", mergedWorktrees)
+	if err != nil {
+		return err
+	}
+
+	if len(selected) == 0 {
+		info("No worktrees selected for removal")
+		return nil
+	}
+
+	if !dryRun {
+		confirmed, err := runConfirmDialog(
+			"Confirm Removal",
+			fmt.Sprintf("Remove %d worktree(s)? This cannot be undone.", len(selected)),
+		)
+		if err != nil {
+			return err
+		}
+		if !confirmed {
+			info("Operation cancelled")
+			return nil
+		}
+	}
+
+	var removedCount int
+	for i, branch := range selected {
+		if dryRun {
+			info(fmt.Sprintf("Would remove worktree: %s (%s)", branch, worktreePaths[i]))
+			removedCount++
 			continue
 		}
 
-		if dryRun {
-			info(fmt.Sprintf("Would remove worktree: %s (%s)", worktree.Branch, worktree.Path))
-		} else {
-			info(fmt.Sprintf("Removing worktree: %s", worktree.Branch))
-			if err := removeWorktree(worktree.Path); err != nil {
-				warning(fmt.Sprintf("Failed to remove %s: %v", worktree.Branch, err))
-				continue
-			}
-
-			// Also kill associated session if it exists
-			sessionName := getSessionName(filepath.Base(worktree.Path), worktree.Branch)
-			if sessionExists(sessionName) {
-				if err := killSession(sessionName); err != nil {
-					warning(fmt.Sprintf("Failed to kill session %s: %v", sessionName, err))
-				} else {
-					info(fmt.Sprintf("Killed session: %s", sessionName))
-				}
-			}
-
-			success(fmt.Sprintf("Removed worktree: %s", worktree.Branch))
+		info(fmt.Sprintf("Removing worktree: %s", branch))
+		if err := removeWorktree(worktreePaths[i]); err != nil {
+			warning(fmt.Sprintf("Failed to remove %s: %v", branch, err))
+			continue
 		}
+
+		sessionName := getSessionName(filepath.Base(worktreePaths[i]), branch)
+		if sessionExists(sessionName) {
+			if err := killSession(sessionName); err != nil {
+				warning(fmt.Sprintf("Failed to kill session %s: %v", sessionName, err))
+			} else {
+				info(fmt.Sprintf("Killed session: %s", sessionName))
+			}
+		}
+
+		success(fmt.Sprintf("Removed worktree: %s", branch))
 		removedCount++
 	}
 

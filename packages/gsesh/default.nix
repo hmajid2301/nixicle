@@ -1,17 +1,16 @@
 {
   lib,
-  buildGoModule,
+  buildGoApplication,
   makeWrapper,
   installShellFiles,
   zoxide,
 }:
-buildGoModule {
+buildGoApplication {
   pname = "gsesh";
   version = "0.1.0";
 
   src = ./.;
-
-  vendorHash = "sha256-V/OhW39ON8jmj58awAHk1pOXFfykz+8L5n3O77wyqrw=";
+  modules = ./gomod2nix.toml;
 
   nativeBuildInputs = [
     makeWrapper

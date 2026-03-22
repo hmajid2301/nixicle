@@ -10,22 +10,59 @@ import (
 )
 
 var (
+	// Colors
+	primaryColor   = lipgloss.Color("205")
+	accentColor    = lipgloss.Color("170")
+	secondaryColor = lipgloss.Color("241")
+	successColor   = lipgloss.Color("42")
+	errorColor     = lipgloss.Color("196")
+	warningColor   = lipgloss.Color("214")
+	infoColor      = lipgloss.Color("39")
+	borderColor    = lipgloss.Color("238")
+
+	// Styles
 	titleStyle = lipgloss.NewStyle().
 			Bold(true).
-			Foreground(lipgloss.Color("205")).
+			Foreground(primaryColor).
 			MarginLeft(2)
 
 	selectedStyle = lipgloss.NewStyle().
-			Foreground(lipgloss.Color("170")).
+			Foreground(accentColor).
 			Bold(true)
 
 	inactiveStyle = lipgloss.NewStyle().
-			Foreground(lipgloss.Color("241"))
+			Foreground(secondaryColor)
 
 	helpStyle = lipgloss.NewStyle().
-			Foreground(lipgloss.Color("241")).
+			Foreground(secondaryColor).
 			MarginLeft(2).
 			MarginTop(1)
+
+	successStyle = lipgloss.NewStyle().
+			Foreground(successColor).
+			Bold(true)
+
+	errorStyle = lipgloss.NewStyle().
+			Foreground(errorColor).
+			Bold(true)
+
+	warningStyle = lipgloss.NewStyle().
+			Foreground(warningColor).
+			Bold(true)
+
+	infoStyle = lipgloss.NewStyle().
+			Foreground(infoColor)
+
+	keyStyle = lipgloss.NewStyle().
+			Foreground(accentColor).
+			Bold(true)
+
+	mutedStyle = lipgloss.NewStyle().
+			Foreground(secondaryColor)
+
+	cursorStyle = lipgloss.NewStyle().
+			Foreground(primaryColor).
+			Bold(true)
 )
 
 // branchItem represents a branch in the list
@@ -268,21 +305,9 @@ func (m worktreePickerModel) View() string {
 	return fmt.Sprintf("%s\n%s", m.list.View(), helpStyle.Render("Press q to quit, / to search"))
 }
 
-// selectBranch shows a TUI for selecting a branch
+// selectBranch shows a TUI for selecting a branch with autocomplete
 func selectBranch(branches []string, currentBranch string) (string, error) {
-	m := newBranchPicker(branches, currentBranch)
-
-	p := tea.NewProgram(m, tea.WithAltScreen())
-	finalModel, err := p.Run()
-	if err != nil {
-		return "", err
-	}
-
-	if m, ok := finalModel.(branchPickerModel); ok {
-		return m.choice, nil
-	}
-
-	return "", fmt.Errorf("unexpected model type")
+	return runQuickBranchSelect("Select or create a branch", branches)
 }
 
 // selectWorktree shows a TUI for selecting a worktree

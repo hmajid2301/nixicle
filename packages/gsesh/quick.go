@@ -3,22 +3,25 @@ package main
 import (
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/urfave/cli/v2"
 )
 
 func runNewMode(c *cli.Context) error {
+	branchName := c.Args().First()
+
+	// If no branch name provided, use zoxide to select project
+	if branchName == "" {
+		return runNewWithZoxide(c)
+	}
+
 	isRepo, err := isGitRepo()
 	if err != nil {
 		return err
 	}
 	if !isRepo {
 		return fmt.Errorf("not in a git repository")
-	}
-
-	branchName := c.Args().First()
-	if branchName == "" {
-		return fmt.Errorf("branch name required: gsesh new <branch-name>")
 	}
 
 	if err := validateBranchName(branchName); err != nil {
@@ -30,6 +33,41 @@ func runNewMode(c *cli.Context) error {
 		return fmt.Errorf("failed to get project name: %w", err)
 	}
 
+	return createNewBranch(branchName, project, c)
+}
+
+func runNewWithZoxide(c *cli.Context) error {
+	info("Loading projects from zoxide...")
+
+	projects, err := getZoxideProjects()
+	if err != nil {
+		return fmt.Errorf("failed to get projects: %w", err)
+	}
+
+	if len(projects) == 0 {
+		return fmt.Errorf("no projects found in zoxide. Use 'zoxide add <dir>' to add projects")
+	}
+
+	selected, err := selectProject(projects)
+	if err != nil {
+		return err
+	}
+
+	if selected == nil {
+		return nil
+	}
+
+	info(fmt.Sprintf("Selected: %s", selected.name))
+
+	if !selected.isRepo {
+		return fmt.Errorf("selected project is not a git repository")
+	}
+
+	// Use the existing handleGitProject from jump.go
+	return handleGitProject(selected, c)
+}
+
+func createNewBranch(branchName, project string, c *cli.Context) error {
 	info(fmt.Sprintf("Creating new branch: %s", branchName))
 
 	baseBranch := c.String("base")
@@ -64,25 +102,35 @@ func runNewMode(c *cli.Context) error {
 
 	layout := c.String("layout")
 	if layout == "" {
-		layout = "default"
+		var err error
+		layout, err = selectLayout()
+		if err != nil {
+			warning(fmt.Sprintf("Failed to select layout: %v, using default", err))
+			layout = "default"
+		}
+		if layout == "" {
+			layout = "default"
+		}
 	}
 
-	info(fmt.Sprintf("Creating session '%s'...", sessionName))
+	info(fmt.Sprintf("Creating session '%s' with layout '%s'...", sessionName, layout))
 	return createSessionWithAI(sessionName, worktreePath, layout, c.Bool("ai"))
 }
 
 func runAttachMode(c *cli.Context) error {
+	branchName := c.Args().First()
+
+	// If no branch name provided, use jump mode
+	if branchName == "" {
+		return runJumpMode(c)
+	}
+
 	isRepo, err := isGitRepo()
 	if err != nil {
 		return err
 	}
 	if !isRepo {
 		return fmt.Errorf("not in a git repository")
-	}
-
-	branchName := c.Args().First()
-	if branchName == "" {
-		return fmt.Errorf("branch name required: gsesh attach <branch-name>")
 	}
 
 	project, err := getProjectName()
@@ -134,4 +182,49 @@ func checkoutBaseBranch(branch string) error {
 	}
 
 	return fetchBranches()
+}
+
+// Helper functions
+
+func contains(slice []string, item string) bool {
+	for _, s := range slice {
+		if s == item {
+			return true
+		}
+	}
+	return false
+}
+
+func unique(slice []string) []string {
+	keys := make(map[string]bool)
+	var result []string
+	for _, item := range slice {
+		if !keys[item] {
+			keys[item] = true
+			result = append(result, item)
+		}
+	}
+	return result
+}
+
+func mapSlice(slice []string, fn func(string) string) []string {
+	result := make([]string, len(slice))
+	for i, item := range slice {
+		result[i] = fn(item)
+	}
+	return result
+}
+
+func filterSlice(slice []string, fn func(string) bool) []string {
+	var result []string
+	for _, item := range slice {
+		if fn(item) {
+			result = append(result, item)
+		}
+	}
+	return result
+}
+
+func joinStrings(slice []string, sep string) string {
+	return strings.Join(slice, sep)
 }
