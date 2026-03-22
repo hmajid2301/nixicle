@@ -11,14 +11,11 @@ in
 {
   config = mkIf cfg.enable {
     programs.niri.settings = {
-      outputs = mkMerge [
-        {
-          "*" = {
-            scale = 1.0;
-          };
-        }
-        cfg.outputs
-      ];
+      outputs = {
+        "*" = {
+          scale = 1.0;
+        };
+      } // cfg.outputs;
 
       input = {
         keyboard.xkb = { };
