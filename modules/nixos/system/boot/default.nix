@@ -71,6 +71,19 @@ in
       };
     };
 
+    # Systemd's logind and sleep services cannot determine the physical offset
+    # of swap files on btrfs (FIEMAP doesn't work for btrfs). This causes
+    # CanHibernate to return "na" even when resume/resume_offset are correctly
+    # set via kernel params. The bypass tells systemd to trust the kernel
+    # config instead of trying (and failing) its own swap discovery.
+    # See: https://github.com/systemd/systemd/issues/14249
+    systemd.services.systemd-logind.environment = {
+      SYSTEMD_BYPASS_HIBERNATION_MEMORY_CHECK = "1";
+    };
+    systemd.services.systemd-hibernate.environment = {
+      SYSTEMD_BYPASS_HIBERNATION_MEMORY_CHECK = "1";
+    };
+
     services.fwupd.enable = true;
 
     # fwupd-efi service needs root access to read Secure Boot keys when signing
