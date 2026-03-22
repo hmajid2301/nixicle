@@ -47,3 +47,4 @@ terraform.tfvars
 # Terraform
 *.tfvars
 *.tfvars.json
+packages/zellij-detach/src/target/
