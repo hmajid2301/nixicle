@@ -12,9 +12,7 @@ let
   
   agentDir = ../agents;
   agentFiles = builtins.readDir agentDir;
-  agentConfig = builtins.mapAttrs (name: _: {
-    file = agentDir + "/${name}";
-  }) (lib.filterAttrs (name: type: type == "regular" && lib.hasSuffix ".md" name) agentFiles);
+  agentNames = builtins.attrNames (lib.filterAttrs (name: type: type == "regular" && lib.hasSuffix ".md" name) agentFiles);
 in
 {
   options.cli.tools.opencode = {
@@ -56,7 +54,9 @@ in
     programs.opencode = {
       enable = true;
 
-      commands = cfg.extraCommands;
+      commands = cfg.extraCommands // {
+        session-summary = "Summarize this session. First ask: personal or work? Based on answer, create notes at ~/projects/notes/notes/{work|personal}/YYYY-MM-DD-<topic>.md with summary. Update the weekly journal at ~/projects/notes/journals/weekly/ to link it with [[filename]]. Keep it concise, bullet points, focus on what shipped.";
+      };
 
       settings = {
         model = "anthropic/claude-sonnet-4-20250514";
@@ -66,7 +66,7 @@ in
           playwright = {
             type = "local";
             command = [
-              "${inputs.nix-playwright-mcp.packages.${pkgs.stdenv.hostPlatform.system}.playwright-mcp-wrapper}/bin/playwright-mcp"
+              "${inputs.nix-playwright-mcp.packages.${pkgs.stdenv.hostPlatform.system}.playwright-mcp-wrapper}"
             ];
             enabled = true;
           };
@@ -78,8 +78,6 @@ in
             enabled = true;
           };
         };
-
-        agents = agentConfig;
 
         "$schema" = "https://opencode.ai/config.json";
         plugin = [ "${inputs.opencode-antigravity-auth}/plugin.js" ];
@@ -281,5 +279,12 @@ in
       }
       // cfg.extraSettings;
     };
+
+    programs.opencode.agents = builtins.listToAttrs (
+      map (name: {
+        name = lib.removeSuffix ".md" name;
+        value = agentDir + "/${name}";
+      }) agentNames
+    );
   };
 }
