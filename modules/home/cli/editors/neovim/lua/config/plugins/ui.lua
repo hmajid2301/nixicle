@@ -58,11 +58,13 @@ return {
 		for_cat = "general.ui",
 		event = "DeferredUIEnter",
 		after = function(plugin)
+			local theme = "catppuccin"
+
 			require("lualine").setup({
 				options = {
 					globalstatus = true,
 					icons_enabled = true,
-					theme = "catppuccin",
+					theme = theme,
 					section_separators = {
 						right = "█",
 						left = "█",
