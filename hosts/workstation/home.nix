@@ -5,6 +5,15 @@
     stateVersion = "24.05";
   };
 
+  gtk.gtk4.theme = null;
+
+  programs.git = {
+    signing = {
+      format = "ssh";
+      signByDefault = true;
+    };
+  };
+
   roles = {
     desktop.enable = true;
     development.enable = true;
