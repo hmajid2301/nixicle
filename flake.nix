@@ -117,7 +117,7 @@
     };
 
     goroutinely = {
-      url = "gitlab:hmajid2301/go-routinely/feat/nixos-module";
+      url = "gitlab:hmajid2301/go-routinely/feat/negative-not-daily";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -151,10 +151,6 @@
 
     zjstatus = {
       url = "github:dj95/zjstatus";
-    };
-
-    zellij-detach = {
-      url = "github:karlbunch/zellij-detach";
     };
 
     fenix = {
@@ -301,13 +297,7 @@
         (final: prev: {
           inherit (inputs) get-shit-done;
           nixicle = lib.nixicle.importPackages final ./packages // {
-            zellij-detach = prev.callPackage ./packages/zellij-detach { 
-              inputs = inputs; 
-              system = prev.stdenv.hostPlatform.system;
-              cargoLockFile = self + "/packages/zellij-detach/Cargo.lock";
-              src = ./packages/zellij-detach/src;
-            };
-            zellij-mcp = prev.callPackage ./packages/zellij-mcp { 
+            zellij-mcp = prev.callPackage ./packages/zellij-mcp {
               inherit inputs;
             };
           };
