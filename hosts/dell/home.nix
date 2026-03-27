@@ -244,5 +244,14 @@ in
     email = "haseeb.majid@nala.money";
   };
 
+  gtk.gtk4.theme = null;
+
+  programs.git = {
+    signing = {
+      format = "ssh";
+      signByDefault = true;
+    };
+  };
+
   home.stateVersion = "23.11";
 }
