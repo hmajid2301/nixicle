@@ -5,6 +5,8 @@ default_shell "fish"
 copy_on_select true
 show_startup_tips false
 scrollback_editor "nixCats"
+session_serialization true
+serialization_interval 60
 
 plugins {
     tab-bar location="zellij:tab-bar"
@@ -12,11 +14,9 @@ plugins {
     strider location="zellij:strider"
     compact-bar location="zellij:compact-bar"
     session-manager location="zellij:session-manager"
-    detach location="https://github.com/karlbunch/zellij-detach/releases/latest/download/zellij-detach.wasm"
 }
 
 load_plugins {
-    "detach"
 }
 
 ui {
