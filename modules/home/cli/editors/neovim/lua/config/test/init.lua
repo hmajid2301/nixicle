@@ -15,6 +15,9 @@ require("lze").load({
 		-- colorscheme = "",
 		load = function(name)
 			vim.cmd.packadd(name)
+			vim.cmd.packadd("nvim-dap")
+			vim.cmd.packadd("nvim-dap-go")
+			vim.cmd.packadd("nvim-coverage")
 			vim.cmd.packadd("neotest-golang")
 			vim.cmd.packadd("plenary.nvim")
 		end,
@@ -22,7 +25,11 @@ require("lze").load({
 			require("neotest").setup({
 				adapters = {
 					require("neotest-golang")({
-						go_test_args = { "-v", "-count=1" },
+						go_test_args = {
+							"-v",
+							"-count=1",
+							"-coverprofile=" .. vim.fn.getcwd() .. "/coverage.out",
+						},
 						go_list_args = {},
 						runner = "gotestsum",
 						log_level = vim.log.levels.DEBUG,
@@ -41,7 +48,7 @@ require("lze").load({
 				neotest.run.run(vim.fn.expand("%"))
 			end, { desc = "Test: Run all in current file" })
 			vim.keymap.set("n", "<leader>tT", function()
-				neotest.run.run(vim.loop.cwd())
+				neotest.run.run(vim.uv.cwd())
 			end, { desc = "Test: Run all in all files" })
 			vim.keymap.set("n", "<leader>tS", neotest.run.stop, { desc = "Test: Stop" })
 			vim.keymap.set("n", "<leader>ts", neotest.summary.toggle, { desc = "Test: Toggle Summary" })
@@ -55,6 +62,14 @@ require("lze").load({
 			vim.keymap.set("n", "<leader>tO", function()
 				neotest.output_panel.toggle()
 			end, { desc = "Test: Toggle output" })
+
+			vim.keymap.set("n", "<leader>tc", function()
+				require("coverage").load()
+				require("coverage").toggle()
+			end, { desc = "Test: Toggle coverage" })
+			vim.keymap.set("n", "<leader>tC", function()
+				require("coverage").summary()
+			end, { desc = "Test: Coverage summary" })
 		end,
 	},
 	{
@@ -67,6 +82,18 @@ require("lze").load({
 		after = function(plugin)
 			require("coverage").setup({
 				auto_reload = true,
+				lang = {
+					go = {
+						coverage_file = vim.fn.getcwd() .. "/coverage.out",
+					},
+				},
+				signs = {
+					covered = { hl = "CoverageCovered", text = "▎" },
+					uncovered = { hl = "CoverageUncovered", text = "▎" },
+				},
+				summary = {
+					min_coverage = 80.0,
+				},
 			})
 		end,
 	},
