@@ -35,6 +35,7 @@ return {
 				rename = { enabled = true },
 				image = { enabled = true },
 				quickfile = { enabled = true },
+				select = { enabled = true },
 				scratch = {
 					enabled = true,
 					win = {
