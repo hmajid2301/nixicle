@@ -8,10 +8,10 @@ with lib;
 with lib.nixicle;
 let
   cfg = config.services.nixicle.hortusfox;
-  
+
   # Container network name
   networkName = "hortusfox-network";
-  
+
   # Database credentials - will be read from environment file
   dbName = "hortusfox";
   dbUser = "hortusfox";
@@ -20,27 +20,25 @@ in
   options.services.nixicle.hortusfox = with types; {
     enable = mkBoolOpt false "Enable the hortusfox plant management service";
     domain = mkOpt str "plants.haseebmajid.dev" "Domain for hortusfox";
-    port = mkOpt int 8080 "Port for hortusfox web interface";
+    port = mkOpt int 25780 "Port for hortusfox web interface";
     dataDir = mkOpt str "/var/lib/hortusfox" "Directory to store hortusfox data";
-    
+
     admin = {
       email = mkOpt str "hello@haseebmajid.dev" "Admin email for hortusfox";
     };
-    
+
     database = {
       host = mkOpt str "hortusfox-db" "Database host (container name)";
       port = mkOpt int 3306 "Database port";
     };
-    
+
     authentik = {
       enable = mkBoolOpt true "Enable Authentik forward auth";
     };
   };
 
   config = mkIf cfg.enable (mkMerge [
-    # Base configuration - containers and database
     {
-      # Enable podman/containers (without dockerCompat to avoid conflict with gitlab-runner's docker)
       virtualisation = {
         containers.enable = true;
         podman = {
@@ -51,7 +49,18 @@ in
         };
       };
 
-      # Create data directories
+      systemd.services.podman-network-hortusfox = {
+        description = "Create podman network for hortusfox";
+        after = [ "network-online.target" ];
+        wantedBy = [ "multi-user.target" ];
+        serviceConfig = {
+          Type = "oneshot";
+          RemainAfterExit = true;
+          ExecStart = "${pkgs.podman}/bin/podman network create ${networkName} || true";
+          ExecStop = "${pkgs.podman}/bin/podman network rm ${networkName} || true";
+        };
+      };
+
       systemd.tmpfiles.rules = [
         "d ${cfg.dataDir}/images 0750 1000 1000 -"
         "d ${cfg.dataDir}/logs 0750 1000 1000 -"
@@ -61,12 +70,10 @@ in
         "d ${cfg.dataDir}/db 0750 1000 1000 -"
       ];
 
-      # Environment file for secrets
       sops.secrets.hortusfox_env = {
         sopsFile = ../secrets.yaml;
       };
 
-      # MariaDB container
       virtualisation.oci-containers.containers.hortusfox-db = {
         image = "mariadb:11";
         autoStart = true;
@@ -81,10 +88,6 @@ in
         ];
         extraOptions = [
           "--network=${networkName}"
-          "--health-cmd=\"healthcheck.sh --connect --innodb_initialized\""
-          "--health-interval=10s"
-          "--health-timeout=5s"
-          "--health-retries=3"
         ];
       };
 
@@ -101,7 +104,6 @@ in
           DB_DATABASE = dbName;
           DB_USERNAME = dbUser;
           DB_CHARSET = "utf8mb4";
-          # Proxy authentication settings for Authentik
           PROXY_ENABLE = if cfg.authentik.enable then "true" else "false";
           PROXY_HEADER_EMAIL = "X-authentik-email";
           PROXY_HEADER_USERNAME = "X-authentik-username";
@@ -120,18 +122,25 @@ in
         ];
         extraOptions = [
           "--network=${networkName}"
-          "--depends-on=hortusfox-db"
         ];
       };
 
       # Ensure containers start after network is ready
+      systemd.services.podman-hortusfox-db.after = [
+        "podman-network-hortusfox.service"
+        "network-online.target"
+      ];
+      systemd.services.podman-hortusfox-db.requires = [ "podman-network-hortusfox.service" ];
+
       systemd.services.podman-hortusfox = {
-        after = [ "podman-hortusfox-db.service" "network-online.target" ];
+        after = [
+          "podman-hortusfox-db.service"
+          "network-online.target"
+        ];
         requires = [ "podman-hortusfox-db.service" ];
         wantedBy = [ "multi-user.target" ];
       };
 
-      # Impermanence persistence
       environment.persistence = mkIf config.system.impermanence.enable {
         "/persist" = {
           directories = [
@@ -146,33 +155,12 @@ in
       };
     }
 
-    # Traefik configuration with Authentik forward auth
-    (mkIf cfg.authentik.enable {
-      services.traefik.dynamicConfigOptions.http = {
-        routers.hortusfox = {
-          entryPoints = [ "websecure" ];
-          rule = "Host(`${cfg.domain}`)";
-          service = "hortusfox";
-          tls.certResolver = "letsencrypt";
-          middlewares = [ "authentik@file" ];
-        };
-        services.hortusfox.loadBalancer.servers = [
-          { url = "http://127.0.0.1:${toString cfg.port}"; }
-        ];
+    (mkIf config.services.traefik.enable {
+      services.traefik.dynamicConfigOptions.http = lib.nixicle.mkAuthenticatedTraefikService {
+        name = "hortusfox";
+        port = cfg.port;
       };
     })
-
-    # Traefik configuration without Authentik (fallback)
-    (mkIf (!cfg.authentik.enable) {
-      services.traefik.dynamicConfigOptions.http =
-        lib.nixicle.mkTraefikService {
-          name = "hortusfox";
-          port = cfg.port;
-          domain = cfg.domain;
-        };
-    })
-
-    # Cloudflared tunnel
     {
       services.cloudflared.tunnels = mkIf config.services.nixicle.cloudflare.enable {
         ${config.services.nixicle.cloudflare.tunnelId}.ingress = {

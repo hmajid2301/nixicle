@@ -145,6 +145,7 @@
       traefik.enable = true;
       tailscale.enable = true;
       hortusfox.enable = true;
+      papra.enable = true;
 
       # adguard.enable = true;
       # unbound.enable = true;
