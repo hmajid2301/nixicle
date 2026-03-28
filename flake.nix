@@ -302,8 +302,7 @@
             };
           };
         })
-      ]
-      ++ (map (path: import path { inherit inputs; }) (lib.nixicle.importOverlays ./overlays));
+      ];
 
       mkPkgs =
         system:
