@@ -150,6 +150,12 @@ in
               group = "1000";
               mode = "0750";
             }
+            {
+              directory = "/var/lib/cni/networks";
+              user = "root";
+              group = "root";
+              mode = "0755";
+            }
           ];
         };
       };
