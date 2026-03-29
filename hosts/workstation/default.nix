@@ -45,6 +45,7 @@
 
   services = {
     virtualisation.kvm.enable = true;
+    virtualisation.docker.enable = true;
     nixicle.tailscale.enable = true;
   };
 
