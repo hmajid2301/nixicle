@@ -56,8 +56,8 @@ in
         serviceConfig = {
           Type = "oneshot";
           RemainAfterExit = true;
-          ExecStart = "${pkgs.podman}/bin/podman network create ${networkName} || true";
-          ExecStop = "${pkgs.podman}/bin/podman network rm ${networkName} || true";
+          ExecStart = "${pkgs.podman}/bin/podman network create --ignore ${networkName}";
+          ExecStop = "${pkgs.podman}/bin/podman network rm -f ${networkName}";
         };
       };
 
