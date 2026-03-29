@@ -117,7 +117,7 @@
     };
 
     goroutinely = {
-      url = "gitlab:hmajid2301/go-routinely/feat/negative-not-daily";
+      url = "gitlab:hmajid2301/goroutinely";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
