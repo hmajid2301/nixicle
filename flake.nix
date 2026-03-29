@@ -117,7 +117,7 @@
     };
 
     goroutinely = {
-      url = "gitlab:hmajid2301/goroutinely";
+      url = "gitlab:hmajid2301/goroutinely/feat/move-to-internal";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
