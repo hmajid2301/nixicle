@@ -85,6 +85,15 @@ in
           args = [];
         };
 
+        postgres = {
+          command = "uvx";
+          args = [
+            "postgres-mcp"
+            "--access-mode=unrestricted"
+          ];
+          # Set DATABASE_URI in your shell/direnv before running claude
+        };
+
         # zellij = {
         #   command = "${pkgs.bun}/bin/bun";
         #   args = [ "run" "${inputs.zellij-pane-tracker}/mcp-server/index.ts" ];

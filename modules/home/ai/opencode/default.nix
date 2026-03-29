@@ -77,6 +77,15 @@ in
             ];
             enabled = true;
           };
+          postgres = {
+            type = "local";
+            command = [
+              "uvx"
+              "postgres-mcp"
+              "--access-mode=unrestricted"
+            ];
+            enabled = false; # Enable per-project by setting DATABASE_URI env var
+          };
         };
 
         "$schema" = "https://opencode.ai/config.json";
