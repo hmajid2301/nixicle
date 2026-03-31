@@ -144,8 +144,10 @@
       tandoor.enable = true;
       traefik.enable = true;
       tailscale.enable = true;
-      hortusfox.enable = true;
       papra.enable = true;
+      bentopdf.enable = true;
+      hortusfox.enable = true;
+      trek.enable = true;
 
       # adguard.enable = true;
       # unbound.enable = true;
