@@ -77,6 +77,13 @@ in
             ];
             enabled = true;
           };
+          nixos = {
+            type = "local";
+            command = [
+              "${pkgs.mcp-nixos}/bin/mcp-nixos"
+            ];
+            enabled = true;
+          };
           postgres = {
             type = "local";
             command = [

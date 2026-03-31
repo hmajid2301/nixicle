@@ -71,8 +71,8 @@ in
         };
 
         nixos = {
-          command = "uvx";
-          args = [ "mcp-nixos" ];
+          command = "${pkgs.mcp-nixos}/bin/mcp-nixos";
+          args = [];
         };
 
         playwright = {
