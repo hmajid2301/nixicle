@@ -74,7 +74,6 @@ require("nixCatsUtils.catPacker").setup({
 
 	{ "j-hui/fidget.nvim", opt = true },
 	{ "numToStr/Comment.nvim", opt = true },
-	{ "mbbill/undotree", opt = true },
 	{ "kndndrj/nvim-dbee", opt = true },
 
 	{ "OXY2DEV/markview.nvim", opt = true },
