@@ -300,6 +300,8 @@
             zellij-mcp = prev.callPackage ./packages/zellij-mcp {
               inherit inputs;
             };
+            # hortusfox-web = prev.callPackage ./packages/hortusfox-web { }; # TODO: uncomment for nixpkgs submission
+            # trek = prev.callPackage ./packages/trek { }; # TODO: network blocked in sandbox - see packages/trek/default.nix
           };
         })
       ];
