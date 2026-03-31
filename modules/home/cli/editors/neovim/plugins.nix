@@ -108,7 +108,6 @@
         fidget-nvim
         # lualine-lsp-progress
         comment-nvim
-        undotree
         nvim-dbee
       ];
       notes = with pkgs.vimPlugins; [

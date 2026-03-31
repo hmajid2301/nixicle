@@ -73,3 +73,7 @@ vim.keymap.set("n", "<leader>tt", function()
 	vim.fn.system(cmd)
 	vim.notify("Opened in new terminal: " .. vim.fn.fnamemodify(current_file, ":t"), vim.log.levels.INFO)
 end, { desc = "Open current file in new terminal" })
+
+vim.keymap.set("n", "<leader>u", function()
+	print(vim.inspect(vim.fn.undotree()))
+end, { desc = "Show undo tree" })
