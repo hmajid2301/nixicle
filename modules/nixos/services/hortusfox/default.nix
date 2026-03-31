@@ -9,10 +9,8 @@ with lib.nixicle;
 let
   cfg = config.services.nixicle.hortusfox;
 
-  # Container network name
   networkName = "hortusfox-network";
 
-  # Database credentials - will be read from environment file
   dbName = "hortusfox";
   dbUser = "hortusfox";
 in
@@ -91,7 +89,6 @@ in
         ];
       };
 
-      # HortusFox app container
       virtualisation.oci-containers.containers.hortusfox = {
         image = "ghcr.io/danielbrendel/hortusfox-web:latest";
         autoStart = true;
@@ -125,7 +122,6 @@ in
         ];
       };
 
-      # Ensure containers start after network is ready
       systemd.services.podman-hortusfox-db.after = [
         "podman-network-hortusfox.service"
         "network-online.target"
