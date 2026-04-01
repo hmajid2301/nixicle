@@ -232,6 +232,8 @@
 
     import-tree.url = "github:vic/import-tree";
 
+    den.url = "github:vic/den";
+
     nixflix = {
       url = "github:kiriwalawren/nixflix";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -267,7 +269,6 @@
     inputs@{
       self,
       nixpkgs,
-      home-manager,
       ...
     }:
     let
@@ -313,221 +314,24 @@
           config.allowUnfree = true;
         };
 
-      baseNixosModules = [
-        inputs.stylix.nixosModules.stylix
-        home-manager.nixosModules.home-manager
-        inputs.lanzaboote.nixosModules.lanzaboote
-        inputs.impermanence.nixosModules.impermanence
-        inputs.sops-nix.nixosModules.sops
-        inputs.authentik-nix.nixosModules.default
-        inputs.tangled.nixosModules.knot
-        inputs.tangled.nixosModules.spindle
-        inputs.nixflix.nixosModules.nixflix
-        inputs.niri.nixosModules.niri
-        inputs.goroutinely.nixosModules.default
-        (inputs.import-tree.match ".*/default\\.nix" ./modules/nixos)
-      ];
-
-      commonNixosModules = baseNixosModules ++ [
-        inputs.disko.nixosModules.disko
-        inputs.nix-topology.nixosModules.default
-      ];
-
-      commonHomeModules = [
-        inputs.dankMaterialShell.homeModules.dank-material-shell
-        inputs.noctalia.homeModules.default
-        inputs.sops-nix.homeManagerModules.sops
-        inputs.stylix.homeModules.stylix
-        inputs.catppuccin.homeModules.catppuccin
-        inputs.nix-index-database.homeModules.nix-index
-        inputs.pam-shim.homeModules.default
-        (inputs.import-tree.match ".*/default\\.nix" ./modules/home)
-      ];
-
-      standaloneHomeModules = commonHomeModules ++ [
-        inputs.niri.homeModules.niri
-        inputs.niri.homeModules.stylix
-      ];
-
-      mkSystem =
-        {
-          hostname,
-          system ? "x86_64-linux",
-          extraModules ? [ ],
-        }:
-        nixpkgs.lib.nixosSystem {
-          inherit system;
-          pkgs = mkPkgs system;
-          specialArgs = {
-            inherit inputs lib;
-          };
-          modules =
-            commonNixosModules
-            ++ extraModules
-            ++ [
-              ./hosts/${hostname}
-              {
-                nixpkgs.hostPlatform = system;
-              }
-            ];
-        };
-
-      mkHome =
-        {
-          username,
-          hostname,
-          system ? "x86_64-linux",
-          extraModules ? [ ],
-        }:
-        let
-          extendedLib = lib.extend (
-            self: super: {
-              nixicle = import ./lib {
-                inherit inputs;
-                lib = self;
-              };
-            }
-          );
-        in
-        home-manager.lib.homeManagerConfiguration {
-          lib = extendedLib;
-          pkgs = mkPkgs system;
-          extraSpecialArgs = {
-            inherit inputs;
-            host = hostname;
-          };
-          modules =
-            standaloneHomeModules
-            ++ extraModules
-            ++ [
-              (./hosts + "/${hostname}/home.nix")
-              {
-                home = {
-                  username = username;
-                  homeDirectory = "/home/${username}";
-                };
-              }
-            ];
-        };
-
-      mkHomeModule =
-        {
-          username,
-          hostname,
-          system ? "x86_64-linux",
-          extraModules ? [ ],
-        }:
-        {
-          home-manager = {
-            useGlobalPkgs = true;
-            useUserPackages = true;
-            extraSpecialArgs = {
-              inherit inputs;
-              host = hostname;
-            };
-            users.${username} = {
-              imports = [
-                (
-                  { lib, ... }:
-                  let
-                    extendedLib = lib.extend (
-                      self: super: {
-                        nixicle = import ./lib {
-                          inherit inputs;
-                          lib = self;
-                        };
-                      }
-                    );
-                  in
-                  {
-                    _module.args.lib = lib.mkForce extendedLib;
-                  }
-                )
-              ]
-              ++ commonHomeModules
-              ++ extraModules
-              ++ [
-                (./hosts + "/${hostname}/home.nix")
-              ];
-            };
-          };
-        };
+      # Evaluate the den module tree.
+      # Only load modules/den.nix and modules/aspects/**  into den's evalModules —
+      # modules/nixos/ and modules/home/ are legacy NixOS/HM option modules that
+      # den injects via baseNixosModules/commonHomeModules in its instantiate override.
+      denConfig = (
+        nixpkgs.lib.evalModules {
+          modules = [
+            ./modules/den.nix
+            (inputs.import-tree ./modules/aspects)
+          ];
+          specialArgs = { inherit inputs lib; };
+        }
+      ).config;
 
     in
     {
-      nixosConfigurations = {
-        framework = mkSystem {
-          hostname = "framework";
-          extraModules = [
-            (mkHomeModule {
-              username = "haseeb";
-              hostname = "framework";
-            })
-          ];
-        };
-
-        vm = mkSystem {
-          hostname = "vm";
-          extraModules = [
-            (mkHomeModule {
-              username = "haseeb";
-              hostname = "vm";
-            })
-          ];
-        };
-
-        framebox = mkSystem {
-          hostname = "framebox";
-          extraModules = [
-            (mkHomeModule {
-              username = "haseeb";
-              hostname = "framebox";
-            })
-          ];
-        };
-
-        workstation = mkSystem {
-          hostname = "workstation";
-          extraModules = [
-            (mkHomeModule {
-              username = "haseeb";
-              hostname = "workstation";
-            })
-          ];
-        };
-
-        vps = mkSystem {
-          hostname = "vps";
-        };
-
-      };
-
-      homeConfigurations = {
-        "haseebmajid@dell" = mkHome {
-          username = "haseebmajid";
-          hostname = "dell";
-        };
-
-        "haseeb@framework" = mkHome {
-          username = "haseeb";
-          hostname = "framework";
-        };
-
-        "haseeb@vm" = mkHome {
-          username = "haseeb";
-          hostname = "vm";
-        };
-
-        "haseeb@framebox" = mkHome {
-          username = "haseeb";
-          hostname = "framebox";
-        };
-
-        "haseeb@workstation" = mkHome {
-          username = "haseeb";
-          hostname = "workstation";
-        };
-      };
+      # Den generates nixosConfigurations and homeConfigurations automatically
+      inherit (denConfig.flake) nixosConfigurations homeConfigurations;
 
       packages = forAllSystems (
         system:
@@ -537,28 +341,28 @@
         pkgs.nixicle
         // {
           iso-graphical =
-            let
-              extendedLib = lib.extend (
-                self: super: {
-                  nixicle = import ./lib {
-                    inherit inputs;
-                    lib = self;
-                  };
-                }
-              );
-            in
             inputs.nixos-generators.nixosGenerate {
               inherit system;
               specialArgs = {
-                inherit inputs;
-                lib = extendedLib;
+                inherit inputs lib;
               };
-              modules = baseNixosModules ++ [
+              modules = [
+                inputs.stylix.nixosModules.stylix
+                inputs.home-manager.nixosModules.home-manager
+                inputs.lanzaboote.nixosModules.lanzaboote
+                inputs.impermanence.nixosModules.impermanence
+                inputs.sops-nix.nixosModules.sops
+                inputs.authentik-nix.nixosModules.default
+                inputs.tangled.nixosModules.knot
+                inputs.tangled.nixosModules.spindle
+                inputs.nixflix.nixosModules.nixflix
+                inputs.niri.nixosModules.niri
+                inputs.goroutinely.nixosModules.default
+                (inputs.import-tree.match ".*/default\\.nix" ./modules/nixos)
                 ./iso/graphical
                 {
                   nixpkgs.hostPlatform = system;
                   nixpkgs.overlays = overlays;
-                  # Use GNOME live environment
                   image.baseName = lib.mkForce "nixicle-graphical";
                   isoImage.volumeID = lib.mkForce "nixicle-${
                     lib.substring 0 8 (self.lastModifiedDate or self.lastModified or "19700101")

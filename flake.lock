@@ -277,6 +277,21 @@
         "type": "github"
       }
     },
+    "den": {
+      "locked": {
+        "lastModified": 1775025386,
+        "narHash": "sha256-1ytyPDpAqFiwFTcQZMEdTX18hJYAC217Q6K9pKfYXM4=",
+        "owner": "vic",
+        "repo": "den",
+        "rev": "c58225a1ffe8f951cc69f2fdbd7d91e156583ef8",
+        "type": "github"
+      },
+      "original": {
+        "owner": "vic",
+        "repo": "den",
+        "type": "github"
+      }
+    },
     "deploy-rs": {
       "inputs": {
         "flake-compat": "flake-compat_4",
@@ -2580,6 +2595,7 @@
         "catppuccin-obs": "catppuccin-obs",
         "comma": "comma",
         "dankMaterialShell": "dankMaterialShell",
+        "den": "den",
         "deploy-rs": "deploy-rs",
         "disko": "disko",
         "fenix": "fenix_2",
