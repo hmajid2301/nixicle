@@ -2,7 +2,7 @@
   home = {
     username = "haseeb";
     homeDirectory = "/home/haseeb";
-    stateVersion = "24.05";
+    stateVersion = "26.05";
   };
 
   gtk.gtk4.theme = null;
