@@ -27,6 +27,7 @@
 
     nixgl.url = "github:nix-community/nixGL";
     nix-index-database.url = "github:nix-community/nix-index-database";
+    den.url = "github:vic/den";
 
     # PAM shim for non-NixOS systems
     # Using 'next' branch for full libpam.so.0 API coverage
