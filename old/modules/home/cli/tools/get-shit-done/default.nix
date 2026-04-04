@@ -41,8 +41,14 @@ in
     dev.claude-code.extraSettings = {
       hooks.SessionStart = [
         {
-          command = "node";
-          args = [ "${config.home.homeDirectory}/.claude/hooks/gsd-check-update.js" ];
+          matcher = "";
+          hooks = [
+            {
+              type = "command";
+              command = "node";
+              args = [ "${config.home.homeDirectory}/.claude/hooks/gsd-check-update.js" ];
+            }
+          ];
         }
       ];
       statusline = {
