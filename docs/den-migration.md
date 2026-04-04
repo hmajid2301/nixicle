@@ -2474,6 +2474,73 @@ nixicle/
 
 ---
 
+## Part 10.5 — Greenfield Migration: What Was Actually Done
+
+This section records the greenfield approach taken for the `den-migration`
+branch (framework + VM scope only). It supersedes the incremental plan in
+Part 9 for these two hosts.
+
+### What was done
+
+**Phase 1 — Scaffold**
+- All existing config moved to `old/`; `modules/` created fresh
+- `flake.nix` replaced with thin `evalModules` evaluator
+- `modules/den.nix`: host declarations, schema, default imports
+- `modules/legacy.nix`: import-tree bridge loading `old/modules/nixos` and
+  `old/modules/home` so all existing option namespaces still work
+- `modules/flake-outputs.nix`: packages, devShells, deploy, checks, topology
+
+**Phase 2 — Host aspects** (`modules/aspects/hosts/`)
+- `framework.nix`: hardware imports, sops secrets, impermanence, secure boot
+- `vm.nix`: QEMU/spice, impermanence, boot config
+
+**Phase 3 — User aspects + typed schema** (`modules/users/`)
+- `schema.nix`: `den.schema.user` with email, signingKey, authorizedKeys defaults
+- `haseeb/base.nix`: parametric includes for SSH authorizedKeys and git identity
+  from schema; static HM config for gtk + git signing format
+- `haseeb/framework.nix`: `provides.framework` sub-aspect with HM home dirs,
+  stateVersion 24.05
+- `haseeb/vm.nix`: `provides.vm` sub-aspect with stateVersion 23.11
+
+**Phase 4 — Profile aspects** (`modules/aspects/profiles/`, `modules/aspects/`)
+- `common.nix`, `desktop.nix`, `development.nix`, `gaming.nix`, `social.nix`:
+  den aspects with actual NixOS + HM config inline (no `roles.*` option layer)
+- `desktop` chains `common → development → niri` via includes
+- `niri.nix`: niri WM setup + greetd + nautilus/portal config; greetd autologin
+  driven by `host.autologin` schema field (default true, false for framework)
+
+### Key decisions made
+
+**Greenfield over incremental.** All existing files moved to `old/` and loaded
+via import-tree bridge. New aspects run alongside old code with zero risk.
+
+**`den.homes` for NixOS hosts is an anti-pattern.** `den.homes."haseeb@framework"`
+is redundant when `den.hosts.framework.users.haseeb` already exists — den
+generates the embedded HM config from the host declaration. Standalone homes
+are only for non-NixOS machines (e.g. a Fedora laptop). Declaring both creates
+a broken standalone build because the old module bridge has NixOS-only
+dependencies (`lib.nixicle`, old modules using `inputs` in `imports`) that
+don't work in a bare HM context.
+
+**Old modules using `inputs` in HM `imports` break standalone builds.** The
+neovim module does `imports = [ inputs.nixCats.homeModule ]`. `inputs` comes
+from `_module.args`, which is evaluated after imports — infinite recursion. The
+fix for standalone builds is to pass `inputs` via `extraSpecialArgs` using the
+`den.homes.*.instantiate` override, not via `_module.args`. But old modules
+also use `lib.nixicle` (which is only extended in NixOS builds via
+`mkInstantiate`), so standalone HM remains blocked until those modules are
+migrated off the old bridge.
+
+**`homeManager = { user, ... }:` does not receive den's `user` context.** The
+`homeManager` owned config in an aspect is forwarded into the NixOS HM module
+system where `user` is not a module arg. Use `includes` with
+`({ user, ... }: { nixos.home-manager.users.haseeb.* = ...; })` instead, with
+`lib.mkForce` to win over any hardcoded values in old bridge modules.
+
+**No what-not-why comments.** See Part 6.
+
+---
+
 ## Part 11 — Migration Checklist
 
 ### Phase 1 — Host Declaration + Schemas

@@ -47,8 +47,6 @@ in
     users.haseeb = { };
   };
 
-  den.homes.x86_64-linux."haseeb@framework" = { };
-  den.homes.x86_64-linux."haseeb@vm" = { };
 
   den.schema.user = { lib, ... }: {
     config.classes = lib.mkDefault [ "homeManager" ];
