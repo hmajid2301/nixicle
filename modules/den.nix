@@ -1,7 +1,7 @@
 { inputs, lib, den, ... }:
 let
   extendedLib = lib.extend (self: super: {
-    nixicle = import ../old/lib {
+    nixicle = import ../lib {
       inherit inputs;
       lib = self;
     };
@@ -17,8 +17,8 @@ let
     })
     (final: prev: {
       inherit (inputs) get-shit-done;
-      nixicle = extendedLib.nixicle.importPackages final ../old/packages // {
-        zellij-mcp = prev.callPackage ../old/packages/zellij-mcp {
+      nixicle = extendedLib.nixicle.importPackages final ../packages // {
+        zellij-mcp = prev.callPackage ../packages/zellij-mcp {
           inherit inputs;
         };
       };

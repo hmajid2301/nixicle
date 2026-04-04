@@ -3,8 +3,8 @@
   den.aspects.vm = {
     nixos = { config, lib, pkgs, ... }: {
       imports = [
-        ../../old/hosts/vm/hardware-configuration.nix
-        ../../old/hosts/vm/disks.nix
+        ../../hosts/vm/hardware-configuration.nix
+        ../../hosts/vm/disks.nix
       ];
 
       system.boot.plymouth = lib.mkForce false;

@@ -5,15 +5,15 @@
 
     nixos = { config, ... }: {
       imports = [
-        ../../old/hosts/workstation/hardware-configuration.nix
-        ../../old/hosts/workstation/disks.nix
+        ../../hosts/workstation/hardware-configuration.nix
+        ../../hosts/workstation/disks.nix
         inputs.nixos-facter-modules.nixosModules.facter
-        { config.facter.reportPath = ../../old/hosts/workstation/facter.json; }
+        { config.facter.reportPath = ../../hosts/workstation/facter.json; }
       ];
 
       sops.secrets = {
         user_password = {
-          sopsFile = ../../old/hosts/workstation/secrets.yaml;
+          sopsFile = ../../hosts/workstation/secrets.yaml;
           neededForUsers = true;
         };
       };

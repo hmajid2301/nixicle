@@ -4,7 +4,7 @@ let
   forAllSystems = lib.genAttrs supportedSystems;
 
   extendedLib = lib.extend (self: super: {
-    nixicle = import ../old/lib {
+    nixicle = import ../lib {
       inherit inputs;
       lib = self;
     };
@@ -20,8 +20,8 @@ let
     })
     (final: prev: {
       inherit (inputs) get-shit-done;
-      nixicle = extendedLib.nixicle.importPackages final ../old/packages // {
-        zellij-mcp = prev.callPackage ../old/packages/zellij-mcp {
+      nixicle = extendedLib.nixicle.importPackages final ../packages // {
+        zellij-mcp = prev.callPackage ../packages/zellij-mcp {
           inherit inputs;
         };
       };
@@ -56,7 +56,7 @@ in
           inputs.niri.nixosModules.niri
           inputs.goroutinely.nixosModules.default
           (inputs.import-tree.match ".*/default\\.nix" ../old/modules/nixos)
-          ../old/iso/graphical
+          ../iso/graphical
           {
             nixpkgs.hostPlatform = system;
             nixpkgs.overlays = overlays;
@@ -132,7 +132,7 @@ in
     import inputs.nix-topology {
       inherit (host) pkgs;
       modules = [
-        (import ../old/topology { inherit (host) config; })
+        (import ../topology { inherit (host) config; })
         { inherit (inputs.self) nixosConfigurations; }
       ];
     };
