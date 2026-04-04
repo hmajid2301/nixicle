@@ -5,22 +5,22 @@
 
     nixos = { config, ... }: {
       imports = [
-        ../../../old/hosts/framebox/hardware-configuration.nix
-        ../../../old/hosts/framebox/disks.nix
+        ../../old/hosts/framebox/hardware-configuration.nix
+        ../../old/hosts/framebox/disks.nix
         inputs.nixos-facter-modules.nixosModules.facter
-        { config.facter.reportPath = ../../../old/hosts/framebox/facter.json; }
+        { config.facter.reportPath = ../../old/hosts/framebox/facter.json; }
         inputs.nixos-hardware.nixosModules.framework-desktop-amd-ai-max-300-series
       ];
 
       sops.secrets = {
-        gitlab_runner_env.sopsFile = ../../../old/hosts/framebox/secrets.yaml;
-        cloudflared.sopsFile = ../../../old/hosts/framebox/secrets.yaml;
+        gitlab_runner_env.sopsFile = ../../old/hosts/framebox/secrets.yaml;
+        cloudflared.sopsFile = ../../old/hosts/framebox/secrets.yaml;
         user_password = {
-          sopsFile = ../../../old/hosts/framebox/secrets.yaml;
+          sopsFile = ../../old/hosts/framebox/secrets.yaml;
           neededForUsers = true;
         };
-        b2_access_key.sopsFile = ../../../old/hosts/framebox/secrets.yaml;
-        b2_secret_key.sopsFile = ../../../old/hosts/framebox/secrets.yaml;
+        b2_access_key.sopsFile = ../../old/hosts/framebox/secrets.yaml;
+        b2_secret_key.sopsFile = ../../old/hosts/framebox/secrets.yaml;
       };
 
       users.users.haseeb.hashedPasswordFile = config.sops.secrets.user_password.path;

@@ -3,16 +3,16 @@
   den.aspects.framework = {
     nixos = { config, lib, pkgs, ... }: {
       imports = [
-        ../../../old/hosts/framework/hardware-configuration.nix
-        ../../../old/hosts/framework/disks.nix
+        ../../old/hosts/framework/hardware-configuration.nix
+        ../../old/hosts/framework/disks.nix
         inputs.nixos-facter-modules.nixosModules.facter
-        { config.facter.reportPath = ../../../old/hosts/framework/facter.json; }
+        { config.facter.reportPath = ../../old/hosts/framework/facter.json; }
         inputs.nixos-hardware.nixosModules.framework-13-7040-amd
       ];
 
       sops.secrets = {
         user_password = {
-          sopsFile = ../../../old/hosts/framework/secrets.yaml;
+          sopsFile = ../../old/hosts/framework/secrets.yaml;
           neededForUsers = true;
         };
       };

@@ -3,8 +3,8 @@
   den.aspects.vps = {
     nixos = { config, lib, ... }: {
       imports = [
-        ../../../old/hosts/vps/hardware-configuration.nix
-        ../../../old/hosts/vps/disks.nix
+        ../../old/hosts/vps/hardware-configuration.nix
+        ../../old/hosts/vps/disks.nix
       ];
 
       boot.loader.systemd-boot.enable = lib.mkForce false;
