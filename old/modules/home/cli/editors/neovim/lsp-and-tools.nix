@@ -34,7 +34,7 @@
       gotools
       gotestsum
     ];
-    json = with pkgs; [ vscode-json-languageserver ];
+    json = with pkgs; [ vscode-langservers-extracted ];
     lua = with pkgs; [
       stylua
       luajitPackages.luacheck

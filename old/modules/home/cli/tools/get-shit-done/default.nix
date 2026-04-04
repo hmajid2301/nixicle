@@ -8,7 +8,7 @@ with lib;
 with lib.nixicle;
 let
   cfg = config.cli.tools.get-shit-done;
-  gsdPackage = pkgs.callPackage ../../../../../packages/get-shit-done { };
+  gsdPackage = pkgs.callPackage ../../../../../../packages/get-shit-done { };
 in
 {
   options.cli.tools.get-shit-done = with types; {

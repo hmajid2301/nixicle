@@ -8,7 +8,7 @@ with lib;
 with lib.nixicle;
 let
   cfg = config.cli.tools.gsesh;
-  gsesh = pkgs.callPackage ../../../../../packages/gsesh { };
+  gsesh = pkgs.callPackage ../../../../../../packages/gsesh { };
 in
 {
   options.cli.tools.gsesh = {
