@@ -47,6 +47,11 @@ in
     users.haseeb = { };
   };
 
+  den.hosts.x86_64-linux.framebox = {
+    instantiate = mkInstantiate;
+    users.haseeb = { };
+  };
+
 
   den.schema.user = { lib, ... }: {
     config.classes = lib.mkDefault [ "homeManager" ];
