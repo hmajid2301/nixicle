@@ -2546,6 +2546,16 @@ in `old/` that use it are fine to leave untouched; they will be deleted as
 each is replaced by a den aspect. Do not refactor them — they are already
 slated for removal.
 
+**Host aspects do not propagate `homeManager` to users.** When a host aspect
+includes a multi-context aspect (one with both `nixos` and `homeManager`
+settings), den only applies the `nixos` portion at host level. The
+`homeManager` portion is silently ignored — it is not forwarded to any user's
+HM config. For HM config to reach a user, the aspect must be included via a
+**user aspect** (e.g. `den.aspects.haseeb.provides.framework`). Host aspects
+should only contain NixOS config (hardware, boot, secrets, hostname) and
+optionally `provides.to-users` for config that must be pushed to all users
+from the host side.
+
 **No what-not-why comments.** See Part 6.
 
 ---
