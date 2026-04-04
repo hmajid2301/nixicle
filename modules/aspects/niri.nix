@@ -2,7 +2,7 @@
 {
   den.aspects.niri = {
     includes = [
-      ({ host, ... }: {
+      ({ host, user, ... }: {
         nixos = { config, pkgs, lib, ... }: {
           services.greetd = {
             enable = true;
@@ -11,7 +11,7 @@
               let
                 session = {
                   command = "niri-session &> /dev/null";
-                  user = config.user.name;
+                  user = user.userName;
                 };
                 greeterSession = {
                   command =

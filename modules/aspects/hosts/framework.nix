@@ -17,7 +17,7 @@
         };
       };
 
-      user.passwordSecretFile = config.sops.secrets.user_password.path;
+      users.users.haseeb.hashedPasswordFile = config.sops.secrets.user_password.path;
 
       security.nixicle.pcr-verification = {
         enable = true;

@@ -7,7 +7,7 @@
       den.aspects.niri
     ];
 
-    nixos = { ... }: {
+    nixos = { lib, ... }: {
       boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
       hardware = {
         audio.enable = true;
@@ -21,10 +21,13 @@
         upower.enable = true;
       };
       system.boot.plymouth = true;
-      cli.programs = {
-        nh.enable = true;
-        nix-ld.enable = true;
+      programs.nh = {
+        enable = true;
+        clean.enable = true;
+        clean.extraArgs = "--keep-since 4d --keep 3";
+        flake = "/home/haseeb/nixicle";
       };
+      nix.gc.automatic = lib.mkForce false;
     };
 
     homeManager = { pkgs, ... }: {

@@ -23,7 +23,7 @@
         b2_secret_key.sopsFile = ../../../old/hosts/framebox/secrets.yaml;
       };
 
-      user.passwordSecretFile = config.sops.secrets.user_password.path;
+      users.users.haseeb.hashedPasswordFile = config.sops.secrets.user_password.path;
 
       users.groups.media.gid = 3000;
       users.users.haseeb.extraGroups = [ "media" ];

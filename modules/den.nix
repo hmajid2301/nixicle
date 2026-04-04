@@ -1,21 +1,41 @@
 { inputs, lib, den, ... }:
 let
-  mkInstantiate =
-    { modules }:
-    let
-      extendedLib = lib.extend (self: super: {
-        nixicle = import ../old/lib {
+  extendedLib = lib.extend (self: super: {
+    nixicle = import ../old/lib {
+      inherit inputs;
+      lib = self;
+    };
+  });
+
+  overlays = [
+    inputs.gomod2nix.overlays.default
+    inputs.nur.overlays.default
+    inputs.nix-topology.overlays.default
+    inputs.niri.overlays.niri
+    (final: prev: {
+      zjstatus = inputs.zjstatus.packages.${prev.stdenv.hostPlatform.system}.default;
+    })
+    (final: prev: {
+      inherit (inputs) get-shit-done;
+      nixicle = extendedLib.nixicle.importPackages final ../old/packages // {
+        zellij-mcp = prev.callPackage ../old/packages/zellij-mcp {
           inherit inputs;
-          lib = self;
         };
-      });
-    in
+      };
+    })
+  ];
+
+  mkInstantiate = { modules }:
     inputs.nixpkgs.lib.nixosSystem {
       inherit modules;
-      specialArgs = {
-        inherit inputs;
-        lib = extendedLib;
-      };
+      specialArgs = { inherit inputs; lib = extendedLib; };
+    };
+
+  mkHomeInstantiate = { modules }:
+    inputs.home-manager.lib.homeManagerConfiguration {
+      pkgs = inputs.nixpkgs.legacyPackages.x86_64-linux;
+      extraSpecialArgs = { inherit inputs; lib = extendedLib; };
+      inherit modules;
     };
 in
 {
@@ -52,6 +72,19 @@ in
     users.haseeb = { };
   };
 
+  den.hosts.x86_64-linux.workstation = {
+    instantiate = mkInstantiate;
+    users.haseeb = { };
+  };
+
+  den.hosts.x86_64-linux.vps = {
+    instantiate = mkInstantiate;
+  };
+
+  den.homes.x86_64-linux."haseebmajid@dell" = {
+    instantiate = mkHomeInstantiate;
+  };
+
 
   den.schema.user = { lib, ... }: {
     config.classes = lib.mkDefault [ "homeManager" ];
@@ -81,6 +114,8 @@ in
 
   # NOTE: do NOT include home-manager.nixosModules here — den handles HM integration automatically
   den.default.nixos = { ... }: {
+    nixpkgs.overlays = overlays;
+    nixpkgs.config.allowUnfree = true;
     imports = [
       inputs.stylix.nixosModules.stylix
       inputs.lanzaboote.nixosModules.lanzaboote

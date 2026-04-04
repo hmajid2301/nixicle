@@ -11,7 +11,7 @@
       home-manager.backupFileExtension = "backup";
       system.impermanence.enable = true;
 
-      services.ssh.enable = true;
+      services.openssh.enable = true;
       services.qemuGuest.enable = true;
       services.spice-vdagentd.enable = true;
       security.sudo.wheelNeedsPassword = false;

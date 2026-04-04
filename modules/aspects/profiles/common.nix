@@ -1,9 +1,36 @@
 { den, ... }:
 {
   den.aspects.common = {
+    includes = [ den.aspects.stylix ];
+
     nixos = { ... }: {
       hardware.networking.enable = true;
-      services.ssh.enable = true;
+
+      services.openssh = {
+        enable = true;
+        ports = [ 22 ];
+        settings = {
+          PasswordAuthentication = false;
+          PermitRootLogin = "prohibit-password";
+          StreamLocalBindUnlink = "yes";
+          GatewayPorts = "clientspecified";
+          KexAlgorithms = [
+            "sntrup761x25519-sha512@openssh.com"
+            "curve25519-sha256"
+            "curve25519-sha256@libssh.org"
+          ];
+          Ciphers = [
+            "chacha20-poly1305@openssh.com"
+            "aes256-gcm@openssh.com"
+            "aes128-gcm@openssh.com"
+          ];
+          Macs = [
+            "hmac-sha2-512-etm@openssh.com"
+            "hmac-sha2-256-etm@openssh.com"
+          ];
+        };
+      };
+
       security = {
         sops.enable = true;
         yubikey.enable = true;
@@ -16,7 +43,6 @@
         boot.enable = true;
         locale.enable = true;
       };
-      styles.stylix.enable = true;
     };
 
     homeManager = { ... }: {
@@ -37,7 +63,6 @@
       };
       security.sops.enable = true;
       hardware.zsa-keyboard.enable = true;
-      styles.stylix.enable = true;
     };
   };
 }

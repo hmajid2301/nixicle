@@ -4,6 +4,7 @@
     includes = [
       ({ user, ... }: {
         nixos.users.users.haseeb.openssh.authorizedKeys.keys = user.authorizedKeys;
+        nixos.users.users.root.openssh.authorizedKeys.keys = user.authorizedKeys;
         nixos.home-manager.users.haseeb.programs.git = {
           settings.user.email = lib.mkForce user.email;
           signing.key = lib.mkForce user.signingKey;
