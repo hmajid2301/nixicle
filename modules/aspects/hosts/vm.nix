@@ -16,11 +16,6 @@
       services.spice-vdagentd.enable = true;
       security.sudo.wheelNeedsPassword = false;
 
-      roles.desktop.addons = {
-        gnome.enable = false;
-        niri.enable = true;
-      };
-
       boot = {
         supportedFilesystems = lib.mkForce [ "btrfs" ];
         kernelPackages = pkgs.linuxPackages_latest;

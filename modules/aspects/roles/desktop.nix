@@ -4,6 +4,7 @@
     includes = [
       den.aspects.common
       den.aspects.development
+      den.aspects.niri
     ];
 
     nixos = { ... }: {

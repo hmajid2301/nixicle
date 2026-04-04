@@ -32,11 +32,6 @@
         };
       };
 
-      roles.desktop.addons = {
-        niri.enable = true;
-        greetd.autologin = false;
-      };
-
       networking.hostName = "framework";
       system.stateVersion = "23.11";
     };

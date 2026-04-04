@@ -31,6 +31,7 @@ in
 
   den.hosts.x86_64-linux.framework = {
     isLaptop = true;
+    autologin = false;
     primaryDisplay = {
       name = "eDP-1";
       width = 2256;
@@ -57,6 +58,10 @@ in
     options.isLaptop = lib.mkOption {
       type = lib.types.bool;
       default = false;
+    };
+    options.autologin = lib.mkOption {
+      type = lib.types.bool;
+      default = true;
     };
     options.primaryDisplay = lib.mkOption {
       type = lib.types.attrsOf lib.types.anything;
