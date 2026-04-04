@@ -5,21 +5,49 @@
       den.aspects.common
       den.aspects.development
       den.aspects.niri
+      den.aspects.audio
     ];
 
-    nixos = { lib, ... }: {
+    nixos = { lib, pkgs, ... }: {
       boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
       hardware = {
-        audio.enable = true;
-        bluetooth.enable = true;
-        logitechMouse.enable = true;
-        zsa.enable = true;
+        bluetooth = {
+          enable = true;
+          powerOnBoot = false;
+          settings.General.Experimental = true;
+        };
+        # Logitech wireless mouse
+        logitech.wireless = {
+          enable = true;
+          enableGraphical = true;
+        };
+        # ZSA keyboards (Moonlander, Voyager, etc.)
+        keyboard.zsa.enable = true;
       };
       services = {
-        nixicle.avahi.enable = true;
-        vpn.enable = true;
         upower.enable = true;
+        blueman.enable = true;
+        vpn.enable = true;
+        avahi = {
+          enable = true;
+          nssmdns4 = true;
+          publish = {
+            enable = true;
+            addresses = true;
+            domain = true;
+            hinfo = true;
+            userServices = true;
+            workstation = true;
+          };
+        };
       };
+      environment.systemPackages = with pkgs; [
+        solaar
+      ];
+      services.udev.packages = with pkgs; [
+        logitech-udev-rules
+        solaar
+      ];
       system.boot.plymouth = true;
       programs.nh = {
         enable = true;

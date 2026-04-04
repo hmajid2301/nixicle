@@ -1,11 +1,21 @@
 { den, ... }:
+let
+  sharedNixConfig = import ../../../old/modules/shared/nix-caches.nix;
+in
 {
   den.aspects.common = {
     includes = [ den.aspects.stylix ];
 
-    nixos = { ... }: {
-      hardware.networking.enable = true;
+    nixos = { pkgs, lib, inputs, options, ... }: {
+      # Networking
+      networking.firewall.enable = true;
+      networking.networkmanager = {
+        enable = true;
+        settings.main.no-auto-default = "*";
+      };
+      systemd.services.NetworkManager-wait-online.enable = false;
 
+      # SSH
       services.openssh = {
         enable = true;
         ports = [ 22 ];
@@ -31,24 +41,99 @@
         };
       };
 
-      security = {
-        sops.enable = true;
-        yubikey.enable = true;
-        sudo.extraConfig = ''
-          Defaults secure_path="/run/wrappers/bin:/run/current-system/sw/bin:/nix/var/nix/profiles/default/bin:/usr/local/bin:/usr/bin:/bin"
+      # Sops (age key via SSH host key)
+      sops.age.sshKeyPaths = [ "/persist/etc/ssh/ssh_host_ed25519_key" ];
+
+      # YubiKey
+      services = {
+        pcscd.enable = true;
+        udev.packages = with pkgs; [ yubikey-personalization ];
+        dbus.packages = [ pkgs.gcr ];
+        udev.extraRules = ''
+          ACTION=="remove",\
+           ENV{ID_BUS}=="usb",\
+           ENV{ID_MODEL_ID}=="0407",\
+           ENV{ID_VENDOR_ID}=="1050",\
+           ENV{ID_VENDOR}=="Yubico",\
+           RUN+="${pkgs.systemd}/bin/loginctl lock-sessions"
         '';
       };
-      system = {
-        nix.enable = true;
-        boot.enable = true;
-        locale.enable = true;
+      security.pam.services = {
+        swaylock.u2fAuth = true;
+        hyprlock.u2fAuth = true;
+        login.u2fAuth = true;
+        sudo.u2fAuth = true;
       };
+
+      # Nix settings
+      nix = {
+        channel.enable = false;
+        nixPath = [ "nixpkgs=flake:nixpkgs" ];
+        settings = {
+          trusted-users = [ "@wheel" "root" ];
+          auto-optimise-store = lib.mkDefault true;
+          system-features = [ "kvm" "big-parallel" "nixos-test" ];
+          flake-registry = "";
+          require-sigs = true;
+          fallback = true;
+        } // sharedNixConfig;
+        registry.nixpkgs.flake = inputs.nixpkgs;
+        gc = {
+          automatic = lib.mkDefault true;
+          dates = lib.mkDefault "weekly";
+          options = lib.mkDefault "--delete-older-than 7d";
+        };
+        optimise = {
+          automatic = lib.mkDefault true;
+          dates = lib.mkDefault [ "weekly" ];
+        };
+      };
+
+      # Locale
+      i18n = {
+        defaultLocale = lib.mkDefault "en_GB.UTF-8";
+        extraLocaleSettings = {
+          LC_ADDRESS = "en_GB.UTF-8";
+          LC_IDENTIFICATION = "en_GB.UTF-8";
+          LC_MEASUREMENT = "en_GB.UTF-8";
+          LC_MONETARY = "en_GB.UTF-8";
+          LC_NAME = "en_GB.UTF-8";
+          LC_NUMERIC = "en_GB.UTF-8";
+          LC_PAPER = "en_GB.UTF-8";
+          LC_TELEPHONE = "en_GB.UTF-8";
+          LC_TIME = "en_GB.UTF-8";
+        };
+      };
+      time.timeZone = "Europe/London";
+      services.xserver.xkb = { layout = "gb"; variant = ""; };
+      console.keyMap = "uk";
+
+      # Boot (general setup via old module — migrated separately with secureBoot/impermanence)
+      system.boot.enable = true;
+
+      security.sudo.extraConfig = ''
+        Defaults secure_path="/run/wrappers/bin:/run/current-system/sw/bin:/nix/var/nix/profiles/default/bin:/usr/local/bin:/usr/bin:/bin"
+      '';
     };
 
-    homeManager = { ... }: {
+    homeManager = { pkgs, config, ... }: {
       home.sessionVariables.NH_SEARCH_CHANNEL = "nixos-unstable";
+
+      # Sops (HM)
+      sops = {
+        age = {
+          generateKey = true;
+          keyFile = "/home/${config.home.username}/.config/sops/age/keys.txt";
+          sshKeyPaths = [ "/home/${config.home.username}/.ssh/id_ed25519" ];
+        };
+        defaultSymlinkPath = "/run/user/1000/secrets";
+        defaultSecretsMountPoint = "/run/user/1000/secrets.d";
+      };
+
+      # ZSA keyboard tool
+      home.packages = [ pkgs.keymapp ];
+
       browsers.firefox.enable = true;
-      system.nix.enable = true;
       cli = {
         terminals.foot.enable = true;
         terminals.ghostty.enable = true;
@@ -61,8 +146,6 @@
         guis.enable = true;
         nautilus.enable = true;
       };
-      security.sops.enable = true;
-      hardware.zsa-keyboard.enable = true;
     };
   };
 }
