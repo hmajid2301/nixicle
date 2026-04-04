@@ -1,6 +1,11 @@
 { den, ... }:
 {
   den.aspects.haseeb.provides.vm = {
+    includes = [
+      den.aspects.desktop
+      den.aspects.gaming
+    ];
+
     homeManager = { ... }: {
       home = {
         username = "haseeb";
@@ -9,11 +14,6 @@
       };
 
       desktops.niri.enable = true;
-
-      roles = {
-        desktop.enable = true;
-        gaming.enable = true;
-      };
 
       cli.tools.ssh.enableKeychain = false;
     };

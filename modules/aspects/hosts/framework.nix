@@ -32,14 +32,9 @@
         };
       };
 
-      roles = {
-        desktop = {
-          enable = true;
-          addons = {
-            niri.enable = true;
-            greetd.autologin = false;
-          };
-        };
+      roles.desktop.addons = {
+        niri.enable = true;
+        greetd.autologin = false;
       };
 
       networking.hostName = "framework";

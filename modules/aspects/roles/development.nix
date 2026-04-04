@@ -1,0 +1,54 @@
+{ den, ... }:
+{
+  den.aspects.development = {
+    homeManager = { pkgs, lib, ... }: {
+      xdg.desktopEntries = lib.optionalAttrs pkgs.stdenv.isLinux {
+        neovim = {
+          name = "Neovim";
+          genericName = "editor";
+          exec = "nvim -f %F";
+          mimeType = [
+            "text/html"
+            "text/xml"
+            "text/plain"
+            "text/english"
+            "text/x-makefile"
+            "text/x-c++hdr"
+            "text/x-tex"
+            "application/x-shellscript"
+          ];
+          terminal = false;
+          type = "Application";
+        };
+      };
+
+      cli = {
+        multiplexers.zellij.enable = true;
+        tools = {
+          attic.enable = true;
+          atuin.enable = true;
+          bat.enable = true;
+          bottom.enable = true;
+          db.enable = true;
+          direnv.enable = true;
+          eza.enable = true;
+          fzf.enable = true;
+          get-shit-done.enable = true;
+          git.enable = true;
+          gpg.enable = true;
+          gsesh.enable = true;
+          htop.enable = true;
+          modern-unix.enable = true;
+          network-tools.enable = true;
+          nix-index.enable = true;
+          ssh.enable = true;
+          starship.enable = true;
+          yazi.enable = true;
+          zoxide.enable = true;
+        };
+      };
+
+      development.containers.docker.enable = true;
+    };
+  };
+}

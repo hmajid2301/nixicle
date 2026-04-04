@@ -16,14 +16,9 @@
       services.spice-vdagentd.enable = true;
       security.sudo.wheelNeedsPassword = false;
 
-      roles = {
-        desktop = {
-          enable = true;
-          addons = {
-            gnome.enable = false;
-            niri.enable = true;
-          };
-        };
+      roles.desktop.addons = {
+        gnome.enable = false;
+        niri.enable = true;
       };
 
       boot = {

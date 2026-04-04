@@ -1,18 +1,17 @@
 { den, ... }:
 {
   den.aspects.haseeb.provides.framework = {
+    includes = [
+      den.aspects.desktop
+      den.aspects.gaming
+      den.aspects.social
+    ];
+
     homeManager = { ... }: {
       home = {
         username = "haseeb";
         homeDirectory = "/home/haseeb";
         stateVersion = "24.05";
-      };
-
-      roles = {
-        desktop.enable = true;
-        development.enable = true;
-        gaming.enable = true;
-        social.enable = true;
       };
 
       desktops = {
