@@ -9,17 +9,14 @@ in
       email = lib.mkOption {
         type = lib.types.str;
         default = defaultEmail;
-        description = "User's email address (used for git, etc.)";
       };
       signingKey = lib.mkOption {
         type = lib.types.nullOr lib.types.str;
         default = defaultSigningKey;
-        description = "SSH signing key for git commits";
       };
       authorizedKeys = lib.mkOption {
         type = lib.types.listOf lib.types.str;
         default = defaultAuthorizedKeys;
-        description = "SSH public keys authorized for this user";
       };
     };
   };
@@ -29,12 +26,10 @@ in
       email = lib.mkOption {
         type = lib.types.str;
         default = defaultEmail;
-        description = "User's email address";
       };
       signingKey = lib.mkOption {
         type = lib.types.nullOr lib.types.str;
         default = defaultSigningKey;
-        description = "SSH signing key for git commits";
       };
     };
   };
