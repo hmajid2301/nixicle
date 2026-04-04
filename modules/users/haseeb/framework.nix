@@ -1,7 +1,5 @@
 { den, ... }:
 {
-  # Per-host user config for haseeb on framework.
-  # Applied via mutual-provider when den evaluates the {host=framework, user=haseeb} context.
   den.aspects.haseeb.provides.framework = {
     homeManager = { ... }: {
       home = {

@@ -26,7 +26,6 @@ let
   ];
 in
 {
-  # Bridge: load all old NixOS modules into every host via import-tree
   den.default.nixos = { ... }: {
     imports = [
       (inputs.import-tree.match ".*/default\\.nix" ../old/modules/nixos)
@@ -34,20 +33,20 @@ in
     nixpkgs.overlays = overlays;
     nixpkgs.config.allowUnfree = true;
 
-    # HM settings that were in mkHomeModule
     home-manager.useGlobalPkgs = true;
     home-manager.useUserPackages = true;
+
+    # Pass inputs into HM modules (old HM modules reference inputs directly)
+    home-manager.extraSpecialArgs = { inherit inputs; };
   };
 
-  # Bridge: load all old HM modules into every user's HM config
   den.default.homeManager = { ... }: {
     imports = [
       (inputs.import-tree.match ".*/default\\.nix" ../old/modules/home)
     ];
   };
 
-  # Inject `host` (hostname string) into HM module args for backward compat.
-  # Old HM modules use `host` (a string) to determine host-specific behaviour.
+  # Old HM modules reference `host` as a string arg — inject it so they keep working.
   den.ctx.user.includes = [
     ({ host, user, ... }: {
       nixos.home-manager.users.${user.userName}._module.args.host = host.hostName;

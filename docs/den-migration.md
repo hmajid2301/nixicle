@@ -296,11 +296,9 @@ An aspect is an attrset with class-keyed configs, optional dependencies
 
 ```nix
 den.aspects.gaming = {
-  # Owned configs: keyed by Nix class
   nixos        = { pkgs, ... }: { programs.steam.enable = true; };
   homeManager  = { pkgs, ... }: { home.packages = [ pkgs.lutris ]; };
 
-  # Dependencies on other aspects
   includes = [ den.aspects.performance den.provides.primary-user ];
 
   # Sub-aspects (accessible as den.aspects.gaming._.emulation)
@@ -350,18 +348,14 @@ The context shape **is** the condition[^5]:
 ```
 
 ```nix
-# Runs unconditionally in every context
 { nixos.networking.firewall.enable = true; }
 
-# Runs only when evaluating a host
 ({ host, ... }: { nixos.networking.hostName = host.hostName; })
 
-# Runs only when evaluating a user within a host
 ({ host, user, ... }: {
   nixos.users.users.${user.userName}.extraGroups = [ "wheel" ];
 })
 
-# Runs only for standalone home-manager (dell)
 ({ home }: { homeManager.home.stateVersion = "24.05"; })
 ```
 
@@ -1442,6 +1436,9 @@ From Doc-Steve's guide[^2], adapted to nixicle:
 - File names are documentation — follow a consistent naming convention
 - Files prefixed with `_` are excluded from import-tree auto-import (useful for
   disabling WIP code or for data files that are not modules)
+- **No "what" comments.** Only write a comment if it explains *why* something is
+  done in a non-obvious way. If the code already says what it does, a comment
+  restating it adds noise — delete it.
 
 ```
 modules/
@@ -1839,7 +1836,6 @@ syntax. The import-tree bridge keeps existing modules loading unchanged.
 
 ```nix
 { inputs, den, lib, ... }: {
-  # Enable angle-bracket includes: <den/primary-user>, <aspects/desktop>, etc.
   _module.args.__findFile = den.lib.__findFile;
 
   imports = [ inputs.den.flakeModule ];
@@ -1847,7 +1843,6 @@ syntax. The import-tree bridge keeps existing modules loading unchanged.
   # Enable mutual-provider globally (host → user config forwarding via provides.to-users)
   den.ctx.user.includes = [den._.mutual-provider];
 
-  # Global defaults applied to every host and user
   den.default = {
     includes = [
       <den/define-user>   # creates users.users.<name> + HM home dirs
@@ -1883,7 +1878,6 @@ syntax. The import-tree bridge keeps existing modules loading unchanged.
     };
   };
 
-  # NixOS hosts
   den.hosts.x86_64-linux.framework = {
     isLaptop       = true;
     primaryDisplay = { name = "eDP-1"; width = 2256; height = 1504; refresh = 120; };
@@ -2041,6 +2035,7 @@ modules/
     # (set with defaults in modules/users/schema.nix)
     homeManager = { user, pkgs, ... }: {
       programs.git = {
+        # Reads user.email and user.signingKey from den.schema.user
         userEmail        = user.email;
         signing.key      = user.signingKey;
         signing.format   = "ssh";

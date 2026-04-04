@@ -23,17 +23,12 @@ in
     inputs.den.flakeModule
     inputs.den.flakeOutputs.nixosConfigurations
     inputs.den.flakeOutputs.homeConfigurations
-    inputs.den.flakeOutputs.packages
-    inputs.den.flakeOutputs.devShells
-    inputs.den.flakeOutputs.checks
   ];
 
   _module.args.__findFile = den.lib.__findFile;
 
-  # Enable host → user config forwarding via provides.to-users
   den.ctx.user.includes = [ den._.mutual-provider ];
 
-  # --- Host declarations ---
   den.hosts.x86_64-linux.framework = {
     isLaptop = true;
     primaryDisplay = {
@@ -51,7 +46,9 @@ in
     users.haseeb = { };
   };
 
-  # --- Schema ---
+  den.homes.x86_64-linux."haseeb@framework" = { };
+  den.homes.x86_64-linux."haseeb@vm" = { };
+
   den.schema.user = { lib, ... }: {
     config.classes = lib.mkDefault [ "homeManager" ];
   };
@@ -67,15 +64,13 @@ in
     };
   };
 
-  # --- Global defaults ---
   den.default = {
     includes = [
-      <den/define-user>
-      <den/hostname>
+      den._.define-user
+      den._.hostname
     ];
   };
 
-  # NixOS modules applied to all hosts
   # NOTE: do NOT include home-manager.nixosModules here — den handles HM integration automatically
   den.default.nixos = { ... }: {
     imports = [
@@ -94,7 +89,6 @@ in
     ];
   };
 
-  # HM modules applied to all users
   den.default.homeManager = { ... }: {
     imports = [
       inputs.dankMaterialShell.homeModules.dank-material-shell
