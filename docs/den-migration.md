@@ -2537,6 +2537,15 @@ system where `user` is not a module arg. Use `includes` with
 `({ user, ... }: { nixos.home-manager.users.haseeb.* = ...; })` instead, with
 `lib.mkForce` to win over any hardcoded values in old bridge modules.
 
+**`lib.nixicle` helpers are an anti-pattern in den.** `mkOpt`, `mkBoolOpt`,
+`enabled`, `disabled` etc. exist solely to support the old `options +
+mkIf cfg.enable` pattern — the very pattern den eliminates. In den aspects
+there are no `options` declarations and no `mkIf`, so these helpers have no
+place. Never use `lib.nixicle` in new den module code. The 64 old HM modules
+in `old/` that use it are fine to leave untouched; they will be deleted as
+each is replaced by a den aspect. Do not refactor them — they are already
+slated for removal.
+
 **No what-not-why comments.** See Part 6.
 
 ---
