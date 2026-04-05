@@ -75,9 +75,9 @@ tasks:
       - nix fmt
 
   write-flake:
-    desc: "Regenerate flake.nix from flake-file.inputs declarations scattered across modules"
+    desc: "NOTE: flake.nix is hand-maintained. flake-file.inputs declarations are for reference/tooling only. Update flake.nix manually when adding inputs."
     cmds:
-      - nix run .#write-flake
+      - echo "flake.nix is hand-maintained in this repo — update it directly when adding inputs."
 
   hosts:
     desc: "List available hosts"

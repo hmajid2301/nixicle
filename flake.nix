@@ -65,18 +65,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # Hyprland
-
-    hypr-contrib = {
-      url = "github:hyprwm/contrib";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    hyprcursor = {
-      url = "github:hyprwm/Hyprcursor";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     # Niri
 
     niri = {
@@ -153,11 +141,6 @@
 
     zjstatus = {
       url = "github:dj95/zjstatus";
-    };
-
-    fenix = {
-      url = "github:nix-community/fenix";
-      inputs.nixpkgs.follows = "nixpkgs";
     };
 
     # Neovim
@@ -247,11 +230,6 @@
 
     zellij-mcp = {
       url = "github:GitJuhb/zellij-mcp-server";
-      flake = false;
-    };
-
-    omerxx-dotfiles = {
-      url = "github:omerxx/dotfiles";
       flake = false;
     };
 

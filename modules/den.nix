@@ -49,13 +49,13 @@ let
     };
 in
 {
+  flake-file.inputs.flake-file.url = "github:vic/flake-file";
+
   # home-manager: used in mkHomeInstantiate
   flake-file.inputs.home-manager = {
     url = "github:nix-community/home-manager";
     inputs.nixpkgs.follows = "nixpkgs";
   };
-
-  flake-file.outputs = "flake-module";
 
   imports = [
     inputs.flake-file.flakeModules.flake
