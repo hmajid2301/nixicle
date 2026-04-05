@@ -1,4 +1,4 @@
-{ inputs, den, lib, ... }:
+{ inputs, den, ... }:
 {
   den.aspects.haseeb.provides.framework = {
     includes = [
@@ -45,27 +45,44 @@
       den.aspects.boot-secure
     ];
 
-    nixos = { config, ... }: {
+    nixos = { config, pkgs, ... }: {
       imports = [
-        ../../hosts/framework/hardware-configuration.nix
-        ../../hosts/framework/disks.nix
+        ./hardware-configuration.nix
+        ./disks.nix
         inputs.nixos-facter-modules.nixosModules.facter
-        { config.facter.reportPath = ../../hosts/framework/facter.json; }
+        { config.facter.reportPath = ./facter.json; }
         inputs.nixos-hardware.nixosModules.framework-13-7040-amd
       ];
 
       sops.secrets = {
         user_password = {
-          sopsFile = ../../hosts/framework/secrets.yaml;
+          sopsFile = ./secrets.yaml;
           neededForUsers = true;
         };
       };
 
       users.users.haseeb.hashedPasswordFile = config.sops.secrets.user_password.path;
 
-      security.nixicle.pcr-verification = {
-        enable = true;
-        expectedPcr15 = "caf33e79c645b65849256238a11fa68ae197e5cb89730c463c1cdf1d9128376f";
+      boot.kernelParams = [ "rd.luks=no" ];
+      boot.initrd.systemd.extraBin.jq = "${pkgs.jq}/bin/jq";
+      boot.initrd.systemd.services.check-pcrs = {
+        script = ''
+          echo "Checking PCR 15 value"
+          if [[ $(systemd-analyze pcrs 15 --json=short | jq -r ".[0].sha256") != "caf33e79c645b65849256238a11fa68ae197e5cb89730c463c1cdf1d9128376f" ]] ; then
+            echo "PCR 15 check failed"
+            exit 1
+          else
+            echo "PCR 15 check succeeded"
+          fi
+        '';
+        serviceConfig = {
+          Type = "oneshot";
+          RemainAfterExit = true;
+        };
+        unitConfig.DefaultDependencies = "no";
+        after = [ "cryptsetup.target" ];
+        before = [ "sysroot.mount" ];
+        requiredBy = [ "sysroot.mount" ];
       };
 
       # Persist secure boot keys

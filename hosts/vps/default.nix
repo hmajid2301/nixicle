@@ -8,8 +8,8 @@
 
     nixos = { config, lib, ... }: {
       imports = [
-        ../../hosts/vps/hardware-configuration.nix
-        ../../hosts/vps/disks.nix
+        ./hardware-configuration.nix
+        ./disks.nix
       ];
 
       # VPS uses GRUB/cloud bootloader, not systemd-boot

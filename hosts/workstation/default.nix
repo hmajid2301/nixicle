@@ -51,15 +51,15 @@
       }:
       {
         imports = [
-          ../../hosts/workstation/hardware-configuration.nix
-          ../../hosts/workstation/disks.nix
+          ./hardware-configuration.nix
+          ./disks.nix
           inputs.nixos-facter-modules.nixosModules.facter
-          { config.facter.reportPath = ../../hosts/workstation/facter.json; }
+          { config.facter.reportPath = ./facter.json; }
         ];
 
         sops.secrets = {
           user_password = {
-            sopsFile = ../../hosts/workstation/secrets.yaml;
+            sopsFile = ./secrets.yaml;
             neededForUsers = true;
           };
         };

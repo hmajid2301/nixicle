@@ -262,7 +262,10 @@
 
   outputs = inputs:
     (inputs.nixpkgs.lib.evalModules {
-      modules = [ (inputs.import-tree ./modules) ];
+      modules = [
+        (inputs.import-tree ./modules)
+        (inputs.import-tree.match ".*/default\\.nix" ./hosts)
+      ];
       specialArgs = {
         inherit inputs;
         inherit (inputs) self;

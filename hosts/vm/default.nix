@@ -24,8 +24,8 @@
 
     nixos = { lib, pkgs, ... }: {
       imports = [
-        ../../hosts/vm/hardware-configuration.nix
-        ../../hosts/vm/disks.nix
+        ./hardware-configuration.nix
+        ./disks.nix
       ];
 
       boot.plymouth.enable = lib.mkForce false;

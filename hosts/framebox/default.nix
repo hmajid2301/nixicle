@@ -71,17 +71,17 @@
 
     nixos = { config, lib, ... }: {
       imports = [
-        ../../hosts/framebox/hardware-configuration.nix
-        ../../hosts/framebox/disks.nix
+        ./hardware-configuration.nix
+        ./disks.nix
         inputs.nixos-facter-modules.nixosModules.facter
-        { config.facter.reportPath = ../../hosts/framebox/facter.json; }
+        { config.facter.reportPath = ./facter.json; }
         inputs.nixos-hardware.nixosModules.framework-desktop-amd-ai-max-300-series
       ];
 
       sops.secrets = {
-        gitlab_runner_env.sopsFile = ../../hosts/framebox/secrets.yaml;
+        gitlab_runner_env.sopsFile = ./secrets.yaml;
         user_password = {
-          sopsFile = ../../hosts/framebox/secrets.yaml;
+          sopsFile = ./secrets.yaml;
           neededForUsers = true;
         };
       };

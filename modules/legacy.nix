@@ -1,11 +1,5 @@
 { inputs, lib, den, ... }:
 {
-  den.default.nixos = { ... }: {
-    imports = [
-      (inputs.import-tree.match ".*/default\\.nix" ../old/modules/nixos)
-    ];
-  };
-
   den.default.homeManager = { ... }: {
     imports = [
       (inputs.import-tree.match ".*/default\\.nix" ../old/modules/home)
