@@ -50,6 +50,7 @@ in
       systemd.services.podman-network-hortusfox = {
         description = "Create podman network for hortusfox";
         after = [ "network-online.target" ];
+        wants = [ "network-online.target" ];
         wantedBy = [ "multi-user.target" ];
         serviceConfig = {
           Type = "oneshot";

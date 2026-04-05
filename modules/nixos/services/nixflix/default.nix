@@ -79,7 +79,7 @@ in
       };
 
       nixflix = {
-        enable = true;
+        enable = cfg.enable;
         stateDir = "/var/lib/nixflix";
         mediaDir = cfg.mediaDir;
         # downloadDir = "/var/lib/nixflix/downloads";
@@ -87,7 +87,7 @@ in
         postgres.enable = false;
 
         sonarr = {
-          enable = true;
+          enable = cfg.enable;
           config = {
             apiKey = {
               _secret = config.sops.secrets."sonarr/api_key".path;
@@ -98,7 +98,7 @@ in
           };
         };
         radarr = {
-          enable = true;
+          enable = cfg.enable;
           config = {
             apiKey = {
               _secret = config.sops.secrets."radarr/api_key".path;
@@ -120,7 +120,7 @@ in
           };
         };
         lidarr = {
-          enable = true;
+          enable = cfg.enable;
           config = {
             apiKey = {
               _secret = config.sops.secrets."lidarr/api_key".path;
@@ -131,7 +131,7 @@ in
           };
         };
         jellyfin = {
-          enable = true;
+          enable = cfg.enable;
           users.admin = {
             mutable = false;
             policy.isAdministrator = true;
@@ -159,7 +159,7 @@ in
           };
         };
         jellyseerr = {
-          enable = true;
+          enable = cfg.enable;
           apiKey = {
             _secret = config.sops.secrets."jellyseerr/api_key".path;
           };

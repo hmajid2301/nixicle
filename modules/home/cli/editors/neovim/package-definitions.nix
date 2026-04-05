@@ -1,6 +1,5 @@
 { config, inputs, ... }:
 let
-  # Access stylix colors for passing to Neovim
   stylixColors = config.lib.stylix.colors.withHashtag or { };
 in
 {
