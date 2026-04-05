@@ -2766,67 +2766,80 @@ from the host side.
 ## Part 11 — Migration Checklist
 
 ### Phase 1 — Host Declaration + Schemas
-- [ ] Expand `modules/den.nix` with all 5 NixOS hosts (dell moves to `modules/homes/`)
-- [ ] Add `_module.args.__findFile = den.lib.__findFile` (enables `<angle/bracket>` syntax)
-- [ ] Add `den.ctx.user.includes = [den._.mutual-provider]` (enables provides.to-users)
-- [ ] Add `den.default` with `<den/define-user>`, `<den/hostname>`, stateVersion
-- [ ] Add shared framework imports to `den.default.nixos` (disko, sops, niri, stylix, facter)
-- [ ] Add `den.schema.host` with `isLaptop`, `primaryDisplay.*`
+- [x] Expand `modules/den.nix` with all 5 NixOS hosts (dell moves to `modules/homes/`)
+- [x] Add `_module.args.__findFile = den.lib.__findFile` (enables `<angle/bracket>` syntax)
+- [x] Add `den.ctx.user.includes = [den._.mutual-provider]` (enables provides.to-users)
+- [x] Add `den.default` with `<den/define-user>`, `<den/hostname>`, stateVersion
+- [x] Add shared framework imports to `den.default.nixos` (disko, sops, niri, stylix, facter)
+- [x] Add `den.schema.host` with `isLaptop`, `primaryDisplay.*`
 - [ ] Add `den.schema.user` with `classes`, email, signingKey, authorizedKeys (typed identity)
 - [ ] Add `den.schema.home` mirroring user schema for standalone homes
 - [ ] Create `modules/users/schema.nix` with typed user identity defaults
-- [ ] Set `primaryDisplay` and `isLaptop` on framework and workstation
-- [ ] Verify `modules/legacy.nix` import-tree bridge is intact
-- [ ] `nix flake check` passes
+- [x] Set `primaryDisplay` and `isLaptop` on framework and workstation
+- [x] Verify `modules/legacy.nix` import-tree bridge is intact
+- [x] `nix flake check` passes
 
 ### Phase 2 — flake.nix Simplification
-- [ ] Create `modules/flake-outputs.nix` (packages, devShells, deploy, checks, topology, iso)
-- [ ] Replace `flake.nix` with thin `evalModules` evaluator
-- [ ] Add `den`, `import-tree`, and optionally `flake-file` to inputs
-- [ ] Delete `mkSystem`, `mkHome`, `mkHomeModule` helpers
-- [ ] `nixos-rebuild build --flake .#framework`
-- [ ] `nixos-rebuild build --flake .#framebox`
-- [ ] `home-manager build --flake .#"haseeb@framework"`
-- [ ] `home-manager build --flake .#"haseebmajid@dell"`
+- [x] Create `modules/flake-outputs.nix` (packages, devShells, deploy, checks, topology, iso)
+- [x] Replace `flake.nix` with thin `evalModules` evaluator
+- [x] Add `den`, `import-tree`, and optionally `flake-file` to inputs
+- [x] Delete `mkSystem`, `mkHome`, `mkHomeModule` helpers
+- [x] `nixos-rebuild build --flake .#framework`
+- [x] `nixos-rebuild build --flake .#framebox`
+- [x] `home-manager build --flake .#"haseeb@framework"`
+- [x] `home-manager build --flake .#"haseebmajid@dell"`
 
 ### Phase 3 — User Aspects + Standalone Homes
-- [ ] `modules/users/haseeb/base.nix` (Simple Aspect, angle-bracket includes)
-- [ ] `modules/users/haseeb/framework.nix` (Inheritance, angle brackets)
-- [ ] `modules/users/haseeb/framebox.nix` (Inheritance)
-- [ ] `modules/users/haseeb/workstation.nix` (Inheritance)
-- [ ] `modules/users/haseeb/vm.nix` (Inheritance)
-- [ ] `modules/homes/haseebmajid@dell/module.nix` (Inline home + aspect, Sharparam pattern)
-- [ ] `modules/users/nixos/vps.nix` (Simple)
+- [x] `modules/users/haseeb/base.nix` (Simple Aspect, angle-bracket includes)
+- [x] `modules/users/haseeb/framework.nix` (Inheritance, angle brackets)
+- [x] `modules/users/haseeb/framebox.nix` (Inheritance)
+- [x] `modules/users/haseeb/workstation.nix` (Inheritance)
+- [x] `modules/users/haseeb/vm.nix` (Inheritance)
+- [x] `modules/users/haseeb/dell.nix` → `den.aspects.haseebmajid.provides.dell` standalone home
+- [x] `modules/users/nixos/vps.nix` (Simple)
 - [ ] Create `modules/secrets/lib.nix` (tag-based user secret registry, Moortu pattern)
 - [ ] Wire `aspect` keys in `den.hosts`
 - [ ] Remove `den.homes` from `modules/den.nix` (now declared inline in `homes/` module)
 - [ ] Remove old `hosts/*/home.nix` files
 
 ### Phase 4 — Role + Program Aspects
-- [ ] `modules/aspects/roles/common.nix`
-- [ ] `modules/aspects/roles/desktop.nix` (Multi-Context + provides: niri, greetd)
-- [ ] `modules/aspects/roles/gaming.nix` (Multi-Context + provides: replays, gamescope, performance)
-- [ ] `modules/aspects/roles/development.nix`
-- [ ] `modules/aspects/roles/social.nix`
+- [x] `modules/aspects/profiles/common.nix`
+- [x] `modules/aspects/profiles/desktop.nix` (Multi-Context + includes niri aspect)
+- [x] `modules/aspects/profiles/gaming.nix` (Multi-Context)
+- [x] `modules/aspects/profiles/development.nix`
+- [x] `modules/aspects/profiles/social.nix`
+- [x] `modules/aspects/profiles/video.nix`
+- [x] `modules/aspects/profiles/gamedev.nix`
+- [x] `modules/aspects/profiles/non-nixos.nix` (nixGL, xwayland-satellite, dell standalone home)
+- [x] `modules/aspects/niri.nix` (greetd, polkit, xdg-portal, niri NixOS module)
 - [ ] `modules/aspects/performance.nix` (Tiered: base / responsive / max)
 - [ ] `modules/aspects/nfs-truenas.nix` (DRY)
-- [ ] `modules/aspects/roles/desktop-addons/niri.nix`
-- [ ] `modules/aspects/roles/desktop-addons/greetd.nix`
-- [ ] Create `modules/aspects/programs/` with category aspects (cli, editors, terminals, security)
-- [ ] Create `modules/profiles/homelab.nix` and `modules/profiles/laptop.nix` (composable bundles)
-- [ ] Add `nix-gaming` input to flake.nix
-- [ ] Update user aspects to use `<aspects/roles/desktop>` angle-bracket includes
-- [ ] Delete `modules/nixos/roles/` and `modules/home/roles/`
+- [x] Delete old `old/modules/nixos/roles/desktop/addons/niri/`
+- [x] Delete old `old/modules/nixos/security/firewall/`, `polkit/`
+- [x] Delete old `old/modules/nixos/services/evolution/`, `tailscale/`, `virtualisation/`
 
 ### Phase 5 — Service Aspects
-- [ ] `modules/aspects/services/<service>.nix` per framebox service (~20 files)
-- [ ] `modules/aspects/hosts/framebox.nix` (Collector Aspect)
-- [ ] `modules/aspects/hosts/framework.nix` (Collector Aspect)
-- [ ] `modules/aspects/hosts/workstation.nix` (Collector Aspect)
-- [ ] `modules/aspects/hosts/vm.nix` (Collector Aspect)
-- [ ] `modules/aspects/hosts/vps.nix` (Collector Aspect)
-- [ ] Wire `den.hosts.*.aspect` in `modules/den.nix`
-- [ ] Delete `hosts/*/default.nix` once migrated
+- [x] `modules/aspects/services/monitoring.nix` (prometheus, grafana, loki, tempo, alertmanager — all inlined)
+- [x] `modules/aspects/services/vpn.nix`
+- [x] `modules/aspects/services/traefik.nix`
+- [x] `modules/aspects/services/postgres.nix`
+- [x] `modules/aspects/services/redis.nix`
+- [x] `modules/aspects/services/authentik.nix`
+- [x] `modules/aspects/services/otel.nix`
+- [x] `modules/aspects/services/tangled.nix`
+- [x] `modules/aspects/services/goroutinely.nix`
+- [x] `modules/aspects/services/banterbus.nix`
+- [x] `modules/aspects/services/nixery.nix`
+- [x] `modules/aspects/services/nixflix.nix`
+- [x] `modules/aspects/hosts/framebox.nix` (Collector Aspect)
+- [x] `modules/aspects/hosts/framework.nix` (Collector Aspect)
+- [x] `modules/aspects/hosts/workstation.nix` (Collector Aspect)
+- [x] `modules/aspects/hosts/vm.nix` (Collector Aspect)
+- [x] `modules/aspects/hosts/vps.nix` (Collector Aspect)
+- [ ] Wire `den.hosts.*.aspect` in `modules/den.nix` (hosts still use nixos modules directly)
+- [ ] Migrate remaining `old/modules/nixos/security/` modules (auditd, doas, hardening, pcr-verification)
+- [ ] Migrate remaining `old/modules/nixos/hardware/` modules (bluetooth, ddcci, nix-ld)
+- [ ] Delete `old/modules/nixos/` once fully migrated
 
 ### Phase 6 — flake-file
 - [ ] Add `flake-file` to flake inputs
@@ -2837,7 +2850,7 @@ from the host side.
 
 ### Final Cleanup
 - [ ] Delete `modules/legacy.nix` (import-tree bridge no longer needed)
-- [ ] Delete `modules/nixos/` and `modules/home/` trees
+- [ ] Delete `old/modules/nixos/` and `old/modules/home/` trees
 - [ ] Final `nix flake check` across all hosts
 - [ ] Final `nix build .#nixosConfigurations.framebox.config.system.build.toplevel`
 
