@@ -161,10 +161,6 @@
     # Neovim
     nixCats.url = "github:BirdeeHub/nixCats-nvim";
 
-    neovim-nightly-overlay = {
-      url = "github:nix-community/neovim-nightly-overlay";
-    };
-
     oxy2dev-nvim-scripts = {
       url = "github:OXY2DEV/nvim";
       flake = false;

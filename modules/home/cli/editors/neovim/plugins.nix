@@ -31,10 +31,8 @@
       debugmaster-nvim
     ];
     test = with pkgs.vimPlugins; [
-      # Use latest neotest with PR #548 fix
-      pkgs.neovimPlugins.neotest
-      # neotest-golang
-      pkgs.neovimPlugins.neotest-golang
+      neotest
+      neotest-golang
       nvim-nio
       nvim-coverage
       vim-dotenv
