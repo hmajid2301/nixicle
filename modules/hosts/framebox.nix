@@ -5,9 +5,11 @@
       den.aspects.nfs-truenas
       den.aspects.impermanence
       den.aspects.boot-secure
+      den.aspects.tailscale
+      den.aspects.kvm
     ];
 
-    nixos = { config, ... }: {
+    nixos = { config, lib, ... }: {
       imports = [
         ../../hosts/framebox/hardware-configuration.nix
         ../../hosts/framebox/disks.nix
@@ -37,8 +39,6 @@
 
       services = {
         power-profiles-daemon.enable = true;
-        virtualisation.kvm.enable = true;
-
         nixicle = {
           authentik.enable = true;
           atuin.enable = true;
@@ -137,7 +137,6 @@
           tangled.enable = true;
           tandoor.enable = true;
           traefik.enable = true;
-          tailscale.enable = true;
           papra.enable = true;
           bentopdf.enable = true;
           hortusfox.enable = true;

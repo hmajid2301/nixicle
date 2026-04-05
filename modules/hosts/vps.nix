@@ -1,6 +1,10 @@
 { den, ... }:
 {
   den.aspects.vps = {
+    includes = [
+      den.aspects.tailscale
+    ];
+
     nixos = { config, lib, ... }: {
       imports = [
         ../../hosts/vps/hardware-configuration.nix
@@ -28,10 +32,7 @@
         execWheelOnly = true;
       };
 
-      services.nixicle = {
-        traefik.enable = true;
-        tailscale.enable = true;
-      };
+      services.nixicle.traefik.enable = true;
 
       services.traefik.dynamicConfigOptions.http = {
         services = {

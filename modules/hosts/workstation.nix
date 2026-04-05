@@ -1,13 +1,15 @@
-{ inputs, den, ... }:
+{ inputs, den, pkgs, ... }:
 {
   den.aspects.workstation = {
     includes = [
       den.aspects.nfs-truenas
       den.aspects.impermanence
       den.aspects.boot-secure
+      den.aspects.tailscale
+      den.aspects.kvm
     ];
 
-    nixos = { config, ... }: {
+    nixos = { config, pkgs, lib, ... }: {
       imports = [
         ../../hosts/workstation/hardware-configuration.nix
         ../../hosts/workstation/disks.nix
@@ -29,14 +31,30 @@
 
       boot.kernelParams = [ "resume_offset=533760" ];
 
-      # Persist secure boot keys
-      environment.persistence."/persist".directories = [ "/etc/secureboot" ];
-
-      services = {
-        virtualisation.kvm.enable = true;
-        virtualisation.docker.enable = true;
-        nixicle.tailscale.enable = true;
+      virtualisation.docker = {
+        enable = true;
+        enableOnBoot = true;
+        autoPrune.enable = true;
+        storageDriver = "btrfs";
+        rootless = {
+          enable = true;
+          setSocketVariable = true;
+          daemon.settings.dns = [ "1.1.1.1" "8.8.8.8" ];
+        };
       };
+
+      users.extraGroups.docker.members = [ "haseeb" ];
+
+      environment.systemPackages = with pkgs; [
+        docker-compose
+      ];
+
+      environment.persistence."/persist".directories = [
+        "/etc/secureboot"
+        { directory = "/var/lib/docker"; user = "root"; group = "root"; mode = "0755"; }
+      ];
+
+      boot.kernel.sysctl."net.ipv4.ip_forward" = 1;
 
       networking.hostName = "workstation";
       system.stateVersion = "24.05";

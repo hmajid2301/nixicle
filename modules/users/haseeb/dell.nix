@@ -63,7 +63,6 @@
       sops.defaultSymlinkPath = lib.mkForce "/run/user/1003/secrets";
       sops.defaultSecretsMountPoint = lib.mkForce "/run/user/1003/secrets.d";
 
-      styles.stylix.enable = lib.mkForce false;
       stylix = lib.mkForce {
         enable = false;
         autoEnable = false;
