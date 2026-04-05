@@ -49,7 +49,14 @@ let
     };
 in
 {
+  flake-file.inputs.nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+  flake-file.inputs.den.url = "github:vic/den";
+  flake-file.inputs.import-tree.url = "github:vic/import-tree";
   flake-file.inputs.flake-file.url = "github:vic/flake-file";
+  flake-file.inputs.flake-parts = {
+    url = "github:hercules-ci/flake-parts";
+    inputs.nixpkgs-lib.follows = "nixpkgs";
+  };
 
   # home-manager: used in mkHomeInstantiate
   flake-file.inputs.home-manager = {
@@ -58,10 +65,8 @@ in
   };
 
   imports = [
-    inputs.flake-file.flakeModules.flake
+    inputs.flake-file.flakeModules.dendritic
     inputs.den.flakeModule
-    inputs.den.flakeOutputs.nixosConfigurations
-    inputs.den.flakeOutputs.homeConfigurations
   ];
 
   _module.args.__findFile = den.lib.__findFile;
