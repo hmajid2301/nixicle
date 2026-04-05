@@ -3,6 +3,7 @@
   den.aspects.vps = {
     includes = [
       den.aspects.tailscale
+      den.aspects.traefik
     ];
 
     nixos = { config, lib, ... }: {
@@ -32,7 +33,6 @@
         execWheelOnly = true;
       };
 
-      services.nixicle.traefik.enable = true;
 
       services.traefik.dynamicConfigOptions.http = {
         services = {

@@ -4,6 +4,11 @@ let
 in
 {
   den.aspects.tangled = {
+    includes = [
+      den.aspects.nixery
+      den.aspects.openbao
+    ];
+
     nixos = { config, pkgs, lib, ... }: {
       services.tangled.knot = {
         enable = true;
@@ -28,17 +33,6 @@ in
             };
           };
         };
-      };
-
-      services.nixicle.nixery = {
-        enable = true;
-        port = 8091;
-        channel = "nixos-unstable";
-      };
-
-      services.nixicle.openbao = {
-        enable = true;
-        proxy.enable = true;
       };
 
       services.cloudflared.tunnels.${tunnelId}.ingress = {
