@@ -514,6 +514,21 @@ aspect is a Simple Aspect — just a `nixos` key with the service config.
 Then create `modules/aspects/hosts/framebox.nix` that includes all service
 aspects plus hardware imports.
 
+### Hardcoded values — do NOT guess, use these exact strings
+
+When writing service aspects, use these literal values (do not invent new ones):
+
+| Value | String |
+|-------|--------|
+| Personal domain | `haseebmajid.dev` |
+| Homelab subdomain | `homelab.haseebmajid.dev` |
+| Cloudflare tunnel ID | `ecef5dbb-834e-43ed-84c6-355a2ac53e59` |
+| Uptime Kuma tunnel ID | `0e845de6-544a-47f2-a1d5-c76be02ce153` |
+
+These are currently hardcoded in each aspect file. A future cleanup will
+extract them into `modules/aspects/services/_config.nix`. Until then, use
+the literal strings above — do not create `den.schema.host` options for them.
+
 ### Per-service migration
 
 Same pattern as Phase 4: create aspect → verify build → delete old module.

@@ -2352,6 +2352,47 @@ server by including the aspect.
 }
 ```
 
+### Phase 5 — Hardcoded Values in Service Aspects
+
+When migrating service aspects, the following values are currently hardcoded
+inline in each aspect file. They should eventually be extracted into a shared
+`modules/aspects/services/config.nix` or passed via `den.schema.host` options:
+
+| Value | Current hardcoded string | Appears in |
+|-------|--------------------------|-----------|
+| Personal domain | `haseebmajid.dev` | traefik routes, cloudflare ingress, gotify, karakeep, goroutinely, navidrome, tandoor, authentik, banterbus, paperless, open-webui |
+| Homelab subdomain | `homelab.haseebmajid.dev` | traefik `mkTraefikService` default domain, atticd, gitea |
+| Cloudflare tunnel ID | `ecef5dbb-834e-43ed-84c6-355a2ac53e59` | cloudflare.nix, authentik, atuin, banterbus, goroutinely, karakeep, navidrome, open-webui, paperless, tandoor, tangled, gotify, audiobookshelf, papra, hortusfox, trek |
+| Uptime Kuma tunnel ID | `0e845de6-544a-47f2-a1d5-c76be02ce153` | uptime-kuma.nix |
+
+**Recommended follow-up:** Add these to `den.schema.host` or a shared `let`
+block in a common `modules/aspects/services/_config.nix` imported by all
+service aspects, so changing domain or tunnel ID only requires one edit.
+
+Example pattern using a shared config file:
+
+```nix
+# modules/aspects/services/_config.nix  (imported, not a den module)
+{
+  domain = "haseebmajid.dev";
+  homelabDomain = "homelab.haseebmajid.dev";
+  cloudflareTunnelId = "ecef5dbb-834e-43ed-84c6-355a2ac53e59";
+}
+```
+
+```nix
+# modules/aspects/services/gotify.nix
+{ den, ... }:
+let cfg = import ./_config.nix; in
+{
+  den.aspects.gotify = {
+    nixos = { lib, ... }: {
+      services.cloudflared.tunnels.${cfg.cloudflareTunnelId}.ingress."notify.${cfg.domain}" = "http://localhost:8051";
+    };
+  };
+}
+```
+
 ---
 
 ### Phase 6 — flake-file Adoption (Inputs Move Into Modules)
