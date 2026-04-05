@@ -2765,6 +2765,43 @@ from the host side.
 
 ## Part 11 — Migration Checklist
 
+### Current State (as of 2026-04-05)
+
+All 6 configs evaluate cleanly: `vm`, `framework`, `framebox`, `workstation`, `vps` (NixOS), `haseebmajid@dell` (standalone HM).
+
+**Repo structure:**
+```
+hosts/
+  haseeb.nix              ← DELETED (inlined into hosts/framebox/default.nix)
+  dell/default.nix        ← haseebmajid standalone home aspect
+  framebox/default.nix    ← den.aspects.haseeb base + provides.framebox + den.aspects.framebox
+  framework/default.nix   ← den.aspects.haseeb.provides.framework + den.aspects.framework
+  workstation/default.nix ← den.aspects.haseeb.provides.workstation + den.aspects.workstation
+  vm/default.nix          ← den.aspects.haseeb.provides.vm + den.aspects.vm
+  vps/default.nix         ← den.aspects.vps
+  (each host folder also has: hardware-configuration.nix, disks.nix, secrets.yaml, facter.json)
+modules/
+  den.nix                 ← flake entry: hosts, homes, schemas, ctx pipelines
+  legacy.nix              ← HM bridge only (old/modules/nixos bridge removed)
+  flake-outputs.nix       ← packages, devShells, deploy, topology, iso
+  aspects/
+    profiles/             ← common, desktop, gaming, development, social, video, gamedev, non-nixos
+    services/             ← all framebox services (~20 files)
+    niri.nix, boot.nix, impermanence.nix, audio.nix, tailscale.nix, kvm.nix, nfs.nix, stylix.nix
+old/modules/
+  home/                   ← still loaded via legacy.nix import-tree bridge (HM modules)
+  nixos/                  ← DELETED
+flake.nix                 ← import-tree ./modules + import-tree.match hosts/*/default.nix
+```
+
+**What's remaining:**
+1. **Neovim broken** — `programs.neovim.enable = false` on dell; investigate `old/modules/home/cli/editors/neovim/`
+2. **Phase 6 (flake-file)** — colocate input declarations inside each aspect file, regenerate flake.nix
+3. **Final cleanup** — once old/modules/home/ is fully migrated, delete `modules/legacy.nix` and `old/`
+4. **Optional** — `den.schema.user` typed identity, `modules/secrets/lib.nix` tag-based registry
+
+
+
 ### Phase 1 — Host Declaration + Schemas
 - [x] Expand `modules/den.nix` with all 5 NixOS hosts (dell moves to `modules/homes/`)
 - [x] Add `_module.args.__findFile = den.lib.__findFile` (enables `<angle/bracket>` syntax)
@@ -2790,17 +2827,15 @@ from the host side.
 - [x] `home-manager build --flake .#"haseebmajid@dell"`
 
 ### Phase 3 — User Aspects + Standalone Homes
-- [x] `modules/users/haseeb/base.nix` (Simple Aspect, angle-bracket includes)
-- [x] `modules/users/haseeb/framework.nix` (Inheritance, angle brackets)
-- [x] `modules/users/haseeb/framebox.nix` (Inheritance)
-- [x] `modules/users/haseeb/workstation.nix` (Inheritance)
-- [x] `modules/users/haseeb/vm.nix` (Inheritance)
-- [x] `modules/users/haseeb/dell.nix` → `den.aspects.haseebmajid.provides.dell` standalone home
-- [x] `modules/users/nixos/vps.nix` (Simple)
+- [x] `hosts/framebox/default.nix` contains `den.aspects.haseeb` base + `den.aspects.haseeb.provides.framebox`
+- [x] `hosts/framework/default.nix` contains `den.aspects.haseeb.provides.framework`
+- [x] `hosts/workstation/default.nix` contains `den.aspects.haseeb.provides.workstation`
+- [x] `hosts/vm/default.nix` contains `den.aspects.haseeb.provides.vm`
+- [x] `hosts/dell/default.nix` → `den.aspects.haseebmajid.provides.dell` standalone home
+- [x] `hosts/vps/default.nix` (NixOS-only, no user HM)
+- [x] `modules/users/` folder deleted — all user aspects inlined into host files
 - [ ] Create `modules/secrets/lib.nix` (tag-based user secret registry, Moortu pattern)
 - [ ] Wire `aspect` keys in `den.hosts`
-- [ ] Remove `den.homes` from `modules/den.nix` (now declared inline in `homes/` module)
-- [ ] Remove old `hosts/*/home.nix` files
 
 ### Phase 4 — Role + Program Aspects
 - [x] `modules/aspects/profiles/common.nix`
@@ -2837,9 +2872,9 @@ from the host side.
 - [x] `modules/aspects/hosts/vm.nix` (Collector Aspect)
 - [x] `modules/aspects/hosts/vps.nix` (Collector Aspect)
 - [ ] Wire `den.hosts.*.aspect` in `modules/den.nix` (hosts still use nixos modules directly)
-- [ ] Migrate remaining `old/modules/nixos/security/` modules (auditd, doas, hardening, pcr-verification)
-- [ ] Migrate remaining `old/modules/nixos/hardware/` modules (bluetooth, ddcci, nix-ld)
-- [ ] Delete `old/modules/nixos/` once fully migrated
+- [x] Migrate/delete all `old/modules/nixos/` — fully deleted
+- [x] pcr-verification inlined into `hosts/framework/default.nix`
+- [x] Remove nixos bridge from `modules/legacy.nix`
 
 ### Phase 6 — flake-file
 - [ ] Add `flake-file` to flake inputs
