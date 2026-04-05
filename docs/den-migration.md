@@ -2796,7 +2796,7 @@ flake.nix                 ← import-tree ./modules + import-tree.match hosts/*/
 
 **What's remaining:**
 1. **Neovim broken** — `programs.neovim.enable = false` on dell; investigate `old/modules/home/cli/editors/neovim/`
-2. **Phase 6 (flake-file)** — colocate input declarations inside each aspect file, regenerate flake.nix
+2. **Phase 6 (flake-file)** — mostly done: `flake-file` added, inputs colocated in aspect files. Remaining: add ~12 more inputs (nixCats, neovim plugins, hyprland, etc.) then run `write-flake` to auto-generate `flake.nix`
 3. **Final cleanup** — once old/modules/home/ is fully migrated, delete `modules/legacy.nix` and `old/`
 4. **Optional** — `den.schema.user` typed identity, `modules/secrets/lib.nix` tag-based registry
 
@@ -2877,12 +2877,12 @@ flake.nix                 ← import-tree ./modules + import-tree.match hosts/*/
 - [x] Remove nixos bridge from `modules/legacy.nix`
 
 ### Phase 6 — flake-file
-- [ ] Add `flake-file` to flake inputs
-- [ ] Move input declarations from `flake.nix` into the module files that use them
-- [ ] Run `nix run .#write-flake` to regenerate `flake.nix`
-- [ ] Verify `nix flake check` passes
+- [x] Add `flake-file` to flake inputs
+- [x] Move input declarations from `flake.nix` into the module files that use them (via `flake-file.inputs.*`)
+- [ ] Add remaining inputs: nixCats, neovim plugins, hyprland, nixflix, comma, fenix, opencode, nix-playwright-mcp, zellij-mcp, omerxx-dotfiles
+- [ ] Run `nix run .#write-flake` to auto-generate `flake.nix` (replaces hand-written file)
+- [ ] Verify `nix flake check` passes with generated `flake.nix`
 - [ ] Commit the auto-generated `flake.nix`
-
 ### Final Cleanup
 - [ ] Delete `modules/legacy.nix` (import-tree bridge no longer needed)
 - [ ] Delete `old/modules/nixos/` and `old/modules/home/` trees

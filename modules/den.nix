@@ -82,6 +82,22 @@ in
     url = "github:gsd-build/get-shit-done/v1.21.1";
     flake = false;
   };
+  flake-file.inputs.nixflix = {
+    url = "github:kiriwalawren/nixflix";
+    inputs.nixpkgs.follows = "nixpkgs";
+  };
+  flake-file.inputs.zellij-mcp = {
+    url = "github:GitJuhb/zellij-mcp-server";
+    flake = false;
+  };
+  flake-file.inputs.comma = {
+    url = "github:nix-community/comma";
+    inputs.nixpkgs.follows = "nixpkgs";
+  };
+  flake-file.inputs.fenix = {
+    url = "github:nix-community/fenix";
+    inputs.nixpkgs.follows = "nixpkgs";
+  };
 
   flake-file.outputs = "flake-module";
 
