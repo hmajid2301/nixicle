@@ -1,17 +1,13 @@
 { den, ... }:
 {
-  den.aspects.haseeb.provides.dell = {
-    homeManager = { pkgs, lib, ... }: {
-      home = {
-        username = "haseeb";
-        homeDirectory = "/home/haseeb";
-        stateVersion = "23.11";
-      };
+  den.aspects.haseebmajid.provides.dell = {
+    includes = [
+      den.aspects.desktop
+      den.aspects.non-nixos
+    ];
 
-      roles = {
-        desktop.enable = true;
-        non-nixos.enable = true;
-      };
+    homeManager = { pkgs, lib, ... }: {
+      home.stateVersion = "23.11";
 
       development.android.emulator.enable = true;
 

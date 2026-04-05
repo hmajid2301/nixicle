@@ -31,10 +31,19 @@ let
       specialArgs = { inherit inputs; lib = extendedLib; };
     };
 
-  mkHomeInstantiate = { modules }:
+  mkHomeInstantiate = { modules, ... }:
+    let
+      hmLib = inputs.home-manager.lib.hm;
+      hmExtendedLib = extendedLib.extend (self: super: { hm = hmLib; });
+      pkgs = import inputs.nixpkgs {
+        system = "x86_64-linux";
+        config.allowUnfree = true;
+        inherit overlays;
+      };
+    in
     inputs.home-manager.lib.homeManagerConfiguration {
-      pkgs = inputs.nixpkgs.legacyPackages.x86_64-linux;
-      extraSpecialArgs = { inherit inputs; lib = extendedLib; };
+      inherit pkgs;
+      extraSpecialArgs = { inherit inputs; lib = hmExtendedLib; };
       inherit modules;
     };
 in
@@ -48,6 +57,14 @@ in
   _module.args.__findFile = den.lib.__findFile;
 
   den.ctx.user.includes = [ den._.mutual-provider ];
+  den.ctx.home.includes = [
+    den._.mutual-provider
+    ({ home, ... }: {
+      homeManager = { ... }: {
+        _module.args.host = home.hostName or "unknown";
+      };
+    })
+  ];
 
   den.hosts.x86_64-linux.framework = {
     isLaptop = true;

@@ -6,6 +6,7 @@
       den.aspects.development
       den.aspects.niri
       den.aspects.audio
+      den.aspects.vpn
     ];
 
     nixos = { lib, pkgs, ... }: {
@@ -27,7 +28,6 @@
       services = {
         upower.enable = true;
         blueman.enable = true;
-        vpn.enable = true;
         avahi = {
           enable = true;
           nssmdns4 = true;
@@ -67,10 +67,18 @@
           Requires = [ "graphical-session-pre.target" ];
         };
       };
-      services = {
-        nixicle.kdeconnect.enable = true;
-        spotify.enable = true;
+      services.spotify.enable = true;
+
+      xdg.desktopEntries = {
+        "org.kde.kdeconnect.sms" = { exec = ""; name = "KDE Connect SMS"; settings.NoDisplay = "true"; };
+        "org.kde.kdeconnect.nonplasma" = { exec = ""; name = "KDE Connect Indicator"; settings.NoDisplay = "true"; };
+        "org.kde.kdeconnect.app" = { exec = ""; name = "KDE Connect"; settings.NoDisplay = "true"; };
       };
+      qt.enable = true;
+      xdg.configFile."autostart/polkit-kde-authentication-agent-1.desktop".text = ''
+        [Desktop Entry]
+        Hidden=true
+      '';
       desktops.addons.xdg.enable = true;
       home.sessionVariables = {
         MOZ_ENABLE_WAYLAND = 1;

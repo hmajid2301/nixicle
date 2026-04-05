@@ -32,8 +32,6 @@ in
       extra-trusted-public-keys = [ "niri.cachix.org-1:Wv0OmO7PsuocRKzfDoJ3mulSl7Z6oezYhGhR+3W2964=" ];
     };
 
-    stylix.targets.niri.enable = lib.mkDefault true;
-
     desktops.addons = {
       rofi.enable = true;
       wlsunset.enable = true;
