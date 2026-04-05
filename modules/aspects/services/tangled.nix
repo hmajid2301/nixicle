@@ -1,0 +1,57 @@
+{ den, inputs, ... }:
+let
+  tunnelId = "ecef5dbb-834e-43ed-84c6-355a2ac53e59";
+in
+{
+  den.aspects.tangled = {
+    nixos = { config, pkgs, lib, ... }: {
+      services.tangled.knot = {
+        enable = true;
+        package = inputs.tangled.packages.${pkgs.stdenv.hostPlatform.system}.knot;
+        server = {
+          owner = "did:plc:reouqbpvl2kbkhvok2pwhlzg";
+          hostname = "tangled.haseebmajid.dev";
+        };
+      };
+
+      services.tangled.spindle = {
+        enable = true;
+        package = inputs.tangled.packages.${pkgs.stdenv.hostPlatform.system}.spindle;
+        server = {
+          owner = "did:plc:reouqbpvl2kbkhvok2pwhlzg";
+          hostname = "spindle.haseebmajid.dev";
+          secrets = {
+            provider = "openbao";
+            openbao = {
+              proxyAddr = "http://127.0.0.1:8202";
+              mount = "spindle";
+            };
+          };
+        };
+      };
+
+      services.nixicle.nixery = {
+        enable = true;
+        port = 8091;
+        channel = "nixos-unstable";
+      };
+
+      services.nixicle.openbao = {
+        enable = true;
+        proxy.enable = true;
+      };
+
+      services.cloudflared.tunnels.${tunnelId}.ingress = {
+        "tangled.haseebmajid.dev".service = "http://localhost:5555";
+        "spindle.haseebmajid.dev".service = "http://localhost:6555";
+        "git.haseebmajid.dev".service = "ssh://localhost:22";
+      };
+
+      environment.persistence."/persist".directories =
+        lib.mkIf config.system.impermanence.enable [
+          { directory = "/home/git"; user = "git"; group = "git"; mode = "0750"; }
+          { directory = "/var/lib/spindle"; user = "root"; group = "root"; mode = "0755"; }
+        ];
+    };
+  };
+}
