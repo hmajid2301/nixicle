@@ -1,3 +1,4 @@
+{ lib, ... }:
 {
   home = {
     username = "haseeb";
@@ -6,6 +7,8 @@
   };
 
   gtk.gtk4.theme = null;
+
+  dev.claude-code.enable = lib.mkForce false;
 
   programs.git = {
     signing = {
@@ -19,7 +22,7 @@
     development.enable = true;
     gaming.enable = true;
     social.enable = true;
-    video.enable = true;
+    # video.enable = true;
   };
 
   desktops = {

@@ -16,11 +16,9 @@ in
   };
 
   config = mkIf cfg.enable {
-    # Enable AI coding assistants via their dedicated modules
     dev.claude-code.enable = true;
     cli.tools.opencode.enable = true;
 
-    # Install other AI tools directly
     home.packages = with pkgs; [
       gemini-cli
       crush
