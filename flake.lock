@@ -1018,11 +1018,11 @@
         "playwright": "playwright_2"
       },
       "locked": {
-        "lastModified": 1774906309,
-        "narHash": "sha256-BIyXpIlPrkfyV785Jl1AVsMgbLYg7QR7Qm+4dpvOyLw=",
+        "lastModified": 1775416059,
+        "narHash": "sha256-YBfTXj6/ToUlrEKMusWDFhTef/6eJsPztrjGekk2OK4=",
         "owner": "hmajid2301",
         "repo": "goroutinely",
-        "rev": "4fd4f060fbf2898257f01e8d4dd0e566dec73b66",
+        "rev": "f7c9220366bc53a4103094de74cda2360df613c6",
         "type": "gitlab"
       },
       "original": {
