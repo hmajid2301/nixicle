@@ -4,6 +4,15 @@
     url = "github:sodiboo/niri-flake";
     inputs.nixpkgs.follows = "nixpkgs";
   };
+  flake-file.inputs.zjstatus.url = "github:dj95/zjstatus";
+  flake-file.inputs.dankMaterialShell = {
+    url = "github:AvengeMedia/DankMaterialShell";
+    inputs.nixpkgs.follows = "nixpkgs";
+  };
+  flake-file.inputs.noctalia = {
+    url = "github:noctalia-dev/noctalia-shell";
+    inputs.nixpkgs.follows = "nixpkgs";
+  };
 
   den.aspects.niri = {
     includes = [
@@ -40,7 +49,14 @@
       })
     ];
 
-    nixos = { config, pkgs, lib, ... }: {
+    nixos = { config, pkgs, lib, inputs, ... }: {
+      nixpkgs.overlays = [
+        inputs.niri.overlays.niri
+        (final: prev: {
+          zjstatus = inputs.zjstatus.packages.${prev.stdenv.hostPlatform.system}.default;
+        })
+      ];
+
       nix.settings = {
         substituters = [ "https://niri.cachix.org" ];
         trusted-public-keys = [ "niri.cachix.org-1:Wv0OmO7PsuocRKzfDoJ3mulSl7Z6oezYhGhR+3W2964=" ];

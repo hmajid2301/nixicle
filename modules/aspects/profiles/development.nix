@@ -1,5 +1,7 @@
 { den, ... }:
 {
+  flake-file.inputs.nix-index-database.url = "github:nix-community/nix-index-database";
+
   den.aspects.development = {
     homeManager = { pkgs, lib, ... }: {
       xdg.desktopEntries = lib.optionalAttrs pkgs.stdenv.isLinux {

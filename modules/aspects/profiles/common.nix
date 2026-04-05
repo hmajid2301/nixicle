@@ -3,10 +3,25 @@ let
   sharedNixConfig = import ../../../old/modules/shared/nix-caches.nix;
 in
 {
+  flake-file.inputs.nur.url = "github:nix-community/NUR";
+  flake-file.inputs.gomod2nix = {
+    url = "github:nix-community/gomod2nix";
+    inputs.nixpkgs.follows = "nixpkgs";
+  };
+  flake-file.inputs.sops-nix = {
+    url = "github:mic92/sops-nix";
+    inputs.nixpkgs.follows = "nixpkgs";
+  };
+
   den.aspects.common = {
     includes = [ den.aspects.stylix den.aspects.boot ];
 
     nixos = { pkgs, lib, inputs, options, ... }: {
+      nixpkgs.overlays = [
+        inputs.nur.overlays.default
+        inputs.gomod2nix.overlays.default
+      ];
+
       # Networking
       networking.firewall.enable = true;
       networking.networkmanager = {

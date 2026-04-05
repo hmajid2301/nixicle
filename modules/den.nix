@@ -7,10 +7,11 @@ let
     };
   });
 
+  # Overlays for mkHomeInstantiate (standalone HM builds like dell).
+  # NixOS hosts get overlays via nixpkgs.overlays in aspect files instead.
   overlays = [
     inputs.gomod2nix.overlays.default
     inputs.nur.overlays.default
-    inputs.nix-topology.overlays.default
     inputs.niri.overlays.niri
     (final: prev: {
       zjstatus = inputs.zjstatus.packages.${prev.stdenv.hostPlatform.system}.default;
@@ -48,55 +49,24 @@ let
     };
 in
 {
+  # home-manager: used in mkHomeInstantiate
   flake-file.inputs.home-manager = {
     url = "github:nix-community/home-manager";
     inputs.nixpkgs.follows = "nixpkgs";
   };
-  flake-file.inputs.sops-nix = {
-    url = "github:mic92/sops-nix";
-    inputs.nixpkgs.follows = "nixpkgs";
-  };
-  flake-file.inputs.disko = {
-    url = "github:nix-community/disko";
-    inputs.nixpkgs.follows = "nixpkgs";
-  };
-  flake-file.inputs.stylix.url = "github:danth/stylix";
-  flake-file.inputs.catppuccin.url = "github:catppuccin/nix";
-  flake-file.inputs.nur.url = "github:nix-community/NUR";
-  flake-file.inputs.gomod2nix = {
-    url = "github:nix-community/gomod2nix";
-    inputs.nixpkgs.follows = "nixpkgs";
-  };
-  flake-file.inputs.nix-index-database.url = "github:nix-community/nix-index-database";
-  flake-file.inputs.nixos-facter-modules.url = "github:numtide/nixos-facter-modules";
-  flake-file.inputs.noctalia = {
-    url = "github:noctalia-dev/noctalia-shell";
-    inputs.nixpkgs.follows = "nixpkgs";
-  };
-  flake-file.inputs.dankMaterialShell = {
-    url = "github:AvengeMedia/DankMaterialShell";
-    inputs.nixpkgs.follows = "nixpkgs";
-  };
-  flake-file.inputs.zjstatus.url = "github:dj95/zjstatus";
-  flake-file.inputs.get-shit-done = {
-    url = "github:gsd-build/get-shit-done/v1.21.1";
-    flake = false;
-  };
+  # nixflix: global NixOS module imported in den.default.nixos
   flake-file.inputs.nixflix = {
     url = "github:kiriwalawren/nixflix";
     inputs.nixpkgs.follows = "nixpkgs";
   };
+  # overlay inputs: get-shit-done + zellij-mcp power the nixicle packages overlay (needs extendedLib)
+  flake-file.inputs.get-shit-done = {
+    url = "github:gsd-build/get-shit-done/v1.21.1";
+    flake = false;
+  };
   flake-file.inputs.zellij-mcp = {
     url = "github:GitJuhb/zellij-mcp-server";
     flake = false;
-  };
-  flake-file.inputs.comma = {
-    url = "github:nix-community/comma";
-    inputs.nixpkgs.follows = "nixpkgs";
-  };
-  flake-file.inputs.fenix = {
-    url = "github:nix-community/fenix";
-    inputs.nixpkgs.follows = "nixpkgs";
   };
 
   flake-file.outputs = "flake-module";
@@ -185,7 +155,18 @@ in
 
   # NOTE: do NOT include home-manager.nixosModules here — den handles HM integration automatically
   den.default.nixos = { ... }: {
-    nixpkgs.overlays = overlays;
+    # nixicle packages overlay (needs extendedLib so defined here).
+    # nur/gomod2nix overlays are in common.nix; niri/zjstatus in niri.nix.
+    nixpkgs.overlays = [
+      (final: prev: {
+        inherit (inputs) get-shit-done;
+        nixicle = extendedLib.nixicle.importPackages final ../packages // {
+          zellij-mcp = prev.callPackage ../packages/zellij-mcp {
+            inherit inputs;
+          };
+        };
+      })
+    ];
     nixpkgs.config.allowUnfree = true;
     imports = [
       inputs.stylix.nixosModules.stylix

@@ -1,5 +1,7 @@
 { inputs, den, pkgs, ... }:
 {
+  flake-file.inputs.nixos-facter-modules.url = "github:numtide/nixos-facter-modules";
+
   den.aspects.haseeb.provides.workstation = {
     includes = [
       den.aspects.desktop

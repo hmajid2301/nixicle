@@ -1,6 +1,10 @@
 { den, ... }:
 {
   flake-file.inputs.lanzaboote.url = "github:nix-community/lanzaboote";
+  flake-file.inputs.disko = {
+    url = "github:nix-community/disko";
+    inputs.nixpkgs.follows = "nixpkgs";
+  };
 
   den.aspects.boot = {
     nixos = { lib, pkgs, ... }: {

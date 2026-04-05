@@ -1,5 +1,8 @@
 { den, ... }:
 {
+  flake-file.inputs.stylix.url = "github:danth/stylix";
+  flake-file.inputs.catppuccin.url = "github:catppuccin/nix";
+
   den.aspects.stylix = {
     nixos = { pkgs, ... }: {
       fonts = {
