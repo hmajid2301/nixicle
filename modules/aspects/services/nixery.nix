@@ -4,6 +4,10 @@ let
   channel = "nixos-unstable";
 in
 {
+  flake-file.inputs.nixery = {
+    url = "github:tazjin/nixery";
+    flake = false;
+  };
   den.aspects.nixery = {
     nixos = { config, pkgs, lib, ... }: {
       systemd.services.nixery = {

@@ -3,6 +3,11 @@ let
   tunnelId = "ecef5dbb-834e-43ed-84c6-355a2ac53e59";
 in
 {
+  flake-file.inputs.tangled = {
+    url = "git+https://tangled.sh/@tangled.sh/core";
+    inputs.nixpkgs.follows = "nixpkgs";
+  };
+
   den.aspects.tangled = {
     includes = [
       den.aspects.nixery

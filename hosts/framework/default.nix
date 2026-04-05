@@ -1,5 +1,7 @@
 { inputs, den, ... }:
 {
+  flake-file.inputs.nixos-hardware.url = "github:nixos/nixos-hardware";
+
   den.aspects.haseeb.provides.framework = {
     includes = [
       den.aspects.desktop

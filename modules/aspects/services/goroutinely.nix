@@ -3,6 +3,11 @@ let
   tunnelId = "ecef5dbb-834e-43ed-84c6-355a2ac53e59";
 in
 {
+  flake-file.inputs.goroutinely = {
+    url = "gitlab:hmajid2301/goroutinely/feat/move-to-internal";
+    inputs.nixpkgs.follows = "nixpkgs";
+  };
+
   den.aspects.goroutinely = {
     nixos = { config, pkgs, lib, ... }: {
       sops.secrets.goroutinely = {

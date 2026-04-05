@@ -1,5 +1,7 @@
 { den, ... }:
 {
+  flake-file.inputs.impermanence.url = "github:nix-community/impermanence";
+
   # Declare the option at the flake module level so it's available to all NixOS modules,
   # even when den.aspects.impermanence is not included on a host.
   den.default.nixos = { lib, ... }: {

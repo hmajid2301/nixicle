@@ -1,4 +1,4 @@
-{ inputs, lib, ... }:
+{ inputs, lib, config, ... }:
 let
   supportedSystems = [ "x86_64-linux" "aarch64-linux" ];
   forAllSystems = lib.genAttrs supportedSystems;
@@ -34,6 +34,23 @@ let
   };
 in
 {
+  flake-file.inputs.deploy-rs = {
+    url = "github:serokell/deploy-rs";
+    inputs.nixpkgs.follows = "nixpkgs";
+  };
+  flake-file.inputs.nixos-generators = {
+    url = "github:nix-community/nixos-generators";
+    inputs.nixpkgs.follows = "nixpkgs";
+  };
+  flake-file.inputs.nixos-anywhere = {
+    url = "github:numtide/nixos-anywhere";
+    inputs.nixpkgs.follows = "nixpkgs";
+  };
+  flake-file.inputs.nix-topology = {
+    url = "github:oddlama/nix-topology";
+    inputs.nixpkgs.follows = "nixpkgs";
+  };
+
   flake.packages = forAllSystems (system:
     let pkgs = mkPkgs system;
     in pkgs.nixicle // {
@@ -69,6 +86,14 @@ in
         format = "iso";
       };
     }
+  );
+
+  flake.apps = forAllSystems (system:
+    let pkgs = mkPkgs system;
+    in lib.mapAttrs (name: f:
+      let drv = f pkgs;
+      in { type = "app"; program = "${drv}/bin/${name}"; }
+    ) config.flake-file.apps
   );
 
   flake.devShells = forAllSystems (system:

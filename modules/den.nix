@@ -48,7 +48,45 @@ let
     };
 in
 {
+  flake-file.inputs.home-manager = {
+    url = "github:nix-community/home-manager";
+    inputs.nixpkgs.follows = "nixpkgs";
+  };
+  flake-file.inputs.sops-nix = {
+    url = "github:mic92/sops-nix";
+    inputs.nixpkgs.follows = "nixpkgs";
+  };
+  flake-file.inputs.disko = {
+    url = "github:nix-community/disko";
+    inputs.nixpkgs.follows = "nixpkgs";
+  };
+  flake-file.inputs.stylix.url = "github:danth/stylix";
+  flake-file.inputs.catppuccin.url = "github:catppuccin/nix";
+  flake-file.inputs.nur.url = "github:nix-community/NUR";
+  flake-file.inputs.gomod2nix = {
+    url = "github:nix-community/gomod2nix";
+    inputs.nixpkgs.follows = "nixpkgs";
+  };
+  flake-file.inputs.nix-index-database.url = "github:nix-community/nix-index-database";
+  flake-file.inputs.nixos-facter-modules.url = "github:numtide/nixos-facter-modules";
+  flake-file.inputs.noctalia = {
+    url = "github:noctalia-dev/noctalia-shell";
+    inputs.nixpkgs.follows = "nixpkgs";
+  };
+  flake-file.inputs.dankMaterialShell = {
+    url = "github:AvengeMedia/DankMaterialShell";
+    inputs.nixpkgs.follows = "nixpkgs";
+  };
+  flake-file.inputs.zjstatus.url = "github:dj95/zjstatus";
+  flake-file.inputs.get-shit-done = {
+    url = "github:gsd-build/get-shit-done/v1.21.1";
+    flake = false;
+  };
+
+  flake-file.outputs = "flake-module";
+
   imports = [
+    inputs.flake-file.flakeModules.flake
     inputs.den.flakeModule
     inputs.den.flakeOutputs.nixosConfigurations
     inputs.den.flakeOutputs.homeConfigurations

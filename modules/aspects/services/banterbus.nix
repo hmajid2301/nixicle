@@ -10,6 +10,11 @@ let
   redisAddress = "localhost:6379";
 in
 {
+  flake-file.inputs.banterbus = {
+    url = "gitlab:hmajid2301/banterbus";
+    inputs.nixpkgs.follows = "nixpkgs";
+  };
+
   den.aspects.banterbus = {
     nixos = { config, pkgs, lib, ... }: {
       services.postgresql = {

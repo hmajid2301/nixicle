@@ -3,6 +3,8 @@ let
   tunnelId = "ecef5dbb-834e-43ed-84c6-355a2ac53e59";
 in
 {
+  flake-file.inputs.authentik-nix.url = "github:nix-community/authentik-nix";
+
   den.aspects.authentik = {
     nixos = { config, lib, ... }: {
       sops.secrets.authenik_env.sopsFile = ../../../hosts/framebox/secrets.yaml;

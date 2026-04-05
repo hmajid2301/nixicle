@@ -1,5 +1,7 @@
 { den, ... }:
 {
+  flake-file.inputs.lanzaboote.url = "github:nix-community/lanzaboote";
+
   den.aspects.boot = {
     nixos = { lib, pkgs, ... }: {
       environment.systemPackages = with pkgs; [

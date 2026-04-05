@@ -1,5 +1,7 @@
 { inputs, den, lib, ... }:
 {
+  flake-file.inputs.nixos-hardware.url = "github:nixos/nixos-hardware";
+
   den.aspects.haseeb = {
     includes = [
       ({ user, ... }: {

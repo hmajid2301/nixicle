@@ -1,5 +1,11 @@
 { den, ... }:
 {
+  flake-file.inputs.nixgl.url = "github:nix-community/nixGL";
+  flake-file.inputs.pam-shim = {
+    url = "github:Cu3PO42/pam_shim/next";
+    inputs.nixpkgs.follows = "nixpkgs";
+  };
+
   den.aspects.non-nixos = {
     homeManager =
       { pkgs, config, lib, inputs, ... }:
