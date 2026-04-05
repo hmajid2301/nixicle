@@ -1,7 +1,11 @@
 { inputs, den, ... }:
 {
   den.aspects.framebox = {
-    includes = [ den.aspects.nfs-truenas ];
+    includes = [
+      den.aspects.nfs-truenas
+      den.aspects.impermanence
+      den.aspects.boot-secure
+    ];
 
     nixos = { config, ... }: {
       imports = [
@@ -28,13 +32,8 @@
       users.groups.media.gid = 3000;
       users.users.haseeb.extraGroups = [ "media" ];
 
-      system = {
-        impermanence.enable = true;
-        boot = {
-          enable = true;
-          secureBoot = true;
-        };
-      };
+      # Persist secure boot keys
+      environment.persistence."/persist".directories = [ "/etc/secureboot" ];
 
       services = {
         power-profiles-daemon.enable = true;

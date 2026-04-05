@@ -1,7 +1,12 @@
 { inputs, den, ... }:
 {
   den.aspects.framework = {
-    nixos = { config, lib, pkgs, ... }: {
+    includes = [
+      den.aspects.impermanence
+      den.aspects.boot-secure
+    ];
+
+    nixos = { config, ... }: {
       imports = [
         ../../hosts/framework/hardware-configuration.nix
         ../../hosts/framework/disks.nix
@@ -24,13 +29,8 @@
         expectedPcr15 = "caf33e79c645b65849256238a11fa68ae197e5cb89730c463c1cdf1d9128376f";
       };
 
-      system = {
-        impermanence.enable = true;
-        boot = {
-          enable = true;
-          secureBoot = true;
-        };
-      };
+      # Persist secure boot keys
+      environment.persistence."/persist".directories = [ "/etc/secureboot" ];
 
       networking.hostName = "framework";
       system.stateVersion = "23.11";

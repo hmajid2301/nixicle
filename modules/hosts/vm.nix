@@ -1,17 +1,17 @@
 { den, ... }:
 {
   den.aspects.vm = {
-    nixos = { config, lib, pkgs, ... }: {
+    includes = [ den.aspects.impermanence ];
+
+    nixos = { lib, pkgs, ... }: {
       imports = [
         ../../hosts/vm/hardware-configuration.nix
         ../../hosts/vm/disks.nix
       ];
 
-      system.boot.plymouth = lib.mkForce false;
+      boot.plymouth.enable = lib.mkForce false;
       home-manager.backupFileExtension = "backup";
-      system.impermanence.enable = true;
 
-      services.openssh.enable = true;
       services.qemuGuest.enable = true;
       services.spice-vdagentd.enable = true;
       security.sudo.wheelNeedsPassword = false;

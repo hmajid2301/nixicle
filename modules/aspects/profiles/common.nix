@@ -4,7 +4,7 @@ let
 in
 {
   den.aspects.common = {
-    includes = [ den.aspects.stylix ];
+    includes = [ den.aspects.stylix den.aspects.boot ];
 
     nixos = { pkgs, lib, inputs, options, ... }: {
       # Networking
@@ -107,9 +107,6 @@ in
       time.timeZone = "Europe/London";
       services.xserver.xkb = { layout = "gb"; variant = ""; };
       console.keyMap = "uk";
-
-      # Boot (general setup via old module — migrated separately with secureBoot/impermanence)
-      system.boot.enable = true;
 
       security.sudo.extraConfig = ''
         Defaults secure_path="/run/wrappers/bin:/run/current-system/sw/bin:/nix/var/nix/profiles/default/bin:/usr/local/bin:/usr/bin:/bin"

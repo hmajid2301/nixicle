@@ -1,7 +1,11 @@
 { inputs, den, ... }:
 {
   den.aspects.workstation = {
-    includes = [ den.aspects.nfs-truenas ];
+    includes = [
+      den.aspects.nfs-truenas
+      den.aspects.impermanence
+      den.aspects.boot-secure
+    ];
 
     nixos = { config, ... }: {
       imports = [
@@ -25,13 +29,8 @@
 
       boot.kernelParams = [ "resume_offset=533760" ];
 
-      system = {
-        impermanence.enable = true;
-        boot = {
-          enable = true;
-          secureBoot = true;
-        };
-      };
+      # Persist secure boot keys
+      environment.persistence."/persist".directories = [ "/etc/secureboot" ];
 
       services = {
         virtualisation.kvm.enable = true;

@@ -48,7 +48,8 @@
         logitech-udev-rules
         solaar
       ];
-      system.boot.plymouth = true;
+      boot.plymouth.enable = true;
+      boot.kernelParams = [ "quiet" "splash" "loglevel=3" "udev.log_level=0" ];
       programs.nh = {
         enable = true;
         clean.enable = true;
