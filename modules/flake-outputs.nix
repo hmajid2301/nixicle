@@ -38,10 +38,6 @@ in
     url = "github:nix-community/comma";
     inputs.nixpkgs.follows = "nixpkgs";
   };
-  flake-file.inputs.fenix = {
-    url = "github:nix-community/fenix";
-    inputs.nixpkgs.follows = "nixpkgs";
-  };
   flake-file.inputs.deploy-rs = {
     url = "github:serokell/deploy-rs";
     inputs.nixpkgs.follows = "nixpkgs";

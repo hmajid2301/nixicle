@@ -54,20 +54,6 @@ in
     url = "github:nix-community/home-manager";
     inputs.nixpkgs.follows = "nixpkgs";
   };
-  # nixflix: global NixOS module imported in den.default.nixos
-  flake-file.inputs.nixflix = {
-    url = "github:kiriwalawren/nixflix";
-    inputs.nixpkgs.follows = "nixpkgs";
-  };
-  # overlay inputs: get-shit-done + zellij-mcp power the nixicle packages overlay (needs extendedLib)
-  flake-file.inputs.get-shit-done = {
-    url = "github:gsd-build/get-shit-done/v1.21.1";
-    flake = false;
-  };
-  flake-file.inputs.zellij-mcp = {
-    url = "github:GitJuhb/zellij-mcp-server";
-    flake = false;
-  };
 
   flake-file.outputs = "flake-module";
 
@@ -176,7 +162,6 @@ in
       inputs.authentik-nix.nixosModules.default
       inputs.tangled.nixosModules.knot
       inputs.tangled.nixosModules.spindle
-      inputs.nixflix.nixosModules.nixflix
       inputs.niri.nixosModules.niri
       inputs.goroutinely.nixosModules.default
       inputs.disko.nixosModules.disko
