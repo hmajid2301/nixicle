@@ -70,7 +70,10 @@ in
           suffix-LD = true;
           aliases = [ "nvim" ];
           configDirName = "nvim";
-          unwrappedCfgPath = "${config.home.homeDirectory}/nixicle/modules/home/cli/editors/neovim";
+          # Hardcoded live path for wrapRc=false (regularCats) — must be a real
+          # filesystem path for live editing without rebuilds. toString/./ would
+          # give a nix store copy instead. Update manually if the repo moves.
+          unwrappedCfgPath = "${config.home.homeDirectory}/nixicle/modules/aspects/neovim";
           neovim-unwrapped = pkgs.neovim-unwrapped;
         };
         categories = {
