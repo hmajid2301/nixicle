@@ -2,7 +2,7 @@
 {
   flake-file.inputs.nix-index-database.url = "github:nix-community/nix-index-database";
   den.aspects.development = {
-    includes = [ den.aspects.neovim den.aspects.ai den.aspects.zellij ];
+    includes = [ den.aspects.neovim den.aspects.ai den.aspects.zellij den.aspects.git den.aspects.gpg den.aspects.ssh den.aspects.attic ];
     homeManager =
       { pkgs, lib, config, ... }:
       let
@@ -45,13 +45,6 @@
           };
         };
 
-        # Shell tools (kept as old-style options — complex modules with per-host options)
-        cli.tools = {
-          attic.enable = true;
-          git.enable = true;
-          gpg.enable = true;
-          ssh.enable = true;
-        };
 
         # Atuin — shell history sync
         home.packages = [ atuin-export-fish ];

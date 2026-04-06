@@ -6,13 +6,7 @@
     inputs.nixpkgs.follows = "nixpkgs";
   };
 
-  den.default.homeManager = { ... }: {
-    imports = [
-      (inputs.import-tree.match ".*/default\\.nix" ../old/modules/home)
-    ];
-  };
-
-  # Inject HM settings and host arg needed by old bridge modules.
+  # Inject HM settings per user context.
   # Runs per user context so it only applies to hosts that actually have HM users.
   den.ctx.user.includes = [
     ({ host, user, ... }: {

@@ -41,7 +41,7 @@
         exec ${pkgs.android-tools}/bin/adb "$@"
       '';
 
-      cli.tools.envoluntary.config = {
+      xdg.configFile."envoluntary/config.toml".source = (pkgs.formats.toml { }).generate "envoluntary-config.toml" {
         entries = [
           {
             pattern = "~/projects/vault-plugins(/.*)?";
@@ -153,10 +153,8 @@
         "x-scheme-handler/unknown" = [ "google-chrome.desktop" ];
       };
 
-      cli.tools.git = {
-        allowedSigners = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDUF0LHH63pGkd1m7FGdbZirVXULDS5WSDzerJ0sskoq haseeb.majid@nala.money";
-        email = "haseeb.majid@nala.money";
-      };
+      programs.git.settings.user.email = "haseeb.majid@nala.money";
+      home.file.".ssh/allowed_signers".text = "* ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDUF0LHH63pGkd1m7FGdbZirVXULDS5WSDzerJ0sskoq haseeb.majid@nala.money";
 
       gtk.gtk4.theme = null;
 

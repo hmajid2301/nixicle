@@ -13,7 +13,7 @@
         stateVersion = "23.11";
       };
 
-      cli.tools.ssh.enableKeychain = false;
+      programs.keychain.enable = false;
     };
   };
 
