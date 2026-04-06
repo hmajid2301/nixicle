@@ -1,4 +1,4 @@
-{ den, ... }:
+{ den, inputs, ... }:
 {
   flake-file.inputs.lanzaboote.url = "github:nix-community/lanzaboote";
   flake-file.inputs.disko = {
@@ -8,6 +8,7 @@
 
   den.aspects.boot = {
     nixos = { lib, pkgs, ... }: {
+      imports = [ inputs.disko.nixosModules.disko ];
       environment.systemPackages = with pkgs; [
         efibootmgr
         efitools
@@ -42,6 +43,7 @@
     includes = [ den.aspects.boot ];
 
     nixos = { lib, ... }: {
+      imports = [ inputs.lanzaboote.nixosModules.lanzaboote ];
       boot = {
         lanzaboote = {
           enable = true;

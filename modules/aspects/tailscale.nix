@@ -1,6 +1,8 @@
-{ den, ... }:
+{ den, lib, ... }:
 {
   den.aspects.tailscale = {
+    includes = [ (import ./services/_persist-forwarder.nix { inherit den lib; }) ];
+    persist.directories = [ "/var/lib/tailscale" ];
     nixos = { config, lib, ... }: {
       services.tailscale = {
         enable = true;
@@ -9,8 +11,6 @@
       services.resolved.enable = true;
       networking.firewall.checkReversePath = "loose";
       networking.firewall.trustedInterfaces = [ "tailscale0" ];
-      environment.persistence."/persist".directories =
-        lib.mkIf config.system.impermanence.enable [ "/var/lib/tailscale" ];
     };
   };
 }

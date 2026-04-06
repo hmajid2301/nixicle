@@ -1,9 +1,13 @@
-{ den, ... }:
+{ den, lib, ... }:
 let
   tunnelId = "ecef5dbb-834e-43ed-84c6-355a2ac53e59";
 in
 {
   den.aspects.karakeep = {
+    includes = [ (import ./_persist-forwarder.nix { inherit den lib; }) ];
+    persist.directories = [
+          { directory = "/var/lib/karakeep"; user = "karakeep"; group = "karakeep"; mode = "0750"; }
+        ];
     nixos = { config, lib, ... }: {
       sops.secrets.karakeep_oauth.sopsFile = ../../../hosts/framebox/secrets.yaml;
 
@@ -34,10 +38,6 @@ in
         domain = "haseebmajid.dev";
       };
 
-      environment.persistence."/persist".directories =
-        lib.mkIf config.system.impermanence.enable [
-          { directory = "/var/lib/karakeep"; user = "karakeep"; group = "karakeep"; mode = "0750"; }
-        ];
     };
   };
 }

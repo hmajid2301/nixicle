@@ -1,4 +1,4 @@
-{ den, inputs, ... }:
+{ den, inputs, lib, ... }:
 let
   tunnelId = "ecef5dbb-834e-43ed-84c6-355a2ac53e59";
 in
@@ -9,7 +9,12 @@ in
   };
 
   den.aspects.goroutinely = {
+    includes = [ (import ./_persist-forwarder.nix { inherit den lib; }) ];
+    persist.directories = [
+          { directory = "/var/lib/goroutinely"; user = "goroutinely"; group = "goroutinely"; mode = "0750"; }
+        ];
     nixos = { config, pkgs, lib, ... }: {
+      imports = [ inputs.goroutinely.nixosModules.default ];
       sops.secrets.goroutinely = {
         sopsFile = ../../../hosts/framebox/secrets.yaml;
         key = "goroutinely";
@@ -46,10 +51,6 @@ in
         domain = "haseebmajid.dev";
       };
 
-      environment.persistence."/persist".directories =
-        lib.mkIf config.system.impermanence.enable [
-          { directory = "/var/lib/goroutinely"; user = "goroutinely"; group = "goroutinely"; mode = "0750"; }
-        ];
     };
   };
 }

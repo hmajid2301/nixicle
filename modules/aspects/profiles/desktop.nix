@@ -59,7 +59,7 @@
       nix.gc.automatic = lib.mkForce false;
     };
 
-    homeManager = { pkgs, config, ... }: {
+    homeManager = { pkgs, config, lib, ... }: {
       systemd.user.targets.tray = {
         Unit = {
           # tray icons require graphical-session-pre: https://github.com/nix-community/home-manager/issues/2064
@@ -124,7 +124,7 @@
       home.sessionVariables = {
         # XDG compliance for various tools
         HISTFILE = "${config.xdg.stateHome}/bash/history";
-        GTK2_RC_FILES = "${config.xdg.configHome}/gtk-2.0/gtkrc";
+        GTK2_RC_FILES = lib.mkDefault "${config.xdg.configHome}/gtk-2.0/gtkrc";
         NODE_REPL_HISTORY = "${config.xdg.stateHome}/node_repl_history";
         NPM_CONFIG_USERCONFIG = "${config.xdg.configHome}/npm/npmrc";
         NPM_CONFIG_CACHE = "${config.xdg.cacheHome}/npm";

@@ -1,4 +1,4 @@
-{ den, inputs, ... }:
+{ den, inputs, lib, ... }:
 let
   tunnelId = "ecef5dbb-834e-43ed-84c6-355a2ac53e59";
 in
@@ -12,9 +12,19 @@ in
     includes = [
       den.aspects.nixery
       den.aspects.openbao
+    
+      (import ./_persist-forwarder.nix { inherit den lib; })
     ];
+    persist.directories = [
+          { directory = "/home/git"; user = "git"; group = "git"; mode = "0750"; }
+          { directory = "/var/lib/spindle"; user = "root"; group = "root"; mode = "0755"; }
+        ];
 
     nixos = { config, pkgs, lib, ... }: {
+      imports = [
+        inputs.tangled.nixosModules.knot
+        inputs.tangled.nixosModules.spindle
+      ];
       services.tangled.knot = {
         enable = true;
         package = inputs.tangled.packages.${pkgs.stdenv.hostPlatform.system}.knot;
@@ -46,11 +56,6 @@ in
         "git.haseebmajid.dev".service = "ssh://localhost:22";
       };
 
-      environment.persistence."/persist".directories =
-        lib.mkIf config.system.impermanence.enable [
-          { directory = "/home/git"; user = "git"; group = "git"; mode = "0750"; }
-          { directory = "/var/lib/spindle"; user = "root"; group = "root"; mode = "0755"; }
-        ];
     };
   };
 }

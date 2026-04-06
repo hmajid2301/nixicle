@@ -10,27 +10,24 @@
       den.aspects.video
     ];
 
-    homeManager = { ... }: {
+    homeManager = { pkgs, config, ... }: {
       home = {
         username = "haseeb";
         homeDirectory = "/home/haseeb";
         stateVersion = "24.05";
       };
 
-      desktops = {
-        niri.enable = true;
-        addons = {
-          noctalia.enable = true;
-          swayidle = {
-            enable = true;
-            timeouts = {
-              lock = 300;
-              dpms = 330;
-              suspend = 0;
-              hibernate = 0;
-            };
-          };
-        };
+      services.swayidle = {
+        enable = true;
+        events.before-sleep = "noctalia-shell ipc call lockScreen lock";
+        timeouts = [
+          { timeout = 300; command = "noctalia-shell ipc call lockScreen lock"; }
+          {
+            timeout = 330;
+            command = "${config.programs.niri.package}/bin/niri msg action power-off-monitors";
+            resumeCommand = "${config.programs.niri.package}/bin/niri msg action power-on-monitors";
+          }
+        ];
       };
     };
   };

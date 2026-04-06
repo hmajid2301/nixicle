@@ -1,4 +1,4 @@
-{ den, ... }:
+{ den, inputs, ... }:
 {
   flake-file.inputs.nixgl.url = "github:nix-community/nixGL";
   flake-file.inputs.pam-shim = {
@@ -10,7 +10,10 @@
     homeManager =
       { pkgs, config, lib, inputs, ... }:
       {
-        imports = [ inputs.niri.homeModules.niri ];
+        imports = [
+          inputs.niri.homeModules.niri
+          inputs.pam-shim.homeModules.default
+        ];
 
         nix.package = pkgs.nix;
 

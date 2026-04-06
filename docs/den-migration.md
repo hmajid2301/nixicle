@@ -2765,9 +2765,17 @@ from the host side.
 
 ## Part 11 — Migration Checklist
 
-### Current State (as of 2026-04-06)
+### Current State (as of 2026-04-06, updated)
 
-All 6 configs evaluate cleanly: `vm`, `framework`, `framebox`, `workstation`, `vps` (NixOS), `haseebmajid@dell` (standalone HM).
+**`nix flake check --no-build` passes with zero errors.** All 6 configs evaluate cleanly: `vm`, `framework`, `framebox`, `workstation`, `vps` (NixOS), `haseebmajid@dell` (standalone HM).
+
+**Completed in this session:**
+- Moved all nixos/homeManager module imports out of `den.default` into their respective aspect files (stylix, boot/lanzaboote, sops-nix, authentik, tangled, niri, goroutinely, disko, nix-topology, sops-nix HM, niri HM, pam-shim, nix-index, stylix HM, catppuccin HM, dankMaterialShell HM, noctalia HM)
+- Implemented guarded persistence forwarding via `modules/aspects/services/_persist-forwarder.nix`: each aspect declares `persist.directories = [...]`; the forwarder conditionally applies them to `environment.persistence."/persist".directories` only when the impermanence module is loaded (using `lib.optionalAttrs` + `options ? environment.persistence` guard)
+- Moved impermanence out of `den.default.nixos` into its own `den.aspects.impermanence` aspect — only hosts that include it load the impermanence module
+- Fixed swayidle `events` syntax (list → attrset) on framebox and workstation
+- Silenced `xdg.userDirs.setSessionVariables` warnings by adopting new default in common profile
+- Fixed ISO gnome/gdm renamed options (`services.xserver.*` → `services.desktopManager/displayManager.*`)
 
 **Repo structure:**
 ```

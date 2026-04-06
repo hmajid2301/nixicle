@@ -1,9 +1,13 @@
-{ den, ... }:
+{ den, lib, ... }:
 let
   tunnelId = "ecef5dbb-834e-43ed-84c6-355a2ac53e59";
 in
 {
   den.aspects.tandoor = {
+    includes = [ (import ./_persist-forwarder.nix { inherit den lib; }) ];
+    persist.directories = [
+          { directory = "/var/lib/tandoor-recipes"; user = "tandoor_recipes"; group = "tandoor_recipes"; mode = "0750"; }
+        ];
     nixos = { config, lib, ... }: {
       sops.secrets.tandoor.sopsFile = ../../../hosts/framebox/secrets.yaml;
 
@@ -69,10 +73,6 @@ in
         }
       ];
 
-      environment.persistence."/persist".directories =
-        lib.mkIf config.system.impermanence.enable [
-          { directory = "/var/lib/tandoor-recipes"; user = "tandoor_recipes"; group = "tandoor_recipes"; mode = "0750"; }
-        ];
     };
   };
 }

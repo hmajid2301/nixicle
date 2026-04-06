@@ -1,4 +1,4 @@
-{ den, ... }:
+{ den, lib, ... }:
 let
   tunnelId = "ecef5dbb-834e-43ed-84c6-355a2ac53e59";
   dataDir = "/var/lib/hortusfox";
@@ -10,6 +10,11 @@ let
 in
 {
   den.aspects.hortusfox = {
+    includes = [ (import ./_persist-forwarder.nix { inherit den lib; }) ];
+    persist.directories = [
+          { directory = dataDir; user = "1000"; group = "1000"; mode = "0750"; }
+          { directory = "/var/lib/cni/networks"; user = "root"; group = "root"; mode = "0755"; }
+        ];
     nixos = { config, pkgs, lib, ... }: {
       sops.secrets.hortusfox_env.sopsFile = ../../../hosts/framebox/secrets.yaml;
 
@@ -105,11 +110,6 @@ in
 
       services.cloudflared.tunnels.${tunnelId}.ingress.${domain} = "http://localhost:${toString port}";
 
-      environment.persistence."/persist".directories =
-        lib.mkIf config.system.impermanence.enable [
-          { directory = dataDir; user = "1000"; group = "1000"; mode = "0750"; }
-          { directory = "/var/lib/cni/networks"; user = "root"; group = "root"; mode = "0755"; }
-        ];
     };
   };
 }

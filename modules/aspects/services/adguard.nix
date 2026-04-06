@@ -1,6 +1,8 @@
-{ den, ... }:
+{ den, lib, ... }:
 {
   den.aspects.adguard = {
+    includes = [ (import ./_persist-forwarder.nix { inherit den lib; }) ];
+    persist.directories = [ "/var/lib/private/AdGuardHome" ];
     nixos = { config, lib, ... }: {
       networking.firewall = {
         enable = true;
@@ -43,8 +45,6 @@
         subdomain = "adguard";
       };
 
-      environment.persistence."/persist".directories =
-        lib.mkIf config.system.impermanence.enable [ "/var/lib/private/AdGuardHome" ];
     };
   };
 }

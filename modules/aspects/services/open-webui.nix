@@ -1,9 +1,13 @@
-{ den, ... }:
+{ den, lib, ... }:
 let
   tunnelId = "ecef5dbb-834e-43ed-84c6-355a2ac53e59";
 in
 {
   den.aspects.open-webui = {
+    includes = [ (import ./_persist-forwarder.nix { inherit den lib; }) ];
+    persist.directories = [
+          { directory = "/var/lib/private/open-webui"; user = "open-webui"; group = "open-webui"; mode = "0750"; defaultPerms.mode = "0700"; }
+        ];
     nixos = { config, lib, ... }: {
       sops.secrets.open_webui_oauth.sopsFile = ../../../hosts/framebox/secrets.yaml;
 
@@ -29,10 +33,6 @@ in
 
       services.cloudflared.tunnels.${tunnelId}.ingress."open-webui.haseebmajid.dev" = "http://localhost:8185";
 
-      environment.persistence."/persist".directories =
-        lib.mkIf config.system.impermanence.enable [
-          { directory = "/var/lib/private/open-webui"; user = "open-webui"; group = "open-webui"; mode = "0750"; defaultPerms.mode = "0700"; }
-        ];
     };
   };
 }

@@ -1,9 +1,13 @@
-{ den, ... }:
+{ den, lib, ... }:
 let
   mediaLocation = "/mnt/homelab/homelab/immich";
 in
 {
   den.aspects.immich = {
+    includes = [ (import ./_persist-forwarder.nix { inherit den lib; }) ];
+    persist.directories = [
+          { directory = "/var/lib/immich"; user = "immich"; group = "immich"; mode = "0750"; }
+        ];
     nixos = { config, lib, ... }: {
       users.users.immich.extraGroups = [ "media" "redis-main" ];
 
@@ -31,10 +35,6 @@ in
         port = 2283;
       };
 
-      environment.persistence."/persist".directories =
-        lib.mkIf config.system.impermanence.enable [
-          { directory = "/var/lib/immich"; user = "immich"; group = "immich"; mode = "0750"; }
-        ];
     };
   };
 }

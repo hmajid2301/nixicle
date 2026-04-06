@@ -1,6 +1,8 @@
-{ den, ... }:
+{ den, lib, ... }:
 {
   den.aspects.llama-cpp = {
+    includes = [ (import ./_persist-forwarder.nix { inherit den lib; }) ];
+    persist.directories = [ "/var/lib/private/llama-cpp" ];
     nixos = { config, pkgs, lib, ... }: {
       hardware.graphics = {
         enable = true;
@@ -33,8 +35,6 @@
         };
       };
 
-      environment.persistence."/persist".directories =
-        lib.mkIf config.system.impermanence.enable [ "/var/lib/private/llama-cpp" ];
     };
   };
 }

@@ -76,7 +76,6 @@ in
           inputs.nixflix.nixosModules.nixflix
           inputs.niri.nixosModules.niri
           inputs.goroutinely.nixosModules.default
-          (inputs.import-tree.match ".*/default\\.nix" ../old/modules/nixos)
           ../iso/graphical
           {
             nixpkgs.hostPlatform = system;

@@ -1,6 +1,22 @@
-{ den, ... }:
+{ den, inputs, ... }:
 let
-  sharedNixConfig = import ../../../old/modules/shared/nix-caches.nix;
+  sharedNixConfig = {
+    substituters = [
+      "https://cache.nixos.org"
+      "https://nix-community.cachix.org"
+      "https://numtide.cachix.org"
+      "https://niri.cachix.org"
+    ];
+    trusted-public-keys = [
+      "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
+      "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
+      "numtide.cachix.org-1:2ps1kLBUWjxIneOy1Ik6cQjb41X0iXVXeHigGmycPPE="
+      "niri.cachix.org-1:Wv0OmO7PsuocRKzfDoJ3mulSl7Z6oezYhGhR+3W2964="
+    ];
+    experimental-features = [ "nix-command" "flakes" ];
+    warn-dirty = false;
+    use-xdg-base-directories = true;
+  };
   fishPlugins = pkgs: [
     { name = "bass"; inherit (pkgs.fishPlugins.bass) src; }
     { name = "fzf-fish"; inherit (pkgs.fishPlugins.fzf-fish) src; }
@@ -170,6 +186,7 @@ in
     };
 
     homeManager = { pkgs, config, lib, ... }: {
+      imports = [ inputs.sops-nix.homeManagerModules.sops ];
       home.sessionVariables.NH_SEARCH_CHANNEL = "nixos-unstable";
 
       # Sops (HM)
@@ -496,7 +513,7 @@ in
         "${pkgs.nautilus}/share/gsettings-schemas/${pkgs.nautilus.name}"
       ];
 
-      xdg.userDirs = { enable = true; createDirectories = true; };
+      xdg.userDirs = { enable = true; createDirectories = true; setSessionVariables = false; };
 
       gtk.gtk3.bookmarks = [ "file://${config.home.homeDirectory}/Downloads" ];
 

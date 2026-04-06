@@ -1,6 +1,8 @@
-{ den, ... }:
+{ den, lib, ... }:
 {
   den.aspects.ollama = {
+    includes = [ (import ./_persist-forwarder.nix { inherit den lib; }) ];
+    persist.directories = [ "/var/lib/private/ollama" ];
     nixos = { config, pkgs, lib, ... }: {
       services.ollama = {
         enable = true;
@@ -18,8 +20,6 @@
         port = 11434;
       };
 
-      environment.persistence."/persist".directories =
-        lib.mkIf config.system.impermanence.enable [ "/var/lib/private/ollama" ];
     };
   };
 }

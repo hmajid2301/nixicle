@@ -14,15 +14,14 @@
 
   networking.wireless.enable = lib.mkForce false;
 
-  roles = {
-    desktop.addons.gnome.enable = true;
-  };
+  services.xserver.enable = true;
+  services.displayManager.gdm.enable = true;
+  services.desktopManager.gnome.enable = true;
+
+  i18n.defaultLocale = "en_GB.UTF-8";
+  time.timeZone = "Europe/London";
 
   nix.enable = true;
-
-  system = {
-    locale.enable = true;
-  };
 
   services.displayManager.autoLogin = {
     enable = true;

@@ -1,10 +1,11 @@
-{ den, ... }:
+{ den, inputs, ... }:
 {
   flake-file.inputs.stylix.url = "github:danth/stylix";
   flake-file.inputs.catppuccin.url = "github:catppuccin/nix";
 
   den.aspects.stylix = {
     nixos = { pkgs, ... }: {
+      imports = [ inputs.stylix.nixosModules.stylix ];
       fonts = {
         enableDefaultPackages = true;
         fontDir.enable = true;
@@ -38,6 +39,7 @@
     };
 
     homeManager = { pkgs, ... }: {
+      imports = [ inputs.stylix.homeModules.stylix inputs.catppuccin.homeModules.catppuccin ];
       fonts.fontconfig.enable = true;
 
       home.packages = with pkgs; [

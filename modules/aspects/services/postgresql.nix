@@ -1,6 +1,11 @@
-{ den, ... }:
+{ den, lib, ... }:
 {
   den.aspects.postgresql = {
+    includes = [ (import ./_persist-forwarder.nix { inherit den lib; }) ];
+    persist.directories = [
+          "/var/lib/postgresql"
+          "/var/backup/postgresql"
+        ];
     nixos = { config, pkgs, lib, ... }: {
       sops.secrets.postgres_terraform_password = {
         sopsFile = ../../../hosts/framebox/secrets.yaml;
@@ -53,11 +58,6 @@
         };
       };
 
-      environment.persistence."/persist".directories =
-        lib.mkIf config.system.impermanence.enable [
-          "/var/lib/postgresql"
-          "/var/backup/postgresql"
-        ];
     };
   };
 }

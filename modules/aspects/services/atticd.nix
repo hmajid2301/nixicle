@@ -1,6 +1,10 @@
-{ den, ... }:
+{ den, lib, ... }:
 {
   den.aspects.atticd = {
+    includes = [ (import ./_persist-forwarder.nix { inherit den lib; }) ];
+    persist.directories = [
+          { directory = "/var/lib/private/atticd"; user = "atticd"; group = "atticd"; mode = "0750"; defaultPerms.mode = "0700"; }
+        ];
     nixos = { config, lib, ... }: {
       sops.secrets.attic.sopsFile = ../../../hosts/framebox/secrets.yaml;
 
@@ -36,10 +40,6 @@
         };
       };
 
-      environment.persistence."/persist".directories =
-        lib.mkIf config.system.impermanence.enable [
-          { directory = "/var/lib/private/atticd"; user = "atticd"; group = "atticd"; mode = "0750"; defaultPerms.mode = "0700"; }
-        ];
     };
   };
 }

@@ -1,6 +1,13 @@
-{ den, ... }:
+{ den, lib, ... }:
 {
   den.aspects.openbao = {
+    includes = [ (import ./_persist-forwarder.nix { inherit den lib; }) ];
+    persist.directories = [
+          "/var/lib/private/openbao"
+          "/var/log/openbao"
+          { directory = "/var/lib/openbao-proxy"; user = "openbao-proxy"; group = "openbao-proxy"; mode = "0750"; }
+          "/etc/openbao"
+        ];
     nixos = { config, pkgs, lib, ... }: {
       sops.secrets.openbao_admin_password.sopsFile = ../../../hosts/framebox/secrets.yaml;
       sops.secrets.spindle_role_id = {
@@ -140,13 +147,6 @@
         };
       };
 
-      environment.persistence."/persist".directories =
-        lib.mkIf config.system.impermanence.enable [
-          "/var/lib/private/openbao"
-          "/var/log/openbao"
-          { directory = "/var/lib/openbao-proxy"; user = "openbao-proxy"; group = "openbao-proxy"; mode = "0750"; }
-          "/etc/openbao"
-        ];
     };
   };
 }

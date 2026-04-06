@@ -1,4 +1,4 @@
-{ den, ... }:
+{ den, inputs, lib, ... }:
 let
   tunnelId = "ecef5dbb-834e-43ed-84c6-355a2ac53e59";
 in
@@ -6,7 +6,12 @@ in
   flake-file.inputs.authentik-nix.url = "github:nix-community/authentik-nix";
 
   den.aspects.authentik = {
+    includes = [ (import ./_persist-forwarder.nix { inherit den lib; }) ];
+    persist.directories = [
+          { directory = "/var/lib/private/authentik"; user = "authentik"; group = "authentik"; mode = "0750"; defaultPerms.mode = "0700"; }
+        ];
     nixos = { config, lib, ... }: {
+      imports = [ inputs.authentik-nix.nixosModules.default ];
       sops.secrets.authenik_env.sopsFile = ../../../hosts/framebox/secrets.yaml;
 
       services.authentik = {
@@ -51,10 +56,6 @@ in
 
       services.cloudflared.tunnels.${tunnelId}.ingress."authentik.haseebmajid.dev" = "http://localhost:9000";
 
-      environment.persistence."/persist".directories =
-        lib.mkIf config.system.impermanence.enable [
-          { directory = "/var/lib/private/authentik"; user = "authentik"; group = "authentik"; mode = "0750"; defaultPerms.mode = "0700"; }
-        ];
     };
   };
 }

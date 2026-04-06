@@ -1,11 +1,27 @@
-{ inputs, lib, den, ... }:
+{
+  inputs,
+  lib,
+  den,
+  ...
+}:
 let
-  extendedLib = lib.extend (self: super: {
-    nixicle = import ../lib {
-      inherit inputs;
-      lib = self;
-    };
-  });
+  haseebUser = {
+    authorizedKeys = [
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKuM4bCeJq0XQ1vd/iNK650Bu3wPVKQTSB0k2gsMKhdE hello@haseebmajid.dev"
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINP5gqbEEj+pykK58djSI1vtMtFiaYcygqhHd3mzPbSt hello@haseebmajid.dev"
+    ];
+    email = "hello@haseebmajid.dev";
+    signingKey = "~/.ssh/id_ed25519.pub";
+  };
+
+  extendedLib = lib.extend (
+    self: super: {
+      nixicle = import ../lib {
+        inherit inputs;
+        lib = self;
+      };
+    }
+  );
 
   # Overlays for mkHomeInstantiate (standalone HM builds like dell).
   # NixOS hosts get overlays via nixpkgs.overlays in aspect files instead.
@@ -26,13 +42,18 @@ let
     })
   ];
 
-  mkInstantiate = { modules }:
+  mkInstantiate =
+    { modules }:
     inputs.nixpkgs.lib.nixosSystem {
       inherit modules;
-      specialArgs = { inherit inputs; lib = extendedLib; };
+      specialArgs = {
+        inherit inputs;
+        lib = extendedLib;
+      };
     };
 
-  mkHomeInstantiate = { modules, ... }:
+  mkHomeInstantiate =
+    { modules, ... }:
     let
       hmLib = inputs.home-manager.lib.hm;
       hmExtendedLib = extendedLib.extend (self: super: { hm = hmLib; });
@@ -44,7 +65,10 @@ let
     in
     inputs.home-manager.lib.homeManagerConfiguration {
       inherit pkgs;
-      extraSpecialArgs = { inherit inputs; lib = hmExtendedLib; };
+      extraSpecialArgs = {
+        inherit inputs;
+        lib = hmExtendedLib;
+      };
       inherit modules;
     };
 in
@@ -67,18 +91,34 @@ in
   imports = [
     inputs.flake-file.flakeModules.dendritic
     inputs.den.flakeModule
+    (inputs.import-tree.match ".*/default\\.nix" ../hosts)
   ];
 
   _module.args.__findFile = den.lib.__findFile;
 
-  den.ctx.user.includes = [ den._.mutual-provider ];
-  den.ctx.home.includes = [
+  den.ctx.user.includes = [
     den._.mutual-provider
-    ({ home, ... }: {
-      homeManager = { ... }: {
-        _module.args.host = home.hostName or "unknown";
+    ({ host, user, ... }: {
+      nixos.home-manager = {
+        useGlobalPkgs = true;
+        useUserPackages = true;
+        extraSpecialArgs = { inherit inputs; };
+        users.${user.userName}._module.args.host = host.hostName;
       };
     })
+  ];
+  den.ctx.home.includes = [
+    den._.mutual-provider
+    (
+      { home, ... }:
+      {
+        homeManager =
+          { ... }:
+          {
+            _module.args.host = home.hostName or "unknown";
+          };
+      }
+    )
   ];
 
   den.hosts.x86_64-linux.framework = {
@@ -91,22 +131,22 @@ in
       refresh = 120;
     };
     instantiate = mkInstantiate;
-    users.haseeb = { };
+    users.haseeb = haseebUser;
   };
 
   den.hosts.x86_64-linux.vm = {
     instantiate = mkInstantiate;
-    users.haseeb = { };
+    users.haseeb = haseebUser;
   };
 
   den.hosts.x86_64-linux.framebox = {
     instantiate = mkInstantiate;
-    users.haseeb = { };
+    users.haseeb = haseebUser;
   };
 
   den.hosts.x86_64-linux.workstation = {
     instantiate = mkInstantiate;
-    users.haseeb = { };
+    users.haseeb = haseebUser;
   };
 
   den.hosts.x86_64-linux.vps = {
@@ -117,25 +157,40 @@ in
     instantiate = mkHomeInstantiate;
   };
 
+  den.schema.user =
+    { lib, ... }:
+    {
+      config.classes = lib.mkDefault [ "homeManager" ];
+      options.authorizedKeys = lib.mkOption {
+        type = lib.types.listOf lib.types.str;
+        default = [ ];
+      };
+      options.email = lib.mkOption {
+        type = lib.types.str;
+        default = "hello@haseebmajid.dev";
+      };
+      options.signingKey = lib.mkOption {
+        type = lib.types.str;
+        default = "~/.ssh/id_ed25519.pub";
+      };
+    };
 
-  den.schema.user = { lib, ... }: {
-    config.classes = lib.mkDefault [ "homeManager" ];
-  };
-
-  den.schema.host = { lib, ... }: {
-    options.isLaptop = lib.mkOption {
-      type = lib.types.bool;
-      default = false;
+  den.schema.host =
+    { lib, ... }:
+    {
+      options.isLaptop = lib.mkOption {
+        type = lib.types.bool;
+        default = false;
+      };
+      options.autologin = lib.mkOption {
+        type = lib.types.bool;
+        default = true;
+      };
+      options.primaryDisplay = lib.mkOption {
+        type = lib.types.attrsOf lib.types.anything;
+        default = { };
+      };
     };
-    options.autologin = lib.mkOption {
-      type = lib.types.bool;
-      default = true;
-    };
-    options.primaryDisplay = lib.mkOption {
-      type = lib.types.attrsOf lib.types.anything;
-      default = { };
-    };
-  };
 
   den.default = {
     includes = [
@@ -145,44 +200,26 @@ in
   };
 
   # NOTE: do NOT include home-manager.nixosModules here — den handles HM integration automatically
-  den.default.nixos = { ... }: {
-    # nixicle packages overlay (needs extendedLib so defined here).
-    # nur/gomod2nix overlays are in common.nix; niri/zjstatus in niri.nix.
-    nixpkgs.overlays = [
-      (final: prev: {
-        inherit (inputs) get-shit-done;
-        nixicle = extendedLib.nixicle.importPackages final ../packages // {
-          zellij-mcp = prev.callPackage ../packages/zellij-mcp {
-            inherit inputs;
+  den.default.nixos =
+    { ... }:
+    {
+      # nixicle packages overlay (needs extendedLib so defined here).
+      # nur/gomod2nix overlays are in common.nix; niri/zjstatus in niri.nix.
+      nixpkgs.overlays = [
+        (final: prev: {
+          inherit (inputs) get-shit-done;
+          nixicle = extendedLib.nixicle.importPackages final ../packages // {
+            zellij-mcp = prev.callPackage ../packages/zellij-mcp {
+              inherit inputs;
+            };
           };
-        };
-      })
-    ];
-    nixpkgs.config.allowUnfree = true;
-    imports = [
-      inputs.stylix.nixosModules.stylix
-      inputs.lanzaboote.nixosModules.lanzaboote
-      inputs.impermanence.nixosModules.impermanence
-      inputs.sops-nix.nixosModules.sops
-      inputs.authentik-nix.nixosModules.default
-      inputs.tangled.nixosModules.knot
-      inputs.tangled.nixosModules.spindle
-      inputs.niri.nixosModules.niri
-      inputs.goroutinely.nixosModules.default
-      inputs.disko.nixosModules.disko
-      inputs.nix-topology.nixosModules.default
-    ];
-  };
-
-  den.default.homeManager = { ... }: {
-    imports = [
-      inputs.dankMaterialShell.homeModules.dank-material-shell
-      inputs.noctalia.homeModules.default
-      inputs.sops-nix.homeManagerModules.sops
-      inputs.stylix.homeModules.stylix
-      inputs.catppuccin.homeModules.catppuccin
-      inputs.nix-index-database.homeModules.nix-index
-      inputs.pam-shim.homeModules.default
-    ];
-  };
+        })
+      ];
+      nixpkgs.config.allowUnfree = true;
+      imports = [
+        inputs.sops-nix.nixosModules.sops
+        inputs.disko.nixosModules.disko
+        inputs.nix-topology.nixosModules.default
+      ];
+    };
 }

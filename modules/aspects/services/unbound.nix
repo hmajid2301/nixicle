@@ -1,6 +1,8 @@
-{ den, ... }:
+{ den, lib, ... }:
 {
   den.aspects.unbound = {
+    includes = [ (import ./_persist-forwarder.nix { inherit den lib; }) ];
+    persist.directories = [ "/var/lib/unbound" ];
     nixos = { config, lib, ... }: {
       services.unbound = {
         enable = true;
@@ -27,8 +29,6 @@
         };
       };
 
-      environment.persistence."/persist".directories =
-        lib.mkIf config.system.impermanence.enable [ "/var/lib/unbound" ];
     };
   };
 }

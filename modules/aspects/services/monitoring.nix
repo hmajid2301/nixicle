@@ -1,6 +1,14 @@
-{ den, ... }:
+{ den, lib, ... }:
 {
   den.aspects.monitoring = {
+    includes = [ (import ./_persist-forwarder.nix { inherit den lib; }) ];
+    persist.directories = [
+      { directory = "/var/lib/prometheus2"; mode = "0755"; }
+      { directory = "/var/lib/grafana"; mode = "0755"; }
+      { directory = "/var/lib/private/alertmanager"; mode = "0750"; }
+      { directory = "/var/lib/loki"; mode = "0755"; }
+      { directory = "/var/lib/private/tempo"; mode = "0750"; }
+    ];
     nixos = { config, lib, ... }: {
       services.prometheus = {
         port = 3020;
@@ -205,15 +213,6 @@
         (lib.nixicle.mkTraefikService { name = "tempo"; port = 4400; })
       ];
 
-      environment.persistence = lib.mkIf config.system.impermanence.enable {
-        "/persist".directories = [
-          { directory = "/var/lib/prometheus2"; mode = "0755"; }
-          { directory = "/var/lib/grafana"; mode = "0755"; }
-          { directory = "/var/lib/private/alertmanager"; mode = "0750"; }
-          { directory = "/var/lib/loki"; mode = "0755"; }
-          { directory = "/var/lib/private/tempo"; mode = "0750"; }
-        ];
-      };
     };
   };
 }

@@ -1,6 +1,8 @@
-{ den, ... }:
+{ den, lib, ... }:
 {
   den.aspects.traefik = {
+    includes = [ (import ./_persist-forwarder.nix { inherit den lib; }) ];
+    persist.directories = [ "/var/lib/traefik" ];
     nixos = { config, lib, ... }: {
       networking.firewall.allowedTCPPorts = [ 80 443 ];
 
@@ -63,8 +65,6 @@
         };
       };
 
-      environment.persistence."/persist".directories =
-        lib.mkIf config.system.impermanence.enable [ "/var/lib/traefik" ];
     };
   };
 }

@@ -1,6 +1,10 @@
-{ den, ... }:
+{ den, lib, ... }:
 {
   den.aspects.gitea = {
+    includes = [ (import ./_persist-forwarder.nix { inherit den lib; }) ];
+    persist.directories = [
+          { directory = "/var/lib/gitea"; user = "gitea"; group = "gitea"; mode = "0750"; }
+        ];
     nixos = { config, pkgs, lib, ... }: {
       sops.secrets.gitea_smtp_password = {
         sopsFile = ../../../hosts/framebox/secrets.yaml;
@@ -73,10 +77,6 @@
         subdomain = "git";
       };
 
-      environment.persistence."/persist".directories =
-        lib.mkIf config.system.impermanence.enable [
-          { directory = "/var/lib/gitea"; user = "gitea"; group = "gitea"; mode = "0750"; }
-        ];
     };
   };
 }

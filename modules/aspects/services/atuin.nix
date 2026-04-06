@@ -1,9 +1,11 @@
-{ den, ... }:
+{ den, lib, ... }:
 let
   tunnelId = "ecef5dbb-834e-43ed-84c6-355a2ac53e59";
 in
 {
   den.aspects.atuin = {
+    includes = [ (import ./_persist-forwarder.nix { inherit den lib; }) ];
+    persist.directories = [ "/var/lib/atuin" ];
     nixos = { config, lib, ... }: {
       services.atuin = {
         enable = true;
@@ -14,8 +16,6 @@ in
 
       services.cloudflared.tunnels.${tunnelId}.ingress."atuin.haseebmajid.dev" = "http://localhost:8890";
 
-      environment.persistence."/persist".directories =
-        lib.mkIf config.system.impermanence.enable [ "/var/lib/atuin" ];
     };
   };
 }

@@ -1,4 +1,4 @@
-{ den, inputs, ... }:
+{ den, inputs, lib, ... }:
 let
   port = 8091;
   channel = "nixos-unstable";
@@ -9,6 +9,8 @@ in
     flake = false;
   };
   den.aspects.nixery = {
+    includes = [ (import ./_persist-forwarder.nix { inherit den lib; }) ];
+    persist.directories = [ "/var/lib/private/nixery" ];
     nixos = { config, pkgs, lib, ... }: {
       systemd.services.nixery = {
         description = "Nixery Container Registry";
@@ -37,8 +39,6 @@ in
         };
       };
 
-      environment.persistence."/persist".directories =
-        lib.mkIf config.system.impermanence.enable [ "/var/lib/private/nixery" ];
     };
   };
 }

@@ -1,4 +1,4 @@
-{ den, ... }:
+{ den, lib, ... }:
 {
   den.aspects.haseeb.provides.vm = {
     includes = [
@@ -13,7 +13,7 @@
         stateVersion = "23.11";
       };
 
-      programs.keychain.enable = false;
+      programs.keychain.enable = lib.mkForce false;
     };
   };
 

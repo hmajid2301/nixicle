@@ -1,7 +1,11 @@
-{ den, ... }:
+{ den, inputs, lib, ... }:
 {
   flake-file.inputs.niri = {
     url = "github:sodiboo/niri-flake";
+    inputs.nixpkgs.follows = "nixpkgs";
+  };
+  flake-file.inputs.nfsm = {
+    url = "github:gvolpe/nfsm";
     inputs.nixpkgs.follows = "nixpkgs";
   };
   flake-file.inputs.dankMaterialShell = {
@@ -45,15 +49,14 @@
               }
               // lib.optionalAttrs host.autologin { initial_session = session; };
           };
-
-          environment.persistence."/persist" = lib.mkIf config.system.impermanence.enable {
-            directories = [ "/var/cache/tuigreet" ];
-          };
         };
       })
+      (import ../services/_persist-forwarder.nix { inherit den lib; })
     ];
+    persist.directories = [ "/var/cache/tuigreet" ];
 
     nixos = { config, pkgs, lib, inputs, ... }: {
+      imports = [ inputs.niri.nixosModules.niri ];
       nixpkgs.overlays = [
         inputs.niri.overlays.niri
         inputs.noctalia-qs.overlays.default
@@ -146,11 +149,13 @@
         noctalia = cmd: [ "noctalia-shell" "ipc" "call" ] ++ (pkgs.lib.splitString " " cmd);
       in
       {
-        # nfsm — floating window session manager
-        home.packages = with inputs.nfsm.packages.${pkgs.stdenv.hostPlatform.system}; [
-          nfsm
-          nfsm-cli
+        imports = [
+          inputs.dankMaterialShell.homeModules.dank-material-shell
+          inputs.noctalia.homeModules.default
         ];
+        # nfsm — floating window session manager + cliphist
+        home.packages = with pkgs; [ cliphist wl-clipboard ]
+          ++ (with inputs.nfsm.packages.${pkgs.stdenv.hostPlatform.system}; [ nfsm nfsm-cli ]);
 
         programs.niri.settings = {
           outputs."*".scale = 1.0;
@@ -536,7 +541,6 @@
         };
 
         # cliphist — clipboard history
-        home.packages = with pkgs; [ cliphist wl-clipboard ];
         systemd.user.services.cliphist = {
           Unit = {
             Description = "Clipboard history service";

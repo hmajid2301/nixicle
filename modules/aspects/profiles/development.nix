@@ -1,4 +1,4 @@
-{ den, ... }:
+{ den, inputs, ... }:
 {
   flake-file.inputs.nix-index-database.url = "github:nix-community/nix-index-database";
   den.aspects.development = {
@@ -31,6 +31,7 @@
         '';
       in
       {
+        imports = [ inputs.nix-index-database.homeModules.nix-index ];
         xdg.desktopEntries = lib.optionalAttrs pkgs.stdenv.isLinux {
           neovim = {
             name = "Neovim";
@@ -47,7 +48,6 @@
 
 
         # Atuin — shell history sync
-        home.packages = [ atuin-export-fish ];
         programs.atuin = {
           enable = true;
           flags = [ "--disable-up-arrow" "--disable-ctrl-r" ];
@@ -92,7 +92,7 @@
           zoxide = { enable = true; enableFishIntegration = true; };
         };
 
-        home.packages = with pkgs; [
+        home.packages = [ atuin-export-fish ] ++ (with pkgs; [
           # Gsesh
           pkgs.nixicle.gsesh
 
@@ -136,7 +136,7 @@
 
           # Yazi media preview tools
           imagemagick ffmpegthumbnailer fontpreview unar poppler
-        ];
+        ]);
       };
   };
 }

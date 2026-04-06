@@ -66,10 +66,10 @@ in
     homeManager =
       { config, lib, pkgs, ... }:
       let
-        configModule = import ./config.nix { inherit config lib pkgs inputs; };
-        lspAndToolsModule = import ./lsp-and-tools.nix { inherit pkgs; };
-        pluginsModule = import ./plugins.nix;
-        packageDefinitionsModule = import ./package-definitions.nix { inherit config inputs; };
+        configModule = import ./_config.nix { inherit config lib pkgs inputs; };
+        lspAndToolsModule = import ./_lsp-and-tools.nix { inherit pkgs; };
+        pluginsModule = import ./_plugins.nix;
+        packageDefinitionsModule = import ./_package-definitions.nix { inherit config inputs; };
       in
       {
         imports = [ inputs.nixCats.homeModule ];

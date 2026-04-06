@@ -1,4 +1,4 @@
-{ den, ... }:
+{ den, lib, ... }:
 let
   tunnelId = "ecef5dbb-834e-43ed-84c6-355a2ac53e59";
   dataDir = "/var/lib/papra";
@@ -7,6 +7,10 @@ let
 in
 {
   den.aspects.papra = {
+    includes = [ (import ./_persist-forwarder.nix { inherit den lib; }) ];
+    persist.directories = [
+          { directory = dataDir; user = "999"; group = "999"; mode = "0750"; }
+        ];
     nixos = { config, lib, ... }: {
       sops.secrets.papra-env.sopsFile = ../../../hosts/framebox/secrets.yaml;
 
@@ -47,10 +51,6 @@ in
 
       services.cloudflared.tunnels.${tunnelId}.ingress.${domain} = "http://localhost:${toString port}";
 
-      environment.persistence."/persist".directories =
-        lib.mkIf config.system.impermanence.enable [
-          { directory = dataDir; user = "999"; group = "999"; mode = "0750"; }
-        ];
     };
   };
 }

@@ -1,10 +1,14 @@
-{ den, ... }:
+{ den, lib, ... }:
 let
   mediaDir = "/mnt/homelab/homelab/paperless/media";
   tunnelId = "ecef5dbb-834e-43ed-84c6-355a2ac53e59";
 in
 {
   den.aspects.paperless = {
+    includes = [ (import ./_persist-forwarder.nix { inherit den lib; }) ];
+    persist.directories = [
+          { directory = "/var/lib/paperless"; user = "paperless"; group = "paperless"; mode = "0750"; }
+        ];
     nixos = { config, lib, ... }: {
       users.users.${config.services.paperless.user}.extraGroups = [ "media" ];
 
@@ -46,10 +50,6 @@ in
 
       services.cloudflared.tunnels.${tunnelId}.ingress."paperless.haseebmajid.dev" = "http://localhost:28981";
 
-      environment.persistence."/persist".directories =
-        lib.mkIf config.system.impermanence.enable [
-          { directory = "/var/lib/paperless"; user = "paperless"; group = "paperless"; mode = "0750"; }
-        ];
     };
   };
 }

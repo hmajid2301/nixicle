@@ -1,4 +1,4 @@
-{ den, ... }:
+{ den, inputs, ... }:
 {
   flake-file.inputs.impermanence.url = "github:nix-community/impermanence";
 
@@ -13,6 +13,7 @@
 
   den.aspects.impermanence = {
     nixos = { config, lib, ... }: {
+      imports = [ inputs.impermanence.nixosModules.impermanence ];
       system.impermanence.enable = true;
 
       boot.initrd.systemd.enable = true;

@@ -3,7 +3,7 @@
   den.aspects.attic = {
     homeManager = { pkgs, config, ... }: {
       sops.secrets.netrc = {
-        sopsFile = ../../old/modules/home/secrets.yaml;
+        sopsFile = ../secrets.yaml;
       };
 
       home.packages = [ pkgs.attic-client ];

@@ -9,7 +9,7 @@
     homeManager = { pkgs, lib, config, ... }: {
       home.stateVersion = "23.11";
 
-      # Android emulator
+      # Android emulator + extra packages (merged)
       home.packages = with pkgs; [
         (pkgs.writeShellScriptBin "android-emulator" ''
           export QT_QPA_PLATFORM=xcb
@@ -30,33 +30,6 @@
           exec "$EMULATOR_BIN" -avd "$SELECTED" -gpu host "$@"
         '')
         gum android-tools
-      ];
-      home.sessionVariables = {
-        ANDROID_SDK_ROOT = "$HOME/Android/Sdk";
-        ANDROID_HOME = "$HOME/Android/Sdk";
-      };
-      home.file.".local/bin/adb-wrapper".source = pkgs.writeShellScript "adb-wrapper" ''
-        export ANDROID_SDK_ROOT="$HOME/Android/Sdk"
-        export ANDROID_HOME="$HOME/Android/Sdk"
-        exec ${pkgs.android-tools}/bin/adb "$@"
-      '';
-
-      xdg.configFile."envoluntary/config.toml".source = (pkgs.formats.toml { }).generate "envoluntary-config.toml" {
-        entries = [
-          {
-            pattern = "~/projects/vault-plugins(/.*)?";
-            flake_reference = "~/nix-dev-shells/vault-plugins";
-            impure = true;
-          }
-          {
-            pattern = "~/projects/terraform-aws(/.*)?";
-            flake_reference = "~/nix-dev-shells/terraform-aws";
-            impure = true;
-          }
-        ];
-      };
-
-      home.packages = with pkgs; [
         (pkgs.writeScriptBin "elgato-fix" ''
           #!/usr/bin/env bash
           card_name="alsa_card.usb-Elgato_Systems_Elgato_Wave_3_BS35M1A01828-00"
@@ -85,6 +58,30 @@
         dejavu_fonts
         liberation_ttf
       ];
+      home.sessionVariables = {
+        ANDROID_SDK_ROOT = "$HOME/Android/Sdk";
+        ANDROID_HOME = "$HOME/Android/Sdk";
+      };
+      home.file.".local/bin/adb-wrapper".source = pkgs.writeShellScript "adb-wrapper" ''
+        export ANDROID_SDK_ROOT="$HOME/Android/Sdk"
+        export ANDROID_HOME="$HOME/Android/Sdk"
+        exec ${pkgs.android-tools}/bin/adb "$@"
+      '';
+
+      xdg.configFile."envoluntary/config.toml".source = (pkgs.formats.toml { }).generate "envoluntary-config.toml" {
+        entries = [
+          {
+            pattern = "~/projects/vault-plugins(/.*)?";
+            flake_reference = "~/nix-dev-shells/vault-plugins";
+            impure = true;
+          }
+          {
+            pattern = "~/projects/terraform-aws(/.*)?";
+            flake_reference = "~/nix-dev-shells/terraform-aws";
+            impure = true;
+          }
+        ];
+      };
 
       sops.defaultSymlinkPath = lib.mkForce "/run/user/1003/secrets";
       sops.defaultSecretsMountPoint = lib.mkForce "/run/user/1003/secrets.d";

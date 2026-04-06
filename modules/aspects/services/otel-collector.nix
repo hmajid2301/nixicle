@@ -1,6 +1,10 @@
-{ den, ... }:
+{ den, lib, ... }:
 {
   den.aspects.otel-collector = {
+    includes = [ (import ./_persist-forwarder.nix { inherit den lib; }) ];
+    persist.directories = [
+          { directory = "/var/lib/private/opentelemetry-collector"; mode = "0755"; }
+        ];
     nixos = { config, pkgs, lib, ... }: {
       services.opentelemetry-collector = {
         enable = true;
@@ -37,10 +41,6 @@
         port = 3333;
       };
 
-      environment.persistence."/persist".directories =
-        lib.mkIf config.system.impermanence.enable [
-          { directory = "/var/lib/private/opentelemetry-collector"; mode = "0755"; }
-        ];
     };
   };
 }
