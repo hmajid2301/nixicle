@@ -142,21 +142,94 @@ in
         defaultSecretsMountPoint = "/run/user/1000/secrets.d";
       };
 
-      # ZSA keyboard tool
-      home.packages = [ pkgs.keymapp ];
-
       browsers.firefox.enable = true;
-      cli = {
-        terminals.foot.enable = true;
-        terminals.ghostty.enable = true;
-        tools.core-tools.enable = true;
-        tools.zk.enable = true;
-        shells.fish.enable = true;
+      cli.shells.fish.enable = true;
+
+      programs.foot = {
+        enable = true;
+        settings = {
+          main = { shell = "fish"; pad = "15x15"; selection-target = "clipboard"; };
+          scrollback.lines = 10000;
+        };
       };
-      development.cloud.k8s.enable = true;
-      programs = {
-        guis.enable = true;
-        nautilus.enable = true;
+
+      programs.ghostty = {
+        enable = true;
+        enableFishIntegration = true;
+        settings = {
+          command = "fish";
+          gtk-titlebar = false;
+          gtk-tabs-location = "hidden";
+          gtk-single-instance = true;
+          window-padding-x = 6;
+          window-padding-y = 6;
+          copy-on-select = "clipboard";
+          cursor-style = "block";
+          confirm-close-surface = false;
+          keybind = [
+            "ctrl+shift+plus=increase_font_size:1"
+            "ctrl+shift+minus=decrease_font_size:1"
+            "ctrl+shift+0=reset_font_size"
+            "shift+enter=text:\\u001b[13;2u"
+          ];
+        };
+      };
+
+      programs.zk = {
+        enable = true;
+        settings = {
+          note = {
+            language = "en"; default-title = "Untitled";
+            filename = "{{id}}-{{slug title}}"; extension = "md"; template = "default.md";
+            id-charset = "alphanum"; id-length = 8; id-case = "lower";
+          };
+          format.markdown = { hashtags = true; colon-tags = true; multiword-tags = false; };
+          tool = { editor = "nvim"; pager = "less -FIRX"; fzf-preview = "bat -p --color always {-1}"; };
+          lsp.diagnostics = { wiki-title = "hint"; dead-link = "error"; };
+          alias = { ls = "zk list $@"; ed = "zk edit $@"; n = "zk new $@"; };
+        };
+      };
+
+      programs.k9s.enable = true;
+
+      home.packages = with pkgs; [
+        keymapp
+
+        # k8s tools
+        kubectl kubectx kubelogin kubelogin-oidc stern kubernetes-helm kustomize fluxcd kubefwd
+
+        # GUI apps
+        trayscale foliate pwvucontrol
+        sushi gnome-disk-utility totem gvfs loupe
+        nautilus ffmpegthumbnailer nautilus-python gst_all_1.gst-libav
+      ];
+
+      xdg.systemDirs.data = [
+        "${pkgs.nautilus}/share/gsettings-schemas/${pkgs.nautilus.name}"
+      ];
+
+      xdg.userDirs = { enable = true; createDirectories = true; };
+
+      gtk.gtk3.bookmarks = [ "file://${config.home.homeDirectory}/Downloads" ];
+
+      dconf.settings = {
+        "org/gnome/nautilus/preferences" = {
+          show-image-thumbnails = "always";
+          thumbnail-limit = 10;
+          show-directory-item-counts = "never";
+          executable-text-activation = "ask";
+          always-use-location-entry = false;
+          default-folder-viewer = "icon-view";
+          thumbnail-cache-time = 30;
+          show-recent = false;
+        };
+        "org/gnome/nautilus/icon-view".captions = [ "none" "none" "none" ];
+        "org/gnome/nautilus/list-view".use-tree-view = false;
+        "org/gnome/desktop/privacy".remember-recent-files = false;
+        "com/github/stunkymonkey/nautilus-open-any-terminal" = {
+          terminal = "ghostty"; flatpak = "off";
+          keybindings = "<Ctrl><Alt>t"; new-tab = false;
+        };
       };
     };
   };
