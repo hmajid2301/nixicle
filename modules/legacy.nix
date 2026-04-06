@@ -6,16 +6,6 @@
     inputs.nixpkgs.follows = "nixpkgs";
   };
 
-  # AI tools
-  flake-file.inputs.nix-playwright-mcp = {
-    url = "github:benjaminkitt/nix-playwright-mcp";
-    inputs.nixpkgs.follows = "nixpkgs";
-  };
-  flake-file.inputs.opencode-antigravity-auth = {
-    url = "github:NoeFabris/opencode-antigravity-auth/v1.6.0";
-    flake = false;
-  };
-
   den.default.homeManager = { ... }: {
     imports = [
       (inputs.import-tree.match ".*/default\\.nix" ../old/modules/home)
