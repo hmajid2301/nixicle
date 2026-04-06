@@ -35,10 +35,6 @@ let
   };
 in
 {
-  flake-file.inputs.gsesh = {
-    url = "gitlab:hmajid2301/gsesh";
-    inputs.nixpkgs.follows = "nixpkgs";
-  };
   flake-file.inputs.comma = {
     url = "github:nix-community/comma";
     inputs.nixpkgs.follows = "nixpkgs";

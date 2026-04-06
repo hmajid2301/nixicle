@@ -1,6 +1,10 @@
-{ den, ... }:
+{ den, inputs, ... }:
 {
   flake-file.inputs.zjstatus.url = "github:dj95/zjstatus";
+  flake-file.inputs.gsesh = {
+    url = "gitlab:hmajid2301/gsesh";
+    inputs.nixpkgs.follows = "nixpkgs";
+  };
 
   den.aspects.zellij = {
     nixos = { inputs, ... }: {
@@ -206,7 +210,11 @@
         '';
       in
       {
-        home.packages = [ pkgs.tmate sesh ];
+        home.packages = [
+          pkgs.tmate
+          sesh
+          inputs.gsesh.packages.${pkgs.stdenv.hostPlatform.system}.default
+        ];
 
         xdg.configFile."zellij/config.kdl".text = ''
           ${stylixTheme}
