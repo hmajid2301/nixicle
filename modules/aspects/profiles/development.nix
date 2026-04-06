@@ -1,9 +1,8 @@
 { den, ... }:
 {
   flake-file.inputs.nix-index-database.url = "github:nix-community/nix-index-database";
-
   den.aspects.development = {
-    includes = [ den.aspects.neovim den.aspects.ai ];
+    includes = [ den.aspects.neovim den.aspects.ai den.aspects.zellij ];
     homeManager =
       { pkgs, lib, config, ... }:
       let
@@ -47,14 +46,11 @@
         };
 
         # Shell tools (kept as old-style options — complex modules with per-host options)
-        cli = {
-          multiplexers.zellij.enable = true;
-          tools = {
-            attic.enable = true;
-            git.enable = true;
-            gpg.enable = true;
-            ssh.enable = true;
-          };
+        cli.tools = {
+          attic.enable = true;
+          git.enable = true;
+          gpg.enable = true;
+          ssh.enable = true;
         };
 
         # Atuin — shell history sync

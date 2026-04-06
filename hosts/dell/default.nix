@@ -6,10 +6,40 @@
       den.aspects.non-nixos
     ];
 
-    homeManager = { pkgs, lib, ... }: {
+    homeManager = { pkgs, lib, config, ... }: {
       home.stateVersion = "23.11";
 
-      development.android.emulator.enable = true;
+      # Android emulator
+      home.packages = with pkgs; [
+        (pkgs.writeShellScriptBin "android-emulator" ''
+          export QT_QPA_PLATFORM=xcb
+          unset __EGL_VENDOR_LIBRARY_FILENAMES
+          unset GBM_BACKENDS_PATH
+          export LD_LIBRARY_PATH=/lib/x86_64-linux-gnu:/usr/lib/x86_64-linux-gnu
+          export LIBGL_DRIVERS_PATH=/usr/lib/x86_64-linux-gnu/dri
+          EMULATOR_BIN="''${ANDROID_SDK_ROOT:-$HOME/Android/Sdk}/emulator/emulator"
+          if [ ! -f "$EMULATOR_BIN" ]; then
+            ${pkgs.gum}/bin/gum style --foreground 196 "Error: Android emulator not found at $EMULATOR_BIN"; exit 1
+          fi
+          AVDS=$("$EMULATOR_BIN" -list-avds)
+          if [ -z "$AVDS" ]; then
+            ${pkgs.gum}/bin/gum style --foreground 196 "No Android Virtual Devices found!"; exit 1
+          fi
+          SELECTED=$(echo "$AVDS" | ${pkgs.gum}/bin/gum choose --header "Select an Android Virtual Device:")
+          if [ -z "$SELECTED" ]; then exit 0; fi
+          exec "$EMULATOR_BIN" -avd "$SELECTED" -gpu host "$@"
+        '')
+        gum android-tools
+      ];
+      home.sessionVariables = {
+        ANDROID_SDK_ROOT = "$HOME/Android/Sdk";
+        ANDROID_HOME = "$HOME/Android/Sdk";
+      };
+      home.file.".local/bin/adb-wrapper".source = pkgs.writeShellScript "adb-wrapper" ''
+        export ANDROID_SDK_ROOT="$HOME/Android/Sdk"
+        export ANDROID_HOME="$HOME/Android/Sdk"
+        exec ${pkgs.android-tools}/bin/adb "$@"
+      '';
 
       cli.tools.envoluntary.config = {
         entries = [
@@ -81,9 +111,16 @@
         keybind = [ "ctrl+shift+plus=increase_font_size:1" ];
       };
 
-      desktops = {
-        niri.enable = true;
-        addons.noctalia.laptop = true;
+      # Noctalia laptop widgets (battery, brightness, bluetooth)
+      programs.noctalia-shell.settings = {
+        bar.widgets.right = lib.mkBefore [
+          { id = "Bluetooth"; displayMode = "icon"; }
+          { id = "Brightness"; displayMode = "onhover"; }
+          { id = "Battery"; }
+        ];
+        controlCenter.shortcuts.right = lib.mkBefore [
+          { id = "PowerProfile"; }
+        ];
       };
 
       systemd.user.services.suspend-on-lid-close = {

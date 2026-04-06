@@ -13,8 +13,6 @@
         stateVersion = "23.11";
       };
 
-      desktops.niri.enable = true;
-
       cli.tools.ssh.enableKeychain = false;
     };
   };

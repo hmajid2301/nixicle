@@ -14,17 +14,19 @@
 
         nix.package = pkgs.nix;
 
-        desktops.niri.xwaylandSatelliteCommand = lib.mkIf config.desktops.niri.enable [
-          "env"
-          "-u"
-          "LD_LIBRARY_PATH"
-          "-u"
-          "__EGL_VENDOR_LIBRARY_FILENAMES"
-          "-u"
-          "LIBGL_DRIVERS_PATH"
-          "-u"
-          "GBM_BACKENDS_PATH"
-          "xwayland-satellite"
+        # Override xwayland-satellite spawn to strip env vars that break it on non-NixOS
+        programs.niri.settings.spawn-at-startup = lib.mkForce [
+          {
+            command = [
+              "env"
+              "-u" "LD_LIBRARY_PATH"
+              "-u" "__EGL_VENDOR_LIBRARY_FILENAMES"
+              "-u" "LIBGL_DRIVERS_PATH"
+              "-u" "GBM_BACKENDS_PATH"
+              "xwayland-satellite"
+            ];
+          }
+          { command = [ "nfsm" ]; }
         ];
         targets.genericLinux.nixGL = {
           inherit (inputs.nixgl) packages;
@@ -34,6 +36,7 @@
         pamShim.enable = true;
 
         nixpkgs.overlays = [
+          inputs.noctalia-qs.overlays.default
           (final: prev: {
             quickshell = config.lib.pamShim.replacePam prev.quickshell;
           })
@@ -65,7 +68,7 @@
           };
         };
 
-        systemd.user.services.noctalia-shell = lib.mkIf config.desktops.addons.noctalia.enable (
+        systemd.user.services.noctalia-shell =
           let
             shimmedQuickshell = config.lib.pamShim.replacePam pkgs.quickshell;
           in
@@ -73,11 +76,10 @@
             Service = {
               ExecStart = lib.mkForce "${pkgs.writeShellScript "noctalia-nixgl" ''
                 export PATH="${pkgs.wlsunset}/bin:${pkgs.wl-clipboard}/bin:${pkgs.cliphist}/bin:${pkgs.coreutils}/bin:${pkgs.gnugrep}/bin:${pkgs.gnused}/bin:${pkgs.bash}/bin:/run/wrappers/bin:${config.home.profileDirectory}/bin:/usr/bin:/bin"
-                exec ${config.lib.nixGL.wrap shimmedQuickshell}/bin/quickshell -p ${config.programs.noctalia-shell.package}/share/noctalia-shell
+                exec ${config.lib.nixGL.wrap shimmedQuickshell}/bin/qs -p ${config.programs.noctalia-shell.package}/share/noctalia-shell
               ''}";
             };
-          }
-        );
+          };
 
         home.file.".local/bin/niri-session-nix" = {
           executable = true;

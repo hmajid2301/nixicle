@@ -10,34 +10,42 @@
       den.aspects.social
 
       ({ host, ... }: {
-        homeManager = { ... }: {
-          desktops.addons.swayidle = {
-            enable = host.isLaptop;
-            timeouts = {
-              lock = 300;
-              dpms = 330;
-              suspend = 0;
-              hibernate = 900;
-            };
+        homeManager = { pkgs, lib, config, ... }: lib.mkIf host.isLaptop {
+          services.swayidle = {
+            enable = true;
+            events.before-sleep = "noctalia-shell ipc call lockScreen lock";
+            timeouts = [
+              { timeout = 300; command = "noctalia-shell ipc call lockScreen lock"; }
+              {
+                timeout = 330;
+                command = "${config.programs.niri.package}/bin/niri msg action power-off-monitors && ${pkgs.pamixer}/bin/pamixer --mute";
+                resumeCommand = "${config.programs.niri.package}/bin/niri msg action power-on-monitors && ${pkgs.pamixer}/bin/pamixer --unmute";
+              }
+              { timeout = 900; command = "${pkgs.systemd}/bin/systemctl hibernate"; }
+            ];
           };
         };
       })
     ];
 
-    homeManager = { ... }: {
+    homeManager = { lib, ... }: {
       home = {
         username = "haseeb";
         homeDirectory = "/home/haseeb";
         stateVersion = "24.05";
       };
 
-      desktops = {
-        niri.enable = true;
-        addons.noctalia = {
-          enable = true;
-          laptop = true;
-          settings.osd.monitors = [ "eDP-1" ];
-        };
+      # Noctalia laptop widgets + framework OSD monitor
+      programs.noctalia-shell.settings = {
+        bar.widgets.right = lib.mkBefore [
+          { id = "Bluetooth"; displayMode = "icon"; }
+          { id = "Brightness"; displayMode = "onhover"; }
+          { id = "Battery"; }
+        ];
+        controlCenter.shortcuts.right = lib.mkBefore [
+          { id = "PowerProfile"; }
+        ];
+        osd.monitors = [ "eDP-1" ];
       };
     };
   };
