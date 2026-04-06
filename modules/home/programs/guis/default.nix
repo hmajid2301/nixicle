@@ -32,8 +32,6 @@ in
       gvfs
       loupe
 
-      obsidian
-
       nautilus
       ffmpegthumbnailer # thumbnails
       nautilus-python # enable plugins

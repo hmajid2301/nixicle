@@ -56,10 +56,6 @@ in
           sopsFile = ../secrets.yaml;
           owner = "prowlarr";
         };
-        "jellyseerr/api_key" = {
-          sopsFile = ../secrets.yaml;
-          owner = "jellyseerr";
-        };
         "jellyfin/admin_password" = {
           sopsFile = ../secrets.yaml;
           owner = "jellyfin";
@@ -82,7 +78,7 @@ in
         enable = cfg.enable;
         stateDir = "/var/lib/nixflix";
         mediaDir = cfg.mediaDir;
-        # downloadDir = "/var/lib/nixflix/downloads";
+        downloadDir = "/var/lib/nixflix/downloads";
         mediaUsers = [ "haseeb" ];
         postgres.enable = false;
 
@@ -158,42 +154,42 @@ in
             };
           };
         };
-        jellyseerr = {
-          enable = cfg.enable;
-          apiKey = {
-            _secret = config.sops.secrets."jellyseerr/api_key".path;
-          };
-          # jellyfin = {
-          #   enableAllLibraries = true;
-          #   hostname = "127.0.0.1";
-          #   port = 8096;
-          #   useSsl = false;
-          # };
-          # sonarr.default = {
-          #   hostname = "127.0.0.1";
-          #   port = 8989;
-          #   useSsl = false;
-          #   apiKey = {
-          #     _secret = config.sops.secrets."sonarr/api_key".path;
-          #   };
-          #   activeDirectory = "${cfg.mediaDir}/tv";
-          #   enableSeasonFolders = true;
-          #   isDefault = true;
-          #   syncEnabled = true;
-          # };
-          # radarr.default = {
-          #   hostname = "127.0.0.1";
-          #   port = 7878;
-          #   useSsl = false;
-          #   apiKey = {
-          #     _secret = config.sops.secrets."radarr/api_key".path;
-          #   };
-          #   activeDirectory = "${cfg.mediaDir}/movies";
-          #   isDefault = true;
-          #   syncEnabled = true;
-          #   minimumAvailability = "released";
-          # };
-        };
+        # jellyseerr = {
+        #   enable = cfg.enable;
+        #   apiKey = {
+        #     _secret = config.sops.secrets."jellyseerr/api_key".path;
+        #   };
+        # };
+        # jellyfin = {
+        #   enableAllLibraries = true;
+        #   hostname = "127.0.0.1";
+        #   port = 8096;
+        #   useSsl = false;
+        # };
+        # sonarr.default = {
+        #   hostname = "127.0.0.1";
+        #   port = 8989;
+        #   useSsl = false;
+        #   apiKey = {
+        #     _secret = config.sops.secrets."sonarr/api_key".path;
+        #   };
+        #   activeDirectory = "${cfg.mediaDir}/tv";
+        #   enableSeasonFolders = true;
+        #   isDefault = true;
+        #   syncEnabled = true;
+        # };
+        # radarr.default = {
+        #   hostname = "127.0.0.1";
+        #   port = 7878;
+        #   useSsl = false;
+        #   apiKey = {
+        #     _secret = config.sops.secrets."radarr/api_key".path;
+        #   };
+        #   activeDirectory = "${cfg.mediaDir}/movies";
+        #   isDefault = true;
+        #   syncEnabled = true;
+        #   minimumAvailability = "released";
+        # };
         mullvad.enable = false;
       };
     }
