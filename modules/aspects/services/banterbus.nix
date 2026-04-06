@@ -13,7 +13,6 @@ in
   flake-file.inputs.banterbus = {
     url = "gitlab:hmajid2301/banterbus";
     inputs.nixpkgs.follows = "nixpkgs";
-    inputs.gomod2nix.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   den.aspects.banterbus = {

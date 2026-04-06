@@ -11,7 +11,6 @@ let
   });
 
   overlays = [
-    inputs.gomod2nix.overlays.default
     inputs.nur.overlays.default
     inputs.nix-topology.overlays.default
     inputs.niri.overlays.niri

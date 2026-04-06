@@ -26,7 +26,6 @@ let
   # Overlays for mkHomeInstantiate (standalone HM builds like dell).
   # NixOS hosts get overlays via nixpkgs.overlays in aspect files instead.
   overlays = [
-    inputs.gomod2nix.overlays.default
     inputs.nur.overlays.default
     inputs.niri.overlays.niri
     (final: prev: {
@@ -206,7 +205,7 @@ in
     { ... }:
     {
       # nixicle packages overlay (needs extendedLib so defined here).
-      # nur/gomod2nix overlays are in common.nix; niri/zjstatus in niri.nix.
+      # nur overlay in common.nix; niri/zjstatus in niri.nix.
       nixpkgs.overlays = [
         (final: prev: {
           inherit (inputs) get-shit-done;

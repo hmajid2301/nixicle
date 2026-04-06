@@ -7,10 +7,7 @@
     authentik-nix.url = "github:nix-community/authentik-nix";
     banterbus = {
       url = "gitlab:hmajid2301/banterbus";
-      inputs = {
-        gomod2nix.inputs.nixpkgs.follows = "nixpkgs";
-        nixpkgs.follows = "nixpkgs";
-      };
+      inputs.nixpkgs.follows = "nixpkgs";
     };
     catppuccin.url = "github:catppuccin/nix";
     catppuccin-obs = {
@@ -45,13 +42,6 @@
     };
     gsesh = {
       url = "gitlab:hmajid2301/gsesh";
-      inputs = {
-        gomod2nix.follows = "gomod2nix";
-        nixpkgs.follows = "nixpkgs";
-      };
-    };
-    gomod2nix = {
-      url = "github:nix-community/gomod2nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     goroutinely = {
