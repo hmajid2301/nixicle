@@ -78,18 +78,11 @@ vim.keymap.set("n", "<leader>u", function()
 	print(vim.inspect(vim.fn.undotree()))
 end, { desc = "Show undo tree" })
 
-vim.keymap.set({ "n", "x", "o" }, "<C-o>", function()
-	if vim.treesitter.get_parser(nil, nil, { error = false }) then
-		require("vim.treesitter._select").select_parent(vim.v.count1)
-	else
-		vim.lsp.buf.selection_range(vim.v.count1)
-	end
+-- Incremental selection using treesitter
+vim.keymap.set({ "x", "o" }, "<C-o>", function()
+	vim.lsp.buf.selection_range(vim.v.count1)
 end, { desc = "Select parent treesitter node" })
 
-vim.keymap.set({ "n", "x", "o" }, "<C-i>", function()
-	if vim.treesitter.get_parser(nil, nil, { error = false }) then
-		require("vim.treesitter._select").select_child(vim.v.count1)
-	else
-		vim.lsp.buf.selection_range(-vim.v.count1)
-	end
+vim.keymap.set({ "x", "o" }, "<C-i>", function()
+	vim.lsp.buf.selection_range(-vim.v.count1)
 end, { desc = "Select child treesitter node" })

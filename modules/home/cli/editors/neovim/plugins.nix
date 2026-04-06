@@ -62,8 +62,7 @@
         sqlite-lua
       ];
       treesitter = with pkgs.vimPlugins; [
-        nvim-treesitter-textobjects
-        (nvim-treesitter.withAllGrammars)
+        nvim-treesitter.withAllGrammars
       ];
       telescope = with pkgs.vimPlugins; [
         telescope-fzf-native-nvim
