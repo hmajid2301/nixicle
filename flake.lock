@@ -1088,11 +1088,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1775498514,
-        "narHash": "sha256-lqOT3SN7SWyi3B4uI8SbI6sue+kKAx9N+KOLmEiLmL8=",
+        "lastModified": 1775498951,
+        "narHash": "sha256-BDSlwaDoYzl1noQC9LXtxIvN0YDB6ce9+bnQYCfaT2g=",
         "owner": "hmajid2301",
         "repo": "gsesh",
-        "rev": "168693a3c1783e29faa2c3e722e6eb0107bce652",
+        "rev": "38ffa4a510398f82089ef809906197a40e19f06b",
         "type": "gitlab"
       },
       "original": {
