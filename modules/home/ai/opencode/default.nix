@@ -48,11 +48,25 @@ in
         }
       '';
     };
+
+    tui = mkOption {
+      type = types.attrs;
+      default = { };
+      description = "TUI-specific configuration for OpenCode tui.json";
+      example = literalExpression ''
+        {
+          theme = "catppuccin";
+          mouse = false;
+        }
+      '';
+    };
   };
 
   config = mkIf cfg.enable {
     programs.opencode = {
       enable = true;
+
+      tui = mkIf (cfg.tui != { }) cfg.tui;
 
       commands = cfg.extraCommands // {
         session-summary = "Summarize this session. First ask: personal or work? Based on answer, create notes at ~/projects/notes/notes/{work|personal}/YYYY-MM-DD-<topic>.md with summary. Update the weekly journal at ~/projects/notes/journals/weekly/ to link it with [[filename]]. Keep it concise, bullet points, focus on what shipped.";
