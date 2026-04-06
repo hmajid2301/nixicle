@@ -9,24 +9,6 @@ return {
 		end,
 		after = function(plugin)
 			require("nvim-treesitter").setup()
-
-			vim.keymap.set("x", "<c-space>", function()
-				vim.lsp.buf.selection_range()
-			end, { desc = "Expand selection (incremental)" })
-
-			vim.keymap.set("x", "<M-space>", function()
-				-- There's no built-in shrink in selection_range, use normal mode command
-				vim.cmd("normal! o")
-			end, { desc = "Shrink selection (incremental)" })
-
-			vim.keymap.set("n", "<c-space>", function()
-				vim.cmd("normal! v")
-				vim.lsp.buf.selection_range()
-			end, { desc = "Start incremental selection" })
-
-			vim.keymap.set("x", "<c-s>", function()
-				vim.lsp.buf.selection_range()
-			end, { desc = "Expand to scope" })
 		end,
 	},
 	{
