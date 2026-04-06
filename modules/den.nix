@@ -98,14 +98,17 @@ in
 
   den.ctx.user.includes = [
     den._.mutual-provider
-    ({ host, user, ... }: {
-      nixos.home-manager = {
-        useGlobalPkgs = true;
-        useUserPackages = true;
-        extraSpecialArgs = { inherit inputs; };
-        users.${user.userName}._module.args.host = host.hostName;
-      };
-    })
+    (
+      { host, user, ... }:
+      {
+        nixos.home-manager = {
+          useGlobalPkgs = true;
+          useUserPackages = true;
+          extraSpecialArgs = { inherit inputs; };
+          users.${user.userName}._module.args.host = host.hostName;
+        };
+      }
+    )
   ];
   den.ctx.home.includes = [
     den._.mutual-provider
@@ -199,7 +202,6 @@ in
     ];
   };
 
-  # NOTE: do NOT include home-manager.nixosModules here — den handles HM integration automatically
   den.default.nixos =
     { ... }:
     {

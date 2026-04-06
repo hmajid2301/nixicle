@@ -24,6 +24,8 @@ let
         zellij-mcp = prev.callPackage ../packages/zellij-mcp {
           inherit inputs;
         };
+      } // {
+        gsesh = inputs.gsesh.packages.${prev.stdenv.hostPlatform.system}.default;
       };
     })
   ];

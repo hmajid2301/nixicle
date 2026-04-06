@@ -43,6 +43,13 @@
       url = "github:gsd-build/get-shit-done/v1.21.1";
       flake = false;
     };
+    gsesh = {
+      url = "gitlab:hmajid2301/gsesh";
+      inputs = {
+        gomod2nix.follows = "gomod2nix";
+        nixpkgs.follows = "nixpkgs";
+      };
+    };
     gomod2nix = {
       url = "github:nix-community/gomod2nix";
       inputs.nixpkgs.follows = "nixpkgs";
