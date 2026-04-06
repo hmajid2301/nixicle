@@ -56,6 +56,7 @@
 
   den.aspects.framebox = {
     includes = [
+      den.aspects.performance-balanced
       den.aspects.nfs-truenas
       den.aspects.impermanence
       den.aspects.boot-secure
@@ -111,8 +112,6 @@
 
       users.groups.media.gid = 3000;
       users.users.haseeb.extraGroups = [ "media" ];
-
-      services.power-profiles-daemon.enable = true;
 
       environment.persistence."/persist".directories = [ "/etc/secureboot" ];
 

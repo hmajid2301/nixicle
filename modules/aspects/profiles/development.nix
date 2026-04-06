@@ -93,9 +93,6 @@
         };
 
         home.packages = [ atuin-export-fish ] ++ (with pkgs; [
-          # Gsesh
-          pkgs.nixicle.gsesh
-
           # Database tools
           dbeaver-bin
           termdbms

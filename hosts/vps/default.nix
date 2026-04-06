@@ -2,6 +2,7 @@
 {
   den.aspects.vps = {
     includes = [
+      den.aspects.performance-base
       den.aspects.tailscale
       den.aspects.traefik
     ];

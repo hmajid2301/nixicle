@@ -18,7 +18,7 @@
   };
 
   den.aspects.vm = {
-    includes = [ den.aspects.impermanence ];
+    includes = [ den.aspects.performance-base den.aspects.impermanence ];
 
     nixos = { lib, pkgs, ... }: {
       imports = [

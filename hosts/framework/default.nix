@@ -52,6 +52,7 @@
 
   den.aspects.framework = {
     includes = [
+      den.aspects.performance-balanced
       den.aspects.impermanence
       den.aspects.boot-secure
     ];

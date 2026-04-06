@@ -166,14 +166,17 @@ in
       options.authorizedKeys = lib.mkOption {
         type = lib.types.listOf lib.types.str;
         default = [ ];
+        description = "SSH public keys to add to authorized_keys for this user.";
       };
       options.email = lib.mkOption {
         type = lib.types.str;
         default = "hello@haseebmajid.dev";
+        description = "Primary email address used for git commits and notifications.";
       };
       options.signingKey = lib.mkOption {
         type = lib.types.str;
         default = "~/.ssh/id_ed25519.pub";
+        description = "Path to the SSH public key used for git commit signing.";
       };
     };
 
