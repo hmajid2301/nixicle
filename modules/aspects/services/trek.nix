@@ -43,7 +43,7 @@ in
 
       services.traefik.dynamicConfigOptions.http = lib.nixicle.mkAuthenticatedTraefikService {
         name = "trek";
-        port = port;
+        inherit port;
       };
 
       services.cloudflared.tunnels.${tunnelId}.ingress.${domain} = "http://localhost:${toString port}";

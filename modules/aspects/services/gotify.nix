@@ -5,17 +5,19 @@ in
 {
   den.aspects.gotify = {
     nixos = { lib, ... }: {
-      services.gotify = {
-        enable = true;
-        environment.GOTIFY_SERVER_PORT = "8051";
-      };
+      services = {
+        gotify = {
+          enable = true;
+          environment.GOTIFY_SERVER_PORT = "8051";
+        };
 
-      services.traefik.dynamicConfigOptions.http = lib.nixicle.mkTraefikService {
-        name = "notify";
-        port = 8051;
-      };
+        traefik.dynamicConfigOptions.http = lib.nixicle.mkTraefikService {
+          name = "notify";
+          port = 8051;
+        };
 
-      services.cloudflared.tunnels.${tunnelId}.ingress."notify.haseebmajid.dev" = "http://localhost:8051";
+        cloudflared.tunnels.${tunnelId}.ingress."notify.haseebmajid.dev" = "http://localhost:8051";
+      };
     };
   };
 }

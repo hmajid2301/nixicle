@@ -1,7 +1,7 @@
-{ ... }:
+_:
 {
   den.aspects.alacritty = {
-    homeManager = { ... }: {
+    homeManager = _: {
       programs.alacritty = {
         enable = true;
         settings = {

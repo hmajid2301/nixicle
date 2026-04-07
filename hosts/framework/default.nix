@@ -75,26 +75,30 @@
 
       users.users.haseeb.hashedPasswordFile = config.sops.secrets.user_password.path;
 
-      boot.kernelParams = [ "rd.luks=no" ];
-      boot.initrd.systemd.extraBin.jq = "${pkgs.jq}/bin/jq";
-      boot.initrd.systemd.services.check-pcrs = {
-        script = ''
-          echo "Checking PCR 15 value"
-          if [[ $(systemd-analyze pcrs 15 --json=short | jq -r ".[0].sha256") != "caf33e79c645b65849256238a11fa68ae197e5cb89730c463c1cdf1d9128376f" ]] ; then
-            echo "PCR 15 check failed"
-            exit 1
-          else
-            echo "PCR 15 check succeeded"
-          fi
-        '';
-        serviceConfig = {
-          Type = "oneshot";
-          RemainAfterExit = true;
+      boot = {
+        kernelParams = [ "rd.luks=no" ];
+        initrd.systemd = {
+          extraBin.jq = "${pkgs.jq}/bin/jq";
+          services.check-pcrs = {
+            script = ''
+              echo "Checking PCR 15 value"
+              if [[ $(systemd-analyze pcrs 15 --json=short | jq -r ".[0].sha256") != "caf33e79c645b65849256238a11fa68ae197e5cb89730c463c1cdf1d9128376f" ]] ; then
+                echo "PCR 15 check failed"
+                exit 1
+              else
+                echo "PCR 15 check succeeded"
+              fi
+            '';
+            serviceConfig = {
+              Type = "oneshot";
+              RemainAfterExit = true;
+            };
+            unitConfig.DefaultDependencies = "no";
+            after = [ "cryptsetup.target" ];
+            before = [ "sysroot.mount" ];
+            requiredBy = [ "sysroot.mount" ];
+          };
         };
-        unitConfig.DefaultDependencies = "no";
-        after = [ "cryptsetup.target" ];
-        before = [ "sysroot.mount" ];
-        requiredBy = [ "sysroot.mount" ];
       };
 
       # Persist secure boot keys

@@ -63,39 +63,43 @@ let
   };
 in
 {
-  den.hosts.x86_64-linux.framework = {
-    isLaptop = true;
-    autologin = false;
-    primaryDisplay = {
-      name = "eDP-1";
-      width = 2256;
-      height = 1504;
-      refresh = 120;
+  den = {
+    hosts.x86_64-linux = {
+      framework = {
+        isLaptop = true;
+        autologin = false;
+        primaryDisplay = {
+          name = "eDP-1";
+          width = 2256;
+          height = 1504;
+          refresh = 120;
+        };
+        instantiate = mkInstantiate;
+        users.haseeb = haseebUser;
+      };
+
+      vm = {
+        instantiate = mkInstantiate;
+        users.haseeb = haseebUser;
+      };
+
+      framebox = {
+        instantiate = mkInstantiate;
+        users.haseeb = haseebUser;
+      };
+
+      workstation = {
+        instantiate = mkInstantiate;
+        users.haseeb = haseebUser;
+      };
+
+      vps = {
+        instantiate = mkInstantiate;
+      };
     };
-    instantiate = mkInstantiate;
-    users.haseeb = haseebUser;
-  };
 
-  den.hosts.x86_64-linux.vm = {
-    instantiate = mkInstantiate;
-    users.haseeb = haseebUser;
-  };
-
-  den.hosts.x86_64-linux.framebox = {
-    instantiate = mkInstantiate;
-    users.haseeb = haseebUser;
-  };
-
-  den.hosts.x86_64-linux.workstation = {
-    instantiate = mkInstantiate;
-    users.haseeb = haseebUser;
-  };
-
-  den.hosts.x86_64-linux.vps = {
-    instantiate = mkInstantiate;
-  };
-
-  den.homes.x86_64-linux."haseebmajid@dell" = {
-    instantiate = mkHomeInstantiate;
+    homes.x86_64-linux."haseebmajid@dell" = {
+      instantiate = mkHomeInstantiate;
+    };
   };
 }

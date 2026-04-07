@@ -1,7 +1,7 @@
 { den, ... }:
 {
   den.aspects.nfs-truenas = {
-    nixos = { ... }: {
+    nixos = _: {
       services.rpcbind.enable = true;
 
       fileSystems."/mnt/homelab" = {

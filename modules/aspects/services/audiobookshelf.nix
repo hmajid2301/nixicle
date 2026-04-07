@@ -4,7 +4,7 @@ let
 in
 {
   den.aspects.audiobookshelf = {
-    nixos = { ... }: {
+    nixos = _: {
       services.audiobookshelf = {
         enable = true;
         port = 8555;

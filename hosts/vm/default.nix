@@ -6,7 +6,7 @@
       den.aspects.gaming
     ];
 
-    homeManager = { ... }: {
+    homeManager = _: {
       home = {
         username = "haseeb";
         homeDirectory = "/home/haseeb";

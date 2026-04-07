@@ -19,7 +19,7 @@
         rule = lib.mkDefault "Host(`${subdomain}.${domain}`)";
         service = name;
         tls.certResolver = certResolver;
-        middlewares = middlewares;
+        inherit middlewares;
       }
       extraRouterConfig
     ];

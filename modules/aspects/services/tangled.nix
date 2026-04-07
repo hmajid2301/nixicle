@@ -25,35 +25,37 @@ in
         inputs.tangled.nixosModules.knot
         inputs.tangled.nixosModules.spindle
       ];
-      services.tangled.knot = {
-        enable = true;
-        package = inputs.tangled.packages.${pkgs.stdenv.hostPlatform.system}.knot;
-        server = {
-          owner = "did:plc:reouqbpvl2kbkhvok2pwhlzg";
-          hostname = "tangled.haseebmajid.dev";
-        };
-      };
-
-      services.tangled.spindle = {
-        enable = true;
-        package = inputs.tangled.packages.${pkgs.stdenv.hostPlatform.system}.spindle;
-        server = {
-          owner = "did:plc:reouqbpvl2kbkhvok2pwhlzg";
-          hostname = "spindle.haseebmajid.dev";
-          secrets = {
-            provider = "openbao";
-            openbao = {
-              proxyAddr = "http://127.0.0.1:8202";
-              mount = "spindle";
+      services = {
+        tangled = {
+          knot = {
+            enable = true;
+            package = inputs.tangled.packages.${pkgs.stdenv.hostPlatform.system}.knot;
+            server = {
+              owner = "did:plc:reouqbpvl2kbkhvok2pwhlzg";
+              hostname = "tangled.haseebmajid.dev";
+            };
+          };
+          spindle = {
+            enable = true;
+            package = inputs.tangled.packages.${pkgs.stdenv.hostPlatform.system}.spindle;
+            server = {
+              owner = "did:plc:reouqbpvl2kbkhvok2pwhlzg";
+              hostname = "spindle.haseebmajid.dev";
+              secrets = {
+                provider = "openbao";
+                openbao = {
+                  proxyAddr = "http://127.0.0.1:8202";
+                  mount = "spindle";
+                };
+              };
             };
           };
         };
-      };
-
-      services.cloudflared.tunnels.${tunnelId}.ingress = {
-        "tangled.haseebmajid.dev".service = "http://localhost:5555";
-        "spindle.haseebmajid.dev".service = "http://localhost:6555";
-        "git.haseebmajid.dev".service = "ssh://localhost:22";
+        cloudflared.tunnels.${tunnelId}.ingress = {
+          "tangled.haseebmajid.dev".service = "http://localhost:5555";
+          "spindle.haseebmajid.dev".service = "http://localhost:6555";
+          "git.haseebmajid.dev".service = "ssh://localhost:22";
+        };
       };
 
     };

@@ -1,7 +1,7 @@
-{ ... }:
+_:
 {
   den.aspects.waybar = {
-    homeManager = { ... }: {
+    homeManager = _: {
       programs.waybar = {
         enable = true;
         systemd.enable = true;

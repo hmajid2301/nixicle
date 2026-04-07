@@ -1,7 +1,7 @@
 { den, ... }:
 {
   den.aspects.git = {
-    homeManager = { ... }: {
+    homeManager = _: {
       programs.git = {
         enable = true;
         settings = {

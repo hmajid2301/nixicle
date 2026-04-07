@@ -10,7 +10,11 @@
     ];
 
     nixos = { lib, pkgs, ... }: {
-      boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
+      boot = {
+        binfmt.emulatedSystems = [ "aarch64-linux" ];
+        plymouth.enable = true;
+        kernelParams = [ "quiet" "splash" "loglevel=3" "udev.log_level=0" ];
+      };
       hardware = {
         bluetooth = {
           enable = true;
@@ -40,16 +44,14 @@
             workstation = true;
           };
         };
+        udev.packages = with pkgs; [
+          logitech-udev-rules
+          solaar
+        ];
       };
       environment.systemPackages = with pkgs; [
         solaar
       ];
-      services.udev.packages = with pkgs; [
-        logitech-udev-rules
-        solaar
-      ];
-      boot.plymouth.enable = true;
-      boot.kernelParams = [ "quiet" "splash" "loglevel=3" "udev.log_level=0" ];
       programs.nh = {
         enable = true;
         clean.enable = true;
@@ -62,24 +64,22 @@
     homeManager = { pkgs, config, lib, ... }: {
       systemd.user.targets.tray = {
         Unit = {
-          # tray icons require graphical-session-pre: https://github.com/nix-community/home-manager/issues/2064
           Description = "Home Manager System Tray";
           Requires = [ "graphical-session-pre.target" ];
         };
       };
-      xdg.desktopEntries = {
-        "org.kde.kdeconnect.sms" = { exec = ""; name = "KDE Connect SMS"; settings.NoDisplay = "true"; };
-        "org.kde.kdeconnect.nonplasma" = { exec = ""; name = "KDE Connect Indicator"; settings.NoDisplay = "true"; };
-        "org.kde.kdeconnect.app" = { exec = ""; name = "KDE Connect"; settings.NoDisplay = "true"; };
-      };
       qt.enable = true;
-      xdg.configFile."autostart/polkit-kde-authentication-agent-1.desktop".text = ''
-        [Desktop Entry]
-        Hidden=true
-      '';
 
-      # XDG compliance
       xdg = {
+        desktopEntries = {
+          "org.kde.kdeconnect.sms" = { exec = ""; name = "KDE Connect SMS"; settings.NoDisplay = "true"; };
+          "org.kde.kdeconnect.nonplasma" = { exec = ""; name = "KDE Connect Indicator"; settings.NoDisplay = "true"; };
+          "org.kde.kdeconnect.app" = { exec = ""; name = "KDE Connect"; settings.NoDisplay = "true"; };
+        };
+        configFile."autostart/polkit-kde-authentication-agent-1.desktop".text = ''
+          [Desktop Entry]
+          Hidden=true
+        '';
         enable = true;
         cacheHome = "${config.home.homeDirectory}/.local/cache";
         mimeApps = {

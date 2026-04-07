@@ -1,7 +1,7 @@
-{ ... }:
+_:
 {
   den.aspects.gammastep = {
-    homeManager = { ... }: {
+    homeManager = _: {
       services.gammastep = {
         enable = true;
         provider = "geoclue2";

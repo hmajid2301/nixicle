@@ -64,12 +64,17 @@
           };
         };
 
-        users.users.haseeb.hashedPasswordFile = config.sops.secrets.user_password.path;
+        users = {
+          users.haseeb.hashedPasswordFile = config.sops.secrets.user_password.path;
+          groups.media.gid = 3000;
+          users.haseeb.extraGroups = [ "media" ];
+          extraGroups.docker.members = [ "haseeb" ];
+        };
 
-        users.groups.media.gid = 3000;
-        users.users.haseeb.extraGroups = [ "media" ];
-
-        boot.kernelParams = [ "resume_offset=533760" ];
+        boot = {
+          kernelParams = [ "resume_offset=533760" ];
+          kernel.sysctl."net.ipv4.ip_forward" = 1;
+        };
 
         virtualisation.docker = {
           enable = true;
@@ -86,8 +91,6 @@
           };
         };
 
-        users.extraGroups.docker.members = [ "haseeb" ];
-
         environment.systemPackages = with pkgs; [
           docker-compose
         ];
@@ -101,8 +104,6 @@
             mode = "0755";
           }
         ];
-
-        boot.kernel.sysctl."net.ipv4.ip_forward" = 1;
 
         networking.hostName = "workstation";
         system.stateVersion = "24.05";

@@ -1,4 +1,4 @@
-{ ... }:
+_:
 {
   den.aspects.gtk-theme = {
     homeManager =

@@ -17,7 +17,6 @@
 
         nix.package = pkgs.nix;
 
-        # Override xwayland-satellite spawn to strip env vars that break it on non-NixOS
         programs.niri.settings.spawn-at-startup = lib.mkForce [
           {
             command = [
@@ -45,23 +44,41 @@
           })
         ];
 
-        home.packages = with pkgs; [
-          inputs.nixgl.packages.${pkgs.stdenv.hostPlatform.system}.nixGLIntel
-          (lib.hiPrio (config.lib.nixGL.wrap totem))
-          (lib.hiPrio (
-            config.lib.nixGL.wrap (
-              pkgs.writeShellScriptBin "google-chrome" ''
-                # Unset LIBVA_DRIVERS_PATH to avoid quoting issues with system Chrome
-                unset LIBVA_DRIVERS_PATH
-                exec /usr/bin/google-chrome-stable \
-                  --no-sandbox \
-                  --enable-features=UseOzonePlatform,VaapiVideoDecodeLinuxGL \
-                  --ozone-platform=wayland \
-                  "$@"
-              ''
-            )
-          ))
-        ];
+        home = {
+          packages = with pkgs; [
+            inputs.nixgl.packages.${pkgs.stdenv.hostPlatform.system}.nixGLIntel
+            (lib.hiPrio (config.lib.nixGL.wrap totem))
+            (lib.hiPrio (
+              config.lib.nixGL.wrap (
+                pkgs.writeShellScriptBin "google-chrome" ''
+                  # Unset LIBVA_DRIVERS_PATH to avoid quoting issues with system Chrome
+                  unset LIBVA_DRIVERS_PATH
+                  exec /usr/bin/google-chrome-stable \
+                    --no-sandbox \
+                    --enable-features=UseOzonePlatform,VaapiVideoDecodeLinuxGL \
+                    --ozone-platform=wayland \
+                    "$@"
+                ''
+              )
+            ))
+          ];
+
+          file.".local/bin/niri-session-nix" = {
+            executable = true;
+            text = ''
+              #!/usr/bin/env bash
+              . "${config.home.profileDirectory}/etc/profile.d/hm-session-vars.sh"
+              exec ${config.home.profileDirectory}/bin/nixGLIntel ${config.home.profileDirectory}/bin/niri-session
+            '';
+          };
+
+          activation.maskConflictingServices = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+            $DRY_RUN_CMD mkdir -p $HOME/.config/systemd/user
+            $DRY_RUN_CMD ln -sf /dev/null $HOME/.config/systemd/user/waybar.service
+            $DRY_RUN_CMD ln -sf /dev/null $HOME/.config/systemd/user/swaync.service
+            $DRY_RUN_CMD ${pkgs.systemd}/bin/systemctl --user daemon-reload || true
+          '';
+        };
 
         programs = {
           firefox.package = config.lib.nixGL.wrap pkgs.firefox;
@@ -83,15 +100,6 @@
               ''}";
             };
           };
-
-        home.file.".local/bin/niri-session-nix" = {
-          executable = true;
-          text = ''
-            #!/usr/bin/env bash
-            . "${config.home.profileDirectory}/etc/profile.d/hm-session-vars.sh"
-            exec ${config.home.profileDirectory}/bin/nixGLIntel ${config.home.profileDirectory}/bin/niri-session
-          '';
-        };
 
         systemd.user.services.niri-env-setup = {
           Unit = {
@@ -125,53 +133,48 @@
           };
         };
 
-        home.activation.maskConflictingServices = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-          $DRY_RUN_CMD mkdir -p $HOME/.config/systemd/user
-          $DRY_RUN_CMD ln -sf /dev/null $HOME/.config/systemd/user/waybar.service
-          $DRY_RUN_CMD ln -sf /dev/null $HOME/.config/systemd/user/swaync.service
-          $DRY_RUN_CMD ${pkgs.systemd}/bin/systemctl --user daemon-reload || true
-        '';
+        xdg = {
+          dataFile."applications/com.mitchellh.ghostty.desktop".text = ''
+            [Desktop Entry]
+            Version=1.0
+            Name=Ghostty
+            Type=Application
+            Comment=A terminal emulator
+            Exec=nixGLIntel ${config.home.homeDirectory}/.nix-profile/bin/ghostty --gtk-single-instance=true
+            Icon=com.mitchellh.ghostty
+            Categories=System;TerminalEmulator;
+            Keywords=terminal;tty;pty;
+            StartupNotify=true
+            StartupWMClass=com.mitchellh.ghostty
+            Terminal=false
+            Actions=new-window;
+            X-GNOME-UsesNotifications=true
+            X-TerminalArgExec=-e
+            X-TerminalArgTitle=--title=
+            X-TerminalArgAppId=--class=
+            X-TerminalArgDir=--working-directory=
+            X-TerminalArgHold=--wait-after-command
 
-        xdg.dataFile."applications/com.mitchellh.ghostty.desktop".text = ''
-          [Desktop Entry]
-          Version=1.0
-          Name=Ghostty
-          Type=Application
-          Comment=A terminal emulator
-          Exec=nixGLIntel ${config.home.homeDirectory}/.nix-profile/bin/ghostty --gtk-single-instance=true
-          Icon=com.mitchellh.ghostty
-          Categories=System;TerminalEmulator;
-          Keywords=terminal;tty;pty;
-          StartupNotify=true
-          StartupWMClass=com.mitchellh.ghostty
-          Terminal=false
-          Actions=new-window;
-          X-GNOME-UsesNotifications=true
-          X-TerminalArgExec=-e
-          X-TerminalArgTitle=--title=
-          X-TerminalArgAppId=--class=
-          X-TerminalArgDir=--working-directory=
-          X-TerminalArgHold=--wait-after-command
+            [Desktop Action new-window]
+            Name=New Window
+            Exec=nixGLIntel ${config.home.homeDirectory}/.nix-profile/bin/ghostty
+          '';
 
-          [Desktop Action new-window]
-          Name=New Window
-          Exec=nixGLIntel ${config.home.homeDirectory}/.nix-profile/bin/ghostty
-        '';
-
-        xdg.configFile."environment.d/envvars.conf".text = ''
-          PATH="$PATH:${config.home.homeDirectory}/.nix-profile/bin"
-          XDG_DATA_DIRS="/usr/share/gnome:/usr/local/share:/usr/share:$XDG_DATA_DIRS"
-          WAYLAND_DISPLAY=wayland-0
-          XDG_CURRENT_DESKTOP=niri
-          XDG_SESSION_TYPE=wayland
-          MOZ_ENABLE_WAYLAND=1
-          # Java AWT compatibility with tiling window managers
-          _JAVA_AWT_WM_NONREPARENTING=1
-          # Intel GPU stability settings for video conferencing
-          MESA_LOADER_DRIVER_OVERRIDE=iris
-          # Prevent aggressive power management during video calls
-          intel_idle.max_cstate=1
-        '';
+          configFile."environment.d/envvars.conf".text = ''
+            PATH="$PATH:${config.home.homeDirectory}/.nix-profile/bin"
+            XDG_DATA_DIRS="/usr/share/gnome:/usr/local/share:/usr/share:$XDG_DATA_DIRS"
+            WAYLAND_DISPLAY=wayland-0
+            XDG_CURRENT_DESKTOP=niri
+            XDG_SESSION_TYPE=wayland
+            MOZ_ENABLE_WAYLAND=1
+            # Java AWT compatibility with tiling window managers
+            _JAVA_AWT_WM_NONREPARENTING=1
+            # Intel GPU stability settings for video conferencing
+            MESA_LOADER_DRIVER_OVERRIDE=iris
+            # Prevent aggressive power management during video calls
+            intel_idle.max_cstate=1
+          '';
+        };
       };
   };
 }

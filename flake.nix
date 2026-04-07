@@ -40,12 +40,12 @@
       url = "github:gsd-build/get-shit-done/v1.21.1";
       flake = false;
     };
-    gsesh = {
-      url = "gitlab:hmajid2301/gsesh";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     goroutinely = {
       url = "gitlab:hmajid2301/goroutinely/feat/move-to-internal";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    gsesh = {
+      url = "gitlab:hmajid2301/gsesh";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     home-manager = {

@@ -216,14 +216,15 @@
           inputs.gsesh.packages.${pkgs.stdenv.hostPlatform.system}.default
         ];
 
-        xdg.configFile."zellij/config.kdl".text = ''
-          ${stylixTheme}
+        xdg.configFile = {
+          "zellij/config.kdl".text = ''
+            ${stylixTheme}
 
-          ${builtins.readFile ./config.kdl}
-        '';
-
-        xdg.configFile."zellij/layouts/dev.kdl".text = layoutDev;
-        xdg.configFile."zellij/layouts/default.kdl".text = layoutDefault;
+            ${builtins.readFile ./config.kdl}
+          '';
+          "zellij/layouts/dev.kdl".text = layoutDev;
+          "zellij/layouts/default.kdl".text = layoutDefault;
+        };
 
         programs.zellij.enable = true;
       };

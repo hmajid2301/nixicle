@@ -8,72 +8,78 @@ let
   });
 in
 {
-  den.ctx.user.includes = [
-    den._.mutual-provider
-    (
-      { host, user, ... }:
-      {
-        nixos.home-manager = {
-          useGlobalPkgs = true;
-          useUserPackages = true;
-          extraSpecialArgs = { inherit inputs; };
-          users.${user.userName}._module.args.host = host.hostName;
-        };
-      }
-    )
-  ];
-
-  den.ctx.home.includes = [
-    den._.mutual-provider
-    (
-      { home, ... }:
-      {
-        homeManager =
-          { ... }:
-          {
-            _module.args.host = home.hostName or "unknown";
+  den = {
+    ctx.user.includes = [
+      den._.mutual-provider
+      (
+        { host, user, ... }:
+        {
+          nixos.home-manager = {
+            useGlobalPkgs = true;
+            useUserPackages = true;
+            extraSpecialArgs = { inherit inputs; };
+            users.${user.userName}._module.args.host = host.hostName;
           };
-      }
-    )
-  ];
+        }
+      )
+    ];
 
-  den.schema.user =
-    { lib, ... }:
-    {
-      config.classes = lib.mkDefault [ "homeManager" ];
-      options.authorizedKeys = lib.mkOption {
-        type = lib.types.listOf lib.types.str;
-        default = [ ];
-        description = "SSH public keys to add to authorized_keys for this user.";
-      };
-      options.email = lib.mkOption {
-        type = lib.types.str;
-        default = "hello@haseebmajid.dev";
-        description = "Primary email address used for git commits and notifications.";
-      };
-      options.signingKey = lib.mkOption {
-        type = lib.types.str;
-        default = "~/.ssh/id_ed25519.pub";
-        description = "Path to the SSH public key used for git commit signing.";
-      };
-    };
+    ctx.home.includes = [
+      den._.mutual-provider
+      (
+        { home, ... }:
+        {
+          homeManager =
+            _:
+            {
+              _module.args.host = home.hostName or "unknown";
+            };
+        }
+      )
+    ];
 
-  den.schema.host =
-    { lib, ... }:
-    {
-      options.isLaptop = lib.mkOption {
-        type = lib.types.bool;
-        default = false;
+    schema.user =
+      { lib, ... }:
+      {
+        config.classes = lib.mkDefault [ "homeManager" ];
+        options = {
+          authorizedKeys = lib.mkOption {
+            type = lib.types.listOf lib.types.str;
+            default = [ ];
+            description = "SSH public keys to add to authorized_keys for this user.";
+          };
+          email = lib.mkOption {
+            type = lib.types.str;
+            default = "hello@haseebmajid.dev";
+            description = "Primary email address used for git commits and notifications.";
+          };
+          signingKey = lib.mkOption {
+            type = lib.types.str;
+            default = "~/.ssh/id_ed25519.pub";
+            description = "Path to the SSH public key used for git commit signing.";
+          };
+        };
       };
-      options.autologin = lib.mkOption {
-        type = lib.types.bool;
-        default = true;
+
+    schema.host =
+      { lib, ... }:
+      {
+        options = {
+          isLaptop = lib.mkOption {
+            type = lib.types.bool;
+            default = false;
+          };
+          autologin = lib.mkOption {
+            type = lib.types.bool;
+            default = true;
+          };
+          primaryDisplay = lib.mkOption {
+            type = lib.types.attrsOf lib.types.anything;
+            default = { };
+          };
+        };
       };
-      options.primaryDisplay = lib.mkOption {
-        type = lib.types.attrsOf lib.types.anything;
-        default = { };
-      };
-    };
+  };
 
   den.default = {
     includes = [

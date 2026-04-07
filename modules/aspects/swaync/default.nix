@@ -1,7 +1,7 @@
-{ ... }:
+_:
 {
   den.aspects.swaync = {
-    homeManager = { ... }: {
+    homeManager = _: {
       services.swaync = {
         enable = true;
         settings = { };

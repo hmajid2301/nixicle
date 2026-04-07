@@ -18,43 +18,44 @@ in
 
       users.users.nginx.extraGroups = [ "tandoor_recipes" ];
 
-      services.tandoor-recipes = {
-        enable = true;
-        port = 8099;
-        extraConfig = {
-          DB_ENGINE = "django.db.backends.postgresql";
-          POSTGRES_HOST = "/run/postgresql";
-          POSTGRES_USER = "tandoor_recipes";
-          POSTGRES_DB = "tandoor_recipes";
-          SOCIAL_DEFAULT_GROUP = "user";
-          SOCIAL_PROVIDERS = "allauth.socialaccount.providers.openid_connect";
-          MEDIA_URL = "https://tandoor-recipes-media.haseebmajid.dev/media/";
-          MEDIA_ROOT = "/var/lib/tandoor-recipes/";
-          SPACE_AI_ENABLED = "1";
-          SPACE_AI_CREDITS_MONTHLY = "1000";
-          AI_RATELIMIT = "600/hour";
+      services = {
+        tandoor-recipes = {
+          enable = true;
+          port = 8099;
+          extraConfig = {
+            DB_ENGINE = "django.db.backends.postgresql";
+            POSTGRES_HOST = "/run/postgresql";
+            POSTGRES_USER = "tandoor_recipes";
+            POSTGRES_DB = "tandoor_recipes";
+            SOCIAL_DEFAULT_GROUP = "user";
+            SOCIAL_PROVIDERS = "allauth.socialaccount.providers.openid_connect";
+            MEDIA_URL = "https://tandoor-recipes-media.haseebmajid.dev/media/";
+            MEDIA_ROOT = "/var/lib/tandoor-recipes/";
+            SPACE_AI_ENABLED = "1";
+            SPACE_AI_CREDITS_MONTHLY = "1000";
+            AI_RATELIMIT = "600/hour";
+          };
         };
-      };
 
-      services.postgresql = {
-        ensureDatabases = [ "tandoor_recipes" ];
-        ensureUsers = [ { name = "tandoor_recipes"; ensureDBOwnership = true; } ];
-      };
-
-      services.nginx = {
-        enable = true;
-        virtualHosts."recipes-media" = {
-          listen = [ { addr = "localhost"; port = 8100; } ];
-          locations."/media/".alias = "/var/lib/tandoor-recipes/";
+        postgresql = {
+          ensureDatabases = [ "tandoor_recipes" ];
+          ensureUsers = [ { name = "tandoor_recipes"; ensureDBOwnership = true; } ];
         };
-      };
 
-      services.cloudflared.tunnels.${tunnelId}.ingress = {
-        "tandoor-recipes-media.haseebmajid.dev" = "http://localhost:8100";
-        "tandoor-recipes.haseebmajid.dev" = "http://localhost:8099";
-      };
+        nginx = {
+          enable = true;
+          virtualHosts."recipes-media" = {
+            listen = [ { addr = "localhost"; port = 8100; } ];
+            locations."/media/".alias = "/var/lib/tandoor-recipes/";
+          };
+        };
 
-      services.traefik.dynamicConfigOptions.http = lib.mkMerge [
+        cloudflared.tunnels.${tunnelId}.ingress = {
+          "tandoor-recipes-media.haseebmajid.dev" = "http://localhost:8100";
+          "tandoor-recipes.haseebmajid.dev" = "http://localhost:8099";
+        };
+
+        traefik.dynamicConfigOptions.http = lib.mkMerge [
         (lib.nixicle.mkTraefikService {
           name = "tandoor";
           port = 8099;
@@ -71,8 +72,8 @@ in
             tls.certResolver = "letsencrypt";
           };
         }
-      ];
-
+];
+      };
     };
   };
 }

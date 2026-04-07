@@ -1,7 +1,7 @@
 { den, ... }:
 {
   den.aspects.podman = {
-    nixos = { ... }: {
+    nixos = _: {
       virtualisation = {
         containers.enable = true;
         podman = {

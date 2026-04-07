@@ -1,7 +1,7 @@
 { den, ... }:
 {
   den.aspects.logging = {
-    nixos = { ... }: {
+    nixos = _: {
       services.loki = {
         enable = true;
         configuration = {

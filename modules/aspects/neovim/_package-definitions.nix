@@ -11,7 +11,7 @@ in
           wrapRc = true;
           suffix-path = true;
           suffix-LD = true;
-          neovim-unwrapped = pkgs.neovim-unwrapped;
+          inherit (pkgs) neovim-unwrapped;
         };
         categories = {
           general = true;
@@ -74,7 +74,7 @@ in
           # filesystem path for live editing without rebuilds. toString/./ would
           # give a nix store copy instead. Update manually if the repo moves.
           unwrappedCfgPath = "${config.home.homeDirectory}/nixicle/modules/aspects/neovim";
-          neovim-unwrapped = pkgs.neovim-unwrapped;
+          inherit (pkgs) neovim-unwrapped;
         };
         categories = {
           general = true;

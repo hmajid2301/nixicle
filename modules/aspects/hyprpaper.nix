@@ -1,7 +1,7 @@
-{ ... }:
+_:
 {
   den.aspects.hyprpaper = {
-    homeManager = { ... }: {
+    homeManager = _: {
       services.hyprpaper.enable = true;
     };
   };

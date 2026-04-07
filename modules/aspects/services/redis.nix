@@ -1,7 +1,7 @@
 { den, ... }:
 {
   den.aspects.redis = {
-    nixos = { ... }: {
+    nixos = _: {
       services.redis.servers.main = {
         enable = true;
         openFirewall = true;

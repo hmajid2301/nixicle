@@ -35,72 +35,75 @@ let
   };
 in
 {
-  flake-file.inputs.comma = {
-    url = "github:nix-community/comma";
-    inputs.nixpkgs.follows = "nixpkgs";
-  };
-  flake-file.inputs.deploy-rs = {
-    url = "github:serokell/deploy-rs";
-    inputs.nixpkgs.follows = "nixpkgs";
-  };
-  flake-file.inputs.nixos-generators = {
-    url = "github:nix-community/nixos-generators";
-    inputs.nixpkgs.follows = "nixpkgs";
-  };
-  flake-file.inputs.nixos-anywhere = {
-    url = "github:numtide/nixos-anywhere";
-    inputs.nixpkgs.follows = "nixpkgs";
-  };
-  flake-file.inputs.nix-topology = {
-    url = "github:oddlama/nix-topology";
-    inputs.nixpkgs.follows = "nixpkgs";
+  flake-file.inputs = {
+    comma = {
+      url = "github:nix-community/comma";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    deploy-rs = {
+      url = "github:serokell/deploy-rs";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    nixos-generators = {
+      url = "github:nix-community/nixos-generators";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    nixos-anywhere = {
+      url = "github:numtide/nixos-anywhere";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    nix-topology = {
+      url = "github:oddlama/nix-topology";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  flake.packages = forAllSystems (system:
-    let pkgs = mkPkgs system;
-    in pkgs.nixicle // {
-      iso-graphical = inputs.nixos-generators.nixosGenerate {
-        inherit system;
-        specialArgs = {
-          inherit inputs;
-          lib = extendedLib;
+  flake = {
+    packages = forAllSystems (system:
+      let pkgs = mkPkgs system;
+      in pkgs.nixicle // {
+        iso-graphical = inputs.nixos-generators.nixosGenerate {
+          inherit system;
+          specialArgs = {
+            inherit inputs;
+            lib = extendedLib;
+          };
+          modules = [
+            inputs.stylix.nixosModules.stylix
+            inputs.home-manager.nixosModules.home-manager
+            inputs.lanzaboote.nixosModules.lanzaboote
+            inputs.impermanence.nixosModules.impermanence
+            inputs.sops-nix.nixosModules.sops
+            inputs.authentik-nix.nixosModules.default
+            inputs.tangled.nixosModules.knot
+            inputs.tangled.nixosModules.spindle
+            inputs.nixflix.nixosModules.nixflix
+            inputs.niri.nixosModules.niri
+            inputs.goroutinely.nixosModules.default
+            ../iso/graphical
+            {
+              nixpkgs.hostPlatform = system;
+              nixpkgs.overlays = overlays;
+              image.baseName = lib.mkForce "nixicle-graphical";
+              isoImage.volumeID = lib.mkForce "nixicle-${
+                lib.substring 0 8 (inputs.self.lastModifiedDate or inputs.self.lastModified or "19700101")
+              }";
+            }
+          ];
+          format = "iso";
         };
-        modules = [
-          inputs.stylix.nixosModules.stylix
-          inputs.home-manager.nixosModules.home-manager
-          inputs.lanzaboote.nixosModules.lanzaboote
-          inputs.impermanence.nixosModules.impermanence
-          inputs.sops-nix.nixosModules.sops
-          inputs.authentik-nix.nixosModules.default
-          inputs.tangled.nixosModules.knot
-          inputs.tangled.nixosModules.spindle
-          inputs.nixflix.nixosModules.nixflix
-          inputs.niri.nixosModules.niri
-          inputs.goroutinely.nixosModules.default
-          ../iso/graphical
-          {
-            nixpkgs.hostPlatform = system;
-            nixpkgs.overlays = overlays;
-            image.baseName = lib.mkForce "nixicle-graphical";
-            isoImage.volumeID = lib.mkForce "nixicle-${
-              lib.substring 0 8 (inputs.self.lastModifiedDate or inputs.self.lastModified or "19700101")
-            }";
-          }
-        ];
-        format = "iso";
-      };
-    }
-  );
+      }
+    );
 
-  flake.apps = forAllSystems (system:
-    let pkgs = mkPkgs system;
-    in lib.mapAttrs (name: f:
-      let drv = f pkgs;
-      in { type = "app"; program = "${drv}/bin/${name}"; }
-    ) config.flake-file.apps
-  );
+    apps = forAllSystems (system:
+      let pkgs = mkPkgs system;
+      in lib.mapAttrs (name: f:
+        let drv = f pkgs;
+        in { type = "app"; program = "${drv}/bin/${name}"; }
+      ) config.flake-file.apps
+    );
 
-  flake.devShells = forAllSystems (system:
+    devShells = forAllSystems (system:
     let pkgs = mkPkgs system;
     in {
       default = pkgs.mkShell {
@@ -142,27 +145,28 @@ in
     }
   );
 
-  flake.deploy = extendedLib.nixicle.mkDeploy {
-    self = inputs.self;
-    overrides = {
-      framework.profiles.system.sshUser = "haseeb";
-      vm.profiles.system.sshUser = "haseeb";
+    deploy = extendedLib.nixicle.mkDeploy {
+      inherit (inputs) self;
+      overrides = {
+        framework.profiles.system.sshUser = "haseeb";
+        vm.profiles.system.sshUser = "haseeb";
+      };
     };
+
+    checks = builtins.mapAttrs (
+      system: deploy-lib: deploy-lib.deployChecks inputs.self.deploy
+    ) inputs.deploy-rs.lib;
+
+    topology =
+      let
+        host = inputs.self.nixosConfigurations.${builtins.head (builtins.attrNames inputs.self.nixosConfigurations)};
+      in
+      import inputs.nix-topology {
+        inherit (host) pkgs;
+        modules = [
+          (import ../topology { inherit (host) config; })
+          { inherit (inputs.self) nixosConfigurations; }
+        ];
+      };
   };
-
-  flake.checks = builtins.mapAttrs (
-    system: deploy-lib: deploy-lib.deployChecks inputs.self.deploy
-  ) inputs.deploy-rs.lib;
-
-  flake.topology =
-    let
-      host = inputs.self.nixosConfigurations.${builtins.head (builtins.attrNames inputs.self.nixosConfigurations)};
-    in
-    import inputs.nix-topology {
-      inherit (host) pkgs;
-      modules = [
-        (import ../topology { inherit (host) config; })
-        { inherit (inputs.self) nixosConfigurations; }
-      ];
-    };
 }

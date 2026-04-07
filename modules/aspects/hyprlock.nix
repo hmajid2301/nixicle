@@ -1,7 +1,7 @@
-{ ... }:
+_:
 {
   den.aspects.hyprlock = {
-    homeManager = { ... }: {
+    homeManager = _: {
       programs.hyprlock = {
         enable = true;
         settings = { };

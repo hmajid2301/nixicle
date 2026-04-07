@@ -14,9 +14,11 @@
       ];
 
       # VPS uses GRUB/cloud bootloader, not systemd-boot
-      boot.loader.systemd-boot.enable = lib.mkForce false;
-      boot.loader.grub.enable = lib.mkDefault true;
-      boot.initrd.systemd.enable = lib.mkForce false;
+      boot = {
+        loader.systemd-boot.enable = lib.mkForce false;
+        loader.grub.enable = lib.mkDefault true;
+        initrd.systemd.enable = lib.mkForce false;
+      };
 
       sops.age.sshKeyPaths = lib.mkForce [ "/etc/ssh/ssh_host_ed25519_key" ];
 
@@ -100,9 +102,11 @@
         };
       };
 
-      networking.hostName = "vps";
-      networking.useDHCP = lib.mkDefault true;
-      networking.interfaces.ens3.useDHCP = lib.mkDefault true;
+      networking = {
+        hostName = "vps";
+        useDHCP = lib.mkDefault true;
+        interfaces.ens3.useDHCP = lib.mkDefault true;
+      };
 
       system.stateVersion = "24.05";
     };

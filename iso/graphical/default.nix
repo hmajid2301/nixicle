@@ -14,9 +14,11 @@
 
   networking.wireless.enable = lib.mkForce false;
 
-  services.xserver.enable = true;
-  services.displayManager.gdm.enable = true;
-  services.desktopManager.gnome.enable = true;
+  services = {
+    xserver.enable = true;
+    displayManager.gdm.enable = true;
+    desktopManager.gnome.enable = true;
+  };
 
   i18n.defaultLocale = "en_GB.UTF-8";
   time.timeZone = "Europe/London";

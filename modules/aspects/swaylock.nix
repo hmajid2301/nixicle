@@ -1,4 +1,4 @@
-{ ... }:
+_:
 {
   den.aspects.swaylock = {
     homeManager =

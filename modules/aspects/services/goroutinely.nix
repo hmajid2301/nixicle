@@ -19,36 +19,38 @@ in
         sopsFile = ../../../hosts/framebox/secrets.yaml;
         key = "goroutinely";
         owner = config.services.goroutinely.user;
-        group = config.services.goroutinely.group;
+        inherit (config.services.goroutinely) group;
         mode = "0400";
       };
 
-      services.goroutinely = {
-        enable = true;
-        package = inputs.goroutinely.packages.${pkgs.system}.default;
-        sendremindersPackage = inputs.goroutinely.packages.${pkgs.system}.default;
-        port = 8235;
-        host = "0.0.0.0";
-        database.createLocally = true;
-        notifications = {
+      services = {
+        goroutinely = {
           enable = true;
-          vapidSubject = "mailto:admin@haseebmajid.dev";
-          vapidPublicKey = "BN91igKCVVyiiDggAN4poSUaEKL_-CNV_3mnioXKghZd00x5fFkjLra8HvAhfwZkHTymFsXHsRwVYpTqyGja-II";
+          package = inputs.goroutinely.packages.${pkgs.system}.default;
+          sendremindersPackage = inputs.goroutinely.packages.${pkgs.system}.default;
+          port = 8235;
+          host = "0.0.0.0";
+          database.createLocally = true;
+          notifications = {
+            enable = true;
+            vapidSubject = "mailto:admin@haseebmajid.dev";
+            vapidPublicKey = "BN91igKCVVyiiDggAN4poSUaEKL_-CNV_3mnioXKghZd00x5fFkjLra8HvAhfwZkHTymFsXHsRwVYpTqyGja-II";
+          };
+          oauth = {
+            issuerUrl = "https://authentik.haseebmajid.dev/application/o/go-routinely/.well-known/openid-configuration";
+            clientId = "N3h5Y0H52Z96NqKfJn8fWasyPX5VRdtx5ps0uoWW";
+          };
+          secretsFile = config.sops.secrets.goroutinely.path;
         };
-        oauth = {
-          issuerUrl = "https://authentik.haseebmajid.dev/application/o/go-routinely/.well-known/openid-configuration";
-          clientId = "N3h5Y0H52Z96NqKfJn8fWasyPX5VRdtx5ps0uoWW";
+
+        cloudflared.tunnels.${tunnelId}.ingress."goroutinely.haseebmajid.dev" = "http://localhost:8235";
+
+        traefik.dynamicConfigOptions.http = lib.nixicle.mkTraefikService {
+          name = "goroutinely";
+          port = 8235;
+          subdomain = "goroutinely";
+          domain = "haseebmajid.dev";
         };
-        secretsFile = config.sops.secrets.goroutinely.path;
-      };
-
-      services.cloudflared.tunnels.${tunnelId}.ingress."goroutinely.haseebmajid.dev" = "http://localhost:8235";
-
-      services.traefik.dynamicConfigOptions.http = lib.nixicle.mkTraefikService {
-        name = "goroutinely";
-        port = 8235;
-        subdomain = "goroutinely";
-        domain = "haseebmajid.dev";
       };
 
     };
