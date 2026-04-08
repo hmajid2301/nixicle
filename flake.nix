@@ -72,7 +72,7 @@
       url = "github:oddlama/nix-topology";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    nixCats.url = "github:BirdeeHub/nixCats-nvim";
+    nix-wrapper-modules.url = "github:BirdeeHub/nix-wrapper-modules";
     nixery = {
       url = "github:tazjin/nixery";
       flake = false;

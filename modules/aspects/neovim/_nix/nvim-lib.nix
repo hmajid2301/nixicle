@@ -1,5 +1,3 @@
-# Adds custom spec fields (postpkgs, mainInfo, settings) and helper functions.
-# Closely follows the birdeevim nvim-lib.nix pattern.
 {
   config,
   lib,
@@ -9,15 +7,12 @@
   ...
 }:
 {
-  # Expose the enabled/disabled state of each spec to Lua via nixInfo("settings","cats","<name>")
   options.settings.cats = lib.mkOption {
     readOnly = true;
     type = lib.types.attrsOf lib.types.raw;
     default = builtins.mapAttrs (_: v: v.enable) config.specs;
-    description = "Map of spec name -> enabled boolean, exposed via nixInfo";
   };
 
-  # Build vim plugins from flake inputs with a plugins-* prefix
   options.nvim-lib.pluginsFromPrefix = lib.mkOption {
     type = lib.types.raw;
     readOnly = true;
@@ -40,14 +35,12 @@
       ];
   };
 
-  # All plugins built from plugins-* inputs
   options.nvim-lib.neovimPlugins = lib.mkOption {
     type = lib.types.raw;
     readOnly = true;
     default = config.nvim-lib.pluginsFromPrefix "plugins-" inputs;
   };
 
-  # Add postpkgs, prepkgs, mainInfo, and settings fields to every spec
   config.specMods =
     { config, ... }:
     let
@@ -67,23 +60,19 @@
     {
       options.prepkgs = lib.mkOption {
         type = lib.types.listOf wlib.types.stringable;
-        description = "Packages prepended to PATH for this spec";
       };
       config.prepkgs = wrappers.pre;
       options.postpkgs = lib.mkOption {
         type = lib.types.listOf wlib.types.stringable;
-        description = "Packages appended to PATH for this spec";
       };
       config.postpkgs = wrappers.post;
       options.mainInfo = lib.mkOption {
         type = wlib.types.attrsRecursive;
         default = { };
-        description = "Extra info merged into the top-level info plugin (accessible via nixInfo)";
       };
       options.settings = lib.mkOption {
         type = lib.types.submoduleWith { modules = [ { freeformType = wlib.types.attrsRecursive; } ]; };
         default = { };
-        description = "Freeform per-spec settings";
       };
       options.wrappers = lib.mkOption {
         type = lib.types.attrsOf (
@@ -100,16 +89,13 @@
           }
         );
         default = { };
-        description = "Per-spec wrapper modules";
       };
     };
 
-  # Collect all mainInfo values and merge into config.info
   config.info = lib.mkMerge (
     config.specCollect (acc: v: acc ++ lib.optional (v.mainInfo or { } != { }) v.mainInfo) [ ]
   );
 
-  # Collect prepkgs into a PATH prefix variable
   config.prefixVar =
     let
       autodeps = config.specCollect (acc: v: acc ++ (v.prepkgs or [ ])) [ ];
@@ -123,7 +109,6 @@
       ];
     };
 
-  # Collect postpkgs into a PATH suffix variable
   config.suffixVar =
     let
       autodeps = config.specCollect (acc: v: acc ++ (v.postpkgs or [ ])) [ ];

@@ -43,17 +43,12 @@
             stateVersion = "24.05";
           };
 
-          services.swayidle = {
-            enable = true;
-            events.before-sleep = "noctalia-shell ipc call lockScreen lock";
-            timeouts = [
-              { timeout = 300; command = "noctalia-shell ipc call lockScreen lock"; }
-              {
-                timeout = 330;
-                command = "${config.programs.niri.package}/bin/niri msg action power-off-monitors";
-                resumeCommand = "${config.programs.niri.package}/bin/niri msg action power-on-monitors";
-              }
-            ];
+          programs.noctalia-shell.settings.idle = {
+            enabled = true;
+            screenOffTimeout = 330;
+            lockTimeout = 300;
+            suspendTimeout = 0;
+            fadeDuration = 5;
           };
         };
       };

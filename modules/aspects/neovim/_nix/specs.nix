@@ -1,27 +1,21 @@
-# All plugin and LSP/tool declarations, mapped from old nixCats categories.
-# Spec names match the for_cat = "name" references in lua config.
 {
   config,
   lib,
   pkgs,
   inputs,
-  # Passed from homeManager context via _module.args
   stylixColors ? { },
   ...
 }:
 {
-  # Non-boolean info values exposed via nixInfo(nil, "info", "key") or nixInfo(nil, "key")
   config.info = {
     colorscheme = "catppuccin";
     lspDebugMode = false;
     colors = stylixColors;
     nixdExtras = {
-      # nixd needs an importable nix expression string
       nixpkgs = "import ${inputs.nixpkgs} {}";
     };
   };
 
-  # ── Foundation plugins (always loaded, non-lazy) ────────────────────────────
   config.specs.general = {
     data = with pkgs.vimPlugins; [
       lze
@@ -41,29 +35,23 @@
     ];
   };
 
-  # ── Colorscheme ─────────────────────────────────────────────────────────────
   config.specs.colorscheme = {
     lazy = true;
     data = pkgs.vimPlugins.catppuccin-nvim;
   };
 
-  # ── LSP core (nvim-lspconfig) ────────────────────────────────────────────────
-  # for_cat = "lsp-core" in lua
   config.specs.lsp-core = {
     lazy = true;
     data = with pkgs.vimPlugins; [ nvim-lspconfig ];
   };
 
-  # ── Nix dev extras (lazydev) ─────────────────────────────────────────────────
   config.specs.neonixdev = {
     lazy = true;
     data = with pkgs.vimPlugins; [ lazydev-nvim ];
     postpkgs = with pkgs; [
-      # lua_ls is also used for neonixdev
     ];
   };
 
-  # ── Completion ───────────────────────────────────────────────────────────────
   config.specs.cmp = {
     lazy = true;
     data = with pkgs.vimPlugins; [
@@ -85,15 +73,14 @@
     ];
   };
 
-  # ── Tree-sitter ──────────────────────────────────────────────────────────────
   config.specs.treesitter = {
     lazy = true;
     data = with pkgs.vimPlugins; [
       nvim-treesitter.withAllGrammars
+      nvim-treesitter-textobjects
     ];
   };
 
-  # ── Telescope ────────────────────────────────────────────────────────────────
   config.specs.telescope = {
     lazy = true;
     data = with pkgs.vimPlugins; [
@@ -104,7 +91,6 @@
     ];
   };
 
-  # ── Git ──────────────────────────────────────────────────────────────────────
   config.specs.git = {
     lazy = true;
     data = with pkgs.vimPlugins; [
@@ -117,7 +103,6 @@
     ];
   };
 
-  # ── Debug ────────────────────────────────────────────────────────────────────
   config.specs.debug = {
     lazy = true;
     data = with pkgs.vimPlugins; [
@@ -129,7 +114,6 @@
     ];
   };
 
-  # ── Test ─────────────────────────────────────────────────────────────────────
   config.specs.test = {
     lazy = true;
     data = with pkgs.vimPlugins; [
@@ -141,25 +125,21 @@
     ];
   };
 
-  # ── Lint ─────────────────────────────────────────────────────────────────────
   config.specs.lint = {
     lazy = true;
     data = with pkgs.vimPlugins; [ nvim-lint ];
   };
 
-  # ── Format ───────────────────────────────────────────────────────────────────
   config.specs.format = {
     lazy = true;
     data = with pkgs.vimPlugins; [ conform-nvim ];
   };
 
-  # ── AI ───────────────────────────────────────────────────────────────────────
   config.specs.ai = {
     lazy = true;
     data = with pkgs.vimPlugins; [ sidekick-nvim ];
   };
 
-  # ── Editor plugins ───────────────────────────────────────────────────────────
   config.specs.editor = {
     lazy = true;
     data = with pkgs.vimPlugins; [
@@ -185,7 +165,6 @@
     ];
   };
 
-  # ── Extra plugins ────────────────────────────────────────────────────────────
   config.specs.extra = {
     lazy = true;
     data = with pkgs.vimPlugins; [
@@ -195,7 +174,6 @@
     ];
   };
 
-  # ── Notes ────────────────────────────────────────────────────────────────────
   config.specs.notes = {
     lazy = true;
     data = with pkgs.vimPlugins; [
@@ -205,7 +183,6 @@
     ];
   };
 
-  # ── UI ───────────────────────────────────────────────────────────────────────
   config.specs.ui = {
     lazy = true;
     data = with pkgs.vimPlugins; [
@@ -217,15 +194,11 @@
     ];
   };
 
-  # ── Diagnostics ──────────────────────────────────────────────────────────────
   config.specs.diagnostics = {
     lazy = true;
     data = with pkgs.vimPlugins; [ trouble-nvim ];
   };
 
-  # ════════════════════════════════════════════════════════════════════════════
-  # Language specs: data = null means no plugins, just tools in postpkgs
-  # ════════════════════════════════════════════════════════════════════════════
 
   config.specs.go = {
     data = null;
@@ -237,7 +210,7 @@
       go-tools
       gotools
       gotestsum
-      inputs.templ.packages.${pkgs.stdenv.hostPlatform.system}.templ
+      templ
     ];
   };
 
@@ -338,7 +311,7 @@
 
   config.specs.templ = {
     data = null;
-    postpkgs = with pkgs; [ inputs.templ.packages.${pkgs.stdenv.hostPlatform.system}.templ ];
+    postpkgs = with pkgs; [ templ ];
   };
 
   config.specs.typescript = {

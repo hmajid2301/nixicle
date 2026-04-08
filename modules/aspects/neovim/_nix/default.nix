@@ -17,12 +17,8 @@ inputs:
   ];
 
   config.package = pkgs.neovim-unwrapped;
-
-  # aliases: vi and vim point to the nvim binary
   config.settings.aliases = [ "vi" "vim" ];
 
-  # Config directory: use the wrapped store path by default.
-  # Set unwrapped_mode = true to use the live filesystem path (like old regularCats).
   options.settings.unwrapped_mode = lib.mkOption {
     type = lib.types.bool;
     default = false;
@@ -31,8 +27,7 @@ inputs:
     type = lib.types.either wlib.types.stringable lib.types.luaInline;
     default = ./..;
   };
-  # Live filesystem path for editing without rebuilds.
-  # Hardcoded because toString ./.. gives a Nix store copy, not the live path.
+  # Hardcoded: toString ./.. gives a store copy, not the live filesystem path.
   options.settings.unwrapped_config = lib.mkOption {
     type = lib.types.either wlib.types.stringable lib.types.luaInline;
     default = lib.generators.mkLuaInline "vim.uv.os_homedir() .. '/nixicle/modules/aspects/neovim'";

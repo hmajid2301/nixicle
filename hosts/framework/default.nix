@@ -9,23 +9,7 @@
       den.aspects.gaming
       den.aspects.social
 
-      ({ host, ... }: {
-        homeManager = { pkgs, lib, config, ... }: lib.mkIf host.isLaptop {
-          services.swayidle = {
-            enable = true;
-            events.before-sleep = "noctalia-shell ipc call lockScreen lock";
-            timeouts = [
-              { timeout = 300; command = "noctalia-shell ipc call lockScreen lock"; }
-              {
-                timeout = 330;
-                command = "${config.programs.niri.package}/bin/niri msg action power-off-monitors && ${pkgs.pamixer}/bin/pamixer --mute";
-                resumeCommand = "${config.programs.niri.package}/bin/niri msg action power-on-monitors && ${pkgs.pamixer}/bin/pamixer --unmute";
-              }
-              { timeout = 900; command = "${pkgs.systemd}/bin/systemctl hibernate"; }
-            ];
-          };
-        };
-      })
+      
     ];
 
     homeManager = { lib, ... }: {
@@ -35,8 +19,14 @@
         stateVersion = "24.05";
       };
 
-      # Noctalia laptop widgets + framework OSD monitor
       programs.noctalia-shell.settings = {
+        idle = {
+          enabled = true;
+          screenOffTimeout = 330;
+          lockTimeout = 300;
+          suspendTimeout = 900;
+          fadeDuration = 5;
+        };
         bar.widgets.right = lib.mkBefore [
           { id = "Bluetooth"; displayMode = "icon"; }
           { id = "Brightness"; displayMode = "onhover"; }

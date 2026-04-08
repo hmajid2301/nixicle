@@ -464,7 +464,7 @@
                 dayTemp = "6500";
                 nightTemp = "4000";
               };
-              general = {
+general = {
                 lockOnSuspend = true;
                 avatarImage = "/home/${config.home.username}/.face";
               };

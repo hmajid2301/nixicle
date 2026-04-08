@@ -3,10 +3,6 @@ if nixUtils.isNix and nixInfo(false, "lspDebugMode") then
 	vim.lsp.set_log_level("debug")
 end
 
--- NOTE: This file uses lzextras.lsp handler https://github.com/BirdeeHub/lzextras?tab=readme-ov-file#lsp-handler
--- This is a slightly more performant fallback function
--- for when you don't provide a filetype to trigger on yourself.
--- nixInfo gives us the paths, which is faster than searching the rtp!
 local old_ft_fallback = require("lze").h.lsp.get_ft_fallback()
 require("lze").h.lsp.set_ft_fallback(function(name)
 	local lspcfg = nixInfo(nil, "plugins", "lazy", "nvim-lspconfig")

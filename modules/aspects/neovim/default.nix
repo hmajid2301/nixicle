@@ -1,13 +1,8 @@
 { den, inputs, ... }:
-let
-  inherit (inputs.nixCats) utils;
-in
 {
   flake-file.inputs = {
-    nixCats.url = "github:BirdeeHub/nixCats-nvim";
+    nix-wrapper-modules.url = "github:BirdeeHub/nix-wrapper-modules";
 
-    # Plugin sources declared as top-level flake inputs — required by
-    # utils.standardPluginOverlay which scans inputs for plugins-* prefixed keys.
     plugins-cmp-dbee = {
       url = "github:MattiasMTS/cmp-dbee";
       flake = false;
@@ -57,7 +52,6 @@ in
       flake = false;
     };
 
-    # Not a plugin — used for XDG config files.
     oxy2dev-nvim-scripts = {
       url = "github:OXY2DEV/nvim";
       flake = false;
@@ -67,14 +61,8 @@ in
   den.aspects.neovim = {
     homeManager =
       { config, lib, pkgs, ... }:
-      let
-        configModule = import ./_config.nix { inherit config lib pkgs inputs; };
-        lspAndToolsModule = import ./_lsp-and-tools.nix { inherit pkgs; };
-        pluginsModule = import ./_plugins.nix;
-        packageDefinitionsModule = import ./_package-definitions.nix { inherit config inputs; };
-      in
       {
-        imports = [ inputs.nixCats.homeModule ];
+        imports = [ inputs.nix-wrapper-modules.homeModules.neovim ];
 
         nix.settings = {
           extra-substituters = [ "https://nix-community.cachix.org" ];
@@ -83,22 +71,28 @@ in
           ];
         };
 
-        inherit (configModule) xdg;
+        xdg.configFile = {
+          "nvim/queries/go/injections.scm".text =
+            builtins.readFile ./lua/config/syntax/go.scm;
+          "nvim/queries/templ/injections.scm".text =
+            builtins.readFile ./lua/config/syntax/html.scm;
+          "nvim/doc/nixicle.txt".text =
+            builtins.readFile ./doc/nixicle.txt;
 
-        nixCats = configModule.nixCats // {
-          categoryDefinitions.replace =
-            {
-              pkgs,
-              settings,
-              categories,
-              extra,
-              name,
-              mkNvimPlugin,
-              ...
-            }@packageDef:
-            (lspAndToolsModule // (pluginsModule { inherit pkgs categories; }));
+          "nvim/lua/scripts/lsp_hover.lua".source =
+            "${inputs.oxy2dev-nvim-scripts}/lua/scripts/lsp_hover.lua";
+          "nvim/lua/scripts/diagnostics.lua".source =
+            "${inputs.oxy2dev-nvim-scripts}/lua/scripts/diagnostics.lua";
+        };
 
-          inherit (packageDefinitionsModule) packageDefinitions;
+        wrappers.neovim = {
+          enable = true;
+          imports = [ (import ./_nix inputs) ];
+          _module.args.stylixColors =
+            let
+              raw = config.lib.stylix.colors.withHashtag or { };
+            in
+            lib.filterAttrs (_: v: builtins.isString v) raw;
         };
       };
   };

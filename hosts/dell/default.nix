@@ -114,6 +114,13 @@
         };
 
         noctalia-shell.settings = {
+          idle = {
+            enabled = true;
+            screenOffTimeout = 330;
+            lockTimeout = 300;
+            suspendTimeout = 900;
+            fadeDuration = 5;
+          };
           bar.widgets.right = lib.mkBefore [
             { id = "Bluetooth"; displayMode = "icon"; }
             { id = "Brightness"; displayMode = "onhover"; }
@@ -123,26 +130,6 @@
             { id = "PowerProfile"; }
           ];
         };
-      };
-
-      systemd.user.services.suspend-on-lid-close = {
-        Unit = {
-          Description = "Suspend system on lid close";
-          PartOf = [ "graphical-session.target" ];
-        };
-        Service = {
-          Type = "oneshot";
-          ExecStart = "${pkgs.systemd}/bin/systemctl suspend";
-        };
-      };
-
-      systemd.user.paths.suspend-on-lid-close = {
-        Unit = {
-          Description = "Monitor lid switch for suspend trigger";
-          PartOf = [ "graphical-session.target" ];
-        };
-        Path.PathChanged = "/proc/acpi/button/lid/LID0/state";
-        Install.WantedBy = [ "graphical-session.target" ];
       };
 
       fonts.fontconfig.enable = true;
