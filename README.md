@@ -1,15 +1,11 @@
 <div align="center">
 <h1>
-<img width="96" src="./images/logo.png"></img> <br>
+<img width="96" src="./docs/images/logo.png"></img> <br>
   Nixicle
 </h1>
-</h2><img src="https://raw.githubusercontent.com/catppuccin/catppuccin/main/assets/palette/macchiato.png" width="500" />
-<img src="./images/terminal.png"></img>
-<p>
-  Screenshot updated: 2024-07-15
-</p>
-<h4>
-  :warning: This config repo is constantly changing,
+<img src="https://raw.githubusercontent.com/catppuccin/catppuccin/main/assets/palette/macchiato.png" width="500" />
+<img src="./docs/images/terminal.png"></img>
+<h4>:warning: This config repo is constantly changing,
   Let me know if you see something that can be improved or done better :smile: .</h4>
 </div>
 
@@ -91,17 +87,17 @@ Some features of my config:
 
 ### Desktop
 
-![terminal](images/terminal.png)
-![notifications](images/notifications.png)
-![wallpaper](images/wallpaper.png)
-![monkeytype](images/monkeytype.png)
+![terminal](docs/images/terminal.png)
+![notifications](docs/images/notifications.png)
+![wallpaper](docs/images/wallpaper.png)
+![monkeytype](docs/images/monkeytype.png)
 
 ### Neovim
 
-![Telescope](images/nvim/telescope.png)
-![Editor](images/nvim/editor.png)
-![Go Code](images/nvim/go-code.png)
-![CMP](images/nvim/cmp.png)
+![Telescope](docs/images/nvim/telescope.png)
+![Editor](docs/images/nvim/editor.png)
+![Go Code](docs/images/nvim/go-code.png)
+![CMP](docs/images/nvim/cmp.png)
 
 ## 🔐 OpenBao Setup
 

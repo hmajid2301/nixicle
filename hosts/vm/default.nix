@@ -1,40 +1,46 @@
+{ den, lib, ... }:
 {
-  pkgs,
-  lib,
-  ...
-}:
-{
-  imports = [
-    ./hardware-configuration.nix
-    ./disks.nix
-  ];
+  den.aspects.haseeb.provides.vm = {
+    includes = [
+      den.aspects.desktop
+      den.aspects.gaming
+    ];
 
-  networking.hostName = "vm";
-  system.boot.plymouth = lib.mkForce false;
+    homeManager = _: {
+      home = {
+        username = "haseeb";
+        homeDirectory = "/home/haseeb";
+        stateVersion = "23.11";
+      };
 
-  home-manager.backupFileExtension = "backup";
-
-  system.impermanence.enable = true;
-
-  services.ssh.enable = true;
-
-  services.qemuGuest.enable = true;
-  services.spice-vdagentd.enable = true;
-  security.sudo.wheelNeedsPassword = false;
-
-  roles = {
-    desktop.enable = true;
-    desktop.addons = {
-      gnome.enable = false;
-      niri.enable = true;
+      programs.keychain.enable = lib.mkForce false;
     };
   };
 
-  boot = {
-    supportedFilesystems = lib.mkForce [ "btrfs" ];
-    kernelPackages = pkgs.linuxPackages_latest;
-    resumeDevice = "/dev/disk/by-label/nixos";
-  };
+  den.aspects.vm = {
+    includes = [ den.aspects.performance-base den.aspects.impermanence ];
 
-  system.stateVersion = "23.11";
+    nixos = { lib, pkgs, ... }: {
+      imports = [
+        ./hardware-configuration.nix
+        ./disks.nix
+      ];
+
+      boot.plymouth.enable = lib.mkForce false;
+      home-manager.backupFileExtension = "backup";
+
+      services.qemuGuest.enable = true;
+      services.spice-vdagentd.enable = true;
+      security.sudo.wheelNeedsPassword = false;
+
+      boot = {
+        supportedFilesystems = lib.mkForce [ "btrfs" ];
+        kernelPackages = pkgs.linuxPackages_latest;
+        resumeDevice = "/dev/disk/by-label/nixos";
+      };
+
+      networking.hostName = "vm";
+      system.stateVersion = "23.11";
+    };
+  };
 }

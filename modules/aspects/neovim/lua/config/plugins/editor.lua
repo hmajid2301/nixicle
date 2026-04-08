@@ -1,0 +1,304 @@
+return {
+	{
+		"nvim-dbee",
+		for_cat = "editor",
+		cmd = { "Dbee" },
+		load = function(name)
+			vim.cmd.packadd(name)
+			vim.cmd.packadd("cmp-dbee")
+		end,
+		after = function(plugin)
+			require("dbee").setup({})
+			require("cmp-dbee").setup()
+		end,
+	},
+	{
+		"todo-comments.nvim",
+		for_cat = "editor",
+		event = "DeferredUIEnter",
+		after = function(plugin)
+			require("todo-comments").setup()
+		end,
+	},
+	{
+		"grug-far.nvim",
+		for_cat = "editor",
+		keys = {
+			{ "<leader>sr", mode = { "n" }, desc = "Search and replace" },
+		},
+		after = function(plugin)
+			require("grug-far").setup()
+			vim.keymap.set("n", "<leader>sr", function()
+				require("grug-far").open({ prefills = { search = vim.fn.expand("<cword>") } })
+			end, { desc = "Search and replace" })
+		end,
+	},
+	{
+		"smart-splits.nvim",
+		for_cat = "editor",
+		event = "DeferredUIEnter",
+		load = function(name)
+			vim.cmd.packadd(name)
+		end,
+		after = function(plugin)
+			require("smart-splits").setup({
+				-- Enable Zellij integration
+				multiplexer_integration = "zellij",
+				-- Enable move to tab when at edge for Zellij
+				zellij_move_focus_or_tab = true,
+				ignored_buftypes = {
+					"nofile",
+					"quickfix",
+					"prompt",
+				},
+			})
+
+			-- Resize splits with Ctrl+Alt+hjkl
+			vim.keymap.set("n", "<C-A-h>", require("smart-splits").resize_left, { desc = "Resize split left" })
+			vim.keymap.set("n", "<C-A-j>", require("smart-splits").resize_down, { desc = "Resize split down" })
+			vim.keymap.set("n", "<C-A-k>", require("smart-splits").resize_up, { desc = "Resize split up" })
+			vim.keymap.set("n", "<C-A-l>", require("smart-splits").resize_right, { desc = "Resize split right" })
+
+			-- Move between splits with Alt+hjkl
+			vim.keymap.set("n", "<A-h>", require("smart-splits").move_cursor_left)
+			vim.keymap.set("n", "<A-j>", require("smart-splits").move_cursor_down)
+			vim.keymap.set("n", "<A-k>", require("smart-splits").move_cursor_up)
+			vim.keymap.set("n", "<A-l>", require("smart-splits").move_cursor_right)
+			vim.keymap.set("n", "<A-\\>", require("smart-splits").move_cursor_previous)
+
+			-- Swap splits with leader+hjkl
+			vim.keymap.set("n", "<leader><leader>h", require("smart-splits").swap_buf_left, { desc = "Swap split left" })
+			vim.keymap.set("n", "<leader><leader>j", require("smart-splits").swap_buf_down, { desc = "Swap split down" })
+			vim.keymap.set("n", "<leader><leader>k", require("smart-splits").swap_buf_up, { desc = "Swap split up" })
+			vim.keymap.set("n", "<leader><leader>l", require("smart-splits").swap_buf_right, { desc = "Swap split right" })
+
+			vim.keymap.set("n", "<C-n>", "<cmd>tabnext<cr>", { desc = "Next tab" })
+			vim.keymap.set("n", "<C-p>", "<cmd>tabprevious<cr>", { desc = "Previous tab" })
+		end,
+	},
+	{
+		"gx-nvim",
+		for_cat = "editor",
+		cmd = { "Browse" },
+		keys = { { "gx", "<cmd>Browse<cr>", mode = { "n", "x" } } },
+		init = function()
+			vim.g.netrw_nogx = 1
+		end,
+		after = function(plugin)
+			require("gx").setup({})
+		end,
+	},
+	{
+		"inc-rename.nvim",
+		for_cat = "editor",
+		keys = {
+			{ "<leader>rn", mode = { "n" }, desc = "Incremental rename" },
+		},
+		after = function(plugin)
+			require("inc_rename").setup()
+			vim.keymap.set("n", "<leader>rn", function()
+				return ":IncRename " .. vim.fn.expand("<cword>")
+			end, { expr = true, desc = "Incremental rename" })
+		end,
+	},
+	{
+		"quicker.nvim",
+		for_cat = "editor",
+		event = { "FileType" },
+		ft = { "qf" },
+		after = function(plugin)
+			require("quicker").setup({
+				keys = {
+					{
+						">",
+						function()
+							require("quicker").expand({ before = 2, after = 2, add_to_existing = true })
+						end,
+						desc = "Expand quickfix context",
+					},
+					{
+						"<",
+						function()
+							require("quicker").collapse()
+						end,
+						desc = "Collapse quickfix context",
+					},
+				},
+			})
+		end,
+	},
+	{
+		"templ-goto-definition",
+		for_cat = "editor",
+		event = "DeferredUIEnter",
+		load = function(name)
+			vim.cmd.packadd(name)
+		end,
+		after = function(plugin)
+			require("templ-goto-definition").setup()
+		end,
+	},
+	{
+		"vim-dotenv",
+		for_cat = "editor",
+		cmd = { "Dotenv" },
+	},
+	{
+		"tiny-code-actions",
+		for_cat = "editor",
+		keys = {
+			{ "<leader>ca", mode = { "n", "v" }, desc = "code actions" },
+		},
+		after = function(plugin)
+			vim.keymap.set({ "n", "v" }, "<leader>ca", function()
+				require("tiny-code-action").code_action()
+			end, { noremap = true, silent = true })
+		end,
+	},
+	{
+		"inline-edit",
+		for_cat = "editor",
+		keys = {
+			{ "<leader>rE", mode = { "n", "v" }, desc = "Inline edit" },
+		},
+		after = function(plugin)
+			vim.keymap.set({ "n", "v" }, "<leader>rE", "<cmd>InlineEdit<cr>", { noremap = true, silent = true })
+		end,
+	},
+	{
+		"warp-nvim",
+		for_cat = "editor",
+		keys = {
+			{ "<leader>ha", mode = { "n" }, desc = "Add file to warp" },
+			{ "<leader>he", mode = { "n" }, desc = "Show warp list" },
+			{ "<leader>hd", mode = { "n" }, desc = "Remove file from warp" },
+			{ "<leader>1", mode = { "n" }, desc = "Go to warp file 1" },
+			{ "<leader>2", mode = { "n" }, desc = "Go to warp file 2" },
+			{ "<leader>3", mode = { "n" }, desc = "Go to warp file 3" },
+			{ "<leader>4", mode = { "n" }, desc = "Go to warp file 4" },
+			{ "<leader>hn", mode = { "n" }, desc = "Next warp file" },
+			{ "<leader>hp", mode = { "n" }, desc = "Prev warp file" },
+		},
+		after = function(plugin)
+			require("warp").setup({
+				auto_prune = true,
+			})
+
+			vim.keymap.set("n", "<leader>ha", "<cmd>WarpAddFile<cr>", { desc = "Add file to warp" })
+			vim.keymap.set("n", "<leader>he", "<cmd>WarpShowList<cr>", { desc = "Show warp list" })
+			vim.keymap.set("n", "<leader>hd", "<cmd>WarpDelFile<cr>", { desc = "Remove file from warp" })
+			vim.keymap.set("n", "<leader>1", "<cmd>WarpGoToIndex 1<cr>", { desc = "Go to warp file 1" })
+			vim.keymap.set("n", "<leader>2", "<cmd>WarpGoToIndex 2<cr>", { desc = "Go to warp file 2" })
+			vim.keymap.set("n", "<leader>3", "<cmd>WarpGoToIndex 3<cr>", { desc = "Go to warp file 3" })
+			vim.keymap.set("n", "<leader>4", "<cmd>WarpGoToIndex 4<cr>", { desc = "Go to warp file 4" })
+			vim.keymap.set("n", "<leader>hn", "<cmd>WarpGoToIndex next<cr>", { desc = "Next warp file" })
+			vim.keymap.set("n", "<leader>hp", "<cmd>WarpGoToIndex prev<cr>", { desc = "Prev warp file" })
+		end,
+	},
+	{
+		"flash.nvim",
+		for_cat = "editor",
+		keys = {
+			{ "<leader>j", mode = { "n", "x", "o" }, desc = "Flash Jump" },
+			{ "<leader>J", mode = { "n", "x", "o" }, desc = "Flash Treesitter" },
+			{ "r", mode = "o", desc = "Remote Flash" },
+			{ "R", mode = { "o", "x" }, desc = "Treesitter Search" },
+			{ "<c-s>", mode = { "c" }, desc = "Toggle Flash Search" },
+		},
+		after = function(plugin)
+			require("flash").setup({
+				labels = "asdfghjklqwertyuiopzxcvbnm",
+				search = {
+					multi_window = true,
+					forward = true,
+					wrap = true,
+					mode = "exact",
+					incremental = false,
+				},
+				jump = {
+					jumplist = true,
+					pos = "start",
+					history = false,
+					register = false,
+					nohlsearch = false,
+					autojump = false,
+				},
+				label = {
+					uppercase = true,
+					rainbow = {
+						enabled = false,
+						shade = 5,
+					},
+				},
+				modes = {
+					search = {
+						enabled = false,
+					},
+					char = {
+						enabled = true,
+						jump_labels = true,
+					},
+				},
+			})
+
+			vim.keymap.set({ "n", "x", "o" }, "<leader>j", function()
+				require("flash").jump()
+			end, { desc = "Flash Jump" })
+
+			vim.keymap.set({ "n", "x", "o" }, "<leader>J", function()
+				require("flash").treesitter()
+			end, { desc = "Flash Treesitter" })
+
+			vim.keymap.set("o", "r", function()
+				require("flash").remote()
+			end, { desc = "Remote Flash" })
+
+			vim.keymap.set({ "o", "x" }, "R", function()
+				require("flash").treesitter_search()
+			end, { desc = "Treesitter Search" })
+
+			vim.keymap.set("c", "<c-s>", function()
+				require("flash").toggle()
+			end, { desc = "Toggle Flash Search" })
+		end,
+	},
+	{
+		"zen-mode.nvim",
+		for_cat = "editor",
+		cmd = { "ZenMode" },
+		keys = {
+			{ "<leader>z", mode = { "n" }, desc = "Toggle Zen Mode" },
+		},
+		after = function(plugin)
+			require("zen-mode").setup({
+				window = {
+					backdrop = 0.95,
+					width = 120,
+					height = 1,
+					options = {
+						signcolumn = "no",
+						number = false,
+						relativenumber = false,
+						cursorline = false,
+						cursorcolumn = false,
+						foldcolumn = "0",
+						list = false,
+					},
+				},
+				plugins = {
+					options = {
+						enabled = true,
+						ruler = false,
+						showcmd = false,
+						laststatus = 0,
+					},
+					twilight = { enabled = false },
+					gitsigns = { enabled = false },
+					tmux = { enabled = false },
+				},
+			})
+
+			vim.keymap.set("n", "<leader>z", "<cmd>ZenMode<cr>", { desc = "Toggle Zen Mode" })
+		end,
+	},
+}
