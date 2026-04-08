@@ -15,7 +15,8 @@ in
         "*" = {
           scale = 1.0;
         };
-      } // cfg.outputs;
+      }
+      // cfg.outputs;
 
       input = {
         keyboard.xkb = { };
@@ -40,13 +41,14 @@ in
           proportion = 0.5;
         };
         preset-column-widths = [
-          { proportion = 0.25; }
           { proportion = 0.33333; }
           { proportion = 0.5; }
           { proportion = 0.66667; }
-          { proportion = 0.75; }
           { proportion = 1.0; }
         ];
+
+        center-focused-column = "always";
+        always-center-single-column = true;
       };
 
       workspaces = { };
