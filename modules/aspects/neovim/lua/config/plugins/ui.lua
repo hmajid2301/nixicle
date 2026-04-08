@@ -2,7 +2,7 @@ return {
 	{
 		"dropbar.nvim",
 		event = "DeferredUIEnter",
-		for_cat = "general.ui",
+		for_cat = "ui",
 		-- keys = {
 		-- 	{ "<leader>nb", mode = { "n" }, desc = "Show dropbar picker" },
 		-- },
@@ -27,7 +27,7 @@ return {
 	},
 	{
 		"indent-blankline.nvim",
-		for_cat = "general.ui",
+		for_cat = "ui",
 		event = "DeferredUIEnter",
 		after = function(plugin)
 			require("ibl").setup({
@@ -55,7 +55,7 @@ return {
 	},
 	{
 		"lualine.nvim",
-		for_cat = "general.ui",
+		for_cat = "ui",
 		event = "DeferredUIEnter",
 		after = function(plugin)
 			local theme = "catppuccin"
@@ -235,7 +235,7 @@ return {
 	},
 	{
 		"fidget.nvim",
-		for_cat = "general.extra",
+		for_cat = "extra",
 		event = "DeferredUIEnter",
 		after = function(plugin)
 			require("fidget").setup({})
@@ -243,7 +243,7 @@ return {
 	},
 	{
 		"helpview.nvim",
-		for_cat = "general.ui",
+		for_cat = "ui",
 		ft = "help",
 		event = "DeferredUIEnter",
 		after = function(plugin)
@@ -253,7 +253,7 @@ return {
 	{
 		"nvim-highlight-colors",
 		event = "DeferredUIEnter",
-		for_cat = "general.ui",
+		for_cat = "ui",
 		after = function(plugin)
 			require("nvim-highlight-colors").setup({
 				render = "virtual",

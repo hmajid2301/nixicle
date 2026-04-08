@@ -1,5 +1,5 @@
--- Get stylix colors from nixCats if available
-local stylixColors = nixCats("colors") or {}
+-- Get stylix colors from nix if available
+local stylixColors = nixInfo(nil, "info", "colors") or {}
 
 local colors = {
 	white = "#D9E0EE",
@@ -61,10 +61,7 @@ local colors = {
 	base0F = stylixColors.base0F or "#F38BA8",
 }
 
-local colorschemeName = nixCats("colorscheme")
-if not require("nixCatsUtils").isNixCats then
-	colorschemeName = "catppuccin"
-end
+local colorschemeName = nixInfo("catppuccin", "info", "colorscheme")
 -- Could I lazy load on colorscheme with lze?
 -- sure. But I was going to call vim.cmd.colorscheme() during startup anyway
 -- this is just an example, feel free to do a better job!

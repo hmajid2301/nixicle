@@ -1,16 +1,16 @@
-local catUtils = require("nixCatsUtils")
-if catUtils.isNixCats and nixCats("lspDebugMode") then
+local nixUtils = require("nix_utils")
+if nixUtils.isNix and nixInfo(false, "lspDebugMode") then
 	vim.lsp.set_log_level("debug")
 end
 
 -- NOTE: This file uses lzextras.lsp handler https://github.com/BirdeeHub/lzextras?tab=readme-ov-file#lsp-handler
 -- This is a slightly more performant fallback function
 -- for when you don't provide a filetype to trigger on yourself.
--- nixCats gives us the paths, which is faster than searching the rtp!
+-- nixInfo gives us the paths, which is faster than searching the rtp!
 local old_ft_fallback = require("lze").h.lsp.get_ft_fallback()
 require("lze").h.lsp.set_ft_fallback(function(name)
-	local lspcfg = nixCats.pawsible({ "allPlugins", "opt", "nvim-lspconfig" })
-		or nixCats.pawsible({ "allPlugins", "start", "nvim-lspconfig" })
+	local lspcfg = nixInfo(nil, "plugins", "lazy", "nvim-lspconfig")
+		or nixInfo(nil, "plugins", "start", "nvim-lspconfig")
 	if lspcfg then
 		local ok, cfg = pcall(dofile, lspcfg .. "/lsp/" .. name .. ".lua")
 		if not ok then
@@ -27,7 +27,7 @@ vim.filetype.add({ extension = { templ = "templ" } })
 require("lze").load({
 	{
 		"nvim-lspconfig",
-		for_cat = "general.core",
+		for_cat = "lsp-core",
 		on_require = { "lspconfig" },
 		-- NOTE: define a function for lsp,
 		-- and it will run for all specs with type(plugin.lsp) == table
@@ -44,7 +44,7 @@ require("lze").load({
 	},
 	{
 		"mason.nvim",
-		enabled = not catUtils.isNixCats,
+		enabled = not nixUtils.isNix,
 		dep_of = { "nvim-lspconfig" },
 		load = function(name)
 			vim.cmd.packadd(name)
@@ -61,14 +61,15 @@ require("lze").load({
 		after = function(_)
 			require("lazydev").setup({
 				library = {
-					{ words = { "nixCats" }, path = (nixCats.nixCatsPath or "") .. "/lua" },
+					-- Add vim type stubs
+					{ words = { "vim" }, path = "${3rd}/luv/library" },
 				},
 			})
 		end,
 	},
 	{
 		"lua_ls",
-		enabled = nixCats("lua") or nixCats("neonixdev"),
+		enabled = nixInfo(false, "settings", "cats", "lua") or nixInfo(false, "settings", "cats", "neonixdev"),
 		lsp = {
 			filetypes = { "lua" },
 			settings = {
@@ -77,7 +78,7 @@ require("lze").load({
 					formatters = { ignoreComments = true },
 					signatureHelp = { enabled = true },
 					diagnostics = {
-						globals = { "nixCats", "vim", "Snacks" },
+						globals = { "nixInfo", "vim", "Snacks" },
 						disable = { "missing-fields", "undefined-global" },
 						libraryFiles = "Disable",
 					},
@@ -145,28 +146,29 @@ require("lze").load({
 	},
 	{
 		"rnix",
-		enabled = not catUtils.isNixCats,
+		enabled = not nixUtils.isNix,
 		lsp = { filetypes = { "nix" } },
 	},
 	{
 		"nil_ls",
-		enabled = not catUtils.isNixCats,
+		enabled = not nixUtils.isNix,
 		lsp = { filetypes = { "nix" } },
 	},
 	{
 		"nixd",
-		enabled = catUtils.isNixCats and (nixCats("nix") or nixCats("neonixdev")),
+		enabled = nixUtils.isNix
+			and (nixInfo(false, "settings", "cats", "nix") or nixInfo(false, "settings", "cats", "neonixdev")),
 		lsp = {
 			filetypes = { "nix" },
 			settings = {
 				nixd = {
 					nixpkgs = {
-						expr = [[import (builtins.getFlake "]] .. nixCats.extra("nixdExtras.nixpkgs") .. [[") { }]],
+						expr = nixInfo(nil, "nixdExtras", "nixpkgs"),
 					},
 					formatting = { command = { "nixfmt" } },
 					options = {
-						nixos = { expr = nixCats.extra("nixdExtras.nixos_options") },
-						["home-manager"] = { expr = nixCats.extra("nixdExtras.home_manager_options") },
+						nixos = { expr = nixInfo(nil, "nixdExtras", "nixos_options") },
+						["home-manager"] = { expr = nixInfo(nil, "nixdExtras", "home_manager_options") },
 					},
 					diagnostic = { suppress = { "sema-escaping-with" } },
 				},

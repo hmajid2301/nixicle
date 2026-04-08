@@ -1,5 +1,5 @@
 local function faster_get_path(name)
-	local path = vim.tbl_get(package.loaded, "nixCats", "pawsible", "allPlugins", "opt", name)
+	local path = nixInfo(nil, "plugins", "lazy", name)
 	if path then
 		vim.cmd.packadd(name)
 		return path
@@ -12,30 +12,30 @@ local load_w_after_plugin = require("lzextras").make_load_with_afters({ "plugin"
 return {
 	{
 		"cmp_dbee",
-		for_cat = "general.cmp",
+		for_cat = "cmp",
 		on_plugin = { "blink.cmp" },
 		load = load_w_after_plugin,
 	},
 	{
 		"cmp-go-deep",
-		for_cat = "general.cmp",
+		for_cat = "cmp",
 		on_plugin = { "blink.cmp" },
 		load = load_w_after_plugin,
 	},
 	{
 		"friendly-snippets",
-		for_cat = "general.cmp",
+		for_cat = "cmp",
 		dep_of = { "blink.cmp" },
 	},
 	{
 		"lspkind.nvim",
-		for_cat = "general.cmp",
+		for_cat = "cmp",
 		dep_of = { "blink.cmp" },
 		load = load_w_after_plugin,
 	},
 	{
 		"luasnip",
-		for_cat = "general.cmp",
+		for_cat = "cmp",
 		dep_of = { "blink.cmp" },
 		after = function()
 			local luasnip = require("luasnip")
@@ -53,7 +53,7 @@ return {
 	},
 	{
 		"blink.cmp",
-		for_cat = "general.cmp",
+		for_cat = "cmp",
 		event = { "DeferredUIEnter" },
 		on_require = { "cmp" },
 		load = function(name)
@@ -94,16 +94,6 @@ return {
 				signature = { enabled = true },
 				cmdline = {
 					enabled = true,
-					-- keymap = {
-					-- 	preset = "inherit",
-					-- 	["<cr>"] = { "select_and_accept" },
-					-- 	["<Tab>"] = { "select_next" },
-					-- 	["<S-Tab>"] = { "select_prev" },
-					-- 	["<C-e>"] = { "cancel" },
-					-- },
-
-					-- keymap = { preset = "inherit" },
-					-- completion = { menu = { auto_show = true } },
 				},
 				completion = {
 					menu = {

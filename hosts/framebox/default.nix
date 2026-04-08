@@ -33,7 +33,7 @@
           den.aspects.desktop
           den.aspects.gaming
           den.aspects.social
-          den.aspects.video
+          den.aspects.obs
         ];
 
         homeManager = { pkgs, config, ... }: {

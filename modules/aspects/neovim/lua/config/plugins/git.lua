@@ -1,7 +1,7 @@
 return {
 	{
 		"gitsigns.nvim",
-		for_cat = "general.git",
+		for_cat = "git",
 		event = "DeferredUIEnter",
 		-- cmd = { "" },
 		-- ft = "",
@@ -77,7 +77,7 @@ return {
 	},
 	{
 		"diffview.nvim",
-		for_cat = "general.git",
+		for_cat = "git",
 		event = "DeferredUIEnter",
 		-- cmd = { "" },
 		-- ft = "",
@@ -243,7 +243,7 @@ return {
 	},
 	{
 		"neogit",
-		for_cat = "general.git",
+		for_cat = "git",
 		event = "DeferredUIEnter",
 		-- ft = "",
 		-- keys = "",
@@ -254,7 +254,7 @@ return {
 	},
 	{
 		"webify-nvim",
-		for_cat = "general.git",
+		for_cat = "git",
 		cmd = { "OpenFileInRepo", "OpenLineInRepo", "YankFileUrl" },
 		load = function(name)
 			vim.cmd.packadd(name)
@@ -262,7 +262,7 @@ return {
 	},
 	{
 		"git-worktree.nvim",
-		for_cat = "general.git",
+		for_cat = "git",
 		event = "DeferredUIEnter",
 		load = function(name)
 			vim.cmd.packadd(name)

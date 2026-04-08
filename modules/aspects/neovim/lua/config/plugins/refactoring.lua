@@ -1,7 +1,7 @@
 return {
 	{
 		"refactoring.nvim",
-		for_cat = "general.editor",
+		for_cat = "editor",
 		keys = {
 			{ "<leader>re", mode = { "x" }, desc = "Refactor extract" },
 			{ "<leader>rf", mode = { "x" }, desc = "Refactor extract to file" },

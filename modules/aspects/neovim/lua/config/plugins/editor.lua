@@ -1,7 +1,7 @@
 return {
 	{
 		"nvim-dbee",
-		for_cat = "general.editor",
+		for_cat = "editor",
 		cmd = { "Dbee" },
 		load = function(name)
 			vim.cmd.packadd(name)
@@ -14,7 +14,7 @@ return {
 	},
 	{
 		"todo-comments.nvim",
-		for_cat = "general.editor",
+		for_cat = "editor",
 		event = "DeferredUIEnter",
 		after = function(plugin)
 			require("todo-comments").setup()
@@ -22,7 +22,7 @@ return {
 	},
 	{
 		"grug-far.nvim",
-		for_cat = "general.editor",
+		for_cat = "editor",
 		keys = {
 			{ "<leader>sr", mode = { "n" }, desc = "Search and replace" },
 		},
@@ -35,7 +35,7 @@ return {
 	},
 	{
 		"smart-splits.nvim",
-		for_cat = "general.editor",
+		for_cat = "editor",
 		event = "DeferredUIEnter",
 		load = function(name)
 			vim.cmd.packadd(name)
@@ -78,7 +78,7 @@ return {
 	},
 	{
 		"gx-nvim",
-		for_cat = "general.editor",
+		for_cat = "editor",
 		cmd = { "Browse" },
 		keys = { { "gx", "<cmd>Browse<cr>", mode = { "n", "x" } } },
 		init = function()
@@ -90,7 +90,7 @@ return {
 	},
 	{
 		"inc-rename.nvim",
-		for_cat = "general.editor",
+		for_cat = "editor",
 		keys = {
 			{ "<leader>rn", mode = { "n" }, desc = "Incremental rename" },
 		},
@@ -103,7 +103,7 @@ return {
 	},
 	{
 		"quicker.nvim",
-		for_cat = "general.editor",
+		for_cat = "editor",
 		event = { "FileType" },
 		ft = { "qf" },
 		after = function(plugin)
@@ -129,7 +129,7 @@ return {
 	},
 	{
 		"templ-goto-definition",
-		for_cat = "general.editor",
+		for_cat = "editor",
 		event = "DeferredUIEnter",
 		load = function(name)
 			vim.cmd.packadd(name)
@@ -140,12 +140,12 @@ return {
 	},
 	{
 		"vim-dotenv",
-		for_cat = "general.editor",
+		for_cat = "editor",
 		cmd = { "Dotenv" },
 	},
 	{
 		"tiny-code-actions",
-		for_cat = "general.editor",
+		for_cat = "editor",
 		keys = {
 			{ "<leader>ca", mode = { "n", "v" }, desc = "code actions" },
 		},
@@ -157,7 +157,7 @@ return {
 	},
 	{
 		"inline-edit",
-		for_cat = "general.editor",
+		for_cat = "editor",
 		keys = {
 			{ "<leader>rE", mode = { "n", "v" }, desc = "Inline edit" },
 		},
@@ -167,7 +167,7 @@ return {
 	},
 	{
 		"warp-nvim",
-		for_cat = "general.editor",
+		for_cat = "editor",
 		keys = {
 			{ "<leader>ha", mode = { "n" }, desc = "Add file to warp" },
 			{ "<leader>he", mode = { "n" }, desc = "Show warp list" },
@@ -197,7 +197,7 @@ return {
 	},
 	{
 		"flash.nvim",
-		for_cat = "general.editor",
+		for_cat = "editor",
 		keys = {
 			{ "<leader>j", mode = { "n", "x", "o" }, desc = "Flash Jump" },
 			{ "<leader>J", mode = { "n", "x", "o" }, desc = "Flash Treesitter" },
@@ -264,7 +264,7 @@ return {
 	},
 	{
 		"zen-mode.nvim",
-		for_cat = "general.editor",
+		for_cat = "editor",
 		cmd = { "ZenMode" },
 		keys = {
 			{ "<leader>z", mode = { "n" }, desc = "Toggle Zen Mode" },

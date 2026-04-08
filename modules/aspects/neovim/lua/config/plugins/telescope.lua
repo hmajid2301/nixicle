@@ -1,7 +1,7 @@
 return {
 	{
 		"telescope.nvim",
-		for_cat = "general.telescope",
+		for_cat = "telescope",
 		cmd = { "Telescope", "LiveGrepGitRoot", "AdvancedGitSearch" },
 		on_require = { "telescope" },
 		load = function(name)

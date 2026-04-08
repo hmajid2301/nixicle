@@ -1,7 +1,7 @@
 return {
 	{
 		"sidekick.nvim",
-		for_cat = "general.ai",
+		for_cat = "ai",
 		event = "DeferredUIEnter",
 		after = function(plugin)
 			require("sidekick").setup({

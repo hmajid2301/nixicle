@@ -279,11 +279,11 @@
     },
     "den": {
       "locked": {
-        "lastModified": 1775579666,
-        "narHash": "sha256-g/NLHcRK8hGytIqGqi9858ShKo5W9PDF9Jnz4OAcnqY=",
+        "lastModified": 1775630792,
+        "narHash": "sha256-/Wr0uyS/kRJln9co+hO+FPQsayWD7/gZDyFqUuyo5ww=",
         "owner": "vic",
         "repo": "den",
-        "rev": "6dc322d12f836ba8d632bd6aaf1e2f015fc41fc5",
+        "rev": "a2e7241a60c32eb634bfc69143d36cc8b458539a",
         "type": "github"
       },
       "original": {
@@ -1093,11 +1093,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1775587248,
-        "narHash": "sha256-lMdrBTTTUprYOeoxRLmwtQAvyaxkWZtx+EEkeJHGxrY=",
+        "lastModified": 1775622785,
+        "narHash": "sha256-/yFxO+7oS1SymDfJ2iVO7K5vJKcYfe9XGIJ+quLqz0Q=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "9cc761169a1bbf1d9787cdbe9abf07f4bae213a1",
+        "rev": "527e47b78fe67213072f706bf933a9705a8c4974",
         "type": "github"
       },
       "original": {
@@ -2023,11 +2023,11 @@
         "nixpkgs": "nixpkgs_11"
       },
       "locked": {
-        "lastModified": 1775594260,
-        "narHash": "sha256-Fikl+kKquXqCcf709BaLOjTjI7bfC5pWNXx2juoCA54=",
+        "lastModified": 1775630408,
+        "narHash": "sha256-2O019+d2mJ0BFGz6iEVQjYWN4U5ZqBKwChHrAb5hbAg=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "18b032014620095b74bf9196455fa2273108d6a9",
+        "rev": "d5f34bd534049b831aab75b4c697e363474bcce9",
         "type": "github"
       },
       "original": {
@@ -2607,11 +2607,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1775365543,
-        "narHash": "sha256-f50qrK0WwZ9z5EdaMGWOTtALgSF7yb7XwuE7LjCuDmw=",
+        "lastModified": 1775619836,
+        "narHash": "sha256-VcC/+MMMldwQKcST2y/QTndGLusSxjeUvYwFwzZKKko=",
         "owner": "mic92",
         "repo": "sops-nix",
-        "rev": "a4ee2de76efb759fe8d4868c33dec9937897916f",
+        "rev": "de5f2d596eb896a5728afcd15f823f59cb9ecfdb",
         "type": "github"
       },
       "original": {
@@ -2908,11 +2908,11 @@
         "sqlite-lib-src": "sqlite-lib-src"
       },
       "locked": {
-        "lastModified": 1775552324,
-        "narHash": "sha256-MvuiBuxqtuCM7WUQj3TtDY4axt5KG3tB76Dp5gEOa58=",
+        "lastModified": 1775631451,
+        "narHash": "sha256-njlHSn7YnZoi+mO13yHc6u2ut+5I45I0onRu8Vl3sxM=",
         "ref": "refs/heads/master",
-        "rev": "8c98797542a2c0c413b725d342555224dd845c31",
-        "revCount": 2191,
+        "rev": "b907bf93ec36e1fab5eee9365ba85922e89a5d2f",
+        "revCount": 2200,
         "type": "git",
         "url": "https://tangled.sh/@tangled.sh/core"
       },

@@ -1,7 +1,7 @@
 return {
 	{
 		"folke/trouble.nvim",
-		for_cat = "general.diagnostics",
+		for_cat = "diagnostics",
 		event = "DeferredUIEnter",
 		load = function(name)
 			vim.cmd.packadd(name)

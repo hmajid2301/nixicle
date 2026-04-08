@@ -1,7 +1,7 @@
 return {
 	{
 		"mini.nvim",
-		for_cat = "general.editor",
+		for_cat = "editor",
 		event = "DeferredUIEnter",
 		load = function(name)
 			vim.cmd.packadd(name)

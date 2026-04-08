@@ -1,16 +1,9 @@
 { den, ... }:
 {
-  flake-file.inputs.catppuccin-obs = {
-    url = "github:catppuccin/obs";
-    flake = false;
-  };
-
   den.aspects.video = {
-    homeManager = { pkgs, inputs, ... }: {
-      xdg.configFile."obs-studio/themes".source = "${inputs.catppuccin-obs}/themes";
+    includes = [ den.aspects.obs ];
 
-      programs.obs-studio.enable = true;
-
+    homeManager = { pkgs, ... }: {
       home.packages = with pkgs; [
         audacity
         davinci-resolve-studio

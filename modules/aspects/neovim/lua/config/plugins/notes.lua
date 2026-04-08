@@ -49,7 +49,7 @@ return {
 	},
 	{
 		"zk-nvim",
-		for_cat = "general.notes",
+		for_cat = "notes",
 		cmd = { "ZkNew", "ZkNotes", "ZkTags" },
 		keys = {
 			{ "<leader>zn", mode = { "n" }, desc = "New note" },
@@ -93,7 +93,7 @@ return {
 	},
 	{
 		"img-clip.nvim",
-		for_cat = "general.notes",
+		for_cat = "notes",
 		keys = {
 			{ "<leader>ip", mode = { "n" }, desc = "Paste image from clipboard" },
 		},

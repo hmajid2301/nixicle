@@ -1,7 +1,7 @@
 return {
 	{
 		"nvim-treesitter",
-		for_cat = "general.treesitter",
+		for_cat = "treesitter",
 		event = "DeferredUIEnter",
 		load = function(name)
 			vim.cmd.packadd(name)
@@ -13,7 +13,7 @@ return {
 	},
 	{
 		"nvim-treesitter-textobjects",
-		for_cat = "general.treesitter",
+		for_cat = "treesitter",
 		event = "DeferredUIEnter",
 		load = function(name)
 			vim.cmd.packadd(name)

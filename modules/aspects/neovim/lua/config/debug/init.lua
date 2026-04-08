@@ -20,7 +20,7 @@ require("lze").load({
 			{ "<leader>td", mode = { "n" }, desc = "Test: Debug nearest" },
 		},
 		-- colorscheme = "",
-		load = (require("nixCatsUtils").isNixCats and function(name)
+		load = (require("nix_utils").isNix and function(name)
 			vim.cmd.packadd(name)
 		end) or function(name)
 			vim.cmd.packadd(name)

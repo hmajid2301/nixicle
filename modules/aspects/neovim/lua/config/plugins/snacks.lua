@@ -1,7 +1,7 @@
 return {
 	{
 		"snacks.nvim",
-		for_cat = "general.editor",
+		for_cat = "editor",
 		event = "DeferredUIEnter",
 		keys = {
 			{ "<leader>.", mode = { "n" }, desc = "New Scratch Buffer" },
@@ -228,7 +228,7 @@ return {
 				Snacks.scratch.select()
 			end, { desc = "Select Scratch Buffer" })
 
-			local colors = nixCats("colors")
+			local colors = nixInfo(nil, "info", "colors")
 			local red = (colors and colors.base08) or "#F38BA8"
 			local black = (colors and colors.base00) or "#1E1D2D"
 			local black2 = (colors and colors.base01) or "#252434"

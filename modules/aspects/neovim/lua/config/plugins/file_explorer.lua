@@ -1,7 +1,7 @@
 return {
 	{
 		"oil.nvim",
-		for_cat = "general.extra",
+		for_cat = "extra",
 		keys = {
 			{ "-", mode = { "n" }, desc = "Open parent directory" },
 			{ "<leader>r-", mode = { "n" }, desc = "Open nvim root directory" },
