@@ -48,3 +48,7 @@ terraform.tfvars
 *.tfvars
 *.tfvars.json
 packages/zellij-detach/src/target/
+
+node_modules/
+package-lock.json
+package.json

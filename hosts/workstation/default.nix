@@ -1,99 +1,107 @@
+{ inputs, den, pkgs, ... }:
 {
-  inputs,
-  config,
-  ...
-}:
-{
-  imports = [
-    ./hardware-configuration.nix
-    ./disks.nix
-    inputs.nixos-facter-modules.nixosModules.facter
-    { config.facter.reportPath = ./facter.json; }
-  ];
+  flake-file.inputs.nixos-facter-modules.url = "github:numtide/nixos-facter-modules";
 
-  sops.secrets = {
-    user_password = {
-      sopsFile = ./secrets.yaml;
-      neededForUsers = true;
-    };
-  };
+  den.aspects.haseeb.provides.workstation = {
+    includes = [
+      den.aspects.desktop
+      den.aspects.gaming
+      den.aspects.social
+      den.aspects.obs
+    ];
 
-  user.passwordSecretFile = config.sops.secrets.user_password.path;
+    homeManager = { pkgs, config, ... }: {
+      home = {
+        username = "haseeb";
+        homeDirectory = "/home/haseeb";
+        stateVersion = "24.05";
+      };
 
-  users.groups.media = {
-    gid = 3000;
-  };
-
-  users.users.haseeb.extraGroups = [ "media" ];
-
-  system = {
-    impermanence.enable = true;
-    boot = {
-      enable = true;
-      secureBoot = true;
-    };
-  };
-
-  # security.nixicle.pcr-verification = {
-  #   enable = true;
-  #   expectedPcr15 = "6f29f4ec21f52202b07aa19ee8e122fe22db90559b6f65ab9515b214ece8d3e6";
-  # };
-
-  boot = {
-    kernelParams = [ "resume_offset=533760" ];
-  };
-
-  services = {
-    virtualisation.kvm.enable = true;
-    virtualisation.docker.enable = true;
-    nixicle.tailscale.enable = true;
-  };
-
-  roles = {
-    desktop = {
-      enable = true;
-      addons = {
-        niri.enable = true;
+      programs.noctalia-shell.settings.idle = {
+        enabled = true;
+        screenOffTimeout = 330;
+        lockTimeout = 300;
+        suspendTimeout = 1800;
+        fadeDuration = 5;
       };
     };
-    gaming.enable = true;
   };
 
-  networking.hostName = "workstation";
-
-  # TODO: refactor this also.
-  services.rpcbind.enable = true;
-  fileSystems."/mnt/homelab" = {
-    device = "truenas:/mnt/main/main-encrypted";
-    fsType = "nfs";
-    options = [
-      "nfsvers=4"
-      "noatime"
-      "nofail"
-      "x-systemd.automount"
-      "x-systemd.idle-timeout=60"
-      "x-systemd.device-timeout=5s"
-      "x-systemd.mount-timeout=5s"
-      "x-systemd.requires=tailscaled.service"
-      "x-systemd.after=tailscaled.service"
+  den.aspects.workstation = {
+    includes = [
+      den.aspects.performance-max
+      den.aspects.nfs-truenas
+      den.aspects.impermanence
+      den.aspects.boot-secure
+      den.aspects.tailscale
+      den.aspects.kvm
     ];
-  };
 
-  fileSystems."/mnt/truenas" = {
-    device = "truenas:/mnt/main/main";
-    fsType = "nfs";
-    options = [
-      "nfsvers=4"
-      "noatime"
-      "nofail"
-      "x-systemd.automount"
-      "x-systemd.idle-timeout=60"
-      "x-systemd.device-timeout=5s"
-      "x-systemd.mount-timeout=5s"
-      "x-systemd.requires=tailscaled.service"
-      "x-systemd.after=tailscaled.service"
-    ];
-  };
+    nixos =
+      {
+        config,
+        pkgs,
+        lib,
+        ...
+      }:
+      {
+        imports = [
+          ./hardware-configuration.nix
+          ./disks.nix
+          inputs.nixos-facter-modules.nixosModules.facter
+          { config.facter.reportPath = ./facter.json; }
+        ];
 
-  system.stateVersion = "24.05";
+        sops.secrets = {
+          user_password = {
+            sopsFile = ./secrets.yaml;
+            neededForUsers = true;
+          };
+        };
+
+        users = {
+          users.haseeb.hashedPasswordFile = config.sops.secrets.user_password.path;
+          groups.media.gid = 3000;
+          users.haseeb.extraGroups = [ "wheel" "media" ];
+          extraGroups.docker.members = [ "haseeb" ];
+        };
+
+        boot = {
+          kernelParams = [ "resume_offset=533760" ];
+          kernel.sysctl."net.ipv4.ip_forward" = 1;
+        };
+
+        virtualisation.docker = {
+          enable = true;
+          enableOnBoot = true;
+          autoPrune.enable = true;
+          storageDriver = "btrfs";
+          rootless = {
+            enable = true;
+            setSocketVariable = true;
+            daemon.settings.dns = [
+              "1.1.1.1"
+              "8.8.8.8"
+            ];
+          };
+        };
+
+        environment.systemPackages = with pkgs; [
+          docker-compose
+        ];
+
+        environment.persistence."/persist".directories = [
+          "/etc/secureboot"
+          {
+            directory = "/var/lib/docker";
+            user = "root";
+            group = "root";
+            mode = "0755";
+          }
+        ];
+
+        networking.hostName = "workstation";
+        system.stateVersion = "24.05";
+      };
+  };
 }

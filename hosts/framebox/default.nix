@@ -1,204 +1,124 @@
+{ inputs, den, lib, ... }:
 {
-  inputs,
-  config,
-  ...
-}:
-{
-  imports = [
-    ./hardware-configuration.nix
-    ./disks.nix
-    inputs.nixos-facter-modules.nixosModules.facter
-    { config.facter.reportPath = ./facter.json; }
-    inputs.nixos-hardware.nixosModules.framework-desktop-amd-ai-max-300-series
-  ];
+  flake-file.inputs.nixos-hardware.url = "github:nixos/nixos-hardware";
+  flake-file.inputs.nixos-facter-modules.url = "github:numtide/nixos-facter-modules";
 
-  sops.secrets = {
-    gitlab_runner_env = {
-      sopsFile = ./secrets.yaml;
-    };
-    cloudflared = {
-      sopsFile = ./secrets.yaml;
-    };
-    user_password = {
-      sopsFile = ./secrets.yaml;
-      neededForUsers = true;
-    };
-    b2_access_key = {
-      sopsFile = ./secrets.yaml;
-    };
-    b2_secret_key = {
-      sopsFile = ./secrets.yaml;
-    };
-  };
+  den = {
+    aspects = {
+      haseeb = {
+        includes = [
+          ({ user, ... }: {
+            nixos = {
+              users.users.haseeb.openssh.authorizedKeys.keys = user.authorizedKeys;
+              users.users.root.openssh.authorizedKeys.keys = user.authorizedKeys;
+              home-manager.users.haseeb.programs.git = {
+                settings.user.email = lib.mkForce user.email;
+                signing.key = lib.mkForce user.signingKey;
+              };
+            };
+          })
+        ];
 
-  user.passwordSecretFile = config.sops.secrets.user_password.path;
-
-  users.groups.media = {
-    gid = 3000;
-  };
-
-  users.users.haseeb.extraGroups = [ "media" ];
-
-  system = {
-    impermanence.enable = true;
-    boot = {
-      enable = true;
-      secureBoot = true;
-    };
-  };
-
-  services = {
-    power-profiles-daemon.enable = true;
-    virtualisation.kvm.enable = true;
-    nixicle = {
-      authentik.enable = true;
-      atuin.enable = true;
-      atticd.enable = true;
-      banterbus = {
-        enable = true;
-        instances = {
-          dev = {
-            port = 8084;
-            domain = "dev.banterbus.games";
-          };
-          prod = {
-            port = 8083;
-            domain = "banterbus.games";
+        homeManager = _: {
+          gtk.gtk4.theme = null;
+          programs.git.signing = {
+            format = "ssh";
+            signByDefault = true;
           };
         };
       };
 
-      # TODO: refactor this out.
-      btrbk = {
-        enable = true;
-        instances.local = {
-          onCalendar = "weekly";
-          subvolumes = {
-            "/persist" = {
-              target = "/mnt/truenas/backups/framebox/persist";
-              snapshot_dir = ".snapshots";
-            };
-            "/home" = {
-              target = "/mnt/truenas/backups/framebox/home";
-              snapshot_dir = ".snapshots";
-            };
+      haseeb.provides.framebox = {
+        includes = [
+          den.aspects.desktop
+          den.aspects.gaming
+          den.aspects.social
+          den.aspects.obs
+        ];
+
+        homeManager = { pkgs, config, ... }: {
+          home = {
+            username = "haseeb";
+            homeDirectory = "/home/haseeb";
+            stateVersion = "24.05";
           };
-          retention = {
-            weekly = 2;
-            monthly = 6;
+
+          programs.noctalia-shell.settings.idle = {
+            enabled = true;
+            screenOffTimeout = 330;
+            lockTimeout = 300;
+            suspendTimeout = 0;
+            fadeDuration = 5;
           };
         };
-        backblaze = {
-          enable = true;
-          bucket = "Majiy00Homelab";
-          endpoint = "s3.us-west-004.backblazeb2.com";
-          paths = [
-            "/persist/.snapshots"
-            "/home/.snapshots"
+      };
+
+      framebox = {
+        includes = [
+          den.aspects.performance-balanced
+          den.aspects.nfs-truenas
+          den.aspects.impermanence
+          den.aspects.boot-secure
+          den.aspects.tailscale
+          den.aspects.kvm
+          den.aspects.traefik
+          den.aspects.cloudflare
+          den.aspects.authentik
+          den.aspects.atuin
+          den.aspects.atticd
+          den.aspects.banterbus
+          den.aspects.btrbk
+          den.aspects.crowdsec
+          den.aspects.gitea
+          den.aspects.goroutinely
+          den.aspects.gitlab-runner
+          den.aspects.immich
+          den.aspects.karakeep
+          den.aspects.llama-cpp
+          den.aspects.ollama
+          den.aspects.monitoring
+          den.aspects.open-webui
+          den.aspects.otel-collector
+          den.aspects.redis
+          den.aspects.postgresql
+          den.aspects.paperless
+          den.aspects.tangled
+          den.aspects.tandoor
+          den.aspects.papra
+          den.aspects.bentopdf
+          den.aspects.hortusfox
+          den.aspects.trek
+        ];
+
+        nixos = { config, lib, ... }: {
+          imports = [
+            ./hardware-configuration.nix
+            ./disks.nix
+            inputs.nixos-facter-modules.nixosModules.facter
+            { config.facter.reportPath = ./facter.json; }
+            inputs.nixos-hardware.nixosModules.framework-desktop-amd-ai-max-300-series
           ];
-          onCalendar = "weekly";
+
+          sops.secrets = {
+            gitlab_runner_env.sopsFile = ./secrets.yaml;
+            user_password = {
+              sopsFile = ./secrets.yaml;
+              neededForUsers = true;
+            };
+          };
+
+          users = {
+            users.haseeb.hashedPasswordFile = config.sops.secrets.user_password.path;
+            groups.media.gid = 3000;
+            users.haseeb.extraGroups = [ "wheel" "media" ];
+          };
+
+          environment.persistence."/persist".directories = [ "/etc/secureboot" ];
+
+          networking.hostName = "framebox";
+          system.stateVersion = "24.05";
         };
       };
-
-      cloudflare = {
-        enable = true;
-        tunnelId = "ecef5dbb-834e-43ed-84c6-355a2ac53e59";
-        credentialsFile = config.sops.secrets.cloudflared.path;
-      };
-      crowdsec.enable = true;
-      gitea.enable = true;
-      goroutinely.enable = true;
-      gitlab-runner = {
-        enable = true;
-        sopsFile = config.sops.secrets.gitlab_runner_env.path;
-      };
-
-      immich = {
-        enable = true;
-        mediaLocation = "/mnt/homelab/homelab/immich";
-      };
-
-      karakeep.enable = true;
-      llama-cpp.enable = true;
-      ollama = {
-        enable = true;
-        acceleration = "vulkan";
-        vulkan = {
-          flashAttention = true;
-          kvCacheType = "q8_0";
-          contextLength = 64000;
-        };
-      };
-      # nixflix.enable = true;
-      monitoring.enable = true;
-      open-webui.enable = true;
-      otel-collector.enable = true;
-      redis.enable = true;
-      postgresql.enable = true;
-      paperless = {
-        enable = true;
-        mediaDir = "/mnt/homelab/homelab/paperless/media";
-      };
-
-      tangled.enable = true;
-      tandoor.enable = true;
-      traefik.enable = true;
-      tailscale.enable = true;
-      papra.enable = true;
-      bentopdf.enable = true;
-      hortusfox.enable = true;
-      trek.enable = true;
-
-      # adguard.enable = true;
-      # unbound.enable = true;
     };
   };
-
-  roles = {
-    desktop = {
-      enable = true;
-      addons = {
-        niri.enable = true;
-      };
-    };
-    gaming.enable = true;
-  };
-
-  networking.hostName = "framebox";
-
-  # TODO: refactor this also.
-  services.rpcbind.enable = true;
-  fileSystems."/mnt/homelab" = {
-    device = "truenas:/mnt/main/main-encrypted";
-    fsType = "nfs";
-    options = [
-      "nfsvers=4"
-      "noatime"
-      "nofail"
-      "x-systemd.automount"
-      "x-systemd.idle-timeout=60"
-      "x-systemd.device-timeout=5s"
-      "x-systemd.mount-timeout=5s"
-      "x-systemd.requires=tailscaled.service"
-      "x-systemd.after=tailscaled.service"
-    ];
-  };
-
-  fileSystems."/mnt/truenas" = {
-    device = "truenas:/mnt/main/main";
-    fsType = "nfs";
-    options = [
-      "nfsvers=4"
-      "noatime"
-      "nofail"
-      "x-systemd.automount"
-      "x-systemd.idle-timeout=60"
-      "x-systemd.device-timeout=5s"
-      "x-systemd.mount-timeout=5s"
-      "x-systemd.requires=tailscaled.service"
-      "x-systemd.after=tailscaled.service"
-    ];
-  };
-
-  system.stateVersion = "24.05";
 }

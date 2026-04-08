@@ -1,0 +1,3 @@
+-- This file is intentionally empty.
+-- Plugins are managed entirely by nix-wrapper-modules.
+-- Non-nix plugin download (paq-nvim) is not used in this configuration.

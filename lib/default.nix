@@ -1,141 +1,11 @@
 { lib, inputs }:
-# Credit: @JakeHamilton and @thursdaddy
-# Adapted from https://github.com/jakehamilton/config and https://github.com/thursdaddy/nixos-config
-
-with lib;
+let
+  inherit (inputs) deploy-rs;
+in
 rec {
-  ## Create a NixOS module option.
-  ##
-  ## ```nix
-  ## lib.nixicle.mkOpt nixpkgs.lib.types.str "My default" "Description of my option."
-  ## ```
-  ##
-  #@ Type -> Any -> String
-  mkOpt =
-    type: default: description:
-    mkOption { inherit type default description; };
-
-  ## Create a NixOS module option without a description.
-  ##
-  ## ```nix
-  ## lib.nixicle.mkOpt' nixpkgs.lib.types.str "My default"
-  ## ```
-  ##
-  #@ Type -> Any -> String
-  mkOpt' = type: default: mkOpt type default null;
-
-  ## Create a NixOS module option with no default
-  ##
-  ## ```nix
-  ## lib.nixicle.mkOpt_ types.path "Description of my option"
-  ## ```
-  ##
-  #@ Type -> Any -> String
-  mkOpt_ = type: description: mkOption { inherit type description; };
-
-  ## Create a boolean option with a default value and description.
-  ##
-  ## ```nix
-  ## lib.nixicle.mkBoolOpt true "Enable this feature"
-  ## ```
-  ##
-  #@ Bool -> String
-  mkBoolOpt = mkOpt types.bool;
-
-  ## Create a boolean option with a default value but no description.
-  ##
-  ## ```nix
-  ## lib.nixicle.mkBoolOpt' false
-  ## ```
-  ##
-  #@ Bool
-  mkBoolOpt' = mkOpt' types.bool;
-
-  ## Create a package option with a default value and description.
-  ##
-  ## ```nix
-  ## lib.nixicle.mkPackageOpt pkgs.vim "The editor to use"
-  ## ```
-  ##
-  #@ Package -> String
-  mkPackageOpt = mkOpt types.package;
-
-  ## Create a package option with a default value but no description.
-  ##
-  ## ```nix
-  ## lib.nixicle.mkPackageOpt' pkgs.vim
-  ## ```
-  ##
-  #@ Package
-  mkPackageOpt' = mkOpt' types.package;
-
-  enabled = {
-    ## Quickly enable an option.
-    ##
-    ## ```nix
-    ## services.nginx = enabled;
-    ## ```
-    ##
-    #@ true
-    enable = true;
-  };
-
-  disabled = {
-    ## Quickly disable an option.
-    ##
-    ## ```nix
-    ## services.nginx = disabled;
-    ## ```
-    ##
-    #@ false
-    enable = false;
-  };
-
-  inherit (import ./deploy { inherit lib inputs; }) mkDeploy;
-
-  inherit (import ./traefik { inherit lib; }) mkTraefikService mkAuthenticatedTraefikService;
-
-  # Recursively import all modules from a directory
-  # Returns a list of module paths that can be used in imports
-  importModulesRecursive = dir:
-    let
-      entries = builtins.readDir dir;
-      hasDefaultNix = builtins.pathExists (dir + "/default.nix");
-
-      # Process each entry in the directory
-      processEntry = name: type:
-        let
-          path = dir + "/${name}";
-        in
-        if type == "directory" then
-          # Recurse into subdirectories
-          importModulesRecursive path
-        else if type == "regular" && lib.hasSuffix ".nix" name && name != "default.nix" && !hasDefaultNix then
-          # Only include standalone .nix files if there's NO default.nix in the current directory
-          # This prevents importing helper files alongside a default.nix module
-          [ path ]
-        else
-          [ ];
-
-      # Map over all entries and flatten
-      subdirModules = lib.flatten (lib.mapAttrsToList processEntry entries);
-
-      # If this directory has a default.nix, include it
-      result = if hasDefaultNix then [ dir ] ++ subdirModules else subdirModules;
-    in
-    result;
-
-  # Import all modules and return as a single module that imports them all
-  mkModuleTree = dir: {
-    imports = importModulesRecursive dir;
-  };
-
-  # Recursively find and import all packages from a directory
-  # Each package should be a directory with default.nix
   importPackages = pkgs: dir:
     let
       entries = builtins.readDir dir;
-
       processEntry = name: type:
         if type == "directory" && builtins.pathExists (dir + "/${name}/default.nix") then
           { ${name} = pkgs.callPackage (dir + "/${name}") { }; }
@@ -144,32 +14,97 @@ rec {
     in
     lib.foldl' (acc: entry: acc // entry) { } (lib.mapAttrsToList processEntry entries);
 
-  # Recursively find and apply all overlays from a directory
-  importOverlays = dir:
+  mkDeploy = { self, overrides ? {} }:
     let
-      entries = builtins.readDir dir;
-
-      processEntry = name: type:
-        if type == "directory" && builtins.pathExists (dir + "/${name}/default.nix") then
-          [ (dir + "/${name}") ]
-        else if type == "regular" && lib.hasSuffix ".nix" name then
-          [ (dir + "/${name}") ]
-        else
-          [ ];
+      hosts = self.nixosConfigurations or {};
+      names = builtins.attrNames hosts;
+      nodes = lib.foldl (result: name:
+        let
+          host = hosts.${name};
+          user = host.config.user.name or null;
+          inherit (host.pkgs.stdenv.hostPlatform) system;
+        in
+        result // {
+          ${name} =
+            (overrides.${name} or {})
+            // {
+              hostname = overrides.${name}.hostname or "${name}";
+              profiles =
+                (overrides.${name}.profiles or {})
+                // {
+                  system =
+                    (overrides.${name}.profiles.system or {})
+                    // {
+                      path = deploy-rs.lib.${system}.activate.nixos host;
+                    }
+                    // lib.optionalAttrs (user != null) {
+                      user = "root";
+                      sshUser = user;
+                    }
+                    // lib.optionalAttrs (host.config.security.nixicle.doas.enable or false) {
+                      sudo = "doas -u";
+                    };
+                };
+            };
+        }) {} names;
     in
-    lib.flatten (lib.mapAttrsToList processEntry entries);
+    { inherit nodes; };
 
-  # Get all .nix files in a directory except default.nix
-  # Replaces lib.snowfall.fs.get-non-default-nix-files
-  getNonDefaultNixFiles = dir:
-    let
-      entries = builtins.readDir dir;
+  mkTraefikService = {
+    name,
+    port,
+    subdomain ? name,
+    domain ? "homelab.haseebmajid.dev",
+    entryPoints ? ["websecure"],
+    certResolver ? "letsencrypt",
+    middlewares ? [],
+    extraRouterConfig ? {},
+    extraServiceConfig ? {},
+  }: {
+    routers.${name} = lib.mkMerge [
+      {
+        inherit entryPoints;
+        rule = lib.mkDefault "Host(`${subdomain}.${domain}`)";
+        service = name;
+        tls.certResolver = certResolver;
+        inherit middlewares;
+      }
+      extraRouterConfig
+    ];
+    services.${name} = lib.mkMerge [
+      {
+        loadBalancer.servers = lib.mkDefault [{ url = "http://localhost:${toString port}"; }];
+      }
+      extraServiceConfig
+    ];
+  };
 
-      processEntry = name: type:
-        if type == "regular" && lib.hasSuffix ".nix" name && name != "default.nix" then
-          [ (dir + "/${name}") ]
-        else
-          [ ];
-    in
-    lib.flatten (lib.mapAttrsToList processEntry entries);
+  mkAuthenticatedTraefikService = {
+    name,
+    port,
+    subdomain ? name,
+    domain ? "homelab.haseebmajid.dev",
+    entryPoints ? ["websecure"],
+    certResolver ? "letsencrypt",
+    middlewares ? [],
+    extraRouterConfig ? {},
+    extraServiceConfig ? {},
+  }: {
+    routers.${name} = lib.mkMerge [
+      {
+        inherit entryPoints;
+        rule = lib.mkDefault "Host(`${subdomain}.${domain}`)";
+        service = name;
+        tls.certResolver = certResolver;
+        middlewares = middlewares ++ ["authentik"];
+      }
+      extraRouterConfig
+    ];
+    services.${name} = lib.mkMerge [
+      {
+        loadBalancer.servers = lib.mkDefault [{ url = "http://localhost:${toString port}"; }];
+      }
+      extraServiceConfig
+    ];
+  };
 }
