@@ -213,6 +213,7 @@ in
       programs = {
         firefox = {
           enable = true;
+          package = pkgs.firefox-bin;
           profiles.default = {
             name = "Default";
             settings = {
