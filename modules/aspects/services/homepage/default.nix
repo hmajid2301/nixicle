@@ -9,9 +9,9 @@
         environmentFile = config.sops.secrets.homepage_env.path;
         listenPort = 8173;
         bookmarks = [ ];
-        services = import ./services.nix;
-        settings = import ./settings.nix;
-        widgets = import ./widgets.nix;
+        services = import ./_services.nix;
+        settings = import ./_settings.nix;
+        widgets = import ./_widgets.nix;
       };
 
       services.traefik.dynamicConfigOptions.http = lib.nixicle.mkAuthenticatedTraefikService {
