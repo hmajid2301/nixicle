@@ -63,7 +63,10 @@
         };
       };
 
-      users.users.haseeb.hashedPasswordFile = config.sops.secrets.user_password.path;
+      users.users.haseeb = {
+        hashedPasswordFile = config.sops.secrets.user_password.path;
+        extraGroups = [ "wheel" ];
+      };
 
       boot = {
         kernelParams = [ "rd.luks=no" ];

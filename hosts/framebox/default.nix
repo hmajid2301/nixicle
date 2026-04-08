@@ -110,7 +110,7 @@
           users = {
             users.haseeb.hashedPasswordFile = config.sops.secrets.user_password.path;
             groups.media.gid = 3000;
-            users.haseeb.extraGroups = [ "media" ];
+            users.haseeb.extraGroups = [ "wheel" "media" ];
           };
 
           environment.persistence."/persist".directories = [ "/etc/secureboot" ];

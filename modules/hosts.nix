@@ -101,5 +101,17 @@ in
     homes.x86_64-linux."haseebmajid@dell" = {
       instantiate = mkHomeInstantiate;
     };
+
+    homes.x86_64-linux."haseeb@workstation" = {
+      instantiate = { modules, ... }@args:
+        mkHomeInstantiate (args // {
+          modules = modules ++ [
+            ({ pkgs, lib, ... }: {
+              imports = [ inputs.niri.homeModules.niri ];
+              nix.package = lib.mkDefault pkgs.nix;
+            })
+          ];
+        });
+    };
   };
 }

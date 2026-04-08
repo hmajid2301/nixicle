@@ -36,7 +36,6 @@
   };
 
   config.specs.colorscheme = {
-    lazy = true;
     data = pkgs.vimPlugins.catppuccin-nvim;
   };
 
@@ -199,7 +198,6 @@
     data = with pkgs.vimPlugins; [ trouble-nvim ];
   };
 
-
   config.specs.go = {
     data = null;
     postpkgs = with pkgs; [
@@ -255,7 +253,7 @@
   config.specs.docker = {
     data = null;
     postpkgs = with pkgs; [
-      dockerfile-language-server-nodejs
+      dockerfile-language-server
       docker-compose-language-service
       hadolint
     ];

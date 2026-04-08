@@ -1,5 +1,7 @@
 # Migrate Neovim from nixCats to nix-wrapper-modules
 
+> **Status: COMPLETE** — Migration finished on 2026-04-08. All phases done and verified building on workstation.
+
 ## Context
 
 nixCats is being superseded by nix-wrapper-modules, created by the same author. nix-wrapper-modules offers:
@@ -10,7 +12,7 @@ nixCats is being superseded by nix-wrapper-modules, created by the same author. 
 - **Wrapper variants**: compose multiple tools (e.g. opencode) alongside neovim
 - **Future**: language modules ecosystem (`languages.nix.enable = true`) similar to nvf
 
-The current neovim config at `modules/aspects/neovim/` uses nixCats with ~50 plugins across 16 language categories, two package variants (nixCats/regularCats), and extensive lua config referencing the nixCats lua API.
+The neovim config at `modules/aspects/neovim/` has been migrated from nixCats to nix-wrapper-modules. 33 specs, all lua files updated.
 
 ## Phase 1: Nix-side restructure
 
@@ -206,32 +208,42 @@ wrappers.neovim = {
 
 ## Phase 4: Cleanup
 
-Delete:
-- `modules/aspects/neovim/_config.nix`
-- `modules/aspects/neovim/_plugins.nix`
-- `modules/aspects/neovim/_lsp-and-tools.nix`
-- `modules/aspects/neovim/_package-definitions.nix`
-- `modules/aspects/neovim/lua/nixCatsUtils/` (entire directory)
+Deleted:
+- [x] `modules/aspects/neovim/_config.nix`
+- [x] `modules/aspects/neovim/_plugins.nix`
+- [x] `modules/aspects/neovim/_lsp-and-tools.nix`
+- [x] `modules/aspects/neovim/_package-definitions.nix`
+- [x] `modules/aspects/neovim/lua/nixCatsUtils/` (entire directory)
 
 Created:
-- `modules/aspects/neovim/nix/default.nix`
-- `modules/aspects/neovim/nix/nvim-lib.nix`
-- `modules/aspects/neovim/nix/specs.nix`
-- `modules/aspects/neovim/lua/nix_utils/init.lua`
+- [x] `modules/aspects/neovim/_nix/default.nix` (note: `_nix/` not `nix/` — import-tree excludes `/_` paths)
+- [x] `modules/aspects/neovim/_nix/nvim-lib.nix`
+- [x] `modules/aspects/neovim/_nix/specs.nix`
+- [x] `modules/aspects/neovim/lua/nix_utils/init.lua`
 
 ## Verification
 
-1. `nix run .#write-flake` — regenerate flake.nix with new input
-2. `nix flake check` — basic evaluation
-3. `nix build .#homeConfigurations."haseeb@workstation".activationPackage` — full HM build
-4. `nix build .#homeConfigurations."haseebmajid@dell".activationPackage` — dell standalone
-5. Launch `nixCats` (wrapped) — verify plugins load, LSPs start, colorscheme applies
-6. Launch `nvim` (unwrapped) — verify live config path works
-7. Check `:checkhealth` for missing providers/tools
+- [x] `nix build .#homeConfigurations."haseeb@workstation".activationPackage` — builds
+- [x] `nh home switch` — activates successfully
+- [x] 33 specs verified via `nix eval`
+- [x] Neovim launches without errors (catppuccin spec changed from `lazy = true` to start)
+- [ ] Full `:checkhealth` audit
 
-## Risks
+## Implementation Notes
 
-- **homeModules.neovim API**: nix-wrapper-modules' home-manager integration uses `wrappers.neovim` under `home.packages`. Need to verify this works inside a den aspect's homeManager block.
-- **`for_cat` spec name flattening**: All lua `for_cat` references using `"general.X"` must become `"X"` since specs are flat. Missing one will silently disable a plugin.
-- **info plugin path for lazydev**: nixCats exposed `nixCatsPath` for lazydev library paths. Need to verify nix-wrapper-modules exposes similar via the info plugin.
-- **Stylix colors passthrough**: Must thread `config.lib.stylix.colors.withHashtag` from the homeManager context into the wrapper module's `config.info.colors`. May need `_module.args` or a let binding.
+### import-tree exclusion
+The wrapper config directory must be named with a `_` prefix (`_nix/`) so import-tree skips it. import-tree uses `andNot (lib.hasInfix "/_")` — any path containing `/_` is excluded from auto-import. Files meant to be used as curried functions (not modules) must live under `_`-prefixed directories.
+
+### Stylix colors passthrough
+`config.lib.stylix.colors.withHashtag` contains function values that break `generators.toLua`. Fixed with:
+```nix
+_module.args.stylixColors =
+  let raw = config.lib.stylix.colors.withHashtag or {};
+  in lib.filterAttrs (_: v: builtins.isString v) raw;
+```
+
+### colorscheme spec must not be lazy
+`catppuccin-nvim` is `require()`d directly in `colorscheme.lua` at startup. Setting `lazy = true` puts it in `opt/` — not on rtp at init time. The spec must omit `lazy` (defaults to start).
+
+### Standalone homeConfigurations
+`homeConfigurations."haseeb@workstation"` is exposed for `nh home switch` without a full NixOS build. The niri homeModule and `nix.package` are injected only in the standalone instantiate function in `modules/hosts.nix` — NOT in the workstation provides block — to avoid conflicts with the NixOS niri nixosModule.

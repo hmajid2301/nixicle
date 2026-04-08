@@ -135,7 +135,9 @@ in
 
             commands.session-summary = "Summarize this session. First ask: personal or work? Based on answer, create notes at ~/projects/notes/notes/{work|personal}/YYYY-MM-DD-<topic>.md with summary. Update the weekly journal at ~/projects/notes/journals/weekly/ to link it with [[filename]]. Keep it concise, bullet points, focus on what shipped.";
 
-            settings = {
+            tui.theme = "stylix";
+
+            settings = lib.mkForce {
               "$schema" = "https://opencode.ai/config.json";
               model = "anthropic/claude-sonnet-4-20250514";
               autoshare = false;

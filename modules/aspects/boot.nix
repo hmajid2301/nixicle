@@ -51,7 +51,7 @@
           autoGenerateKeys.enable = true;
           autoEnrollKeys = {
             enable = true;
-            autoReboot = true;
+            autoReboot = false;
           };
         };
         loader.systemd-boot.enable = lib.mkForce false;
