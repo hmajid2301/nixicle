@@ -108,7 +108,7 @@
             "image/*" = [ "org.gnome.loupe.desktop" ]; "image/png" = [ "org.gnome.loupe.desktop" ];
             "image/jpg" = [ "org.gnome.loupe.desktop" ];
             "application/json" = [ "gnome-text-editor.desktop" ];
-            "application/pdf" = "firefox";
+            "application/pdf" = [ "firefox.desktop" ];
             "application/x-gnome-saved-search" = [ "org.gnome.Nautilus.desktop" ];
             "x-scheme-handler/discord" = [ "discord.desktop" ]; "x-scheme-handler/spotify" = [ "spotify.desktop" ];
             "x-scheme-handler/tg" = [ "telegramdesktop.desktop" ];
