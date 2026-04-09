@@ -32,7 +32,7 @@
           };
           routers.attic = {
             entryPoints = [ "websecure" ];
-            rule = "Host(`attic.homelab.haseebmajid.dev`)";
+            rule = "Host(`attic.haseebmajid.dev`)";
             service = "attic";
             middlewares = [ "attic-timeout" ];
             tls.certResolver = "letsencrypt";

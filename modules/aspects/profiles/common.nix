@@ -2,7 +2,7 @@
 let
   sharedNixConfig = {
     substituters = [
-      "https://attic.homelab.haseebmajid.dev/main"
+      "https://attic.haseebmajid.dev/main"
       "https://staging.attic.rs/attic-ci"
       "https://cache.nixos.org"
       "https://nix-community.cachix.org"
