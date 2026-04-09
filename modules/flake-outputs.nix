@@ -80,7 +80,7 @@ in
             inputs.nixflix.nixosModules.nixflix
             inputs.niri.nixosModules.niri
             inputs.goroutinely.nixosModules.default
-            ../hosts/iso/graphical
+            ../iso/graphical
             {
               nixpkgs.hostPlatform = system;
               nixpkgs.overlays = overlays;
