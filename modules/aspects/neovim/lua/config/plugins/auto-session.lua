@@ -23,8 +23,13 @@ return {
 					if
 						bufname:match("COMMIT_EDITMSG")
 						or bufname:match("MERGE_MSG")
-						or bufname:match("git-rebase-todo")
+						or bufname:match("git%-rebase%-todo")
+						or bufname:match("rebase%-merge")
+						or bufname:match("%.git/")
 					then
+						return false
+					end
+					if vim.fn.isdirectory(".git/rebase-merge") == 1 or vim.fn.isdirectory(".git/rebase-apply") == 1 then
 						return false
 					end
 					return true
