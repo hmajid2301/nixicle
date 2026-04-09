@@ -199,7 +199,10 @@
           ++ (with inputs.nfsm.packages.${pkgs.stdenv.hostPlatform.system}; [
             nfsm
             nfsm-cli
-          ]);
+          ])
+          ++ [
+            inputs.niri.packages.${pkgs.stdenv.hostPlatform.system}.xwayland-satellite-stable
+          ];
 
         programs = {
           niri.settings = {
