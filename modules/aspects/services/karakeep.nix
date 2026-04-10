@@ -6,40 +6,47 @@ in
   den.aspects.karakeep = {
     includes = [ (import ./_persist-forwarder.nix { inherit den lib; }) ];
     persist.directories = [
-          { directory = "/var/lib/karakeep"; user = "karakeep"; group = "karakeep"; mode = "0750"; }
-        ];
-    nixos = { config, lib, ... }: {
-      sops.secrets.karakeep_oauth.sopsFile = ../../../hosts/framebox/secrets.yaml;
+      {
+        directory = "/var/lib/karakeep";
+        user = "karakeep";
+        group = "karakeep";
+        mode = "0750";
+      }
+    ];
+    nixos =
+      { config, lib, ... }:
+      {
+        sops.secrets.karakeep_oauth.sopsFile = ../../../hosts/framebox/secrets.yaml;
 
-      services = {
-        karakeep = {
-          enable = true;
-          browser.enable = true;
-          extraEnvironment = {
-            PORT = "3035";
-            NEXTAUTH_URL = "https://karakeep.haseebmajid.dev";
-            OAUTH_PROVIDER_NAME = "authentik";
-            OAUTH_ALLOW_DANGEROUS_EMAIL_ACCOUNT_LINKING = "true";
-            OAUTH_WELLKNOWN_URL = "https://authentik.haseebmajid.dev/application/o/karakeep/.well-known/openid-configuration";
-            DISABLE_PASSWORD_AUTH = "true";
-            DISABLE_SIGNUPS = "true";
-            OLLAMA_BASE_URL = "http://localhost:11434";
-            INFERENCE_TEXT_MODEL = "gemma2";
-            INFERENCE_IMAGE_MODEL = "llava";
+        services = {
+          karakeep = {
+            enable = true;
+            browser.enable = true;
+            extraEnvironment = {
+              PORT = "3035";
+              NEXTAUTH_URL = "https://karakeep.haseebmajid.dev";
+              OAUTH_PROVIDER_NAME = "authentik";
+              OAUTH_ALLOW_DANGEROUS_EMAIL_ACCOUNT_LINKING = "true";
+              OAUTH_WELLKNOWN_URL = "https://authentik.haseebmajid.dev/application/o/karakeep/.well-known/openid-configuration";
+              DISABLE_PASSWORD_AUTH = "true";
+              DISABLE_SIGNUPS = "true";
+              OLLAMA_BASE_URL = "http://localhost:11434";
+              INFERENCE_TEXT_MODEL = "gemma2";
+              INFERENCE_IMAGE_MODEL = "llava";
+            };
+            environmentFile = config.sops.secrets.karakeep_oauth.path;
           };
-          environmentFile = config.sops.secrets.karakeep_oauth.path;
+
+          cloudflared.tunnels.${tunnelId}.ingress."karakeep.haseebmajid.dev" = "http://localhost:3035";
+
+          traefik.dynamicConfigOptions.http = lib.nixicle.mkTraefikService {
+            name = "karakeep";
+            port = 3035;
+            subdomain = "karakeep";
+            domain = "haseebmajid.dev";
+          };
         };
 
-        cloudflared.tunnels.${tunnelId}.ingress."karakeep.haseebmajid.dev" = "http://localhost:3035";
-
-        traefik.dynamicConfigOptions.http = lib.nixicle.mkTraefikService {
-          name = "karakeep";
-          port = 3035;
-          subdomain = "karakeep";
-          domain = "haseebmajid.dev";
-        };
       };
-
-    };
   };
 }

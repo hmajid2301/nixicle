@@ -1,5 +1,4 @@
-_:
-{
+_: {
   den.aspects.wezterm = {
     homeManager = _: {
       programs.wezterm = {

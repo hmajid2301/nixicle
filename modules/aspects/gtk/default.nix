@@ -1,8 +1,12 @@
-_:
-{
+_: {
   den.aspects.gtk-theme = {
     homeManager =
-      { pkgs, config, lib, ... }:
+      {
+        pkgs,
+        config,
+        lib,
+        ...
+      }:
       {
         gtk = lib.mkForce {
           enable = true;

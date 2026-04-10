@@ -1,5 +1,4 @@
-_:
-{
+_: {
   den.aspects.alacritty = {
     homeManager = _: {
       programs.alacritty = {
@@ -7,11 +6,19 @@ _:
         settings = {
           shell.program = "fish";
           window = {
-            padding = { x = 30; y = 30; };
+            padding = {
+              x = 30;
+              y = 30;
+            };
             decorations = "none";
           };
           selection.save_to_clipboard = true;
-          mouse_bindings = [{ mouse = "Right"; action = "Paste"; }];
+          mouse_bindings = [
+            {
+              mouse = "Right";
+              action = "Paste";
+            }
+          ];
           env.TERM = "xterm-256color";
         };
       };

@@ -1,4 +1,4 @@
-{ den, inputs, ... }:
+{ inputs, ... }:
 let
   agentDir = ./agents;
   agentFiles = builtins.readDir agentDir;

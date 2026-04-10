@@ -17,17 +17,19 @@ buildHomeAssistantComponent rec {
     sha256 = "sha256-5UX74mgg9eV6kdupB42RrxTnNeLyeOScVg41mMhfARo=";
   };
 
-  checkInputs = with pkgs.python312Packages;
-  with pkgs; [
-    home-assistant
-    mock
-    psutil-home-assistant
-    pytest
-    pytest-socket
-    pytest-asyncio
-    sqlalchemy
-    pydantic
-  ];
+  checkInputs =
+    with pkgs.python312Packages;
+    with pkgs;
+    [
+      home-assistant
+      mock
+      psutil-home-assistant
+      pytest
+      pytest-socket
+      pytest-asyncio
+      sqlalchemy
+      pydantic
+    ];
 
   # checkPhase = ''
   #   python -m pytest tests/unit

@@ -1,4 +1,4 @@
-{ den, ... }:
+{ ... }:
 {
   den.aspects.git = {
     homeManager = _: {
@@ -15,7 +15,10 @@
             ssh.allowedSignersFile = "~/.ssh/allowed_signers";
           };
           commit.gpgsign = true;
-          core = { editor = "nvim"; pager = "delta"; };
+          core = {
+            editor = "nvim";
+            pager = "delta";
+          };
           color.ui = true;
           interactive.diffFitler = "delta --color-only";
           delta = {
@@ -26,7 +29,10 @@
             options.syntax-theme = "catppuccin";
           };
           pull.ff = "only";
-          push = { default = "current"; autoSetupRemote = true; };
+          push = {
+            default = "current";
+            autoSetupRemote = true;
+          };
           init.defaultBranch = "init";
           url."git@github.com:".insteadOf = "https://github.com/";
         };

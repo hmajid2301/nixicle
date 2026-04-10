@@ -1,38 +1,53 @@
-{ inputs, lib, config, ... }:
+{
+  inputs,
+  lib,
+  config,
+  ...
+}:
 let
-  supportedSystems = [ "x86_64-linux" "aarch64-linux" ];
+  supportedSystems = [
+    "x86_64-linux"
+    "aarch64-linux"
+  ];
   forAllSystems = lib.genAttrs supportedSystems;
 
-  extendedLib = lib.extend (self: super: {
-    nixicle = import ../lib {
-      inherit inputs;
-      lib = self;
-    };
-  });
+  extendedLib = lib.extend (
+    self: _super: {
+      nixicle = import ../lib {
+        inherit inputs;
+        lib = self;
+      };
+    }
+  );
 
   overlays = [
     inputs.nur.overlays.default
     inputs.nix-topology.overlays.default
     inputs.niri.overlays.niri
-    (final: prev: {
+    (_final: prev: {
       zjstatus = inputs.zjstatus.packages.${prev.stdenv.hostPlatform.system}.default;
     })
     (final: prev: {
       inherit (inputs) get-shit-done;
-      nixicle = extendedLib.nixicle.importPackages final ../packages // {
-        zellij-mcp = prev.callPackage ../packages/zellij-mcp {
-          inherit inputs;
+      nixicle =
+        extendedLib.nixicle.importPackages final ../packages
+        // {
+          zellij-mcp = prev.callPackage ../packages/zellij-mcp {
+            inherit inputs;
+          };
+        }
+        // {
+          gsesh = inputs.gsesh.packages.${prev.stdenv.hostPlatform.system}.default;
         };
-      } // {
-        gsesh = inputs.gsesh.packages.${prev.stdenv.hostPlatform.system}.default;
-      };
     })
   ];
 
-  mkPkgs = system: import inputs.nixpkgs {
-    inherit system overlays;
-    config.allowUnfree = true;
-  };
+  mkPkgs =
+    system:
+    import inputs.nixpkgs {
+      inherit system overlays;
+      config.allowUnfree = true;
+    };
 in
 {
   flake-file.inputs = {
@@ -59,9 +74,13 @@ in
   };
 
   flake = {
-    packages = forAllSystems (system:
-      let pkgs = mkPkgs system;
-      in pkgs.nixicle // {
+    packages = forAllSystems (
+      system:
+      let
+        pkgs = mkPkgs system;
+      in
+      pkgs.nixicle
+      // {
         iso-graphical = inputs.nixos-generators.nixosGenerate {
           inherit system;
           specialArgs = {
@@ -95,55 +114,70 @@ in
       }
     );
 
-    apps = forAllSystems (system:
-      let pkgs = mkPkgs system;
-      in lib.mapAttrs (name: f:
-        let drv = f pkgs;
-        in { type = "app"; program = "${drv}/bin/${name}"; }
+    apps = forAllSystems (
+      system:
+      let
+        pkgs = mkPkgs system;
+      in
+      lib.mapAttrs (
+        name: f:
+        let
+          drv = f pkgs;
+        in
+        {
+          type = "app";
+          program = "${drv}/bin/${name}";
+        }
       ) config.flake-file.apps
     );
 
-    devShells = forAllSystems (system:
-    let pkgs = mkPkgs system;
-    in {
-      default = pkgs.mkShell {
-        NIX_CONFIG = "extra-experimental-features = nix-command flakes";
-        packages = with pkgs; [
-          (pkgs.nh.override {
-            nix-output-monitor = pkgs.nix-output-monitor.overrideAttrs (old: {
-              postPatch = old.postPatch or "" + ''
-                substituteInPlace lib/NOM/Print.hs \
-                  --replace 'down = "↓"' 'down = "\xf072e"' \
-                  --replace 'up = "↑"' 'up = "\xf0737"' \
-                  --replace 'clock = "⏱"' 'clock = "\xf520"' \
-                  --replace 'running = "⏵"' 'running = "\xf04b"' \
-                  --replace 'done = "✔"' 'done = "\xf00c"' \
-                  --replace 'todo = "⏸"' 'todo = "\xf04d"' \
-                  --replace 'warning = "⚠"' 'warning = "\xf071"' \
-                  --replace 'average = "∅"' 'average = "\xf1da"' \
-                  --replace 'bigsum = "∑"' 'bigsum = "\xf04a0"'
-              '';
-            });
-          })
-          inputs.nixos-anywhere.packages.${pkgs.stdenv.hostPlatform.system}.nixos-anywhere
-          inputs.deploy-rs.packages.${pkgs.stdenv.hostPlatform.system}.default
-          statix
-          deadnix
-          alejandra
-          inputs.home-manager.packages.${pkgs.stdenv.hostPlatform.system}.default
-          git
-          sops
-          ssh-to-age
-          gnupg
-          age
-          opentofu
-          mc
-          go-task
-          gum
-        ];
-      };
-    }
-  );
+    devShells = forAllSystems (
+      system:
+      let
+        pkgs = mkPkgs system;
+      in
+      {
+        default = pkgs.mkShell {
+          NIX_CONFIG = "extra-experimental-features = nix-command flakes";
+          packages = with pkgs; [
+            (pkgs.nh.override {
+              nix-output-monitor = pkgs.nix-output-monitor.overrideAttrs (old: {
+                postPatch = old.postPatch or "" + ''
+                  substituteInPlace lib/NOM/Print.hs \
+                    --replace 'down = "↓"' 'down = "\xf072e"' \
+                    --replace 'up = "↑"' 'up = "\xf0737"' \
+                    --replace 'clock = "⏱"' 'clock = "\xf520"' \
+                    --replace 'running = "⏵"' 'running = "\xf04b"' \
+                    --replace 'done = "✔"' 'done = "\xf00c"' \
+                    --replace 'todo = "⏸"' 'todo = "\xf04d"' \
+                    --replace 'warning = "⚠"' 'warning = "\xf071"' \
+                    --replace 'average = "∅"' 'average = "\xf1da"' \
+                    --replace 'bigsum = "∑"' 'bigsum = "\xf04a0"'
+                '';
+              });
+            })
+            inputs.nixos-anywhere.packages.${pkgs.stdenv.hostPlatform.system}.nixos-anywhere
+            inputs.deploy-rs.packages.${pkgs.stdenv.hostPlatform.system}.default
+            inputs.home-manager.packages.${pkgs.stdenv.hostPlatform.system}.default
+
+            statix
+            deadnix
+            nixfmt
+
+            sops
+            ssh-to-age
+            age
+
+            git
+            gnupg
+            opentofu
+            mc
+            go-task
+            gum
+          ];
+        };
+      }
+    );
 
     deploy = extendedLib.nixicle.mkDeploy {
       inherit (inputs) self;
@@ -154,12 +188,13 @@ in
     };
 
     checks = builtins.mapAttrs (
-      system: deploy-lib: deploy-lib.deployChecks inputs.self.deploy
+      _system: deploy-lib: deploy-lib.deployChecks inputs.self.deploy
     ) inputs.deploy-rs.lib;
 
     topology =
       let
-        host = inputs.self.nixosConfigurations.${builtins.head (builtins.attrNames inputs.self.nixosConfigurations)};
+        host =
+          inputs.self.nixosConfigurations.${builtins.head (builtins.attrNames inputs.self.nixosConfigurations)};
       in
       import inputs.nix-topology {
         inherit (host) pkgs;
