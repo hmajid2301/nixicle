@@ -1050,11 +1050,11 @@
         "playwright": "playwright_2"
       },
       "locked": {
-        "lastModified": 1775416059,
-        "narHash": "sha256-YBfTXj6/ToUlrEKMusWDFhTef/6eJsPztrjGekk2OK4=",
+        "lastModified": 1775772115,
+        "narHash": "sha256-pgYGnzF4KPh4q1mTzA6MIQFexYEXz5LmhgewsdDU61I=",
         "owner": "hmajid2301",
         "repo": "goroutinely",
-        "rev": "f7c9220366bc53a4103094de74cda2360df613c6",
+        "rev": "b30b579e14e0c49c2a42bdfa5c0f225631d8f8dc",
         "type": "gitlab"
       },
       "original": {
@@ -2014,6 +2014,26 @@
         "type": "github"
       }
     },
+    "noctalia-plugins": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1775201395,
+        "narHash": "sha256-PI2qvhXxtgdIz8wFq4TgjMfDc620uW7S0oUY1ACrKww=",
+        "owner": "Mic92",
+        "repo": "noctalia-plugins",
+        "rev": "272a73bfe5dda964a02fdcd037ad735f8c40335f",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Mic92",
+        "repo": "noctalia-plugins",
+        "type": "github"
+      }
+    },
     "noctalia-qs": {
       "inputs": {
         "nixpkgs": [
@@ -2519,6 +2539,7 @@
           "nixpkgs"
         ],
         "noctalia": "noctalia",
+        "noctalia-plugins": "noctalia-plugins",
         "noctalia-qs": "noctalia-qs",
         "nur": "nur",
         "opencode-antigravity-auth": "opencode-antigravity-auth",

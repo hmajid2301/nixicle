@@ -140,8 +140,8 @@
         MOZ_ENABLE_WAYLAND = 1;
         QT_QPA_PLATFORM = "wayland;xcb";
         LIBSEAT_BACKEND = "logind";
-        EDITOR = "nixCats";
-        MANPAGER = "nixCats +Man!";
+        EDITOR = "nvim";
+        MANPAGER = "nvim +Man!";
       };
       home.packages = with pkgs; [
         ddcutil

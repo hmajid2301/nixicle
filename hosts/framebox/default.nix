@@ -1,5 +1,9 @@
-{ inputs, den, lib, ... }:
 {
+  inputs,
+  den,
+  lib,
+  ...
+}: {
   flake-file.inputs.nixos-hardware.url = "github:nixos/nixos-hardware";
   flake-file.inputs.nixos-facter-modules.url = "github:numtide/nixos-facter-modules";
 
@@ -7,7 +11,7 @@
     aspects = {
       haseeb = {
         includes = [
-          ({ user, ... }: {
+          ({user, ...}: {
             nixos = {
               users.users.haseeb.openssh.authorizedKeys.keys = user.authorizedKeys;
               users.users.root.openssh.authorizedKeys.keys = user.authorizedKeys;
@@ -36,7 +40,11 @@
           den.aspects.obs
         ];
 
-        homeManager = { pkgs, config, ... }: {
+        homeManager = {
+          pkgs,
+          config,
+          ...
+        }: {
           home = {
             username = "haseeb";
             homeDirectory = "/home/haseeb";
@@ -49,6 +57,20 @@
             lockTimeout = 300;
             suspendTimeout = 0;
             fadeDuration = 5;
+          };
+
+          programs.fish.interactiveShellInit = lib.mkAfter ''
+            if not set -q ZELLIJ; and status is-interactive
+                exec zellij attach --create main
+            end
+          '';
+
+          home.packages = [pkgs.rbw];
+          programs.rbw = {
+            enable = true;
+            settings = {
+              email = "unset";
+            };
           };
         };
       };
@@ -76,7 +98,6 @@
           den.aspects.karakeep
           den.aspects.llama-cpp
           den.aspects.ollama
-          den.aspects.monitoring
           den.aspects.open-webui
           den.aspects.otel-collector
           den.aspects.redis
@@ -88,14 +109,19 @@
           den.aspects.bentopdf
           den.aspects.hortusfox
           den.aspects.trek
+          den.aspects.zellij
         ];
 
-        nixos = { config, lib, ... }: {
+        nixos = {
+          config,
+          lib,
+          ...
+        }: {
           imports = [
             ./hardware-configuration.nix
             ./disks.nix
             inputs.nixos-facter-modules.nixosModules.facter
-            { config.facter.reportPath = ./facter.json; }
+            {config.facter.reportPath = ./facter.json;}
             inputs.nixos-hardware.nixosModules.framework-desktop-amd-ai-max-300-series
           ];
 
@@ -110,10 +136,10 @@
           users = {
             users.haseeb.hashedPasswordFile = config.sops.secrets.user_password.path;
             groups.media.gid = 3000;
-            users.haseeb.extraGroups = [ "wheel" "media" ];
+            users.haseeb.extraGroups = ["wheel" "media"];
           };
 
-          environment.persistence."/persist".directories = [ "/etc/secureboot" ];
+          environment.persistence."/persist".directories = ["/etc/secureboot"];
 
           networking.hostName = "framebox";
           system.stateVersion = "24.05";

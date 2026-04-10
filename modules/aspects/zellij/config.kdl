@@ -4,7 +4,7 @@ simplified_ui true
 default_shell "fish"
 copy_on_select true
 show_startup_tips false
-scrollback_editor "nixCats"
+scrollback_editor "nvim"
 session_serialization true
 serialization_interval 60
 
