@@ -14,11 +14,20 @@ let
       inherit (pkgs.fishPlugins.fifc) src;
     }
     {
+      name = "nvm.fish";
+      src = pkgs.fetchFromGitHub {
+        owner = "jorgebucaran";
+        repo = "nvm.fish";
+        rev = "846f1f20b2d1d0a99e344f250493c41a450f9448";
+        sha256 = "sha256-u3qhoYBDZ0zBHbD+arDxLMM8XoLQlNI+S84wnM3nDzg=";
+      };
+    }
+    {
       name = "git-abbr";
       inherit (pkgs.fishPlugins.git-abbr) src;
     }
     {
-      name = "fish-completion-sync";
+      name = "completion-sync";
       src = pkgs.fetchFromGitHub {
         owner = "iynaix";
         repo = "fish-completion-sync";
@@ -27,15 +36,21 @@ let
       };
     }
     {
+      name = "hm-generation-reload";
       src = pkgs.writeTextDir "conf.d/hm-generation-reload.fish" ''
         function __hm_generation_reload --on-event fish_prompt
-          if test "$HOME_MANAGER_GENERATION" != (readlink -f $HOME/.local/state/home-manager/gcroots/current-home)
-            echo "🔄 Home Manager generation changed, reloading fish..."
-            exec fish
+          set -l hm_gen_file ~/.local/state/home-manager/gcroots/current-home
+          if test -L $hm_gen_file
+            set -l current_gen (readlink $hm_gen_file)
+            if set -q __hm_last_generation; and test "$__hm_last_generation" != "$current_gen"
+              echo "🔄 Home Manager generation changed, reloading fish..."
+              set -e __hm_last_generation
+              exec fish
+            end
+            set -g __hm_last_generation $current_gen
           end
         end
       '';
-      name = "hm-generation-reload";
     }
   ];
 in
