@@ -5,7 +5,7 @@ let
 in
 {
   den.aspects.paperless = {
-    includes = [ (import ./_persist-forwarder.nix { inherit den lib; }) ];
+    includes = [ ];
     persist.directories = [
       {
         directory = "/var/lib/paperless";

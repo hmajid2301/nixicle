@@ -4,7 +4,7 @@ let
 in
 {
   den.aspects.tandoor = {
-    includes = [ (import ./_persist-forwarder.nix { inherit den lib; }) ];
+    includes = [ ];
     persist.directories = [
       {
         directory = "/var/lib/tandoor-recipes";

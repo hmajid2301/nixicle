@@ -1,7 +1,7 @@
 { den, lib, ... }:
 {
   den.aspects.gitea = {
-    includes = [ (import ./_persist-forwarder.nix { inherit den lib; }) ];
+    includes = [ ];
     persist.directories = [
       {
         directory = "/var/lib/gitea";

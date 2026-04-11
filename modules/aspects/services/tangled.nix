@@ -18,7 +18,6 @@ in
       den.aspects.nixery
       den.aspects.openbao
 
-      (import ./_persist-forwarder.nix { inherit den lib; })
     ];
     persist.directories = [
       {

@@ -14,7 +14,7 @@ in
   };
 
   den.aspects.goroutinely = {
-    includes = [ (import ./_persist-forwarder.nix { inherit den lib; }) ];
+    includes = [ ];
     persist.directories = [
       {
         directory = "/var/lib/goroutinely";

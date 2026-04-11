@@ -1,7 +1,7 @@
 { den, lib, ... }:
 {
   den.aspects.traefik = {
-    includes = [ (import ./_persist-forwarder.nix { inherit den lib; }) ];
+    includes = [ ];
     persist.directories = [ "/var/lib/traefik" ];
     nixos =
       { config, ... }:

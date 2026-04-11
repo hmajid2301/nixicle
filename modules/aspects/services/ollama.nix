@@ -1,7 +1,7 @@
 { den, lib, ... }:
 {
   den.aspects.ollama = {
-    includes = [ (import ./_persist-forwarder.nix { inherit den lib; }) ];
+    includes = [ ];
     persist.directories = [ "/var/lib/private/ollama" ];
     nixos =
       {

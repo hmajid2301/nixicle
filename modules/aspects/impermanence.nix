@@ -1,9 +1,7 @@
-{ inputs, ... }:
+{ inputs, den, lib, ... }:
 {
   flake-file.inputs.impermanence.url = "github:nix-community/impermanence";
 
-  # Declare the option at the flake module level so it's available to all NixOS modules,
-  # even when den.aspects.impermanence is not included on a host.
   den.default.nixos =
     { lib, ... }:
     {
@@ -12,6 +10,19 @@
         default = false;
       };
     };
+
+  den.ctx.host.includes = [
+    ({ class, aspect-chain }:
+      den._.forward {
+        each = lib.singleton true;
+        fromClass = _: "persist";
+        intoClass = _: "nixos";
+        intoPath = _: [ "environment" "persistence" "/persist" ];
+        fromAspect = _: lib.head aspect-chain;
+        guard = { options, ... }: options ? environment && options ? environment.persistence;
+      }
+    )
+  ];
 
   den.aspects.impermanence = {
     nixos =

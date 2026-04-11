@@ -7,7 +7,7 @@ let
 in
 {
   den.aspects.papra = {
-    includes = [ (import ./_persist-forwarder.nix { inherit den lib; }) ];
+    includes = [ ];
     persist.directories = [
       {
         directory = dataDir;

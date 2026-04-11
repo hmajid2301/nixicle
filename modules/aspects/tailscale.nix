@@ -1,7 +1,7 @@
 { den, lib, ... }:
 {
   den.aspects.tailscale = {
-    includes = [ (import ./services/_persist-forwarder.nix { inherit den lib; }) ];
+    includes = [ ];
     persist.directories = [ "/var/lib/tailscale" ];
     nixos =
       { ... }:

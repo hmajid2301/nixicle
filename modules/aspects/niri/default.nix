@@ -77,7 +77,6 @@
             };
         }
       )
-      (import ../services/_persist-forwarder.nix { inherit den lib; })
     ];
     persist.directories = [ "/var/cache/tuigreet" ];
 
