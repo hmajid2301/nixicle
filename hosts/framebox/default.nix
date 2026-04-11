@@ -109,6 +109,9 @@
           den.aspects.zellij
           den.aspects.fish
           den.aspects.monitoring
+          den.aspects.openbao
+          den.aspects.homepage
+          den.aspects.nixery
         ];
 
         nixos =
