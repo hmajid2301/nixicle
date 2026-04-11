@@ -113,6 +113,7 @@
         nixos =
           {
             config,
+            pkgs,
             ...
           }:
           {
@@ -133,12 +134,15 @@
             };
 
             users = {
-              users.haseeb.hashedPasswordFile = config.sops.secrets.user_password.path;
+              users.haseeb = {
+                hashedPasswordFile = config.sops.secrets.user_password.path;
+                shell = pkgs.fish;
+                extraGroups = [
+                  "wheel"
+                  "media"
+                ];
+              };
               groups.media.gid = 3000;
-              users.haseeb.extraGroups = [
-                "wheel"
-                "media"
-              ];
             };
 
             # TODO: move to boot.nix in all files
