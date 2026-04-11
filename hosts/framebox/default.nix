@@ -108,6 +108,7 @@
           den.aspects.hortusfox
           den.aspects.trek
           den.aspects.zellij
+          den.aspects.fish
         ];
 
         nixos =
