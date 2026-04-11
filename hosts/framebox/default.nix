@@ -105,10 +105,10 @@
           den.aspects.tandoor
           den.aspects.papra
           den.aspects.bentopdf
-          den.aspects.hortusfox
           den.aspects.trek
           den.aspects.zellij
           den.aspects.fish
+          den.aspects.monitoring
         ];
 
         nixos =
