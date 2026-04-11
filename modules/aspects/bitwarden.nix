@@ -9,9 +9,10 @@
         programs.rbw = {
           enable = true;
           settings = {
-            email = "unset";
+            email = "hello@haseebmajid.dev";
           };
         };
       };
   };
 }
+

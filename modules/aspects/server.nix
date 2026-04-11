@@ -4,15 +4,6 @@
     homeManager =
       { pkgs, ... }:
       {
-        home.packages = [ pkgs.rbw ];
-
-        programs.rbw = {
-          enable = true;
-          settings = {
-            email = "unset";
-          };
-        };
-
         programs.zellij = {
           enable = true;
           settings = {
@@ -27,3 +18,4 @@
       };
   };
 }
+
