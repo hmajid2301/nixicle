@@ -5,6 +5,7 @@
       den.aspects.performance-base
       den.aspects.tailscale
       den.aspects.traefik
+      den.aspects.uptime-kuma
     ];
 
     nixos =
