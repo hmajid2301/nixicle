@@ -141,6 +141,7 @@
               ];
             };
 
+            # TODO: move to boot.nix in all files
             environment.persistence."/persist".directories = [ "/etc/secureboot" ];
 
             networking.hostName = "framebox";
