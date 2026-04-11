@@ -78,7 +78,7 @@
           den.aspects.nfs-truenas
           den.aspects.impermanence
           den.aspects.boot-secure
-          den.aspect.server
+          den.aspects.server
           den.aspects.tailscale
           den.aspects.kvm
           den.aspects.traefik
