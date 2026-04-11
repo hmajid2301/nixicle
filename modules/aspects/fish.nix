@@ -14,25 +14,16 @@ let
       inherit (pkgs.fishPlugins.fifc) src;
     }
     {
-      name = "nvm.fish";
-      src = pkgs.fetchFromGitHub {
-        owner = "jorgebucaran";
-        repo = "nvm.fish";
-        rev = "2.2.0";
-        sha256 = "sha256-FnSLf0z4WMWcwZkvtWMHOsweqw13q4SFsJc/KwwO4GI=";
-      };
-    }
-    {
       name = "git-abbr";
       inherit (pkgs.fishPlugins.git-abbr) src;
     }
     {
       name = "fish-completion-sync";
       src = pkgs.fetchFromGitHub {
-        owner = "purcell";
+        owner = "iynaix";
         repo = "fish-completion-sync";
-        rev = "95da234415c8c99b6a83d0c910a18611f500392d";
-        sha256 = "sha256-IQel+VNbVx4kEaZjOp6D0KkhWN9IqJutupITIiD26yQ=";
+        rev = "4f058ad2986727a5f510e757bc82cbbfca4596f0";
+        sha256 = "sha256-kHpdCQdYcpvi9EFM/uZXv93mZqlk1zCi2DRhWaDyK5g=";
       };
     }
     {
@@ -132,19 +123,19 @@ in
               end
             '';
             gcrb = ''
-                set result (git branch -a --color=always | grep -v '/HEAD\s' | sort |
-                  fzf --height 50% --border --ansi --tac --preview-window right:70% \
-                    --preview 'git log --oneline --graph --date=short --pretty="format:%C(auto)%cd %h%d %s" (string sub -s 3 (string split ' ' {})[1]) | head -'$LINES |
-                  string sub -s 3 | string split ' ' -m 1)[1]
+              set result (git branch -a --color=always | grep -v '/HEAD\s' | sort |
+                fzf --height 50% --border --ansi --tac --preview-window right:70% \
+                  --preview 'git log --oneline --graph --date=short --pretty="format:%C(auto)%cd %h%d %s" (string sub -s 3 (string split ' ' {})[1]) | head -'$LINES |
+                string sub -s 3 | string split ' ' -m 1)[1]
 
-                  if test -n "$result"
-                    if string match -r "^remotes/.*" $result > /dev/null
-                      git checkout --track (string replace -r "^remotes/" "" $result)
-                    else
-                      git checkout $result
-                    end
+                if test -n "$result"
+                  if string match -r "^remotes/.*" $result > /dev/null
+                    git checkout --track (string replace -r "^remotes/" "" $result)
+                  else
+                    git checkout $result
                   end
                 end
+              end
             '';
             hmg = ''
               set current_gen (home-manager generations | head -n 1 | awk '{print $7}')
