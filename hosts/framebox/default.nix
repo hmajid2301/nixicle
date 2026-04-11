@@ -69,14 +69,6 @@
                   exec zellij attach --create main
               end
             '';
-
-            home.packages = [ pkgs.rbw ];
-            programs.rbw = {
-              enable = true;
-              settings = {
-                email = "unset";
-              };
-            };
           };
       };
 
@@ -86,6 +78,7 @@
           den.aspects.nfs-truenas
           den.aspects.impermanence
           den.aspects.boot-secure
+          den.aspect.server
           den.aspects.tailscale
           den.aspects.kvm
           den.aspects.traefik
