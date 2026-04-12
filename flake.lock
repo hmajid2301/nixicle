@@ -2014,6 +2014,26 @@
         "type": "github"
       }
     },
+    "noctalia-plugins": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1775929122,
+        "narHash": "sha256-f1Wxg5D6hy0NkEFNpaO0mksrMH16nwniW03x7RiwrNs=",
+        "owner": "Mic92",
+        "repo": "noctalia-plugins",
+        "rev": "e3866c7baf348e4c890f2403519358332d5e2ccb",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Mic92",
+        "repo": "noctalia-plugins",
+        "type": "github"
+      }
+    },
     "noctalia-qs": {
       "inputs": {
         "nixpkgs": [
@@ -2519,6 +2539,7 @@
           "nixpkgs"
         ],
         "noctalia": "noctalia",
+        "noctalia-plugins": "noctalia-plugins",
         "noctalia-qs": "noctalia-qs",
         "nur": "nur",
         "opencode-antigravity-auth": "opencode-antigravity-auth",
