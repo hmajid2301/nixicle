@@ -64,6 +64,7 @@ creation_rules:
       - *framework
       - *framebox
       - *vm
+      - *vps
       - *workstation
       - *haseeb_framework
       - *haseeb_framebox
