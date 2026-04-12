@@ -1,4 +1,9 @@
-{ inputs, den, lib, ... }:
+{
+  inputs,
+  den,
+  lib,
+  ...
+}:
 {
   flake-file.inputs.impermanence.url = "github:nix-community/impermanence";
 
@@ -12,12 +17,17 @@
     };
 
   den.ctx.host.includes = [
-    ({ class, aspect-chain }:
+    (
+      { class, aspect-chain }:
       den._.forward {
         each = lib.singleton true;
         fromClass = _: "persist";
         intoClass = _: "nixos";
-        intoPath = _: [ "environment" "persistence" "/persist" ];
+        intoPath = _: [
+          "environment"
+          "persistence"
+          "/persist"
+        ];
         fromAspect = _: lib.head aspect-chain;
         guard = { options, ... }: options ? environment && options ? environment.persistence;
       }
