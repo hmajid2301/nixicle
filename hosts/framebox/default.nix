@@ -1,4 +1,9 @@
-{ inputs, den, lib, ... }:
+{
+  inputs,
+  den,
+  lib,
+  ...
+}:
 {
   flake-file.inputs.nixos-hardware.url = "github:nixos/nixos-hardware";
   flake-file.inputs.nixos-facter-modules.url = "github:numtide/nixos-facter-modules";
@@ -7,16 +12,19 @@
     aspects = {
       haseeb = {
         includes = [
-          ({ user, ... }: {
-            nixos = {
-              users.users.haseeb.openssh.authorizedKeys.keys = user.authorizedKeys;
-              users.users.root.openssh.authorizedKeys.keys = user.authorizedKeys;
-              home-manager.users.haseeb.programs.git = {
-                settings.user.email = lib.mkForce user.email;
-                signing.key = lib.mkForce user.signingKey;
+          (
+            { user, ... }:
+            {
+              nixos = {
+                users.users.haseeb.openssh.authorizedKeys.keys = user.authorizedKeys;
+                users.users.root.openssh.authorizedKeys.keys = user.authorizedKeys;
+                home-manager.users.haseeb.programs.git = {
+                  settings.user.email = lib.mkForce user.email;
+                  signing.key = lib.mkForce user.signingKey;
+                };
               };
-            };
-          })
+            }
+          )
         ];
 
         homeManager = _: {
@@ -36,21 +44,32 @@
           den.aspects.obs
         ];
 
-        homeManager = { pkgs, config, ... }: {
-          home = {
-            username = "haseeb";
-            homeDirectory = "/home/haseeb";
-            stateVersion = "24.05";
-          };
+        homeManager =
+          {
+            pkgs,
+            ...
+          }:
+          {
+            home = {
+              username = "haseeb";
+              homeDirectory = "/home/haseeb";
+              stateVersion = "24.05";
+            };
 
-          programs.noctalia-shell.settings.idle = {
-            enabled = true;
-            screenOffTimeout = 330;
-            lockTimeout = 300;
-            suspendTimeout = 0;
-            fadeDuration = 5;
+            programs.noctalia-shell.settings.idle = {
+              enabled = true;
+              screenOffTimeout = 330;
+              lockTimeout = 300;
+              suspendTimeout = 0;
+              fadeDuration = 5;
+            };
+
+            programs.fish.interactiveShellInit = lib.mkAfter ''
+              if not set -q ZELLIJ; and status is-interactive
+                  exec zellij attach --create main
+              end
+            '';
           };
-        };
       };
 
       framebox = {
@@ -59,6 +78,7 @@
           den.aspects.nfs-truenas
           den.aspects.impermanence
           den.aspects.boot-secure
+          den.aspects.server
           den.aspects.tailscale
           den.aspects.kvm
           den.aspects.traefik
@@ -76,7 +96,6 @@
           den.aspects.karakeep
           den.aspects.llama-cpp
           den.aspects.ollama
-          den.aspects.monitoring
           den.aspects.open-webui
           den.aspects.otel-collector
           den.aspects.redis
@@ -86,38 +105,54 @@
           den.aspects.tandoor
           den.aspects.papra
           den.aspects.bentopdf
-          den.aspects.hortusfox
           den.aspects.trek
+          den.aspects.zellij
+          den.aspects.fish
+          den.aspects.monitoring
+          den.aspects.homepage
         ];
 
-        nixos = { config, lib, ... }: {
-          imports = [
-            ./hardware-configuration.nix
-            ./disks.nix
-            inputs.nixos-facter-modules.nixosModules.facter
-            { config.facter.reportPath = ./facter.json; }
-            inputs.nixos-hardware.nixosModules.framework-desktop-amd-ai-max-300-series
-          ];
+        nixos =
+          {
+            config,
+            pkgs,
+            ...
+          }:
+          {
+            imports = [
+              ./hardware-configuration.nix
+              ./disks.nix
+              inputs.nixos-facter-modules.nixosModules.facter
+              { config.facter.reportPath = ./facter.json; }
+              inputs.nixos-hardware.nixosModules.framework-desktop-amd-ai-max-300-series
+            ];
 
-          sops.secrets = {
-            gitlab_runner_env.sopsFile = ./secrets.yaml;
-            user_password = {
-              sopsFile = ./secrets.yaml;
-              neededForUsers = true;
+            sops.secrets = {
+              gitlab_runner_env.sopsFile = ./secrets.yaml;
+              user_password = {
+                sopsFile = ./secrets.yaml;
+                neededForUsers = true;
+              };
             };
+
+            users = {
+              users.haseeb = {
+                hashedPasswordFile = config.sops.secrets.user_password.path;
+                shell = pkgs.fish;
+                extraGroups = [
+                  "wheel"
+                  "media"
+                ];
+              };
+              groups.media.gid = 3000;
+            };
+
+            # TODO: move to boot.nix in all files
+            environment.persistence."/persist".directories = [ "/etc/secureboot" ];
+
+            networking.hostName = "framebox";
+            system.stateVersion = "24.05";
           };
-
-          users = {
-            users.haseeb.hashedPasswordFile = config.sops.secrets.user_password.path;
-            groups.media.gid = 3000;
-            users.haseeb.extraGroups = [ "wheel" "media" ];
-          };
-
-          environment.persistence."/persist".directories = [ "/etc/secureboot" ];
-
-          networking.hostName = "framebox";
-          system.stateVersion = "24.05";
-        };
       };
     };
   };

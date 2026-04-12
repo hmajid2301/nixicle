@@ -1,4 +1,4 @@
-{ den, inputs, ... }:
+{ inputs, ... }:
 {
   flake-file.inputs.nixflix = {
     url = "github:kiriwalawren/nixflix";
@@ -6,8 +6,10 @@
   };
 
   den.aspects.nixflix = {
-    nixos = { ... }: {
-      imports = [ inputs.nixflix.nixosModules.nixflix ];
-    };
+    nixos =
+      { ... }:
+      {
+        imports = [ inputs.nixflix.nixosModules.nixflix ];
+      };
   };
 }

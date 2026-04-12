@@ -1,4 +1,4 @@
-{ den, ... }:
+{ ... }:
 {
   # Tiered power profiles. Include exactly one per host.
   #

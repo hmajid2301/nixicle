@@ -1,4 +1,8 @@
-{ den, inputs, lib, ... }:
+{
+  den,
+  lib,
+  ...
+}:
 {
   flake-file.inputs = {
     niri = {
@@ -22,125 +26,169 @@
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.noctalia-qs.follows = "noctalia-qs";
     };
+    noctalia-plugins = {
+      url = "github:Mic92/noctalia-plugins";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   den.aspects.niri = {
     includes = [
-      ({ host, user, ... }: {
-        nixos = { config, pkgs, lib, ... }: {
-          services.greetd = {
-            enable = true;
-            useTextGreeter = !host.autologin;
-            settings =
-              let
-                session = {
-                  command = "niri-session &> /dev/null";
-                  user = user.userName;
-                };
-                greeterSession = {
-                  command =
-                    let
-                      theme = with config.lib.stylix.colors.withHashtag; "border=${base0D};text=${base05};prompt=${base0E};time=${base04};action=${base0B};button=${base0C};container=${base00};input=${base02}";
-                    in
-                    "${pkgs.tuigreet}/bin/tuigreet --time --remember --remember-session --cmd 'niri-session &> /dev/null' --theme '${theme}'";
-                  user = "greeter";
-                };
-              in
-              {
-                default_session = if host.autologin then session else greeterSession;
-              }
-              // lib.optionalAttrs host.autologin { initial_session = session; };
-          };
-        };
-      })
-      (import ../services/_persist-forwarder.nix { inherit den lib; })
+      (
+        {
+          host,
+          user,
+          ...
+        }:
+        {
+          nixos =
+            {
+              config,
+              pkgs,
+              lib,
+              ...
+            }:
+            {
+              services.greetd = {
+                enable = true;
+                useTextGreeter = !host.autologin;
+                settings =
+                  let
+                    session = {
+                      command = "niri-session &> /dev/null";
+                      user = user.userName;
+                    };
+                    greeterSession = {
+                      command =
+                        let
+                          theme =
+                            with config.lib.stylix.colors.withHashtag;
+                            "border=${base0D};text=${base05};prompt=${base0E};time=${base04};action=${base0B};button=${base0C};container=${base00};input=${base02}";
+                        in
+                        "${pkgs.tuigreet}/bin/tuigreet --time --remember --remember-session --cmd 'niri-session &> /dev/null' --theme '${theme}'";
+                      user = "greeter";
+                    };
+                  in
+                  {
+                    default_session = if host.autologin then session else greeterSession;
+                  }
+                  // lib.optionalAttrs host.autologin { initial_session = session; };
+              };
+            };
+        }
+      )
     ];
     persist.directories = [ "/var/cache/tuigreet" ];
 
-    nixos = { config, pkgs, lib, inputs, ... }: {
-      imports = [ inputs.niri.nixosModules.niri ];
-      nixpkgs.overlays = [
-        inputs.niri.overlays.niri
-        inputs.noctalia-qs.overlays.default
-      ];
-
-      nix.settings = {
-        substituters = [ "https://niri.cachix.org" ];
-        trusted-public-keys = [ "niri.cachix.org-1:Wv0OmO7PsuocRKzfDoJ3mulSl7Z6oezYhGhR+3W2964=" ];
-      };
-
-      programs = {
-        niri.enable = true;
-        xwayland.enable = true;
-      };
-
-      environment = {
-        sessionVariables.NIXOS_OZONE_WL = "1";
-        systemPackages = with pkgs; [
-          wl-clipboard
-          slurp
-          grim
-          wf-recorder
-          brightnessctl
-          ffmpegthumbnailer
-          gst_all_1.gst-libav
-          gdk-pixbuf
-          webp-pixbuf-loader
-          nautilus-open-any-terminal
-          nautilus-python
-          gvfs
-          nfs-utils
-          # evolution-data-server deps
-          gnome-online-accounts
-          python3
+    nixos =
+      {
+        config,
+        pkgs,
+        lib,
+        inputs,
+        ...
+      }:
+      {
+        imports = [ inputs.niri.nixosModules.niri ];
+        nixpkgs.overlays = [
+          inputs.niri.overlays.niri
+          inputs.noctalia-qs.overlays.default
         ];
-        pathsToLink = [ "/share/nautilus-python/extensions" ];
-        variables = {
-          NAUTILUS_EXTENSION_DIR = "${config.system.path}/lib/nautilus/extensions-4";
-          NAUTILUS_4_EXTENSION_DIR = "${config.system.path}/lib/nautilus/extensions-4";
-          GST_PLUGIN_SYSTEM_PATH_1_0 = lib.makeSearchPathOutput "lib" "lib/gstreamer-1.0" (
-            with pkgs.gst_all_1;
-            [
-              gst-plugins-good
-              gst-plugins-bad
-              gst-plugins-ugly
-              gst-libav
-            ]
-          );
+
+        nix.settings = {
+          substituters = [ "https://niri.cachix.org" ];
+          trusted-public-keys = [ "niri.cachix.org-1:Wv0OmO7PsuocRKzfDoJ3mulSl7Z6oezYhGhR+3W2964=" ];
+        };
+
+        programs = {
+          niri.enable = true;
+          xwayland.enable = true;
+        };
+
+        environment = {
+          sessionVariables.NIXOS_OZONE_WL = "1";
+          systemPackages = with pkgs; [
+            wl-clipboard
+            slurp
+            grim
+            wf-recorder
+            brightnessctl
+            ffmpegthumbnailer
+            gst_all_1.gst-libav
+            gdk-pixbuf
+            webp-pixbuf-loader
+            nautilus-open-any-terminal
+            nautilus-python
+            gvfs
+            nfs-utils
+            # evolution-data-server deps
+            gnome-online-accounts
+            python3
+          ];
+          pathsToLink = [ "/share/nautilus-python/extensions" ];
+          variables = {
+            NAUTILUS_EXTENSION_DIR = "${config.system.path}/lib/nautilus/extensions-4";
+            NAUTILUS_4_EXTENSION_DIR = "${config.system.path}/lib/nautilus/extensions-4";
+            GST_PLUGIN_SYSTEM_PATH_1_0 = lib.makeSearchPathOutput "lib" "lib/gstreamer-1.0" (
+              with pkgs.gst_all_1;
+              [
+                gst-plugins-good
+                gst-plugins-bad
+                gst-plugins-ugly
+                gst-libav
+              ]
+            );
+          };
+        };
+
+        xdg.portal = {
+          enable = true;
+          extraPortals = with pkgs; [
+            xdg-desktop-portal-gtk
+            xdg-desktop-portal-gnome
+          ];
+          config.niri = {
+            default = [
+              "gnome"
+              "gtk"
+            ];
+            "org.freedesktop.impl.portal.ScreenCast" = [ "gnome" ];
+            "org.freedesktop.impl.portal.Screenshot" = [ "gnome" ];
+          };
+          xdgOpenUsePortal = true;
+        };
+
+        security.polkit.enable = true;
+
+        # evolution-data-server for calendar/contacts
+        services.gnome.evolution-data-server.enable = true;
+        programs.dconf.enable = true;
+        services = {
+          gvfs.enable = true;
+          udisks2.enable = true;
         };
       };
 
-      xdg.portal = {
-        enable = true;
-        extraPortals = with pkgs; [
-          xdg-desktop-portal-gtk
-          xdg-desktop-portal-gnome
-        ];
-        config.niri = {
-          default = [ "gnome" "gtk" ];
-          "org.freedesktop.impl.portal.ScreenCast" = [ "gnome" ];
-          "org.freedesktop.impl.portal.Screenshot" = [ "gnome" ];
-        };
-        xdgOpenUsePortal = true;
-      };
-
-      security.polkit.enable = true;
-
-      # evolution-data-server for calendar/contacts
-      services.gnome.evolution-data-server.enable = true;
-      programs.dconf.enable = true;
-      services = {
-        gvfs.enable = true;
-        udisks2.enable = true;
-      };
-    };
-
-    homeManager = { pkgs, config, lib, inputs, ... }:
+    homeManager =
+      {
+        pkgs,
+        config,
+        lib,
+        inputs,
+        ...
+      }:
       let
         inherit (config.lib.stylix) colors;
         inherit (config.lib.formats.rasi) mkLiteral;
 
-        noctalia = cmd: [ "noctalia-shell" "ipc" "call" ] ++ (pkgs.lib.splitString " " cmd);
+        noctalia =
+          cmd:
+          [
+            "noctalia-shell"
+            "ipc"
+            "call"
+          ]
+          ++ (pkgs.lib.splitString " " cmd);
       in
       {
         imports = [
@@ -148,8 +196,24 @@
           inputs.noctalia.homeModules.default
         ];
         # nfsm — floating window session manager + cliphist
-        home.packages = with pkgs; [ cliphist wl-clipboard ]
-          ++ (with inputs.nfsm.packages.${pkgs.stdenv.hostPlatform.system}; [ nfsm nfsm-cli ]);
+        home.packages =
+          with pkgs;
+          [
+            cliphist
+            wl-clipboard
+          ]
+          ++ (with inputs.nfsm.packages.${pkgs.stdenv.hostPlatform.system}; [
+            nfsm
+            nfsm-cli
+          ])
+          ++ [
+            inputs.niri.packages.${pkgs.stdenv.hostPlatform.system}.xwayland-satellite-stable
+          ];
+
+        xdg.configFile = {
+          "noctalia/plugins/display-config".source = "${inputs.noctalia-plugins}/display-config";
+          "noctalia/plugins/rbw-provider".source = "${inputs.noctalia-plugins}/rbw-provider";
+        };
 
         programs = {
           niri.settings = {
@@ -180,7 +244,6 @@
                 { proportion = 1.0; }
               ];
 
-              center-focused-column = "always";
               always-center-single-column = true;
             };
 
@@ -190,33 +253,92 @@
               {
                 clip-to-geometry = true;
                 geometry-corner-radius = {
-                  bottom-left = 10.0; bottom-right = 10.0;
-                  top-left = 10.0; top-right = 10.0;
+                  bottom-left = 10.0;
+                  bottom-right = 10.0;
+                  top-left = 10.0;
+                  top-right = 10.0;
                 };
               }
               {
                 matches = [
-                  { app-id = "^google-chrome$"; title = ".*Meet.*"; }
-                  { app-id = "^google-chrome$"; title = ".*meet\\.google\\.com.*"; }
-                  { app-id = "^google-chrome$"; title = ".*Google Meet.*"; }
-                  { app-id = "^google-chrome$"; title = ".*Zoom.*"; }
-                  { app-id = "^google-chrome$"; title = ".*zoom\\.us.*"; }
-                  { app-id = "^google-chrome$"; title = ".*Join Zoom Meeting.*"; }
-                  { app-id = "^google-chrome$"; title = "^$"; }
-                  { app-id = "^firefox$"; title = ".*PayPal.*"; }
-                  { app-id = "^firefox$"; title = ".*popup.*"; }
-                  { app-id = "^firefox$"; title = ".*Authentication.*"; }
-                  { app-id = "^firefox$"; title = ".*Login.*"; }
-                  { app-id = "^firefox$"; title = ".*Security.*"; }
-                  { app-id = "^org.mozilla.firefox$"; title = ".*PayPal.*"; }
-                  { app-id = "^org.mozilla.firefox$"; title = ".*popup.*"; }
-                  { app-id = "^firefox$"; title = ".*Bitwarden.*"; }
-                  { app-id = "^org.mozilla.firefox$"; title = ".*Bitwarden.*"; }
-                  { app-id = "^firefox$"; title = ".*Extension.*Bitwarden.*"; }
+                  {
+                    app-id = "^google-chrome$";
+                    title = ".*Meet.*";
+                  }
+                  {
+                    app-id = "^google-chrome$";
+                    title = ".*meet\\.google\\.com.*";
+                  }
+                  {
+                    app-id = "^google-chrome$";
+                    title = ".*Google Meet.*";
+                  }
+                  {
+                    app-id = "^google-chrome$";
+                    title = ".*Zoom.*";
+                  }
+                  {
+                    app-id = "^google-chrome$";
+                    title = ".*zoom\\.us.*";
+                  }
+                  {
+                    app-id = "^google-chrome$";
+                    title = ".*Join Zoom Meeting.*";
+                  }
+                  {
+                    app-id = "^google-chrome$";
+                    title = "^$";
+                  }
+                  {
+                    app-id = "^firefox$";
+                    title = ".*PayPal.*";
+                  }
+                  {
+                    app-id = "^firefox$";
+                    title = ".*popup.*";
+                  }
+                  {
+                    app-id = "^firefox$";
+                    title = ".*Authentication.*";
+                  }
+                  {
+                    app-id = "^firefox$";
+                    title = ".*Login.*";
+                  }
+                  {
+                    app-id = "^firefox$";
+                    title = ".*Security.*";
+                  }
+                  {
+                    app-id = "^org.mozilla.firefox$";
+                    title = ".*PayPal.*";
+                  }
+                  {
+                    app-id = "^org.mozilla.firefox$";
+                    title = ".*popup.*";
+                  }
+                  {
+                    app-id = "^firefox$";
+                    title = ".*Bitwarden.*";
+                  }
+                  {
+                    app-id = "^org.mozilla.firefox$";
+                    title = ".*Bitwarden.*";
+                  }
+                  {
+                    app-id = "^firefox$";
+                    title = ".*Extension.*Bitwarden.*";
+                  }
                   { app-id = "^bitwarden$"; }
                   { app-id = "^com.bitwarden.desktop$"; }
-                  { app-id = "^firefox$"; title = "^$"; }
-                  { app-id = "^org.mozilla.firefox$"; title = "^$"; }
+                  {
+                    app-id = "^firefox$";
+                    title = "^$";
+                  }
+                  {
+                    app-id = "^org.mozilla.firefox$";
+                    title = "^$";
+                  }
                 ];
                 default-column-width = { };
                 open-on-output = "";
@@ -242,7 +364,11 @@
               "Mod+E".action.spawn = [ "nautilus" ];
 
               "Mod+Space".action.spawn = noctalia "launcher toggle";
-              "Mod+B".action.spawn = [ "rofi" "-show" "drun" ];
+              "Mod+B".action.spawn = [
+                "rofi"
+                "-show"
+                "drun"
+              ];
               "Mod+S".action.spawn = noctalia "controlCenter toggle";
               "Mod+Comma".action.spawn = noctalia "settings toggle";
               "Mod+V".action.spawn = noctalia "launcher clipboard";
@@ -294,27 +420,57 @@
               "Mod+Alt+J".action = move-window-down;
               "Mod+Alt+K".action = move-window-up;
 
-              "Mod+1".action.focus-workspace = 1; "Mod+2".action.focus-workspace = 2;
-              "Mod+3".action.focus-workspace = 3; "Mod+4".action.focus-workspace = 4;
-              "Mod+5".action.focus-workspace = 5; "Mod+6".action.focus-workspace = 6;
-              "Mod+7".action.focus-workspace = 7; "Mod+8".action.focus-workspace = 8;
-              "Mod+9".action.focus-workspace = 9; "Mod+0".action.focus-workspace = 10;
+              "Mod+1".action.focus-workspace = 1;
+              "Mod+2".action.focus-workspace = 2;
+              "Mod+3".action.focus-workspace = 3;
+              "Mod+4".action.focus-workspace = 4;
+              "Mod+5".action.focus-workspace = 5;
+              "Mod+6".action.focus-workspace = 6;
+              "Mod+7".action.focus-workspace = 7;
+              "Mod+8".action.focus-workspace = 8;
+              "Mod+9".action.focus-workspace = 9;
+              "Mod+0".action.focus-workspace = 10;
 
-              "Mod+Shift+1".action.move-window-to-workspace = 1; "Mod+Shift+2".action.move-window-to-workspace = 2;
-              "Mod+Shift+3".action.move-window-to-workspace = 3; "Mod+Shift+4".action.move-window-to-workspace = 4;
-              "Mod+Shift+5".action.move-window-to-workspace = 5; "Mod+Shift+6".action.move-window-to-workspace = 6;
-              "Mod+Shift+7".action.move-window-to-workspace = 7; "Mod+Shift+8".action.move-window-to-workspace = 8;
-              "Mod+Shift+9".action.move-window-to-workspace = 9; "Mod+Shift+0".action.move-window-to-workspace = 10;
+              "Mod+Shift+1".action.move-window-to-workspace = 1;
+              "Mod+Shift+2".action.move-window-to-workspace = 2;
+              "Mod+Shift+3".action.move-window-to-workspace = 3;
+              "Mod+Shift+4".action.move-window-to-workspace = 4;
+              "Mod+Shift+5".action.move-window-to-workspace = 5;
+              "Mod+Shift+6".action.move-window-to-workspace = 6;
+              "Mod+Shift+7".action.move-window-to-workspace = 7;
+              "Mod+Shift+8".action.move-window-to-workspace = 8;
+              "Mod+Shift+9".action.move-window-to-workspace = 9;
+              "Mod+Shift+0".action.move-window-to-workspace = 10;
 
-              "Mod+Ctrl+Shift+1".action.move-column-to-workspace = 1; "Mod+Ctrl+Shift+2".action.move-column-to-workspace = 2;
-              "Mod+Ctrl+Shift+3".action.move-column-to-workspace = 3; "Mod+Ctrl+Shift+4".action.move-column-to-workspace = 4;
-              "Mod+Ctrl+Shift+5".action.move-column-to-workspace = 5; "Mod+Ctrl+Shift+6".action.move-column-to-workspace = 6;
-              "Mod+Ctrl+Shift+7".action.move-column-to-workspace = 7; "Mod+Ctrl+Shift+8".action.move-column-to-workspace = 8;
-              "Mod+Ctrl+Shift+9".action.move-column-to-workspace = 9; "Mod+Ctrl+Shift+0".action.move-column-to-workspace = 10;
+              "Mod+Ctrl+Shift+1".action.move-column-to-workspace = 1;
+              "Mod+Ctrl+Shift+2".action.move-column-to-workspace = 2;
+              "Mod+Ctrl+Shift+3".action.move-column-to-workspace = 3;
+              "Mod+Ctrl+Shift+4".action.move-column-to-workspace = 4;
+              "Mod+Ctrl+Shift+5".action.move-column-to-workspace = 5;
+              "Mod+Ctrl+Shift+6".action.move-column-to-workspace = 6;
+              "Mod+Ctrl+Shift+7".action.move-column-to-workspace = 7;
+              "Mod+Ctrl+Shift+8".action.move-column-to-workspace = 8;
+              "Mod+Ctrl+Shift+9".action.move-column-to-workspace = 9;
+              "Mod+Ctrl+Shift+0".action.move-column-to-workspace = 10;
 
-              "Print".action.spawn = [ "niri" "msg" "action" "screenshot" ];
-              "Shift+Print".action.spawn = [ "niri" "msg" "action" "screenshot-screen" ];
-              "Mod+Print".action.spawn = [ "niri" "msg" "action" "screenshot-window" ];
+              "Print".action.spawn = [
+                "niri"
+                "msg"
+                "action"
+                "screenshot"
+              ];
+              "Shift+Print".action.spawn = [
+                "niri"
+                "msg"
+                "action"
+                "screenshot-screen"
+              ];
+              "Mod+Print".action.spawn = [
+                "niri"
+                "msg"
+                "action"
+                "screenshot-window"
+              ];
 
               "XF86AudioRaiseVolume".action.spawn = noctalia "volume increase";
               "XF86AudioLowerVolume".action.spawn = noctalia "volume decrease";
@@ -451,7 +607,7 @@
                 dayTemp = "6500";
                 nightTemp = "4000";
               };
-general = {
+              general = {
                 lockOnSuspend = true;
                 avatarImage = "/home/${config.home.username}/.face";
               };
@@ -461,17 +617,38 @@ general = {
                 marginHorizontal = 0.25;
                 marginVertical = 0.25;
                 widgets = {
-                  left = [ { id = "Workspace"; characterCount = 2; } ];
+                  left = [
+                    {
+                      id = "Workspace";
+                      characterCount = 2;
+                    }
+                  ];
                   center = [
-                    { id = "Clock"; formatHorizontal = "HH:mm:ss ddd, MMM dd"; usePrimaryColor = true; }
+                    {
+                      id = "Clock";
+                      formatHorizontal = "HH:mm:ss ddd, MMM dd";
+                      usePrimaryColor = true;
+                    }
                     { id = "KeepAwake"; }
                   ];
                   right = [
                     { id = "Tray"; }
-                    { id = "NotificationHistory"; hideWhenZero = true; }
-                    { id = "WiFi"; displayMode = "icon"; }
-                    { id = "Volume"; displayMode = "onhover"; }
-                    { id = "ControlCenter"; icon = "noctalia"; }
+                    {
+                      id = "NotificationHistory";
+                      hideWhenZero = true;
+                    }
+                    {
+                      id = "WiFi";
+                      displayMode = "icon";
+                    }
+                    {
+                      id = "Volume";
+                      displayMode = "onhover";
+                    }
+                    {
+                      id = "ControlCenter";
+                      icon = "noctalia";
+                    }
                   ];
                 };
               };
@@ -479,12 +656,27 @@ general = {
                 directory = "/home/${config.home.username}/nixicle/packages/wallpapers/wallpapers";
                 overviewEnabled = true;
               };
-              location = { name = "london"; showCalendarWeather = true; };
+              location = {
+                name = "london";
+                showCalendarWeather = true;
+              };
               calendar.cards = [
-                { enabled = true; id = "calendar-header-card"; }
-                { enabled = true; id = "calendar-month-card"; }
-                { enabled = false; id = "timer-card"; }
-                { enabled = true; id = "weather-card"; }
+                {
+                  enabled = true;
+                  id = "calendar-header-card";
+                }
+                {
+                  enabled = true;
+                  id = "calendar-month-card";
+                }
+                {
+                  enabled = false;
+                  id = "timer-card";
+                }
+                {
+                  enabled = true;
+                  id = "weather-card";
+                }
               ];
               controlCenter.shortcuts = {
                 left = [
@@ -506,12 +698,42 @@ general = {
           wlogout = {
             enable = true;
             layout = [
-              { label = "lock"; action = "noctalia-shell ipc call lockScreen lock"; text = "Lock"; keybind = "l"; }
-              { label = "hibernate"; action = "systemctl hibernate"; text = "Hibernate"; keybind = "h"; }
-              { label = "logout"; action = "loginctl terminate-user $USER"; text = "Logout"; keybind = "L"; }
-              { label = "shutdown"; action = "systemctl poweroff"; text = "Shutdown"; keybind = "S"; }
-              { label = "suspend"; action = "systemctl suspend"; text = "Suspend"; keybind = "s"; }
-              { label = "reboot"; action = "systemctl reboot"; text = "Reboot"; keybind = "r"; }
+              {
+                label = "lock";
+                action = "noctalia-shell ipc call lockScreen lock";
+                text = "Lock";
+                keybind = "l";
+              }
+              {
+                label = "hibernate";
+                action = "systemctl hibernate";
+                text = "Hibernate";
+                keybind = "h";
+              }
+              {
+                label = "logout";
+                action = "loginctl terminate-user $USER";
+                text = "Logout";
+                keybind = "L";
+              }
+              {
+                label = "shutdown";
+                action = "systemctl poweroff";
+                text = "Shutdown";
+                keybind = "S";
+              }
+              {
+                label = "suspend";
+                action = "systemctl suspend";
+                text = "Suspend";
+                keybind = "s";
+              }
+              {
+                label = "reboot";
+                action = "systemctl reboot";
+                text = "Reboot";
+                keybind = "r";
+              }
             ];
             style = builtins.readFile ./wlogout-style.css;
           };
@@ -529,8 +751,15 @@ general = {
                 lower_cutoff_freq = 50;
                 higher_cutoff_freq = 10000;
               };
-              input = { method = "pipewire"; source = "auto"; };
-              output = { method = "ncurses"; orientation = "bottom"; channels = "stereo"; };
+              input = {
+                method = "pipewire";
+                source = "auto";
+              };
+              output = {
+                method = "ncurses";
+                orientation = "bottom";
+                channels = "stereo";
+              };
               color = {
                 gradient = 1;
                 gradient_count = 6;
@@ -541,7 +770,12 @@ general = {
                 gradient_color_5 = "'#${colors.base0C}'";
                 gradient_color_6 = "'#${colors.base0D}'";
               };
-              smoothing = { monstercat = 1; waves = 0; gravity = 100; ignore = 0; };
+              smoothing = {
+                monstercat = 1;
+                waves = 0;
+                gravity = 100;
+                ignore = 0;
+              };
             };
           };
         };
@@ -551,7 +785,10 @@ general = {
           enable = true;
           latitude = "51.5072";
           longitude = "-0.1275";
-          temperature = { day = 6500; night = 4000; };
+          temperature = {
+            day = 6500;
+            night = 4000;
+          };
         };
         systemd.user.services.wlsunset = {
           Unit = {
@@ -583,6 +820,5 @@ general = {
           Install.WantedBy = [ "graphical-session.target" ];
         };
       };
-
   };
 }

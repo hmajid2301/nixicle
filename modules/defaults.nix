@@ -1,11 +1,18 @@
-{ inputs, lib, den, ... }:
+{
+  inputs,
+  lib,
+  den,
+  ...
+}:
 let
-  extendedLib = lib.extend (self: super: {
-    nixicle = import ../lib {
-      inherit inputs;
-      lib = self;
-    };
-  });
+  extendedLib = lib.extend (
+    self: _super: {
+      nixicle = import ../lib {
+        inherit inputs;
+        lib = self;
+      };
+    }
+  );
 in
 {
   den = {
@@ -29,11 +36,9 @@ in
       (
         { home, ... }:
         {
-          homeManager =
-            _:
-            {
-              _module.args.host = home.hostName or "unknown";
-            };
+          homeManager = _: {
+            _module.args.host = home.hostName or "unknown";
+          };
         }
       )
     ];

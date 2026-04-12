@@ -1,16 +1,18 @@
 { inputs, lib, ... }:
 let
-  extendedLib = lib.extend (self: super: {
-    nixicle = import ../lib {
-      inherit inputs;
-      lib = self;
-    };
-  });
+  extendedLib = lib.extend (
+    self: _super: {
+      nixicle = import ../lib {
+        inherit inputs;
+        lib = self;
+      };
+    }
+  );
 
   overlays = [
     inputs.nur.overlays.default
     inputs.niri.overlays.niri
-    (final: prev: {
+    (_final: prev: {
       zjstatus = inputs.zjstatus.packages.${prev.stdenv.hostPlatform.system}.default;
     })
     (final: prev: {
@@ -37,7 +39,7 @@ let
     { modules, ... }:
     let
       hmLib = inputs.home-manager.lib.hm;
-      hmExtendedLib = extendedLib.extend (self: super: { hm = hmLib; });
+      hmExtendedLib = extendedLib.extend (_self: _super: { hm = hmLib; });
       pkgs = import inputs.nixpkgs {
         system = "x86_64-linux";
         config.allowUnfree = true;
@@ -103,15 +105,22 @@ in
     };
 
     homes.x86_64-linux."haseeb@workstation" = {
-      instantiate = { modules, ... }@args:
-        mkHomeInstantiate (args // {
-          modules = modules ++ [
-            ({ pkgs, lib, ... }: {
-              imports = [ inputs.niri.homeModules.niri ];
-              nix.package = lib.mkDefault pkgs.nix;
-            })
-          ];
-        });
+      instantiate =
+        { modules, ... }@args:
+        mkHomeInstantiate (
+          args
+          // {
+            modules = modules ++ [
+              (
+                { pkgs, lib, ... }:
+                {
+                  imports = [ inputs.niri.homeModules.niri ];
+                  nix.package = lib.mkDefault pkgs.nix;
+                }
+              )
+            ];
+          }
+        );
     };
   };
 }

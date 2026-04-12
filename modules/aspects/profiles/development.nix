@@ -2,9 +2,22 @@
 {
   flake-file.inputs.nix-index-database.url = "github:nix-community/nix-index-database";
   den.aspects.development = {
-    includes = [ den.aspects.neovim den.aspects.ai den.aspects.zellij den.aspects.git den.aspects.gpg den.aspects.ssh den.aspects.attic ];
+    includes = [
+      den.aspects.neovim
+      den.aspects.ai
+      den.aspects.zellij
+      den.aspects.git
+      den.aspects.gpg
+      den.aspects.ssh
+      den.aspects.attic
+    ];
     homeManager =
-      { pkgs, lib, config, ... }:
+      {
+        pkgs,
+        lib,
+        config,
+        ...
+      }:
       let
         atuin-export-fish = pkgs.buildGoModule rec {
           pname = "atuin-export-fish-history";
@@ -16,7 +29,10 @@
             sha256 = "sha256-2egZYLnaekcYm2IzPdWAluAZogdi4Nf/oXWLw8+AnMk=";
           };
           vendorHash = "sha256-hLEmRq7Iw0hHEAla0Ehwk1EfmpBv6ddBuYtq12XdhVc=";
-          ldflags = [ "-s" "-w" ];
+          ldflags = [
+            "-s"
+            "-w"
+          ];
         };
 
         open-in-terminal = pkgs.writeShellScriptBin "open-in-terminal" ''
@@ -38,19 +54,27 @@
             genericName = "editor";
             exec = "nvim -f %F";
             mimeType = [
-              "text/html" "text/xml" "text/plain" "text/english" "text/x-makefile"
-              "text/x-c++hdr" "text/x-tex" "application/x-shellscript"
+              "text/html"
+              "text/xml"
+              "text/plain"
+              "text/english"
+              "text/x-makefile"
+              "text/x-c++hdr"
+              "text/x-tex"
+              "application/x-shellscript"
             ];
             terminal = false;
             type = "Application";
           };
         };
 
-
         # Atuin — shell history sync
         programs.atuin = {
           enable = true;
-          flags = [ "--disable-up-arrow" "--disable-ctrl-r" ];
+          flags = [
+            "--disable-up-arrow"
+            "--disable-ctrl-r"
+          ];
           settings = {
             sync_address = "https://atuin.haseebmajid.dev";
             sync_frequency = "15m";
@@ -65,16 +89,30 @@
         programs = {
           bat.enable = true;
           bottom.enable = true;
-          direnv = { enable = true; nix-direnv.enable = true; };
+          direnv = {
+            enable = true;
+            nix-direnv.enable = true;
+          };
           eza.enable = true;
           fzf = {
             enable = true;
             enableFishIntegration = false;
-            colors = with config.lib.stylix.colors.withHashtag; lib.mkForce {
-              "bg" = base00; "bg+" = base02; "fg" = base05; "fg+" = base05;
-              "header" = base0E; "hl" = base08; "hl+" = base08; "info" = base0A;
-              "marker" = base06; "pointer" = base06; "prompt" = base0E; "spinner" = base06;
-            };
+            colors =
+              with config.lib.stylix.colors.withHashtag;
+              lib.mkForce {
+                "bg" = base00;
+                "bg+" = base02;
+                "fg" = base05;
+                "fg+" = base05;
+                "header" = base0E;
+                "hl" = base08;
+                "hl+" = base08;
+                "info" = base0A;
+                "marker" = base06;
+                "pointer" = base06;
+                "prompt" = base0E;
+                "spinner" = base06;
+              };
           };
           htop = {
             enable = true;
@@ -85,14 +123,31 @@
               show_program_path = 0;
             };
           };
-          nix-index = { enable = true; enableBashIntegration = true; };
+          nix-index = {
+            enable = true;
+            enableBashIntegration = true;
+          };
           nix-index-database.comma.enable = true;
-          starship = { enable = true; enableFishIntegration = true; settings = { }; };
-          yazi = { enable = true; enableFishIntegration = true; shellWrapperName = "y"; };
-          zoxide = { enable = true; enableFishIntegration = true; };
+          starship = {
+            enable = true;
+            enableFishIntegration = true;
+            settings = { };
+          };
+          yazi = {
+            enable = true;
+            enableFishIntegration = true;
+            shellWrapperName = "y";
+          };
+          zoxide = {
+            enable = true;
+            enableFishIntegration = true;
+          };
         };
 
-        home.packages = [ atuin-export-fish ] ++ (with pkgs; [
+        home.packages = [
+          atuin-export-fish
+        ]
+        ++ (with pkgs; [
           # Database tools
           dbeaver-bin
           termdbms
@@ -108,31 +163,81 @@
 
           # Core tools (modern unix)
           open-in-terminal
-          broot erdtree fd xcp entr
-          choose ripgrep silver-searcher sd grex yq-go
-          duf dust dysk gdu procs gping viddy
-          hexyl delta chafa ouch jqp jnv
-          curlie doggo
-          hyperfine tokei
-          gomi tailspin
-          sshx glow
-          (lib.hiPrio parallel) moreutils unzip gnupg
+          broot
+          erdtree
+          fd
+          xcp
+          entr
+          choose
+          ripgrep
+          silver-searcher
+          sd
+          grex
+          yq-go
+          duf
+          dust
+          dysk
+          gdu
+          procs
+          gping
+          viddy
+          hexyl
+          delta
+          chafa
+          ouch
+          jqp
+          jnv
+          curlie
+          doggo
+          hyperfine
+          tokei
+          gomi
+          tailspin
+          sshx
+          glow
+          (lib.hiPrio parallel)
+          moreutils
+          unzip
+          gnupg
           optinix
 
           # Development tools
-          go goose golangci-lint air templ sqlc golines gotools
-          go-task go-mockery gotestsum delve
-          nodejs_24 bun pnpm
+          go
+          goose
+          golangci-lint
+          air
+          templ
+          sqlc
+          golines
+          gotools
+          go-task
+          go-mockery
+          gotestsum
+          delve
+          nodejs_24
+          bun
+          pnpm
           gnumake
 
           # Homelab tools
-          pgcli openbao kind kaf
+          pgcli
+          openbao
+          kind
+          kaf
 
           # Container tools
-          arion docker docker-compose dive amazon-ecr-credential-helper
+          arion
+          docker
+          docker-compose
+          dive
+          amazon-ecr-credential-helper
 
           # Yazi media preview tools
-          imagemagick ffmpegthumbnailer fontpreview unar poppler
+          imagemagick
+          ffmpegthumbnailer
+          fontpreview
+          unar
+          poppler
         ]);
       };
   };

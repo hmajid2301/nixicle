@@ -1,5 +1,4 @@
-_:
-{
+_: {
   den.aspects.swaync = {
     homeManager = _: {
       services.swaync = {

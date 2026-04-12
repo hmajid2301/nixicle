@@ -1,5 +1,4 @@
-_:
-{
+_: {
   den.aspects.qt-theme = {
     homeManager =
       { pkgs, ... }:
