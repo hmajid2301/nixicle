@@ -90,6 +90,7 @@
       }:
       {
         imports = [ inputs.niri.nixosModules.niri ];
+        home-manager.sharedModules = lib.mkForce [ ];
         nixpkgs.overlays = [
           inputs.niri.overlays.niri
           inputs.noctalia-qs.overlays.default
@@ -180,18 +181,10 @@
       let
         inherit (config.lib.stylix) colors;
         inherit (config.lib.formats.rasi) mkLiteral;
-
-        noctalia =
-          cmd:
-          [
-            "noctalia-shell"
-            "ipc"
-            "call"
-          ]
-          ++ (pkgs.lib.splitString " " cmd);
       in
       {
         imports = [
+          inputs.niri.homeModules.niri
           inputs.dankMaterialShell.homeModules.dank-material-shell
           inputs.noctalia.homeModules.default
         ];
@@ -363,15 +356,39 @@
               "Mod+Return".action.spawn = [ "ghostty" ];
               "Mod+E".action.spawn = [ "nautilus" ];
 
-              "Mod+Space".action.spawn = noctalia "launcher toggle";
+              "Mod+Space".action.spawn = [
+                "noctalia-shell"
+                "ipc"
+                "call"
+                "launcher"
+                "toggle"
+              ];
               "Mod+B".action.spawn = [
                 "rofi"
                 "-show"
                 "drun"
               ];
-              "Mod+S".action.spawn = noctalia "controlCenter toggle";
-              "Mod+Comma".action.spawn = noctalia "settings toggle";
-              "Mod+V".action.spawn = noctalia "launcher clipboard";
+              "Mod+S".action.spawn = [
+                "noctalia-shell"
+                "ipc"
+                "call"
+                "controlCenter"
+                "toggle"
+              ];
+              "Mod+Comma".action.spawn = [
+                "noctalia-shell"
+                "ipc"
+                "call"
+                "settings"
+                "toggle"
+              ];
+              "Mod+V".action.spawn = [
+                "noctalia-shell"
+                "ipc"
+                "call"
+                "launcher"
+                "clipboard"
+              ];
 
               "Mod+Q".action = close-window;
               "Mod+F".action = fullscreen-window;
@@ -472,15 +489,57 @@
                 "screenshot-window"
               ];
 
-              "XF86AudioRaiseVolume".action.spawn = noctalia "volume increase";
-              "XF86AudioLowerVolume".action.spawn = noctalia "volume decrease";
-              "XF86AudioMute".action.spawn = noctalia "volume muteOutput";
+              "XF86AudioRaiseVolume".action.spawn = [
+                "noctalia-shell"
+                "ipc"
+                "call"
+                "volume"
+                "increase"
+              ];
+              "XF86AudioLowerVolume".action.spawn = [
+                "noctalia-shell"
+                "ipc"
+                "call"
+                "volume"
+                "decrease"
+              ];
+              "XF86AudioMute".action.spawn = [
+                "noctalia-shell"
+                "ipc"
+                "call"
+                "volume"
+                "muteOutput"
+              ];
 
-              "XF86MonBrightnessUp".action.spawn = noctalia "brightness increase";
-              "XF86MonBrightnessDown".action.spawn = noctalia "brightness decrease";
+              "XF86MonBrightnessUp".action.spawn = [
+                "noctalia-shell"
+                "ipc"
+                "call"
+                "brightness"
+                "increase"
+              ];
+              "XF86MonBrightnessDown".action.spawn = [
+                "noctalia-shell"
+                "ipc"
+                "call"
+                "brightness"
+                "decrease"
+              ];
 
-              "Mod+Escape".action.spawn = noctalia "lockScreen lock";
-              "Mod+Shift+Escape".action.spawn = noctalia "sessionMenu toggle";
+              "Mod+Escape".action.spawn = [
+                "noctalia-shell"
+                "ipc"
+                "call"
+                "lockScreen"
+                "lock"
+              ];
+              "Mod+Shift+Escape".action.spawn = [
+                "noctalia-shell"
+                "ipc"
+                "call"
+                "sessionMenu"
+                "toggle"
+              ];
 
               "Mod+Shift+E".action = quit;
             };

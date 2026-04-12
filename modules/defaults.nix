@@ -36,9 +36,12 @@ in
       (
         { home, ... }:
         {
-          homeManager = _: {
-            _module.args.host = home.hostName or "unknown";
-          };
+          homeManager =
+            { pkgs, ... }:
+            {
+              _module.args.host = home.hostName or "unknown";
+              nix.package = pkgs.nix;
+            };
         }
       )
     ];
