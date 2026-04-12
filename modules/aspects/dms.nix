@@ -1,8 +1,12 @@
-_:
-{
+_: {
   den.aspects.dms = {
     homeManager =
-      { pkgs, config, lib, ... }:
+      {
+        pkgs,
+        config,
+        lib,
+        ...
+      }:
       let
         colors = config.lib.stylix.colors.withHashtag;
         stylixColorTheme = {
@@ -81,21 +85,54 @@ _:
               monoFontFamily = "MonoLisa";
               dankBarLeftWidgets = [
                 "workspaceSwitcher"
-                { id = "focusedWindow"; enabled = false; }
+                {
+                  id = "focusedWindow";
+                  enabled = false;
+                }
               ];
               dankBarCenterWidgets = [
-                { id = "music"; enabled = false; }
-                { id = "clock"; enabled = true; }
-                { id = "idleInhibitor"; enabled = true; }
-                { id = "weather"; enabled = false; }
+                {
+                  id = "music";
+                  enabled = false;
+                }
+                {
+                  id = "clock";
+                  enabled = true;
+                }
+                {
+                  id = "idleInhibitor";
+                  enabled = true;
+                }
+                {
+                  id = "weather";
+                  enabled = false;
+                }
               ];
               dankBarRightWidgets = [
-                { id = "systemTray"; enabled = true; }
-                { id = "clipboard"; enabled = true; }
-                { id = "cpuUsage"; enabled = true; }
-                { id = "notificationButton"; enabled = true; }
-                { id = "privacyIndicator"; enabled = true; }
-                { id = "controlCenterButton"; enabled = true; }
+                {
+                  id = "systemTray";
+                  enabled = true;
+                }
+                {
+                  id = "clipboard";
+                  enabled = true;
+                }
+                {
+                  id = "cpuUsage";
+                  enabled = true;
+                }
+                {
+                  id = "notificationButton";
+                  enabled = true;
+                }
+                {
+                  id = "privacyIndicator";
+                  enabled = true;
+                }
+                {
+                  id = "controlCenterButton";
+                  enabled = true;
+                }
               ];
             }
           ];

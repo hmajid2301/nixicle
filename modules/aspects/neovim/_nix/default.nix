@@ -17,7 +17,10 @@ inputs:
   ];
 
   config.package = pkgs.neovim-unwrapped;
-  config.settings.aliases = [ "vi" "vim" ];
+  config.settings.aliases = [
+    "vi"
+    "vim"
+  ];
 
   options.settings.unwrapped_mode = lib.mkOption {
     type = lib.types.bool;
@@ -33,7 +36,8 @@ inputs:
     default = lib.generators.mkLuaInline "vim.uv.os_homedir() .. '/nixicle/modules/aspects/neovim'";
   };
   config.settings.config_directory =
-    if config.settings.unwrapped_mode
-    then config.settings.unwrapped_config
-    else config.settings.wrapped_config;
+    if config.settings.unwrapped_mode then
+      config.settings.unwrapped_config
+    else
+      config.settings.wrapped_config;
 }

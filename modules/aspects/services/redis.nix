@@ -1,4 +1,4 @@
-{ den, ... }:
+{ ... }:
 {
   den.aspects.redis = {
     nixos = _: {

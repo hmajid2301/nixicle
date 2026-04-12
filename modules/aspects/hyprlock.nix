@@ -1,5 +1,4 @@
-_:
-{
+_: {
   den.aspects.hyprlock = {
     homeManager = _: {
       programs.hyprlock = {

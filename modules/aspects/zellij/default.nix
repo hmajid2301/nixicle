@@ -1,4 +1,4 @@
-{ den, inputs, ... }:
+{ inputs, ... }:
 {
   flake-file.inputs.zjstatus.url = "github:dj95/zjstatus";
   flake-file.inputs.gsesh = {
@@ -7,15 +7,18 @@
   };
 
   den.aspects.zellij = {
-    nixos = { inputs, ... }: {
-      nixpkgs.overlays = [
-        (final: prev: {
-          zjstatus = inputs.zjstatus.packages.${prev.stdenv.hostPlatform.system}.default;
-        })
-      ];
-    };
+    nixos =
+      { inputs, ... }:
+      {
+        nixpkgs.overlays = [
+          (_final: prev: {
+            zjstatus = inputs.zjstatus.packages.${prev.stdenv.hostPlatform.system}.default;
+          })
+        ];
+      };
 
-    homeManager = { pkgs, config, ... }:
+    homeManager =
+      { pkgs, config, ... }:
       let
         inherit (config.lib.stylix) colors;
 

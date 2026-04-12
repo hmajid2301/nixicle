@@ -1,5 +1,4 @@
-_:
-{
+_: {
   den.aspects.kanshi = {
     homeManager =
       { pkgs, ... }:
@@ -12,7 +11,7 @@ _:
           settings = [
             {
               profile.name = "undocked";
-              profile.outputs = [{ criteria = "eDP-1"; }];
+              profile.outputs = [ { criteria = "eDP-1"; } ];
             }
             {
               profile.name = "home_office_laptop_docked";

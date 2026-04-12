@@ -1,4 +1,4 @@
-{stdenv, ...}:
+{ stdenv, ... }:
 stdenv.mkDerivation {
   pname = "monolisa";
   version = "0.1.0";

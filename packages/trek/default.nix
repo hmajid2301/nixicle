@@ -27,7 +27,6 @@
   lib,
   stdenv,
   fetchFromGitHub,
-  nodejs_22,
 }:
 let
   pname = "trek";

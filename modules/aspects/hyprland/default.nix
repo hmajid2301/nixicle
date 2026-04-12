@@ -11,12 +11,14 @@
       den.aspects.swaync
     ];
 
-    homeManager = { ... }: {
-      imports = [
-        ./_config.nix
-        ./_keybindings.nix
-        ./_windowrules.nix
-      ];
-    };
+    homeManager =
+      { ... }:
+      {
+        imports = [
+          ./_config.nix
+          ./_keybindings.nix
+          ./_windowrules.nix
+        ];
+      };
   };
 }

@@ -72,7 +72,18 @@ tasks:
   fmt:
     desc: "Format Nix files"
     cmds:
-      - nix fmt
+      - nixfmt $(find . -name "*.nix" -not -path "./.git/*" -not -path "./.worktrees/*")
+
+  lint:
+    desc: "Lint Nix files for dead code and unused imports"
+    cmds:
+      - deadnix --edit
+      - deadnix --fail
+
+  write-flake:
+    desc: "Regenerate flake.nix from flake-file.inputs declarations scattered across modules"
+    cmds:
+      - nix run .#write-flake
 
   write-flake:
     desc: "Regenerate flake.nix from flake-file.inputs declarations scattered across modules"

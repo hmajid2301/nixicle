@@ -1,4 +1,4 @@
-{ den, inputs, ... }:
+{ inputs, ... }:
 {
   flake-file.inputs = {
     nix-wrapper-modules.url = "github:BirdeeHub/nix-wrapper-modules";
@@ -60,7 +60,11 @@
 
   den.aspects.neovim = {
     homeManager =
-      { config, lib, pkgs, ... }:
+      {
+        config,
+        lib,
+        ...
+      }:
       {
         imports = [ inputs.nix-wrapper-modules.homeModules.neovim ];
 
@@ -72,12 +76,9 @@
         };
 
         xdg.configFile = {
-          "nvim/queries/go/injections.scm".text =
-            builtins.readFile ./lua/config/syntax/go.scm;
-          "nvim/queries/templ/injections.scm".text =
-            builtins.readFile ./lua/config/syntax/html.scm;
-          "nvim/doc/nixicle.txt".text =
-            builtins.readFile ./doc/nixicle.txt;
+          "nvim/queries/go/injections.scm".text = builtins.readFile ./lua/config/syntax/go.scm;
+          "nvim/queries/templ/injections.scm".text = builtins.readFile ./lua/config/syntax/html.scm;
+          "nvim/doc/nixicle.txt".text = builtins.readFile ./doc/nixicle.txt;
 
           "nvim/lua/scripts/lsp_hover.lua".source =
             "${inputs.oxy2dev-nvim-scripts}/lua/scripts/lsp_hover.lua";

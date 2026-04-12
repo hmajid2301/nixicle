@@ -1,4 +1,4 @@
-{ den, ... }:
+{ ... }:
 {
   den.aspects.nfs-truenas = {
     nixos = _: {

@@ -1,4 +1,4 @@
-{ den, inputs, ... }:
+{ ... }:
 {
   flake-file.inputs.nixgl.url = "github:nix-community/nixGL";
   flake-file.inputs.pam-shim = {
@@ -8,7 +8,13 @@
 
   den.aspects.non-nixos = {
     homeManager =
-      { pkgs, config, lib, inputs, ... }:
+      {
+        pkgs,
+        config,
+        lib,
+        inputs,
+        ...
+      }:
       {
         imports = [
           inputs.niri.homeModules.niri
@@ -21,10 +27,14 @@
           {
             command = [
               "env"
-              "-u" "LD_LIBRARY_PATH"
-              "-u" "__EGL_VENDOR_LIBRARY_FILENAMES"
-              "-u" "LIBGL_DRIVERS_PATH"
-              "-u" "GBM_BACKENDS_PATH"
+              "-u"
+              "LD_LIBRARY_PATH"
+              "-u"
+              "__EGL_VENDOR_LIBRARY_FILENAMES"
+              "-u"
+              "LIBGL_DRIVERS_PATH"
+              "-u"
+              "GBM_BACKENDS_PATH"
               "xwayland-satellite"
             ];
           }
@@ -39,7 +49,7 @@
 
         nixpkgs.overlays = [
           inputs.noctalia-qs.overlays.default
-          (final: prev: {
+          (_final: prev: {
             quickshell = config.lib.pamShim.replacePam prev.quickshell;
           })
         ];

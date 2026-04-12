@@ -18,29 +18,34 @@
   };
 
   den.aspects.vm = {
-    includes = [ den.aspects.performance-base den.aspects.impermanence ];
+    includes = [
+      den.aspects.performance-base
+      den.aspects.impermanence
+    ];
 
-    nixos = { lib, pkgs, ... }: {
-      imports = [
-        ./hardware-configuration.nix
-        ./disks.nix
-      ];
+    nixos =
+      { lib, pkgs, ... }:
+      {
+        imports = [
+          ./hardware-configuration.nix
+          ./disks.nix
+        ];
 
-      boot.plymouth.enable = lib.mkForce false;
-      home-manager.backupFileExtension = "backup";
+        boot.plymouth.enable = lib.mkForce false;
+        home-manager.backupFileExtension = "backup";
 
-      services.qemuGuest.enable = true;
-      services.spice-vdagentd.enable = true;
-      security.sudo.wheelNeedsPassword = false;
+        services.qemuGuest.enable = true;
+        services.spice-vdagentd.enable = true;
+        security.sudo.wheelNeedsPassword = false;
 
-      boot = {
-        supportedFilesystems = lib.mkForce [ "btrfs" ];
-        kernelPackages = pkgs.linuxPackages_latest;
-        resumeDevice = "/dev/disk/by-label/nixos";
+        boot = {
+          supportedFilesystems = lib.mkForce [ "btrfs" ];
+          kernelPackages = pkgs.linuxPackages_latest;
+          resumeDevice = "/dev/disk/by-label/nixos";
+        };
+
+        networking.hostName = "vm";
+        system.stateVersion = "23.11";
       };
-
-      networking.hostName = "vm";
-      system.stateVersion = "23.11";
-    };
   };
 }

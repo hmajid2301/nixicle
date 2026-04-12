@@ -1,5 +1,4 @@
-_:
-{
+_: {
   den.aspects.waybar = {
     homeManager = _: {
       programs.waybar = {
@@ -10,18 +9,38 @@ _:
             layer = "top";
             position = "top";
             margin = "0 0 0 0";
-            modules-left = [ "hyprland/workspaces" "tray" ];
-            modules-center = [ "custom/notification" "clock" "idle_inhibitor" ];
-            modules-right = [ "backlight" "power-profiles-daemon" "battery" "pulseaudio" "network" ];
+            modules-left = [
+              "hyprland/workspaces"
+              "tray"
+            ];
+            modules-center = [
+              "custom/notification"
+              "clock"
+              "idle_inhibitor"
+            ];
+            modules-right = [
+              "backlight"
+              "power-profiles-daemon"
+              "battery"
+              "pulseaudio"
+              "network"
+            ];
 
             "hyprland/workspaces" = {
               format = "{icon}";
               sort-by-number = true;
               active-only = false;
               format-icons = {
-                "1" = " 󰲌 "; "2" = "  "; "3" = " 󰎞 "; "4" = "  "; "5" = "  ";
-                "6" = " 󰺵 "; "7" = "  ";
-                urgent = "  "; focused = "  "; default = "  ";
+                "1" = " 󰲌 ";
+                "2" = "  ";
+                "3" = " 󰎞 ";
+                "4" = "  ";
+                "5" = "  ";
+                "6" = " 󰺵 ";
+                "7" = "  ";
+                urgent = "  ";
+                focused = "  ";
+                default = "  ";
               };
               on-click = "activate";
             };
@@ -50,10 +69,14 @@ _:
               tooltip = false;
               format = "{} {icon}";
               "format-icons" = {
-                notification = "󱅫"; none = "";
-                "dnd-notification" = " "; "dnd-none" = "󰂛";
-                "inhibited-notification" = " "; "inhibited-none" = "";
-                "dnd-inhibited-notification" = " "; "dnd-inhibited-none" = " ";
+                notification = "󱅫";
+                none = "";
+                "dnd-notification" = " ";
+                "dnd-none" = "󰂛";
+                "inhibited-notification" = " ";
+                "inhibited-none" = "";
+                "dnd-inhibited-notification" = " ";
+                "dnd-inhibited-none" = " ";
               };
               "return-type" = "json";
               "exec-if" = "which swaync-client";
@@ -65,17 +88,30 @@ _:
 
             idle_inhibitor = {
               format = "{icon}";
-              format-icons = { activated = "  "; deactivated = "  "; };
+              format-icons = {
+                activated = "  ";
+                deactivated = "  ";
+              };
             };
 
             backlight.format = " {percent}%";
 
             battery = {
-              states = { good = 80; warning = 50; critical = 15; };
+              states = {
+                good = 80;
+                warning = 50;
+                critical = 15;
+              };
               format = "{icon} {capacity}%";
               format-alt = "{time}";
               format-charging = "  {capacity}%";
-              format-icons = [ "󰁻 " "󰁽 " "󰁿 " "󰂁 " "󰂂 " ];
+              format-icons = [
+                "󰁻 "
+                "󰁽 "
+                "󰁿 "
+                "󰂁 "
+                "󰂂 "
+              ];
             };
 
             network = {
@@ -98,12 +134,19 @@ _:
               format-bluetooth = " {icon} {volume}%";
               format-muted = "  ";
               format-icons = {
-                headphone = "  "; headset = "  ";
-                default = [ "  " "  " ];
+                headphone = "  ";
+                headset = "  ";
+                default = [
+                  "  "
+                  "  "
+                ];
               };
             };
 
-            tray = { icon-size = 16; spacing = 8; };
+            tray = {
+              icon-size = 16;
+              spacing = 8;
+            };
           }
         ];
         style = builtins.readFile ./styles.css;

@@ -60,6 +60,10 @@ return {
 		after = function(plugin)
 			local theme = "catppuccin"
 
+			vim.tbl_flatten = function(t)
+				return vim.iter(t):flatten(math.huge):totable()
+			end
+
 			require("lualine").setup({
 				options = {
 					globalstatus = true,

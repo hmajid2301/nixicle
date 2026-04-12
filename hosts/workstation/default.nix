@@ -1,4 +1,8 @@
-{ inputs, den, pkgs, ... }:
+{
+  inputs,
+  den,
+  ...
+}:
 {
   flake-file.inputs.nixos-facter-modules.url = "github:numtide/nixos-facter-modules";
 
@@ -10,21 +14,23 @@
       den.aspects.obs
     ];
 
-    homeManager = { pkgs, config, ... }: {
-      home = {
-        username = "haseeb";
-        homeDirectory = "/home/haseeb";
-        stateVersion = "24.05";
-      };
+    homeManager =
+      { ... }:
+      {
+        home = {
+          username = "haseeb";
+          homeDirectory = "/home/haseeb";
+          stateVersion = "24.05";
+        };
 
-      programs.noctalia-shell.settings.idle = {
-        enabled = true;
-        screenOffTimeout = 330;
-        lockTimeout = 300;
-        suspendTimeout = 1800;
-        fadeDuration = 5;
+        programs.noctalia-shell.settings.idle = {
+          enabled = true;
+          screenOffTimeout = 330;
+          lockTimeout = 300;
+          suspendTimeout = 1800;
+          fadeDuration = 5;
+        };
       };
-    };
   };
 
   den.aspects.workstation = {
@@ -41,7 +47,6 @@
       {
         config,
         pkgs,
-        lib,
         ...
       }:
       {
@@ -62,7 +67,10 @@
         users = {
           users.haseeb.hashedPasswordFile = config.sops.secrets.user_password.path;
           groups.media.gid = 3000;
-          users.haseeb.extraGroups = [ "wheel" "media" ];
+          users.haseeb.extraGroups = [
+            "wheel"
+            "media"
+          ];
           extraGroups.docker.members = [ "haseeb" ];
         };
 

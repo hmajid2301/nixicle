@@ -20,7 +20,7 @@
   {
     resources = {
       label = "storage";
-      disk = ["/mnt/n1/"];
+      disk = [ "/mnt/n1/" ];
     };
   }
   {

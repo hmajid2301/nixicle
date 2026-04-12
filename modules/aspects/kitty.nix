@@ -1,5 +1,4 @@
-_:
-{
+_: {
   den.aspects.kitty = {
     homeManager = _: {
       programs.kitty = {

@@ -101,6 +101,10 @@
         noctalia-qs.follows = "noctalia-qs";
       };
     };
+    noctalia-plugins = {
+      url = "github:Mic92/noctalia-plugins";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     noctalia-qs = {
       url = "github:noctalia-dev/noctalia-qs";
       inputs.nixpkgs.follows = "nixpkgs";

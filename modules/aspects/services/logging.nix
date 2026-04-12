@@ -1,4 +1,4 @@
-{ den, ... }:
+{ ... }:
 {
   den.aspects.logging = {
     nixos = _: {
@@ -9,7 +9,10 @@
           auth_enabled = false;
           ingester = {
             lifecycler = {
-              ring = { kvstore.store = "inmemory"; replication_factor = 1; };
+              ring = {
+                kvstore.store = "inmemory";
+                replication_factor = 1;
+              };
             };
             chunk_idle_period = "5m";
             chunk_retain_period = "30s";
@@ -20,7 +23,10 @@
               store = "boltdb-shipper";
               object_store = "filesystem";
               schema = "v13";
-              index = { prefix = "index_"; period = "24h"; };
+              index = {
+                prefix = "index_";
+                period = "24h";
+              };
             }
           ];
           storage_config = {

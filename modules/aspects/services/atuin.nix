@@ -4,18 +4,20 @@ let
 in
 {
   den.aspects.atuin = {
-    includes = [ (import ./_persist-forwarder.nix { inherit den lib; }) ];
+    includes = [ ];
     persist.directories = [ "/var/lib/atuin" ];
-    nixos = { config, lib, ... }: {
-      services.atuin = {
-        enable = true;
-        openRegistration = true;
-        maxHistoryLength = 99999999;
-        port = 8890;
+    nixos =
+      { ... }:
+      {
+        services.atuin = {
+          enable = true;
+          openRegistration = true;
+          maxHistoryLength = 99999999;
+          port = 8890;
+        };
+
+        services.cloudflared.tunnels.${tunnelId}.ingress."atuin.haseebmajid.dev" = "http://localhost:8890";
+
       };
-
-      services.cloudflared.tunnels.${tunnelId}.ingress."atuin.haseebmajid.dev" = "http://localhost:8890";
-
-    };
   };
 }

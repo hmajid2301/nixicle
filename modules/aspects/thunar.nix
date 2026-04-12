@@ -1,5 +1,4 @@
-_:
-{
+_: {
   den.aspects.thunar = {
     homeManager =
       { pkgs, ... }:

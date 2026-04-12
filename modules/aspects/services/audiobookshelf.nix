@@ -1,4 +1,4 @@
-{ den, ... }:
+{ ... }:
 let
   tunnelId = "ecef5dbb-834e-43ed-84c6-355a2ac53e59";
 in
@@ -11,7 +11,8 @@ in
         group = "media";
       };
 
-      services.cloudflared.tunnels.${tunnelId}.ingress."audiobookshelf.haseebmajid.dev" = "http://localhost:8555";
+      services.cloudflared.tunnels.${tunnelId}.ingress."audiobookshelf.haseebmajid.dev" =
+        "http://localhost:8555";
     };
   };
 }
