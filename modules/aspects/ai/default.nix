@@ -16,13 +16,13 @@ in
       url = "github:GitJuhb/zellij-mcp-server";
       flake = false;
     };
+    zellij-pane-tracker = {
+      url = "github:theslyprofessor/zellij-pane-tracker";
+      flake = false;
+    };
     nix-playwright-mcp = {
       url = "github:benjaminkitt/nix-playwright-mcp";
       inputs.nixpkgs.follows = "nixpkgs";
-    };
-    opencode-antigravity-auth = {
-      url = "github:NoeFabris/opencode-antigravity-auth/v1.6.0";
-      flake = false;
     };
   };
 
@@ -120,6 +120,10 @@ in
                 command = "${pkgs.nixicle.zellij-mcp}/bin/zellij-mcp";
                 args = [ ];
               };
+              zellij-pane-tracker = {
+                command = "${pkgs.nixicle.zellij-pane-tracker-plugin}/bin/zellij-pane-tracker-mcp";
+                args = [ ];
+              };
               postgres = {
                 command = "uvx";
                 args = [
@@ -142,7 +146,6 @@ in
               model = "anthropic/claude-sonnet-4-20250514";
               autoshare = false;
               autoupdate = false;
-              plugin = [ "${inputs.opencode-antigravity-auth}/plugin.js" ];
               permission = {
                 read."${config.home.homeDirectory}/.config/opencode/get-shit-done/*" = "allow";
                 external_directory."${config.home.homeDirectory}/.config/opencode/get-shit-done/*" = "allow";
@@ -158,6 +161,13 @@ in
                 zellij = {
                   type = "local";
                   command = [ "${pkgs.nixicle.zellij-mcp}/bin/zellij-mcp" ];
+                  enabled = true;
+                };
+                zellij-pane-tracker = {
+                  type = "local";
+                  command = [
+                    "${pkgs.nixicle.zellij-pane-tracker-plugin}/bin/zellij-pane-tracker-mcp"
+                  ];
                   enabled = true;
                 };
                 nixos = {
@@ -197,11 +207,15 @@ in
         };
 
         home.packages = with pkgs; [
-          uv
-          gemini-cli
-          crush
-          amazon-q-cli
           gsdPackage
+          (pi-coding-agent.overrideAttrs (old: {
+            postFixup = ''
+              wrapProgram $out/bin/pi \
+                --prefix PATH : ${lib.makeBinPath [ ripgrep ]} \
+                --set NPM_CONFIG_PREFIX "$HOME/.pi/npm" \
+                --set npm_config_prefix "$HOME/.pi/npm"
+            '';
+          }))
         ];
       };
   };
