@@ -53,7 +53,7 @@
             home = {
               username = "haseeb";
               homeDirectory = "/home/haseeb";
-              stateVersion = "24.05";
+              stateVersion = "26.05";
             };
 
             programs.noctalia-shell.settings.idle = {
@@ -63,12 +63,6 @@
               suspendTimeout = 0;
               fadeDuration = 5;
             };
-
-            programs.fish.interactiveShellInit = lib.mkAfter ''
-              if not set -q ZELLIJ; and status is-interactive
-                  exec zellij attach --create main
-              end
-            '';
           };
       };
 
@@ -78,7 +72,6 @@
           den.aspects.nfs-truenas
           den.aspects.impermanence
           den.aspects.boot-secure
-          den.aspects.server
           den.aspects.tailscale
           den.aspects.kvm
           den.aspects.traefik
@@ -89,8 +82,11 @@
           den.aspects.banterbus
           den.aspects.btrbk
           den.aspects.crowdsec
-          den.aspects.gitea
+          den.aspects.forgejo
           den.aspects.goroutinely
+          den.aspects.garage
+          den.aspects.gothreads
+          den.aspects.lettucego
           den.aspects.gitlab-runner
           den.aspects.immich
           den.aspects.karakeep
@@ -100,16 +96,18 @@
           den.aspects.otel-collector
           den.aspects.redis
           den.aspects.postgresql
-          den.aspects.paperless
-          den.aspects.tangled
           den.aspects.tandoor
           den.aspects.papra
           den.aspects.bentopdf
-          den.aspects.trek
-          den.aspects.zellij
           den.aspects.fish
           den.aspects.monitoring
           den.aspects.homepage
+          den.aspects.home-assistant
+          den.aspects.zellij
+          # den.aspects.gitea
+          # den.aspects.tangled
+          # den.aspects.paperless
+          # den.aspects.trek
         ];
 
         nixos =
@@ -142,16 +140,44 @@
                 extraGroups = [
                   "wheel"
                   "media"
+                  "dialout"
+                  "docker"
                 ];
               };
               groups.media.gid = 3000;
             };
 
+            virtualisation = {
+              docker = {
+                enable = true;
+                enableOnBoot = true;
+                autoPrune.enable = true;
+                storageDriver = "btrfs";
+                rootless = {
+                  enable = true;
+                  setSocketVariable = true;
+                };
+              };
+              oci-containers.backend = "docker";
+            };
+
             # TODO: move to boot.nix in all files
-            environment.persistence."/persist".directories = [ "/etc/secureboot" ];
+            environment.persistence."/persist".directories = [
+              "/etc/secureboot"
+              {
+                directory = "/var/lib/docker";
+                user = "root";
+                group = "root";
+                mode = "0755";
+              }
+            ];
 
             networking.hostName = "framebox";
-            system.stateVersion = "24.05";
+            system.stateVersion = "26.05";
+
+            environment.systemPackages = with pkgs; [
+              docker-compose
+            ];
           };
       };
     };

@@ -99,11 +99,27 @@ Some features of my config:
 ![Go Code](docs/images/nvim/go-code.png)
 ![CMP](docs/images/nvim/cmp.png)
 
-## 🔐 OpenBao Setup
+
+## Manual Steps
+
+### AI
+
+Manually installed packages now yet via nix
+
+#### claude code and opencode
+
+- https://github.com/juliusbrussee/caveman
+
+#### pi coding agent
+
+- https://github.com/v2nic/pi-caveman
+- https://github.com/badlogic/pi-telegram
+
+### 🔐 OpenBao Setup
 
 After deploying the system, OpenBao requires manual setup for AppRole authentication:
 
-### 1. Get Admin Token
+1. Get Admin Token
 
 ```bash
 # Login with admin credentials (password is in SOPS secrets.yaml)
@@ -112,7 +128,7 @@ curl -X POST http://127.0.0.1:8200/v1/auth/userpass/login/admin \
   -d '{"password":"<OPENBAO_ADMIN_PASSWORD>"}' | jq -r '.auth.client_token'
 ```
 
-### 2. Run Terraform
+2. Run Terraform
 
 ```bash
 cd infra/tf
@@ -134,7 +150,7 @@ tofu apply -target=vault_auth_backend.approle \
   -target=vault_approle_auth_backend_role_secret_id.spindle
 ```
 
-### 3. Add Credentials to SOPS
+3. Add Credentials to SOPS
 
 ```bash
 # Get the credentials from Terraform
@@ -146,7 +162,7 @@ sops modules/nixos/services/secrets.yaml
 # Add: spindle_role_id and spindle_secret_id
 ```
 
-### 4. Update Configuration & Rebuild
+4. Update Configuration & Rebuild
 
 Update `modules/nixos/services/openbao/proxy.nix` to use SOPS secrets, then rebuild:
 
@@ -166,8 +182,6 @@ nh os switch
 
 ### Inspired By
 
-- Snowfall config: https://github.com/jakehamilton/config?tab=readme-ov-file
-- More snowfall config: https://github.dev/khaneliman/khanelinix/blob/f4f4149dd8a0fda1c01fa7b14894b2bcf5653572/flake.nix
 - My original structure and nixlang code: https://github.com/Misterio77/nix-config
 - Waybar & scripts: https://github.dev/yurihikari/garuda-sway-config
 - Neovim UI: https://github.com/NvChad/nvchad

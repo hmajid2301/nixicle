@@ -3,6 +3,7 @@
   den.aspects.vps = {
     includes = [
       den.aspects.performance-base
+      den.aspects.server
       den.aspects.tailscale
       den.aspects.traefik
       den.aspects.uptime-kuma
