@@ -175,12 +175,6 @@ return {
 						vim.opt_local.colorcolumn = ""
 						vim.opt_local.number = false
 						vim.opt_local.relativenumber = false
-
-						-- Enhanced diff colors for Catppuccin
-						vim.api.nvim_set_hl(0, "DiffAdd", { bg = "#a6e3a1", fg = "#11111b", bold = true })
-						vim.api.nvim_set_hl(0, "DiffChange", { bg = "#89b4fa", fg = "#11111b", bold = true })
-						vim.api.nvim_set_hl(0, "DiffDelete", { bg = "#f38ba8", fg = "#11111b", bold = true })
-						vim.api.nvim_set_hl(0, "DiffText", { bg = "#cba6f7", fg = "#11111b", bold = true })
 					end,
 					view_opened = function(view)
 						-- Custom actions when view opens
