@@ -17,11 +17,8 @@
       }:
       {
         imports = [
-          inputs.niri.homeModules.niri
           inputs.pam-shim.homeModules.default
         ];
-
-        nix.package = pkgs.nix;
 
         programs.niri.settings.spawn-at-startup = lib.mkForce [
           {
@@ -39,6 +36,20 @@
             ];
           }
           { command = [ "nfsm" ]; }
+          {
+            command = [
+              "${
+                let
+                  shimmedQuickshell = config.lib.pamShim.replacePam pkgs.quickshell;
+                in
+                pkgs.writeShellScript "noctalia-nixgl" ''
+                  export PATH="${pkgs.wlsunset}/bin:${pkgs.wl-clipboard}/bin:${pkgs.cliphist}/bin:${pkgs.coreutils}/bin:${pkgs.gnugrep}/bin:${pkgs.gnused}/bin:${pkgs.bash}/bin:/run/wrappers/bin:${config.home.profileDirectory}/bin:/usr/bin:/bin"
+                  export NOCTALIA_PAM_SERVICE="quickshell"
+                  exec ${config.lib.nixGL.wrap shimmedQuickshell}/bin/qs -p ${config.programs.noctalia-shell.package}/share/noctalia-shell
+                ''
+              }"
+            ];
+          }
         ];
         targets.genericLinux.nixGL = {
           inherit (inputs.nixgl) packages;
@@ -57,12 +68,15 @@
         home = {
           packages = with pkgs; [
             inputs.nixgl.packages.${pkgs.stdenv.hostPlatform.system}.nixGLIntel
-            (lib.hiPrio (config.lib.nixGL.wrap totem))
+            gdk-pixbuf
+            webp-pixbuf-loader
             (lib.hiPrio (
               config.lib.nixGL.wrap (
                 pkgs.writeShellScriptBin "google-chrome" ''
-                  # Unset LIBVA_DRIVERS_PATH to avoid quoting issues with system Chrome
-                  unset LIBVA_DRIVERS_PATH
+                  # Unset Nix GL paths to avoid conflicts with system Chrome (WebGL fix)
+                  unset LIBVA_DRIVERS_PATH LIBGL_DRIVERS_PATH __EGL_VENDOR_LIBRARY_FILENAMES GBM_BACKENDS_PATH
+                  # Strip Nix mesa/libglvnd paths from LD_LIBRARY_PATH so Chrome uses system GPU drivers
+                  export LD_LIBRARY_PATH=$(echo "$LD_LIBRARY_PATH" | tr ':' '\n' | grep -v -E 'mesa|libglvnd|libgl1' | tr '\n' ':' | sed 's/:*$//')
                   exec /usr/bin/google-chrome-stable \
                     --no-sandbox \
                     --enable-features=UseOzonePlatform,VaapiVideoDecodeLinuxGL \
@@ -91,25 +105,12 @@
         };
 
         programs = {
-          firefox.package = config.lib.nixGL.wrap pkgs.firefox;
+          firefox.package = lib.mkForce (config.lib.nixGL.wrap pkgs.firefox);
 
           ghostty = lib.mkForce {
             package = config.lib.nixGL.wrap pkgs.ghostty;
           };
         };
-
-        systemd.user.services.noctalia-shell =
-          let
-            shimmedQuickshell = config.lib.pamShim.replacePam pkgs.quickshell;
-          in
-          {
-            Service = {
-              ExecStart = lib.mkForce "${pkgs.writeShellScript "noctalia-nixgl" ''
-                export PATH="${pkgs.wlsunset}/bin:${pkgs.wl-clipboard}/bin:${pkgs.cliphist}/bin:${pkgs.coreutils}/bin:${pkgs.gnugrep}/bin:${pkgs.gnused}/bin:${pkgs.bash}/bin:/run/wrappers/bin:${config.home.profileDirectory}/bin:/usr/bin:/bin"
-                exec ${config.lib.nixGL.wrap shimmedQuickshell}/bin/qs -p ${config.programs.noctalia-shell.package}/share/noctalia-shell
-              ''}";
-            };
-          };
 
         systemd.user.services.niri-env-setup = {
           Unit = {
@@ -144,6 +145,30 @@
         };
 
         xdg = {
+          dataFile."applications/google-chrome.desktop".text = ''
+            [Desktop Entry]
+            Version=1.0
+            Name=Google Chrome
+            GenericName=Web Browser
+            Comment=Access the Internet
+            Exec=${config.home.homeDirectory}/.nix-profile/bin/google-chrome %U
+            StartupNotify=true
+            Terminal=false
+            Icon=google-chrome
+            Type=Application
+            Categories=Network;WebBrowser;
+            MimeType=application/pdf;application/rdf+xml;application/rss+xml;application/xhtml+xml;application/xhtml_xml;application/xml;image/gif;image/jpeg;image/png;image/webp;text/html;text/xml;x-scheme-handler/http;x-scheme-handler/https;x-scheme-handler/google-chrome;
+            Actions=new-window;new-private-window;
+
+            [Desktop Action new-window]
+            Name=New Window
+            Exec=${config.home.homeDirectory}/.nix-profile/bin/google-chrome
+
+            [Desktop Action new-private-window]
+            Name=New Incognito Window
+            Exec=${config.home.homeDirectory}/.nix-profile/bin/google-chrome --incognito
+          '';
+
           dataFile."applications/com.mitchellh.ghostty.desktop".text = ''
             [Desktop Entry]
             Version=1.0
