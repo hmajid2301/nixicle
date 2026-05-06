@@ -22,7 +22,10 @@
       "sd_mod"
     ];
     initrd.kernelModules = [ ];
-    kernelModules = [ "kvm-amd" ];
+    kernelModules = [
+      "kvm-amd"
+      "cp210x"
+    ];
     extraModulePackages = [ ];
   };
 

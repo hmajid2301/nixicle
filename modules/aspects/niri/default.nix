@@ -97,8 +97,8 @@
         ];
 
         nix.settings = {
-          substituters = [ "https://niri.cachix.org" ];
-          trusted-public-keys = [ "niri.cachix.org-1:Wv0OmO7PsuocRKzfDoJ3mulSl7Z6oezYhGhR+3W2964=" ];
+          extra-substituters = [ "https://niri.cachix.org" ];
+          extra-trusted-public-keys = [ "niri.cachix.org-1:Wv0OmO7PsuocRKzfDoJ3mulSl7Z6oezYhGhR+3W2964=" ];
         };
 
         programs = {
@@ -194,6 +194,7 @@
           [
             cliphist
             wl-clipboard
+            wdisplays
           ]
           ++ (with inputs.nfsm.packages.${pkgs.stdenv.hostPlatform.system}; [
             nfsm
@@ -350,6 +351,7 @@
             spawn-at-startup = [
               { command = [ "xwayland-satellite" ]; }
               { command = [ "nfsm" ]; }
+              { command = [ "noctalia-shell" ]; }
             ];
 
             binds = with config.lib.niri.actions; {
@@ -653,7 +655,6 @@
           # Noctalia shell
           noctalia-shell = {
             enable = true;
-            systemd.enable = true;
             settings = {
               appLauncher.enableClipboardHistory = true;
               ui = {

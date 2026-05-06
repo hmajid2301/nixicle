@@ -162,7 +162,7 @@
         };
 
         programs.git = {
-          settings.user.email = "haseeb.majid@nala.money";
+          settings.user.email = lib.mkForce "haseeb.majid@nala.money";
           signing = {
             format = "ssh";
             signByDefault = true;

@@ -11,6 +11,20 @@
       { lib, pkgs, ... }:
       {
         imports = [ inputs.disko.nixosModules.disko ];
+
+        # TODO: remove once https://github.com/NixOS/nixpkgs/pull/514576 is merged
+        nixpkgs.overlays = [
+          (final: prev: {
+            efitools = prev.efitools.overrideAttrs (old: {
+              postPatch =
+                (old.postPatch or "")
+                + ''
+                  substituteInPlace Make.rules \
+                    --replace-fail '--target=efi-app-$(ARCH)' '--output-target=efi-app-$(ARCH)'
+                '';
+            });
+          })
+        ];
         environment.systemPackages = with pkgs; [
           efibootmgr
           efitools

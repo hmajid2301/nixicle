@@ -2,9 +2,9 @@
 {
   den.aspects.server = {
     homeManager =
-      { pkgs, ... }:
+      { pkgs, lib, ... }:
       {
-        programs.zellij = {
+        programs.zellij = lib.mkForce {
           enable = true;
           settings = {
             theme = "stylix";
