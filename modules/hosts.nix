@@ -16,9 +16,12 @@ let
       zjstatus = inputs.zjstatus.packages.${prev.stdenv.hostPlatform.system}.default;
     })
     (final: prev: {
-      inherit (inputs) get-shit-done;
+      inherit (inputs) get-shit-done caveman;
       nixicle = extendedLib.nixicle.importPackages final ../packages // {
         zellij-mcp = prev.callPackage ../packages/zellij-mcp {
+          inherit inputs;
+        };
+        zellij-pane-tracker-plugin = prev.callPackage ../packages/zellij-pane-tracker-plugin {
           inherit inputs;
         };
       };
@@ -59,6 +62,7 @@ let
     authorizedKeys = [
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKuM4bCeJq0XQ1vd/iNK650Bu3wPVKQTSB0k2gsMKhdE hello@haseebmajid.dev"
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINP5gqbEEj+pykK58djSI1vtMtFiaYcygqhHd3mzPbSt hello@haseebmajid.dev"
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDwAamg3cSHP+91grc7qmrwNoPpbxD/IMi8MhqpptuM2 hello@haseebmajid.dev"
     ];
     email = "hello@haseebmajid.dev";
     signingKey = "~/.ssh/id_ed25519.pub";
