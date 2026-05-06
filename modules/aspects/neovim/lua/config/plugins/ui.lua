@@ -3,9 +3,6 @@ return {
 		"dropbar.nvim",
 		event = "DeferredUIEnter",
 		for_cat = "ui",
-		-- keys = {
-		-- 	{ "<leader>nb", mode = { "n" }, desc = "Show dropbar picker" },
-		-- },
 		load = function(name)
 			vim.cmd.packadd(name)
 		end,
@@ -64,6 +61,12 @@ return {
 				return vim.iter(t):flatten(math.huge):totable()
 			end
 
+			vim.keymap.set("n", "<leader>tq", "<cmd>tabclose<CR>", { desc = "Close tab" })
+
+			local function show_tabline()
+				return #vim.api.nvim_list_tabpages() >= 2
+			end
+
 			require("lualine").setup({
 				options = {
 					globalstatus = true,
@@ -78,194 +81,34 @@ return {
 						right = "",
 					},
 				},
-				sections = {
-					-- tabline = {
-					-- 	lualine_a = { "buffers" },
-					-- 	-- if you use lualine-lsp-progress, I have mine here instead of fidget
-					-- 	-- lualine_b = { 'lsp_progress', },
-					-- 	lualine_z = { "tabs" },
-					-- },
-					lualine_a = {
-						{
-							"mode",
-							icon = " ",
-							color = { gui = "bold" },
-						},
-					},
-					lualine_b = {
-						{
-							"filetype",
-							icon_only = true,
-							colored = true,
-							padding = { left = 1, right = 0 },
-						},
-						{
-							"filename",
-							color = { fg = "#FFFFFF" },
-						},
-					},
-					lualine_c = {
-						{
-							"branch",
-							padding = { left = 2, right = 0 },
-							icon = "",
-							colored = false,
-							color = {
-								gui = "bold",
-								fg = "#FFF",
-							},
-						},
-						{
-							"diff",
-							colored = false,
-							color = {
-								gui = "bold",
-								fg = "#605f6f",
-							},
-							symbols = {
-								added = " ",
-								modified = " ",
-								removed = " ",
-							},
-						},
-					},
-					lualine_x = {
-						{
-							"diagnostics",
-							color = {
-								fg = "#605f6f",
-								gui = "bold",
-							},
-							diagnostics_color = {
-								error = { fg = "#F38BA8" },
-								warn = { fg = "#FAE3B0" },
-							},
-							symbols = {
-								error = " ",
-								warn = " ",
-							},
-						},
-						{
-							function()
-								return (vim.t.maximized and " ") or ""
-							end,
-							color = {
-								fg = "#FFF",
-								bg = "#CBA6F7",
-								gui = "bold",
-							},
-						},
-					},
-					lualine_y = {
-						{
-							function()
-								local buf_ft = vim.api.nvim_get_option_value("filetype", { buf = 0 })
-								local clients = vim.lsp.get_clients()
-								if next(clients) == nil then
-									return "None"
-								end
-
-								local msg = ""
-								for _, client in ipairs(clients) do
-									local filetypes = client.config.filetypes
-									if filetypes and vim.fn.index(filetypes, buf_ft) ~= -1 then
-										msg = msg .. client.name .. " "
-									end
-								end
-
-								return msg ~= "" and msg or "None"
-							end,
-							icon = {
-								" ",
-								color = {
-									fg = "#2d2c3c",
-									bg = "#8bc2f0",
-								},
-							},
-							separator = {
-								left = "",
-								color = { fg = "#8bc2f0", bg = "#1e1e2e" },
-							},
-							padding = { left = 0, right = 0 },
-							color = {
-								bg = "#2d2c3c",
-								fg = "#FFFFFF",
-							},
-						},
-						{
-							"location",
-							icon = {
-								" ",
-								color = {
-									fg = "#2d2c3c",
-									bg = "#F38BA8",
-								},
-							},
-							separator = {
-								left = "",
-								color = { fg = "#F38BA8", bg = "#1e1e2e" },
-							},
-							padding = { left = 0, right = 1 },
-							color = {
-								bg = "#2d2c3c",
-								fg = "#FFFFFF",
-							},
-						},
-					},
+				tabline = {
+					lualine_a = {},
+					lualine_b = {},
+					lualine_c = {},
+					lualine_x = {},
+					lualine_y = {},
 					lualine_z = {
 						{
-							"progress",
-							icon = {
-								" ",
-								color = {
-									fg = "#2d2c3c",
-									bg = "#ABE9B3",
-								},
-							},
-							separator = {
-								left = "",
-								color = { fg = "#ABE9B3", bg = "#1e1e2e" },
-							},
-							padding = { left = 0, right = 0 },
-							color = {
-								bg = "#2d2c3c",
-								fg = "#FFFFFF",
-							},
+							"tabs",
+							cond = show_tabline,
 						},
 					},
 				},
+				sections = {
+				},
 			})
-		end,
-	},
-	{
-		"fidget.nvim",
-		for_cat = "extra",
-		event = "DeferredUIEnter",
-		after = function(plugin)
-			require("fidget").setup({})
-		end,
-	},
-	{
-		"helpview.nvim",
-		for_cat = "ui",
-		ft = "help",
-		event = "DeferredUIEnter",
-		after = function(plugin)
-			require("helpview").setup({})
-		end,
-	},
-	{
-		"nvim-highlight-colors",
-		event = "DeferredUIEnter",
-		for_cat = "ui",
-		after = function(plugin)
-			require("nvim-highlight-colors").setup({
-				render = "virtual",
-				virtual_symbol = "󰝤",
-				virtual_symbol_prefix = "",
-				virtual_symbol_suffix = " ",
-				enable_tailwind = true,
+
+			vim.api.nvim_create_autocmd("TabNew", {
+				callback = function()
+					vim.o.showtabline = #vim.api.nvim_list_tabpages() >= 2 and 2 or 0
+				end,
 			})
+			vim.api.nvim_create_autocmd("TabClosed", {
+				callback = function()
+					vim.o.showtabline = #vim.api.nvim_list_tabpages() >= 2 and 2 or 0
+				end,
+			})
+			vim.o.showtabline = #vim.api.nvim_list_tabpages() >= 2 and 2 or 0
 		end,
 	},
 }

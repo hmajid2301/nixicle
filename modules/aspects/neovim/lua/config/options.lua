@@ -11,6 +11,8 @@ vim.opt.incsearch = true
 vim.opt.list = true
 vim.opt.listchars = { tab = "» ", trail = "·", nbsp = "␣" }
 
+vim.opt.fillchars = vim.opt.fillchars + "diff:╱"
+
 vim.opt.hlsearch = true
 vim.opt.inccommand = "split"
 vim.opt.scrolloff = 10

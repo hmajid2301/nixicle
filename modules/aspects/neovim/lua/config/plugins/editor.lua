@@ -3,13 +3,37 @@ return {
 		"nvim-dbee",
 		for_cat = "editor",
 		cmd = { "Dbee" },
+		keys = {
+			{ "<leader>dd", mode = { "n" }, desc = "Toggle Dbee" },
+		},
 		load = function(name)
 			vim.cmd.packadd(name)
 			vim.cmd.packadd("cmp-dbee")
 		end,
 		after = function(plugin)
 			require("dbee").setup({})
+
+			-- TODO: remove once nvim-dbee fixes E444 "Cannot close last window" in make_only
+			local orig_dbee = require("dbee")
+			local orig_toggle = orig_dbee.toggle
+			orig_dbee.toggle = function(...)
+				if #vim.api.nvim_tabpage_list_wins(0) <= 1 then
+					vim.cmd("new")
+				end
+				orig_toggle(...)
+			end
+
 			require("cmp-dbee").setup()
+		end,
+	},
+	{
+		"maximize.nvim",
+		for_cat = "editor",
+		keys = {
+			{ "<leader>mo", mode = { "n" }, desc = "Toggle maximize" },
+		},
+		after = function(plugin)
+			require("maximize").setup()
 		end,
 	},
 	{

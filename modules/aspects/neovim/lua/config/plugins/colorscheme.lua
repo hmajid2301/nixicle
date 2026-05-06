@@ -75,6 +75,7 @@ require("catppuccin").setup({
 	integrations = {
 		blink_cmp = true,
 		dashboard = true,
+		diffview = true,
 		gitsigns = true,
 		illuminate = { enabled = true },
 		flash = true,
@@ -123,9 +124,12 @@ hl(0, "NormalFloat", { bg = colors.darker_black })
 hl(0, "Visual", { bg = colors.base02 })
 hl(0, "VisualNOS", { fg = colors.base08 })
 hl(0, "WarningMsg", { fg = colors.base08 })
-hl(0, "DiffAdd", { fg = colors.vibrant_green })
-hl(0, "DiffChange", { fg = colors.blue })
-hl(0, "DiffDelete", { fg = colors.red })
+-- hl(0, "DiffAdd", { fg = colors.green, bg = colors.base01 })
+-- hl(0, "DiffChange", { fg = colors.blue, bg = colors.base01 })
+-- hl(0, "DiffDelete", { fg = colors.red, bg = colors.base01 })
+-- hl(0, "DiffAddLn", { fg = colors.green, bg = colors.base02 })
+-- hl(0, "DiffChangeLn", { fg = colors.blue, bg = colors.base02 })
+-- hl(0, "DiffDeleteLn", { fg = colors.red, bg = colors.base02 })
 hl(0, "QuickFixLine", { bg = colors.base01 })
 hl(0, "PmenuSbar", { bg = colors.one_bg })
 hl(0, "PmenuThumb", { bg = colors.grey })
@@ -179,9 +183,6 @@ hl(0, "Italic", { italic = true })
 hl(0, "Ignore", { fg = colors.cyan, bg = colors.base00, bold = true })
 hl(0, "Todo", { fg = colors.base0A, bg = colors.base01 })
 hl(0, "Error", { fg = colors.base00, bg = colors.base08 })
-hl(0, "TabLine", { fg = colors.light_grey, bg = colors.line })
-hl(0, "TabLineSel", { fg = colors.white, bg = colors.line })
-hl(0, "TabLineFill", { fg = colors.line, bg = colors.line })
 
 -- Treesitter
 hl(0, "@annotation", { fg = colors.base0F })
