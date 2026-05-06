@@ -18,12 +18,6 @@ in
         group = "1000";
         mode = "0750";
       }
-      {
-        directory = "/var/lib/cni/networks";
-        user = "root";
-        group = "root";
-        mode = "0755";
-      }
     ];
     nixos =
       {
@@ -35,42 +29,34 @@ in
       {
         sops.secrets.hortusfox_env.sopsFile = ../../../hosts/framebox/secrets.yaml;
 
-        virtualisation = {
-          containers.enable = true;
-          podman = {
-            enable = true;
-            dockerSocket.enable = false;
-            dockerCompat = false;
-            defaultNetwork.settings.dns_enabled = true;
-          };
-        };
+        virtualisation.oci-containers.backend = "docker";
 
         systemd = {
           services = {
-            podman-network-hortusfox = {
-              description = "Create podman network for hortusfox";
+            docker-network-hortusfox = {
+              description = "Create docker network for hortusfox";
               after = [ "network-online.target" ];
               wantedBy = [ "multi-user.target" ];
               serviceConfig = {
                 Type = "oneshot";
                 RemainAfterExit = true;
-                ExecStart = "${pkgs.podman}/bin/podman network create --ignore ${networkName}";
-                ExecStop = "${pkgs.podman}/bin/podman network rm -f ${networkName}";
+                ExecStart = "${pkgs.docker}/bin/docker network create ${networkName} 2>/dev/null || true";
+                ExecStop = "${pkgs.docker}/bin/docker network rm ${networkName} 2>/dev/null || true";
               };
             };
-            podman-hortusfox-db = {
+            docker-hortusfox-db = {
               after = [
-                "podman-network-hortusfox.service"
+                "docker-network-hortusfox.service"
                 "network-online.target"
               ];
-              requires = [ "podman-network-hortusfox.service" ];
+              requires = [ "docker-network-hortusfox.service" ];
             };
-            podman-hortusfox = {
+            docker-hortusfox = {
               after = [
-                "podman-hortusfox-db.service"
+                "docker-hortusfox-db.service"
                 "network-online.target"
               ];
-              requires = [ "podman-hortusfox-db.service" ];
+              requires = [ "docker-hortusfox-db.service" ];
               wantedBy = [ "multi-user.target" ];
             };
           };

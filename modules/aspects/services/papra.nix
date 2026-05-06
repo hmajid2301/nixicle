@@ -21,15 +21,7 @@ in
       {
         sops.secrets.papra-env.sopsFile = ../../../hosts/framebox/secrets.yaml;
 
-        virtualisation = {
-          containers.enable = true;
-          podman = {
-            enable = true;
-            dockerSocket.enable = false;
-            dockerCompat = false;
-            defaultNetwork.settings.dns_enabled = true;
-          };
-        };
+        virtualisation.oci-containers.backend = "docker";
 
         systemd.tmpfiles.rules = [
           "d ${dataDir} 0750 999 999 -"
@@ -51,7 +43,7 @@ in
           environmentFiles = [ config.sops.secrets.papra-env.path ];
         };
 
-        systemd.services.podman-papra = {
+        systemd.services.docker-papra = {
           after = [ "network-online.target" ];
           wantedBy = [ "multi-user.target" ];
         };
