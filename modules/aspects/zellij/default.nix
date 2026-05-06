@@ -102,7 +102,7 @@
                   plugin location="file://${pkgs.zjstatus}/bin/zjstatus.wasm" {
                       format_left   "{mode}#[bg=#${colors.base00}] {tabs}"
                       format_center ""
-                      format_right  "#[bg=#${colors.base00},fg=#${colors.base0D}]#[bg=#${colors.base0D},fg=#${colors.base01},bold] #[bg=#${colors.base02},fg=#${colors.base05},bold] {session} #[bg=#${colors.base03},fg=#${colors.base05},bold]"
+                      format_right  "#[bg=#${colors.base00},fg=#${colors.base0D}]#[bg=#${colors.base0D},fg=#${colors.base01},bold] #[bg=#${colors.base02},fg=#${colors.base05},bold] {session} #[bg=#${colors.base03},fg=#${colors.base05},bold]"
                       format_space  ""
                       format_hide_on_overlength "true"
                       format_precedence "crl"
@@ -212,6 +212,10 @@
           }
         '';
       in
+      let
+        pluginPath = "${pkgs.nixicle.zellij-pane-tracker-plugin}/lib/zellij-pane-tracker.wasm";
+        zjdumpPath = "${pkgs.nixicle.zellij-pane-tracker-plugin}/bin/zjdump";
+      in
       {
         home.packages = [
           pkgs.tmate
@@ -219,9 +223,17 @@
           inputs.gsesh.packages.${pkgs.stdenv.hostPlatform.system}.default
         ];
 
+        home.file = {
+          "${config.home.homeDirectory}/zjdump".source = zjdumpPath;
+        };
+
         xdg.configFile = {
           "zellij/config.kdl".text = ''
             ${stylixTheme}
+
+            load_plugins {
+                "file:${pluginPath}"
+            }
 
             ${builtins.readFile ./config.kdl}
           '';

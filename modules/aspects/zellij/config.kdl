@@ -16,9 +16,6 @@ plugins {
     session-manager location="zellij:session-manager"
 }
 
-load_plugins {
-}
-
 ui {
     pane_frames {
         hide_session_name true
