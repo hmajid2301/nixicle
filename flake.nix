@@ -41,7 +41,11 @@
       flake = false;
     };
     goroutinely = {
-      url = "gitlab:hmajid2301/goroutinely/feat/move-to-internal";
+      url = "gitlab:hmajid2301/goroutinely/fix-broken";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    gothreads = {
+      url = "gitlab:hmajid2301/gothreads";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     gsesh = {
@@ -55,6 +59,10 @@
     impermanence.url = "github:nix-community/impermanence";
     import-tree.url = "github:vic/import-tree";
     lanzaboote.url = "github:nix-community/lanzaboote";
+    lettucego = {
+      url = "gitlab:hmajid2301/lettucego";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     nfsm = {
       url = "github:gvolpe/nfsm";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -93,7 +101,6 @@
     };
     nixos-hardware.url = "github:nixos/nixos-hardware";
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-    nixpkgs-lib.follows = "nixpkgs";
     noctalia = {
       url = "github:noctalia-dev/noctalia-shell";
       inputs = {
@@ -181,6 +188,10 @@
     };
     zellij-mcp = {
       url = "github:GitJuhb/zellij-mcp-server";
+      flake = false;
+    };
+    zellij-pane-tracker = {
+      url = "github:theslyprofessor/zellij-pane-tracker";
       flake = false;
     };
     zjstatus.url = "github:dj95/zjstatus";
