@@ -153,9 +153,9 @@
           termdbms
 
           # Network tools
-          tshark
-          termshark
-          kubeshark
+          # tshark
+          # termshark
+          # kubeshark
 
           # TUI tools
           gh-dash

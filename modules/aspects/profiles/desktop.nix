@@ -84,6 +84,13 @@
         };
         qt.enable = true;
 
+        services.kdeconnect = {
+          enable = true;
+          indicator = true;
+        };
+
+        home.sessionVariables.NH_FLAKE = "${config.home.homeDirectory}/nixicle";
+
         xdg = {
           desktopEntries = {
             "org.kde.kdeconnect.sms" = {
@@ -180,22 +187,68 @@
           EDITOR = "nvim";
           MANPAGER = "nvim +Man!";
         };
-        home.packages = with pkgs; [
-          ddcutil
-          mtpfs
-          jmtpfs
-          brightnessctl
-          xdg-utils
-          wl-clipboard
-          clipse
-          pamixer
-          playerctl
-          impression
-          grimblast
-          slurp
-          sway-contrib.grimshot
-          satty
-        ];
+        home.packages =
+          let
+            swap-input = pkgs.writeShellScriptBin "swap-input" ''
+              display=$(${pkgs.ddcutil}/bin/ddcutil detect 2>/dev/null \
+                | awk '/^Display/{display=$0; getline; getline; if(/I2C/){print display " -> " $0}}' \
+                | ${pkgs.gum}/bin/gum choose --header "Select monitor:")
+              if [ -z "$display" ]; then
+                exit 1
+              fi
+
+              bus=$(echo "$display" | grep -oP '/dev/i2c-\d+')
+
+              current=$(${pkgs.ddcutil}/bin/ddcutil getvcp 60 --brief --bus="$bus" 2>/dev/null | awk '{print $NF}')
+
+              input_map="12:HDMI-1 13:HDMI-2 15:DisplayPort-1 16:DisplayPort-2 17:DisplayPort-3 18:DisplayPort-4 3:DVI-1 4:DVI-2 1:VGA-1 2:VGA-2"
+
+              choices=()
+              for entry in $input_map; do
+                num=''${entry%%:*}
+                name=''${entry#*:}
+                if [ "$num" = "$current" ]; then
+                  choices+=("$name (current)")
+                else
+                  choices+=("$name")
+                fi
+              done
+
+              selected=$(${pkgs.gum}/bin/gum choose --header "Select input:" "''${choices[@]}")
+              if [ -z "$selected" ]; then
+                exit 1
+              fi
+
+              selected=''${selected// (current)/}
+              for entry in $input_map; do
+                if [ "''${entry#*:}" = "$selected" ]; then
+                  target=''${entry%%:*}
+                  break
+                fi
+              done
+
+              echo "Switching to $selected..."
+              ${pkgs.ddcutil}/bin/ddcutil setvcp 60 "$target" --bus="$bus"
+            '';
+          in
+          with pkgs;
+          [
+            swap-input
+            ddcutil
+            mtpfs
+            jmtpfs
+            brightnessctl
+            xdg-utils
+            wl-clipboard
+            clipse
+            pamixer
+            playerctl
+            impression
+            grimblast
+            slurp
+            sway-contrib.grimshot
+            satty
+          ];
       };
   };
 }
