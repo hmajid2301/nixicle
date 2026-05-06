@@ -43,7 +43,7 @@
               rule = "Host(`attic.haseebmajid.dev`)";
               service = "attic";
               middlewares = [ "attic-timeout" ];
-              tls.certResolver = "letsencrypt";
+              tls = { };
             };
           };
         };

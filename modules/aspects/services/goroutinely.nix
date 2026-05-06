@@ -9,7 +9,7 @@ let
 in
 {
   flake-file.inputs.goroutinely = {
-    url = "gitlab:hmajid2301/goroutinely/feat/move-to-internal";
+    url = "gitlab:hmajid2301/goroutinely/fix-broken";
     inputs.nixpkgs.follows = "nixpkgs";
   };
 
@@ -43,8 +43,8 @@ in
         services = {
           goroutinely = {
             enable = true;
-            package = inputs.goroutinely.packages.${pkgs.system}.default;
-            sendremindersPackage = inputs.goroutinely.packages.${pkgs.system}.default;
+            package = inputs.goroutinely.packages.${pkgs.stdenv.hostPlatform.system}.default;
+            sendremindersPackage = inputs.goroutinely.packages.${pkgs.stdenv.hostPlatform.system}.default;
             port = 8235;
             host = "0.0.0.0";
             database.createLocally = true;

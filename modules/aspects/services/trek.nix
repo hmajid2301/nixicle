@@ -10,14 +10,7 @@ in
     nixos =
       { lib, ... }:
       {
-        virtualisation = {
-          containers.enable = true;
-          podman = {
-            enable = true;
-            dockerSocket.enable = false;
-            dockerCompat = false;
-          };
-        };
+        virtualisation.oci-containers.backend = "docker";
 
         systemd.tmpfiles.rules = [
           "d ${dataDir} 0755 root root - -"

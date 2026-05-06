@@ -14,8 +14,11 @@
         sops.secrets.cloudflare_api_key.sopsFile = ../../../hosts/framebox/secrets.yaml;
 
         systemd.services.traefik = {
-          environment.CF_API_EMAIL = "hello@haseebmajid.dev";
+          # TODO: global token used instead of scoped one.
           serviceConfig.EnvironmentFile = config.sops.secrets.cloudflare_api_key.path;
+          environment = {
+            CF_API_EMAIL = "hello@haseebmajid.dev";
+          };
         };
 
         services.tailscale.permitCertUid = "traefik";
@@ -58,7 +61,6 @@
                       main = "homelab.haseebmajid.dev";
                       sans = [ "*.homelab.haseebmajid.dev" ];
                     }
-                    { main = "port8082.homelab.haseebmajid.dev"; }
                     {
                       main = "haseebmajid.dev";
                       sans = [ "*.haseebmajid.dev" ];

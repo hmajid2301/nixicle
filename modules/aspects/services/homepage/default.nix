@@ -8,7 +8,7 @@
 
         services.homepage-dashboard = {
           enable = true;
-          environmentFile = config.sops.secrets.homepage_env.path;
+          environmentFiles = [ config.sops.secrets.homepage_env.path ];
           listenPort = 8173;
           bookmarks = [ ];
           services = import ./_services.nix;

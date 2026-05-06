@@ -30,6 +30,7 @@ in
             enable = true;
             port = 8099;
             extraConfig = {
+              ALLOWED_HOSTS = "tandoor-recipes.haseebmajid.dev,localhost,127.0.0.1";
               DB_ENGINE = "django.db.backends.postgresql";
               POSTGRES_HOST = "/run/postgresql";
               POSTGRES_USER = "tandoor_recipes";
@@ -86,7 +87,7 @@ in
                 rule = "Host(`tandoor-recipes-media.haseebmajid.dev`) && PathPrefix(`/media/`)";
                 service = "tandoor-media";
                 priority = 100;
-                tls.certResolver = "letsencrypt";
+                tls = { };
               };
             }
           ];
