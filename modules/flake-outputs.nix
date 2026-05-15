@@ -49,7 +49,9 @@ let
     system:
     import inputs.nixpkgs {
       inherit system overlays;
-      config.allowUnfree = true;
+      config = {
+        allowUnfree = true;
+      };
     };
 in
 {
