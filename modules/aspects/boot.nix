@@ -14,14 +14,12 @@
 
         # TODO: remove once https://github.com/NixOS/nixpkgs/pull/514576 is merged
         nixpkgs.overlays = [
-          (final: prev: {
+          (_final: prev: {
             efitools = prev.efitools.overrideAttrs (old: {
-              postPatch =
-                (old.postPatch or "")
-                + ''
-                  substituteInPlace Make.rules \
-                    --replace-fail '--target=efi-app-$(ARCH)' '--output-target=efi-app-$(ARCH)'
-                '';
+              postPatch = (old.postPatch or "") + ''
+                substituteInPlace Make.rules \
+                  --replace-quiet '--target=efi-app-$(ARCH)' '--output-target=efi-app-$(ARCH)'
+              '';
             });
           })
         ];

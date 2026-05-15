@@ -65,7 +65,12 @@ stdenv.mkDerivation {
     cp scripts/zjdump $out/bin/zjdump
     chmod +x $out/bin/zjdump
     wrapProgram $out/bin/zjdump \
-      --prefix PATH : ${lib.makeBinPath [ zsh jq ]}
+      --prefix PATH : ${
+        lib.makeBinPath [
+          zsh
+          jq
+        ]
+      }
 
     runHook postInstall
   '';

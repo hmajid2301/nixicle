@@ -60,7 +60,7 @@ return {
 					if vim.fn.isdirectory(".git") == 1 then
 						local old_shortmess = vim.o.shortmess
 						vim.o.shortmess = vim.o.shortmess .. "F"
-						require("auto-session").save_session()
+						require("auto-session").save_session(nil, { show_message = false })
 						vim.o.shortmess = old_shortmess
 					end
 				end)

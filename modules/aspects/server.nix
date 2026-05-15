@@ -2,7 +2,7 @@
 {
   den.aspects.server = {
     homeManager =
-      { pkgs, lib, ... }:
+      { lib, ... }:
       {
         programs.zellij = lib.mkForce {
           enable = true;
