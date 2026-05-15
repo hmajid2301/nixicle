@@ -1,4 +1,4 @@
-{ den, lib, ... }:
+{ ... }:
 let
   tunnelId = "ecef5dbb-834e-43ed-84c6-355a2ac53e59";
 in
@@ -28,7 +28,7 @@ in
             ANONYMIZED_TELEMETRY = "False";
             DO_NOT_TRACK = "True";
             SCARF_NO_ANALYTICS = "True";
-            OLLAMA_BASE_URL = "http://127.0.0.1:11435";
+            OLLAMA_BASE_URL = "http://127.0.0.1:11434";
             OAUTH_PROVIDER_NAME = "authentik";
             OPENID_PROVIDER_URL = "https://authentik.haseebmajid.dev/application/o/ollama-web-ui/.well-known/openid-configuration";
             OPENID_REDIRECT_URI = "https://open-webui.haseebmajid.dev/oauth/oidc/callback";

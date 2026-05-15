@@ -5,8 +5,29 @@
       {
         config,
         pkgs,
+        lib,
         ...
       }:
+      let
+        rsyncExcludes = [
+          "*.sock"
+          "*.fifo"
+          ".backingFsBlockDev*"
+          "Games"
+          ".steam"
+          ".lmstudio"
+          ".cache"
+          ".local/share/Steam"
+          "~/.config/gtk/"
+          "*.vdi"
+          "*.qcow2"
+          "*.iso"
+          "node_modules"
+          ".npm"
+          ".cargo/registry"
+        ];
+        rsyncExcludeArgs = lib.concatStringsSep " " (map (p: "--exclude='${p}'") rsyncExcludes);
+      in
       {
         sops.secrets.b2_access_key.sopsFile = ../../../hosts/framebox/secrets.yaml;
         sops.secrets.b2_secret_key.sopsFile = ../../../hosts/framebox/secrets.yaml;
@@ -17,19 +38,15 @@
             timestamp_format = "long";
             snapshot_preserve_min = "2d";
             snapshot_preserve = "0d 2w 6m";
-            target_preserve_min = "no";
-            target_preserve = "0d 2w 6m";
             volume = {
               "/persist" = {
                 subvolume."." = {
                   snapshot_dir = ".snapshots";
-                  target = "/mnt/truenas/backups/framebox/persist";
                 };
               };
               "/home" = {
                 subvolume."." = {
                   snapshot_dir = ".snapshots";
-                  target = "/mnt/truenas/backups/framebox/home";
                 };
               };
             };
@@ -37,6 +54,38 @@
         };
 
         systemd = {
+          services.btrbk-truenas-rsync = {
+            description = "Rsync btrbk snapshots to TrueNAS";
+            after = [ "network-online.target" ];
+            wants = [ "network-online.target" ];
+            serviceConfig = {
+              Type = "oneshot";
+              User = "root";
+            };
+            script = ''
+              set -euo pipefail
+              for path in /persist/.snapshots /home/.snapshots; do
+                if [ -d "$path" ]; then
+                  echo "Syncing $path to TrueNAS..."
+                  ${pkgs.rsync}/bin/rsync -rlptD --no-o --no-g --delete \
+                    ${rsyncExcludeArgs} \
+                    "$path/" \
+                    "/mnt/truenas/backups/${config.networking.hostName}/$(basename $path)/"
+                fi
+              done
+              echo "TrueNAS rsync completed"
+            '';
+          };
+
+          timers.btrbk-truenas-rsync = {
+            description = "Timer for TrueNAS rsync backup";
+            wantedBy = [ "timers.target" ];
+            timerConfig = {
+              OnCalendar = "weekly";
+              Persistent = true;
+            };
+          };
+
           services.btrbk-b2-upload = {
             description = "Upload btrbk snapshots to Backblaze B2";
             after = [ "network-online.target" ];
