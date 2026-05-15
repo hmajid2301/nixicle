@@ -1,4 +1,7 @@
-{ den, lib, ... }:
+{ ... }:
+let
+  tunnelId = "ecef5dbb-834e-43ed-84c6-355a2ac53e59";
+in
 {
   den.aspects.forgejo = {
     includes = [ ];
@@ -64,8 +67,8 @@
             settings = {
               server = {
                 HTTP_PORT = 5706;
-                DOMAIN = "forgejo.homelab.haseebmajid.dev";
-                ROOT_URL = "https://forgejo.homelab.haseebmajid.dev/";
+                DOMAIN = "forgejo.haseebmajid.dev";
+                ROOT_URL = "https://forgejo.haseebmajid.dev/";
               };
               mailer = {
                 ENABLED = true;
@@ -121,6 +124,10 @@
                 ];
               };
             };
+          };
+
+          cloudflared.tunnels.${tunnelId}.ingress = {
+            "forgejo.haseebmajid.dev" = "http://localhost:5706";
           };
         };
       };

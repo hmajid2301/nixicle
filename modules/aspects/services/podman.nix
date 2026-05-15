@@ -1,10 +1,10 @@
-{ den, lib, ... }:
+{ lib, ... }:
 {
   den.aspects.podman = {
     persist.directories = [ "/var/lib/containers" ];
 
     nixos =
-      { config, ... }:
+      { ... }:
       {
         virtualisation = {
           containers.enable = true;

@@ -1,10 +1,14 @@
-{ den, lib, ... }:
+{ ... }:
 {
   den.aspects.garage = {
     includes = [ ];
     persist.directories = [ "/var/lib/private/garage" ];
     nixos =
-      { pkgs, config, lib, ... }:
+      {
+        pkgs,
+        config,
+        ...
+      }:
       {
         config = {
           sops.secrets.garage_rpc_secret = {
