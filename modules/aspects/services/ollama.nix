@@ -1,4 +1,4 @@
-{ den, lib, ... }:
+{ ... }:
 {
   den.aspects.ollama = {
     includes = [ ];

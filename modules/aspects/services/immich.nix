@@ -1,4 +1,4 @@
-{ den, lib, ... }:
+{ ... }:
 let
   mediaLocation = "/mnt/homelab/homelab/immich";
 in
