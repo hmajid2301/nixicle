@@ -102,3 +102,12 @@ creation_rules:
       - *haseeb_vm
       - *haseebmajid_dell
       - *haseeb_workstation
+
+  - path_regex: modules/secrets.ya?ml$
+    key_groups:
+    - age:
+      - *haseeb_framework
+      - *haseeb_framebox
+      - *haseeb_vm
+      - *haseebmajid_dell
+      - *haseeb_workstation

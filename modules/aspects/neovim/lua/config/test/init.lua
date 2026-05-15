@@ -33,6 +33,7 @@ require("lze").load({
 						go_list_args = {},
 						runner = "gotestsum",
 						log_level = vim.log.levels.DEBUG,
+						warn_test_name_dupes = false,
 					}),
 				},
 				output = { open_on_run = true },

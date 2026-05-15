@@ -62,6 +62,13 @@
           inputs.noctalia-qs.overlays.default
           (_final: prev: {
             quickshell = config.lib.pamShim.replacePam prev.quickshell;
+            nautilus = prev.nautilus.overrideAttrs (old: {
+              postFixup = (old.postFixup or "") + ''
+                mv $out/bin/nautilus $out/bin/.nautilus-gdk-wrapped
+                makeWrapper $out/bin/.nautilus-gdk-wrapped $out/bin/nautilus \
+                  --unset GDK_PIXBUF_MODULE_FILE
+              '';
+            });
           })
         ];
 

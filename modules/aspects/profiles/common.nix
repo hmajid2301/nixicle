@@ -211,6 +211,7 @@ in
         programs = {
           firefox = {
             enable = true;
+            configPath = "${config.xdg.configHome}/mozilla/firefox";
             package = pkgs.firefox-bin;
             profiles.default = {
               name = "Default";
