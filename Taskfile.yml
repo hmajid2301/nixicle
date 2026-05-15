@@ -85,11 +85,6 @@ tasks:
     cmds:
       - nix run .#write-flake
 
-  write-flake:
-    desc: "Regenerate flake.nix from flake-file.inputs declarations scattered across modules"
-    cmds:
-      - nix run .#write-flake
-
   hosts:
     desc: "List available hosts"
     cmds:

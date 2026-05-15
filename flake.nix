@@ -117,10 +117,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nur.url = "github:nix-community/NUR";
-    opencode-antigravity-auth = {
-      url = "github:NoeFabris/opencode-antigravity-auth/v1.6.0";
-      flake = false;
-    };
     oxy2dev-nvim-scripts = {
       url = "github:OXY2DEV/nvim";
       flake = false;
