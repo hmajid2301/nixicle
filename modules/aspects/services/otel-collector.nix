@@ -1,4 +1,4 @@
-{ den, lib, ... }:
+{ ... }:
 {
   den.aspects.otel-collector = {
     includes = [ ];

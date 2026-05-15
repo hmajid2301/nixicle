@@ -1,7 +1,5 @@
 {
-  den,
   inputs,
-  lib,
   ...
 }:
 let
@@ -27,7 +25,6 @@ in
       {
         config,
         pkgs,
-        lib,
         ...
       }:
       {
