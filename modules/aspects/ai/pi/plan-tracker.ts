@@ -5,10 +5,10 @@
  * State is stored in tool result details for proper branching support.
  * Shows a persistent TUI widget with progress indicators.
  *
- * Actions: init, update, status, clear
+ * Actions: init, update, status, review, clear
  */
 
-import type { ExtensionAPI } from "@mariozechner/pi-coding-agent";
+import type { ExtensionAPI, ExtensionContext } from "@mariozechner/pi-coding-agent";
 import { StringEnum } from "@mariozechner/pi-ai";
 import { Text } from "@mariozechner/pi-tui";
 import { Type, type Static } from "typebox";
@@ -22,22 +22,26 @@ interface Task {
 	status: TaskStatus;
 }
 
+type ActionType = "init" | "update" | "status" | "review" | "clear";
+
 interface PlanTrackerDetails {
-	action: "init" | "update" | "status" | "clear";
+	action: ActionType;
 	tasks: Task[];
 	error?: string;
+	updatedIndex?: number;
 }
 
 interface ActionResult {
 	text: string;
 	tasks: Task[];
 	error?: string;
+	updatedIndex?: number;
 }
 
 // ── Parameters ────────────────────────────────────────────────────────────────
 
 const PlanTrackerParams = Type.Object({
-	action: StringEnum(["init", "update", "status", "clear"] as const, {
+	action: StringEnum(["init", "update", "status", "review", "clear"] as const, {
 		description: "Action to perform",
 	}),
 	tasks: Type.Optional(
@@ -112,12 +116,58 @@ function handleUpdate(
 	return {
 		text: `Task ${index} "${updated[index].name}" → ${status}\n${formatStatus(updated)}`,
 		tasks: updated,
+		updatedIndex: index,
 	};
 }
 
 function handleStatusAction(tasks: Task[]): ActionResult {
 	return {
 		text: formatStatus(tasks),
+		tasks: [...tasks],
+	};
+}
+
+function handleReview(tasks: Task[]): ActionResult {
+	if (tasks.length === 0) {
+		return { text: "No plan active.", tasks: [] };
+	}
+
+	const complete = tasks.filter((t) => t.status === "complete");
+	const inProgress = tasks.filter((t) => t.status === "in_progress");
+	const pending = tasks.filter((t) => t.status === "pending");
+
+	const lines: string[] = [];
+	lines.push(`Plan Review: ${complete.length}/${tasks.length} complete`);
+
+	if (inProgress.length > 0) {
+		lines.push("");
+		lines.push(`IN PROGRESS (${inProgress.length}):`);
+		for (const t of inProgress) {
+			const idx = tasks.indexOf(t);
+			lines.push(`  → [${idx}] ${t.name}`);
+		}
+	}
+
+	if (pending.length > 0) {
+		lines.push("");
+		lines.push(`PENDING (${pending.length}):`);
+		for (const t of pending) {
+			const idx = tasks.indexOf(t);
+			lines.push(`  ○ [${idx}] ${t.name}`);
+		}
+	}
+
+	if (complete.length > 0) {
+		lines.push("");
+		lines.push(`COMPLETE (${complete.length}):`);
+		for (const t of complete) {
+			const idx = tasks.indexOf(t);
+			lines.push(`  ✓ [${idx}] ${t.name}`);
+		}
+	}
+
+	return {
+		text: lines.join("\n"),
 		tasks: [...tasks],
 	};
 }
@@ -153,29 +203,60 @@ function formatStatus(tasks: Task[]): string {
 	return lines.join("\n");
 }
 
-function renderWidgetText(tasks: Task[], theme: any): string {
-	if (tasks.length === 0) return "";
+function renderWidgetLines(tasks: Task[], theme: any, width: number): string[] {
+	if (tasks.length === 0) return [];
+	const allComplete = tasks.every((t) => t.status === "complete");
+	if (allComplete) return [];
 
 	const complete = tasks.filter((t) => t.status === "complete").length;
-	const icons = tasks
+	const inProgress = tasks.filter((t) => t.status === "in_progress").length;
+	const pending = tasks.filter((t) => t.status === "pending").length;
+	const groups: [string, TaskStatus, string][] = [
+		["In Progress", "in_progress", "→"],
+		["Pending", "pending", "○"],
+		["Complete", "complete", "✓"],
+	];
+
+	const lines: string[] = [];
+
+	// Header with progress bar
+	const bar = tasks
 		.map((t) => {
 			switch (t.status) {
 				case "complete":
-					return theme.fg("success", "✓");
+					return theme.fg("success", "━");
 				case "in_progress":
-					return theme.fg("warning", "→");
+					return theme.fg("warning", "▸");
 				default:
-					return theme.fg("dim", "○");
+					return theme.fg("dim", "─");
 			}
 		})
 		.join("");
+	lines.push(`${theme.bold(theme.fg("accent", "Plan"))} [${bar}] ${theme.fg("muted", `${complete}/${tasks.length}`)}  ${theme.fg("dim", `→${inProgress} ○${pending}`)}`);
 
-	const current =
-		tasks.find((t) => t.status === "in_progress") ??
-		tasks.find((t) => t.status === "pending");
-	const currentName = current ? `  ${current.name}` : "";
+	// Grouped task lines
+	for (const [label, status, icon] of groups) {
+		const group = tasks.filter((t) => t.status === status);
+		if (group.length === 0) continue;
 
-	return `${theme.fg("muted", "Tasks:")} ${icons} ${theme.fg("muted", `(${complete}/${tasks.length})`)}${currentName}`;
+		const ic = status === "complete"
+			? theme.fg("success", icon)
+			: status === "in_progress"
+				? theme.fg("warning", icon)
+				: theme.fg("dim", icon);
+
+		for (const t of group) {
+			const idx = tasks.indexOf(t);
+			const prefix = `  ${ic} ${theme.fg("muted", `[${idx}]`)} `;
+			const maxNameLen = Math.max(10, width - 12);
+			const name = t.name.length > maxNameLen
+				? t.name.slice(0, maxNameLen - 1) + "…"
+				: t.name;
+			lines.push(`${prefix}${name}`);
+		}
+	}
+
+	return lines;
 }
 
 // ── State Reconstruction ──────────────────────────────────────────────────────
@@ -194,11 +275,24 @@ function reconstructFromBranch(entries: BranchEntry[]): Task[] {
 	for (const entry of entries) {
 		if (entry.type !== "message") continue;
 		const msg = entry.message;
-		if (!msg || msg.role !== "toolResult" || msg.toolName !== "plan_tracker")
+		if (!msg || msg.role !== "toolResult" || msg.toolName !== "plan_tracker") {
 			continue;
+		}
 		const details = msg.details as PlanTrackerDetails | undefined;
-		if (details && !details.error) {
-			tasks = details.tasks;
+		const hasValidTasks =
+			details &&
+			!details.error &&
+			Array.isArray(details.tasks) &&
+			details.tasks.every(
+				(task) =>
+					task &&
+					typeof task.name === "string" &&
+					(task.status === "pending" ||
+						task.status === "in_progress" ||
+						task.status === "complete"),
+			);
+		if (hasValidTasks) {
+			tasks = details.tasks.map((task) => ({ ...task }));
 		}
 	}
 	return tasks;
@@ -209,7 +303,7 @@ function reconstructFromBranch(entries: BranchEntry[]): Task[] {
 export default function register(pi: ExtensionAPI) {
 	let tasks: Task[] = [];
 
-	const reconstructState = (ctx: any) => {
+	const reconstructState = (ctx: ExtensionContext) => {
 		try {
 			const branch = ctx.sessionManager?.getBranch();
 			if (branch) {
@@ -218,15 +312,16 @@ export default function register(pi: ExtensionAPI) {
 		} catch {}
 	};
 
-	const updateWidget = (ctx: any) => {
-		if (!ctx?.hasUI) return;
+	const updateWidget = (ctx: ExtensionContext) => {
+		if (!ctx.hasUI) return;
 		try {
-			if (tasks.length === 0) {
+			const allDone = tasks.length > 0 && tasks.every((t) => t.status === "complete");
+			if (tasks.length === 0 || allDone) {
 				ctx.ui.setWidget("plan_tracker", undefined);
 			} else {
-				ctx.ui.setWidget("plan_tracker", (_tui: any, theme: any) => {
-					return new Text(renderWidgetText(tasks, theme), 0, 0);
-				});
+				const width = process.stdout.columns ?? 80;
+				const lines = renderWidgetLines(tasks, ctx.ui.theme, width);
+				ctx.ui.setWidget("plan_tracker", lines);
 			}
 		} catch {}
 	};
@@ -238,7 +333,7 @@ export default function register(pi: ExtensionAPI) {
 		"session_fork",
 		"session_tree",
 	] as const) {
-		pi.on(event, async (_event: any, ctx: any) => {
+		pi.on(event, async (_event: any, ctx: ExtensionContext) => {
 			reconstructState(ctx);
 			updateWidget(ctx);
 		});
@@ -255,15 +350,26 @@ Actions:
 - init: Set task list (pass tasks array of names)
 - update: Change a task's status by index (0-based)
 - status: Show current plan state
+- review: Review todos grouped by status (in_progress → pending → complete)
 - clear: Remove active plan
 
-The widget shows: Tasks: ✓✓→○○ (2/5) Task 3: Name
+Note: task indices are 0-based.
+
+The widget shows: Tasks: [━━▸──] (2/5) Task 3: Name
 
 State persists across conversation branches via tool result details.`,
 
+		promptSnippet: "Track plan progress with init/update/status/review/clear actions",
+		promptGuidelines: [
+			"Use plan_tracker init with a task list before starting multi-step work.",
+			"Use plan_tracker update to mark tasks in_progress or complete as you work.",
+			"Use plan_tracker status or review to check remaining work.",
+			"Use plan_tracker clear to dismiss the plan widget when done.",
+		],
+
 		parameters: PlanTrackerParams,
 
-		async execute(_toolCallId, params, _signal, _onUpdate, ctx) {
+		async execute(_toolCallId, params, _signal, _onUpdate, ctx: ExtensionContext) {
 			let result: ActionResult;
 
 			switch (params.action) {
@@ -271,10 +377,11 @@ State persists across conversation branches via tool result details.`,
 					result = handleInit(params.tasks);
 					if (!result.error) {
 						tasks = result.tasks;
-						updateWidget(ctx);
 					} else {
-						result = { ...result, tasks: [...tasks] };
+						tasks = [];
+						result = { ...result, tasks: [] };
 					}
+					updateWidget(ctx);
 					break;
 				}
 				case "update": {
@@ -285,6 +392,10 @@ State persists across conversation branches via tool result details.`,
 				}
 				case "status": {
 					result = handleStatusAction(tasks);
+					break;
+				}
+				case "review": {
+					result = handleReview(tasks);
 					break;
 				}
 				case "clear": {
@@ -302,7 +413,7 @@ State persists across conversation branches via tool result details.`,
 							},
 						],
 						details: {
-							action: "status",
+							action: "status" as ActionType,
 							tasks: [...tasks],
 							error: "unknown action",
 						} as PlanTrackerDetails,
@@ -313,6 +424,7 @@ State persists across conversation branches via tool result details.`,
 				action: params.action,
 				tasks: result.tasks,
 				...(result.error ? { error: result.error } : {}),
+				...(result.updatedIndex !== undefined ? { updatedIndex: result.updatedIndex } : {}),
 			};
 
 			return {
@@ -325,8 +437,7 @@ State persists across conversation branches via tool result details.`,
 			let text = theme.fg("toolTitle", theme.bold("plan_tracker "));
 			text += theme.fg("muted", args.action);
 			if (args.action === "update" && args.index !== undefined) {
-				text += ` ${theme.fg("accent", `[${args.index}]`)}`;
-				if (args.status) text += ` → ${theme.fg("dim", args.status)}`;
+				text += ` ${theme.fg("accent", `[${args.index}]`)} → ${theme.fg("dim", args.status)}`;
 			}
 			if (args.action === "init" && args.tasks) {
 				text += ` ${theme.fg("dim", `(${args.tasks.length} tasks)`)}`;
@@ -334,7 +445,7 @@ State persists across conversation branches via tool result details.`,
 			return new Text(text, 0, 0);
 		},
 
-		renderResult(result: any, _options: any, theme: any) {
+		renderResult(result: any, { expanded }: any, theme: any, _context: any) {
 			const details = result.details as PlanTrackerDetails | undefined;
 			if (!details) {
 				const content = result.content?.[0];
@@ -369,12 +480,21 @@ State persists across conversation branches via tool result details.`,
 					const complete = taskList.filter(
 						(t) => t.status === "complete",
 					).length;
+					const idx = details.updatedIndex;
+					const taskName = (idx !== undefined && taskList[idx]) ? taskList[idx].name : "?";
+					const allDone = complete === taskList.length;
+					if (allDone) {
+						return new Text(
+							theme.fg("success", "✓ ") +
+								theme.fg("muted", `All ${taskList.length} tasks complete`),
+							0,
+							0,
+						);
+					}
 					return new Text(
 						theme.fg("success", "✓ ") +
-							theme.fg(
-								"muted",
-								`Updated (${complete}/${taskList.length} complete)`,
-							),
+							theme.fg("muted", `${taskName}`) +
+							theme.fg("dim", ` — ${complete}/${taskList.length} done`),
 						0,
 						0,
 					);
@@ -390,10 +510,10 @@ State persists across conversation branches via tool result details.`,
 					const complete = taskList.filter(
 						(t) => t.status === "complete",
 					).length;
-					let text = theme.fg(
-						"muted",
-						`${complete}/${taskList.length} complete`,
-					);
+					const summary = theme.fg("muted", `${complete}/${taskList.length} complete`);
+					if (!expanded) return new Text(summary, 0, 0);
+
+					let text = summary;
 					for (const t of taskList) {
 						const icon =
 							t.status === "complete"
@@ -402,6 +522,37 @@ State persists across conversation branches via tool result details.`,
 									? theme.fg("warning", "→")
 									: theme.fg("dim", "○");
 						text += `\n${icon} ${theme.fg("muted", t.name)}`;
+					}
+					return new Text(text, 0, 0);
+				}
+				case "review": {
+					if (taskList.length === 0) {
+						return new Text(theme.fg("dim", "No plan active"), 0, 0);
+					}
+					const complete = taskList.filter((t) => t.status === "complete").length;
+					const summary = theme.bold(theme.fg("accent", "Plan Review ")) +
+						theme.fg("muted", `${complete}/${taskList.length}`);
+					if (!expanded) return new Text(summary, 0, 0);
+
+					let text = summary;
+					const groups: [string, TaskStatus, string][] = [
+						["In Progress", "in_progress", "→"],
+						["Pending", "pending", "○"],
+						["Complete", "complete", "✓"],
+					];
+					for (const [label, status, icon] of groups) {
+						const group = taskList.filter((t) => t.status === status);
+						if (group.length === 0) continue;
+						text += `\n${theme.fg("muted", `${label} (${group.length}):`)}`;
+						for (const t of group) {
+							const idx = taskList.indexOf(t);
+							const ic = status === "complete"
+								? theme.fg("success", icon)
+								: status === "in_progress"
+									? theme.fg("warning", icon)
+									: theme.fg("dim", icon);
+							text += `\n  ${ic} ${theme.fg("muted", `[${idx}]`)} ${t.name}`;
+						}
 					}
 					return new Text(text, 0, 0);
 				}
@@ -422,14 +573,25 @@ State persists across conversation branches via tool result details.`,
 
 	pi.registerCommand("plan-status", {
 		description: "Show current plan tracker status",
-		handler: async (_args: any, ctx: any) => {
+		handler: async (_args: any, ctx: ExtensionContext) => {
+			reconstructState(ctx);
 			ctx.ui.notify(formatStatus(tasks), tasks.length > 0 ? "info" : "warning");
+		},
+	});
+
+	pi.registerCommand("plan-review", {
+		description: "Review plan todos grouped by status",
+		handler: async (_args: any, ctx: ExtensionContext) => {
+			reconstructState(ctx);
+			const result = handleReview(tasks);
+			ctx.ui.notify(result.text, tasks.length > 0 ? "info" : "warning");
 		},
 	});
 
 	pi.registerCommand("plan-clear", {
 		description: "Clear the active plan",
-		handler: async (_args: any, ctx: any) => {
+		handler: async (_args: any, ctx: ExtensionContext) => {
+			reconstructState(ctx);
 			const count = tasks.length;
 			tasks = [];
 			updateWidget(ctx);

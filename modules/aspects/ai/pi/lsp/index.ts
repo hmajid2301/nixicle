@@ -4,7 +4,8 @@
  * Provides an `lsp` tool for code intelligence via Language Server Protocol.
  * All modules inlined into a single file (pi loads extensions as single files).
  *
- * Actions: diagnostics, definition, references, hover, symbols, rename, code_actions, status
+ * Actions: diagnostics, definition, references, hover, symbols, rename, rename_file,
+ * code_actions, type_definition, implementation, status, reload, capabilities, request
  * Config: ~/.pi/agent/lsp.json or project-local .pi/lsp.json
  */
 
@@ -30,8 +31,14 @@ const LspParams = Type.Object({
 			"hover",
 			"symbols",
 			"rename",
+			"rename_file",
 			"code_actions",
+			"type_definition",
+			"implementation",
 			"status",
+			"reload",
+			"capabilities",
+			"request",
 		] as const,
 		{ description: "LSP operation to perform" },
 	),
@@ -39,8 +46,9 @@ const LspParams = Type.Object({
 	line: Type.Optional(Type.Number({ description: "Line number (1-indexed)" })),
 	symbol: Type.Optional(Type.String({ description: "Symbol/substring on the target line to resolve column" })),
 	query: Type.Optional(Type.String({ description: "Search query or code-action filter" })),
-	new_name: Type.Optional(Type.String({ description: "New name for rename" })),
-	apply: Type.Optional(Type.Boolean({ description: "Apply edits (default: true for rename)" })),
+	new_name: Type.Optional(Type.String({ description: "New name for rename / rename_file" })),
+	apply: Type.Optional(Type.Boolean({ description: "Apply edits (default: true for rename / rename_file; list only for code_actions unless true)" })),
+	payload: Type.Optional(Type.String({ description: "JSON payload for action=request" })),
 	timeout: Type.Optional(Type.Number({ description: "Request timeout in seconds (default: 15)" })),
 });
 
@@ -65,6 +73,7 @@ interface CodeAction {
 	command?: { title: string; command: string; arguments?: unknown[] }; diagnostics?: Diagnostic[];
 }
 interface WorkspaceEdit { changes?: Record<string, TextEdit[]>; documentChanges?: unknown[]; }
+interface ServerCapabilities { [key: string]: unknown; }
 
 interface JsonRpcRequest { jsonrpc: "2.0"; id: number; method: string; params?: unknown; }
 interface JsonRpcNotification { jsonrpc: "2.0"; method: string; params?: unknown; }
@@ -80,6 +89,7 @@ interface LspClient {
 	proc: child_process.ChildProcess; serverName: string; config: ServerConfig; cwd: string;
 	initialized: boolean; pendingRequests: Map<number, PendingRequest>; diagnostics: Map<string, Diagnostic[]>;
 	messageBuffer: Buffer; nextId: number; lastActivity: number; writeLock: Promise<void>;
+	serverCapabilities?: ServerCapabilities;
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -305,28 +315,58 @@ const CLIENT_CAPABILITIES = {
 	workspace: { applyEdit: true, workspaceEdit: { documentChanges: true }, configuration: true, symbol: { dynamicRegistration: false } },
 };
 
+// Single-flight: prevents double-spawn for concurrent calls to the same server
+const clientInitFlights = new Map<string, Promise<LspClient>>();
+
 async function getOrCreateClient(serverName: string, config: ServerConfig, cwd: string, timeoutMs = 15_000): Promise<LspClient> {
 	const existing = clients.get(serverName);
 	if (existing && existing.initialized) { existing.lastActivity = Date.now(); return existing; }
+
+	// If another call is already spawning this server, piggyback
+	const inFlight = clientInitFlights.get(serverName);
+	if (inFlight) return inFlight;
+
 	if (existing) {
+		// Someone is initializing but not through our single-flight — wait
 		return new Promise((resolve, reject) => {
 			const check = setInterval(() => { const c = clients.get(serverName); if (c?.initialized) { clearInterval(check); resolve(c); } }, 100);
 			setTimeout(() => { clearInterval(check); reject(new Error(`Timeout waiting for ${serverName} to initialize`)); }, timeoutMs);
 		});
 	}
-	const proc = child_process.spawn(config.command, config.args ?? [], { cwd, stdio: ["pipe", "pipe", "pipe"], env: { ...process.env } });
-	const client: LspClient = {
-		proc, serverName, config, cwd, initialized: false, pendingRequests: new Map(), diagnostics: new Map(),
-		messageBuffer: Buffer.alloc(0), nextId: 1, lastActivity: Date.now(), writeLock: Promise.resolve(),
-	};
-	clients.set(serverName, client);
-	startMessageReader(client);
-	await sendRequest(client, "initialize", {
-		processId: process.pid, rootUri: fileToUri(cwd), capabilities: CLIENT_CAPABILITIES, initializationOptions: config.initOptions ?? {},
-	}, timeoutMs);
-	client.initialized = true;
-	await writeMessage(client, { jsonrpc: "2.0", method: "initialized", params: {} });
-	return client;
+
+	const flight = (async () => {
+		const proc = child_process.spawn(config.command, config.args ?? [], { cwd, stdio: ["pipe", "pipe", "pipe"], env: { ...process.env } });
+
+		// Handle spawn errors (ENOENT etc.)
+		const spawnError = new Promise<never>((_, reject) => {
+			proc.on("error", (err) => reject(new Error(`Failed to start LSP server ${serverName}: ${err.message}`)));
+		});
+
+		const client: LspClient = {
+			proc, serverName, config, cwd, initialized: false, pendingRequests: new Map(), diagnostics: new Map(),
+			messageBuffer: Buffer.alloc(0), nextId: 1, lastActivity: Date.now(), writeLock: Promise.resolve(),
+		};
+		clients.set(serverName, client);
+		startMessageReader(client);
+
+		const initResult = await Promise.race([
+			sendRequest(client, "initialize", {
+				processId: process.pid, rootUri: fileToUri(cwd), capabilities: CLIENT_CAPABILITIES, initializationOptions: config.initOptions ?? {},
+			}, timeoutMs),
+			spawnError,
+		]);
+		client.serverCapabilities = initResult as ServerCapabilities;
+		client.initialized = true;
+		await writeMessage(client, { jsonrpc: "2.0", method: "initialized", params: {} });
+		return client;
+	})();
+
+	clientInitFlights.set(serverName, flight);
+	try {
+		return await flight;
+	} finally {
+		clientInitFlights.delete(serverName);
+	}
 }
 
 function sendRequest(client: LspClient, method: string, params: unknown, timeoutMs = 15_000): Promise<unknown> {
@@ -342,9 +382,17 @@ async function sendNotification(client: LspClient, method: string, params: unkno
 	await writeMessage(client, { jsonrpc: "2.0", method, params });
 }
 
+// Track open files per client to avoid duplicate didOpen (violates LSP spec)
+const openFiles = new WeakMap<LspClient, Set<string>>();
+
 async function ensureFileOpen(client: LspClient, filePath: string): Promise<void> {
+	const open = openFiles.get(client) ?? new Set<string>();
+	if (open.has(filePath)) return;
+	open.add(filePath);
+	openFiles.set(client, open);
+	const content = await readFileContent(filePath);
 	await sendNotification(client, "textDocument/didOpen", {
-		textDocument: { uri: fileToUri(filePath), languageId: detectLanguageId(filePath), version: 0, text: await readFileContent(filePath) },
+		textDocument: { uri: fileToUri(filePath), languageId: detectLanguageId(filePath), version: 0, text: content.text },
 	});
 }
 
@@ -369,7 +417,12 @@ function getActiveClients(): Map<string, LspClient> { return clients; }
 
 function fileToUri(filePath: string): string {
 	const resolved = path.resolve(filePath);
-	return process.platform === "win32" ? `file:///${resolved.replace(/\\/g, "/")}` : `file://${resolved}`;
+	if (process.platform === "win32") {
+		return `file:///${resolved.replace(/\\/g, "/").split("/").map(encodeURIComponent).join("/")}`;
+	}
+	// On POSIX, only encode segments (keep / separators)
+	const segments = resolved.split("/");
+	return `file://${segments.map((s, i) => i === 0 ? s : encodeURIComponent(s)).join("/")}`;
 }
 
 function uriToFile(uri: string): string {
@@ -391,8 +444,13 @@ function detectLanguageId(filePath: string): string {
 	return map[ext] ?? "plaintext";
 }
 
-async function readFileContent(filePath: string): Promise<string> {
-	try { return await fsPromises.readFile(filePath, "utf-8"); } catch { return ""; }
+async function readFileContent(filePath: string): Promise<{ text: string; error?: string }> {
+	try {
+		const text = await fsPromises.readFile(filePath, "utf-8");
+		return { text };
+	} catch (err: any) {
+		return { text: "", error: `Cannot read ${filePath}: ${err.message}` };
+	}
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -571,10 +629,16 @@ Actions:
 - definition: Go to definition of a symbol
 - references: Find all references to a symbol
 - hover: Get type info and documentation
-- symbols: List symbols in a file
+- symbols: List symbols in a file or workspace
 - rename: Rename a symbol across the codebase
+- rename_file: Rename a file and notify LSP servers
 - code_actions: Get available quick-fixes and refactors
+- type_definition: Go to type definition
+- implementation: Go to implementation
 - status: Show active LSP servers
+- reload: Restart matching LSP server(s)
+- capabilities: Show server capabilities
+- request: Send a raw LSP request
 
 Requires a running language server for the target language. Servers auto-start on first use.
 Config: ~/.pi/agent/lsp.json for server overrides.`,
@@ -585,7 +649,7 @@ Config: ~/.pi/agent/lsp.json for server overrides.`,
 			currentCtx = ctx;
 			const cwd = ctx.cwd ?? sessionCwd;
 			const config = loadConfig(cwd);
-			const timeoutMs = (params.timeout ?? 15) * 1000 || DEFAULT_TIMEOUT_MS;
+			const timeoutMs = Math.max(5, Math.min(300, params.timeout ?? 15)) * 1000;
 
 			try {
 				switch (params.action) {
@@ -596,7 +660,13 @@ Config: ~/.pi/agent/lsp.json for server overrides.`,
 					case "hover": return await handleHover(params, config, cwd, timeoutMs);
 					case "symbols": return await handleSymbols(params, config, cwd, timeoutMs);
 					case "rename": return await handleRename(params, config, cwd, timeoutMs);
+					case "rename_file": return await handleRenameFile(params, config, cwd, timeoutMs);
 					case "code_actions": return await handleCodeActions(params, config, cwd, timeoutMs);
+					case "type_definition": return await handleTypeDefinition(params, config, cwd, timeoutMs);
+					case "implementation": return await handleImplementation(params, config, cwd, timeoutMs);
+					case "reload": return await handleReload(params, config, cwd, timeoutMs);
+					case "capabilities": return await handleCapabilities(params, config, cwd, timeoutMs);
+					case "request": return await handleRequest(params, config, cwd, timeoutMs);
 					default: return errorResult(`Unknown action: ${params.action}`);
 				}
 			} catch (err: any) {
@@ -665,7 +735,7 @@ Config: ~/.pi/agent/lsp.json for server overrides.`,
 		if (args?.file) {
 			lastDiagFile = resolvePath(args.file, process.cwd());
 			if (!diagTimer) {
-				diagTimer = setInterval(() => { try { refreshDiagWidget(currentCtx, loadConfig(process.cwd()), process.cwd()); } catch {} }, 3000);
+				diagTimer = setInterval(() => { try { const diagCwd = currentCtx?.cwd ?? sessionCwd; refreshDiagWidget(currentCtx, loadConfig(diagCwd), diagCwd); } catch {} }, 3000);
 				if (diagTimer.unref) diagTimer.unref();
 			}
 		}
@@ -717,16 +787,7 @@ Config: ~/.pi/agent/lsp.json for server overrides.`,
 	}
 
 	async function handleDefinition(params: LspParamsType, config: LspConfig, cwd: string, timeoutMs: number) {
-		if (!params.file || !params.line) return errorResult("file and line are required for definition");
-		const { client, filePath, position } = await resolvePosition(params, config, cwd, timeoutMs);
-		const result = await sendRequest(client, "textDocument/definition", { textDocument: { uri: fileToUri(filePath) }, position }, timeoutMs);
-		if (!result) return textResult("No definition found.");
-		const locations = Array.isArray(result) ? result : [result];
-		const formatted = locations.map((loc: any) => {
-			if (loc.targetUri) return formatLocation({ uri: loc.targetUri, range: loc.targetSelectionRange ?? loc.targetRange }, cwd);
-			return formatLocation(loc as Location, cwd);
-		}).join("\n\n");
-		return textResult(formatted || "No definition found.");
+		return handleLocationRequest("definition", "textDocument/definition", "No definition found.", params, config, cwd, timeoutMs);
 	}
 
 	async function handleReferences(params: LspParamsType, config: LspConfig, cwd: string, timeoutMs: number) {
@@ -748,7 +809,27 @@ Config: ~/.pi/agent/lsp.json for server overrides.`,
 	}
 
 	async function handleSymbols(params: LspParamsType, config: LspConfig, cwd: string, timeoutMs: number) {
-		if (!params.file) return errorResult("file is required for symbols");
+		if (!params.file || params.file === "*") {
+			if (!params.query) return errorResult("query is required for workspace symbols");
+			const targets = getAllAvailableServers(config, cwd);
+			if (targets.length === 0) return textResult("No LSP servers available.");
+			const seen = new Set<string>();
+			const lines: string[] = [];
+			for (const target of targets) {
+				const client = await getOrCreateClient(target.name, target.config, cwd, timeoutMs);
+				const result = await sendRequest(client, "workspace/symbol", { query: params.query }, timeoutMs);
+				if (!Array.isArray(result)) continue;
+				for (const sym of result as SymbolInformation[]) {
+					const key = `${sym.name}:${sym.location?.uri}:${sym.location?.range?.start?.line}`;
+					if (seen.has(key)) continue;
+					seen.add(key);
+					const rel = path.relative(cwd, uriToFile(sym.location.uri));
+					lines.push(`${sym.name} @ ${rel}:${sym.location.range.start.line + 1}:${sym.location.range.start.character + 1}`);
+				}
+			}
+			const truncated = lines.length > 200;
+			return textResult(lines.length ? lines.slice(0, 200).join("\n") + (truncated ? `\n\n... and ${lines.length - 200} more` : "") : `No symbols found for \"${params.query}\".`);
+		}
 		const filePath = resolvePath(params.file, cwd);
 		const servers = getServersForFile(config, filePath, cwd);
 		if (servers.length === 0) return errorResult(`No LSP server found for ${params.file}`);
@@ -783,22 +864,171 @@ Config: ~/.pi/agent/lsp.json for server overrides.`,
 		const { client, filePath, position } = await resolvePosition(params, config, cwd, timeoutMs);
 		const result = await sendRequest(client, "textDocument/codeAction", {
 			textDocument: { uri: fileToUri(filePath) }, range: { start: position, end: position },
-			context: { diagnostics: [], only: params.query ? [params.query] : undefined },
+			context: { diagnostics: [], only: params.query && params.apply !== true ? [params.query] : undefined },
 		}, timeoutMs);
 		if (!result || !Array.isArray(result) || result.length === 0) return textResult("No code actions available at this position.");
 		const actions = result as CodeAction[];
-		if (params.apply !== false && params.query) {
-			const idx = parseInt(params.query) - 1;
-			const matched = actions[idx] ?? actions.find((a) => a.title.includes(params.query!));
-			if (matched?.edit) {
+		if (params.apply === true && params.query) {
+			const idx = Number.parseInt(params.query, 10);
+			const matched = Number.isFinite(idx)
+				? actions[idx] ?? actions[idx - 1]
+				: actions.find((a) => a.title.toLowerCase().includes(params.query!.toLowerCase()));
+			if (!matched) return textResult(`No code action matches "${params.query}".\n${formatCodeActions(actions)}`);
+			if (matched.edit) {
 				const applied = await applyWorkspaceEdit(matched.edit, cwd);
 				return textResult(`Applied: ${matched.title}\n${applied.join("\n")}`);
 			}
+			if (matched.command) {
+				await sendRequest(client, "workspace/executeCommand", matched.command, timeoutMs);
+				return textResult(`Executed: ${matched.title}`);
+			}
+			return textResult(`Action "${matched.title}" has no workspace edit or command to apply.`);
 		}
 		return textResult(formatCodeActions(actions));
 	}
 
+	async function handleTypeDefinition(params: LspParamsType, config: LspConfig, cwd: string, timeoutMs: number) {
+		return handleLocationRequest("type_definition", "textDocument/typeDefinition", "No type definition found.", params, config, cwd, timeoutMs);
+	}
+
+	async function handleImplementation(params: LspParamsType, config: LspConfig, cwd: string, timeoutMs: number) {
+		return handleLocationRequest("implementation", "textDocument/implementation", "No implementation found.", params, config, cwd, timeoutMs);
+	}
+
+	async function handleLocationRequest(_action: string, method: string, emptyMessage: string, params: LspParamsType, config: LspConfig, cwd: string, timeoutMs: number) {
+		if (!params.file || !params.line) return errorResult(`file and line are required for ${params.action}`);
+		const { client, filePath, position } = await resolvePosition(params, config, cwd, timeoutMs);
+		const result = await sendRequest(client, method, { textDocument: { uri: fileToUri(filePath) }, position }, timeoutMs);
+		if (!result) return textResult(emptyMessage);
+		const locations = Array.isArray(result) ? result : [result];
+		const formatted = locations.map((loc: any) => {
+			if (loc.targetUri) return formatLocation({ uri: loc.targetUri, range: loc.targetSelectionRange ?? loc.targetRange }, cwd);
+			return formatLocation(loc as Location, cwd);
+		}).join("\n\n");
+		return textResult(formatted || emptyMessage);
+	}
+
+	async function handleCapabilities(params: LspParamsType, config: LspConfig, cwd: string, timeoutMs: number) {
+		const targets = params.file && params.file !== "*"
+			? getServersForFile(config, resolvePath(params.file, cwd), cwd)
+			: getAllAvailableServers(config, cwd);
+		if (targets.length === 0) return textResult("No LSP servers available.");
+		const blocks: string[] = [];
+		for (const target of targets) {
+			try {
+				const client = await getOrCreateClient(target.name, target.config, cwd, timeoutMs);
+				blocks.push(`${target.name}:\n${JSON.stringify(client.serverCapabilities ?? {}, null, 2)}`);
+			} catch (err: any) {
+				blocks.push(`${target.name}: failed to start (${err?.message ?? err})`);
+			}
+		}
+		return textResult(blocks.join("\n\n"));
+	}
+
+	async function handleReload(params: LspParamsType, config: LspConfig, cwd: string, timeoutMs: number) {
+		const targets = params.file && params.file !== "*"
+			? getServersForFile(config, resolvePath(params.file, cwd), cwd)
+			: getAllAvailableServers(config, cwd);
+		if (targets.length === 0) return textResult("No LSP servers available to reload.");
+		const lines: string[] = [];
+		for (const target of targets) {
+			const existing = getActiveClients().get(target.name);
+			if (existing) {
+				await shutdownClient(target.name);
+			}
+			try {
+				await getOrCreateClient(target.name, target.config, cwd, timeoutMs);
+				lines.push(`Reloaded ${target.name}`);
+			} catch (err: any) {
+				lines.push(`Failed to reload ${target.name}: ${err?.message ?? err}`);
+			}
+		}
+		return textResult(lines.join("\n"));
+	}
+
+	async function handleRequest(params: LspParamsType, config: LspConfig, cwd: string, timeoutMs: number) {
+		if (!params.query) return errorResult("query is required for request");
+		const target = await resolveRequestTarget(params, config, cwd, timeoutMs);
+		if (!target) return errorResult("No LSP server available for request");
+		const { client, requestParams } = target;
+		try {
+			const result = await sendRequest(client, params.query, requestParams, timeoutMs);
+			const text = typeof result === "string" ? result : JSON.stringify(result ?? null, null, 2);
+			return textResult(`${client.serverName} ← ${params.query}:\n${text}`);
+		} catch (err: any) {
+			return errorResult(`LSP error from ${client.serverName} on ${params.query}: ${err?.message ?? err}`);
+		}
+	}
+
+	async function handleRenameFile(params: LspParamsType, config: LspConfig, cwd: string, timeoutMs: number) {
+		if (!params.file || !params.new_name) return errorResult("file and new_name are required for rename_file");
+		const oldPath = resolvePath(params.file, cwd);
+		const newPath = resolvePath(params.new_name, cwd);
+		if (oldPath === newPath) return errorResult("rename_file source and destination are identical");
+		if (!fs.existsSync(oldPath)) return errorResult(`rename_file source does not exist: ${params.file}`);
+		if (fs.existsSync(newPath)) return errorResult(`rename_file destination already exists: ${params.new_name}`);
+		const files = [{ oldUri: fileToUri(oldPath), newUri: fileToUri(newPath) }];
+		const targets = getAllAvailableServers(config, cwd);
+		const previews: string[] = [];
+		const edits: WorkspaceEdit[] = [];
+		for (const target of targets) {
+			try {
+				const client = await getOrCreateClient(target.name, target.config, cwd, timeoutMs);
+				const edit = await sendRequest(client, "workspace/willRenameFiles", { files }, timeoutMs) as WorkspaceEdit | null;
+				if (edit && (edit.changes || edit.documentChanges)) {
+					edits.push(edit);
+					previews.push(`${target.name}: ${formatWorkspaceEditSummary(edit, cwd)}`);
+				}
+			} catch {}
+		}
+		if (params.apply === false) {
+			return textResult([`Rename preview: ${path.relative(cwd, oldPath)} → ${path.relative(cwd, newPath)}`, ...(previews.length ? previews : ["No workspace edits."])].join("\n"));
+		}
+		// Rename file first, then apply workspace edits — avoids inconsistent state on rename failure
+		await fsPromises.mkdir(path.dirname(newPath), { recursive: true });
+		await fsPromises.rename(oldPath, newPath);
+		const applied: string[] = [];
+		for (const edit of edits) { try { applied.push(...await applyWorkspaceEdit(edit, cwd)); } catch {} }
+		for (const target of targets) {
+			try {
+				const client = await getOrCreateClient(target.name, target.config, cwd, timeoutMs);
+				await sendNotification(client, "workspace/didRenameFiles", { files });
+			} catch {}
+		}
+		return textResult([`Renamed ${path.relative(cwd, oldPath)} → ${path.relative(cwd, newPath)}`, ...applied].join("\n"));
+	}
+
+	function formatWorkspaceEditSummary(edit: WorkspaceEdit, cwd: string): string {
+		const lines: string[] = [];
+		if (edit.changes) {
+			for (const [uri, textEdits] of Object.entries(edit.changes)) lines.push(`${path.relative(cwd, uriToFile(uri))}: ${textEdits.length} change(s)`);
+		}
+		if (edit.documentChanges) lines.push(`${edit.documentChanges.length} document change(s)`);
+		return lines.join(", ") || "No changes";
+	}
+
 	// ── Helpers ────────────────────────────────────────────────────────────
+
+	async function resolveRequestTarget(params: LspParamsType, config: LspConfig, cwd: string, timeoutMs: number) {
+		if (params.file && params.file !== "*") {
+			const filePath = resolvePath(params.file, cwd);
+			const servers = getServersForFile(config, filePath, cwd);
+			if (servers.length === 0) return null;
+			const client = await getOrCreateClient(servers[0].name, servers[0].config, cwd, timeoutMs);
+			await ensureFileOpen(client, filePath);
+			if (params.payload) { try { return { client, requestParams: JSON.parse(params.payload) }; } catch (e: any) { throw new Error(`Invalid JSON payload: ${e.message}`); } }
+			if (params.line) {
+				const line = Math.max(0, params.line - 1);
+				const character = params.symbol ? resolveSymbolColumn(filePath, line, params.symbol) : 0;
+				return { client, requestParams: { textDocument: { uri: fileToUri(filePath) }, position: { line, character } } };
+			}
+			return { client, requestParams: { textDocument: { uri: fileToUri(filePath) } } };
+		}
+		const servers = getAllAvailableServers(config, cwd);
+		if (servers.length === 0) return null;
+		const client = await getOrCreateClient(servers[0].name, servers[0].config, cwd, timeoutMs);
+		return { client, requestParams: params.payload ? (() => { try { return JSON.parse(params.payload); } catch (e: any) { throw new Error(`Invalid JSON payload: ${e.message}`); } })() : {} };
+	}
 
 	async function resolvePosition(params: LspParamsType, config: LspConfig, cwd: string, timeoutMs: number) {
 		const filePath = resolvePath(params.file!, cwd);

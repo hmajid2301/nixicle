@@ -288,9 +288,10 @@ async function execPg(pi: ExtensionAPI, db: DiscoveredDB, sql: string, format: "
 		psqlArgs.splice(1, 0, "-t", "-A");
 	}
 
+	const psqlEnv = { ...process.env, PGPASSWORD: process.env.PGPASSWORD ?? db.password ?? "postgres" };
 	const result = await pi.exec("psql", psqlArgs, {
 		timeout: 30_000,
-		env: { PGPASSWORD: "postgres" }, // default, user can override
+		env: psqlEnv,
 	});
 
 	if (result.code !== 0 && !result.killed) {
