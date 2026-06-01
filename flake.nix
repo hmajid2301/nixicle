@@ -10,16 +10,8 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     catppuccin.url = "github:catppuccin/nix";
-    catppuccin-obs = {
-      url = "github:catppuccin/obs";
-      flake = false;
-    };
     comma = {
       url = "github:nix-community/comma";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    dankMaterialShell = {
-      url = "github:AvengeMedia/DankMaterialShell";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     den.url = "github:vic/den";
@@ -35,10 +27,6 @@
     flake-parts = {
       url = "github:hercules-ci/flake-parts";
       inputs.nixpkgs-lib.follows = "nixpkgs";
-    };
-    get-shit-done = {
-      url = "github:gsd-build/get-shit-done/v1.21.1";
-      flake = false;
     };
     goroutinely = {
       url = "gitlab:hmajid2301/goroutinely/fix-broken";
@@ -58,6 +46,10 @@
     };
     impermanence.url = "github:nix-community/impermanence";
     import-tree.url = "github:vic/import-tree";
+    ketch-src = {
+      url = "github:1broseidon/ketch";
+      flake = false;
+    };
     lanzaboote.url = "github:nix-community/lanzaboote";
     lettucego = {
       url = "gitlab:hmajid2301/lettucego";
@@ -72,10 +64,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nix-index-database.url = "github:nix-community/nix-index-database";
-    nix-playwright-mcp = {
-      url = "github:benjaminkitt/nix-playwright-mcp";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     nix-topology = {
       url = "github:oddlama/nix-topology";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -157,6 +145,10 @@
       url = "github:igorlfs/nvim-dap-view";
       flake = false;
     };
+    plugins-pi-nvim = {
+      url = "github:carderne/pi-nvim";
+      flake = false;
+    };
     plugins-templ-goto-definition = {
       url = "github:catgoose/templ-goto-definition";
       flake = false;
@@ -181,14 +173,6 @@
     tangled = {
       url = "git+https://tangled.sh/@tangled.sh/core";
       inputs.nixpkgs.follows = "nixpkgs";
-    };
-    zellij-mcp = {
-      url = "github:GitJuhb/zellij-mcp-server";
-      flake = false;
-    };
-    zellij-pane-tracker = {
-      url = "github:theslyprofessor/zellij-pane-tracker";
-      flake = false;
     };
     zjstatus.url = "github:dj95/zjstatus";
   };
