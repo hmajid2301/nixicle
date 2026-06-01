@@ -3,6 +3,8 @@
   pkgs,
   fetchFromGitHub,
   buildHomeAssistantComponent,
+  inputs,
+  ...
 }:
 buildHomeAssistantComponent rec {
   owner = "BottlecapDave";
