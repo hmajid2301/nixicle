@@ -16,7 +16,7 @@
       };
     };
 
-  den.ctx.host.includes = [
+  den.schema.host.includes = [
     (
       { class, aspect-chain }:
       den._.forward {
