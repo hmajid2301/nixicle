@@ -17,62 +17,163 @@ import type { AssistantMessage, TextContent } from "@mariozechner/pi-ai";
 import type { ExtensionAPI, ExtensionContext } from "@mariozechner/pi-coding-agent";
 import { Key } from "@mariozechner/pi-tui";
 
-// ── Plan Utils (inlined from plan-utils.ts) ──────────────────────────────────
-
+// NOTE: pi extension loader no resolve relative TS imports at runtime.
+// Keep plan-mode self-contained (copy from plan-utils.ts).
 const DESTRUCTIVE_PATTERNS = [
-	/\brm\b/i, /\brmdir\b/i, /\bmv\b/i, /\bcp\b/i, /\bmkdir\b/i, /\btouch\b/i,
-	/\bchmod\b/i, /\bchown\b/i, /\bchgrp\b/i, /\bln\b/i, /\btee\b/i, /\btruncate\b/i,
-	/\bdd\b/i, /\bshred\b/i, /(^|[^<])>(?!>)/, />>/,
-	/\bnpm\s+(install|uninstall|update|ci|link|publish)/i,
-	/\byarn\s+(add|remove|install|publish)/i, /\bpnpm\s+(add|remove|install|publish)/i,
-	/\bpip\s+(install|uninstall)/i, /\bapt(-get)?\s+(install|remove|purge|update|upgrade)/i,
-	/\bbrew\s+(install|uninstall|upgrade)/i,
-	/\bgit\s+(add|commit|push|pull|merge|rebase|reset|checkout|branch\s+-[dD]|stash|cherry-pick|revert|tag|init|clone)/i,
-	/\bsudo\b/i, /\bsu\b/i, /\bkill\b/i, /\bpkill\b/i, /\bkillall\b/i,
-	/\breboot\b/i, /\bshutdown\b/i,
-	/\bsystemctl\s+(start|stop|restart|enable|disable)/i,
-	/\bservice\s+\S+\s+(start|stop|restart)/i,
+	/\brm\b/i,
+	/\brmdir\b/i,
+	/\bmv\b/i,
+	/\bcp\b/i,
+	/\bmkdir\b/i,
+	/\btouch\b/i,
+	/\bchmod\b/i,
+	/\bchown\b/i,
+	/\bchgrp\b/i,
+	/\bln\b/i,
+	/\btee\b/i,
+	/\btruncate\b/i,
+	/\bdd\b/i,
+	/\bshred\b/i,
+	/(^|[^<])>(?!>)/,
+	/>>/,
+	/\bnpm\s+(install|uninstall|update|ci|link|publish)\b/i,
+	/\byarn\s+(add|remove|install|publish)\b/i,
+	/\bpnpm\s+(add|remove|install|publish)\b/i,
+	/\bpip\s+(install|uninstall)\b/i,
+	/\bapt(-get)?\s+(install|remove|purge|update|upgrade)\b/i,
+	/\bbrew\s+(install|uninstall|upgrade)\b/i,
+	/\bgit\s+(add|commit|push|pull|merge|rebase|reset|checkout|branch\s+-[dD]|stash|cherry-pick|revert|tag|init|clone)\b/i,
+	/\bsudo\b/i,
+	/\bsu\b/i,
+	/\bkill\b/i,
+	/\bpkill\b/i,
+	/\bkillall\b/i,
+	/\breboot\b/i,
+	/\bshutdown\b/i,
+	/\bsystemctl\s+(start|stop|restart|enable|disable)\b/i,
+	/\bservice\s+\S+\s+(start|stop|restart)\b/i,
 	/\b(vim?|nano|emacs|code|subl)\b/i,
 ];
 
 const SAFE_PATTERNS = [
-	/^\s*cat\b/, /^\s*head\b/, /^\s*tail\b/, /^\s*less\b/, /^\s*more\b/,
-	/^\s*grep\b/, /^\s*find\b/, /^\s*ls\b/, /^\s*pwd\b/, /^\s*echo\b/,
-	/^\s*printf\b/, /^\s*wc\b/, /^\s*sort\b/, /^\s*uniq\b/, /^\s*diff\b/,
-	/^\s*file\b/, /^\s*stat\b/, /^\s*du\b/, /^\s*df\b/, /^\s*tree\b/,
-	/^\s*which\b/, /^\s*whereis\b/, /^\s*type\b/, /^\s*env\b/, /^\s*printenv\b/,
-	/^\s*uname\b/, /^\s*whoami\b/, /^\s*id\b/, /^\s*date\b/, /^\s*cal\b/,
-	/^\s*uptime\b/, /^\s*ps\b/, /^\s*top\b/, /^\s*htop\b/, /^\s*free\b/,
-	/^\s*git\s+(status|log|diff|show|branch|remote|config\s+--get)/i,
-	/^\s*git\s+ls-/i, /^\s*npm\s+(list|ls|view|info|search|outdated|audit)/i,
-	/^\s*yarn\s+(list|info|why|audit)/i, /^\s*node\s+--version/i,
-	/^\s*python\s+--version/i, /^\s*curl\s/i, /^\s*wget\s+-O\s*-/i,
-	/^\s*jq\b/, /^\s*sed\s+-n/i, /^\s*awk\b/, /^\s*rg\b/, /^\s*fd\b/,
-	/^\s*bat\b/, /^\s*eza\b/,
+	/^\s*cat\b/,
+	/^\s*head\b/,
+	/^\s*tail\b/,
+	/^\s*less\b/,
+	/^\s*more\b/,
+	/^\s*grep\b/,
+	/^\s*find\b/,
+	/^\s*ls\b/,
+	/^\s*pwd\b/,
+	/^\s*echo\b/,
+	/^\s*printf\b/,
+	/^\s*wc\b/,
+	/^\s*sort\b/,
+	/^\s*uniq\b/,
+	/^\s*diff\b/,
+	/^\s*file\b/,
+	/^\s*stat\b/,
+	/^\s*tree\b/,
+	/^\s*which\b/,
+	/^\s*whoami\b/,
+	/^\s*id\b/,
+	/^\s*uname\b/,
+	/^\s*date\b/,
+	/^\s*env\b/,
+	/^\s*printenv\b/,
+	/^\s*ps\b/,
+	/^\s*top\b/,
+	/^\s*htop\b/,
+	/^\s*free\b/,
+	/^\s*df\b/,
+	/^\s*du\b/,
+	/^\s*ip\b/,
+	/^\s*ss\b/,
+	/^\s*netstat\b/,
+	/^\s*lsof\b/,
+	/^\s*journalctl\b/,
+	/^\s*systemctl\s+status\b/i,
+	/^\s*nix\s+info\b/i,
+	/^\s*nix\s+flake\s+show\b/i,
+	/^\s*nix\s+flake\s+metadata\b/i,
+	/^\s*nix\s+path-info\b/i,
+	/^\s*nix\s+show-derivation\b/i,
+	/^\s*nix\s+log\b/i,
+	/^\s*nix\s+why-depends\b/i,
+	/^\s*go\s+(env|list|version|test\s+-c)\b/i,
+	/^\s*cargo\s+(metadata|version)\b/i,
+	/^\s*python\s+--version\b/i,
+	/^\s*node\s+--version\b/i,
+	/^\s*bun\s+--version\b/i,
+	/^\s*npm\s+--version\b/i,
+	/^\s*yarn\s+--version\b/i,
+	/^\s*pnpm\s+--version\b/i,
+	/^\s*git\s+(status|diff|log|show|rev-parse|branch|remote\s+-v)\b/i,
+	/^\s*awk\b/,
+	/^\s*rg\b/,
+	/^\s*fd\b/,
+	/^\s*bat\b/,
+	/^\s*eza\b/,
+	/^\s*docker\s+ps\b/i,
+	/^\s*docker\s+compose\s+ps\b/i,
+	/^\s*nix\s+build\s+--dry-run\b/i,
+	/^\s*nix\s+eval\b/i,
+	/^\s*cargo\s+check\b/i,
+	/^\s*cargo\s+clippy\b/i,
+	/^\s*cargo\s+test\s+--no-run\b/i,
 ];
 
 function isSafeCommand(command: string): boolean {
-	return !DESTRUCTIVE_PATTERNS.some(p => p.test(command)) && SAFE_PATTERNS.some(p => p.test(command));
+	const normalizedCommand = command.replace(/(["'`])(?:\\.|(?!\1)[^\\])*\1/g, "");
+	const isDestructive = DESTRUCTIVE_PATTERNS.some((p) => p.test(normalizedCommand));
+	const isSafe = SAFE_PATTERNS.some((p) => p.test(command));
+	return !isDestructive && isSafe;
 }
 
-interface TodoItem { step: number; text: string; completed: boolean; }
+interface TodoItem {
+	step: number;
+	text: string;
+	completed: boolean;
+}
 
 function cleanStepText(text: string): string {
-	let c = text.replace(/\*{1,2}([^*]+)\*{1,2}/g, "$1").replace(/`([^`]+)`/g, "$1")
-		.replace(/^(Use|Run|Execute|Create|Write|Read|Check|Verify|Update|Modify|Add|Remove|Delete|Install)\s+(the\s+)?/i, "")
-		.replace(/\s+/g, " ").trim();
-	if (c.length > 0) c = c.charAt(0).toUpperCase() + c.slice(1);
-	if (c.length > 50) c = `${c.slice(0, 47)}...`;
-	return c;
+	let cleaned = text
+		.replace(/\*{1,2}([^*]+)\*{1,2}/g, "$1")
+		.replace(/`([^`]+)`/g, "$1")
+		.replace(
+			/^(Use|Run|Execute|Create|Write|Read|Check|Verify|Update|Modify|Add|Remove|Delete|Install)\s+(the\s+)?/i,
+			"",
+		)
+		.replace(/^(?:\s*[-*+]\s+|\s*\d+[.)]\s+)/, "")
+		.replace(/\s+/g, " ")
+		.trim();
+
+	if (cleaned.length > 0) cleaned = cleaned.charAt(0).toUpperCase() + cleaned.slice(1);
+	if (cleaned.length > 50) {
+		let truncated = cleaned.slice(0, 47);
+		const lastSpace = truncated.lastIndexOf(" ");
+		if (lastSpace > 0) truncated = truncated.slice(0, lastSpace);
+		cleaned = `${truncated}...`;
+	}
+	return cleaned;
 }
 
 function extractTodoItems(message: string): TodoItem[] {
 	const items: TodoItem[] = [];
 	const headerMatch = message.match(/\*{0,2}Plan:\*{0,2}\s*\n/i);
 	if (!headerMatch) return items;
+
 	const planSection = message.slice(message.indexOf(headerMatch[0]) + headerMatch[0].length);
-	for (const match of planSection.matchAll(/^\s*(\d+)[.)]\s+\*{0,2}([^*\n]+)/gm)) {
-		const text = match[2].trim().replace(/\*{1,2}$/, "").trim();
+	const numberedPattern = /^\s*(\d+)[.)]\s+(.+?)(?=\n\s*\d+[.)]\s+|\n*$)/gms;
+
+	for (const match of planSection.matchAll(numberedPattern)) {
+		const text = match[2]
+			.split("\n")
+			.find((line) => line.trim().length > 0 && !/^\s*[-*]\s+/.test(line))
+			?.trim()
+			.replace(/\*{1,2}$/, "")
+			.trim();
+		if (!text) continue;
 		if (text.length > 5 && !text.startsWith("`") && !text.startsWith("/") && !text.startsWith("-")) {
 			const cleaned = cleanStepText(text);
 			if (cleaned.length > 3) items.push({ step: items.length + 1, text: cleaned, completed: false });
@@ -81,15 +182,26 @@ function extractTodoItems(message: string): TodoItem[] {
 	return items;
 }
 
-function markCompletedSteps(text: string, items: TodoItem[]): number {
-	const doneSteps = [...text.matchAll(/\[DONE:(\d+)\]/gi)].map(m => Number(m[1])).filter(Number.isFinite);
-	for (const step of doneSteps) { const item = items.find(t => t.step === step); if (item) item.completed = true; }
-	return doneSteps.length;
+function extractDoneSteps(message: string): number[] {
+	const steps: number[] = [];
+	for (const match of message.matchAll(/\[DONE:(\d+)\]/gi)) {
+		const step = Number(match[1]);
+		if (Number.isFinite(step)) steps.push(step);
+	}
+	return steps;
+}
+
+function markCompletedSteps(text: string, items: TodoItem[]): TodoItem[] {
+	const doneSteps = new Set(extractDoneSteps(text));
+	return items.map((item) => ({
+		...item,
+		completed: item.completed || doneSteps.has(item.step),
+	}));
 }
 
 // Tools
-const PLAN_MODE_TOOLS = ["read", "bash", "grep", "find", "ls", "questionnaire"];
-const NORMAL_MODE_TOOLS = ["read", "bash", "edit", "write"];
+const PLAN_MODE_TOOLS = ["read", "bash", "grep", "find", "ls", "ask_user_question"];
+const NORMAL_MODE_TOOLS = ["read", "bash", "edit", "write", "grep", "find", "ls", "ask_user_question"];
 
 // Type guard for assistant messages
 function isAssistantMessage(m: AgentMessage): m is AssistantMessage {
@@ -116,6 +228,8 @@ export default function planModeExtension(pi: ExtensionAPI): void {
 	});
 
 	function updateStatus(ctx: ExtensionContext): void {
+		if (!ctx.hasUI) return;
+
 		// Footer status
 		if (executionMode && todoItems.length > 0) {
 			const completed = todoItems.filter((t) => t.completed).length;
@@ -234,11 +348,11 @@ export default function planModeExtension(pi: ExtensionAPI): void {
 You are in plan mode - a read-only exploration mode for safe code analysis.
 
 Restrictions:
-- You can only use: read, bash, grep, find, ls, questionnaire
+- You can only use: read, bash, grep, find, ls, ask_user_question
 - You CANNOT use: edit, write (file modifications are disabled)
 - Bash is restricted to an allowlist of read-only commands
 
-Ask clarifying questions using the questionnaire tool.
+Ask clarifying questions using the ask_user_question tool.
 Use brave-search skill via bash for web research.
 
 Create a detailed numbered plan under a "Plan:" header:
@@ -279,7 +393,12 @@ After completing a step, include a [DONE:n] tag in your response.`,
 		if (!isAssistantMessage(event.message)) return;
 
 		const text = getTextContent(event.message);
-		if (markCompletedSteps(text, todoItems) > 0) {
+		const nextTodoItems = markCompletedSteps(text, todoItems);
+		const changed = nextTodoItems.some(
+			(item, index) => item.completed !== todoItems[index]?.completed,
+		);
+		todoItems = nextTodoItems;
+		if (changed) {
 			updateStatus(ctx);
 		}
 		persistState();
@@ -304,15 +423,12 @@ After completing a step, include a [DONE:n] tag in your response.`,
 			return;
 		}
 
-		if (!planModeEnabled || !ctx.hasUI) return;
+		if (!planModeEnabled) return;
 
 		// Extract todos from last assistant message
 		const lastAssistant = [...event.messages].reverse().find(isAssistantMessage);
 		if (lastAssistant) {
-			const extracted = extractTodoItems(getTextContent(lastAssistant));
-			if (extracted.length > 0) {
-				todoItems = extracted;
-			}
+			todoItems = extractTodoItems(getTextContent(lastAssistant));
 		}
 
 		// Show plan steps and prompt for next action
@@ -328,13 +444,7 @@ After completing a step, include a [DONE:n] tag in your response.`,
 			);
 		}
 
-		const choice = await ctx.ui.select("Plan mode - what next?", [
-			todoItems.length > 0 ? "Execute the plan (track progress)" : "Execute the plan",
-			"Stay in plan mode",
-			"Refine the plan",
-		]);
-
-		if (choice?.startsWith("Execute")) {
+		const executePlan = (): void => {
 			planModeEnabled = false;
 			executionMode = todoItems.length > 0;
 			pi.setActiveTools(NORMAL_MODE_TOOLS);
@@ -348,10 +458,44 @@ After completing a step, include a [DONE:n] tag in your response.`,
 				{ customType: "plan-mode-execute", content: execMessage, display: true },
 				{ triggerTurn: true },
 			);
+		};
+
+		if (!ctx.hasUI) {
+			if (todoItems.length === 0) {
+				pi.sendMessage(
+					{
+						customType: "plan-mode-warning",
+						content:
+							"Warning: no todo items were extracted from the plan. Proceeding with full access and without progress tracking.",
+						display: true,
+					},
+					{ triggerTurn: false },
+				);
+			}
+			executePlan();
+			return;
+		}
+
+		const executeLabel = todoItems.length > 0 ? "Execute the plan (track progress)" : "Execute the plan";
+		const choices =
+			todoItems.length > 0
+				? [executeLabel, "Stay in plan mode", "Refine the plan"]
+				: [executeLabel, "Stay in plan mode", "Refine the plan"];
+
+		const choice = await ctx.ui.select("Plan mode - what next?", choices);
+
+		if (choice === executeLabel && todoItems.length > 0) {
+			executePlan();
+		} else if (choice === "Execute the plan") {
+			const confirmed = await ctx.ui.select(
+				"No todo items were extracted. Executing now will restore full access without progress tracking. Continue?",
+				["Continue", "Stay in plan mode"],
+			);
+			if (confirmed === "Continue") executePlan();
 		} else if (choice === "Refine the plan") {
 			const refinement = await ctx.ui.editor("Refine the plan:", "");
 			if (refinement?.trim()) {
-				pi.sendUserMessage(refinement.trim());
+				pi.sendUserMessage(refinement.trim(), { deliverAs: "followUp" });
 			}
 		}
 	});
@@ -398,7 +542,7 @@ After completing a step, include a [DONE:n] tag in your response.`,
 				}
 			}
 			const allText = messages.map(getTextContent).join("\n");
-			markCompletedSteps(allText, todoItems);
+			todoItems = markCompletedSteps(allText, todoItems);
 		}
 
 		if (planModeEnabled) {

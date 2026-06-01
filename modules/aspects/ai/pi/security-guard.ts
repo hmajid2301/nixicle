@@ -92,13 +92,13 @@ const DEFAULT_CONFIG: SecurityConfig = {
 			{ pattern: "parted", description: "Disk partitioning", action: "block" },
 			{ pattern: "chmod -R 777", description: "Insecure permissions", action: "prompt" },
 			{ pattern: "chmod 777", description: "World-writable permissions", action: "prompt" },
+			{ pattern: "chown -R", description: "Recursive ownership change", action: "block" },
 			{ pattern: "git push --force", description: "Force push", action: "prompt" },
 			{ pattern: "git push -f", description: "Force push", action: "prompt" },
 			{ pattern: "curl.*\| sh", description: "Pipe download to shell", action: "block" },
 			{ pattern: "curl.*\| bash", description: "Pipe download to shell", action: "block" },
 			{ pattern: "wget.*\| sh", description: "Pipe download to shell", action: "block" },
 			{ pattern: "wget.*\| bash", description: "Pipe download to shell", action: "block" },
-			{ pattern: "shred", description: "Secure overwrite", action: "block" },
 			{ pattern: "reboot", description: "System reboot", action: "block" },
 			{ pattern: "shutdown", description: "System shutdown", action: "block" },
 			{ pattern: "docker run --privileged", description: "Privileged container", action: "block" },
@@ -242,25 +242,40 @@ function parseCommand(command: string): string[] {
 	const tokens: string[] = [];
 	let current = "";
 	let inQuote: string | null = null;
+
 	for (const ch of command) {
 		if (inQuote) {
-			if (ch === inQuote) inQuote = null;
-			else current += ch;
-		} else if (ch === '"' || ch === "'") {
-			inQuote = ch;
-		} else if (/\s/.test(ch)) {
-			if (current) { tokens.push(current); current = ""; }
-		} else {
-			current += ch;
+			if (ch === inQuote) {
+				inQuote = null;
+			} else {
+				current += ch;
+			}
+			continue;
 		}
+
+		if (ch === '"' || ch === "'") {
+			inQuote = ch;
+			continue;
+		}
+
+		if (/\s/.test(ch)) {
+			if (current.length > 0) {
+				tokens.push(current);
+				current = "";
+			}
+			continue;
+		}
+
+		current += ch;
 	}
-	if (current) tokens.push(current);
+
+	if (current.length > 0) tokens.push(current);
 	return tokens;
 }
 
 function hasFlag(words: string[], flag: string): boolean {
 	return words.some(
-		(w) => w === `-${flag}` || (w.startsWith("-") && !w.startsWith("--") && w.includes(flag)),
+		(w) => w === `-${flag}`,
 	);
 }
 

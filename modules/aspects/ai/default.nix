@@ -5,25 +5,77 @@ let
   agentNames = builtins.filter (name: builtins.match ".*\\.md" name != null) (
     builtins.attrNames agentFiles
   );
+  piExtensionFiles = [
+    {
+      rel = "zellij.ts";
+      src = ./pi/zellij.ts;
+    }
+    {
+      rel = "footer.ts";
+      src = ./pi/footer.ts;
+    }
+    {
+      rel = "subagents.ts";
+      src = ./pi/subagents.ts;
+    }
+    {
+      rel = "plan-mode.ts";
+      src = ./pi/plan-mode.ts;
+    }
+    {
+      rel = "nvim-edit/index.ts";
+      src = ./pi/nvim-edit/index.ts;
+    }
+    {
+      rel = "lsp/index.ts";
+      src = ./pi/lsp/index.ts;
+    }
+    {
+      rel = "debug/index.ts";
+      src = ./pi/debug/index.ts;
+    }
+    {
+      rel = "security-guard.ts";
+      src = ./pi/security-guard.ts;
+    }
+    {
+      rel = "plan-tracker.ts";
+      src = ./pi/plan-tracker.ts;
+    }
+    {
+      rel = "ask-user-question.ts";
+      src = ./pi/ask-user-question.ts;
+    }
+    {
+      rel = "db.ts";
+      src = ./pi/db.ts;
+    }
+    {
+      rel = "ketch.ts";
+      src = ./pi/ketch.ts;
+    }
+    {
+      rel = "treesitter.ts";
+      src = ./pi/treesitter.ts;
+    }
+    {
+      rel = "zk.ts";
+      src = ./pi/zk.ts;
+    }
+    {
+      rel = "pi-nvim.ts";
+      src = ./pi/pi-nvim.ts;
+    }
+    {
+      rel = "synthetic-models.ts";
+      src = ./pi/synthetic-models.ts;
+    }
+  ];
 in
 {
-  flake-file.inputs = {
-    get-shit-done = {
-      url = "github:gsd-build/get-shit-done/v1.21.1";
-      flake = false;
-    };
-    zellij-mcp = {
-      url = "github:GitJuhb/zellij-mcp-server";
-      flake = false;
-    };
-    zellij-pane-tracker = {
-      url = "github:theslyprofessor/zellij-pane-tracker";
-      flake = false;
-    };
-    nix-playwright-mcp = {
-      url = "github:benjaminkitt/nix-playwright-mcp";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+  flake-file.inputs.ketch-src = {
+    url = "github:1broseidon/ketch";
+    flake = false;
   };
 
   den.aspects.ai = {
@@ -34,27 +86,8 @@ in
         pkgs,
         ...
       }:
-      let
-        gsdPackage = pkgs.nixicle.get-shit-done;
-      in
       {
         home.file = {
-          ".claude/commands/gsd".source = "${gsdPackage}/share/claude-code/commands/gsd";
-          ".claude/get-shit-done".source = "${gsdPackage}/share/claude-code/get-shit-done";
-          ".claude/agents" = {
-            source = "${gsdPackage}/share/claude-code/agents";
-            recursive = true;
-          };
-          ".claude/hooks".source = "${gsdPackage}/share/claude-code/hooks";
-          ".config/opencode/command" = {
-            source = "${gsdPackage}/share/opencode/command";
-            recursive = true;
-          };
-          ".config/opencode/get-shit-done".source = "${gsdPackage}/share/opencode/get-shit-done";
-          ".config/opencode/agents" = {
-            source = "${gsdPackage}/share/opencode/agents";
-            recursive = true;
-          };
           ".pi/agent/models.json".source = (pkgs.formats.json { }).generate "pi-models" {
             providers = {
               llama-swap = {
@@ -65,6 +98,7 @@ in
                   { id = "qwen3-coder-30b"; }
                   { id = "qwen3-coder-30b:think"; }
                   { id = "qwen25-coder-7b"; }
+                  { id = "qwen3-vl:8b"; }
                 ];
               };
             };
@@ -73,46 +107,23 @@ in
             defaultProvider = "openai-codex";
             defaultModel = "gpt-5.4";
             defaultThinkingLevel = "medium";
+            theme = "stylix";
             packages = [
               "git:github.com/badlogic/pi-telegram"
               "git:github.com/v2nic/pi-caveman"
-              "git:github.com/elpapi42/pi-observational-memory"
-              "git:github.com/raphapr/pi-zk"
               "git:github.com/cdias900/pi-superpowers"
             ];
-            extensions = [
-              "~/.pi/agent/extensions/zellij.ts"
-              "~/.pi/agent/extensions/lualine-footer.ts"
-              "~/.pi/agent/extensions/subagents.ts"
-              "~/.pi/agent/extensions/plan-mode.ts"
-              "~/.pi/agent/extensions/stylix-theme.ts"
-              "~/.pi/agent/extensions/lsp/index.ts"
-              "~/.pi/agent/extensions/security-guard.ts"
-              "~/.pi/agent/extensions/plan-tracker.ts"
-              "~/.pi/agent/extensions/db.ts"
-            ];
+            extensions = map (ext: "~/.pi/agent/extensions/${ext.rel}") piExtensionFiles;
           };
 
-          ".pi/agent/extensions/zellij.ts".source = ../../../packages/zellij-pi-extension/index.ts;
-          ".pi/agent/extensions/lualine-footer.ts".source = ../../../packages/pi-lualine-footer/index.ts;
-          ".pi/agent/extensions/subagents.ts".source = ./pi/subagents.ts;
-          ".pi/agent/extensions/plan-mode.ts".source = ./pi/plan-mode.ts;
-          ".pi/agent/extensions/stylix-theme.ts".source = ./pi/stylix-theme.ts;
-          ".pi/agent/extensions/security-guard.ts".source = ./pi/security-guard.ts;
-          ".pi/agent/extensions/plan-tracker.ts".source = ./pi/plan-tracker.ts;
-          ".pi/agent/extensions/db.ts".source = ./pi/db.ts;
-
-          # Agent files (individual symlinks to avoid overwriting entire directory)
           ".pi/agent/agents" = {
-            source = ./pi/agents;
+            source = ./agents;
             recursive = true;
           };
 
-          # Pi theme from stylix base16 — maps palette to all 51 color tokens
           ".pi/agent/themes/stylix.json".source =
             let
-              s = config.lib.stylix.colors;
-              co = base: fallback: base.withHashtag or fallback;
+              s = config.lib.stylix.colors.withHashtag;
             in
             pkgs.writeText "stylix.json" (
               builtins.toJSON {
@@ -120,19 +131,19 @@ in
                   "https://raw.githubusercontent.com/badlogic/pi-mono/main/packages/coding-agent/src/modes/interactive/theme/theme-schema.json";
                 name = "stylix";
                 vars = {
-                  bg = co s.base00 "#282828";
-                  bgLight = co s.base01 "#383838";
-                  selection = co s.base02 "#505050";
-                  comment = co s.base03 "#665c54";
-                  fgDark = co s.base04 "#a89984";
-                  fg = co s.base05 "#bdae93";
-                  red = co s.base08 "#fb4934";
-                  orange = co s.base09 "#fe8019";
-                  yellow = co s.base0A "#fabd2f";
-                  green = co s.base0B "#b8bb26";
-                  cyan = co s.base0C "#8ec07c";
-                  blue = co s.base0D "#83a598";
-                  magenta = co s.base0E "#d3869b";
+                  bg = s.base00;
+                  bgLight = s.base01;
+                  selection = s.base02;
+                  comment = s.base03;
+                  fgDark = s.base04;
+                  fg = s.base05;
+                  red = s.base08;
+                  orange = s.base09;
+                  yellow = s.base0A;
+                  green = s.base0B;
+                  cyan = s.base0C;
+                  blue = s.base0D;
+                  magenta = s.base0E;
                 };
                 colors = {
                   accent = "blue";
@@ -189,6 +200,95 @@ in
                 };
               }
             );
+
+          ".pi/agent/themes/catppuccin-mocha.json".source = pkgs.writeText "catppuccin-mocha.json" (
+            builtins.toJSON {
+              "$schema" =
+                "https://raw.githubusercontent.com/earendil-works/pi/main/packages/coding-agent/src/modes/interactive/theme/theme-schema.json";
+              name = "catppuccin-mocha";
+              vars = {
+                base = "#1e1e2e";
+                mantle = "#181825";
+                crust = "#11111b";
+                text = "#cdd6f4";
+                subtext0 = "#a6adc8";
+                subtext1 = "#bac2de";
+                overlay0 = "#6c7086";
+                overlay1 = "#7f849c";
+                overlay2 = "#9399b2";
+                surface0 = "#313244";
+                surface1 = "#45475a";
+                surface2 = "#585b70";
+                blue = "#89b4fa";
+                lavender = "#b4befe";
+                sapphire = "#74c7ec";
+                sky = "#89dceb";
+                teal = "#94e2d5";
+                green = "#a6e3a1";
+                yellow = "#f9e2af";
+                peach = "#fab387";
+                maroon = "#eba0ac";
+                red = "#f38ba8";
+                mauve = "#cba6f7";
+                pink = "#f5c2e7";
+                flamingo = "#f2cdcd";
+                rosewater = "#f5e0dc";
+              };
+              colors = {
+                accent = "mauve";
+                border = "overlay1";
+                borderAccent = "lavender";
+                borderMuted = "overlay0";
+                success = "green";
+                error = "red";
+                warning = "yellow";
+                muted = "overlay1";
+                dim = "overlay0";
+                text = "";
+                thinkingText = "overlay1";
+                selectedBg = "surface1";
+                userMessageBg = "base";
+                userMessageText = "";
+                customMessageBg = "mantle";
+                customMessageText = "subtext0";
+                customMessageLabel = "mauve";
+                toolPendingBg = "mantle";
+                toolSuccessBg = "#1e2e1e";
+                toolErrorBg = "#2e1e1e";
+                toolTitle = "lavender";
+                toolOutput = "subtext0";
+                mdHeading = "peach";
+                mdLink = "blue";
+                mdLinkUrl = "overlay1";
+                mdCode = "sky";
+                mdCodeBlock = "";
+                mdCodeBlockBorder = "overlay0";
+                mdQuote = "overlay1";
+                mdQuoteBorder = "overlay0";
+                mdHr = "overlay0";
+                mdListBullet = "teal";
+                toolDiffAdded = "green";
+                toolDiffRemoved = "red";
+                toolDiffContext = "overlay1";
+                syntaxComment = "overlay0";
+                syntaxKeyword = "mauve";
+                syntaxFunction = "blue";
+                syntaxVariable = "text";
+                syntaxString = "green";
+                syntaxNumber = "peach";
+                syntaxType = "yellow";
+                syntaxOperator = "sky";
+                syntaxPunctuation = "overlay1";
+                thinkingOff = "overlay0";
+                thinkingMinimal = "blue";
+                thinkingLow = "sapphire";
+                thinkingMedium = "teal";
+                thinkingHigh = "yellow";
+                thinkingXhigh = "peach";
+                bashMode = "peach";
+              };
+            }
+          );
         }
         // builtins.listToAttrs (
           map (name: {
@@ -198,10 +298,12 @@ in
             };
           }) agentNames
         )
-        // {
-          # LSP extension (single file — all modules inlined)
-          ".pi/agent/extensions/lsp/index.ts".source = ./pi/lsp/index.ts;
-        };
+        // builtins.listToAttrs (
+          map (ext: {
+            name = ".pi/agent/extensions/${ext.rel}";
+            value.source = ext.src;
+          }) piExtensionFiles
+        );
 
         programs = {
           claude-code = {
@@ -217,22 +319,6 @@ in
               };
               "includeCoAuthoredBy" = false;
               "alwaysThinkingEnabled" = false;
-              hooks.SessionStart = [
-                {
-                  matcher = "";
-                  hooks = [
-                    {
-                      type = "command";
-                      command = "node";
-                      args = [ "${config.home.homeDirectory}/.claude/hooks/gsd-check-update.js" ];
-                    }
-                  ];
-                }
-              ];
-              statusline = {
-                command = "node";
-                args = [ "${config.home.homeDirectory}/.claude/hooks/gsd-statusline.js" ];
-              };
             };
 
             mcpServers = {
@@ -248,128 +334,15 @@ in
                 command = "${pkgs.mcp-nixos}/bin/mcp-nixos";
                 args = [ ];
               };
-              playwright = {
-                command = "${
-                  inputs.nix-playwright-mcp.packages.${pkgs.stdenv.hostPlatform.system}.playwright-mcp-wrapper
-                }/bin/playwright-mcp";
-                args = [ ];
-              };
-              zellij = {
-                command = "${pkgs.nixicle.zellij-mcp}/bin/zellij-mcp";
-                args = [ ];
-              };
-              zellij-pane-tracker = {
-                command = "${pkgs.nixicle.zellij-pane-tracker-plugin}/bin/zellij-pane-tracker-mcp";
-                args = [ ];
-              };
-              postgres = {
-                command = "uvx";
-                args = [
-                  "postgres-mcp"
-                  "--access-mode=unrestricted"
-                ];
-              };
             };
-          };
-
-          opencode = {
-            enable = true;
-
-            commands.session-summary = "Summarize this session. First ask: personal or work? Based on answer, create notes at ~/projects/notes/notes/{work|personal}/YYYY-MM-DD-<topic>.md with summary. Update the weekly journal at ~/projects/notes/journals/weekly/ to link it with [[filename]]. Keep it concise, bullet points, focus on what shipped.";
-
-            tui.theme = "stylix";
-
-            settings = lib.mkForce {
-              "$schema" = "https://opencode.ai/config.json";
-              model = "anthropic/claude-sonnet-4-20250514";
-              autoshare = false;
-              autoupdate = false;
-              permission = {
-                read."${config.home.homeDirectory}/.config/opencode/get-shit-done/*" = "allow";
-                external_directory."${config.home.homeDirectory}/.config/opencode/get-shit-done/*" = "allow";
-              };
-              provider = {
-                llama-swap = {
-                  id = "llama-swap";
-                  name = "llama-swap (Local)";
-                  models = {
-                    "llama-swap/qwen3-coder-30b" = {
-                      name = "llama-swap/qwen3-coder-30b";
-                      attach = { };
-                    };
-                    "llama-swap/qwen3-coder-30b:think" = {
-                      name = "llama-swap/qwen3-coder-30b:think";
-                      attach = { };
-                    };
-                    "llama-swap/qwen25-coder-7b" = {
-                      name = "llama-swap/qwen25-coder-7b";
-                      attach = { };
-                    };
-                  };
-                  options = {
-                    baseURL = "http://localhost:5800/v1";
-                    apiKey = "sk-no-key";
-                  };
-                };
-              };
-              mcp = {
-                playwright = {
-                  type = "local";
-                  command = [
-                    "${inputs.nix-playwright-mcp.packages.${pkgs.stdenv.hostPlatform.system}.playwright-mcp-wrapper}"
-                  ];
-                  enabled = true;
-                };
-                zellij = {
-                  type = "local";
-                  command = [ "${pkgs.nixicle.zellij-mcp}/bin/zellij-mcp" ];
-                  enabled = true;
-                };
-                zellij-pane-tracker = {
-                  type = "local";
-                  command = [
-                    "${pkgs.nixicle.zellij-pane-tracker-plugin}/bin/zellij-pane-tracker-mcp"
-                  ];
-                  enabled = true;
-                };
-                nixos = {
-                  type = "local";
-                  command = [ "${pkgs.mcp-nixos}/bin/mcp-nixos" ];
-                  enabled = true;
-                };
-                postgres = {
-                  type = "local";
-                  command = [
-                    "uvx"
-                    "postgres-mcp"
-                    "--access-mode=unrestricted"
-                  ];
-                  enabled = false;
-                };
-              };
-              provider.ollama = {
-                npm = "@ai-sdk/openai-compatible";
-                name = "Ollama (local)";
-                options.baseURL = "http://localhost:11434/v1";
-                models = {
-                  "llama3.1:70b-instruct-q4_K_M".name = "Llama 3.1 70B (32k context)";
-                  "deepseek-coder:33b".name = "DeepSeek Coder 33B (32k context)";
-                  "codestral:22b".name = "Codestral 22B (32k context)";
-                };
-              };
-            };
-
-            agents = builtins.listToAttrs (
-              map (name: {
-                name = lib.removeSuffix ".md" name;
-                value = agentDir + "/${name}";
-              }) agentNames
-            );
           };
         };
 
         home.packages = with pkgs; [
-          gsdPackage
+          gh
+          glab
+          ddgr
+          nixicle.ketch
           (pi-coding-agent.overrideAttrs (_old: {
             postFixup = ''
               wrapProgram $out/bin/pi \
@@ -379,15 +352,6 @@ in
             '';
           }))
         ];
-
-        # Kagi API key — decrypted at runtime by sops-nix
-        sops.secrets.kagi_api_key = {
-          sopsFile = ../../../modules/secrets.yaml;
-        };
-
-        # Point the Kagi extension at the sops-decrypted secret file
-        home.sessionVariables.KAGI_API_KEY_FILE = config.sops.secrets.kagi_api_key.path;
-
       };
   };
 }

@@ -12,7 +12,7 @@
  * - Semantic completion via agent_end event detection
  * - Artifact files for stdout/stderr diagnostics
  * - Nested fork/subagent usage aggregation
- * - Commands: /sub, /subcont, /subrm, /subclear
+ * - Commands: /agents, /sub, /subcont, /subrm, /subclear
  */
 
 import { spawn } from "node:child_process";
@@ -311,7 +311,7 @@ interface SubState {
 	artifactDir?: string;
 	stdoutArtifact?: string;
 	stderrArtifact?: string;
-	stdoutTail: string[];
+	stderrTail: string[];
 }
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -360,100 +360,175 @@ function getPiInvocation(args: string[]): { command: string; args: string[] } {
 
 // ── Widget Renderer (pure function) ──────────────────────────────────────────
 
-function renderWidgetLines(subs: Map<number, SubState>, theme: any, width: number): string[] {
+function renderWidgetLines(subs: Map<number, SubState>, theme: any, width: number, layout: "single" | "parallel" | "chain" | "mixed" = "mixed"): string[] {
 	const th = theme;
 	const lines: string[] = [];
 	if (subs.size === 0) return lines;
 
 	const entries = Array.from(subs.values());
+	for (const s of entries) if (s.status === "running") s.elapsed = Date.now() - s.startTime;
 
-	// Header
 	const running = entries.filter(s => s.status === "running").length;
 	const done = entries.filter(s => s.status === "done").length;
 	const failed = entries.filter(s => s.status === "error").length;
+	const totalElapsed = Math.max(...entries.map(s => s.elapsed));
+	const allDone = running === 0 && (done + failed) > 0;
+	const actualLayout = layout === "single" && entries.length > 1 ? "mixed" : layout;
 
+	// Header with summary counts
 	const headerParts: string[] = [];
 	if (running > 0) headerParts.push(th.fg("accent", `● ${running} running`));
 	if (done > 0) headerParts.push(th.fg("success", `✓ ${done} done`));
 	if (failed > 0) headerParts.push(th.fg("error", `✗ ${failed} failed`));
-	// Show total elapsed when all done
-	const allDone = running === 0 && (done + failed) > 0;
-	if (allDone) {
-		const totalElapsed = Math.max(...entries.map(s => s.elapsed));
-		headerParts.push(th.fg("dim", fmtDuration(totalElapsed)));
-	}
-	const header = th.bold(" Subagents ") + th.fg("dim", "│") + " " + headerParts.join(th.fg("dim", " · "));
-	lines.push(truncateToWidth(header, width));
-
-	// Separator
+	if (allDone) headerParts.push(th.fg("dim", fmtDuration(totalElapsed)));
+	lines.push(truncateToWidth(th.bold(" Subagents ") + th.fg("dim", "│") + " " + headerParts.join(th.fg("dim", " · ")), width));
 	lines.push(th.fg("dim", "─".repeat(Math.min(width, 60))));
 
-	// Each subagent line
-	for (const s of entries) {
-		// Update elapsed for running agents
-		if (s.status === "running") s.elapsed = Date.now() - s.startTime;
+	if (actualLayout === "chain") renderPipeline(entries, lines, th, width);
+	else if (actualLayout === "parallel") renderSwimlanes(entries, lines, th, width);
+	else renderHybrid(entries, lines, th, width);
 
-		// Status icon
-		const icon = s.status === "running" ? th.fg("accent", spinnerFrame())
-			: s.status === "done" ? th.fg("success", "✓")
-			: s.status === "error" ? th.fg("error", "✗")
-			: th.fg("dim", "◦");
-
-		// Agent name + task
-		const name = th.fg("accent", s.agentName);
-		const taskMax = Math.max(20, width - 40);
-		const task = th.fg("muted", s.task.length > taskMax ? s.taskPreview : s.task.slice(0, taskMax));
-
-		// Stats
-		const elapsed = th.fg("dim", fmtDuration(s.elapsed));
-		const tools = th.fg("dim", `${s.toolCount}t`);
-		const turns = s.turnCount > 1 ? th.fg("dim", `${s.turnCount}r`) : "";
-		const stats = [elapsed, tools, turns].filter(Boolean).join(th.fg("dim", " · "));
-
-		lines.push(truncateToWidth(`${icon} ${name} ${task} ${th.fg("dim", "│")} ${stats}`, width));
-
-		// Activity sub-line for running agents
-		if (s.status === "running") {
-			const actParts: string[] = [];
-
-			// Show thinking state
-			if (s.thinking?.status === "running") {
-				const chars = s.thinking.chars > 0 ? ` ${formatCount(s.thinking.chars)} chars` : "...";
-				actParts.push(`thinking${chars}`);
-			}
-
-			// Show tool activity with richer info
-			if (s.currentTool) {
-				const dur = s.currentToolStartedAt ? ` ${fmtDuration(Date.now() - s.currentToolStartedAt)}` : "";
-				actParts.push(`${s.currentTool}${dur}`);
-			}
-
-			// Show latest tool output preview
-			if (s.lastOutput) {
-				const preview = s.lastOutput.length > 60 ? s.lastOutput.slice(0, 57) + "…" : s.lastOutput;
-				actParts.push(preview);
-			}
-
-			// Show recent tool execution summary
-			const recentTools = s.toolExecutions.slice(-3);
-			for (const t of recentTools) {
-				if (t.status === "error") {
-					actParts.push(`✗ ${t.displayText || t.toolName}`);
-				}
-			}
-
-			const activity = actParts.length > 0 ? actParts.join(" · ") : "thinking…";
-			lines.push(truncateToWidth(th.fg("dim", `  ${activity}`), width));
-		}
-
-		// Error sub-line
-		if (s.status === "error" && s.lastOutput) {
-			const err = s.lastOutput.length > width - 6 ? s.lastOutput.slice(0, width - 9) + "…" : s.lastOutput;
-			lines.push(truncateToWidth(th.fg("error", `  → ${err}`), width));
-		}
+	// Footer hint when there are errors
+	if (failed > 0) {
+		lines.push(th.fg("dim", ` Use ${th.fg("accent", "/suberr <id>")} to inspect errors`));
 	}
 
 	return lines;
+}
+
+function renderPipeline(entries: SubState[], lines: string[], th: any, width: number) {
+	const nodes = entries.map((s, i) => `${statusIcon(s, th)} ${i + 1}:${s.agentName}`);
+	const sep = th.fg("dim", " ─▶ ");
+	let current = "";
+	for (const node of nodes) {
+		const candidate = current ? current + sep + node : node;
+		if (stripAnsi(candidate).length > width && current) {
+			lines.push(truncateToWidth(current, width));
+			current = th.fg("dim", "  ↳ ") + node;
+		} else current = candidate;
+	}
+	if (current) lines.push(truncateToWidth(current, width));
+
+	const active = entries.find(s => s.status === "running") ?? entries.find(s => s.status === "error") ?? entries[entries.length - 1];
+	if (active) renderDetail(active, lines, th, width, "  ");
+}
+
+function renderSwimlanes(entries: SubState[], lines: string[], th: any, width: number) {
+	const byAgent = new Map<string, SubState[]>();
+	for (const s of entries) {
+		const bucket = byAgent.get(s.agentName) ?? [];
+		bucket.push(s);
+		byAgent.set(s.agentName, bucket);
+	}
+
+	for (const [agent, states] of byAgent.entries()) {
+		const lane = states.map(s => statusIcon(s, th)).join(" ");
+		const worst = states.find(s => s.status === "running") ?? states.find(s => s.status === "error") ?? states[states.length - 1]!;
+		const stats = th.fg("dim", `${fmtDuration(Math.max(...states.map(s => s.elapsed)))} · ${states.reduce((n, s) => n + s.toolCount, 0)}t`);
+		const task = worst.task.length > 60 ? worst.task.slice(0, 57) + "…" : worst.task;
+		lines.push(truncateToWidth(`${th.fg("accent", agent.padEnd(14).slice(0, 14))} ${lane} ${th.fg("muted", task)} ${th.fg("dim", "│")} ${stats}`, width));
+		if (worst.status === "running" || worst.status === "error") renderDetail(worst, lines, th, width, "  ");
+	}
+}
+
+function renderHybrid(entries: SubState[], lines: string[], th: any, width: number) {
+	const sequence = entries.map(s => `${statusIcon(s, th)} ${s.agentName}`).join(th.fg("dim", " ─ "));
+	lines.push(truncateToWidth(sequence, width));
+	// Show detail for every subagent (not just running/error) so you can see task text
+	for (const s of entries) renderDetail(s, lines, th, width, "  ");
+}
+
+function statusIcon(s: SubState, th: any): string {
+	return s.status === "running" ? th.fg("accent", spinnerFrame())
+		: s.status === "done" ? th.fg("success", "✓")
+		: s.status === "error" ? th.fg("error", "✗")
+		: th.fg("dim", "○");
+}
+
+function renderDetail(s: SubState, lines: string[], th: any, width: number, prefix: string) {
+	const stats = [fmtDuration(s.elapsed), `${s.toolCount}t`, s.turnCount > 1 ? `${s.turnCount}r` : ""].filter(Boolean).join(" · ");
+
+	// Task line: show full task text (truncated to width)
+	const taskText = s.task.length > 80 ? s.task.slice(0, 77) + "…" : s.task;
+	lines.push(truncateToWidth(`${th.fg("muted", `${prefix}${taskText} │`)} ${th.fg("dim", stats)}`, width));
+
+	if (s.status === "running") {
+		const actParts: string[] = [];
+		if (s.thinking?.status === "running") actParts.push(`thinking${s.thinking.chars > 0 ? ` ${formatCount(s.thinking.chars)} chars` : "…"}`);
+		if (s.currentTool) actParts.push(`${s.currentTool}${s.currentToolStartedAt ? ` ${fmtDuration(Date.now() - s.currentToolStartedAt)}` : ""}`);
+		if (s.lastOutput) actParts.push(s.lastOutput.length > 60 ? s.lastOutput.slice(0, 57) + "…" : s.lastOutput);
+		const recentErrors = s.toolExecutions.slice(-3).filter(t => t.status === "error").map(t => `✗ ${t.displayText || t.toolName}`);
+		actParts.push(...recentErrors);
+		lines.push(truncateToWidth(th.fg("dim", `${prefix}${actParts.length ? actParts.join(" · ") : "thinking…"}`), width));
+	}
+
+	if (s.status === "error") {
+		// Primary error reason
+		const reason = s.lastOutput || "unknown error";
+		lines.push(truncateToWidth(th.fg("error", `${prefix}↳ ${reason}`), width));
+
+		// Fast-fail hint (spawn/startup errors)
+		if (s.toolCount === 0 && s.elapsed < 5000) {
+			lines.push(truncateToWidth(th.fg("dim", `${prefix}  Failed immediately — check agent name exists and PATH is correct`), width));
+		}
+
+		// Show stderr tail (last 3 lines)
+		const tail = s.stderrTail.slice(-3);
+		for (const line of tail) {
+			const trimmed = line.trim();
+			if (trimmed) lines.push(truncateToWidth(th.fg("dim", `${prefix}  ${trimmed}`), width));
+		}
+
+		// Show last failed tool executions if any
+		const failedTools = s.toolExecutions.filter(t => t.status === "error").slice(-2);
+		for (const ft of failedTools) {
+			lines.push(truncateToWidth(th.fg("dim", `${prefix}  ✗ ${ft.toolName}: ${ft.displayText || "failed"}`), width));
+		}
+	}
+}
+
+function stripAnsi(text: string): string {
+	return text.replace(/\x1b\[[0-9;]*m/g, "").replace(/\x1b\][^\x07]*(\x07|\x1b\\)/g, "");
+}
+
+function formatErrorReport(s: SubState): string {
+	const lines: string[] = [];
+	lines.push(`#${s.id} ${s.agentName} — FAILED`);
+	lines.push(`Task: ${s.task}`);
+	lines.push(`Elapsed: ${fmtDuration(s.elapsed)} · Turns: ${s.turnCount} · Tools: ${s.toolCount}`);
+	lines.push("");
+
+	// Primary error
+	if (s.lastOutput) {
+		lines.push(`Error: ${s.lastOutput}`);
+	}
+
+	// Stderr tail
+	if (s.stderrTail.length > 0) {
+		lines.push("");
+		lines.push("stderr:");
+		for (const line of s.stderrTail.slice(-10)) {
+			if (line.trim()) lines.push(`  ${line.trimEnd()}`);
+		}
+	}
+
+	// Failed tools
+	const failedTools = s.toolExecutions.filter(t => t.status === "error");
+	if (failedTools.length > 0) {
+		lines.push("");
+		lines.push("Failed tools:");
+		for (const ft of failedTools.slice(-5)) {
+			lines.push(`  ✗ ${ft.toolName}: ${ft.displayText || "failed"}`);
+		}
+	}
+
+	// Spawn failure hint
+	if (s.toolCount === 0 && s.elapsed < 5000) {
+		lines.push("");
+		lines.push("Hint: Failed immediately with no tool calls — likely a spawn error (bad agent name, pi not in PATH, or agent file missing).");
+	}
+
+	return lines.join("\n");
 }
 
 // ── Process Line Parser ──────────────────────────────────────────────────────
@@ -651,7 +726,10 @@ async function runSubagentWithWidget(
 		proc.stderr!.on("data", (chunk: string) => {
 			try { fs.appendFileSync(stderrArtifact, chunk); } catch {}
 			if (chunk.trim()) {
-				state.lastOutput = chunk.trim();
+				const lines = chunk.trim().split("\n");
+				state.stderrTail.push(...lines);
+				if (state.stderrTail.length > 50) state.stderrTail = state.stderrTail.slice(-50);
+				state.lastOutput = lines[lines.length - 1]!.trim();
 				flush();
 			}
 		});
@@ -778,6 +856,7 @@ export default function (pi: ExtensionAPI) {
 	let animTimer: ReturnType<typeof setInterval> | null = null;
 	let currentCtx: any = null;
 	let widgetName = "subagents";
+	let currentLayout: "single" | "parallel" | "chain" | "mixed" = "mixed";
 
 	// Agent discovery
 	let discoveredAgents: AgentConfig[] = [];
@@ -791,25 +870,18 @@ export default function (pi: ExtensionAPI) {
 			currentCtx.ui.setWidget(widgetName, undefined);
 			return;
 		}
-		const lines = renderWidgetLines(subs, currentCtx.ui.theme, process.stdout.columns ?? 80);
+		const lines = renderWidgetLines(subs, currentCtx.ui.theme, process.stdout.columns ?? 80, currentLayout);
 		currentCtx.ui.setWidget(widgetName, lines);
 	}
 
 	// ── Animation timer ───────────────────────────────────────────────────
 
-	const AUTO_CLEAR_MS = 30_000; // Auto-clear completed agents after 30s
-	let autoClearTimer: ReturnType<typeof setTimeout> | null = null;
-
 	function startAnimation() {
+		cancelHide();
 		if (animTimer) return;
 		animTimer = setInterval(() => {
 			const hasRunning = Array.from(subs.values()).some(s => s.status === "running");
-			if (!hasRunning) {
-				stopAnimation();
-				// Start auto-clear timer for completed agents
-				scheduleAutoClear();
-				return;
-			}
+			if (!hasRunning) { stopAnimation(); return; }
 			try { flush(); } catch { stopAnimation(); }
 		}, 200);
 		if (animTimer.unref) animTimer.unref();
@@ -817,30 +889,14 @@ export default function (pi: ExtensionAPI) {
 
 	function stopAnimation() {
 		if (animTimer) { clearInterval(animTimer); animTimer = null; }
+		// Unpin widget once all subagents settle — content stays in scrollback
+		const hasRunning = Array.from(subs.values()).some(s => s.status === "running");
+		if (!hasRunning && subs.size > 0 && currentCtx) {
+			currentCtx.ui.setWidget(widgetName, undefined);
+		}
 	}
 
-	function scheduleAutoClear() {
-		if (autoClearTimer) return;
-		const entries = Array.from(subs.values());
-		const allDone = entries.every(s => s.status !== "running");
-		const hasErrors = entries.some(s => s.status === "error");
-		if (!allDone || subs.size === 0 || hasErrors) return; // Don't auto-clear if errors exist
-		autoClearTimer = setTimeout(() => {
-			autoClearTimer = null;
-			// Only clear if still all done and no errors
-			const e = Array.from(subs.values());
-			if (e.every(s => s.status !== "running") && !e.some(s => s.status === "error")) {
-				subs.clear();
-				nextId = 1;
-				flush();
-			}
-		}, AUTO_CLEAR_MS);
-		if (autoClearTimer.unref) autoClearTimer.unref();
-	}
-
-	function cancelAutoClear() {
-		if (autoClearTimer) { clearTimeout(autoClearTimer); autoClearTimer = null; }
-	}
+	function cancelHide() {}
 
 	// ── Discover agents on session start ──────────────────────────────────
 
@@ -850,6 +906,46 @@ export default function (pi: ExtensionAPI) {
 		const discovery = discoverAgents(cwd, "both");
 		discoveredAgents = discovery.agents;
 		agentMap = new Map(discoveredAgents.map((a) => [a.name, a]));
+	});
+
+	// ── Command: /agents ─────────────────────────────────────────────────────
+
+	pi.registerCommand("agents", {
+		description: "List/filter available agents: /agents [filter]",
+		handler: async (args, ctx) => {
+			currentCtx = ctx;
+			const filter = args?.trim()?.toLowerCase() ?? "";
+
+			if (discoveredAgents.length === 0) {
+				ctx.ui.notify("No agents found. Create agents in ~/.pi/agent/agents/*.md or .pi/agents/*.md", "info");
+				return;
+			}
+
+			const filtered = filter
+				? discoveredAgents.filter(a => a.name.toLowerCase().includes(filter) || a.description.toLowerCase().includes(filter))
+				: discoveredAgents;
+
+			if (filtered.length === 0) {
+				ctx.ui.notify(`No agents match "${filter}".`, "info");
+				return;
+			}
+
+			const lines: string[] = [];
+
+			for (const a of filtered) {
+				const badge = a.source === "user" ? "[user]" : "[proj]";
+				const meta: string[] = [badge];
+				if (a.model) meta.push(a.model);
+				if (a.tools?.length) meta.push(`tools:${a.tools.length}`);
+				if (a.extensions?.length) meta.push(`ext:${a.extensions.length}`);
+				if (a.skills?.length) meta.push(`skills:${a.skills.length}`);
+				if (a.thinking) meta.push(`thinking:${a.thinking}`);
+				lines.push(`\n  ${a.name}\n  ${meta.join(" · ")}\n  ${a.description}`);
+			}
+
+			ctx.ui.notify(`Available agents (${filtered.length} of ${discoveredAgents.length}):
+${lines.join("\n")}`, "success");
+		},
 	});
 
 	// ── Helper: create a SubState ─────────────────────────────────────────
@@ -866,14 +962,13 @@ export default function (pi: ExtensionAPI) {
 			elapsed: 0, startTime: Date.now(),
 			sessionFile: makeSessionFile(id),
 			toolExecutions: [], toolExecutionCount: 0,
-			stdoutTail: [],
+			stderrTail: [],
 		};
 	}
 
 	// ── Helper: spawn and track ───────────────────────────────────────────
 
 	function spawnSync(state: SubState, agentConfig: AgentConfig): Promise<string> {
-		cancelAutoClear();
 		subs.set(state.id, state);
 		startAnimation();
 		flush();
@@ -881,7 +976,6 @@ export default function (pi: ExtensionAPI) {
 	}
 
 	function spawnAsync(state: SubState, agentConfig: AgentConfig): void {
-		cancelAutoClear();
 		subs.set(state.id, state);
 		startAnimation();
 		flush();
@@ -909,6 +1003,7 @@ export default function (pi: ExtensionAPI) {
 				return { content: [{ type: "text", text: `Unknown agent: ${args.agent}. Available: ${available}` }], isError: true };
 			}
 
+			currentLayout = "single";
 			const state = createSubState(args.agent, args.task);
 
 			if (args.async) {
@@ -997,7 +1092,9 @@ export default function (pi: ExtensionAPI) {
 			if (subs.size === 0) return { content: [{ type: "text", text: "No active subagents." }] };
 			const list = Array.from(subs.values()).map(s => {
 				const icon = s.status === "running" ? "●" : s.status === "done" ? "✓" : "✗";
-				return `#${s.id} ${icon} ${s.agentName} (Turn ${s.turnCount}, ${fmtDuration(s.elapsed)}) - ${s.taskPreview}`;
+				const base = `#${s.id} ${icon} ${s.agentName} (Turn ${s.turnCount}, ${fmtDuration(s.elapsed)}) - ${s.task.length > 60 ? s.task.slice(0, 57) + "…" : s.task}`;
+				if (s.status === "error" && s.lastOutput) return `${base}\n  ↳ ${s.lastOutput}`;
+				return base;
 			}).join("\n");
 			return { content: [{ type: "text", text: `Subagents:\n${list}` }] };
 		},
@@ -1019,6 +1116,7 @@ export default function (pi: ExtensionAPI) {
 			const agentConfig = agentMap.get(agentName);
 			if (!agentConfig) { ctx.ui.notify(`Unknown agent: ${agentName}. Available: ${discoveredAgents.map(a => a.name).join(", ")}`, "error"); return; }
 
+			currentLayout = "single";
 			const state = createSubState(agentName, task);
 			ctx.ui.notify(`Subagent #${state.id} started with ${agentName}...`, "info");
 			const result = await spawnSync(state, agentConfig);
@@ -1083,6 +1181,29 @@ export default function (pi: ExtensionAPI) {
 		},
 	});
 
+	pi.registerCommand("suberr", {
+		description: "Inspect subagent error details: /suberr <id>",
+		handler: async (args, ctx) => {
+			currentCtx = ctx;
+			const num = parseInt(args?.trim() ?? "", 10);
+			if (isNaN(num)) {
+				// Show all errors if no id given
+				const errors = Array.from(subs.values()).filter(s => s.status === "error");
+				if (errors.length === 0) {
+					ctx.ui.notify("No failed subagents.", "info");
+					return;
+				}
+				const report = errors.map(s => formatErrorReport(s)).join("\n" + "─".repeat(40) + "\n");
+				ctx.ui.notify(report, "error");
+				return;
+			}
+			const state = subs.get(num);
+			if (!state) { ctx.ui.notify(`No subagent #${num} found.`, "error"); return; }
+			if (state.status !== "error") { ctx.ui.notify(`Subagent #${num} status: ${state.status} (not errored).`, "info"); return; }
+			ctx.ui.notify(formatErrorReport(state), "error");
+		},
+	});
+
 	// ── Original subagents tool (single/parallel/chain with rich progress) ─
 
 	pi.registerTool({
@@ -1126,6 +1247,7 @@ export default function (pi: ExtensionAPI) {
 					return { content: [{ type: "text", text: `Unknown agent: ${params.agent}. Available: ${availableNames}` }], isError: true };
 				}
 
+				currentLayout = "single";
 				const state = createSubState(params.agent, params.task);
 				subs.set(state.id, state);
 				startAnimation();
@@ -1163,6 +1285,7 @@ export default function (pi: ExtensionAPI) {
 					return { content: [{ type: "text", text: `Unknown agents: ${invalidAgents.map(t => t.agent).join(", ")}. Available: ${availableNames}` }], isError: true };
 				}
 
+				currentLayout = "parallel";
 				// Create widget states for each parallel task
 				const parallelStates: SubState[] = tasks.map(t => {
 					const s = createSubState(t.agent, t.task);
@@ -1224,6 +1347,7 @@ export default function (pi: ExtensionAPI) {
 					return { content: [{ type: "text", text: `Unknown agents: ${invalidAgents.map(s => s.agent).join(", ")}. Available: ${availableNames}` }], isError: true };
 				}
 
+				currentLayout = "chain";
 				const results: SubagentResult[] = [];
 				let previousOutput = "";
 				let completed = 0;
@@ -1392,7 +1516,6 @@ export default function (pi: ExtensionAPI) {
 
 	pi.on("session_shutdown", async () => {
 		stopAnimation();
-		cancelAutoClear();
 		for (const [, state] of subs.entries()) {
 			if (state.proc && state.status === "running") state.proc.kill("SIGTERM");
 		}
