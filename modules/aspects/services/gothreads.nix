@@ -24,6 +24,7 @@ in
     nixos =
       {
         config,
+        lib,
         pkgs,
         ...
       }:
@@ -43,6 +44,7 @@ in
           "postgresql.service"
         ];
         systemd.services.gothreads.requires = [ "garage.service" ];
+        systemd.services.gothreads.environment.GOTHREADS_OLLAMA_TEXT_MODEL = lib.mkForce "llama3.2";
 
         services = {
           gothreads = {

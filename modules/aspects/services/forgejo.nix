@@ -69,6 +69,8 @@ in
                 HTTP_PORT = 5706;
                 DOMAIN = "forgejo.haseebmajid.dev";
                 ROOT_URL = "https://forgejo.haseebmajid.dev/";
+                SSH_DOMAIN = "git.haseebmajid.dev";
+                SSH_PORT = 22;
               };
               mailer = {
                 ENABLED = true;
