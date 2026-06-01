@@ -138,6 +138,11 @@
     data = with pkgs.vimPlugins; [ sidekick-nvim ];
   };
 
+  config.specs.pi-nvim = {
+    lazy = true;
+    data = config.nvim-lib.neovimPlugins.pi-nvim;
+  };
+
   config.specs.editor = {
     lazy = true;
     data = with pkgs.vimPlugins; [
