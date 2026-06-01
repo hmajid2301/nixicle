@@ -54,8 +54,13 @@
           open-sans
         ];
 
-        catppuccin.flavor = "mocha";
-        catppuccin.fish.enable = true;
+        catppuccin = {
+          enable = true;
+          autoEnable = false;
+          cache.enable = true;
+          flavor = "mocha";
+          fish.enable = true;
+        };
 
         stylix = {
           enable = true;
