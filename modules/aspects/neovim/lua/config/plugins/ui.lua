@@ -55,8 +55,6 @@ return {
 		for_cat = "ui",
 		event = "DeferredUIEnter",
 		after = function(plugin)
-			local theme = "catppuccin"
-
 			vim.tbl_flatten = function(t)
 				return vim.iter(t):flatten(math.huge):totable()
 			end
@@ -71,7 +69,6 @@ return {
 				options = {
 					globalstatus = true,
 					icons_enabled = true,
-					theme = theme,
 					section_separators = {
 						right = "█",
 						left = "█",
@@ -267,3 +264,4 @@ return {
 		end,
 	},
 }
+

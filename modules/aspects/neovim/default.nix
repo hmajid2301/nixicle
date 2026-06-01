@@ -51,6 +51,10 @@
       url = "github:y3owk1n/warp.nvim";
       flake = false;
     };
+    plugins-pi-nvim = {
+      url = "github:carderne/pi-nvim";
+      flake = false;
+    };
 
     oxy2dev-nvim-scripts = {
       url = "github:OXY2DEV/nvim";
@@ -84,6 +88,7 @@
             "${inputs.oxy2dev-nvim-scripts}/lua/scripts/lsp_hover.lua";
           "nvim/lua/scripts/diagnostics.lua".source =
             "${inputs.oxy2dev-nvim-scripts}/lua/scripts/diagnostics.lua";
+          "nvim/lua/pi-nvim/init.lua".source = ./lua/pi-nvim/init.lua;
         };
 
         wrappers.neovim = {
