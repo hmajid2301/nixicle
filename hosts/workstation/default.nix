@@ -11,7 +11,6 @@
       den.aspects.desktop
       den.aspects.gaming
       den.aspects.social
-      den.aspects.obs
     ];
 
     homeManager =
