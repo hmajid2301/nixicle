@@ -11,10 +11,12 @@
           443
         ];
 
-        sops.secrets.cloudflare_api_key.sopsFile = ../../../hosts/framebox/secrets.yaml;
+        sops.secrets.cloudflare_api_key = {
+          sopsFile = ../../../hosts/framebox/secrets.yaml;
+          owner = "traefik";
+        };
 
         systemd.services.traefik = {
-          # TODO: global token used instead of scoped one.
           serviceConfig.EnvironmentFile = config.sops.secrets.cloudflare_api_key.path;
           environment = {
             CF_API_EMAIL = "hello@haseebmajid.dev";
@@ -36,7 +38,10 @@
                 storage = "/var/lib/traefik/cert.json";
                 dnsChallenge = {
                   provider = "cloudflare";
-                  resolvers = [ "1.1.1.1" ];
+                  propagation = {
+                    disableANSChecks = true;
+                    delayBeforeChecks = 30;
+                  };
                 };
               };
             };

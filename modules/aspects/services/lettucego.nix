@@ -45,7 +45,7 @@ in
             "postgresql.service"
             "network.target"
           ];
-          environment.LETTUCEGO_S3_PUBLIC_URL = "http://127.0.0.1:3900/lettucego";
+          environment.LETTUCEGO_S3_PUBLIC_URL = "https://lettucego.haseebmajid.dev/lettucego";
         };
 
         services = {
