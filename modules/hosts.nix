@@ -16,15 +16,7 @@ let
       zjstatus = inputs.zjstatus.packages.${prev.stdenv.hostPlatform.system}.default;
     })
     (final: prev: {
-      inherit (inputs) get-shit-done caveman;
-      nixicle = extendedLib.nixicle.importPackages final ../packages // {
-        zellij-mcp = prev.callPackage ../packages/zellij-mcp {
-          inherit inputs;
-        };
-        zellij-pane-tracker-plugin = prev.callPackage ../packages/zellij-pane-tracker-plugin {
-          inherit inputs;
-        };
-      };
+      nixicle = extendedLib.nixicle.importPackages final ../packages // { };
     })
   ];
 

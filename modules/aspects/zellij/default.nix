@@ -212,10 +212,6 @@
           }
         '';
       in
-      let
-        pluginPath = "${pkgs.nixicle.zellij-pane-tracker-plugin}/lib/zellij-pane-tracker.wasm";
-        zjdumpPath = "${pkgs.nixicle.zellij-pane-tracker-plugin}/bin/zjdump";
-      in
       {
         home.packages = [
           pkgs.tmate
@@ -223,17 +219,9 @@
           inputs.gsesh.packages.${pkgs.stdenv.hostPlatform.system}.default
         ];
 
-        home.file = {
-          "${config.home.homeDirectory}/zjdump".source = zjdumpPath;
-        };
-
         xdg.configFile = {
           "zellij/config.kdl".text = ''
             ${stylixTheme}
-
-            load_plugins {
-                "file:${pluginPath}"
-            }
 
             ${builtins.readFile ./config.kdl}
           '';

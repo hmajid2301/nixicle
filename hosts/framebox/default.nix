@@ -41,7 +41,6 @@
           den.aspects.desktop
           den.aspects.gaming
           den.aspects.social
-          den.aspects.obs
         ];
 
         homeManager =
@@ -79,21 +78,22 @@
           den.aspects.atuin
           den.aspects.atticd
           den.aspects.banterbus
-          den.aspects.btrbk
+          # den.aspects.btrbk
           den.aspects.crowdsec
           den.aspects.forgejo
           den.aspects.goroutinely
           den.aspects.garage
           den.aspects.gothreads
           den.aspects.lettucego
+          den.aspects.gothreads
           den.aspects.gitlab-runner
           den.aspects.immich
           den.aspects.karakeep
           den.aspects.llama-cpp
           den.aspects.ollama
-          den.aspects.open-webui
           den.aspects.otel-collector
           den.aspects.redis
+          den.aspects.valkey
           den.aspects.postgresql
           den.aspects.tandoor
           den.aspects.papra
@@ -102,7 +102,10 @@
           den.aspects.monitoring
           den.aspects.homepage
           den.aspects.home-assistant
+          den.aspects.searx
           den.aspects.zellij
+          den.aspects.nixflix
+          # den.aspects.open-webui
           # den.aspects.gitea
           # den.aspects.tangled
           # den.aspects.paperless
@@ -168,6 +171,24 @@
                 user = "root";
                 group = "root";
                 mode = "0755";
+              }
+              {
+                directory = "/var/lib/qBittorrent";
+                user = "qbittorrent";
+                group = "qbittorrent";
+                mode = "0755";
+              }
+              {
+                directory = "/data/.state";
+                user = "root";
+                group = "media";
+                mode = "0775";
+              }
+              {
+                directory = "/data/downloads";
+                user = "root";
+                group = "media";
+                mode = "0775";
               }
             ];
 

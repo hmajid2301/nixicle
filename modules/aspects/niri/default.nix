@@ -11,10 +11,6 @@
       url = "github:gvolpe/nfsm";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    dankMaterialShell = {
-      url = "github:AvengeMedia/DankMaterialShell";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     noctalia-qs = {
       url = "github:noctalia-dev/noctalia-qs";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -183,10 +179,8 @@
       {
         imports = [
           inputs.niri.homeModules.niri
-          inputs.dankMaterialShell.homeModules.dank-material-shell
           inputs.noctalia.homeModules.default
         ];
-        # nfsm — floating window session manager + cliphist
         home.packages =
           with pkgs;
           [
