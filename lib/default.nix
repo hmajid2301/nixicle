@@ -10,7 +10,7 @@ rec {
       processEntry =
         name: type:
         if type == "directory" && builtins.pathExists (dir + "/${name}/default.nix") then
-          { ${name} = pkgs.callPackage (dir + "/${name}") { }; }
+          { ${name} = pkgs.callPackage (dir + "/${name}") { inherit inputs; }; }
         else
           { };
     in
