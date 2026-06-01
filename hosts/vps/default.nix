@@ -17,12 +17,13 @@
           ./disks.nix
         ];
 
-        # VPS uses GRUB/cloud bootloader, not systemd-boot
         boot = {
           loader.systemd-boot.enable = lib.mkForce false;
           loader.grub.enable = lib.mkDefault true;
           initrd.systemd.enable = lib.mkForce false;
         };
+
+        services.dbus.implementation = "dbus";
 
         sops.age.sshKeyPaths = lib.mkForce [ "/etc/ssh/ssh_host_ed25519_key" ];
 
@@ -53,6 +54,8 @@
             attic.loadBalancer = {
               servers = [ { url = "http://framebox:8899"; } ];
               passHostHeader = true;
+              responseForwarding.flushInterval = "100ms";
+              serversTransport = "attic-transport";
             };
           };
 
@@ -65,9 +68,9 @@
               stsSeconds = 315360000;
               stsIncludeSubdomains = true;
               stsPreload = true;
-              frameDeny = true;
+              frameDeny = false;
               contentTypeNosniff = true;
-              customFrameOptionsValue = "DENY";
+              customFrameOptionsValue = "SAMEORIGIN";
             };
             immich-headers.headers = {
               customResponseHeaders.X-Robots-Tag = "noindex, nofollow, nosnippet, noarchive";
@@ -79,6 +82,16 @@
               stsPreload = true;
               contentTypeNosniff = true;
             };
+            attic-timeout.buffering = {
+              maxRequestBodyBytes = 21474836480;
+              memRequestBodyBytes = 1073741824;
+            };
+          };
+
+          serversTransports.attic-transport.forwardingTimeouts = {
+            dialTimeout = "30s";
+            responseHeaderTimeout = "10m";
+            idleConnTimeout = "10m";
           };
 
           routers = {
@@ -100,6 +113,7 @@
               entryPoints = [ "websecure" ];
               rule = "Host(`attic.haseebmajid.dev`)";
               service = "attic";
+              middlewares = [ "attic-timeout" ];
               tls.certResolver = "letsencrypt";
             };
           };

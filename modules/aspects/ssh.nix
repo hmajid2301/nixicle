@@ -12,18 +12,18 @@
         programs.ssh = {
           enable = true;
           enableDefaultConfig = false;
-          matchBlocks = {
+          settings = {
             "*" = {
-              addKeysToAgent = "yes";
-              identitiesOnly = true;
-              serverAliveInterval = 60;
-              serverAliveCountMax = 3;
+              AddKeysToAgent = "yes";
+              IdentitiesOnly = true;
+              ServerAliveInterval = 60;
+              ServerAliveCountMax = 3;
             };
             "git.haseebmajid.dev" = {
-              hostname = "git.haseebmajid.dev";
-              user = "git";
-              port = 22;
-              proxyCommand = "${pkgs.cloudflared}/bin/cloudflared access ssh --hostname %h";
+              HostName = "git.haseebmajid.dev";
+              User = "git";
+              Port = 22;
+              ProxyCommand = "${pkgs.cloudflared}/bin/cloudflared access ssh --hostname %h";
             };
           };
           extraConfig = ''
