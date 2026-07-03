@@ -28,7 +28,6 @@
         ];
 
         homeManager = _: {
-          gtk.gtk4.theme = null;
           programs.git.signing = {
             format = "ssh";
             signByDefault = true;
@@ -80,6 +79,7 @@
           den.aspects.banterbus
           # den.aspects.btrbk
           den.aspects.crowdsec
+          den.aspects.docker
           den.aspects.forgejo
           den.aspects.goroutinely
           den.aspects.garage
@@ -127,10 +127,11 @@
               inputs.nixos-hardware.nixosModules.framework-desktop-amd-ai-max-300-series
             ];
 
+            sops.defaultSopsFile = ./secrets.yaml;
+
             sops.secrets = {
-              gitlab_runner_env.sopsFile = ./secrets.yaml;
+              gitlab_runner_env = { };
               user_password = {
-                sopsFile = ./secrets.yaml;
                 neededForUsers = true;
               };
             };
@@ -143,35 +144,14 @@
                   "wheel"
                   "media"
                   "dialout"
-                  "docker"
                 ];
               };
               groups.media.gid = 3000;
             };
 
-            virtualisation = {
-              docker = {
-                enable = true;
-                enableOnBoot = true;
-                autoPrune.enable = true;
-                storageDriver = "btrfs";
-                rootless = {
-                  enable = true;
-                  setSocketVariable = true;
-                };
-              };
-              oci-containers.backend = "docker";
-            };
-
             # TODO: move to boot.nix in all files
             environment.persistence."/persist".directories = [
               "/etc/secureboot"
-              {
-                directory = "/var/lib/docker";
-                user = "root";
-                group = "root";
-                mode = "0755";
-              }
               {
                 directory = "/var/lib/qBittorrent";
                 user = "qbittorrent";
@@ -194,10 +174,6 @@
 
             networking.hostName = "framebox";
             system.stateVersion = "26.05";
-
-            environment.systemPackages = with pkgs; [
-              docker-compose
-            ];
           };
       };
     };
