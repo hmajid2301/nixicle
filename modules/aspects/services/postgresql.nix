@@ -14,8 +14,7 @@
       }:
       {
         sops.secrets.postgres_terraform_password = {
-          sopsFile = ../../../hosts/framebox/secrets.yaml;
-        };
+                  };
 
         sops.templates."init.sql" = {
           content = ''

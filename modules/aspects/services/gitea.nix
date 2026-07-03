@@ -19,8 +19,7 @@
       }:
       {
         sops.secrets.gitea_smtp_password = {
-          sopsFile = ../../../hosts/framebox/secrets.yaml;
-          owner = "gitea";
+                    owner = "gitea";
         };
 
         systemd = {

@@ -5,7 +5,6 @@
       { config, lib, ... }:
       {
         sops.secrets.crowdsec_enroll_key.sopsFile = ../../../hosts/framebox/secrets.yaml;
-
         systemd.services.crowdsec-firewall-bouncer.serviceConfig.DynamicUser = lib.mkForce false;
         systemd.services.crowdsec-firewall-bouncer-register.serviceConfig.DynamicUser = lib.mkForce false;
 

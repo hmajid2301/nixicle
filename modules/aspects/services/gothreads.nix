@@ -32,8 +32,7 @@ in
         imports = [ inputs.gothreads.nixosModules.default ];
 
         sops.secrets.gothreads = {
-          sopsFile = ../../../hosts/framebox/secrets.yaml;
-          key = "gothreads";
+                    key = "gothreads";
           owner = config.services.gothreads.user;
           inherit (config.services.gothreads) group;
           mode = "0400";

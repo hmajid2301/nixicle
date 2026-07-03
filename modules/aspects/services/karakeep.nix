@@ -17,7 +17,6 @@ in
       { config, lib, ... }:
       {
         sops.secrets.karakeep_oauth.sopsFile = ../../../hosts/framebox/secrets.yaml;
-
         services = {
           karakeep = {
             enable = true;
