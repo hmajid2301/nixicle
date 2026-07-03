@@ -10,7 +10,6 @@ buildHomeAssistantComponent rec {
   owner = "BottlecapDave";
   domain = "octopus_energy";
   version = "14.0.0-beta.1";
-  format = "other";
 
   src = fetchFromGitHub {
     owner = "BottlecapDave";
