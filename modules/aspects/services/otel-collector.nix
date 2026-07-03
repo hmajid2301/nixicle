@@ -38,7 +38,7 @@
             };
             exporters = {
               "prometheus".endpoint = "0.0.0.0:8889";
-              "loki".endpoint = "http://127.0.0.1:3030/loki/api/v1/push";
+              "otlphttp/loki".endpoint = "http://127.0.0.1:3030/otlp/v1/logs";
               "otlphttp/tempo".endpoint = "http://127.0.0.1:4318";
             };
             service = {
@@ -58,7 +58,7 @@
                     "journald"
                   ];
                   processors = [ "batch" ];
-                  exporters = [ "loki" ];
+                  exporters = [ "otlphttp/loki" ];
                 };
                 "traces/tempo" = {
                   receivers = [ "otlp" ];
