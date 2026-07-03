@@ -7,6 +7,9 @@
       den.aspects.tailscale
       den.aspects.traefik
       den.aspects.uptime-kuma
+      den.aspects.postgresql
+      den.aspects.redis
+      den.aspects.banterbus
     ];
 
     nixos =
@@ -25,6 +28,7 @@
 
         services.dbus.implementation = "dbus";
 
+        sops.defaultSopsFile = ./secrets.yaml;
         sops.age.sshKeyPaths = lib.mkForce [ "/etc/ssh/ssh_host_ed25519_key" ];
 
         users.users.nixos = {
@@ -41,83 +45,7 @@
           execWheelOnly = true;
         };
 
-        services.traefik.dynamicConfigOptions.http = {
-          services = {
-            jellyfin.loadBalancer = {
-              servers = [ { url = "http://framebox:8096"; } ];
-              passHostHeader = true;
-            };
-            immich.loadBalancer = {
-              servers = [ { url = "http://framebox:2283"; } ];
-              passHostHeader = true;
-            };
-            attic.loadBalancer = {
-              servers = [ { url = "http://framebox:8899"; } ];
-              passHostHeader = true;
-              responseForwarding.flushInterval = "100ms";
-              serversTransport = "attic-transport";
-            };
-          };
-
-          middlewares = {
-            jellyfin-headers.headers = {
-              customResponseHeaders.X-Robots-Tag = "noindex, nofollow, nosnippet, noarchive";
-              customRequestHeaders.X-Forwarded-Proto = "https";
-              sslRedirect = true;
-              sslForceHost = true;
-              stsSeconds = 315360000;
-              stsIncludeSubdomains = true;
-              stsPreload = true;
-              frameDeny = false;
-              contentTypeNosniff = true;
-              customFrameOptionsValue = "SAMEORIGIN";
-            };
-            immich-headers.headers = {
-              customResponseHeaders.X-Robots-Tag = "noindex, nofollow, nosnippet, noarchive";
-              customRequestHeaders.X-Forwarded-Proto = "https";
-              sslRedirect = true;
-              sslForceHost = true;
-              stsSeconds = 315360000;
-              stsIncludeSubdomains = true;
-              stsPreload = true;
-              contentTypeNosniff = true;
-            };
-            attic-timeout.buffering = {
-              maxRequestBodyBytes = 21474836480;
-              memRequestBodyBytes = 1073741824;
-            };
-          };
-
-          serversTransports.attic-transport.forwardingTimeouts = {
-            dialTimeout = "30s";
-            responseHeaderTimeout = "10m";
-            idleConnTimeout = "10m";
-          };
-
-          routers = {
-            jellyfin = {
-              entryPoints = [ "websecure" ];
-              rule = "Host(`jellyfin.haseebmajid.dev`)";
-              service = "jellyfin";
-              middlewares = [ "jellyfin-headers" ];
-              tls.certResolver = "letsencrypt";
-            };
-            immich = {
-              entryPoints = [ "websecure" ];
-              rule = "Host(`immich.haseebmajid.dev`)";
-              service = "immich";
-              middlewares = [ "immich-headers" ];
-              tls.certResolver = "letsencrypt";
-            };
-            attic = {
-              entryPoints = [ "websecure" ];
-              rule = "Host(`attic.haseebmajid.dev`)";
-              service = "attic";
-              middlewares = [ "attic-timeout" ];
-              tls.certResolver = "letsencrypt";
-            };
-          };
-        };
+        services.openssh.ports = [ 22 ];
 
         networking = {
           hostName = "vps";

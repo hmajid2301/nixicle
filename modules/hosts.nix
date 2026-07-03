@@ -91,12 +91,20 @@ in
         users.haseeb = haseebUser;
       };
 
+      gateway = {
+        instantiate = mkInstantiate;
+      };
+
       vps = {
         instantiate = mkInstantiate;
       };
     };
 
     homes.x86_64-linux."haseebmajid@dell" = {
+      instantiate = mkHomeInstantiate;
+    };
+
+    homes.x86_64-linux."haseeb@framework" = {
       instantiate = mkHomeInstantiate;
     };
 
