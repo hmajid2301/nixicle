@@ -13,7 +13,6 @@
       { lib, pkgs, ... }:
       {
         boot = {
-          binfmt.emulatedSystems = [ "aarch64-linux" ];
           plymouth.enable = true;
           kernelParams = [
             "quiet"
@@ -28,12 +27,10 @@
             powerOnBoot = false;
             settings.General.Experimental = true;
           };
-          # Logitech wireless mouse
           logitech.wireless = {
             enable = true;
             enableGraphical = true;
           };
-          # ZSA keyboards (Moonlander, Voyager, etc.)
           keyboard.zsa.enable = true;
         };
         services = {
