@@ -31,7 +31,6 @@
       {
         sops.secrets.b2_access_key.sopsFile = ../../../hosts/framebox/secrets.yaml;
         sops.secrets.b2_secret_key.sopsFile = ../../../hosts/framebox/secrets.yaml;
-
         services.btrbk.instances.local = {
           onCalendar = "weekly";
           settings = {

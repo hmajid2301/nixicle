@@ -17,7 +17,6 @@ in
       { config, lib, ... }:
       {
         sops.secrets.tandoor.sopsFile = ../../../hosts/framebox/secrets.yaml;
-
         systemd.services.tandoor-recipes = {
           serviceConfig.EnvironmentFile = [ config.sops.secrets.tandoor.path ];
           after = [ "postgresql.service" ];

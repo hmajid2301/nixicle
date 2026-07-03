@@ -15,7 +15,6 @@
       { config, ... }:
       {
         sops.secrets.attic.sopsFile = ../../../hosts/framebox/secrets.yaml;
-
         services.atticd = {
           enable = true;
           environmentFile = config.sops.secrets.attic.path;

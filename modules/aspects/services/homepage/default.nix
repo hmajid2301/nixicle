@@ -5,7 +5,6 @@
       { config, lib, ... }:
       {
         sops.secrets.homepage_env.sopsFile = ../../../../hosts/framebox/secrets.yaml;
-
         services.homepage-dashboard = {
           enable = true;
           environmentFiles = [ config.sops.secrets.homepage_env.path ];

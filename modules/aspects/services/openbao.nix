@@ -23,13 +23,11 @@
       {
         sops = {
           secrets = {
-            openbao_admin_password.sopsFile = ../../../hosts/framebox/secrets.yaml;
+            openbao_admin_password = { };
             spindle_role_id = {
-              sopsFile = ../../../hosts/framebox/secrets.yaml;
               owner = "openbao-proxy";
             };
             spindle_secret_id = {
-              sopsFile = ../../../hosts/framebox/secrets.yaml;
               owner = "openbao-proxy";
             };
           };

@@ -254,16 +254,13 @@
 
         sops.secrets = {
           grafana_oauth2_client_id = {
-            sopsFile = ../../../hosts/framebox/secrets.yaml;
-            owner = "grafana";
+                        owner = "grafana";
           };
           grafana_oauth2_client_secret = {
-            sopsFile = ../../../hosts/framebox/secrets.yaml;
-            owner = "grafana";
+                        owner = "grafana";
           };
           grafana_secret_key = {
-            sopsFile = ../../../hosts/framebox/secrets.yaml;
-            owner = "grafana";
+                        owner = "grafana";
           };
         };
 

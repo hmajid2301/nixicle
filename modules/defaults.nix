@@ -16,23 +16,48 @@ let
 in
 {
   den = {
-    ctx.user.includes = [
-      den._.mutual-provider
-      (
-        { host, user, ... }:
-        {
-          nixos.home-manager = {
-            useGlobalPkgs = true;
-            useUserPackages = true;
-            extraSpecialArgs = { inherit inputs; };
-            users.${user.userName}._module.args.host = host.hostName;
-          };
-        }
-      )
-    ];
+    schema.user = {
+      includes = [
+        (
+          { host, user, ... }:
+          {
+            nixos.home-manager = {
+              useGlobalPkgs = true;
+              useUserPackages = true;
+              extraSpecialArgs = { inherit inputs; };
+              users.${user.userName}._module.args.host = host.hostName;
+            };
+          }
+        )
+      ];
+      imports = [
+        (
+          { lib, ... }:
+          {
+            config.classes = lib.mkDefault [ "homeManager" ];
+            options = {
+              authorizedKeys = lib.mkOption {
+                type = lib.types.listOf lib.types.str;
+                default = [ ];
+                description = "SSH public keys to add to authorized_keys for this user.";
+              };
+              email = lib.mkOption {
+                type = lib.types.str;
+                default = "hello@haseebmajid.dev";
+                description = "Primary email address used for git commits and notifications.";
+              };
+              signingKey = lib.mkOption {
+                type = lib.types.str;
+                default = "~/.ssh/id_ed25519.pub";
+                description = "Path to the SSH public key used for git commit signing.";
+              };
+            };
+          }
+        )
+      ];
+    };
 
-    ctx.home.includes = [
-      den._.mutual-provider
+    schema.home.includes = [
       (
         { home, ... }:
         {
@@ -45,29 +70,6 @@ in
         }
       )
     ];
-
-    schema.user =
-      { lib, ... }:
-      {
-        config.classes = lib.mkDefault [ "homeManager" ];
-        options = {
-          authorizedKeys = lib.mkOption {
-            type = lib.types.listOf lib.types.str;
-            default = [ ];
-            description = "SSH public keys to add to authorized_keys for this user.";
-          };
-          email = lib.mkOption {
-            type = lib.types.str;
-            default = "hello@haseebmajid.dev";
-            description = "Primary email address used for git commits and notifications.";
-          };
-          signingKey = lib.mkOption {
-            type = lib.types.str;
-            default = "~/.ssh/id_ed25519.pub";
-            description = "Path to the SSH public key used for git commit signing.";
-          };
-        };
-      };
 
     schema.host =
       { lib, ... }:

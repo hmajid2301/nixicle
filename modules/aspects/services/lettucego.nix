@@ -32,8 +32,7 @@ in
         imports = [ inputs.lettucego.nixosModules.default ];
 
         sops.secrets.lettucego = {
-          sopsFile = ../../../hosts/framebox/secrets.yaml;
-          key = "lettucego";
+                    key = "lettucego";
           owner = config.services.lettucego.user;
           inherit (config.services.lettucego) group;
           mode = "0400";

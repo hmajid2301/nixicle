@@ -28,7 +28,6 @@ in
       }:
       {
         sops.secrets.hortusfox_env.sopsFile = ../../../hosts/framebox/secrets.yaml;
-
         virtualisation.oci-containers.backend = "docker";
 
         systemd = {

@@ -56,9 +56,10 @@
           { config.facter.reportPath = ./facter.json; }
         ];
 
+        sops.defaultSopsFile = ./secrets.yaml;
+
         sops.secrets = {
           user_password = {
-            sopsFile = ./secrets.yaml;
             neededForUsers = true;
           };
         };
