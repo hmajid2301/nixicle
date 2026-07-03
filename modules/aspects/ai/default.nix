@@ -112,6 +112,9 @@ in
               "git:github.com/badlogic/pi-telegram"
               "git:github.com/v2nic/pi-caveman"
               "git:github.com/cdias900/pi-superpowers"
+              "npm:pi-scroll"
+              "npm:@observal/pi-insights"
+              "npm:@samfp/pi-memory"
             ];
             extensions = map (ext: "~/.pi/agent/extensions/${ext.rel}") piExtensionFiles;
           };
@@ -119,6 +122,16 @@ in
           ".pi/agent/agents" = {
             source = ./agents;
             recursive = true;
+          };
+
+          ".config/ketch/config.json".source = (pkgs.formats.json { }).generate "ketch-config" {
+            backend = "searxng";
+            searxng_url = "http://127.0.0.1:8082";
+            limit = 5;
+            cache_ttl = "72h";
+            code_backend = "grepapp";
+            docs_backend = "context7";
+            sourcegraph_url = "https://sourcegraph.com";
           };
 
           ".pi/agent/themes/stylix.json".source =

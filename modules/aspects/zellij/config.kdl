@@ -229,6 +229,10 @@ keybinds {
         bind "Ctrl n" { GoToNextTab; }
         bind "Ctrl p" { GoToPreviousTab; }
 
+        bind "Alt ." { GoToNextTab; }
+        bind "Alt ," { GoToPreviousTab; }
+        bind "Alt e" { NewTab; }
+
         bind "Ctrl Alt h" {
             MessagePlugin "https://github.com/hiasr/vim-zellij-navigator/releases/download/0.3.0/vim-zellij-navigator.wasm" {
                 name "resize";

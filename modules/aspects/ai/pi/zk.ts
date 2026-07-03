@@ -3,7 +3,8 @@ import type { ExtensionAPI } from "@mariozechner/pi-coding-agent";
 import { StringEnum } from "@mariozechner/pi-ai";
 import { Type, type Static } from "typebox";
 import { spawn } from "node:child_process";
-import { appendFile, existsSync, mkdir, readFile, realpathSync, writeFile } from "node:fs/promises";
+import { existsSync, realpathSync } from "node:fs";
+import { appendFile, mkdir, readFile, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { basename, dirname, isAbsolute, join, relative, resolve, sep } from "node:path";
 
