@@ -22,8 +22,7 @@
             "git.haseebmajid.dev" = {
               HostName = "git.haseebmajid.dev";
               User = "git";
-              Port = 22;
-              ProxyCommand = "${pkgs.cloudflared}/bin/cloudflared access ssh --hostname %h";
+              Port = 2222;
             };
           };
           extraConfig = ''

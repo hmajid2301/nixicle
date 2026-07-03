@@ -12,6 +12,12 @@ in
         group = "forgejo";
         mode = "0750";
       }
+      {
+        directory = "/var/lib/forgejo-dind";
+        user = "root";
+        group = "root";
+        mode = "0755";
+      }
     ];
     nixos =
       {
@@ -22,13 +28,11 @@ in
       }:
       {
         sops.secrets.forgejo_smtp_password = {
-          sopsFile = ../../../hosts/framebox/secrets.yaml;
-          owner = "forgejo";
+                    owner = "forgejo";
         };
 
         sops.secrets.forgejo_runner_token = {
-          sopsFile = ../../../hosts/framebox/secrets.yaml;
-        };
+                  };
 
         systemd = {
           services.forgejo.preStart =
@@ -51,8 +55,49 @@ in
             "d /var/lib/forgejo/custom 0750 forgejo forgejo -"
             "d /var/lib/forgejo/custom/conf 0750 forgejo forgejo -"
             "d /var/lib/forgejo/backups 0775 forgejo forgejo -"
+            "d /var/lib/forgejo-dind 0755 root root -"
           ];
+
         };
+
+        virtualisation.oci-containers = {
+          backend = "docker";
+          containers.forgejo-dind = {
+            image = "docker:dind";
+            autoStart = true;
+            privileged = true;
+            # Host networking avoids Tailscale routing table issues (table 52)
+            # and Docker bridge conflicts — DIND can reach Docker Hub directly.
+            # Use a non-conflicting bridge subnet so job containers inside DIND
+            # can reach the DIND daemon via host-gateway.
+            extraOptions = [
+              "--network"
+              "host"
+            ];
+            cmd = [
+              # Listen on all interfaces (0.0.0.0) because dockerd needs to bind
+              # BEFORE it creates the bridge at --bip. The firewall blocks external
+              # access to port 2376. Job containers reach DIND via host-gateway
+              # (172.20.0.1:2376 after dockerd creates the bridge).
+              "dockerd"
+              "-H"
+              "tcp://0.0.0.0:2376"
+              "--bip=172.20.0.1/16"
+              "--tls=false"
+            ];
+            volumes = [ "/var/lib/forgejo-dind:/var/lib/docker" ];
+          };
+        };
+
+        # bridge-nf-call-iptables=1 causes bridge traffic to go through iptables.
+        # DIND cannot set up iptables (nft missing from docker:dind). Host rule
+        # allows traffic from DIND bridge to the API port.
+        networking.firewall.extraCommands = ''
+          iptables -I nixos-fw 1 -p tcp --dport 2376 -s 172.20.0.0/16 -j ACCEPT 2>/dev/null || true
+        '';
+        networking.firewall.extraStopCommands = ''
+          iptables -D nixos-fw -p tcp --dport 2376 -s 172.20.0.0/16 -j ACCEPT 2>/dev/null || true
+        '';
 
         services = {
           forgejo = {
@@ -70,7 +115,9 @@ in
                 DOMAIN = "forgejo.haseebmajid.dev";
                 ROOT_URL = "https://forgejo.haseebmajid.dev/";
                 SSH_DOMAIN = "git.haseebmajid.dev";
-                SSH_PORT = 22;
+                SSH_PORT = 2222;
+                START_SSH_SERVER = true;
+                SSH_LISTEN_PORT = 2223;
               };
               mailer = {
                 ENABLED = true;
@@ -120,16 +167,21 @@ in
                 name = "homelab";
                 tokenFile = config.sops.secrets.forgejo_runner_token.path;
                 labels = [
+                  "docker:docker://ghcr.io/actions/actions-runner:latest"
                   "ubuntu-latest:docker://ghcr.io/actions/actions-runner:latest"
                   "ubuntu-22.04:docker://ghcr.io/actions/actions-runner:latest"
                   "ubuntu-20.04:docker://ghcr.io/actions/actions-runner:v2.308.0-ubuntu20.04"
                 ];
+                settings = {
+                  runner.capacity = 4;
+
+                  runner.envs.DOCKER_HOST = "tcp://dind_container.docker.internal:2376";
+                  container.docker_host = "tcp://127.0.0.1:2376";
+                  container.network = "bridge";
+                  container.options = "--add-host=dind_container.docker.internal:host-gateway";
+                };
               };
             };
-          };
-
-          cloudflared.tunnels.${tunnelId}.ingress = {
-            "forgejo.haseebmajid.dev" = "http://localhost:5706";
           };
         };
       };
