@@ -64,7 +64,7 @@
           settings.cpu_load_change = true;
         };
         home.packages = with pkgs; [
-          # lutris
+          lutris
           # bottles
         ];
       };
