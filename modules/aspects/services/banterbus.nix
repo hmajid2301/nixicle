@@ -1,6 +1,5 @@
 { inputs, ... }:
 let
-  tunnelId = "ecef5dbb-834e-43ed-84c6-355a2ac53e59";
   instances = {
     dev = {
       port = 8084;
@@ -13,7 +12,7 @@ let
   };
   jwksUrl = "https://authentik.haseebmajid.dev/application/o/budibase/.well-known/openid-configuration";
   adminGroup = "Admin";
-  redisAddress = "localhost:6379";
+  redisAddress = "127.0.0.1:6380";
 in
 {
   flake-file.inputs.banterbus = {
@@ -28,6 +27,23 @@ in
         lib,
         ...
       }:
+      let
+        traefikConfigs = lib.mapAttrsToList (
+          name: instanceCfg: {
+            services."banterbus-${name}".loadBalancer.servers = [
+              {
+                url = "http://localhost:${toString instanceCfg.port}";
+              }
+            ];
+            routers."banterbus-${name}" = {
+              entryPoints = [ "websecure" ];
+              rule = "Host(`${instanceCfg.domain}`)";
+              service = "banterbus-${name}";
+              tls.certResolver = "letsencrypt";
+            };
+          }
+        ) instances;
+      in
       {
         services.postgresql = {
           ensureDatabases = lib.mapAttrsToList (name: _: "banterbus_${name}") instances;
@@ -89,11 +105,7 @@ in
           }
         ) instances;
 
-        networking.firewall.allowedTCPPorts = lib.mapAttrsToList (_: i: i.port) instances;
-
-        services.cloudflared.tunnels.${tunnelId}.ingress = lib.mapAttrs' (
-          _: i: lib.nameValuePair i.domain "http://localhost:${toString i.port}"
-        ) instances;
+        services.traefik.dynamicConfigOptions.http = lib.mkMerge traefikConfigs;
       };
   };
 }

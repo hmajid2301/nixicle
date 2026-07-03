@@ -2,9 +2,6 @@
   inputs,
   ...
 }:
-let
-  tunnelId = "ecef5dbb-834e-43ed-84c6-355a2ac53e59";
-in
 {
   flake-file.inputs.authentik-nix.url = "github:nix-community/authentik-nix";
 
@@ -24,7 +21,6 @@ in
       {
         imports = [ inputs.authentik-nix.nixosModules.default ];
         sops.secrets.authenik_env.sopsFile = ../../../hosts/framebox/secrets.yaml;
-
         services = {
           authentik = {
             enable = true;
@@ -72,8 +68,6 @@ in
               extraRouterConfig.rule = "Host(`authentik.haseebmajid.dev`) || HostRegexp(`{subdomain:[a-z0-9]+}.homelab.haseebmajid.com`) && PathPrefix(`/outpost.goauthentik.io/`)";
             })
           ];
-
-          cloudflared.tunnels.${tunnelId}.ingress."authentik.haseebmajid.dev" = "http://localhost:9000";
         };
 
       };
