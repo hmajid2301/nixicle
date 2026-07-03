@@ -52,10 +52,14 @@
       den.aspects.performance-balanced
       den.aspects.impermanence
       den.aspects.boot-secure
+      den.aspects.nfs-truenas
+      den.aspects.searx
+      den.aspects.tailscale
+      den.aspects.docker
     ];
 
     nixos =
-      { config, pkgs, ... }:
+      { config, pkgs, lib, ... }:
       {
         imports = [
           ./hardware-configuration.nix
@@ -74,7 +78,10 @@
 
         users.users.haseeb = {
           hashedPasswordFile = config.sops.secrets.user_password.path;
-          extraGroups = [ "wheel" ];
+          extraGroups = [
+            "wheel"
+            "docker"
+          ];
         };
 
         boot = {
@@ -105,6 +112,9 @@
 
         # Persist secure boot keys
         environment.persistence."/persist".directories = [ "/etc/secureboot" ];
+
+        # Disable inbound SSH on this laptop
+        services.openssh.enable = lib.mkForce false;
 
         networking.hostName = "framework";
         system.stateVersion = "23.11";
