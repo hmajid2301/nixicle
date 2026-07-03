@@ -16,7 +16,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     noctalia = {
-      url = "github:noctalia-dev/noctalia-shell";
+      url = "github:noctalia-dev/noctalia/legacy-v4";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.noctalia-qs.follows = "noctalia-qs";
     };
@@ -199,6 +199,43 @@
         xdg.configFile = {
           "noctalia/plugins/display-config".source = "${inputs.noctalia-plugins}/display-config";
           "noctalia/plugins/rbw-provider".source = "${inputs.noctalia-plugins}/rbw-provider";
+        };
+
+        # Lock the screen before the system suspends (e.g. lid close with no
+        # external monitor). noctalia's idle daemon races logind's suspend and
+        # can leave the desktop unlocked on resume. This watches logind's
+        # PrepareForSleep D-Bus signal — like swayidle's before-sleep hook —
+        # and holds a delay inhibitor so the lock paints before sleep proceeds.
+        # Lives in the systemd user layer so it works on NixOS and non-NixOS;
+        # sleep.target is a system target unavailable to user units.
+        systemd.user.services.lock-before-sleep = {
+          Unit = {
+            Description = "Lock noctalia before sleep";
+            PartOf = [ "graphical-session.target" ];
+            After = [ "graphical-session.target" ];
+          };
+          Service = {
+            ExecStart = "${pkgs.writeShellScript "lock-before-sleep" ''
+              exec ${pkgs.systemd}/bin/systemd-inhibit \
+                --what=sleep --mode=delay --who=lock-before-sleep --why="Lock screen before sleep" \
+                ${pkgs.dbus}/bin/dbus-monitor --system \
+                  "type='signal',interface='org.freedesktop.login1.Manager',member='PrepareForSleep'" \
+                | while read -r line; do
+                    case "$line" in
+                      *"boolean true"*)
+                        ${config.programs.noctalia-shell.package}/bin/noctalia-shell ipc call lockScreen lock \
+                          || ${pkgs.systemd}/bin/loginctl lock-session
+                        sleep 1
+                        ;;
+                    esac
+                  done
+            ''}";
+            Restart = "on-failure";
+            RestartSec = 2;
+          };
+          Install = {
+            WantedBy = [ "graphical-session.target" ];
+          };
         };
 
         programs = {
