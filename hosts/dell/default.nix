@@ -1,6 +1,6 @@
 { den, ... }:
 {
-  den.aspects.haseebmajid.provides.dell = {
+  den.aspects.haseebmajid = {
     includes = [
       den.aspects.desktop
       den.aspects.non-nixos
@@ -58,6 +58,8 @@
             semgrep
             pre-commit
             bun
+            awscli2
+            terraform
             nixicle.monolisa
             noto-fonts-color-emoji
             noto-fonts
