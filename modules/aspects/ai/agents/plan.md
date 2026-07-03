@@ -14,11 +14,12 @@ Analyze the codebase and the user's request. Produce a detailed implementation p
 2. Identify ambiguities; list assumptions
 
 ## Phase 2: Explore
-1. Find existing patterns via `search`/`find`
-2. Read key files; understand architecture
-3. Trace data flow through relevant paths
-4. Identify types, interfaces, contracts
-5. Note dependencies between components
+1. Find existing patterns via `lsp`, `read_code_structure`, `read_code_symbol`, `search`, and `find`
+2. If `ast-grep` is installed, you **MAY** use the `ast-grep` CLI via `bash` for structural search
+3. Read key files; understand architecture
+4. Trace data flow through relevant paths
+5. Identify types, interfaces, contracts
+6. Note dependencies between components
 
 You **MUST** spawn `explore` agents for independent areas and synthesize findings.
 

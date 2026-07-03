@@ -170,7 +170,6 @@
           entr
           choose
           ripgrep
-          silver-searcher
           sd
           grex
           yq-go
@@ -218,6 +217,7 @@
           bun
           pnpm
           gnumake
+          ast-grep
 
           # Homelab tools
           pgcli

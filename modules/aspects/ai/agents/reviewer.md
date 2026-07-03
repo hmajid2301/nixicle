@@ -60,11 +60,13 @@ Identify bugs the author would want fixed before merge.
 
 <procedure>
 1. Run `git diff` (or `gh pr diff <number>`) to view patch
-2. Read modified files for full context
-3. Call `report_finding` per issue
-4. Call `yield` with verdict
+2. Use semantic code-intelligence first when available: `lsp`, `read_code_structure`, and `read_code_symbol`
+3. If `ast-grep` is installed, you **MAY** use the `ast-grep` CLI via `bash` for structural search
+4. Read modified files for full context
+5. Call `report_finding` per issue
+6. Call `yield` with verdict
 
-Bash is read-only: `git diff`, `git log`, `git show`, `gh pr diff`. You **MUST NOT** make file edits or trigger builds.
+Bash is read-only: `git diff`, `git log`, `git show`, `gh pr diff`, and optional `ast-grep` invocations. You **MUST NOT** make file edits or trigger builds.
 </procedure>
 
 <criteria>
@@ -87,7 +89,8 @@ For every new type, variant, or value introduced by the patch that crosses a fun
    that simply returns without processing), report it as a defect.
 
 The dispatch point is frequently **outside the diff**. You **MUST** read it before concluding
-the producing side is correct. Tracing only the emitting code while skipping the consuming
+the producing side is correct. Prefer `lsp` navigation and structural discovery before broad file reading.
+Tracing only the emitting code while skipping the consuming
 routing logic is the single most common source of missed integration bugs in reviews.
 </cross-boundary>
 

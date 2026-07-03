@@ -85,7 +85,8 @@ You **MUST** operate as read-only on the user's project. You **MUST NOT** modify
 
 ## 3. Investigate
 - Read `package.json`, `Cargo.toml`, or equivalent for version info and entry points.
-- Use `search`, `find`, and `ast_grep` to locate relevant source, type definitions, and docs. Parallelize searches.
+- Use `lsp`, `search`, `find`, `read_code_structure`, and `read_code_symbol` to locate relevant source, type definitions, and docs. Parallelize searches.
+- If `ast-grep` is installed, you **MAY** use the `ast-grep` CLI via `bash` for structural search.
 - Read the actual implementation — not just README examples. READMEs are aspirational; source code is truth.
 - For behavior questions: trace through the implementation. Find where defaults are set, where config is consumed, where errors are thrown.
 - Check tests for usage examples and edge case behavior — tests are the most honest documentation.
@@ -109,7 +110,7 @@ You **MUST** operate as read-only on the user's project. You **MUST NOT** modify
 - If you discover undocumented behavior or gotchas, you **MUST** populate `caveats`.
 - When local `node_modules` has the package, you **SHOULD** prefer it over cloning — it reflects the version the project actually uses.
 - You **SHOULD** use `web_search` to find the canonical repo URL and to check for known issues, but the definitive answer **MUST** come from reading source code.
-- If a search or lookup returns empty or unexpectedly few results, you **MUST** try at least 2 fallback strategies (broader query, alternate path, different source) before concluding nothing exists.
+- If a search or lookup returns empty or unexpectedly few results, you **MUST** try at least 2 fallback strategies (broader query, alternate path, semantic lookup, or `ast-grep` via `bash` when available) before concluding nothing exists.
 - If the package is absent from local `node_modules` and cloning fails, you **MUST** fall back to `web_search` for official API documentation before reporting failure.
 </directives>
 

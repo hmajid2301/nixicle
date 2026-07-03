@@ -194,7 +194,7 @@
                   pane {
                       name "ai-assistant"
                       command "fish"
-                      args "-c" "set ai_tool (string lower $GSESH_AI_TOOL); if test \"$ai_tool\" = \"claude\"; claude -c; else; opencode -c; end; exec fish"
+                      args "-c" "if command -sq pi; pi; else; echo 'gsesh/zellij: pi not found on PATH'; exec fish; end"
                   }
               }
 
