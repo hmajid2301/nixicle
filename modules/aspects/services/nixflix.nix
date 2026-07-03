@@ -24,30 +24,10 @@ in
             mkdir -p '${config.services.qbittorrent.profileDir}/qBittorrent/config'
           '';
 
-          jellyfin-libraries = lib.mkIf config.nixflix.jellyfin.enable {
-            serviceConfig = {
-              ExecStartPre = lib.mkBefore [
-                "${lib.getExe' pkgs.util-linux "runuser"} -u haseeb -- mkdir -p /mnt/homelab/homelab/media/anime /mnt/homelab/homelab/media/movies /mnt/homelab/homelab/media/tv"
-              ];
-            };
-            script = lib.mkForce ''
-              set -eu
-
-              BASE_URL="http://127.0.0.1:8096"
-
-              echo "Configuring Jellyfin libraries..."
-
-              # Find and run original script, skipping mkdir lines
-              ORIGINAL=$(ls /nix/store/*-unit-script-jellyfin-libraries-start/bin/jellyfin-libraries-start 2>/dev/null | head -1)
-              if [ -n "$ORIGINAL" ] && [ -x "$ORIGINAL" ]; then
-                # Remove lines from "Creating library paths..." through the last mkdir echo
-                # Use $BASH since it's not in the service's PATH
-                sed -e '/^echo "Creating library paths..."/,/^echo "Created path: \/mnt\/homelab\/homelab\/media\/tv"/d' "$ORIGINAL" | "$BASH"
-              else
-                echo "Warning: Original jellyfin-libraries-start script not found" >&2
-              fi
-            '';
-          };
+          # TODO: jellyfin-libraries service fails on boot, disabled for now.
+          # Fix properly later — needs to align with nixflix upstream changes
+          # or rewrite the library provisioning script.
+          jellyfin-libraries.enable = lib.mkForce false;
         };
 
         environment.etc =
@@ -138,6 +118,13 @@ in
               hostConfig = {
                 password._secret = config.sops.secrets."prowlarr/password".path;
               };
+              indexers = [
+                { name = "Torrent Downloads"; }
+                { name = "TorrentDownload"; }
+                { name = "TorrentKitty"; }
+                { name = "The Pirate Bay"; }
+                { name = "showRSS"; }
+              ];
             };
           };
 
@@ -145,7 +132,19 @@ in
             enable = true;
             apiKey._secret = config.sops.secrets."jellyfin/api_key".path;
 
+            encoding = {
+              hardwareAccelerationType = "vaapi";
+              vaapiDevice = "/dev/dri/renderD128";
+              enableHardwareEncoding = true;
+            };
+
             system = {
+              trickplayOptions = {
+                enableHwAcceleration = true;
+                enableHwEncoding = true;
+                processPriority = "Idle";
+                processThreads = 1;
+              };
               pluginRepositories = {
                 "SSO-Auth" = {
                   url = "https://raw.githubusercontent.com/9p4/jellyfin-plugin-sso/manifest-release/manifest.json";
@@ -248,6 +247,8 @@ in
                   requirePerfectSubtitleMatch = true;
                   skipSubtitlesIfAudioTrackMatches = false;
                   skipSubtitlesIfEmbeddedSubtitlesPresent = true;
+                  extractChapterImagesDuringLibraryScan = false;
+                  extractTrickplayImagesDuringLibraryScan = false;
                 };
               in
               {
