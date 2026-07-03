@@ -8,7 +8,6 @@ in
       { config, ... }:
       {
         sops.secrets.cloudflared.sopsFile = ../../../hosts/framebox/secrets.yaml;
-
         services.cloudflared = {
           enable = true;
           tunnels.${tunnelId} = {
@@ -17,6 +16,10 @@ in
             ingress = { };
           };
         };
+
+        # Force HTTP2 (TCP) instead of QUIC (UDP) — more stable through consumer router/WiFi
+        systemd.services."cloudflared-tunnel-${tunnelId}".environment.TUNNEL_TRANSPORT_PROTOCOL =
+          "http2";
       };
   };
 }

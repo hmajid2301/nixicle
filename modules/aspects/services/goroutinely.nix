@@ -2,9 +2,6 @@
   inputs,
   ...
 }:
-let
-  tunnelId = "ecef5dbb-834e-43ed-84c6-355a2ac53e59";
-in
 {
   flake-file.inputs.goroutinely = {
     url = "gitlab:hmajid2301/goroutinely/fix-broken";
@@ -31,8 +28,7 @@ in
       {
         imports = [ inputs.goroutinely.nixosModules.default ];
         sops.secrets.goroutinely = {
-          sopsFile = ../../../hosts/framebox/secrets.yaml;
-          key = "goroutinely";
+                    key = "goroutinely";
           owner = config.services.goroutinely.user;
           inherit (config.services.goroutinely) group;
           mode = "0400";
@@ -57,8 +53,6 @@ in
             };
             secretsFile = config.sops.secrets.goroutinely.path;
           };
-
-          cloudflared.tunnels.${tunnelId}.ingress."goroutinely.haseebmajid.dev" = "http://localhost:8235";
 
           traefik.dynamicConfigOptions.http = lib.nixicle.mkTraefikService {
             name = "goroutinely";

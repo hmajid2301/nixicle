@@ -12,8 +12,7 @@
         ];
 
         sops.secrets.cloudflare_api_key = {
-          sopsFile = ../../../hosts/framebox/secrets.yaml;
-          owner = "traefik";
+                    owner = "traefik";
         };
 
         systemd.services.traefik = {
@@ -77,9 +76,9 @@
                   ];
                 };
                 transport.respondingTimeouts = {
-                  readTimeout = "10m";
-                  writeTimeout = "10m";
-                  idleTimeout = "10m";
+                  readTimeout = "30m";
+                  writeTimeout = "30m";
+                  idleTimeout = "30m";
                 };
               };
             };
