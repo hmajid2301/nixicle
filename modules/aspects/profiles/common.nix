@@ -223,9 +223,9 @@ in
                 "gnomeTheme.systemIcons" = true;
                 "gnomeTheme.spinner" = true;
                 "layers.acceleration.force-enabled" = true;
-                "identity.fxaccounts.account.device.name" = "${config.home.username}@(hostname)";
+                # "identity.fxaccounts.account.device.name" = "${config.home.username}@(hostname)";
                 "browser.urlbar.oneOffSearches" = false;
-                "browser.search.hiddenOneOffs" = "Google,Yahoo,Bing,Amazon.com,Twitter,Wikipedia (en),YouTube,eBay";
+                # "browser.search.hiddenOneOffs" = "Google,Yahoo,Bing,Amazon.com,Twitter,Wikipedia (en),YouTube,eBay";
                 "browser.urlbar.shortcuts.bookmarks" = false;
                 "browser.urlbar.shortcuts.history" = false;
                 "browser.urlbar.shortcuts.tabs" = false;
@@ -245,6 +245,7 @@ in
                   "NixOS Options"
                   "Nix Packages"
                   "GitHub"
+                  # "Home Manager"
                   "HackerNews"
                 ];
                 engines = {
@@ -262,6 +263,14 @@ in
                     ];
                     metaData.hideOneOffButton = true;
                   };
+                  # "Google".metaData.hidden = true;
+                  # "Yahoo".metaData.hidden = true;
+                  # "Bing".metaData.hidden = true;
+                  # "DuckDuckGo".metaData.hidden = true;
+                  # "Amazon.com".metaData.hidden = true;
+                  # "Wikipedia (en)".metaData.hidden = true;
+                  # "YouTube".metaData.hidden = true;
+                  # "eBay".metaData.hidden = true;
                   "Nix Packages" = {
                     icon = "https://nixos.org/_astro/flake-blue.Bf2X2kC4_Z1yqDoT.svg";
                     definedAliases = [ "@np" ];
