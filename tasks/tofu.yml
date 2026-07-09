@@ -1,0 +1,40 @@
+version: '3'
+
+tasks:
+  generate:
+    desc: Generate OpenTofu JSON from Terranix for Pocket ID resources
+    cmds:
+      - mkdir -p infra/terranix/generated/prod
+      - terranix infra/terranix/prod.nix > infra/terranix/generated/prod/config.tf.json
+
+  init:
+    desc: Init OpenTofu working dir for Pocket ID resources (requires backend env for remote state)
+    deps: [generate]
+    dir: infra/terranix/generated/prod
+    cmds:
+      - tofu init
+
+  validate:
+    desc: Validate generated OpenTofu config without backend access
+    deps: [generate]
+    dir: infra/terranix/generated/prod
+    cmds:
+      - rm -rf .terraform
+      - tofu init -backend=false
+      - tofu validate
+
+  plan:
+    desc: Plan Pocket ID OpenTofu resources (requires Pocket ID + backend env)
+    deps: [generate]
+    dir: infra/terranix/generated/prod
+    cmds:
+      - tofu init
+      - tofu plan
+
+  apply:
+    desc: Apply Pocket ID OpenTofu resources (manual, requires Pocket ID + backend env)
+    deps: [generate]
+    dir: infra/terranix/generated/prod
+    cmds:
+      - tofu init
+      - tofu apply
