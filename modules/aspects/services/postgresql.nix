@@ -42,9 +42,9 @@
             package = pkgs.postgresql_18;
             authentication = pkgs.lib.mkOverride 10 ''
               #type database DBuser origin-address auth-method
-              local all       all     trust
-              host  all      all     127.0.0.1/32   trust
-              host all       all     ::1/128        trust
+              local all       all                     peer
+              host  all       all     127.0.0.1/32   scram-sha-256
+              host  all       all     ::1/128        scram-sha-256
             '';
             initialScript = config.sops.templates."init.sql".path;
           };
@@ -53,15 +53,6 @@
             enable = true;
             backupAll = true;
             startAt = "*-*-* 10:00:00";
-          };
-
-          traefik.dynamicConfigOptions.tcp = {
-            services.postgres.loadBalancer.servers = [ { address = "127.0.0.1:5432"; } ];
-            routers.postgres = {
-              entryPoints = [ "postgres" ];
-              rule = "HostSNI(`*`)";
-              service = "postgres";
-            };
           };
         };
 

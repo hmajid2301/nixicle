@@ -98,9 +98,19 @@ in
                 "BANTERBUS_WEBSERVER_PORT=${toString instanceCfg.port}"
               ];
               PrivateTmp = true;
+              PrivateDevices = true;
               NoNewPrivileges = true;
               ProtectSystem = "strict";
               ProtectHome = true;
+              ProtectKernelLogs = true;
+              ProtectKernelTunables = true;
+              ProtectControlGroups = true;
+              ProtectKernelModules = true;
+              RestrictSUIDSGID = true;
+              LockPersonality = true;
+              RestrictNamespaces = true;
+              RestrictRealtime = true;
+              SystemCallArchitectures = "native";
             };
           }
         ) instances;

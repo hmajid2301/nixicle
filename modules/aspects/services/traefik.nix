@@ -45,9 +45,6 @@
               };
             };
             entryPoints = {
-              redis.address = "0.0.0.0:6381";
-              valkey.address = "0.0.0.0:6382";
-              postgres.address = "0.0.0.0:5433";
               web = {
                 address = "0.0.0.0:80";
                 http.redirections.entryPoint = {

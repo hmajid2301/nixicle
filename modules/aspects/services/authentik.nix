@@ -17,14 +17,17 @@
       }
     ];
     nixos =
-      { config, lib, ... }:
+      { config, lib, secrets, ... }:
+      let
+        secretPaths = lib.mergeAttrsList secrets;
+      in
       {
         imports = [ inputs.authentik-nix.nixosModules.default ];
-        sops.secrets.authenik_env.sopsFile = ../../../hosts/framebox/secrets.yaml;
+        sops.secrets.authenik_env = { };
         services = {
           authentik = {
             enable = true;
-            environmentFile = config.sops.secrets.authenik_env.path;
+            environmentFile = secretPaths.authenik_env;
             settings = {
               email = {
                 host = "smtp.mailgun.org";

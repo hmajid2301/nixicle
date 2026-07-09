@@ -48,8 +48,8 @@
               vapidPublicKey = "BN91igKCVVyiiDggAN4poSUaEKL_-CNV_3mnioXKghZd00x5fFkjLra8HvAhfwZkHTymFsXHsRwVYpTqyGja-II";
             };
             oauth = {
-              issuerUrl = "https://authentik.haseebmajid.dev/application/o/go-routinely/.well-known/openid-configuration";
-              clientId = "N3h5Y0H52Z96NqKfJn8fWasyPX5VRdtx5ps0uoWW";
+              issuerUrl = "https://id.haseebmajid.dev/.well-known/openid-configuration";
+              clientId = "goroutinely";
             };
             secretsFile = config.sops.secrets.goroutinely.path;
           };

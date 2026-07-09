@@ -15,14 +15,17 @@ in
       }
     ];
     nixos =
-      { config, ... }:
+      { config, secrets, lib, ... }:
+      let
+        secretPaths = lib.mergeAttrsList secrets;
+      in
       {
-        sops.secrets.open_webui_oauth.sopsFile = ../../../hosts/framebox/secrets.yaml;
+        sops.secrets.open_webui_oauth = { };
         services.open-webui = {
           enable = true;
           host = "0.0.0.0";
           port = 8185;
-          environmentFile = config.sops.secrets.open_webui_oauth.path;
+          environmentFile = secretPaths.open_webui_oauth;
           environment = {
             ANONYMIZED_TELEMETRY = "False";
             DO_NOT_TRACK = "True";
