@@ -1,6 +1,6 @@
 { den, ... }:
 {
-  den.aspects.vps = {
+  den.aspects.gateway = {
     includes = [
       den.aspects.performance-base
       den.aspects.server

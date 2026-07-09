@@ -149,9 +149,7 @@
               groups.media.gid = 3000;
             };
 
-            # TODO: move to boot.nix in all files
             environment.persistence."/persist".directories = [
-              "/etc/secureboot"
               {
                 directory = "/var/lib/qBittorrent";
                 user = "qbittorrent";
