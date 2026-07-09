@@ -12,10 +12,9 @@
  * Config: ~/.pi/agent/security-guard.json (deployed via nix)
  */
 
-import type { ExtensionAPI } from "@mariozechner/pi-coding-agent";
+import { DynamicBorder, type ExtensionAPI } from "@mariozechner/pi-coding-agent";
 import {
 	Container,
-	DynamicBorder,
 	Key,
 	matchesKey,
 	Spacer,

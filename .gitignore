@@ -47,6 +47,8 @@ terraform.tfvars
 # Terraform
 *.tfvars
 *.tfvars.json
+infra/terranix/.local/
+infra/terranix/generated/
 packages/zellij-detach/src/target/
 
 node_modules/
