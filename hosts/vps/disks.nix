@@ -7,21 +7,116 @@
         content = {
           type = "gpt";
           partitions = {
-            boot = {
-              size = "1M";
-              type = "EF02";
+            ESP = {
+              label = "boot";
+              name = "ESP";
+              size = "512M";
+              type = "EF00";
+              content = {
+                type = "filesystem";
+                format = "vfat";
+                mountpoint = "/boot";
+                mountOptions = [
+                  "defaults"
+                  "umask=0077"
+                  "dmask=0077"
+                  "fmask=0177"
+                ];
+              };
             };
             root = {
               size = "100%";
+              label = "nixos";
               content = {
-                type = "filesystem";
-                format = "ext4";
-                mountpoint = "/";
+                type = "btrfs";
+                extraArgs = [
+                  "-L"
+                  "nixos"
+                  "-f"
+                ];
+                postCreateHook = ''
+                  mount -t btrfs /dev/disk/by-label/nixos /mnt
+
+                  # Create the blank snapshot for impermanence rollback
+                  btrfs subvolume snapshot -r /mnt/root /mnt/root-blank
+
+                  # Pre-create critical directories in /persist for first boot
+                  # This is essential for nixos-anywhere + impermanence to work
+                  mkdir -p /mnt/persist/{root,srv,etc/nixos,etc/ssh}
+                  mkdir -p /mnt/persist/var/{spool,cache,db}
+                  mkdir -p /mnt/persist/var/lib/{nixos,systemd,dbus,bluetooth,NetworkManager}
+                  mkdir -p /mnt/persist/var/lib/systemd/{coredump,timers,timesync}
+                  mkdir -p /mnt/persist/var/db/sudo
+                  mkdir -p /mnt/persist/etc/NetworkManager/system-connections
+
+                  # Set proper permissions
+                  chmod 700 /mnt/persist/root
+                  chmod 700 /mnt/persist/var/db/sudo
+                  chmod 700 /mnt/persist/etc/NetworkManager/system-connections
+
+                  umount /mnt
+                '';
+                subvolumes = {
+                  "/root" = {
+                    mountpoint = "/";
+                    mountOptions = [
+                      "subvol=root"
+                      "compress=zstd"
+                      "noatime"
+                    ];
+                  };
+                  "/home" = {
+                    mountpoint = "/home";
+                    mountOptions = [
+                      "subvol=home"
+                      "compress=zstd"
+                      "noatime"
+                    ];
+                  };
+                  "/nix" = {
+                    mountpoint = "/nix";
+                    mountOptions = [
+                      "subvol=nix"
+                      "compress=zstd"
+                      "noatime"
+                    ];
+                  };
+                  "/persist" = {
+                    mountpoint = "/persist";
+                    mountOptions = [
+                      "subvol=persist"
+                      "compress=zstd"
+                      "noatime"
+                    ];
+                  };
+                  "/log" = {
+                    mountpoint = "/var/log";
+                    mountOptions = [
+                      "subvol=log"
+                      "compress=zstd"
+                      "noatime"
+                    ];
+                  };
+                  "/swap" = {
+                    mountpoint = "/swap";
+                    mountOptions = [
+                      "noatime"
+                      "compress=no"
+                    ];
+                    swap.swapfile.size = "16G";
+                  };
+                };
               };
             };
           };
         };
       };
     };
+  };
+
+  fileSystems = {
+    "/persist".neededForBoot = true;
+    "/var/log".neededForBoot = true;
+    "/home".neededForBoot = true;
   };
 }
