@@ -55,6 +55,7 @@
 
   den.aspects.boot-secure = {
     includes = [ den.aspects.boot ];
+    persist.directories = [ "/etc/secureboot" ];
 
     nixos =
       { lib, ... }:
