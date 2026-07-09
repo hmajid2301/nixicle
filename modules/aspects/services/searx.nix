@@ -4,10 +4,15 @@
     nixos =
       { config, ... }:
       {
-        sops.secrets.searx_secret_key.sopsFile = ../../../hosts/framebox/secrets.yaml;
+        sops = {
+          secrets.searx_secret_key = { };
+          templates."searx-env".content = ''
+            SEARX_SECRET_KEY=${config.sops.placeholder.searx_secret_key}
+          '';
+        };
         services.searx = {
           enable = true;
-          environmentFile = config.sops.secrets.searx_secret_key.path;
+          environmentFile = config.sops.templates."searx-env".path;
           settings = {
             server.bind_address = "127.0.0.1";
             server.port = 8082;

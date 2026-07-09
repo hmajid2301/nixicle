@@ -24,10 +24,14 @@ in
         config,
         pkgs,
         lib,
+        secrets,
         ...
       }:
+      let
+        secretPaths = lib.mergeAttrsList secrets;
+      in
       {
-        sops.secrets.hortusfox_env.sopsFile = ../../../hosts/framebox/secrets.yaml;
+        sops.secrets.hortusfox_env = { };
         virtualisation.oci-containers.backend = "docker";
 
         systemd = {
@@ -78,7 +82,7 @@ in
               MARIADB_USER = dbUser;
               MARIADB_ROOT_HOST = "%";
             };
-            environmentFiles = [ config.sops.secrets.hortusfox_env.path ];
+            environmentFiles = [ secretPaths.hortusfox_env ];
             volumes = [ "${dataDir}/db:/var/lib/mysql" ];
             extraOptions = [ "--network=${networkName}" ];
           };
@@ -103,7 +107,7 @@ in
               PROXY_HIDE_LOGOUT = "true";
               PROXY_OVERWRITE_VALUES = "true";
             };
-            environmentFiles = [ config.sops.secrets.hortusfox_env.path ];
+            environmentFiles = [ secretPaths.hortusfox_env ];
             volumes = [
               "${dataDir}/images:/var/www/html/public/img"
               "${dataDir}/logs:/var/www/html/app/logs"

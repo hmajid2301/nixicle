@@ -1,6 +1,5 @@
 { ... }:
 let
-  tunnelId = "ecef5dbb-834e-43ed-84c6-355a2ac53e59";
   domain = "papra.haseebmajid.dev";
   port = 1221;
 in
@@ -16,10 +15,10 @@ in
       }
     ];
     nixos =
-      { config, ... }:
+      { config, lib, ... }:
       {
         sops.secrets.papra-env = {
-                    restartUnits = [ "papra.service" ];
+          restartUnits = [ "papra.service" ];
         };
 
         services.papra = {
@@ -34,7 +33,12 @@ in
           };
         };
 
-        services.cloudflared.tunnels.${tunnelId}.ingress.${domain} = "http://localhost:${toString port}";
+        services.traefik.dynamicConfigOptions.http = lib.nixicle.mkTraefikService {
+          name = "papra";
+          port = port;
+          subdomain = "papra";
+          domain = "haseebmajid.dev";
+        };
       };
   };
 }

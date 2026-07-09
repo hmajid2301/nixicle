@@ -1,7 +1,4 @@
 { ... }:
-let
-  tunnelId = "ecef5dbb-834e-43ed-84c6-355a2ac53e59";
-in
 {
   den.aspects.tandoor = {
     includes = [ ];
@@ -16,7 +13,7 @@ in
     nixos =
       { config, lib, ... }:
       {
-        sops.secrets.tandoor.sopsFile = ../../../hosts/framebox/secrets.yaml;
+        sops.secrets.tandoor = { };
         systemd.services.tandoor-recipes = {
           serviceConfig.EnvironmentFile = [ config.sops.secrets.tandoor.path ];
           after = [ "postgresql.service" ];
@@ -65,11 +62,6 @@ in
               ];
               locations."/media/".alias = "/var/lib/tandoor-recipes/";
             };
-          };
-
-          cloudflared.tunnels.${tunnelId}.ingress = {
-            "tandoor-recipes-media.haseebmajid.dev" = "http://localhost:8100";
-            "tandoor-recipes.haseebmajid.dev" = "http://localhost:8099";
           };
 
           traefik.dynamicConfigOptions.http = lib.mkMerge [

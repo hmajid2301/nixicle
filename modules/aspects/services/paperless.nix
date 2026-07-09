@@ -15,13 +15,16 @@ in
       }
     ];
     nixos =
-      { config, ... }:
+      { config, secrets, lib, ... }:
+      let
+        secretPaths = lib.mergeAttrsList secrets;
+      in
       {
         users.users.${config.services.paperless.user}.extraGroups = [ "media" ];
 
         sops.secrets = {
-          paperless_pass.sopsFile = ../../../hosts/framebox/secrets.yaml;
-          paperless.sopsFile = ../../../hosts/framebox/secrets.yaml;
+          paperless_pass = { };
+          paperless = { };
         };
 
         systemd = {
@@ -32,7 +35,7 @@ in
           services = {
             paperless-web = {
               serviceConfig = {
-                EnvironmentFile = [ config.sops.secrets.paperless.path ];
+                EnvironmentFile = [ secretPaths.paperless ];
                 BindPaths = [ "/mnt/homelab" ];
               };
               requires = [ "mnt-homelab.mount" ];
@@ -51,7 +54,7 @@ in
           paperless = {
             enable = true;
             inherit mediaDir;
-            passwordFile = config.sops.secrets.paperless_pass.path;
+            passwordFile = secretPaths.paperless_pass;
             settings = {
               PAPERLESS_DBHOST = "/run/postgresql";
               PAPERLESS_ALLOWED_HOSTS = "paperless.haseebmajid.dev,localhost,127.0.0.1";

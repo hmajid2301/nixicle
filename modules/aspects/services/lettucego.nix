@@ -2,9 +2,6 @@
   inputs,
   ...
 }:
-let
-  tunnelId = "ecef5dbb-834e-43ed-84c6-355a2ac53e59";
-in
 {
   flake-file.inputs.lettucego = {
     url = "gitlab:hmajid2301/lettucego";
@@ -59,13 +56,19 @@ in
               region = "garage";
             };
             oauth = {
-              issuerUrl = "https://authentik.haseebmajid.dev/application/o/lettucego/";
-              clientId = "4xkxfKIj6aYPvnlTpvCvRN58cWBTQMxPNhnd5YXp";
+              issuerUrl = "https://id.haseebmajid.dev";
+              clientId = "lettucego";
+              provider = "pocketid";
             };
             secretsFile = config.sops.secrets.lettucego.path;
           };
 
-          cloudflared.tunnels.${tunnelId}.ingress."lettucego.haseebmajid.dev" = "http://localhost:8236";
+          traefik.dynamicConfigOptions.http = lib.nixicle.mkTraefikService {
+            name = "lettucego";
+            port = 8236;
+            subdomain = "lettucego";
+            domain = "haseebmajid.dev";
+          };
         };
       };
   };

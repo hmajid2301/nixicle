@@ -12,12 +12,15 @@
       }
     ];
     nixos =
-      { config, ... }:
+      { config, secrets, lib, ... }:
+      let
+        secretPaths = lib.mergeAttrsList secrets;
+      in
       {
-        sops.secrets.attic.sopsFile = ../../../hosts/framebox/secrets.yaml;
+        sops.secrets.attic = { };
         services.atticd = {
           enable = true;
-          environmentFile = config.sops.secrets.attic.path;
+          environmentFile = secretPaths.attic;
           settings.listen = "[::]:8899";
         };
 

@@ -4,9 +4,54 @@
     nixos =
       { config, lib, ... }:
       {
-        sops.secrets.crowdsec_enroll_key.sopsFile = ../../../hosts/framebox/secrets.yaml;
-        systemd.services.crowdsec-firewall-bouncer.serviceConfig.DynamicUser = lib.mkForce false;
-        systemd.services.crowdsec-firewall-bouncer-register.serviceConfig.DynamicUser = lib.mkForce false;
+        sops.secrets.crowdsec_enroll_key = { };
+        systemd.services.crowdsec.serviceConfig = {
+          NoNewPrivileges = true;
+          PrivateTmp = true;
+          PrivateDevices = true;
+          ProtectHome = true;
+          ProtectKernelLogs = true;
+          ProtectKernelTunables = true;
+          ProtectControlGroups = true;
+          ProtectKernelModules = true;
+          RestrictSUIDSGID = true;
+          LockPersonality = true;
+          RestrictNamespaces = true;
+          RestrictRealtime = true;
+          SystemCallArchitectures = "native";
+        };
+        systemd.services.crowdsec-firewall-bouncer.serviceConfig = {
+          DynamicUser = lib.mkForce false;
+          NoNewPrivileges = true;
+          PrivateTmp = true;
+          PrivateDevices = true;
+          ProtectHome = true;
+          ProtectKernelLogs = true;
+          ProtectKernelTunables = true;
+          ProtectControlGroups = true;
+          ProtectKernelModules = true;
+          RestrictSUIDSGID = true;
+          LockPersonality = true;
+          RestrictNamespaces = true;
+          RestrictRealtime = true;
+          SystemCallArchitectures = "native";
+        };
+        systemd.services.crowdsec-firewall-bouncer-register.serviceConfig = {
+          DynamicUser = lib.mkForce false;
+          NoNewPrivileges = true;
+          PrivateTmp = true;
+          PrivateDevices = true;
+          ProtectHome = true;
+          ProtectKernelLogs = true;
+          ProtectKernelTunables = true;
+          ProtectControlGroups = true;
+          ProtectKernelModules = true;
+          RestrictSUIDSGID = true;
+          LockPersonality = true;
+          RestrictNamespaces = true;
+          RestrictRealtime = true;
+          SystemCallArchitectures = "native";
+        };
 
         services.crowdsec = {
           enable = true;

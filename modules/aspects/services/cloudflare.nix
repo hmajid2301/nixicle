@@ -5,13 +5,16 @@ in
 {
   den.aspects.cloudflare = {
     nixos =
-      { config, ... }:
+      { config, secrets, lib, ... }:
+      let
+        secretPaths = lib.mergeAttrsList secrets;
+      in
       {
-        sops.secrets.cloudflared.sopsFile = ../../../hosts/framebox/secrets.yaml;
+        sops.secrets.cloudflared = { };
         services.cloudflared = {
           enable = true;
           tunnels.${tunnelId} = {
-            credentialsFile = config.sops.secrets.cloudflared.path;
+            credentialsFile = secretPaths.cloudflared;
             default = "http_status:404";
             ingress = { };
           };
