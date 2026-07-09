@@ -7,6 +7,9 @@ includes:
   sops:
     taskfile: ./tasks/sops.yml
     optional: true
+  tofu:
+    taskfile: ./tasks/tofu.yml
+    optional: true
 
 tasks:
   deploy:

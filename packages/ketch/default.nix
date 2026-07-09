@@ -5,14 +5,14 @@
 }:
 let
   pname = "ketch";
-  version = "0.9.0";
+  version = "0.10.0";
 in
 buildGoModule {
   inherit pname version;
 
   src = inputs.ketch-src;
 
-  vendorHash = "sha256-m3IwAYsczsxcVk9fay+f2AsNjmXoPk7NS0abES6b594=";
+  vendorHash = "sha256-UsTR7+GSuxUQ0aBq8fv1M18LegeDqf/XoiyASQKe5EI=";
 
   ldflags = [
     "-s"

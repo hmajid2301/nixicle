@@ -5,9 +5,66 @@ tasks:
     desc: "Install host with nixos-anywhere"
     cmds:
       - |
-        HOST=$(ls -1 hosts/ | gum choose)
+        gum style --border rounded --padding "1 2" --border-foreground 212 "NixOS Anywhere Installer"
+        echo ""
+
+        HOST=$(ls -1 hosts/ | gum choose --header "Select host to install")
+
+        DEFAULT_TARGET="$HOST"
+        if [ "$HOST" = "vps" ]; then
+          gum style --border double --padding "1 2" --border-foreground 196 \
+            "WARNING: VPS install is destructive" \
+            "Expected current SSH user: root" \
+            "Expected target disk: /dev/vda" \
+            "Expected boot mode: UEFI" \
+            "Final installed admin user: nixos"
+          echo ""
+          DEFAULT_TARGET=""
+        fi
+
+        TARGET=$(gum input --placeholder "Target host/IP" --value "$DEFAULT_TARGET")
+
+        DEFAULT_USER="root"
+        if [ "$HOST" != "vps" ]; then
+          DEFAULT_USER="nixos"
+        fi
+        USER=$(gum input --placeholder "SSH user for current install environment" --value "$DEFAULT_USER")
+
+        PRESERVE_KEYS="No"
+        if [ -f "/persist/etc/ssh/ssh_host_ed25519_key" ]; then
+          PRESERVE_KEYS=$(gum choose --header "Preserve current SSH host keys?" "Yes" "No")
+        fi
+
+        EXTRA_FILES_ARGS=""
+        SSH_KEYS=""
+        if [ "$PRESERVE_KEYS" = "Yes" ]; then
+          SSH_KEYS=$(mktemp -d)
+          mkdir -p "$SSH_KEYS/persist/etc/ssh"
+
+          gum input --password --placeholder "Enter sudo password" | sudo -S true
+          gum spin --spinner dot --title "Copying SSH host keys from current system..." -- bash -c "
+            sudo cp /persist/etc/ssh/ssh_host_ed25519_key '$SSH_KEYS/persist/etc/ssh/' && \
+            sudo cp /persist/etc/ssh/ssh_host_ed25519_key.pub '$SSH_KEYS/persist/etc/ssh/' && \
+            sudo cp /persist/etc/ssh/ssh_host_rsa_key '$SSH_KEYS/persist/etc/ssh/' 2>/dev/null && \
+            sudo cp /persist/etc/ssh/ssh_host_rsa_key.pub '$SSH_KEYS/persist/etc/ssh/' 2>/dev/null
+          "
+          sudo chmod 600 "$SSH_KEYS/persist/etc/ssh"/ssh_host_*_key 2>/dev/null || true
+          sudo chown -R $(id -u):$(id -g) "$SSH_KEYS"
+          EXTRA_FILES_ARGS="--extra-files $SSH_KEYS"
+        fi
+
+        gum confirm "Install $HOST to $TARGET as $USER?" || exit 0
+
         echo "Installing $HOST with nixos-anywhere..."
-        nixos-anywhere --flake .#$HOST root@$HOST
+        # shellcheck disable=SC2086
+        nixos-anywhere --flake .#$HOST $EXTRA_FILES_ARGS "$USER@$TARGET"
+        INSTALL_STATUS=$?
+
+        if [ -n "$SSH_KEYS" ]; then
+          rm -rf "$SSH_KEYS"
+        fi
+
+        exit $INSTALL_STATUS
 
   secure:
     desc: "Install host with Secure Boot and TPM auto-unlock"
@@ -18,6 +75,17 @@ tasks:
 
         HOST=$(ls -1 hosts/ | gum choose --header "Select host to install")
         gum spin --spinner dot --title "Loading host configuration..." -- sleep 1
+
+        if [ "$HOST" = "vps" ]; then
+          gum style --border double --padding "1 2" --border-foreground 196 \
+            "WARNING: VPS install is destructive" \
+            "Expected current SSH user: root" \
+            "Expected target disk: /dev/vda" \
+            "Expected boot mode: UEFI" \
+            "Final installed admin user: nixos"
+          echo ""
+          gum confirm "Continue with destructive VPS install flow?" || exit 0
+        fi
 
         SCAN_NETWORK=$(gum choose --header "How to find target IP?" "Enter manually" "Scan network for $HOST")
 
@@ -38,7 +106,11 @@ tasks:
 
         gum confirm "Install $HOST to $TARGET?" || exit 0
 
-        USER=$(gum input --placeholder "SSH user" --value "nixos")
+        DEFAULT_USER="nixos"
+        if [ "$HOST" = "vps" ]; then
+          DEFAULT_USER="root"
+        fi
+        USER=$(gum input --placeholder "SSH user for current install environment" --value "$DEFAULT_USER")
 
         gum style --foreground 212 "Testing SSH connection..."
         if ssh -o ConnectTimeout=5 -o StrictHostKeyChecking=no "$USER@$TARGET" "echo 'Connection successful'" >/dev/null 2>&1; then
@@ -83,13 +155,16 @@ tasks:
         gum style --border double --padding "1 2" --border-foreground 212 "Starting installation..."
         echo ""
         gum style "Host: $HOST" "Target: $TARGET" "User: $USER"
+        if [ "$HOST" = "vps" ]; then
+          gum style "Disk: /dev/vda" "Boot mode expected: UEFI" "Final admin user after install: nixos"
+        fi
         echo ""
 
         nixos-anywhere \
           --flake ".#$HOST" \
           --disk-encryption-keys /tmp/disk-encryption.key "$MY_PASS" \
           --extra-files "$SSH_KEYS" \
-          --build-on-remote \
+          # --build-on-remote \
           "$USER@$TARGET"
 
         INSTALL_STATUS=$?
