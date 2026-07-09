@@ -163,6 +163,7 @@ in
             git
             gnupg
             opentofu
+            terranix
             mc
             go-task
             gum
@@ -176,6 +177,10 @@ in
       overrides = {
         framework.profiles.system.sshUser = "haseeb";
         vm.profiles.system.sshUser = "haseeb";
+        vps.profiles.system = {
+          user = "root";
+          sshUser = "nixos";
+        };
       };
     };
 
