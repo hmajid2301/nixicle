@@ -69,10 +69,14 @@
           inputs.nixos-hardware.nixosModules.framework-13-7040-amd
         ];
 
+        sops.defaultSopsFile = ./secrets.yaml;
+
         sops.secrets = {
           user_password = {
-            sopsFile = ./secrets.yaml;
             neededForUsers = true;
+          };
+          searx_secret_key = {
+            sopsFile = ../framebox/secrets.yaml;
           };
         };
 
@@ -81,6 +85,7 @@
           extraGroups = [
             "wheel"
             "docker"
+            "networkmanager"
           ];
         };
 
@@ -109,9 +114,6 @@
             };
           };
         };
-
-        # Persist secure boot keys
-        environment.persistence."/persist".directories = [ "/etc/secureboot" ];
 
         # Disable inbound SSH on this laptop
         services.openssh.enable = lib.mkForce false;
