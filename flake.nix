@@ -4,7 +4,6 @@
   outputs = inputs: inputs.flake-parts.lib.mkFlake { inherit inputs; } (inputs.import-tree ./modules);
 
   inputs = {
-    authentik-nix.url = "github:nix-community/authentik-nix";
     banterbus = {
       url = "gitlab:hmajid2301/banterbus";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -46,10 +45,6 @@
     };
     impermanence.url = "github:nix-community/impermanence";
     import-tree.url = "github:vic/import-tree";
-    ketch-src = {
-      url = "github:1broseidon/ketch";
-      flake = false;
-    };
     lanzaboote.url = "github:nix-community/lanzaboote";
     lettucego = {
       url = "gitlab:hmajid2301/lettucego";

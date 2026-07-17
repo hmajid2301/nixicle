@@ -173,6 +173,7 @@
           sd
           grex
           yq-go
+          jq
           duf
           dust
           dysk
