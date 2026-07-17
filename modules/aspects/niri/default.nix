@@ -243,7 +243,9 @@
             outputs."*".scale = 1.0;
 
             input = {
-              keyboard.xkb = { };
+              keyboard.xkb = {
+                layout = "gb";
+              };
               touchpad.tap = true;
               touchpad.natural-scroll = true;
               focus-follows-mouse = {
