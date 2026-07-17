@@ -1,6 +1,6 @@
 { den, ... }:
 {
-  den.aspects.desktop = {
+  den.aspects.desktopProfile = {
     includes = [
       den.aspects.common
       den.aspects.development

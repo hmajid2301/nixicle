@@ -2,7 +2,7 @@
 {
   den.aspects.haseeb.provides.vm = {
     includes = [
-      den.aspects.desktop
+      den.aspects.desktopProfile
       den.aspects.gaming
     ];
 

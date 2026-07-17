@@ -2,7 +2,7 @@
 {
   den.aspects.haseebmajid = {
     includes = [
-      den.aspects.desktop
+      den.aspects.desktopProfile
       den.aspects.non-nixos
     ];
 
@@ -10,6 +10,7 @@
       {
         pkgs,
         lib,
+        config,
         ...
       }:
       {
@@ -101,10 +102,46 @@
         sops.defaultSymlinkPath = lib.mkForce "/run/user/1003/secrets";
         sops.defaultSecretsMountPoint = lib.mkForce "/run/user/1003/secrets.d";
 
-        stylix = lib.mkForce {
-          enable = false;
-          autoEnable = false;
-          base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-mocha.yaml";
+        # Lock on suspend (e.g. lid close) on this Ubuntu host.
+        #
+        # noctalia's own `general.lockOnSuspend` does not listen for logind's
+        # sleep signals, so a system-initiated suspend resumes unlocked
+        # (noctalia-shell issues #2569 / #1066). The shared lock-before-sleep
+        # service from the niri aspect uses `dbus-monitor --system`, which
+        # needs the D-Bus BecomeMonitor interface — NixOS's bus policy allows
+        # it but Ubuntu's rejects it, so on this host it silently never fires.
+        #
+        # Fix: use swayidle's `-w before-sleep` hook, the approach the niri +
+        # noctalia community settled on. The `-w` flag makes swayidle hold a
+        # logind delay inhibitor, run the lock command, WAIT for it to return,
+        # then release — the race-free "inhibit → lock → release" sequence the
+        # systemd docs require (watching PrepareForSleep without an inhibitor
+        # held first is racy). swayidle uses logind's inhibitor API as an
+        # ordinary client, so it works under Ubuntu's bus policy too.
+        #
+        # Neutralise the shared service and run swayidle instead. Ordered
+        # after niri-env-setup so WAYLAND_DISPLAY/NIRI_SOCKET are in the user
+        # environment.
+        systemd.user.services.lock-before-sleep.Install.WantedBy = lib.mkForce [ ];
+
+        systemd.user.services.swayidle-lock = {
+          Unit = {
+            Description = "swayidle: lock noctalia before sleep";
+            PartOf = [ "graphical-session.target" ];
+            After = [
+              "graphical-session.target"
+              "niri-env-setup.service"
+            ];
+          };
+          Service = {
+            Type = "simple";
+            ExecStart = "${pkgs.swayidle}/bin/swayidle -w before-sleep '${config.programs.noctalia-shell.package}/bin/noctalia-shell ipc call lockScreen lock || ${pkgs.systemd}/bin/loginctl lock-session'";
+            Restart = "on-failure";
+            RestartSec = 2;
+          };
+          Install = {
+            WantedBy = [ "graphical-session.target" ];
+          };
         };
 
         programs = {
@@ -172,8 +209,6 @@
         };
         home.file.".ssh/allowed_signers".text =
           "* ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDUF0LHH63pGkd1m7FGdbZirVXULDS5WSDzerJ0sskoq haseeb.majid@nala.money";
-
-        gtk.gtk4.theme = null;
       };
   };
 }
