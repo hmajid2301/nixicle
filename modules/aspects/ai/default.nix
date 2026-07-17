@@ -73,11 +73,6 @@ let
   ];
 in
 {
-  flake-file.inputs.ketch-src = {
-    url = "github:1broseidon/ketch";
-    flake = false;
-  };
-
   den.aspects.ai = {
     homeManager =
       {
@@ -495,7 +490,7 @@ in
             gh
             glab
             ddgr
-            nixicle.ketch
+            ketch
             (pi-coding-agent.overrideAttrs (_old: {
               postFixup = ''
                 wrapProgram $out/bin/pi \
