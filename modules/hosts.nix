@@ -87,13 +87,18 @@ in
         users.haseeb = haseebUser;
       };
 
-      workstation = {
+      desktop = {
         instantiate = mkInstantiate;
         users.haseeb = haseebUser;
       };
 
       gateway = {
         instantiate = mkInstantiate;
+      };
+
+      nas = {
+        instantiate = mkInstantiate;
+        users.haseeb = haseebUser;
       };
 
       vps = {
@@ -113,7 +118,7 @@ in
       instantiate = mkHomeInstantiate;
     };
 
-    homes.x86_64-linux."haseeb@workstation" = {
+    homes.x86_64-linux."haseeb@desktop" = {
       instantiate = mkHomeInstantiate;
     };
   };

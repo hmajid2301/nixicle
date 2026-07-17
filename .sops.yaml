@@ -21,11 +21,13 @@ keys:
     - &haseebmajid_dell age1s6rx9whkkf35t7qaju9vvla8tl2nstt0drx722ca4qadqfx66g0slxyxd0
     - &haseeb_framebox age1zm36rngg07hrm8nj3r8wj5ucz85njxzfwsxftsx3gtdmzkgw3peqh8vf55
     - &haseeb_vm age1x4x5ujnd9em23jhs53lgwqcmw9t6hx64xtdt3x0u4n66fsuygf9s4njjla
+    - &haseeb_desktop age1et5u4u20utu2hethuaddhjjnj67p3r43l2jq4e32hm2a0m595qessmakpp
   - &hosts:
     - &framework age16lkhqtnle3z62gy0tk9x4tn3w43st2cnvdpl8r84xpzkn2f7jv8qxl5a9q
     - &vm age1pc0qdk5d2fen55cstvtch588wcqgzemgavlsvsc5dm0r4uw00vrq297et7
     - &framebox age199ny6lhask8zc65auwygqhj0svjkpp5kr7lhht8hvj947vaclecqrt4yg7
     - &vps age1ucucdna4spp5znu0e9fnq3v6qxzwcpp33fh58cll2r074sh8gytssd2jnq
+    - &desktop age199ny6lhask8zc65auwygqhj0svjkpp5kr7lhht8hvj947vaclecqrt4yg7
 
 creation_rules:
   - path_regex: modules/nixos/secrets.ya?ml$
@@ -35,6 +37,8 @@ creation_rules:
       - *framebox
       - *vm
       - *vps
+      - *desktop
+      - *haseeb_desktop
       - *haseeb_framework
       - *haseeb_framebox
       - *haseeb_vm
@@ -47,6 +51,8 @@ creation_rules:
       - *framebox
       - *vm
       - *vps
+      - *desktop
+      - *haseeb_desktop
       - *haseeb_framework
       - *haseeb_framebox
       - *haseeb_vm
@@ -59,6 +65,8 @@ creation_rules:
       - *framebox
       - *vm
       - *vps
+      - *desktop
+      - *haseeb_desktop
       - *haseeb_framework
       - *haseeb_framebox
       - *haseebmajid_dell
@@ -68,6 +76,8 @@ creation_rules:
     - age:
       - *framework
       - *framebox
+      - *desktop
+      - *haseeb_desktop
       - *haseeb_framework
       - *haseeb_framebox
       - *haseebmajid_dell
@@ -78,6 +88,8 @@ creation_rules:
       - *framework
       - *framebox
       - *vps
+      - *desktop
+      - *haseeb_desktop
       - *haseeb_framework
       - *haseeb_framebox
       - *haseebmajid_dell
@@ -88,6 +100,7 @@ creation_rules:
       - *haseeb_framework
       - *haseeb_framebox
       - *haseeb_vm
+      - *haseeb_desktop
       - *haseebmajid_dell
 
   - path_regex: modules/secrets.ya?ml$
@@ -97,3 +110,4 @@ creation_rules:
       - *haseeb_framebox
       - *haseeb_vm
       - *haseebmajid_dell
+      - *haseeb_desktop

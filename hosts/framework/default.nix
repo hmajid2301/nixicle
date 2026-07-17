@@ -5,10 +5,10 @@
 
   den.aspects.haseeb.provides.framework = {
     includes = [
-      den.aspects.desktop
+      den.aspects.desktopProfile
       den.aspects.gaming
       den.aspects.social
-
+      den.aspects.video
     ];
 
     homeManager =
@@ -59,7 +59,12 @@
     ];
 
     nixos =
-      { config, pkgs, lib, ... }:
+      {
+        config,
+        pkgs,
+        lib,
+        ...
+      }:
       {
         imports = [
           ./hardware-configuration.nix

@@ -37,7 +37,7 @@
 
       haseeb.provides.framebox = {
         includes = [
-          den.aspects.desktop
+          den.aspects.desktopProfile
           den.aspects.gaming
           den.aspects.social
         ];
@@ -73,7 +73,6 @@
           den.aspects.kvm
           den.aspects.traefik
           den.aspects.cloudflare
-          den.aspects.authentik
           den.aspects.atuin
           den.aspects.atticd
           den.aspects.banterbus
