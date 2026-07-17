@@ -53,10 +53,7 @@ in
 
         # Networking
         networking.firewall.enable = true;
-        networking.networkmanager = {
-          enable = true;
-          settings.main.no-auto-default = "*";
-        };
+        networking.networkmanager.enable = true;
         systemd.services.NetworkManager-wait-online.enable = false;
 
         # SSH
