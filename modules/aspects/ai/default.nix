@@ -55,6 +55,10 @@ let
       src = ./pi/ketch.ts;
     }
     {
+      rel = "codegraph.ts";
+      src = ./pi/codegraph.ts;
+    }
+    {
       rel = "treesitter.ts";
       src = ./pi/treesitter.ts;
     }
@@ -260,7 +264,6 @@ in
                 "npm:pi-scroll"
                 "npm:@observal/pi-insights"
                 "npm:@samfp/pi-memory"
-                "npm:pi-code-graph"
               ];
               extensions = map (ext: "~/.pi/agent/extensions/${ext.rel}") piExtensionFiles;
             };

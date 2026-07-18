@@ -41,6 +41,7 @@
       den.aspects.tailscale
       den.aspects.kvm
       den.aspects.searx
+      den.aspects.gitlab-runner
     ];
 
     nixos =
@@ -64,6 +65,7 @@
             neededForUsers = true;
           };
           searx_secret_key = { };
+          gitlab_runner_env = { };
         };
 
         users = {
@@ -98,10 +100,6 @@
 
         environment.systemPackages = with pkgs; [
           docker-compose
-        ];
-
-        environment.persistence."/persist".directories = [
-          "/var/lib/docker"
         ];
 
         networking.hostName = "desktop";
