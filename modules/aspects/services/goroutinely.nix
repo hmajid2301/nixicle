@@ -25,20 +25,49 @@
         lib,
         ...
       }:
+      let
+        waitForPocketId = ''
+          echo "Waiting for Pocket ID OIDC discovery..."
+          for i in $(seq 1 60); do
+            if ${pkgs.curl}/bin/curl --fail --silent --show-error \
+              https://id.haseebmajid.dev/.well-known/openid-configuration >/dev/null; then
+              echo "Pocket ID OIDC discovery is ready"
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "Pocket ID OIDC discovery did not become ready in time" >&2
+          exit 1
+        '';
+      in
       {
         imports = [ inputs.goroutinely.nixosModules.default ];
         sops.secrets.goroutinely = {
-                    key = "goroutinely";
+          key = "goroutinely";
           owner = config.services.goroutinely.user;
           inherit (config.services.goroutinely) group;
           mode = "0400";
+        };
+
+        systemd.services.goroutinely = {
+          after = [
+            "network-online.target"
+            "pocket-id.service"
+            "traefik.service"
+          ];
+          wants = [
+            "network-online.target"
+            "pocket-id.service"
+            "traefik.service"
+          ];
+          preStart = lib.mkBefore waitForPocketId;
         };
 
         services = {
           goroutinely = {
             enable = true;
             package = inputs.goroutinely.packages.${pkgs.stdenv.hostPlatform.system}.default;
-            sendremindersPackage = inputs.goroutinely.packages.${pkgs.stdenv.hostPlatform.system}.default;
+            sendremindersPackage = inputs.goroutinely.packages.${pkgs.stdenv.hostPlatform.system}.sendreminders;
             port = 8235;
             host = "0.0.0.0";
             database.createLocally = true;

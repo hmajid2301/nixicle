@@ -32,7 +32,7 @@ in
         imports = [ inputs.gothreads.nixosModules.default ];
 
         sops.secrets.gothreads = {
-                    key = "gothreads";
+          key = "gothreads";
           owner = config.services.gothreads.user;
           inherit (config.services.gothreads) group;
           mode = "0400";
@@ -54,7 +54,7 @@ in
             database.createLocally = true;
             secretsFile = config.sops.secrets.gothreads.path;
             oauth = {
-              issuerUrl = "https://authentik.haseebmajid.dev/application/o/gothreads/";
+              issuerUrl = "https://id.haseebmajid.dev";
               clientId = "UMLLRCgGhl1ljj48lbhTVMCyulz77hMl6ELEKHUI";
             };
             s3 = {

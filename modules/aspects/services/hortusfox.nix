@@ -100,8 +100,8 @@ in
               DB_USERNAME = dbUser;
               DB_CHARSET = "utf8mb4";
               PROXY_ENABLE = "true";
-              PROXY_HEADER_EMAIL = "X-authentik-email";
-              PROXY_HEADER_USERNAME = "X-authentik-username";
+              PROXY_HEADER_EMAIL = "X-Forwarded-Email";
+              PROXY_HEADER_USERNAME = "X-Forwarded-Preferred-Username";
               PROXY_AUTO_SIGNUP = "true";
               PROXY_WHITELIST = "";
               PROXY_HIDE_LOGOUT = "true";

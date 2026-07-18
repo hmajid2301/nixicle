@@ -189,11 +189,11 @@ in
                 };
                 config = {
                   OidConfigs = {
-                    authentik = {
+                    pocketid = {
                       Enabled = true;
                       EnableAuthorization = true;
                       EnableAllFolders = true;
-                      OidEndpoint = "https://authentik.haseebmajid.dev/application/o/jellyfin/.well-known/openid-configuration";
+                      OidEndpoint = "https://id.haseebmajid.dev/.well-known/openid-configuration";
                       OidClientId._secret = config.sops.secrets."jellyfin/client_id".path;
                       OidSecret._secret = config.sops.secrets."jellyfin/client_secret".path;
                       OidScopes = [
@@ -213,7 +213,7 @@ in
 
             branding = {
               loginDisclaimer = ''
-                <form action="https://jellyfin.haseebmajid.dev/sso/OID/p/authentik">
+                <form action="https://jellyfin.haseebmajid.dev/sso/OID/p/pocketid">
                   <button class="raised block emby-button button-submit">
                     Sign in with SSO
                   </button>

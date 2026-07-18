@@ -15,7 +15,12 @@ in
       }
     ];
     nixos =
-      { config, secrets, lib, ... }:
+      {
+        config,
+        secrets,
+        lib,
+        ...
+      }:
       let
         secretPaths = lib.mergeAttrsList secrets;
       in
@@ -31,8 +36,8 @@ in
             DO_NOT_TRACK = "True";
             SCARF_NO_ANALYTICS = "True";
             OLLAMA_BASE_URL = "http://127.0.0.1:11434";
-            OAUTH_PROVIDER_NAME = "authentik";
-            OPENID_PROVIDER_URL = "https://authentik.haseebmajid.dev/application/o/ollama-web-ui/.well-known/openid-configuration";
+            OAUTH_PROVIDER_NAME = "Pocket ID";
+            OPENID_PROVIDER_URL = "https://id.haseebmajid.dev/.well-known/openid-configuration";
             OPENID_REDIRECT_URI = "https://open-webui.haseebmajid.dev/oauth/oidc/callback";
             WEBUI_URL = "https://open-webui.haseebmajid.dev";
             ENABLE_OAUTH_SIGNUP = "true";
