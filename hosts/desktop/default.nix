@@ -40,6 +40,7 @@
       den.aspects.boot-secure
       den.aspects.tailscale
       den.aspects.kvm
+      den.aspects.searx
     ];
 
     nixos =
@@ -61,6 +62,9 @@
         sops.secrets = {
           user_password = {
             neededForUsers = true;
+          };
+          searx_secret_key = {
+            sopsFile = ../framebox/secrets.yaml;
           };
         };
 

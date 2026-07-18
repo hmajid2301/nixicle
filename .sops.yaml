@@ -94,6 +94,17 @@ creation_rules:
       - *haseeb_framebox
       - *haseebmajid_dell
 
+  - path_regex: hosts/desktop/secrets.ya?ml$
+    key_groups:
+    - age:
+      - *framework
+      - *framebox
+      - *desktop
+      - *haseeb_desktop
+      - *haseeb_framework
+      - *haseeb_framebox
+      - *haseebmajid_dell
+
   - path_regex: modules/home/secrets.ya?ml$
     key_groups:
     - age:

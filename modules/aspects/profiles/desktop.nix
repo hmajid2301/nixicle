@@ -6,6 +6,7 @@
       den.aspects.development
       den.aspects.niri
       den.aspects.audio
+      den.aspects.video
       den.aspects.vpn
     ];
 
