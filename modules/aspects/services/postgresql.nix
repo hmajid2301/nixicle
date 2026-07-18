@@ -14,7 +14,7 @@
       }:
       {
         sops.secrets.postgres_terraform_password = {
-                  };
+        };
 
         sops.templates."init.sql" = {
           content = ''

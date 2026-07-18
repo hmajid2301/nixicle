@@ -8,7 +8,8 @@ in
     description = "Per-aspect secret path delivery";
   };
 
-  den.policies.crowdsec-secrets = { host, ... }:
+  den.policies.crowdsec-secrets =
+    { host, ... }:
     [
       (pipe.from "secrets" [
         (pipe.filter (_: false))
@@ -18,7 +19,8 @@ in
       ])
     ];
 
-  den.policies.traefik-secrets = { host, ... }:
+  den.policies.traefik-secrets =
+    { host, ... }:
     [
       (pipe.from "secrets" [
         (pipe.filter (_: false))
@@ -28,7 +30,8 @@ in
       ])
     ];
 
-  den.policies.openbao-secrets = { host, ... }:
+  den.policies.openbao-secrets =
+    { host, ... }:
     [
       (pipe.from "secrets" [
         (pipe.filter (_: false))
@@ -38,7 +41,8 @@ in
       ])
     ];
 
-  den.policies.pocketid-secrets = { host, ... }:
+  den.policies.pocketid-secrets =
+    { host, ... }:
     [
       (pipe.from "secrets" [
         (pipe.filter (_: false))
@@ -51,7 +55,8 @@ in
       ])
     ];
 
-  den.policies.cloudflare-secrets = { host, ... }:
+  den.policies.cloudflare-secrets =
+    { host, ... }:
     [
       (pipe.from "secrets" [
         (pipe.filter (_: false))
@@ -61,7 +66,8 @@ in
       ])
     ];
 
-  den.policies.searx-secrets = { host, ... }:
+  den.policies.searx-secrets =
+    { host, ... }:
     [
       (pipe.from "secrets" [
         (pipe.filter (_: false))
@@ -71,7 +77,8 @@ in
       ])
     ];
 
-  den.policies.atticd-secrets = { host, ... }:
+  den.policies.atticd-secrets =
+    { host, ... }:
     [
       (pipe.from "secrets" [
         (pipe.filter (_: false))
@@ -81,17 +88,8 @@ in
       ])
     ];
 
-  den.policies.authentik-secrets = { host, ... }:
-    [
-      (pipe.from "secrets" [
-        (pipe.filter (_: false))
-        (pipe.append { authenik_env = "/run/secrets/authenik_env"; })
-        (pipe.for mergeOne)
-        (pipe.to [ den.aspects.authentik ])
-      ])
-    ];
-
-  den.policies.btrbk-secrets = { host, ... }:
+  den.policies.btrbk-secrets =
+    { host, ... }:
     [
       (pipe.from "secrets" [
         (pipe.filter (_: false))
@@ -104,7 +102,8 @@ in
       ])
     ];
 
-  den.policies.karakeep-secrets = { host, ... }:
+  den.policies.karakeep-secrets =
+    { host, ... }:
     [
       (pipe.from "secrets" [
         (pipe.filter (_: false))
@@ -114,7 +113,8 @@ in
       ])
     ];
 
-  den.policies.open-webui-secrets = { host, ... }:
+  den.policies.open-webui-secrets =
+    { host, ... }:
     [
       (pipe.from "secrets" [
         (pipe.filter (_: false))
@@ -124,7 +124,8 @@ in
       ])
     ];
 
-  den.policies.paperless-secrets = { host, ... }:
+  den.policies.paperless-secrets =
+    { host, ... }:
     [
       (pipe.from "secrets" [
         (pipe.filter (_: false))
@@ -137,7 +138,8 @@ in
       ])
     ];
 
-  den.policies.tandoor-secrets = { host, ... }:
+  den.policies.tandoor-secrets =
+    { host, ... }:
     [
       (pipe.from "secrets" [
         (pipe.filter (_: false))
@@ -147,7 +149,8 @@ in
       ])
     ];
 
-  den.policies.hortusfox-secrets = { host, ... }:
+  den.policies.hortusfox-secrets =
+    { host, ... }:
     [
       (pipe.from "secrets" [
         (pipe.filter (_: false))
@@ -157,7 +160,8 @@ in
       ])
     ];
 
-  den.policies.homepage-secrets = { host, ... }:
+  den.policies.homepage-secrets =
+    { host, ... }:
     [
       (pipe.from "secrets" [
         (pipe.filter (_: false))
@@ -175,7 +179,6 @@ in
     den.policies.cloudflare-secrets
     den.policies.searx-secrets
     den.policies.atticd-secrets
-    den.policies.authentik-secrets
     den.policies.btrbk-secrets
     den.policies.karakeep-secrets
     den.policies.open-webui-secrets

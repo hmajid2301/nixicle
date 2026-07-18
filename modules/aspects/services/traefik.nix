@@ -12,7 +12,7 @@
         ];
 
         sops.secrets.cloudflare_api_key = {
-                    owner = "traefik";
+          owner = "traefik";
         };
 
         systemd.services.traefik = {

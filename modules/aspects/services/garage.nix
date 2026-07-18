@@ -12,7 +12,7 @@
       {
         config = {
           sops.secrets.garage_rpc_secret = {
-                        key = "garage_rpc_secret";
+            key = "garage_rpc_secret";
             mode = "0400";
           };
 

@@ -146,7 +146,10 @@
                 entryPoints = [ "websecure" ];
                 rule = "Host(`forgejo.haseebmajid.dev`)";
                 service = "forgejo";
-                middlewares = [ "forgejo-headers" "forgejo-timeout" ];
+                middlewares = [
+                  "forgejo-headers"
+                  "forgejo-timeout"
+                ];
                 tls.certResolver = "letsencrypt";
               };
               attic = {
@@ -166,14 +169,22 @@
               service = "ssh";
             };
             services.ssh = {
-              loadBalancer.servers = [{ address = "framebox:2223"; }];
+              loadBalancer.servers = [ { address = "framebox:2223"; } ];
             };
           };
         };
 
         services.openssh.ports = [ 22 ];
 
-        networking.firewall.allowedTCPPorts = [ 22 2222 80 443 5433 6381 6382 ];
+        networking.firewall.allowedTCPPorts = [
+          22
+          2222
+          80
+          443
+          5433
+          6381
+          6382
+        ];
 
         networking = {
           hostName = "gateway";
