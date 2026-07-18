@@ -57,11 +57,14 @@
         environment.systemPackages = with pkgs; [
           solaar
         ];
-        programs.nh = {
-          enable = true;
-          clean.enable = true;
-          clean.extraArgs = "--keep-since 4d --keep 3";
-          flake = "/home/haseeb/nixicle";
+        programs = {
+          nh = {
+            enable = true;
+            clean.enable = true;
+            clean.extraArgs = "--keep-since 4d --keep 3";
+            flake = "/home/haseeb/nixicle";
+          };
+          localsend.enable = true;
         };
         nix.gc.automatic = lib.mkForce false;
       };
@@ -239,7 +242,6 @@
             xdg-utils
             wl-clipboard
             clipse
-            localsend
             pamixer
             playerctl
             impression
