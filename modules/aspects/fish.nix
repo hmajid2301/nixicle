@@ -140,15 +140,14 @@ in
             gcrb = ''
               set result (git branch -a --color=always | grep -v '/HEAD\s' | sort |
                 fzf --height 50% --border --ansi --tac --preview-window right:70% \
-                  --preview 'git log --oneline --graph --date=short --pretty="format:%C(auto)%cd %h%d %s" (string sub -s 3 (string split ' ' {})[1]) | head -'$LINES |
+                  --preview 'set branch (string sub -s 3 (string split " " {})[1]); git log --oneline --graph --date=short --pretty="format:%C(auto)%cd %h%d %s" $branch | head -$LINES' |
                 string sub -s 3 | string split ' ' -m 1)[1]
 
-                if test -n "$result"
-                  if string match -r "^remotes/.*" $result > /dev/null
-                    git checkout --track (string replace -r "^remotes/" "" $result)
-                  else
-                    git checkout $result
-                  end
+              if test -n "$result"
+                if string match -r "^remotes/.*" $result > /dev/null
+                  git checkout --track (string replace -r "^remotes/" "" $result)
+                else
+                  git checkout $result
                 end
               end
             '';
