@@ -239,6 +239,7 @@
             xdg-utils
             wl-clipboard
             clipse
+            localsend
             pamixer
             playerctl
             impression
