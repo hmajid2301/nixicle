@@ -10,6 +10,7 @@ _: {
       {
         home.sessionVariables.GTK_THEME = "Adwaita:dark";
         home.pointerCursor = lib.mkForce {
+          enable = true;
           name = "Bibata-Modern-Classic";
           package = pkgs.bibata-cursors;
           size = 24;

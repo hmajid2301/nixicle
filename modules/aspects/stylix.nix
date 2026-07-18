@@ -48,6 +48,7 @@
           inputs.catppuccin.homeModules.catppuccin
         ];
         fonts.fontconfig.enable = true;
+        home.pointerCursor.enable = true;
 
         home.packages = with pkgs; [
           nerd-fonts.symbols-only
