@@ -5,7 +5,12 @@ in
 {
   den.aspects.cloudflare = {
     nixos =
-      { config, secrets, lib, ... }:
+      {
+        config,
+        secrets,
+        lib,
+        ...
+      }:
       let
         secretPaths = lib.mergeAttrsList secrets;
       in
@@ -21,8 +26,7 @@ in
         };
 
         # Force HTTP2 (TCP) instead of QUIC (UDP) — more stable through consumer router/WiFi
-        systemd.services."cloudflared-tunnel-${tunnelId}".environment.TUNNEL_TRANSPORT_PROTOCOL =
-          "http2";
+        systemd.services."cloudflared-tunnel-${tunnelId}".environment.TUNNEL_TRANSPORT_PROTOCOL = "http2";
       };
   };
 }

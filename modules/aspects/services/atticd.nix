@@ -12,7 +12,12 @@
       }
     ];
     nixos =
-      { config, secrets, lib, ... }:
+      {
+        config,
+        secrets,
+        lib,
+        ...
+      }:
       let
         secretPaths = lib.mergeAttrsList secrets;
       in

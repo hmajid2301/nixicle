@@ -17,7 +17,10 @@
             server.bind_address = "127.0.0.1";
             server.port = 8082;
             server.secret_key = "$SEARX_SECRET_KEY";
-            search.formats = [ "html" "json" ];
+            search.formats = [
+              "html"
+              "json"
+            ];
             valkey = {
               url = "valkey://localhost:6379/0";
             };

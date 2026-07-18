@@ -28,11 +28,11 @@ in
       }:
       {
         sops.secrets.forgejo_smtp_password = {
-                    owner = "forgejo";
+          owner = "forgejo";
         };
 
         sops.secrets.forgejo_runner_token = {
-                  };
+        };
 
         systemd = {
           services.forgejo.preStart =

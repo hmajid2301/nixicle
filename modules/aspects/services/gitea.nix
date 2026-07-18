@@ -19,7 +19,7 @@
       }:
       {
         sops.secrets.gitea_smtp_password = {
-                    owner = "gitea";
+          owner = "gitea";
         };
 
         systemd = {
