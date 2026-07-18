@@ -25,6 +25,17 @@ let
       pkce_enabled = true;
     };
 
+    gothreads = {
+      name = "GoThreads";
+      client_id = "gothreads";
+      launch_url = "https://gothreads.haseebmajid.dev";
+      callback_urls = [
+        "https://gothreads.haseebmajid.dev/callback"
+      ];
+      is_public = false;
+      pkce_enabled = true;
+    };
+
     karakeep = {
       name = "KaraKeep";
       client_id = "karakeep";
