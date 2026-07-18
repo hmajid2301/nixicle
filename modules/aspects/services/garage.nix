@@ -3,6 +3,18 @@
   den.aspects.garage = {
     includes = [ ];
     persist.directories = [ "/var/lib/private/garage" ];
+    backup.garage = {
+      paths = [
+        "/var/lib/garage/meta"
+        "/var/lib/garage/data"
+      ];
+      backupPrepareCommand = ''
+        systemctl stop garage.service
+      '';
+      backupCleanupCommand = ''
+        systemctl start garage.service
+      '';
+    };
     nixos =
       {
         pkgs,

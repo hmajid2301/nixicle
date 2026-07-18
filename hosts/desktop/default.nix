@@ -63,9 +63,7 @@
           user_password = {
             neededForUsers = true;
           };
-          searx_secret_key = {
-            sopsFile = ../framebox/secrets.yaml;
-          };
+          searx_secret_key = { };
         };
 
         users = {

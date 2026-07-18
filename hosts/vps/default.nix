@@ -7,6 +7,7 @@
       den.aspects.impermanence
       den.aspects.boot
       den.aspects.hardening-vps
+      den.aspects.backup-restic
 
       den.aspects.tailscale
       den.aspects.traefik

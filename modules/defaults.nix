@@ -15,6 +15,8 @@ let
   );
 in
 {
+  imports = [ ./aspects/backup.nix ];
+
   den = {
     schema.user = {
       includes = [

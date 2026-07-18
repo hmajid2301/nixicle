@@ -260,6 +260,7 @@ in
                 "npm:pi-scroll"
                 "npm:@observal/pi-insights"
                 "npm:@samfp/pi-memory"
+                "npm:pi-code-graph"
               ];
               extensions = map (ext: "~/.pi/agent/extensions/${ext.rel}") piExtensionFiles;
             };
@@ -491,6 +492,7 @@ in
             glab
             ddgr
             ketch
+            codegraph
             (pi-coding-agent.overrideAttrs (_old: {
               postFixup = ''
                 wrapProgram $out/bin/pi \
