@@ -99,6 +99,9 @@
           };
         };
 
+        # SOPS needs persisted host key during early activation, before /etc is restored.
+        sops.age.sshKeyPaths = lib.mkDefault [ "/persist/etc/ssh/ssh_host_ed25519_key" ];
+
         services.openssh.hostKeys = lib.mkForce [
           {
             path = "/persist/etc/ssh/ssh_host_ed25519_key";

@@ -1,14 +1,15 @@
-{ ... }:
+{ den, ... }:
 {
   den.aspects.gitlab-runner = {
-    includes = [ ];
+    includes = [ den.aspects.docker ];
     persist.directories = [
       {
+        # DynamicUser services store StateDirectory under /var/lib/private; no
+        # stable gitlab-runner user exists during impermanence activation.
         directory = "/var/lib/private/gitlab-runner";
-        user = "gitlab-runner";
-        group = "gitlab-runner";
+        user = "root";
+        group = "root";
         mode = "0750";
-        defaultPerms.mode = "0700";
       }
     ];
     nixos =
@@ -18,8 +19,6 @@
           enable = true;
           liveRestore = false;
         };
-
-        systemd.services.gitlab-runner.serviceConfig.SupplementaryGroups = [ "docker" ];
 
         services.gitlab-runner = {
           enable = true;
