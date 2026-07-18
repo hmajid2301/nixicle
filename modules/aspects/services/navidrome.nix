@@ -13,7 +13,7 @@ in
             group = "media";
             settings = {
               MusicFolder = "/mnt/n1/media/Music";
-              ND_REVERSEPROXYUSERHEADER = "X-authentik-username";
+              ND_REVERSEPROXYUSERHEADER = "X-Forwarded-Preferred-Username";
               ND_REVERSEPROXYWHITELIST = "0.0.0.0/0";
             };
           };

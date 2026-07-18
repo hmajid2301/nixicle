@@ -107,7 +107,7 @@ rec {
           rule = lib.mkDefault "Host(`${subdomain}.${domain}`)";
           service = name;
           tls.certResolver = certResolver;
-          middlewares = middlewares ++ [ "authentik" ];
+          middlewares = middlewares;
         }
         extraRouterConfig
       ];

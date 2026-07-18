@@ -63,18 +63,6 @@
           };
         };
       }
-      {
-        Authentik = {
-          icon = "authentik.png";
-          href = "{{HOMEPAGE_VAR_AUTHENTIK_URL}}";
-          description = "auth management";
-          widget = {
-            type = "authentik";
-            url = "{{HOMEPAGE_VAR_AUTHENTIK_INTERNAL_URL}}";
-            key = "{{HOMEPAGE_VAR_AUTHENTIK_API_KEY}}";
-          };
-        };
-      }
     ];
   }
   {

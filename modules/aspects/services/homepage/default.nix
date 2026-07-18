@@ -2,7 +2,12 @@
 {
   den.aspects.homepage = {
     nixos =
-      { config, lib, secrets, ... }:
+      {
+        config,
+        lib,
+        secrets,
+        ...
+      }:
       let
         secretPaths = lib.mergeAttrsList secrets;
       in

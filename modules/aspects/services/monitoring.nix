@@ -106,9 +106,9 @@
                 client_id = "$__file{${config.sops.secrets.grafana_oauth2_client_id.path}}";
                 client_secret = "$__file{${config.sops.secrets.grafana_oauth2_client_secret.path}}";
                 scopes = "openid profile email";
-                auth_url = "https://authentik.haseebmajid.dev/application/o/authorize/";
-                token_url = "https://authentik.haseebmajid.dev/application/o/token/";
-                api_url = "https://authentik.haseebmajid.dev/application/o/userinfo/";
+                auth_url = "https://id.haseebmajid.dev/authorize";
+                token_url = "https://id.haseebmajid.dev/api/oidc/token";
+                api_url = "https://id.haseebmajid.dev/api/oidc/userinfo";
                 role_attribute_path = "contains(groups, 'Grafana Admins') && 'Admin' || contains(groups, 'Grafana Editors') && 'Editor' || 'Viewer'";
               };
               security.secret_key = "$__file{${config.sops.secrets.grafana_secret_key.path}}";
@@ -254,13 +254,13 @@
 
         sops.secrets = {
           grafana_oauth2_client_id = {
-                        owner = "grafana";
+            owner = "grafana";
           };
           grafana_oauth2_client_secret = {
-                        owner = "grafana";
+            owner = "grafana";
           };
           grafana_secret_key = {
-                        owner = "grafana";
+            owner = "grafana";
           };
         };
 

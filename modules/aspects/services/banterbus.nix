@@ -10,7 +10,7 @@ let
       domain = "banterbus.games";
     };
   };
-  jwksUrl = "https://authentik.haseebmajid.dev/application/o/budibase/.well-known/openid-configuration";
+  jwksUrl = "https://id.haseebmajid.dev/.well-known/openid-configuration";
   adminGroup = "Admin";
   redisAddress = "127.0.0.1:6380";
 in
@@ -28,21 +28,19 @@ in
         ...
       }:
       let
-        traefikConfigs = lib.mapAttrsToList (
-          name: instanceCfg: {
-            services."banterbus-${name}".loadBalancer.servers = [
-              {
-                url = "http://localhost:${toString instanceCfg.port}";
-              }
-            ];
-            routers."banterbus-${name}" = {
-              entryPoints = [ "websecure" ];
-              rule = "Host(`${instanceCfg.domain}`)";
-              service = "banterbus-${name}";
-              tls.certResolver = "letsencrypt";
-            };
-          }
-        ) instances;
+        traefikConfigs = lib.mapAttrsToList (name: instanceCfg: {
+          services."banterbus-${name}".loadBalancer.servers = [
+            {
+              url = "http://localhost:${toString instanceCfg.port}";
+            }
+          ];
+          routers."banterbus-${name}" = {
+            entryPoints = [ "websecure" ];
+            rule = "Host(`${instanceCfg.domain}`)";
+            service = "banterbus-${name}";
+            tls.certResolver = "letsencrypt";
+          };
+        }) instances;
       in
       {
         services.postgresql = {

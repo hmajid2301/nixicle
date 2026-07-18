@@ -85,7 +85,6 @@ in
             inputs.lanzaboote.nixosModules.lanzaboote
             inputs.impermanence.nixosModules.impermanence
             inputs.sops-nix.nixosModules.sops
-            inputs.authentik-nix.nixosModules.default
             inputs.tangled.nixosModules.knot
             inputs.tangled.nixosModules.spindle
             inputs.nixflix.nixosModules.nixflix
