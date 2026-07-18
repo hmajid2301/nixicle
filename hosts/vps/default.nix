@@ -7,25 +7,36 @@
       den.aspects.impermanence
       den.aspects.boot
       den.aspects.hardening-vps
+
       den.aspects.tailscale
       den.aspects.traefik
       den.aspects.postgresql
       den.aspects.valkey
-      den.aspects.banterbus
       den.aspects.crowdsec
+      den.aspects.openbao
       den.aspects.pocketid
       den.aspects.garage
+      den.aspects.tangled
+      den.aspects.gitlab-runner
+
+      den.aspects.atuin
+      den.aspects.banterbus
       den.aspects.goroutinely
       den.aspects.lettucego
       den.aspects.karakeep
       den.aspects.papra
-      den.aspects.atuin
       den.aspects.tandoor
+
       den.aspects.fish
     ];
 
     nixos =
-      { config, lib, pkgs, ... }:
+      {
+        config,
+        lib,
+        pkgs,
+        ...
+      }:
       let
         authorizedKeys = [
           "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKuM4bCeJq0XQ1vd/iNK650Bu3wPVKQTSB0k2gsMKhdE hello@haseebmajid.dev"
@@ -57,10 +68,12 @@
         users.mutableUsers = false;
 
         sops.defaultSopsFile = ./secrets.yaml;
-        sops.age.sshKeyPaths = lib.mkForce [ "/etc/ssh/ssh_host_ed25519_key" ];
 
-        sops.secrets.nixos_hashed_password = {
-          neededForUsers = true;
+        sops.secrets = {
+          gitlab_runner_env = { };
+          nixos_hashed_password = {
+            neededForUsers = true;
+          };
         };
 
         users.users.root.openssh.authorizedKeys.keys = authorizedKeys;

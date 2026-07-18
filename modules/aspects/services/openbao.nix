@@ -14,10 +14,28 @@
         ...
       }:
       {
-        sops.secrets.openbao_static_seal_key = {
-          owner = "openbao";
-          group = "openbao";
-          mode = "0400";
+        services.traefik.dynamicConfigOptions.http = lib.nixicle.mkTraefikService {
+          name = "openbao";
+          port = 8200;
+          subdomain = "openbao";
+          domain = "homelab.haseebmajid.dev";
+          entryPoints = [ "websecure" ];
+          certResolver = "letsencrypt";
+        };
+
+        sops = {
+          secrets = {
+            openbao_admin_password = { };
+            openbao_static_seal_key = {
+              owner = "openbao";
+              group = "openbao";
+              mode = "0400";
+            };
+          };
+          templates."openbao-env".content = ''
+            OPENBAO_ADMIN_PASSWORD=${config.sops.placeholder.openbao_admin_password}
+            OPENBAO_STATIC_SEAL_KEY=${config.sops.placeholder.openbao_static_seal_key}
+          '';
         };
 
         systemd = {
@@ -25,6 +43,7 @@
             "d /var/log/openbao 0755 openbao openbao -"
           ];
           services.openbao.serviceConfig = {
+            EnvironmentFile = config.sops.templates."openbao-env".path;
             DynamicUser = lib.mkForce false;
             User = "openbao";
             Group = "openbao";
@@ -39,7 +58,7 @@
             api_addr = "http://127.0.0.1:8200";
             cluster_addr = "https://127.0.0.1:8201";
             seal.static = {
-              current_key = "file://${config.sops.secrets.openbao_static_seal_key.path}";
+              current_key = "env://OPENBAO_STATIC_SEAL_KEY";
               current_key_id = "primary";
             };
             listener.tcp = {
@@ -48,9 +67,53 @@
               tls_disable = true;
             };
             storage.file.path = "/var/lib/openbao";
+            initialize = [
+              {
+                policy.request = [
+                  {
+                    add-admin-policy = {
+                      operation = "update";
+                      path = "sys/policies/acl/admin";
+                      data.policy = ''
+                        path "*" {
+                          capabilities = ["create", "update", "read", "delete", "list", "scan", "sudo"]
+                        }
+                      '';
+                    };
+                  }
+                ];
+              }
+              {
+                identity.request = [
+                  {
+                    mount-userpass = {
+                      operation = "update";
+                      path = "sys/auth/userpass";
+                      data = {
+                        type = "userpass";
+                        description = "Local userpass authentication";
+                      };
+                    };
+                  }
+                  {
+                    userpass-add-admin = {
+                      operation = "update";
+                      path = "auth/userpass/users/admin";
+                      data = {
+                        password = {
+                          eval_type = "string";
+                          eval_source = "env";
+                          env_var = "OPENBAO_ADMIN_PASSWORD";
+                        };
+                        token_policies = [ "admin" ];
+                      };
+                    };
+                  }
+                ];
+              }
+            ];
           };
         };
-
 
         users = {
           users.openbao = {

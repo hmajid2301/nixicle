@@ -22,7 +22,7 @@
             "git.haseebmajid.dev" = {
               HostName = "git.haseebmajid.dev";
               User = "git";
-              Port = 2222;
+              Port = 22;
             };
           };
           extraConfig = ''
