@@ -89,6 +89,10 @@
       let
         secretPaths = lib.mergeAttrsList secrets;
         backupObjects = config.system.backup.objects;
+        resticWrapped = pkgs.writeShellScriptBin "restic" ''
+          exec ${pkgs.util-linux}/bin/flock /run/restic-backups-global.lock \
+            ${pkgs.restic}/bin/restic "$@"
+        '';
       in
       {
         sops.secrets.restic_password = { };
@@ -108,12 +112,14 @@
             ;
           runCheck = backup.checkOpts != [ ];
           checkOpts = backup.checkOpts;
+          package = resticWrapped;
           passwordFile = secretPaths.restic_password;
           environmentFile = secretPaths.backblaze_env;
           repositoryFile = secretPaths.restic_repository;
         }) backupObjects;
 
-        systemd.services = lib.mapAttrs' (name: _backup:
+        systemd.services = lib.mapAttrs' (
+          name: _backup:
           lib.nameValuePair "restic-backups-${name}" {
             path = [ pkgs.systemd ];
           }

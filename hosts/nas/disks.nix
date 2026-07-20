@@ -5,7 +5,9 @@
       # Boot disk only. Do not place any TrueNAS/ZFS data-pool disks in this file.
       boot = {
         type = "disk";
-        device = "/dev/disk/by-id/REPLACE_ME_BOOT_DISK";
+        # Observed old TrueNAS boot-pool disk during read-only recovery inspection.
+        # Verify this still resolves to the intended 1TB WD boot/system disk before any destructive install.
+        device = "/dev/disk/by-id/nvme-WDS100T3X0C-00SJG0_21234L802961";
         content = {
           type = "gpt";
           partitions = {

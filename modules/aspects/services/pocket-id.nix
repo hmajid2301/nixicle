@@ -60,7 +60,7 @@
             PORT = 1411;
             DB_CONNECTION_STRING = "postgres://pocketid@/pocketid?host=/run/postgresql";
             UI_CONFIG_DISABLED = true;
-            ALLOW_USER_SIGNUPS = "disabled";
+            ALLOW_USER_SIGNUPS = "withToken";
             ANALYTICS_DISABLED = true;
             VERSION_CHECK_DISABLED = true;
           };
