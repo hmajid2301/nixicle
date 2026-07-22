@@ -236,7 +236,6 @@
             swap-input
             ddcutil
             mtpfs
-            jmtpfs
             brightnessctl
             xdg-utils
             wl-clipboard

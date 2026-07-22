@@ -22,9 +22,16 @@ in
     };
 
     nixos = { pkgs, ... }: {
+      # Split into the small files recommended by the migration notes
+      # (storage import, shares, health, app recovery), mirroring the
+      # nijho.lt TrueNAS->NixOS migration structure.
       imports = [
         ./hardware-configuration.nix
         ./disks.nix
+        ./storage.nix
+        ./nfs.nix
+        ./samba.nix
+        ./health.nix
       ];
 
       boot = {
@@ -55,9 +62,7 @@ in
         hdparm
         jq
         lsof
-        nvme-cli
         rsync
-        smartmontools
         tmux
         vim
         zfs
@@ -98,30 +103,9 @@ in
         trim.enable = false;
       };
 
-      # Recovery-first defaults:
-      # - only the boot disk belongs in disko
-      # - production data pools are imported by name
-      # - encrypted datasets remain manual until the first boot path is proven
-      fileSystems."/mnt/recovery" = {
-        device = "tmpfs";
-        fsType = "tmpfs";
-        options = [
-          "mode=0755"
-          "size=2G"
-        ];
-      };
-
-      systemd.tmpfiles.rules = [
-        # Preserve the old TrueNAS path layout during first recovery.
-        # The important recovered host-path data should remain reachable under this tree.
-        "d /mnt/main 0755 root root -"
-        "d /mnt/main/main 0755 root root -"
-        "d /mnt/main/main/Data 0755 root root -"
-        "d /mnt/.ix-apps 0755 root root -"
-        "d /mnt/.ix-apps/app_mounts 0755 root root -"
-        "d /mnt/.ix-apps/app_configs 0755 root root -"
-      ];
-
+      # Allow SSH during recovery. NFS/SMB firewall openings are declared
+      # in their respective aspect files (nfs.nix / samba.nix) where the
+      # services are enabled.
       networking.firewall.allowedTCPPorts = [ 22 ];
 
       system.stateVersion = "26.05";
