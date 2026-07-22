@@ -1,6 +1,9 @@
 { ... }:
 {
-  den.aspects.nfs-truenas = {
+  # Client aspect: mounts the NAS NFS exports. The server host is now `nas`
+  # (renamed from `truenas` during the TrueNAS -> NixOS migration). The NAS
+  # exports both the plain and the (post-unlock) encrypted dataset.
+  den.aspects.nfs-nas = {
     nixos = _: {
       services.rpcbind.enable = true;
 
@@ -9,7 +12,7 @@
       # denied" on mkdir and hangs on ls/stat when the mount isn't triggered.
       # nofail + restart ensures boot works even if NAS/Tailscale is slow.
       fileSystems."/mnt/homelab" = {
-        device = "truenas:/mnt/main/main-encrypted";
+        device = "nas:/mnt/main/main-encrypted";
         fsType = "nfs";
         options = [
           "nfsvers=4"
@@ -22,8 +25,8 @@
         ];
       };
 
-      fileSystems."/mnt/truenas" = {
-        device = "truenas:/mnt/main/main";
+      fileSystems."/mnt/nas" = {
+        device = "nas:/mnt/main/main";
         fsType = "nfs";
         options = [
           "nfsvers=4"

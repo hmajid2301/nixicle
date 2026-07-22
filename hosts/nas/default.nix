@@ -13,8 +13,15 @@ in
     includes = [
       den.aspects.performance-base
       den.aspects.server
-      den.aspects.boot
+      den.aspects.boot-secure # LUKS+TPM2 secure boot (includes den.aspects.boot)
+      den.aspects.impermanence # ephemeral btrfs root, /persist for state
       den.aspects.fish
+    ];
+
+    # NAS service state that must survive the impermanence rollback.
+    persist.directories = [
+      "/var/lib/samba"
+      "/var/lib/nfs"
     ];
 
     homeManager = { ... }: {
@@ -72,13 +79,20 @@ in
 
       home-manager.users.haseeb.home.stateVersion = "26.05";
 
+      # `media` gid 3000 matches the recovered TrueNAS ownership on
+      # /mnt/main/main and the homelab datasets (fleet convention; framebox
+      # uses the same gid). Members can read/write shared data.
+      users.groups.media.gid = 3000;
+
       users.users.root.openssh.authorizedKeys.keys = authorizedKeys;
 
       users.users.nixos = {
         isNormalUser = true;
+        uid = 1000; # matches TrueNAS NFS anonuid/anongid and share owner
         group = "users";
         extraGroups = [
           "wheel"
+          "media"
         ];
         initialPassword = "changeme";
         openssh.authorizedKeys.keys = authorizedKeys;

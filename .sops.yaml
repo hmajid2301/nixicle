@@ -28,6 +28,10 @@ keys:
     - &framebox age199ny6lhask8zc65auwygqhj0svjkpp5kr7lhht8hvj947vaclecqrt4yg7
     - &vps age1ucucdna4spp5znu0e9fnq3v6qxzwcpp33fh58cll2r074sh8gytssd2jnq
     - &desktop age199ny6lhask8zc65auwygqhj0svjkpp5kr7lhht8hvj947vaclecqrt4yg7
+    # nas host key: fill in after first boot with
+    #   ssh-to-age -i /etc/ssh/ssh_host_ed25519_key.pub
+    # then `sops updatekeys hosts/nas/secrets.yaml`.
+    # - &nas age1REPLACE_ME_AFTER_FIRST_BOOT
 
 creation_rules:
   - path_regex: modules/nixos/secrets.ya?ml$
@@ -66,6 +70,15 @@ creation_rules:
       - *vm
       - *vps
       - *desktop
+      - *haseeb_desktop
+      - *haseeb_framework
+      - *haseeb_framebox
+      - *haseebmajid_dell
+
+  - path_regex: hosts/nas/secrets.ya?ml$
+    key_groups:
+    - age:
+      # Add *nas here once the host key exists (see note above), then rekey.
       - *haseeb_desktop
       - *haseeb_framework
       - *haseeb_framebox

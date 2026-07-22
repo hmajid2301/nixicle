@@ -1,27 +1,49 @@
 # Storage recovery for the migrated NAS.
 #
 # The TrueNAS "main" raidz2 pool is imported by name (see default.nix
-# boot.zfs.extraPools). This file only carries recovery-first helpers and
-# the path-compatibility tmpfiles entries that preserve the old layout
-# clients (NFS, SMB, apps) expect.
+# boot.zfs.extraPools). TrueNAS stored the pool mountpoint as `/main` and
+# mounted it via `altroot=/mnt`, so datasets appeared at `/mnt/main/main`.
+# On a plain NixOS import there is no altroot, so without intervention the
+# datasets would mount at `/main/main` — breaking the NFS export, SMB share
+# and every client that expects `/mnt/main`.
 #
-# Observed dataset properties on TrueNAS "main" and child datasets:
-#   compression = lz4
-#   atime      = off
-#   xattr      = sa
-#   aclmode    = discard
-# These stay encoded on the existingpool itself and are not re-declared here.
+# The oneshot below rewrites the mountpoints to the `/mnt/main` layout before
+# `zfs-mount.service` runs. It is idempotent (only sets when different) and
+# safe: changing a `mountpoint` property does not touch data.
 #
-# Encrypted dataset observed:
-#   main/main-encrypted  encryption=aes-256-gcm  keyformat=passphrase  keylocation=prompt
-# Keep unlock manual after boot; do not put the passphrase in the Nix store.
-{ ... }:
+# Pool dataset properties (compression=lz4, atime=off, xattr=sa,
+# aclmode=discard) live on the pool itself and are not re-declared here.
+# `main/main-encrypted` is aes-256-gcm / passphrase / prompt — unlocked
+# manually after boot (see runbook); the property change here works even
+# while it is locked.
+{ pkgs, ... }:
 {
-  # Preserve the TrueNAS client/app path layout on first recovery.
+  systemd.services.zfs-nas-mountpoints = {
+    description = "Normalise NAS 'main' pool mountpoints to /mnt/main layout";
+    after = [ "zfs-import-main.service" ];
+    before = [ "zfs-mount.service" ];
+    wantedBy = [ "zfs-mount.service" ];
+    serviceConfig.Type = "oneshot";
+    script = ''
+      set -eu
+      zfs=${pkgs.zfs}/bin/zfs
+      set_mp() {
+        ds="$1"; want="$2"
+        cur=$("$zfs" get -H -o value mountpoint "$ds" 2>/dev/null || echo "")
+        if [ -n "$cur" ] && [ "$cur" != "$want" ]; then
+          "$zfs" set -u mountpoint="$want" "$ds"
+        fi
+      }
+      set_mp main /mnt/main
+      set_mp main/main /mnt/main/main
+      set_mp main/main-encrypted /mnt/main/main-encrypted
+    '';
+  };
+
+  # Path-compatibility dirs for the noauto ix-apps datasets and app recovery.
+  # (main/main and main/main-encrypted mount over /mnt/main/... via ZFS.)
   systemd.tmpfiles.rules = [
     "d /mnt/main 0755 root root -"
-    "d /mnt/main/main 0755 root root -"
-    "d /mnt/main/main/Data 0755 root root -"
     "d /mnt/.ix-apps 0755 root root -"
     "d /mnt/.ix-apps/app_mounts 0755 root root -"
     "d /mnt/.ix-apps/app_configs 0755 root root -"

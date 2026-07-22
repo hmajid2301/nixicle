@@ -52,7 +52,7 @@
       den.aspects.performance-balanced
       den.aspects.impermanence
       den.aspects.boot-secure
-      den.aspects.nfs-truenas
+      den.aspects.nfs-nas
       den.aspects.searx
       den.aspects.tailscale
       den.aspects.docker

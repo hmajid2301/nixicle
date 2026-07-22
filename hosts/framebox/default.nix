@@ -67,7 +67,7 @@
       framebox = {
         includes = [
           den.aspects.performance-balanced
-          den.aspects.nfs-truenas
+          den.aspects.nfs-nas
           den.aspects.impermanence
           den.aspects.boot-secure
           den.aspects.tailscale

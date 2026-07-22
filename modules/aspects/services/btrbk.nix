@@ -57,8 +57,8 @@
         };
 
         systemd = {
-          services.btrbk-truenas-rsync = {
-            description = "Rsync btrbk snapshots to TrueNAS";
+          services.btrbk-nas-rsync = {
+            description = "Rsync btrbk snapshots to the NAS";
             after = [ "network-online.target" ];
             wants = [ "network-online.target" ];
             serviceConfig = {
@@ -69,19 +69,19 @@
               set -euo pipefail
               for path in /persist/.snapshots /home/.snapshots; do
                 if [ -d "$path" ]; then
-                  echo "Syncing $path to TrueNAS..."
+                  echo "Syncing $path to the NAS..."
                   ${pkgs.rsync}/bin/rsync -rlptD --no-o --no-g --delete \
                     ${rsyncExcludeArgs} \
                     "$path/" \
-                    "/mnt/truenas/backups/${config.networking.hostName}/$(basename $path)/"
+                    "/mnt/nas/backups/${config.networking.hostName}/$(basename $path)/"
                 fi
               done
-              echo "TrueNAS rsync completed"
+              echo "NAS rsync completed"
             '';
           };
 
-          timers.btrbk-truenas-rsync = {
-            description = "Timer for TrueNAS rsync backup";
+          timers.btrbk-nas-rsync = {
+            description = "Timer for NAS rsync backup";
             wantedBy = [ "timers.target" ];
             timerConfig = {
               OnCalendar = "weekly";

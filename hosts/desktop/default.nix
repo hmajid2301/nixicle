@@ -36,7 +36,7 @@
   den.aspects.desktop = {
     includes = [
       den.aspects.performance-max
-      den.aspects.nfs-truenas
+      den.aspects.nfs-nas
       den.aspects.impermanence
       den.aspects.boot-secure
       den.aspects.tailscale
