@@ -40,6 +40,7 @@
           den.aspects.desktopProfile
           den.aspects.gaming
           den.aspects.social
+          den.aspects.video
         ];
 
         homeManager =
