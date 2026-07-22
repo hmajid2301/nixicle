@@ -80,6 +80,7 @@
     zellij
     ethtool
     usbutils
+    nixos-facter
   ];
 
   system.stateVersion = "23.11";

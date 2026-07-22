@@ -1,4 +1,4 @@
-{ den, lib, ... }:
+{ den, inputs, lib, ... }:
 let
   authorizedKeys = [
     "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKuM4bCeJq0XQ1vd/iNK650Bu3wPVKQTSB0k2gsMKhdE hello@haseebmajid.dev"
@@ -9,6 +9,8 @@ let
   ];
 in
 {
+  flake-file.inputs.nixos-facter-modules.url = "github:numtide/nixos-facter-modules";
+
   den.aspects.nas = {
     includes = [
       den.aspects.performance-base
@@ -39,6 +41,8 @@ in
         ./nfs.nix
         ./samba.nix
         ./health.nix
+        inputs.nixos-facter-modules.nixosModules.facter
+        { config.facter.reportPath = ./facter.json; }
       ];
 
       boot = {
