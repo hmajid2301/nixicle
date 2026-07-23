@@ -277,6 +277,7 @@ in
                 "npm:pi-scroll"
                 "npm:@observal/pi-insights"
                 "npm:@samfp/pi-memory"
+                "npm:@latentminds/pi-quotas"
               ];
               extensions = map (ext: "~/.pi/agent/extensions/${ext.rel}") piExtensionFiles;
             };

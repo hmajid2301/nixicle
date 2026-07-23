@@ -3,6 +3,7 @@ let
     "goroutinely"
     "gothreads"
     "lettucego"
+    "sure"
   ];
 
   mkSecret = app: {

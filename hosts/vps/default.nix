@@ -27,6 +27,7 @@
       den.aspects.karakeep
       den.aspects.papra
       den.aspects.tandoor
+      den.aspects.sure
 
       den.aspects.fish
     ];

@@ -68,6 +68,17 @@ let
       is_public = false;
       pkce_enabled = false;
     };
+
+    sure = {
+      name = "Sure";
+      client_id = "sure";
+      launch_url = "https://sure.haseebmajid.dev";
+      callback_urls = [
+        "https://sure.haseebmajid.dev/auth/openid_connect/callback"
+      ];
+      is_public = false;
+      pkce_enabled = true;
+    };
   };
 
   mkClient = key: cfg: {

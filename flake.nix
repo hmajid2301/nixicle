@@ -78,10 +78,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nixos-facter-modules.url = "github:numtide/nixos-facter-modules";
-    nixos-generators = {
-      url = "github:nix-community/nixos-generators";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     nixos-hardware.url = "github:nixos/nixos-hardware";
     nixos-raspberrypi.url = "github:nvmd/nixos-raspberrypi/main";
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
@@ -166,6 +162,10 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     stylix.url = "github:danth/stylix";
+    sure-nix = {
+      url = "github:nSimonFR/sure-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     tangled = {
       url = "git+https://tangled.sh/@tangled.sh/core";
       inputs.nixpkgs.follows = "nixpkgs";
