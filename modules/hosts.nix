@@ -30,6 +30,17 @@ let
       };
     };
 
+  mkPiInstantiate =
+    { modules }:
+    inputs.nixos-raspberrypi.lib.nixosSystem {
+      nixpkgs = inputs.nixpkgs;
+      inherit modules;
+      specialArgs = {
+        inherit inputs;
+        lib = extendedLib;
+      };
+    };
+
   mkHomeInstantiate =
     { modules, ... }:
     let
@@ -104,6 +115,12 @@ in
 
       vps = {
         instantiate = mkInstantiate;
+      };
+    };
+
+    hosts.aarch64-linux = {
+      rpi = {
+        instantiate = mkPiInstantiate;
       };
     };
 

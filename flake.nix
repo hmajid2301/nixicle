@@ -83,6 +83,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nixos-hardware.url = "github:nixos/nixos-hardware";
+    nixos-raspberrypi.url = "github:nvmd/nixos-raspberrypi/main";
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     noctalia = {
       url = "github:noctalia-dev/noctalia/legacy-v4";
