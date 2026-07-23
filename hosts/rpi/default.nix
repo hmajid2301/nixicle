@@ -11,6 +11,8 @@
       den.aspects.performance-base
       den.aspects.server
       den.aspects.fish
+      den.aspects.hardening-vps
+      den.aspects.backup-restic
       den.aspects.tailscale
       den.aspects.traefik
       den.aspects.nixflix
@@ -87,15 +89,31 @@
         services.openssh = {
           enable = true;
           ports = [ 22 ];
-          settings = {
-            PasswordAuthentication = lib.mkForce false;
-            PermitRootLogin = "prohibit-password";
-          };
         };
 
-        security.sudo = {
-          wheelNeedsPassword = lib.mkForce false;
-          execWheelOnly = true;
+        time.timeZone = "UTC";
+
+        nix.gc = {
+          automatic = true;
+          dates = "weekly";
+          options = "--delete-older-than 30d";
+        };
+        nix.optimise.automatic = true;
+
+        services.resolved.settings.Resolve.DNSStubListener = false;
+
+        system.backup.objects.data = {
+          paths = [ "/data" ];
+          exclude = [
+            "/data/downloads"
+            "/data/media"
+            "/data/romm/db"
+          ];
+          timerConfig = {
+            OnCalendar = "daily";
+            RandomizedDelaySec = "2h";
+            Persistent = true;
+          };
         };
 
         systemd.tmpfiles.rules = [
