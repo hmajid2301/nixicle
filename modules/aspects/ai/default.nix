@@ -250,6 +250,19 @@ in
                     { id = "qwen3-vl:8b"; }
                   ];
                 };
+                ollama = {
+                  baseUrl = "http://localhost:11434/v1";
+                  api = "openai-completions";
+                  apiKey = "ollama";
+                  models = [
+                    { id = "qwen3.5:cloud"; }
+                    { id = "kimi-k2.7-code:cloud"; }
+                    { id = "glm-5.2:cloud"; }
+                    { id = "glm-5.1:cloud"; }
+                    { id = "deepseek-v4-pro:cloud"; }
+                    { id = "minimax-m3:cloud"; }
+                  ];
+                };
               };
             };
             ".pi/agent/settings.json".source = (pkgs.formats.json { }).generate "pi-settings" {

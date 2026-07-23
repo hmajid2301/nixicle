@@ -14,6 +14,7 @@
       {
         boot = {
           plymouth.enable = true;
+          kernelModules = [ "i2c-dev" ];
           kernelParams = [
             "quiet"
             "splash"
@@ -33,6 +34,7 @@
           };
           keyboard.zsa.enable = true;
         };
+        users.groups.i2c = { };
         services = {
           upower.enable = true;
           blueman.enable = true;
@@ -48,6 +50,10 @@
               workstation = true;
             };
           };
+          # i2c-dev for ddcutil monitor input switching (swap-input script)
+          udev.extraRules = ''
+            SUBSYSTEM=="i2c-dev", GROUP="i2c", MODE="0660"
+          '';
           udev.packages = with pkgs; [
             logitech-udev-rules
             solaar

@@ -64,6 +64,20 @@
 
   security.sudo.wheelNeedsPassword = false;
 
+  # Prevent GNOME from suspending during long recovery transfers (e.g. rsync).
+  # Runs as a user service within the auto-logged-in GNOME session.
+  systemd.user.services.disable-gnome-suspend = {
+    enable = true;
+    description = "Disable GNOME auto-suspend on AC power";
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+      ExecStart = "${pkgs.glib}/bin/gsettings set org.gnome.desktop.session idle-delay 0";
+    };
+    wantedBy = [ "graphical-session.target" ];
+    partOf = [ "graphical-session.target" ];
+  };
+
   environment.systemPackages = with pkgs; [
     gparted
     git

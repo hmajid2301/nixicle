@@ -75,6 +75,7 @@
           users.haseeb.extraGroups = [
             "wheel"
             "media"
+            "i2c"
           ];
           extraGroups.docker.members = [ "haseeb" ];
         };
