@@ -90,6 +90,17 @@ let
       is_public = false;
       pkce_enabled = true;
     };
+
+    grafana = {
+      name = "Grafana";
+      client_id = "grafana";
+      launch_url = "https://grafana.homelab.haseebmajid.dev";
+      callback_urls = [
+        "https://grafana.homelab.haseebmajid.dev/login/generic_oauth"
+      ];
+      is_public = false;
+      pkce_enabled = true;
+    };
   };
 
   mkClient = key: cfg: {

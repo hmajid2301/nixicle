@@ -30,6 +30,8 @@
       den.aspects.tinyauth
       den.aspects.invidious
       den.aspects.redlib
+      den.aspects.otel-collector
+      den.aspects.monitoring
       den.aspects.sure
 
       den.aspects.fish
@@ -106,6 +108,19 @@
         };
 
         security.sudo.wheelNeedsPassword = lib.mkForce false;
+
+        system.backup.objects.observability = {
+          paths = [
+            "/var/lib/prometheus2"
+            "/var/lib/loki"
+            "/var/lib/grafana"
+          ];
+          timerConfig = {
+            OnCalendar = "daily";
+            RandomizedDelaySec = "2h";
+            Persistent = true;
+          };
+        };
 
         services.traefik.dynamicConfigOptions.http = lib.mkMerge [
           (lib.nixicle.mkTraefikService {

@@ -148,19 +148,6 @@
           })
         ];
 
-        services.adguardhome.settings.dhcp = {
-          enabled = false;
-          interface_name = "end0";
-          dhcpv4 = {
-            gateway_ip = "10.0.0.1";
-            subnet_mask = "255.255.255.0";
-            range_start = "10.0.0.100";
-            range_end = "10.0.0.200";
-            lease_duration = 86400;
-          };
-        };
-        networking.firewall.allowedUDPPorts = [ 67 ];
-
         services.traefik.staticConfigOptions.entryPoints.websecure.http.tls.certResolver =
           lib.mkForce "tailscale";
 
