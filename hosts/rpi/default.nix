@@ -18,7 +18,6 @@
       den.aspects.nixflix
       den.aspects.adguard
       den.aspects.navidrome
-      den.aspects.homepage
       den.aspects.docker
       den.aspects.romm
       den.aspects.invidious
