@@ -1,0 +1,361 @@
+#!/usr/bin/env bash
+# =============================================================================
+# nas-status -- NixOS NAS Live Dashboard
+# =============================================================================
+# Usage : sudo nas-status            (5s refresh loop)
+#         sudo nas-status -r 3       (3s refresh)
+#         sudo nas-status --once     (single shot, no loop)
+#
+# Bundled via: (writeShellScriptBin "nas-status" (builtins.readFile ./scripts/nas-status))
+#
+# Adapted from daskladas/nasdots (nixnas-status) for ZFS + NVMe + btrfs root.
+# =============================================================================
+set -euo pipefail
+
+# =============================================================================
+# CONFIGURATION — adjust for your hardware
+# =============================================================================
+REFRESH=5
+ONCE=false
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    -r|--refresh) REFRESH="$2"; shift 2 ;;
+    --once) ONCE=true; shift ;;
+    *) shift ;;
+  esac
+done
+
+IFACE="enp2s0"                      # primary NIC
+GATEWAY="192.168.1.1"              # default gateway
+ZPOOL="main"                       # ZFS data pool name
+NVME_DRIVES=(
+  "nvme0n1"
+  # Add boot NVMe if different: "nvme1n1"
+)
+NVME_LABEL=(
+  "WD 1TB (boot)"
+)
+# Data pool drives (NVMe) — auto-detected from zpool status
+DATA_POOL="main"
+
+SERVICES=(
+  "sshd"
+  "nfs-server"
+  "samba-smbd"
+  "smartd"
+  "zfs-import-main"
+  "prometheus-node-exporter"
+)
+SVC_SHORT=(
+  "sshd"
+  "nfs"
+  "smb"
+  "smartd"
+  "zpool"
+  "prom"
+)
+
+NIXOS_CONFIG="/etc/nixos"
+
+# =============================================================================
+# COLOURS
+# =============================================================================
+if [[ -t 1 ]]; then
+  RST="\e[0m"; BLD="\e[1m"; DIM="\e[2m"
+  GRN="\e[32m"; YLW="\e[33m"; RED="\e[31m"; CYN="\e[36m"
+  BGRN="\e[1;32m"; BYLW="\e[1;33m"; BRED="\e[1;31m"; BCYN="\e[1;36m"; BWHT="\e[1;37m"
+else
+  RST=""; BLD=""; DIM=""; GRN=""; YLW=""; RED=""; CYN=""
+  BGRN=""; BYLW=""; BRED=""; BCYN=""; BWHT=""
+fi
+
+# =============================================================================
+# HELPERS
+# =============================================================================
+W=80
+hr() { printf " ${DIM}"; printf '─%.0s' $(seq 1 $((W-4))); printf "${RST}\n"; }
+hdr() { printf " ${BCYN}━━ %s${RST}\n" "$1"; }
+dot() {
+  case "$1" in
+    active|ONLINE|PASSED|clean*)  printf "${BGRN}●${RST}" ;;
+    DEGRADED|degraded*)           printf "${BYLW}●${RST}" ;;
+    FAULTED|OFFLINE|UNAVAIL|*)    printf "${BRED}●${RST}" ;;
+  esac
+}
+bar() {
+  local used=${1:-0} total=${2:-1} width=${3:-20}
+  local pct=0; (( total > 0 )) && pct=$(( used * 100 / total ))
+  local filled=$(( pct * width / 100 )) empty=$(( width - filled ))
+  local color="$GRN"; (( pct > 80 )) && color="$YLW"; (( pct > 95 )) && color="$RED"
+  printf "${color}"
+  printf '█%.0s' $(seq 1 $filled) 2>/dev/null || true
+  printf "${DIM}"
+  printf '░%.0s' $(seq 1 $empty) 2>/dev/null || true
+  printf "${RST} %3d%%" "$pct"
+}
+fmt() {
+  local b=${1:-0}; (( b == 0 )) && { echo "0 B"; return; }
+  if (( b >= 1099511627776 )); then printf "%.2f TiB" "$(echo "scale=2; $b/1099511627776" | bc)"
+  elif (( b >= 1073741824 )); then printf "%.1f GiB" "$(echo "scale=1; $b/1073741824" | bc)"
+  elif (( b >= 1048576 )); then printf "%.1f MiB" "$(echo "scale=1; $b/1048576" | bc)"
+  else printf "%d KiB" "$(( b / 1024 ))"
+  fi
+}
+fmtr() { local v="$1"; [[ "$v" == .* ]] && echo "0${v}" || echo "$v"; }
+
+# ── Data collection ────────────────────────────────────────────────────────
+blk_stat() {
+  local f="/sys/block/$1/stat"
+  [[ -f "$f" ]] || { echo "0 0"; return; }
+  local r w; read -r _ _ r _ _ _ w _ _ _ _ < "$f"
+  echo $(( r * 512 )) $(( w * 512 ))
+}
+
+collect_io() {
+  declare -gA IO_R IO_W
+  local -A s_r s_w
+
+  # Include all NVMe drives
+  local all_drives=("${NVME_DRIVES[@]}")
+  # Add data pool drives from zpool status
+  while IFS= read -r dev; do
+    [[ -n "$dev" ]] && all_drives+=("$dev")
+  done < <(zpool status -P "$ZPOOL" 2>/dev/null | awk '/nvme[0-9]+n[0-9]+/{print $1}' | sort -u)
+
+  for d in "${all_drives[@]}"; do
+    read -r r w <<< "$(blk_stat "$d")"; s_r[$d]=$r; s_w[$d]=$w
+  done
+
+  local rx0 tx0
+  rx0=$(cat "/sys/class/net/${IFACE}/statistics/rx_bytes" 2>/dev/null || echo 0)
+  tx0=$(cat "/sys/class/net/${IFACE}/statistics/tx_bytes" 2>/dev/null || echo 0)
+  local snap0; snap0=$(awk '/^cpu /{print $2,$3,$4,$5,$6,$7,$8}' /proc/stat)
+
+  sleep 1
+
+  for d in "${all_drives[@]}"; do
+    read -r r w <<< "$(blk_stat "$d")"
+    IO_R[$d]=$(echo "scale=1; ($r-${s_r[$d]})/1048576" | bc)
+    IO_W[$d]=$(echo "scale=1; ($w-${s_w[$d]})/1048576" | bc)
+  done
+
+  local rx1 tx1
+  rx1=$(cat "/sys/class/net/${IFACE}/statistics/rx_bytes" 2>/dev/null || echo 0)
+  tx1=$(cat "/sys/class/net/${IFACE}/statistics/tx_bytes" 2>/dev/null || echo 0)
+  NET_RX=$(echo "scale=1; ($rx1-$rx0)/1048576" | bc)
+  NET_TX=$(echo "scale=1; ($tx1-$tx0)/1048576" | bc)
+  local snap1; snap1=$(awk '/^cpu /{print $2,$3,$4,$5,$6,$7,$8}' /proc/stat)
+  CPU_PCT=$(awk -v s0="$snap0" -v s1="$snap1" 'BEGIN{
+    split(s0,a); split(s1,b)
+    dt=(b[1]+b[2]+b[3]+b[4]+b[5]+b[6]+b[7])-(a[1]+a[2]+a[3]+a[4]+a[5]+a[6]+a[7])
+    di=b[4]-a[4]; printf "%d", (dt>0) ? (dt-di)*100/dt : 0
+  }')
+}
+
+# NVMe SMART helpers
+nsh()   { smartctl -H "/dev/$1" 2>/dev/null | awk '/result:/{print $NF}' | head -1 || true; }
+ntemp() { smartctl -A "/dev/$1" 2>/dev/null | awk '/^Temperature:/{print $2; exit}' || true; }
+npoh()  { smartctl -A "/dev/$1" 2>/dev/null | awk '/Power On Hours/{gsub(/,/,"",$4); print $4; exit}' || true; }
+
+# ZFS helpers
+zfs_pool_status() {
+  local pool="$1"
+  local health
+  health=$(zpool get -H -o value health "$pool" 2>/dev/null || echo "UNAVAIL")
+  echo "$health"
+}
+
+zfs_pool_size() {
+  local pool="$1"
+  zpool get -H -o value size "$pool" 2>/dev/null || echo "0"
+}
+
+zfs_pool_alloc() {
+  local pool="$1"
+  zpool get -H -o value allocated "$pool" 2>/dev/null || echo "0"
+}
+
+zfs_pool_free() {
+  local pool="$1"
+  zpool get -H -o value free "$pool" 2>/dev/null || echo "0"
+}
+
+zfs_pool_cratio() {
+  local pool="$1"
+  zpool get -H -o value compressratio "$pool" 2>/dev/null || echo "1.00x"
+}
+
+zfs_pool_frag() {
+  local pool="$1"
+  zpool get -H -o value fragmentation "$pool" 2>/dev/null || echo "-"
+}
+
+zfs_scrub_status() {
+  local pool="$1"
+  local line
+  line=$(zpool status "$pool" 2>/dev/null | grep -i "scan:" | head -1) || true
+  if echo "$line" | grep -qi "scrub in progress"; then
+    local pct; pct=$(echo "$line" | grep -oP '\d+\.\d+%' | head -1 || echo "")
+    echo "scrubbing${pct:+ ($pct)}"
+  elif echo "$line" | grep -qi "none requested"; then
+    echo "never"
+  elif echo "$line" | grep -qi "scrub repaired"; then
+    echo "$line"
+  else
+    local ago; ago=$(echo "$line" | grep -oP '(July|August|September|October|November|December|January|February|March|April|May|June)\s+\d+' | head -1 || echo "?")
+    echo "$ago"
+  fi
+}
+
+# =============================================================================
+# RENDER
+# =============================================================================
+render() {
+  local now hn uptime_str kernel gen rebuild_date flake_age
+  now=$(date "+%Y-%m-%d %H:%M:%S")
+  hn=$(hostname)
+  uptime_str=$(awk '{s=$1; d=int(s/86400); h=int((s%86400)/3600); m=int((s%3600)/60);
+    if (d>0) printf "%dd %dh %02dm", d, h, m; else printf "%dh %02dm", h, m}' /proc/uptime)
+  kernel=$(uname -r)
+  gen=$(readlink /nix/var/nix/profiles/system 2>/dev/null | grep -oP '\d+' | tail -1 || echo "?")
+  rebuild_date=$(stat -c "%y" /nix/var/nix/profiles/system 2>/dev/null | cut -c1-10 || echo "?")
+
+  local flake_lock="${NIXOS_CONFIG}/flake.lock"
+  if [[ -f "$flake_lock" ]]; then
+    flake_age=$(( ( $(date +%s) - $(stat -c "%Y" "$flake_lock") ) / 86400 ))
+  else
+    flake_age="?"
+  fi
+
+  local ram_used ram_total ram_pct
+  read -r ram_used ram_total ram_pct <<< "$(awk '/MemTotal/{t=$2} /MemAvailable/{a=$2}
+    END{printf "%.1f %.1f %d",(t-a)/1048576,t/1048576,(t-a)*100/t}' /proc/meminfo)"
+
+  local load1 load5 load15; read -r load1 load5 load15 _ _ <<< "$(cat /proc/loadavg)"
+  local ip gw link_speed ping_gw ping_dns
+  ip=$(ip -4 addr show "$IFACE" 2>/dev/null | awk '/inet /{print $2}')
+  gw=$(ip route show default 2>/dev/null | awk '/default/{print $3; exit}')
+  link_speed=$(cat "/sys/class/net/${IFACE}/speed" 2>/dev/null || echo "?")
+  ping_gw=$(ping -c1 -W1 "$GATEWAY" 2>/dev/null | awk -F/ '/avg/{printf "%.1f",$5}' || echo "---")
+  ping_dns=$(ping -c1 -W1 "$GATEWAY" 2>/dev/null | awk -F/ '/avg/{printf "%.1f",$5}' || echo "---")
+
+  # ZFS pool
+  local z_health z_size z_alloc z_free z_cratio z_frag z_scrub
+  z_health=$(zfs_pool_status "$ZPOOL")
+  z_size=$(zfs_pool_size "$ZPOOL")
+  z_alloc=$(zfs_pool_alloc "$ZPOOL")
+  z_free=$(zfs_pool_free "$ZPOOL")
+  z_cratio=$(zfs_pool_cratio "$ZPOOL")
+  z_frag=$(zfs_pool_frag "$ZPOOL")
+  z_scrub=$(zfs_scrub_status "$ZPOOL")
+
+  # Root filesystem (btrfs)
+  local r_total r_used r_free
+  r_total=$(df -B1 / 2>/dev/null | awk 'NR==2{print $2}')
+  r_used=$(df -B1 / 2>/dev/null | awk 'NR==2{print $3}')
+  r_free=$(df -B1 / 2>/dev/null | awk 'NR==2{print $4}')
+
+  # ── OUTPUT ──
+  if $ONCE; then clear; else tput cup 0 0 2>/dev/null || clear; fi
+
+  local pad=$(( W - 16 - ${#hn} - ${#now} )); (( pad < 1 )) && pad=1
+  printf " ${BWHT}NAS${RST} ${DIM}//${RST} ${BLD}%s${RST}%*s${DIM}%s${RST}\n" "$hn" "$pad" "" "$now"
+  hr
+
+  # SYSTEM
+  hdr "SYSTEM"
+  printf " CPU ${BLD}%s${RST} ${DIM}│${RST} Load: %s %s %s  ${DIM}│${RST} Uptime: %s  ${DIM}│${RST} Kernel: %s\n" \
+    "${CPU_PCT}%" "$load1" "$load5" "$load15" "$uptime_str" "$kernel"
+  printf " Mem ${BLD}%s${RST}/%s GiB " "$ram_used" "$ram_total"
+  bar $(echo "$ram_used * 1073741824 / 1" | bc) $(echo "$ram_total * 1073741824 / 1" | bc) 20
+  printf " ${DIM}│${RST} Gen #%s ${DIM}(%s)${RST}" "$gen" "$rebuild_date"
+  if [[ "$flake_age" != "?" ]] && (( flake_age >= 14 )); then
+    printf " ${BYLW}⚠ %sd old${RST}" "$flake_age"
+  elif [[ "$flake_age" != "?" ]]; then
+    printf " ${GRN}✓${RST}"
+  fi
+  printf "\n"
+
+  # NETWORK
+  printf "\n"; hdr "NETWORK  ${DIM}($IFACE)${RST}"
+  printf " IP ${BLD}%-20s${RST}  Link ${BLD}%s${RST} Mb/s  RX ${BCYN}%s${RST}  TX ${BCYN}%s${RST} MB/s  GW ${BLD}%s${RST} ms\n" \
+    "${ip:--}" "$link_speed" "$(fmtr "$NET_RX")" "$(fmtr "$NET_TX")" "$ping_gw"
+
+  # STORAGE — ZFS pool
+  printf "\n"; hdr "STORAGE  ${DIM}($ZPOOL — raidz2 5× NVMe)${RST}"
+  local z_size_b z_alloc_b z_free_b
+  z_size_b=$(echo "$z_size" | awk '/T/{printf "%.0f", $1*1099511627776} /G/{printf "%.0f", $1*1073741824} /P/{printf "%.0f", $1*1125899906842624}')
+  z_alloc_b=$(echo "$z_alloc" | awk '/T/{printf "%.0f", $1*1099511627776} /G/{printf "%.0f", $1*1073741824} /P/{printf "%.0f", $1*1125899906842624}')
+  z_free_b=$(echo "$z_free" | awk '/T/{printf "%.0f", $1*1099511627776} /G/{printf "%.0f", $1*1073741824} /P/{printf "%.0f", $1*1125899906842624}')
+  [[ -z "$z_size_b" || "$z_size_b" == "0" ]] && { z_size_b=0; z_alloc_b=0; z_free_b=0; }
+  printf " $(dot "$z_health") ${BLD}/mnt/main/main${RST}  %s " "$z_size"
+  bar "$z_alloc_b" "$z_size_b" 25
+  printf "  Used: ${BLD}%s${RST}  Free: ${BGRN}%s${RST}  Ratio: ${CYN}%s${RST}  Frag: ${DIM}%s${RST}\n" \
+    "$z_alloc" "$z_free" "$z_cratio" "$z_frag"
+
+  # Root btrfs
+  printf " ${BLD}/${RST}                          %s " "$(fmt "$r_total")"
+  bar "$r_used" "$r_total" 25
+  printf "  Used: ${BLD}%s${RST}  Free: ${BGRN}%s${RST}\n" "$(fmt "$r_used")" "$(fmt "$r_free")"
+
+  # Scrub status
+  printf "\n ${DIM}Scrub:${RST} ${CYN}%s${RST}\n" "$z_scrub"
+
+  # DRIVES
+  printf "\n"; hdr "DRIVES"
+  printf " ${DIM}%-10s %-18s %-7s %5s %6s %6s MB/s %6s MB/s${RST}\n" \
+    "Device" "Label" "Health" "Temp" "Hours" "Read" "Write"
+  hr
+
+  for i in "${!NVME_DRIVES[@]}"; do
+    local d="${NVME_DRIVES[$i]}" h t hrs
+    h=$(nsh "$d"); t=$(ntemp "$d"); hrs=$(npoh "$d")
+    local tc="$GRN"; [[ -n "$t" ]] && (( t >= 50 )) && tc="$YLW"; [[ -n "$t" ]] && (( t >= 70 )) && tc="$RED"
+    printf " $(dot "${h:-?}") %-9s %-18s %-7s ${tc}%-4s${RST} %5s %6s MB/s %6s MB/s\n" \
+      "$d" "${NVME_LABEL[$i]}" "${h:-?}" "${t:--}°C" "${hrs:--}h" \
+      "$(fmtr "${IO_R[$d]:-0}")" "$(fmtr "${IO_W[$d]:-0}")"
+  done
+
+  # ZFS pool drives
+  while IFS= read -r dev; do
+    [[ -z "$dev" ]] && continue
+    local h t hrs
+    h=$(nsh "$dev"); t=$(ntemp "$dev"); hrs=$(npoh "$dev")
+    local tc="$GRN"; [[ -n "$t" ]] && (( t >= 50 )) && tc="$YLW"; [[ -n "$t" ]] && (( t >= 70 )) && tc="$RED"
+    local label; label=$(zpool status -P "$ZPOOL" 2>/dev/null | grep "$dev" | awk '{print $NF, $2}' | head -1 || echo "data")
+    printf " $(dot "${h:-?}") %-9s %-18s %-7s ${tc}%-4s${RST} %5s %6s MB/s %6s MB/s\n" \
+      "$dev" "$label" "${h:-?}" "${t:--}°C" "${hrs:--}h" \
+      "$(fmtr "${IO_R[$dev]:-0}")" "$(fmtr "${IO_W[$dev]:-0}")"
+  done < <(zpool status -P "$ZPOOL" 2>/dev/null | awk '/nvme[0-9]+n[0-9]+/{print $1}' | sort -u | grep -v -F "$(printf '%s\n' "${NVME_DRIVES[@]}")" || true)
+
+  # SERVICES
+  printf "\n"; hdr "SERVICES"
+  for i in "${!SERVICES[@]}"; do
+    local st; st=$(systemctl is-active "${SERVICES[$i]}" 2>/dev/null || echo "inactive")
+    printf "$(dot "$st") %-7s " "${SVC_SHORT[$i]}"
+  done
+  printf "\n"
+
+  # FOOTER
+  hr
+  printf " ${DIM}nas-status v1 │ Refresh: %ss │ Ctrl+C to exit${RST}\n" "$REFRESH"
+}
+
+# =============================================================================
+# MAIN
+# =============================================================================
+[[ $EUID -ne 0 ]] && { echo "Run as root: sudo nas-status"; exit 1; }
+
+declare -A IO_R IO_W
+NET_RX="0.0"; NET_TX="0.0"; CPU_PCT=0
+
+if $ONCE; then collect_io; render; exit 0; fi
+
+tput civis 2>/dev/null
+trap 'tput cnorm 2>/dev/null; exit' EXIT INT TERM
+
+while true; do
+  collect_io
+  render
+  sleep $(( REFRESH - 1 ))
+done

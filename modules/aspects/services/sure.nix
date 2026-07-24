@@ -49,16 +49,14 @@ in
           };
         }).overrideAttrs (old: {
           postPatch = (old.postPatch or "") + ''
-            cat > config/auth.yml << 'YAMLEOF'
-            providers:
-              - id: "pocketid"
-                strategy: "openid_connect"
-                name: "Pocket ID"
-                label: "Sign in with Pocket ID"
-                issuer: "<%= ENV['OIDC_ISSUER'] %>"
-                client_id: "<%= ENV['OIDC_CLIENT_ID'] %>"
-                client_secret: "<%= ENV['OIDC_CLIENT_SECRET'] %>"
-            YAMLEOF
+            sed -i '/^    - id: "oidc"/,/^      redirect_uri:/c\
+    - id: "pocketid"\
+      strategy: "openid_connect"\
+      name: "Pocket ID"\
+      label: "Sign in with Pocket ID"\
+      issuer: <'''%= ENV["OIDC_ISSUER"] %>\
+      client_id: <'''%= ENV["OIDC_CLIENT_ID"] %>\
+      client_secret: <'''%= ENV["OIDC_CLIENT_SECRET"] %>' config/auth.yml
           '';
         });
       in
@@ -88,7 +86,12 @@ in
           after = lib.mkAfter [
             "postgresql.service"
             "pocket-id.service"
+            "systemd-tmpfiles-setup.service"
           ];
+          preStart = ''
+            mkdir -p /var/lib/sure/tmp
+            chown sure:sure /var/lib/sure/tmp
+          '';
         };
 
         systemd.services.sure-web = {
@@ -117,7 +120,7 @@ in
           enable = true;
           inherit port;
           package = surePackage;
-          databaseUrl = "postgresql://sure@/sure?host=/run/postgresql";
+          databaseUrl = "postgresql:///sure?host=/run/postgresql&user=sure";
           redisUrl = "redis://127.0.0.1:6379/0";
           environmentFile = config.sops.secrets.sure_env.path;
           settings = {

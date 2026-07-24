@@ -33,15 +33,16 @@ in
           after = [ "network-online.target" ];
           wants = [ "network-online.target" ];
           environment = {
-            APP_URL = "https://auth.${domain}";
-            PORT = toString authPort;
-            PROVIDERS_POCKETID_AUTH_URL = "https://id.${domain}/authorize";
-            PROVIDERS_POCKETID_TOKEN_URL = "https://id.${domain}/api/oidc/token";
-            PROVIDERS_POCKETID_USER_INFO_URL = "https://id.${domain}/api/oidc/userinfo";
-            PROVIDERS_POCKETID_REDIRECT_URL = "https://auth.${domain}/api/oauth/callback/pocketid";
-            PROVIDERS_POCKETID_SCOPES = "openid profile email groups";
-            PROVIDERS_POCKETID_NAME = "Pocket ID";
-            OAUTH_AUTO_REDIRECT = "pocketid";
+            TINYAUTH_APPURL = "https://auth.${domain}";
+            TINYAUTH_SERVER_PORT = toString authPort;
+            TINYAUTH_DATABASE_PATH = "/var/lib/tinyauth/tinyauth.db";
+            TINYAUTH_OAUTH_PROVIDERS_pocketid_AUTHURL = "https://id.${domain}/authorize";
+            TINYAUTH_OAUTH_PROVIDERS_pocketid_TOKENURL = "https://id.${domain}/api/oidc/token";
+            TINYAUTH_OAUTH_PROVIDERS_pocketid_USERINFOURL = "https://id.${domain}/api/oidc/userinfo";
+            TINYAUTH_OAUTH_PROVIDERS_pocketid_REDIRECTURL = "https://auth.${domain}/api/oauth/callback/pocketid";
+            TINYAUTH_OAUTH_PROVIDERS_pocketid_SCOPES = "openid profile email groups";
+            TINYAUTH_OAUTH_PROVIDERS_pocketid_NAME = "Pocket ID";
+            TINYAUTH_OAUTH_AUTOREDIRECT = "pocketid";
           };
           serviceConfig = {
             ExecStart = lib.getExe pkgs.tinyauth;

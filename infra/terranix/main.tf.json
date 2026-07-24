@@ -1,0 +1,250 @@
+{
+  "output": {
+    "goroutinely_client_id": {
+      "value": "${pocketid_client.goroutinely.id}"
+    },
+    "goroutinely_client_secret": {
+      "sensitive": true,
+      "value": "${pocketid_client.goroutinely.client_secret}"
+    },
+    "gothreads_client_id": {
+      "value": "${pocketid_client.gothreads.id}"
+    },
+    "gothreads_client_secret": {
+      "sensitive": true,
+      "value": "${pocketid_client.gothreads.client_secret}"
+    },
+    "grafana_client_id": {
+      "value": "${pocketid_client.grafana.id}"
+    },
+    "grafana_client_secret": {
+      "sensitive": true,
+      "value": "${pocketid_client.grafana.client_secret}"
+    },
+    "karakeep_client_id": {
+      "value": "${pocketid_client.karakeep.id}"
+    },
+    "karakeep_client_secret": {
+      "sensitive": true,
+      "value": "${pocketid_client.karakeep.client_secret}"
+    },
+    "lettucego_client_id": {
+      "value": "${pocketid_client.lettucego.id}"
+    },
+    "lettucego_client_secret": {
+      "sensitive": true,
+      "value": "${pocketid_client.lettucego.client_secret}"
+    },
+    "papra_client_id": {
+      "value": "${pocketid_client.papra.id}"
+    },
+    "papra_client_secret": {
+      "sensitive": true,
+      "value": "${pocketid_client.papra.client_secret}"
+    },
+    "sure_client_id": {
+      "value": "${pocketid_client.sure.id}"
+    },
+    "sure_client_secret": {
+      "sensitive": true,
+      "value": "${pocketid_client.sure.client_secret}"
+    },
+    "tandoor_client_id": {
+      "value": "${pocketid_client.tandoor.id}"
+    },
+    "tandoor_client_secret": {
+      "sensitive": true,
+      "value": "${pocketid_client.tandoor.client_secret}"
+    },
+    "tinyauth_client_id": {
+      "value": "${pocketid_client.tinyauth.id}"
+    },
+    "tinyauth_client_secret": {
+      "sensitive": true,
+      "value": "${pocketid_client.tinyauth.client_secret}"
+    }
+  },
+  "provider": {
+    "pocketid": {
+      "api_token": "${var.pocketid_api_token}",
+      "base_url": "${var.pocketid_base_url}"
+    },
+    "vault": {
+      "address": "${var.openbao_address}",
+      "skip_child_token": true,
+      "token": "${var.openbao_token}"
+    }
+  },
+  "resource": {
+    "pocketid_client": {
+      "goroutinely": {
+        "callback_urls": [
+          "https://goroutinely.haseebmajid.dev/callback"
+        ],
+        "client_id": "goroutinely",
+        "is_public": false,
+        "launch_url": "https://goroutinely.haseebmajid.dev",
+        "name": "Goroutinely",
+        "pkce_enabled": true
+      },
+      "gothreads": {
+        "callback_urls": [
+          "https://gothreads.haseebmajid.dev/callback"
+        ],
+        "client_id": "gothreads",
+        "is_public": false,
+        "launch_url": "https://gothreads.haseebmajid.dev",
+        "name": "GoThreads",
+        "pkce_enabled": true
+      },
+      "grafana": {
+        "callback_urls": [
+          "https://grafana.homelab.haseebmajid.dev/login/generic_oauth"
+        ],
+        "client_id": "grafana",
+        "is_public": false,
+        "launch_url": "https://grafana.homelab.haseebmajid.dev",
+        "name": "Grafana",
+        "pkce_enabled": true
+      },
+      "karakeep": {
+        "callback_urls": [
+          "https://karakeep.haseebmajid.dev/api/auth/callback/custom"
+        ],
+        "client_id": "karakeep",
+        "is_public": false,
+        "launch_url": "https://karakeep.haseebmajid.dev",
+        "name": "KaraKeep",
+        "pkce_enabled": true
+      },
+      "lettucego": {
+        "callback_urls": [
+          "https://lettucego.haseebmajid.dev/callback"
+        ],
+        "client_id": "lettucego",
+        "is_public": false,
+        "launch_url": "https://lettucego.haseebmajid.dev",
+        "name": "LettuceGo",
+        "pkce_enabled": true
+      },
+      "papra": {
+        "callback_urls": [
+          "https://papra.haseebmajid.dev/api/auth/oauth2/callback/pocketid"
+        ],
+        "client_id": "papra",
+        "is_public": false,
+        "launch_url": "https://papra.haseebmajid.dev",
+        "name": "Papra",
+        "pkce_enabled": true
+      },
+      "sure": {
+        "callback_urls": [
+          "https://sure.haseebmajid.dev/auth/openid_connect/callback"
+        ],
+        "client_id": "sure",
+        "is_public": false,
+        "launch_url": "https://sure.haseebmajid.dev",
+        "name": "Sure",
+        "pkce_enabled": true
+      },
+      "tandoor": {
+        "callback_urls": [
+          "https://tandoor-recipes.haseebmajid.dev/accounts/oidc/pocket-id/login/callback/"
+        ],
+        "client_id": "tandoor",
+        "is_public": false,
+        "launch_url": "https://tandoor-recipes.haseebmajid.dev",
+        "name": "Tandoor",
+        "pkce_enabled": false
+      },
+      "tinyauth": {
+        "callback_urls": [
+          "https://auth.haseebmajid.dev/api/oauth/callback/pocketid"
+        ],
+        "client_id": "tinyauth",
+        "is_public": false,
+        "launch_url": "https://auth.haseebmajid.dev",
+        "name": "TinyAuth",
+        "pkce_enabled": true
+      }
+    },
+    "vault_kv_secret_v2": {
+      "goroutinely_oidc": {
+        "data_json": "{\"client_id\":\"${pocketid_client.goroutinely.id}\",\"client_secret\":\"${pocketid_client.goroutinely.client_secret}\"}",
+        "mount": "${vault_mount.kv.path}",
+        "name": "apps/goroutinely/oidc"
+      },
+      "gothreads_oidc": {
+        "data_json": "{\"client_id\":\"${pocketid_client.gothreads.id}\",\"client_secret\":\"${pocketid_client.gothreads.client_secret}\"}",
+        "mount": "${vault_mount.kv.path}",
+        "name": "apps/gothreads/oidc"
+      },
+      "grafana_oidc": {
+        "data_json": "{\"client_id\":\"${pocketid_client.grafana.id}\",\"client_secret\":\"${pocketid_client.grafana.client_secret}\"}",
+        "mount": "${vault_mount.kv.path}",
+        "name": "apps/grafana/oidc"
+      },
+      "lettucego_oidc": {
+        "data_json": "{\"client_id\":\"${pocketid_client.lettucego.id}\",\"client_secret\":\"${pocketid_client.lettucego.client_secret}\"}",
+        "mount": "${vault_mount.kv.path}",
+        "name": "apps/lettucego/oidc"
+      },
+      "sure_oidc": {
+        "data_json": "{\"client_id\":\"${pocketid_client.sure.id}\",\"client_secret\":\"${pocketid_client.sure.client_secret}\"}",
+        "mount": "${vault_mount.kv.path}",
+        "name": "apps/sure/oidc"
+      },
+      "tinyauth_oidc": {
+        "data_json": "{\"client_id\":\"${pocketid_client.tinyauth.id}\",\"client_secret\":\"${pocketid_client.tinyauth.client_secret}\"}",
+        "mount": "${vault_mount.kv.path}",
+        "name": "apps/tinyauth/oidc"
+      }
+    },
+    "vault_mount": {
+      "kv": {
+        "options": {
+          "version": "2"
+        },
+        "path": "kv",
+        "type": "kv"
+      }
+    }
+  },
+  "terraform": {
+    "backend": {
+      "local": {}
+    },
+    "required_providers": {
+      "pocketid": {
+        "source": "trozz/pocketid",
+        "version": "~> 0.1"
+      },
+      "vault": {
+        "source": "hashicorp/vault",
+        "version": "~> 4.0"
+      }
+    },
+    "required_version": ">= 1.0"
+  },
+  "variable": {
+    "openbao_address": {
+      "default": "https://openbao.homelab.haseebmajid.dev",
+      "description": "OpenBao/Vault API URL.",
+      "type": "string"
+    },
+    "openbao_token": {
+      "description": "OpenBao/Vault token used by the Vault provider.",
+      "sensitive": true,
+      "type": "string"
+    },
+    "pocketid_api_token": {
+      "description": "Pocket-ID admin API token",
+      "sensitive": true,
+      "type": "string"
+    },
+    "pocketid_base_url": {
+      "description": "Pocket-ID base URL, e.g. https://id.haseebmajid.dev",
+      "type": "string"
+    }
+  }
+}

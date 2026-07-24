@@ -32,7 +32,6 @@
       den.aspects.redlib
       den.aspects.otel-collector
       den.aspects.monitoring
-      den.aspects.sure
 
       den.aspects.fish
     ];
