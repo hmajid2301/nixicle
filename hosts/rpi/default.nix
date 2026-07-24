@@ -21,6 +21,8 @@
       den.aspects.homepage
       den.aspects.docker
       den.aspects.romm
+      den.aspects.invidious
+      den.aspects.redlib
     ];
 
     nixos =
@@ -135,6 +137,17 @@
         };
 
         services.navidrome.settings.MusicFolder = lib.mkForce "/data/media/Music";
+
+        services.traefik.dynamicConfigOptions.http = lib.mkMerge [
+          (lib.nixicle.mkTraefikService {
+            name = "invidious";
+            port = 3939;
+          })
+          (lib.nixicle.mkTraefikService {
+            name = "redlib";
+            port = 8929;
+          })
+        ];
 
         services.adguardhome.settings.dhcp = {
           enabled = false;

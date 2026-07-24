@@ -79,6 +79,17 @@ let
       is_public = false;
       pkce_enabled = true;
     };
+
+    tinyauth = {
+      name = "TinyAuth";
+      client_id = "tinyauth";
+      launch_url = "https://auth.haseebmajid.dev";
+      callback_urls = [
+        "https://auth.haseebmajid.dev/api/oauth/callback/pocketid"
+      ];
+      is_public = false;
+      pkce_enabled = true;
+    };
   };
 
   mkClient = key: cfg: {

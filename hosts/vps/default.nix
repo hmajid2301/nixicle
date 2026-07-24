@@ -27,6 +27,9 @@
       den.aspects.karakeep
       den.aspects.papra
       den.aspects.tandoor
+      den.aspects.tinyauth
+      den.aspects.invidious
+      den.aspects.redlib
       den.aspects.sure
 
       den.aspects.fish
@@ -103,6 +106,21 @@
         };
 
         security.sudo.wheelNeedsPassword = lib.mkForce false;
+
+        services.traefik.dynamicConfigOptions.http = lib.mkMerge [
+          (lib.nixicle.mkTraefikService {
+            name = "invidious";
+            port = 3939;
+            domain = "haseebmajid.dev";
+            middlewares = [ "tinyauth" ];
+          })
+          (lib.nixicle.mkTraefikService {
+            name = "redlib";
+            port = 8929;
+            domain = "haseebmajid.dev";
+            middlewares = [ "tinyauth" ];
+          })
+        ];
 
         services.openssh = {
           enable = true;
