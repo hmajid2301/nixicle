@@ -102,6 +102,21 @@ in
       ])
     ];
 
+  den.policies.backup-secrets =
+    { host, ... }:
+    [
+      (pipe.from "secrets" [
+        (pipe.filter (_: false))
+        (pipe.append {
+          restic_password = "/run/secrets/restic_password";
+          backblaze_env = "/run/secrets/backblaze_env";
+          restic_repository = "/run/secrets/restic_repository";
+        })
+        (pipe.for mergeOne)
+        (pipe.to [ den.aspects.backup-restic ])
+      ])
+    ];
+
   den.policies.karakeep-secrets =
     { host, ... }:
     [
@@ -180,6 +195,7 @@ in
     den.policies.searx-secrets
     den.policies.atticd-secrets
     den.policies.btrbk-secrets
+    den.policies.backup-secrets
     den.policies.karakeep-secrets
     den.policies.open-webui-secrets
     den.policies.paperless-secrets

@@ -6,6 +6,7 @@
       "/var/lib/postgresql"
       "/var/backup/postgresql"
     ];
+    backup.postgresql-dumps.paths = [ "/var/backup/postgresql" ];
     nixos =
       {
         config,
