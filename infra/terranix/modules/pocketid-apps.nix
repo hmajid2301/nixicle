@@ -68,6 +68,39 @@ let
       is_public = false;
       pkce_enabled = false;
     };
+
+    sure = {
+      name = "Sure";
+      client_id = "sure";
+      launch_url = "https://sure.haseebmajid.dev";
+      callback_urls = [
+        "https://sure.haseebmajid.dev/auth/pocketid/callback"
+      ];
+      is_public = false;
+      pkce_enabled = true;
+    };
+
+    tinyauth = {
+      name = "TinyAuth";
+      client_id = "tinyauth";
+      launch_url = "https://auth.haseebmajid.dev";
+      callback_urls = [
+        "https://auth.haseebmajid.dev/api/oauth/callback/pocketid"
+      ];
+      is_public = false;
+      pkce_enabled = true;
+    };
+
+    grafana = {
+      name = "Grafana";
+      client_id = "grafana";
+      launch_url = "https://grafana.homelab.haseebmajid.dev";
+      callback_urls = [
+        "https://grafana.homelab.haseebmajid.dev/login/generic_oauth"
+      ];
+      is_public = false;
+      pkce_enabled = true;
+    };
   };
 
   mkClient = key: cfg: {

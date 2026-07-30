@@ -3,6 +3,9 @@ let
     "goroutinely"
     "gothreads"
     "lettucego"
+    "sure"
+    "tinyauth"
+    "grafana"
   ];
 
   mkSecret = app: {

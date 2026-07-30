@@ -79,7 +79,7 @@
                 rule = "Host(`tandoor-recipes-media.haseebmajid.dev`) && PathPrefix(`/media/`)";
                 service = "tandoor-media";
                 priority = 100;
-                tls = { };
+                tls.certResolver = "letsencrypt";
               };
             }
           ];

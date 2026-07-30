@@ -30,11 +30,12 @@
         services = {
           prometheus = {
             port = 3020;
+            listenAddress = "127.0.0.1";
             enable = true;
             checkConfig = "syntax-only";
             extraFlags = [
               "--web.enable-admin-api"
-              "--storage.tsdb.retention.time=30d"
+              "--storage.tsdb.retention.time=180d"
             ];
 
             exporters = {
@@ -200,14 +201,14 @@
               limits_config = {
                 reject_old_samples = true;
                 reject_old_samples_max_age = "168h";
-              };
-              table_manager = {
-                retention_deletes_enabled = false;
-                retention_period = "0s";
+                allow_structured_metadata = true;
+                retention_period = "4320h";
               };
               compactor = {
                 working_directory = "/var/lib/loki";
                 compactor_ring.kvstore.store = "inmemory";
+                retention_enabled = true;
+                delete_request_store = "filesystem";
               };
             };
           };
@@ -232,24 +233,10 @@
             };
           };
 
-          traefik.dynamicConfigOptions.http = lib.mkMerge [
-            (lib.nixicle.mkTraefikService {
-              name = "prometheus";
-              port = 3020;
-            })
-            (lib.nixicle.mkTraefikService {
-              name = "grafana";
-              port = 3010;
-            })
-            (lib.nixicle.mkTraefikService {
-              name = "alertmanager";
-              port = 9093;
-            })
-            (lib.nixicle.mkTraefikService {
-              name = "tempo";
-              port = 4400;
-            })
-          ];
+          traefik.dynamicConfigOptions.http = lib.nixicle.mkTraefikService {
+            name = "grafana";
+            port = 3010;
+          };
         };
 
         sops.secrets = {

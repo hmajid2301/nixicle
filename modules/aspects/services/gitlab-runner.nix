@@ -36,7 +36,10 @@
               "/cache"
               "/certs/client"
             ];
-            environmentVariables.DOCKER_TLS_CERTDIR = "/certs";
+            environmentVariables = {
+              DOCKER_TLS_CERTDIR = "/certs";
+              FF_NETWORK_PER_BUILD = "1";
+            };
           };
         };
 
