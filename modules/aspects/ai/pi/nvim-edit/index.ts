@@ -38,6 +38,16 @@ let server: net.Server | null = null;
 let currentClient: net.Socket | null = null;
 let nextRequestId = 1;
 const pending = new Map<string, PendingRequest>();
+let activeNotify: ((message: string, level?: string) => void) | null = null;
+
+function notify(message: string, level: string = "info") {
+	if (!activeNotify) return;
+	try {
+		activeNotify(message, level);
+	} catch {
+		// Ignore stale ctx errors during session replacement/reload teardown.
+	}
+}
 
 function textResult(text: string, details: Record<string, unknown> = {}) {
 	return { content: [{ type: "text" as const, text }], details };
@@ -81,7 +91,7 @@ function handleClientLine(socket: net.Socket, line: string) {
 	);
 }
 
-function attachClient(socket: net.Socket, notify: (message: string, level?: string) => void) {
+function attachClient(socket: net.Socket) {
 	if (currentClient && currentClient !== socket) currentClient.destroy();
 	currentClient = socket;
 	notify("nvim-edit: Neovim client connected", "info");
@@ -164,6 +174,7 @@ export default function nvimEditExtension(pi: ExtensionAPI) {
 	});
 
 	pi.on("session_start", async (_event, ctx) => {
+		activeNotify = (message, level = "info") => ctx.ui.notify(message, level as any);
 		try {
 			fs.mkdirSync(SOCKET_DIR, { recursive: true, mode: 0o700 });
 			try {
@@ -175,15 +186,16 @@ export default function nvimEditExtension(pi: ExtensionAPI) {
 				JSON.stringify({ pid: process.pid, cwd: process.cwd(), socket: SOCKET_FILE, startedAt: new Date().toISOString() }),
 			);
 
-			server = net.createServer((socket) => attachClient(socket, (message, level = "info") => ctx.ui.notify(message, level as any)));
-			server.on("error", (err) => ctx.ui.notify(`nvim-edit: Server error: ${err.message}`, "error"));
-			server.listen(SOCKET_FILE, () => ctx.ui.notify(`nvim-edit: Listening on ${SOCKET_FILE}`, "success"));
+			server = net.createServer((socket) => attachClient(socket));
+			server.on("error", (err) => notify(`nvim-edit: Server error: ${err.message}`, "error"));
+			server.listen(SOCKET_FILE, () => notify(`nvim-edit: Listening on ${SOCKET_FILE}`, "success"));
 		} catch (err) {
-			ctx.ui.notify(`nvim-edit: Failed to start server: ${err}`, "error");
+			notify(`nvim-edit: Failed to start server: ${err}`, "error");
 		}
 	});
 
 	pi.on("session_shutdown", async () => {
+		activeNotify = null;
 		for (const id of pending.keys()) cleanupPending(id);
 		currentClient?.destroy();
 		currentClient = null;
