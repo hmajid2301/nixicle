@@ -106,6 +106,34 @@ update:flake:
     #     exit 1
     #   fi
 
+build:nixos-config:
+  extends: .base_setup
+  stage: build
+  # Keep matrix in sync with `nix eval --json .#nixosConfigurations --apply builtins.attrNames`.
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '$CI_PIPELINE_SOURCE == "push"'
+  parallel:
+    matrix:
+      - CONFIG_NAME: ["desktop", "framebox", "framework", "gateway", "nas", "rpi", "vm", "vps"]
+  script:
+    - echo "Building nixosConfigurations.${CONFIG_NAME}..."
+    - nix build ".#nixosConfigurations.${CONFIG_NAME}.config.system.build.toplevel" --print-build-logs
+
+build:home-config:
+  extends: .base_setup
+  stage: build
+  # Keep matrix in sync with `nix eval --json .#homeConfigurations --apply builtins.attrNames`.
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '$CI_PIPELINE_SOURCE == "push"'
+  parallel:
+    matrix:
+      - CONFIG_NAME: ["haseeb@desktop", "haseeb@framebox", "haseeb@framework", "haseebmajid@dell"]
+  script:
+    - echo "Building homeConfigurations.${CONFIG_NAME}..."
+    - nix build ".#homeConfigurations.${CONFIG_NAME}.activationPackage" --print-build-logs
+
 build:flake:
   extends: .base_setup
   stage: build
