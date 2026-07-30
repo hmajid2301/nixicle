@@ -7,6 +7,7 @@
       den.aspects.impermanence
       den.aspects.boot
       den.aspects.hardening-vps
+      den.aspects.backup-restic
 
       den.aspects.tailscale
       den.aspects.traefik
@@ -26,6 +27,11 @@
       den.aspects.karakeep
       den.aspects.papra
       den.aspects.tandoor
+      den.aspects.tinyauth
+      den.aspects.otel-collector
+      den.aspects.ollama
+      den.aspects.monitoring
+      den.aspects.sure
 
       den.aspects.fish
     ];
@@ -43,6 +49,7 @@
           "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINP5gqbEEj+pykK58djSI1vtMtFiaYcygqhHd3mzPbSt hello@haseebmajid.dev"
           "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDwAamg3cSHP+91grc7qmrwNoPpbxD/IMi8MhqpptuM2 hello@haseebmajid.dev"
           "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBZsm7CzZ50x8eaUrXaMmNRE2J9qK9E9X9vFHuv04E1V hello@haseebmajid.dev"
+          "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDuNpCUillp0oM7vFWpEf+EARQusfdOH2Sy1RlSDdDxr hello@haseebmajid.dev"
         ];
       in
       {
@@ -101,6 +108,19 @@
         };
 
         security.sudo.wheelNeedsPassword = lib.mkForce false;
+
+        system.backup.objects.observability = {
+          paths = [
+            "/var/lib/prometheus2"
+            "/var/lib/loki"
+            "/var/lib/grafana"
+          ];
+          timerConfig = {
+            OnCalendar = "daily";
+            RandomizedDelaySec = "2h";
+            Persistent = true;
+          };
+        };
 
         services.openssh = {
           enable = true;

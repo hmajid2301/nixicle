@@ -2,29 +2,44 @@
 {
   den.aspects.ollama = {
     includes = [ ];
-    persist.directories = [ "/var/lib/private/ollama" ];
+    backup.ollama.paths = [ "/var/lib/ollama" ];
+    persist.directories = [
+      {
+        directory = "/var/lib/ollama";
+        user = "ollama";
+        group = "ollama";
+        mode = "0750";
+      }
+    ];
+
     nixos =
+      { lib, ... }:
       {
-        pkgs,
-        ...
-      }:
-      {
-        services.ollama = {
-          enable = true;
-          package = pkgs.ollama;
-          environmentVariables = {
-            OLLAMA_NUM_PARALLEL = "32";
-            OLLAMA_MAX_LOADED_MODELS = "8";
-            OLLAMA_MAX_QUEUE = "1024";
-            OLLAMA_VULKAN = "1";
-            OLLAMA_FLASH_ATTENTION = "true";
-            OLLAMA_KV_CACHE_TYPE = "q8_0";
-            OLLAMA_CONTEXT_LENGTH = "64000";
+        services = {
+          ollama = {
+            enable = true;
+            user = "ollama";
+            group = "ollama";
+            # host defaults to 127.0.0.1 — only accessible via localhost
+            # port defaults to 11434
           };
-          host = "0.0.0.0";
-          port = 11434;
         };
 
+        # DynamicUser conflicts with our static user + persist setup.
+        # The NixOS module hardcodes DynamicUser=true; force it off.
+        systemd.services.ollama = {
+          serviceConfig.DynamicUser = lib.mkForce false;
+          # ReadWritePaths includes modelsDir (/var/lib/ollama/models) by default,
+          # which fails mount namespace setup because the dir doesn't exist yet.
+          # Override to only include the home dir (already created by persist).
+          serviceConfig.ReadWritePaths = lib.mkForce [ "/var/lib/ollama" ];
+        };
+
+        users.users.ollama = {
+          isSystemUser = true;
+          group = "ollama";
+        };
+        users.groups.ollama = { };
       };
   };
 }

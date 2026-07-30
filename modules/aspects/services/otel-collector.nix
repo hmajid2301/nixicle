@@ -11,7 +11,6 @@
     nixos =
       {
         pkgs,
-        lib,
         ...
       }:
       {
@@ -20,7 +19,7 @@
           package = pkgs.opentelemetry-collector-contrib;
           settings = {
             receivers = {
-              otlp.protocols.http.endpoint = "0.0.0.0:3333";
+              otlp.protocols.http.endpoint = "127.0.0.1:3333";
               journald = {
                 directory = "/var/log/journal";
                 files = [ "/var/log/journal/*/*" ];
@@ -68,11 +67,6 @@
               };
             };
           };
-        };
-
-        services.traefik.dynamicConfigOptions.http = lib.nixicle.mkTraefikService {
-          name = "otel-collector";
-          port = 3333;
         };
 
       };

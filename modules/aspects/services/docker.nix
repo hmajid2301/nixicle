@@ -20,10 +20,6 @@
             autoPrune.enable = true;
             storageDriver = "btrfs";
             daemon.settings = {
-              dns = [
-                "1.1.1.1"
-                "8.8.8.8"
-              ];
               default-address-pools = [
                 {
                   base = "172.16.0.0/12";
@@ -35,10 +31,6 @@
               enable = true;
               setSocketVariable = true;
               daemon.settings = {
-                dns = [
-                  "1.1.1.1"
-                  "8.8.8.8"
-                ];
                 default-address-pools = [
                   {
                     base = "172.16.0.0/12";
