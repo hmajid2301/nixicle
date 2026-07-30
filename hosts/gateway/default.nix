@@ -10,7 +10,14 @@
     ];
 
     nixos =
-      { lib, ... }:
+      { config, lib, pkgs, ... }:
+      let
+        authorizedKeys = [
+          "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKuM4bCeJq0XQ1vd/iNK650Bu3wPVKQTSB0k2gsMKhdE hello@haseebmajid.dev"
+          "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINP5gqbEEj+pykK58djSI1vtMtFiaYcygqhHd3mzPbSt hello@haseebmajid.dev"
+          "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDuNpCUillp0oM7vFWpEf+EARQusfdOH2Sy1RlSDdDxr hello@haseebmajid.dev"
+        ];
+      in
       {
         imports = [
           ./hardware-configuration.nix
@@ -28,11 +35,14 @@
         sops.defaultSopsFile = ./secrets.yaml;
         sops.age.sshKeyPaths = lib.mkForce [ "/etc/ssh/ssh_host_ed25519_key" ];
 
+        users.users.root.openssh.authorizedKeys.keys = authorizedKeys;
+
         users.users.nixos = {
           isNormalUser = true;
           group = "users";
           extraGroups = [ "wheel" ];
           initialPassword = "changeme";
+          openssh.authorizedKeys.keys = authorizedKeys;
         };
 
         time.timeZone = lib.mkForce "UTC";
