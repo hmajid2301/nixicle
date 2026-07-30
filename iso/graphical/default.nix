@@ -9,10 +9,18 @@
     "${modulesPath}/profiles/installation-device.nix"
   ];
 
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
+  isoImage.makeEfiBootable = true;
+  isoImage.makeUsbBootable = true;
 
   networking.wireless.enable = lib.mkForce false;
+  networking.useDHCP = lib.mkForce false;
+  networking.networkmanager.enable = lib.mkForce false;
+
+  systemd.network.enable = true;
+  systemd.network.networks."20-recovery" = {
+    matchConfig.Name = [ "en*" "eth*" ];
+    DHCP = "yes";
+  };
 
   services = {
     xserver.enable = true;
@@ -32,12 +40,37 @@
 
   services.openssh.enable = true;
 
+  boot.supportedFilesystems = [ "zfs" ];
+  boot.zfs.forceImportRoot = false;
+  networking.hostId = "8425e349";
+
+  users.users.root.openssh.authorizedKeys.keys = [
+    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKuM4bCeJq0XQ1vd/iNK650Bu3wPVKQTSB0k2gsMKhdE hello@haseebmajid.dev"
+    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINP5gqbEEj+pykK58djSI1vtMtFiaYcygqhHd3mzPbSt hello@haseebmajid.dev"
+    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICLrECFz5PQ5D2+QXomsLK9HcZhHzcBUIDGkiI94c6Ux hello@haseebmajid.dev"
+    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDuNpCUillp0oM7vFWpEf+EARQusfdOH2Sy1RlSDdDxr hello@haseebmajid.dev"
+  ];
+
   users.users.nixos.openssh.authorizedKeys.keys = [
     "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKuM4bCeJq0XQ1vd/iNK650Bu3wPVKQTSB0k2gsMKhdE hello@haseebmajid.dev"
     "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINP5gqbEEj+pykK58djSI1vtMtFiaYcygqhHd3mzPbSt hello@haseebmajid.dev"
+    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICLrECFz5PQ5D2+QXomsLK9HcZhHzcBUIDGkiI94c6Ux hello@haseebmajid.dev"
+    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDuNpCUillp0oM7vFWpEf+EARQusfdOH2Sy1RlSDdDxr hello@haseebmajid.dev"
   ];
 
   security.sudo.wheelNeedsPassword = false;
+
+  systemd.user.services.disable-gnome-suspend = {
+    enable = true;
+    description = "Disable GNOME auto-suspend on AC power";
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+      ExecStart = "${pkgs.glib}/bin/gsettings set org.gnome.desktop.session idle-delay 0";
+    };
+    wantedBy = [ "graphical-session.target" ];
+    partOf = [ "graphical-session.target" ];
+  };
 
   environment.systemPackages = with pkgs; [
     gparted
@@ -46,6 +79,16 @@
     htop
     curl
     wget
+    zfs
+    smartmontools
+    nvme-cli
+    pciutils
+    lshw
+    tmux
+    zellij
+    ethtool
+    usbutils
+    nixos-facter
   ];
 
   system.stateVersion = "23.11";
