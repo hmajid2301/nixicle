@@ -55,6 +55,10 @@ let
       src = ./pi/ketch.ts;
     }
     {
+      rel = "codegraph.ts";
+      src = ./pi/codegraph.ts;
+    }
+    {
       rel = "treesitter.ts";
       src = ./pi/treesitter.ts;
     }
@@ -246,6 +250,19 @@ in
                     { id = "qwen3-vl:8b"; }
                   ];
                 };
+                ollama = {
+                  baseUrl = "http://localhost:11434/v1";
+                  api = "openai-completions";
+                  apiKey = "ollama";
+                  models = [
+                    { id = "qwen3.5:cloud"; }
+                    { id = "kimi-k2.7-code:cloud"; }
+                    { id = "glm-5.2:cloud"; }
+                    { id = "glm-5.1:cloud"; }
+                    { id = "deepseek-v4-pro:cloud"; }
+                    { id = "minimax-m3:cloud"; }
+                  ];
+                };
               };
             };
             ".pi/agent/settings.json".source = (pkgs.formats.json { }).generate "pi-settings" {
@@ -260,6 +277,7 @@ in
                 "npm:pi-scroll"
                 "npm:@observal/pi-insights"
                 "npm:@samfp/pi-memory"
+                "npm:@latentminds/pi-quotas"
               ];
               extensions = map (ext: "~/.pi/agent/extensions/${ext.rel}") piExtensionFiles;
             };
@@ -491,6 +509,7 @@ in
             glab
             ddgr
             ketch
+            codegraph
             (pi-coding-agent.overrideAttrs (_old: {
               postFixup = ''
                 wrapProgram $out/bin/pi \
