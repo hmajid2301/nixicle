@@ -6,6 +6,15 @@
       "/var/lib/openbao"
       "/var/log/openbao"
     ];
+    backup.openbao = {
+      paths = [ "/var/lib/openbao" ];
+      backupPrepareCommand = ''
+        systemctl stop openbao.service
+      '';
+      backupCleanupCommand = ''
+        systemctl start openbao.service
+      '';
+    };
     nixos =
       {
         config,

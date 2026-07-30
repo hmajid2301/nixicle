@@ -2,6 +2,7 @@
 {
   den.aspects.pocketid = {
     includes = [ den.aspects.postgresql ];
+    backup.pocketid.paths = [ "/var/lib/pocket-id" ];
     persist.directories = [
       {
         directory = "/var/lib/pocket-id";

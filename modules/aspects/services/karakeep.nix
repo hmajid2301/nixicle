@@ -2,6 +2,7 @@
 {
   den.aspects.karakeep = {
     includes = [ ];
+    backup.karakeep.paths = [ "/var/lib/karakeep" ];
     persist.directories = [
       {
         directory = "/var/lib/karakeep";

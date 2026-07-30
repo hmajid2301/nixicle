@@ -6,6 +6,7 @@ in
 {
   den.aspects.papra = {
     includes = [ ];
+    backup.papra.paths = [ "/var/lib/papra" ];
     persist.directories = [
       {
         directory = "/var/lib/papra";
