@@ -47,7 +47,7 @@ lint:
       max-jobs = 4
       cores = 2
       EOF
-    - echo "machine attic.haseebmajid.dev password $ATTIC_AUTH_KEY" > /etc/nix/netrc
+    # - echo "machine attic.haseebmajid.dev password $ATTIC_AUTH_KEY" > /etc/nix/netrc
     - mkdir -p ~/.ssh /etc/ssh
     - chmod 700 ~/.ssh
     - ssh-keygen -t ed25519 -N "" -f ~/.ssh/id_ed25519
@@ -62,8 +62,9 @@ lint:
     - eval $(ssh-agent -s)
     - ssh-add ~/.ssh/id_ed25519 2>/dev/null
     - nix-env -iA nixpkgs.cacert nixpkgs.attic-client nixpkgs.go-task
-    - attic login homelab https://attic.haseebmajid.dev $ATTIC_AUTH_KEY
-    - attic use homelab:main
+    # Attic disabled for now until TLS/cert chain fixed in CI.
+    # - attic login homelab https://attic.haseebmajid.dev $ATTIC_AUTH_KEY
+    # - attic use homelab:main
 
 update:flake:
   extends: .base_setup
