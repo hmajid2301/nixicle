@@ -51,10 +51,7 @@ in
       url = "github:serokell/deploy-rs";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    nixos-generators = {
-      url = "github:nix-community/nixos-generators";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    # nixos-generators is deprecated; using upstream iso-image.nix directly
     nixos-anywhere = {
       url = "github:numtide/nixos-anywhere";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -73,13 +70,14 @@ in
       in
       pkgs.nixicle
       // {
-        iso-graphical = inputs.nixos-generators.nixosGenerate {
+        iso-graphical = (inputs.nixpkgs.lib.nixosSystem {
           inherit system;
           specialArgs = {
             inherit inputs;
             lib = extendedLib;
           };
           modules = [
+            "${inputs.nixpkgs}/nixos/modules/installer/cd-dvd/iso-image.nix"
             inputs.stylix.nixosModules.stylix
             inputs.home-manager.nixosModules.home-manager
             inputs.lanzaboote.nixosModules.lanzaboote
@@ -94,14 +92,12 @@ in
             {
               nixpkgs.hostPlatform = system;
               nixpkgs.overlays = overlays;
-              image.baseName = lib.mkForce "nixicle-graphical";
               isoImage.volumeID = lib.mkForce "nixicle-${
                 lib.substring 0 8 (inputs.self.lastModifiedDate or inputs.self.lastModified or "19700101")
               }";
             }
           ];
-          format = "iso";
-        };
+        }).config.system.build.isoImage;
       }
     );
 
