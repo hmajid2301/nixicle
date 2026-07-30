@@ -27,8 +27,10 @@ in
               useGlobalPkgs = true;
               useUserPackages = true;
               extraSpecialArgs = { inherit inputs; };
-              users.${user.userName}._module.args.host = host.hostName;
-              users.${user.userName}._module.args.hostIsLaptop = host.isLaptop or false;
+              users.${user.userName}._module.args = {
+                host = host.hostName;
+                hostIsLaptop = host.isLaptop or false;
+              };
             };
           }
         )
@@ -67,8 +69,10 @@ in
           homeManager =
             { pkgs, ... }:
             {
-              _module.args.host = home.hostName or "unknown";
-              _module.args.hostIsLaptop = false;
+              _module.args = {
+                host = home.hostName or "unknown";
+                hostIsLaptop = false;
+              };
               nix.package = pkgs.nix;
             };
         }

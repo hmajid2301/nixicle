@@ -12,6 +12,7 @@
       den.aspects.tailscale
       den.aspects.traefik
       den.aspects.postgresql
+      # den.aspects.atticd
       den.aspects.valkey
       den.aspects.crowdsec
       den.aspects.openbao
