@@ -4,7 +4,7 @@ _: {
       { config, ... }:
       let
         # Detect which compositor is active
-        isNiri = config.programs.niri.enable or false;
+        isNiri = config.wayland.windowManager.niri.enable or false;
         isHyprland = config.wayland.windowManager.hyprland.enable or false;
 
         dpmsOn =

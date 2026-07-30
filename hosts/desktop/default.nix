@@ -11,6 +11,7 @@
       den.aspects.desktopProfile
       den.aspects.gaming
       den.aspects.social
+      den.aspects.video
     ];
 
     homeManager =
@@ -35,11 +36,13 @@
   den.aspects.desktop = {
     includes = [
       den.aspects.performance-max
-      den.aspects.nfs-truenas
+      den.aspects.nfs-nas
       den.aspects.impermanence
       den.aspects.boot-secure
       den.aspects.tailscale
       den.aspects.kvm
+      den.aspects.searx
+      den.aspects.gitlab-runner
     ];
 
     nixos =
@@ -62,6 +65,8 @@
           user_password = {
             neededForUsers = true;
           };
+          searx_secret_key = { };
+          gitlab_runner_env = { };
         };
 
         users = {
@@ -70,6 +75,7 @@
           users.haseeb.extraGroups = [
             "wheel"
             "media"
+            "i2c"
           ];
           extraGroups.docker.members = [ "haseeb" ];
         };
@@ -87,19 +93,11 @@
           rootless = {
             enable = true;
             setSocketVariable = true;
-            daemon.settings.dns = [
-              "1.1.1.1"
-              "8.8.8.8"
-            ];
           };
         };
 
         environment.systemPackages = with pkgs; [
           docker-compose
-        ];
-
-        environment.persistence."/persist".directories = [
-          "/var/lib/docker"
         ];
 
         networking.hostName = "desktop";

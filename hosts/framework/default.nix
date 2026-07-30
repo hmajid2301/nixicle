@@ -9,6 +9,7 @@
       den.aspects.gaming
       den.aspects.social
       den.aspects.video
+      den.aspects.iris
     ];
 
     homeManager =
@@ -52,10 +53,11 @@
       den.aspects.performance-balanced
       den.aspects.impermanence
       den.aspects.boot-secure
-      den.aspects.nfs-truenas
+      den.aspects.nfs-nas
       den.aspects.searx
       den.aspects.tailscale
       den.aspects.docker
+      den.aspects.ollama
     ];
 
     nixos =
@@ -95,29 +97,7 @@
         };
 
         boot = {
-          kernelParams = [ "rd.luks=no" ];
-          initrd.systemd = {
-            extraBin.jq = "${pkgs.jq}/bin/jq";
-            services.check-pcrs = {
-              script = ''
-                echo "Checking PCR 15 value"
-                if [[ $(systemd-analyze pcrs 15 --json=short | jq -r ".[0].sha256") != "caf33e79c645b65849256238a11fa68ae197e5cb89730c463c1cdf1d9128376f" ]] ; then
-                  echo "PCR 15 check failed"
-                  exit 1
-                else
-                  echo "PCR 15 check succeeded"
-                fi
-              '';
-              serviceConfig = {
-                Type = "oneshot";
-                RemainAfterExit = true;
-              };
-              unitConfig.DefaultDependencies = "no";
-              after = [ "cryptsetup.target" ];
-              before = [ "sysroot.mount" ];
-              requiredBy = [ "sysroot.mount" ];
-            };
-          };
+          initrd.systemd.enable = true;
         };
 
         # Disable inbound SSH on this laptop
