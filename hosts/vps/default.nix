@@ -12,6 +12,7 @@
       den.aspects.tailscale
       den.aspects.traefik
       den.aspects.postgresql
+      # den.aspects.atticd
       den.aspects.valkey
       den.aspects.crowdsec
       den.aspects.openbao
@@ -67,7 +68,31 @@
         environment.systemPackages = with pkgs; [
           jq
           sqlite-interactive
+          zellij
         ];
+
+        # Auto-start/attach a persistent zellij session on login (SSH + console).
+        # "main" is created on first login and survives disconnects; reattach is seamless.
+        # Mirrors what framebox used to do before f7045a7e.
+        programs.fish.interactiveShellInit = lib.mkAfter ''
+          if not set -q ZELLIJ; and status is-interactive
+            exec zellij attach --create main
+          end
+        '';
+
+        # Minimal zellij config for the nixos user (no home-manager on vps):
+        # compact layout removes tab bar, simplified_ui drops the status bar.
+        system.activationScripts.zellij-config = lib.stringAfter [ "users" ] ''
+          mkdir -p /home/nixos/.config/zellij
+          chown nixos:users /home/nixos/.config /home/nixos/.config/zellij
+          install -o nixos -g users -m 0644 ${pkgs.writeText "vps-zellij-config" ''
+            default_layout "compact"
+            simplified_ui true
+            pane_frames false
+            copy_on_select true
+            show_startup_tips false
+          ''} /home/nixos/.config/zellij/config.kdl
+        '';
 
         services.dbus.implementation = "dbus";
         services.getty.autologinUser = "nixos";
