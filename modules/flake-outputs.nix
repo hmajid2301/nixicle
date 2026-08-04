@@ -70,34 +70,35 @@ in
       in
       pkgs.nixicle
       // {
-        iso-graphical = (inputs.nixpkgs.lib.nixosSystem {
-          inherit system;
-          specialArgs = {
-            inherit inputs;
-            lib = extendedLib;
-          };
-          modules = [
-            "${inputs.nixpkgs}/nixos/modules/installer/cd-dvd/iso-image.nix"
-            inputs.stylix.nixosModules.stylix
-            inputs.home-manager.nixosModules.home-manager
-            inputs.lanzaboote.nixosModules.lanzaboote
-            inputs.impermanence.nixosModules.impermanence
-            inputs.sops-nix.nixosModules.sops
-            inputs.tangled.nixosModules.knot
-            inputs.tangled.nixosModules.spindle
-            inputs.nixflix.nixosModules.nixflix
-            inputs.niri.nixosModules.niri
-            inputs.goroutinely.nixosModules.default
-            ../iso/graphical
-            {
-              nixpkgs.hostPlatform = system;
-              nixpkgs.overlays = overlays;
-              isoImage.volumeID = lib.mkForce "nixicle-${
-                lib.substring 0 8 (inputs.self.lastModifiedDate or inputs.self.lastModified or "19700101")
-              }";
-            }
-          ];
-        }).config.system.build.isoImage;
+        iso-graphical =
+          (inputs.nixpkgs.lib.nixosSystem {
+            inherit system;
+            specialArgs = {
+              inherit inputs;
+              lib = extendedLib;
+            };
+            modules = [
+              "${inputs.nixpkgs}/nixos/modules/installer/cd-dvd/iso-image.nix"
+              inputs.stylix.nixosModules.stylix
+              inputs.home-manager.nixosModules.home-manager
+              inputs.lanzaboote.nixosModules.lanzaboote
+              inputs.impermanence.nixosModules.impermanence
+              inputs.sops-nix.nixosModules.sops
+              inputs.tangled.nixosModules.knot
+              inputs.tangled.nixosModules.spindle
+              inputs.nixflix.nixosModules.nixflix
+              inputs.niri.nixosModules.niri
+              inputs.goroutinely.nixosModules.default
+              ../iso/graphical
+              {
+                nixpkgs.hostPlatform = system;
+                nixpkgs.overlays = overlays;
+                isoImage.volumeID = lib.mkForce "nixicle-${
+                  lib.substring 0 8 (inputs.self.lastModifiedDate or inputs.self.lastModified or "19700101")
+                }";
+              }
+            ];
+          }).config.system.build.isoImage;
       }
     );
 

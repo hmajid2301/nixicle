@@ -42,12 +42,11 @@ lint:
       experimental-features = nix-command flakes
       extra-platforms = x86_64-linux i686-linux
       system-features = benchmark big-parallel nixos-test i686
-      substituters = https://attic.haseebmajid.dev/system?priority=43 https://nix-community.cachix.org?priority=41 https://numtide.cachix.org?priority=42 https://cache.nixos.org/
-      trusted-public-keys = cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY= system:5M8uBPjS68HTadSbeCs0Jiu0Z1tJBNdahtKBCXhl+Z0= nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs= numtide.cachix.org-1:2ps1kLBUWjxIneOy1Ik6cQjb41X0iXVXeHigGmycPPE=
+      substituters = https://nix-community.cachix.org?priority=41 https://numtide.cachix.org?priority=42 https://cache.nixos.org/
+      trusted-public-keys = cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY= nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs= numtide.cachix.org-1:2ps1kLBUWjxIneOy1Ik6cQjb41X0iXVXeHigGmycPPE=
       max-jobs = 4
       cores = 2
       EOF
-    - echo "machine attic.haseebmajid.dev password $ATTIC_AUTH_KEY" > /etc/nix/netrc
     - mkdir -p ~/.ssh /etc/ssh
     - chmod 700 ~/.ssh
     - ssh-keygen -t ed25519 -N "" -f ~/.ssh/id_ed25519
@@ -61,9 +60,7 @@ lint:
     - export SSH_ASKPASS_REQUIRE=never
     - eval $(ssh-agent -s)
     - ssh-add ~/.ssh/id_ed25519 2>/dev/null
-    - nix-env -iA nixpkgs.cacert nixpkgs.attic-client nixpkgs.go-task
-    - attic login homelab https://attic.haseebmajid.dev $ATTIC_AUTH_KEY
-    - attic use homelab:main
+    - nix-env -iA nixpkgs.cacert nixpkgs.go-task
 
 update:flake:
   extends: .base_setup
@@ -74,7 +71,7 @@ update:flake:
   script:
     - echo "Updating flake inputs..."
     - nix flake update
-    - nix run github:Mic92/nix-fast-build -- --flake '.#framebox' --skip-cached --no-nom --max-jobs 2 --attic-cache homelab:main
+    - nix run github:Mic92/nix-fast-build -- --flake '.#framebox' --skip-cached --no-nom --max-jobs 2
     # - |
     #   if nix flake check --no-build; then
     #     echo "✅ Flake check passed, creating merge request..."
@@ -106,6 +103,34 @@ update:flake:
     #     exit 1
     #   fi
 
+build:nixos-config:
+  extends: .base_setup
+  stage: build
+  # Keep matrix in sync with `nix eval --json .#nixosConfigurations --apply builtins.attrNames`.
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '$CI_PIPELINE_SOURCE == "push"'
+  parallel:
+    matrix:
+      - CONFIG_NAME: ["desktop", "framebox", "framework", "gateway", "nas", "rpi", "vm", "vps"]
+  script:
+    - echo "Building nixosConfigurations.${CONFIG_NAME}..."
+    - nix build ".#nixosConfigurations.${CONFIG_NAME}.config.system.build.toplevel" --print-build-logs
+
+build:home-config:
+  extends: .base_setup
+  stage: build
+  # Keep matrix in sync with `nix eval --json .#homeConfigurations --apply builtins.attrNames`.
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '$CI_PIPELINE_SOURCE == "push"'
+  parallel:
+    matrix:
+      - CONFIG_NAME: ["haseeb@desktop", "haseeb@framebox", "haseeb@framework", "haseebmajid@dell"]
+  script:
+    - echo "Building homeConfigurations.${CONFIG_NAME}..."
+    - nix build ".#homeConfigurations.${CONFIG_NAME}.activationPackage" --print-build-logs
+
 build:flake:
   extends: .base_setup
   stage: build
@@ -113,18 +138,16 @@ build:flake:
     - if: '$CI_PIPELINE_SOURCE == "schedule"'
   script:
     - nix flake update
-    - nix run github:Mic92/nix-fast-build -- --skip-cached --no-nom --max-jobs 4 --attic-cache homelab:main
-    - echo "Building and pushing all system configurations to Attic..."
+    - nix run github:Mic92/nix-fast-build -- --skip-cached --no-nom --max-jobs 4
+    - echo "Building representative scheduled system configurations..."
     - for host in framework vm framebox; do
         echo "Building nixosConfigurations.$host...";
-        nix build ".#nixosConfigurations.$host.config.system.build.toplevel" --print-out-paths | while read path; do
-          nix-store -qR "$path" | grep -vE "(davinci-resolve|blender|steam|wine|nvidia-x11)" | attic push homelab:main --stdin || true;
-        done
+        nix build ".#nixosConfigurations.$host.config.system.build.toplevel" --print-build-logs;
       done
-    - echo "Building and pushing packages to Attic..."
-    - nix build ".#packages.x86_64-linux.install" --print-out-paths | attic push homelab:main
-    - nix build ".#packages.x86_64-linux.kaf" --print-out-paths | attic push homelab:main
-    - nix build ".#packages.x86_64-linux.octopus-energy" --print-out-paths | attic push homelab:main
+    - echo "Building selected packages..."
+    - nix build ".#packages.x86_64-linux.install" --print-build-logs
+    - nix build ".#packages.x86_64-linux.kaf" --print-build-logs
+    - nix build ".#packages.x86_64-linux.octopus-energy" --print-build-logs
 
 # build:changed:
 #   extends: .base_setup
@@ -133,4 +156,4 @@ build:flake:
 #     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
 #   script:
 #     - echo "Building all NixOS configurations and pushing to Attic..."
-#     - nix run github:Mic92/nix-fast-build -- --flake '.#nixosConfigurations' --skip-cached --no-nom --max-jobs 2 --attic-cache homelab:main
+#     - nix run github:Mic92/nix-fast-build -- --flake '.#nixosConfigurations' --skip-cached --no-nom --max-jobs 2

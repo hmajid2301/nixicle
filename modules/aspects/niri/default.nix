@@ -170,6 +170,7 @@
         config,
         lib,
         inputs,
+        hostIsLaptop,
         ...
       }:
       let
@@ -567,25 +568,39 @@
                     }
                     { id = "KeepAwake"; }
                   ];
-                  right = [
-                    { id = "Tray"; }
-                    {
-                      id = "NotificationHistory";
-                      hideWhenZero = true;
-                    }
-                    {
-                      id = "WiFi";
-                      displayMode = "icon";
-                    }
-                    {
-                      id = "Volume";
-                      displayMode = "onhover";
-                    }
-                    {
-                      id = "ControlCenter";
-                      icon = "noctalia";
-                    }
-                  ];
+                  right =
+                    [
+                      { id = "Tray"; }
+                      {
+                        id = "NotificationHistory";
+                        hideWhenZero = true;
+                      }
+                      {
+                        id = "WiFi";
+                        displayMode = "icon";
+                      }
+                    ]
+                    ++ lib.optionals hostIsLaptop [
+                      {
+                        id = "Bluetooth";
+                        displayMode = "icon";
+                      }
+                      {
+                        id = "Brightness";
+                        displayMode = "onhover";
+                      }
+                      { id = "Battery"; }
+                    ]
+                    ++ [
+                      {
+                        id = "Volume";
+                        displayMode = "onhover";
+                      }
+                      {
+                        id = "ControlCenter";
+                        icon = "noctalia";
+                      }
+                    ];
                 };
               };
               wallpaper = {
@@ -621,11 +636,15 @@
                   { id = "ScreenRecorder"; }
                   { id = "WallpaperSelector"; }
                 ];
-                right = [
-                  { id = "Notifications"; }
-                  { id = "KeepAwake"; }
-                  { id = "NightLight"; }
-                ];
+                right =
+                  lib.optionals hostIsLaptop [
+                    { id = "PowerProfile"; }
+                  ]
+                  ++ [
+                    { id = "Notifications"; }
+                    { id = "KeepAwake"; }
+                    { id = "NightLight"; }
+                  ];
               };
             };
           };

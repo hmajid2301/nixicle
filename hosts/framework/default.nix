@@ -13,7 +13,7 @@
     ];
 
     homeManager =
-      { lib, ... }:
+      { ... }:
       {
         home = {
           username = "haseeb";
@@ -29,20 +29,6 @@
             suspendTimeout = 900;
             fadeDuration = 5;
           };
-          bar.widgets.right = lib.mkBefore [
-            {
-              id = "Bluetooth";
-              displayMode = "icon";
-            }
-            {
-              id = "Brightness";
-              displayMode = "onhover";
-            }
-            { id = "Battery"; }
-          ];
-          controlCenter.shortcuts.right = lib.mkBefore [
-            { id = "PowerProfile"; }
-          ];
           osd.monitors = [ "eDP-1" ];
         };
       };

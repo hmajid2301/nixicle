@@ -104,9 +104,13 @@
         # upstream's symlink layout so workflow names stay compatible with docs.
         systemd.tmpfiles.rules = [
           "d /var/lib/spindle/images 0755 root root - -"
-          "L+ /var/lib/spindle/images/nixos-x86_64 - - - - ${inputs.tangled.packages.${system}.spindle-nixos-image}"
+          "L+ /var/lib/spindle/images/nixos-x86_64 - - - - ${
+            inputs.tangled.packages.${system}.spindle-nixos-image
+          }"
           "L+ /var/lib/spindle/images/nixos - - - - /var/lib/spindle/images/nixos-x86_64"
-          "L+ /var/lib/spindle/images/alpine-x86_64 - - - - ${inputs.tangled.packages.${system}.spindle-alpine-image}"
+          "L+ /var/lib/spindle/images/alpine-x86_64 - - - - ${
+            inputs.tangled.packages.${system}.spindle-alpine-image
+          }"
           "L+ /var/lib/spindle/images/alpine - - - - /var/lib/spindle/images/alpine-x86_64"
         ];
 

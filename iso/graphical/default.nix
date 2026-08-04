@@ -18,7 +18,10 @@
 
   systemd.network.enable = true;
   systemd.network.networks."20-recovery" = {
-    matchConfig.Name = [ "en*" "eth*" ];
+    matchConfig.Name = [
+      "en*"
+      "eth*"
+    ];
     DHCP = "yes";
   };
 
