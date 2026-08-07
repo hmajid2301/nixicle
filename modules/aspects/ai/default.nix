@@ -257,6 +257,7 @@ in
                   models = [
                     { id = "qwen3.5:cloud"; }
                     { id = "kimi-k2.7-code:cloud"; }
+                    { id = "kimi-k3:cloud"; }
                     { id = "glm-5.2:cloud"; }
                     { id = "glm-5.1:cloud"; }
                     { id = "deepseek-v4-pro:cloud"; }
