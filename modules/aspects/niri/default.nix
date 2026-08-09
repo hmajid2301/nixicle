@@ -96,7 +96,10 @@
         };
 
         programs = {
-          niri.enable = true;
+          niri = {
+            enable = true;
+            package = pkgs.niri;
+          };
           xwayland.enable = true;
         };
 
@@ -236,8 +239,8 @@
 
         wayland.windowManager.niri = {
           enable = true;
-          package = pkgs.niri-stable;
-          xwaylandSatellitePackage = pkgs.xwayland-satellite-stable;
+          package = pkgs.niri;
+          xwaylandSatellitePackage = pkgs.xwayland-satellite;
           extraConfig = ''
             input {
                 keyboard {
