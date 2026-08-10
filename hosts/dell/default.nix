@@ -19,6 +19,19 @@
 
           # Android emulator + extra packages (merged)
           packages = with pkgs; [
+            # The niri session is launched under nixGLIntel with
+            # hm-session-vars.sh sourced, so every process inherits a Nix
+            # GI_TYPELIB_PATH (glib-2.88.1, gtk4, ...) and Nix libs on
+            # LD_LIBRARY_PATH. Ubuntu's Python `gi` powerprofilesctl then loads
+            # the Nix glib typelib against a mismatched glib and dies with
+            # `undefined symbol: g_string_copy`. Strip the Nix env so it uses
+            # the system stack — same fix as the google-chrome wrapper below.
+            # noctalia's PowerProfile control-center widget shells out here too.
+            (lib.hiPrio (pkgs.writeShellScriptBin "powerprofilesctl" ''
+              unset GI_TYPELIB_PATH
+              export LD_LIBRARY_PATH=$(echo "$LD_LIBRARY_PATH" | tr ':' '\n' | grep -v /nix/store | tr '\n' ':' | sed 's/:*$//')
+              exec /usr/bin/powerprofilesctl "$@"
+            ''))
             (pkgs.writeShellScriptBin "android-emulator" ''
               export QT_QPA_PLATFORM=xcb
               unset __EGL_VENDOR_LIBRARY_FILENAMES
