@@ -1,6 +1,27 @@
 { den, inputs, ... }:
 {
   flake-file.inputs.nix-index-database.url = "github:nix-community/nix-index-database";
+
+  den.aspects.kubernetesCli = {
+    homeManager =
+      { pkgs, ... }:
+      {
+        programs.k9s.enable = true;
+
+        home.packages = with pkgs; [
+          kubectl
+          kubectx
+          kubelogin
+          kubelogin-oidc
+          stern
+          kubernetes-helm
+          kustomize
+          fluxcd
+          kubefwd
+        ];
+      };
+  };
+
   den.aspects.development = {
     includes = [
       den.aspects.neovim
@@ -10,7 +31,13 @@
       den.aspects.gpg
       den.aspects.ssh
       den.aspects.attic
+      den.aspects.devGo
+      den.aspects.devJs
+      den.aspects.devContainers
+      den.aspects.devDb
+      den.aspects.devHomelab
     ];
+
     homeManager =
       {
         pkgs,
@@ -48,6 +75,7 @@
       in
       {
         imports = [ inputs.nix-index-database.homeModules.nix-index ];
+
         xdg.desktopEntries = lib.optionalAttrs pkgs.stdenv.isLinux {
           neovim = {
             name = "Neovim";
@@ -68,7 +96,6 @@
           };
         };
 
-        # Atuin — shell history sync
         programs.atuin = {
           enable = true;
           flags = [
@@ -85,7 +112,6 @@
           };
         };
 
-        # Simple program enables
         programs = {
           bat.enable = true;
           bottom.enable = true;
@@ -100,18 +126,18 @@
             colors =
               with config.lib.stylix.colors.withHashtag;
               lib.mkForce {
-                "bg" = base00;
+                bg = base00;
                 "bg+" = base02;
-                "fg" = base05;
+                fg = base05;
                 "fg+" = base05;
-                "header" = base0E;
-                "hl" = base08;
+                header = base0E;
+                hl = base08;
                 "hl+" = base08;
-                "info" = base0A;
-                "marker" = base06;
-                "pointer" = base06;
-                "prompt" = base0E;
-                "spinner" = base06;
+                info = base0A;
+                marker = base06;
+                pointer = base06;
+                prompt = base0E;
+                spinner = base06;
               };
           };
           htop = {
@@ -148,20 +174,8 @@
           atuin-export-fish
         ]
         ++ (with pkgs; [
-          # Database tools
-          dbeaver-bin
-          termdbms
-
-          # Network tools
-          # tshark
-          # termshark
-          # kubeshark
-
-          # TUI tools
           gh-dash
           gum
-
-          # Core tools (modern unix)
           open-in-terminal
           broot
           erdtree
@@ -200,40 +214,7 @@
           unzip
           gnupg
           optinix
-
-          # Development tools
-          go
-          goose
-          golangci-lint
-          air
-          templ
-          sqlc
-          golines
-          gotools
-          go-task
-          go-mockery
-          gotestsum
-          delve
-          nodejs_24
-          bun
-          pnpm
           gnumake
-          ast-grep
-
-          # Homelab tools
-          pgcli
-          openbao
-          kind
-          kaf
-
-          # Container tools
-          arion
-          docker
-          docker-compose
-          dive
-          amazon-ecr-credential-helper
-
-          # Yazi media preview tools
           imagemagick
           ffmpegthumbnailer
           fontpreview

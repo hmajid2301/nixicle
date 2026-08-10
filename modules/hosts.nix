@@ -101,6 +101,7 @@ in
       };
 
       desktop = {
+        autologin = false;
         instantiate = mkInstantiate;
         users.haseeb = haseebUser;
       };
