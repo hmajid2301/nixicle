@@ -81,17 +81,22 @@
         '';
 
         # Minimal zellij config for the nixos user (no home-manager on vps):
-        # compact layout removes tab bar, simplified_ui drops the status bar.
+        # use a custom single-pane layout with no UI chrome.
         system.activationScripts.zellij-config = lib.stringAfter [ "users" ] ''
-          mkdir -p /home/nixos/.config/zellij
-          chown nixos:users /home/nixos/.config /home/nixos/.config/zellij
+          mkdir -p /home/nixos/.config/zellij/layouts
+          chown nixos:users /home/nixos/.config /home/nixos/.config/zellij /home/nixos/.config/zellij/layouts
           install -o nixos -g users -m 0644 ${pkgs.writeText "vps-zellij-config" ''
-            default_layout "compact"
+            default_layout "bare"
             simplified_ui true
             pane_frames false
             copy_on_select true
             show_startup_tips false
           ''} /home/nixos/.config/zellij/config.kdl
+          install -o nixos -g users -m 0644 ${pkgs.writeText "vps-zellij-layout-bare" ''
+            layout {
+              pane
+            }
+          ''} /home/nixos/.config/zellij/layouts/bare.kdl
         '';
 
         services.dbus.implementation = "dbus";

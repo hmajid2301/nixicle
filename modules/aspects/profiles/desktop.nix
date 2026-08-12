@@ -7,6 +7,7 @@
       den.aspects.niri
       den.aspects.audio
       den.aspects.vpn
+      den.aspects.ollama
     ];
 
     nixos =

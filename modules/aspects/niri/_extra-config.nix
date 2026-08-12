@@ -1,4 +1,17 @@
-{ ... }:
+{ hostIsLaptop, ... }:
+let
+  lidCloseHook =
+    if hostIsLaptop then
+      ''
+        switch-events {
+            lid-close {
+                spawn "qs" "-c" "noctalia-shell" "ipc" "call" "lockScreen" "lock"
+            }
+        }
+      ''
+    else
+      "";
+in
 ''
   input {
       keyboard {
@@ -177,4 +190,5 @@
       place-within-backdrop true
   }
   gestures { hot-corners { off; }; }
+${lidCloseHook}
 ''

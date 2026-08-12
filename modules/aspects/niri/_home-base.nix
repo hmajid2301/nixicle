@@ -2,6 +2,7 @@
   pkgs,
   config,
   inputs,
+  hostIsLaptop,
   ...
 }:
 {
@@ -28,6 +29,6 @@
     enable = true;
     package = pkgs.niri;
     xwaylandSatellitePackage = pkgs.xwayland-satellite;
-    extraConfig = import ./_extra-config.nix { };
+    extraConfig = import ./_extra-config.nix { inherit hostIsLaptop; };
   };
 }

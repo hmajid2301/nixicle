@@ -28,7 +28,7 @@ in
           environment = {
             APP_BASE_URL = "https://${domain}";
             NODE_ENV = "production";
-            SERVER_HOSTNAME = "0.0.0.0";
+            SERVER_HOSTNAME = "127.0.0.1";
             DOCUMENT_STORAGE_ENCRYPTION_IS_ENABLED = "true";
             AUTH_PROVIDERS_EMAIL_IS_ENABLED = "false";
           };
@@ -39,6 +39,9 @@ in
           port = port;
           subdomain = "papra";
           domain = "haseebmajid.dev";
+          extraServiceConfig.loadBalancer.servers = [
+            { url = "http://127.0.0.1:${toString port}"; }
+          ];
         };
       };
   };
