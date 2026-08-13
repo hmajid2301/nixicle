@@ -127,10 +127,12 @@ in
     };
 
     homes.x86_64-linux."haseebmajid@dell" = {
+      isLaptop = true;
       instantiate = mkHomeInstantiate;
     };
 
     homes.x86_64-linux."haseeb@framework" = {
+      isLaptop = true;
       instantiate = mkHomeInstantiate;
     };
 

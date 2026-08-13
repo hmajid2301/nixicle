@@ -19,7 +19,6 @@
           karakeep = {
             enable = true;
             browser.enable = true;
-            meilisearch.experimental_dumpless_upgrade = false;
             extraEnvironment = {
               PORT = "3035";
               NEXTAUTH_URL = "https://karakeep.haseebmajid.dev";

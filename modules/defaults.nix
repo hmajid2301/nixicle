@@ -62,22 +62,31 @@ in
       ];
     };
 
-    schema.home.includes = [
-      (
-        { home, ... }:
-        {
-          homeManager =
-            { pkgs, ... }:
-            {
-              _module.args = {
-                host = home.hostName or "unknown";
-                hostIsLaptop = false;
+    schema.home = {
+      includes = [
+        (
+          { home, ... }:
+          {
+            homeManager =
+              { pkgs, ... }:
+              {
+                _module.args = {
+                  host = home.hostName or "unknown";
+                  hostIsLaptop = home.isLaptop or false;
+                };
+                nix.package = pkgs.nix;
               };
-              nix.package = pkgs.nix;
-            };
-        }
-      )
-    ];
+          }
+        )
+      ];
+
+      options = {
+        isLaptop = lib.mkOption {
+          type = lib.types.bool;
+          default = false;
+        };
+      };
+    };
 
     schema.host =
       { lib, ... }:

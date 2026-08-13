@@ -29,6 +29,7 @@
         users.groups.atticd = { };
 
         sops.secrets.attic = {
+          sopsFile = ../../nixos/services/secrets.yaml;
           owner = "atticd";
           group = "atticd";
           mode = "0400";
@@ -36,7 +37,7 @@
 
         services = {
           postgresql = {
-            ensureDatabases = [ "attic" ];
+            ensureDatabases = [ "atticd" ];
             ensureUsers = [
               {
                 name = "atticd";
@@ -52,12 +53,12 @@
               listen = "[::]:8899";
               allowed-hosts = [ "attic.haseebmajid.dev" ];
               api-endpoint = "https://attic.haseebmajid.dev/";
-              database.url = "postgresql:///attic?host=/run/postgresql";
+              database.url = "postgresql:///atticd?host=/run/postgresql";
               storage = {
                 type = "s3";
                 endpoint = "https://s3.us-west-004.backblazeb2.com";
                 region = "us-west-004";
-                bucket = "REPLACE_ME_BACKBLAZE_BUCKET";
+                bucket = "majiy00-nix-cache";
               };
             };
           };
