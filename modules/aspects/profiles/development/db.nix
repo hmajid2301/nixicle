@@ -6,6 +6,7 @@
         dbeaver-bin
         termdbms
         pgcli
+        postgresql
       ];
     };
   };
