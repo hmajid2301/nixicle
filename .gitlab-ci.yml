@@ -127,34 +127,19 @@ build:flake:
   extends: .base_setup
   stage: build
   rules:
+    - if: '$CI_COMMIT_BRANCH == "desktop"'
     - if: '$CI_PIPELINE_SOURCE == "schedule"'
   script:
     - test -n "$ATTIC_AUTH_KEY"
     - attic login --set-default ci https://attic.haseebmajid.dev "$ATTIC_AUTH_KEY"
     - nix flake update
-    - nix run github:Mic92/nix-fast-build -- --skip-cached --no-nom --max-jobs 4
-    - rm -f attic-paths.txt
-    - echo "Building scheduled NixOS configurations and collecting outputs..."
-    - |
-      for host in desktop framebox framework gateway nas rpi vm vps; do
-        echo "Building nixosConfigurations.$host..."
-        nix build ".#nixosConfigurations.$host.config.system.build.toplevel" \
-          --print-build-logs --no-link --print-out-paths | tee -a attic-paths.txt
-      done
-    - echo "Building scheduled Home Manager configurations and collecting outputs..."
-    - |
-      for home in 'haseeb@desktop' 'haseeb@framebox' 'haseeb@framework' 'haseebmajid@dell'; do
-        echo "Building homeConfigurations.$home..."
-        nix build ".#homeConfigurations.$home.activationPackage" \
-          --print-build-logs --no-link --print-out-paths | tee -a attic-paths.txt
-      done
-    - echo "Building selected packages and collecting outputs..."
-    - nix build ".#packages.x86_64-linux.install" --print-build-logs --no-link --print-out-paths | tee -a attic-paths.txt
-    - nix build ".#packages.x86_64-linux.kaf" --print-build-logs --no-link --print-out-paths | tee -a attic-paths.txt
-    - nix build ".#packages.x86_64-linux.octopus-energy" --print-build-logs --no-link --print-out-paths | tee -a attic-paths.txt
-    - sort -u attic-paths.txt -o attic-paths.txt
-    - echo "Pushing built outputs to Attic cache..."
-    - xargs -r attic push main < attic-paths.txt
+    - nix run github:Mic92/nix-fast-build -- --skip-cached --no-nom --max-jobs 4 --attic-cache main --attic-push-build-closure
+    - echo "Building scheduled NixOS configurations with nix-fast-build and auto-pushing to Attic..."
+    - nix run github:Mic92/nix-fast-build -- --flake '.#nixosConfigurations' --select 'cfgs: builtins.mapAttrs (_: v: v.config.system.build.toplevel) cfgs' --skip-cached --no-nom --max-jobs 4 --attic-cache main --attic-push-build-closure
+    - echo "Building scheduled Home Manager configurations with nix-fast-build and auto-pushing to Attic..."
+    - nix run github:Mic92/nix-fast-build -- --flake '.#homeConfigurations' --select 'cfgs: builtins.mapAttrs (_: v: v.activationPackage) cfgs' --skip-cached --no-nom --max-jobs 4 --attic-cache main --attic-push-build-closure
+    - echo "Building selected packages with nix-fast-build and auto-pushing to Attic..."
+    - nix run github:Mic92/nix-fast-build -- --flake '.#packages.x86_64-linux' --select 'pkgs: builtins.getAttrs ["install" "kaf" "octopus-energy"] pkgs' --skip-cached --no-nom --max-jobs 4 --attic-cache main --attic-push-build-closure
 
 # build:changed:
 #   extends: .base_setup
