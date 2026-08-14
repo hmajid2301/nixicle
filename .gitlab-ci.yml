@@ -100,6 +100,7 @@ build:flake:
   stage: build
   rules:
     - if: '$CI_COMMIT_BRANCH == "desktop"'
+    - if: '$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME == "desktop"'
     - if: '$CI_PIPELINE_SOURCE == "schedule"'
   script:
     - test -n "$ATTIC_AUTH_KEY"
