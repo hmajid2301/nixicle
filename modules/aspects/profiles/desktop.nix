@@ -246,7 +246,6 @@
             brightnessctl
             xdg-utils
             wl-clipboard
-            clipse
             pamixer
             playerctl
             impression

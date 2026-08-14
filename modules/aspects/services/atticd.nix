@@ -53,7 +53,7 @@
               listen = "[::]:8899";
               allowed-hosts = [ "attic.haseebmajid.dev" ];
               api-endpoint = "https://attic.haseebmajid.dev/";
-              database.url = "postgresql:///atticd?host=/run/postgresql";
+              database.url = "postgresql:///atticd?host=/run/postgresql&user=atticd";
               storage = {
                 type = "s3";
                 endpoint = "https://s3.us-west-004.backblazeb2.com";
@@ -84,7 +84,7 @@
                 rule = "Host(`attic.haseebmajid.dev`)";
                 service = "attic";
                 middlewares = [ "attic-timeout" ];
-                tls = { };
+                tls.certResolver = "letsencrypt";
               };
             };
           };
