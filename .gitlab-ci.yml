@@ -129,8 +129,8 @@ build:flake:
   rules:
     - if: '$CI_PIPELINE_SOURCE == "schedule"'
   script:
-    - test -n "$ATTIC_TOKEN"
-    - attic login --set-default ci https://attic.haseebmajid.dev "$ATTIC_TOKEN"
+    - test -n "$ATTIC_AUTH_KEY"
+    - attic login --set-default ci https://attic.haseebmajid.dev "$ATTIC_AUTH_KEY"
     - nix flake update
     - nix run github:Mic92/nix-fast-build -- --skip-cached --no-nom --max-jobs 4
     - rm -f attic-paths.txt
