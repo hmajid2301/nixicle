@@ -135,11 +135,20 @@ build:flake:
     - nix flake update
     - nix run github:Mic92/nix-fast-build -- --skip-cached --no-nom --max-jobs 4 --attic-cache main --attic-push-build-closure
     - echo "Building scheduled NixOS configurations with nix-fast-build and auto-pushing to Attic..."
-    - nix run github:Mic92/nix-fast-build -- --flake '.#nixosConfigurations' --select 'cfgs: builtins.mapAttrs (_: v: v.config.system.build.toplevel) cfgs' --skip-cached --no-nom --max-jobs 4 --attic-cache main --attic-push-build-closure
+    - |
+      nix run github:Mic92/nix-fast-build -- --flake '.#nixosConfigurations' \
+        --select 'cfgs: builtins.mapAttrs (_: v: v.config.system.build.toplevel) cfgs' \
+        --skip-cached --no-nom --max-jobs 4 --attic-cache main --attic-push-build-closure
     - echo "Building scheduled Home Manager configurations with nix-fast-build and auto-pushing to Attic..."
-    - nix run github:Mic92/nix-fast-build -- --flake '.#homeConfigurations' --select 'cfgs: builtins.mapAttrs (_: v: v.activationPackage) cfgs' --skip-cached --no-nom --max-jobs 4 --attic-cache main --attic-push-build-closure
+    - |
+      nix run github:Mic92/nix-fast-build -- --flake '.#homeConfigurations' \
+        --select 'cfgs: builtins.mapAttrs (_: v: v.activationPackage) cfgs' \
+        --skip-cached --no-nom --max-jobs 4 --attic-cache main --attic-push-build-closure
     - echo "Building selected packages with nix-fast-build and auto-pushing to Attic..."
-    - nix run github:Mic92/nix-fast-build -- --flake '.#packages.x86_64-linux' --select 'pkgs: builtins.getAttrs ["install" "kaf" "octopus-energy"] pkgs' --skip-cached --no-nom --max-jobs 4 --attic-cache main --attic-push-build-closure
+    - |
+      nix run github:Mic92/nix-fast-build -- --flake '.#packages.x86_64-linux' \
+        --select 'pkgs: builtins.getAttrs ["install" "kaf" "octopus-energy"] pkgs' \
+        --skip-cached --no-nom --max-jobs 4 --attic-cache main --attic-push-build-closure
 
 # build:changed:
 #   extends: .base_setup
