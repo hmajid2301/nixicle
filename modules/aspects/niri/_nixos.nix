@@ -1,4 +1,10 @@
-{ config, pkgs, lib, inputs, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  inputs,
+  ...
+}:
 {
   imports = [ inputs.niri.nixosModules.niri ];
   home-manager.sharedModules = lib.mkForce [ ];

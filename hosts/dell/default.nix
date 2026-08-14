@@ -27,11 +27,13 @@
             # `undefined symbol: g_string_copy`. Strip the Nix env so it uses
             # the system stack — same fix as the google-chrome wrapper below.
             # noctalia's PowerProfile control-center widget shells out here too.
-            (lib.hiPrio (pkgs.writeShellScriptBin "powerprofilesctl" ''
-              unset GI_TYPELIB_PATH
-              export LD_LIBRARY_PATH=$(echo "$LD_LIBRARY_PATH" | tr ':' '\n' | grep -v /nix/store | tr '\n' ':' | sed 's/:*$//')
-              exec /usr/bin/powerprofilesctl "$@"
-            ''))
+            (lib.hiPrio (
+              pkgs.writeShellScriptBin "powerprofilesctl" ''
+                unset GI_TYPELIB_PATH
+                export LD_LIBRARY_PATH=$(echo "$LD_LIBRARY_PATH" | tr ':' '\n' | grep -v /nix/store | tr '\n' ':' | sed 's/:*$//')
+                exec /usr/bin/powerprofilesctl "$@"
+              ''
+            ))
             (pkgs.writeShellScriptBin "android-emulator" ''
               export QT_QPA_PLATFORM=xcb
               unset __EGL_VENDOR_LIBRARY_FILENAMES
