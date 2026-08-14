@@ -99,6 +99,30 @@ in
               }
             ];
           }).config.system.build.isoImage;
+
+        tangled-spindle-nixos-image =
+          let
+            imageSystem = "${lib.head (lib.splitString "-" system)}-linux";
+            imagePkgs = mkPkgs imageSystem;
+            spindleNixosSystem = inputs.nixpkgs.lib.nixosSystem {
+              system = imageSystem;
+              modules = [
+                inputs.tangled.nixosModules.spindle-nixos
+                {
+                  # TODO: Send upstream fix for spindle-nixos-image to fall back to
+                  # `bzImage` when hostPlatform."linux-kernel".target is missing on
+                  # newer nixpkgs, then drop this local workaround.
+                  nixpkgs.hostPlatform = {
+                    system = imageSystem;
+                    "linux-kernel".target = "bzImage";
+                  };
+                }
+              ];
+            };
+          in
+          imagePkgs.callPackage "${inputs.tangled}/nix/pkgs/spindle-nixos-image.nix" {
+            nixosSystem = spindleNixosSystem;
+          };
       }
     );
 
