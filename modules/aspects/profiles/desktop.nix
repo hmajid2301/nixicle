@@ -7,6 +7,7 @@
       den.aspects.niri
       den.aspects.audio
       den.aspects.vpn
+      den.aspects.ollama
     ];
 
     nixos =
@@ -241,11 +242,9 @@
           [
             swap-input
             ddcutil
-            mtpfs
             brightnessctl
             xdg-utils
             wl-clipboard
-            clipse
             pamixer
             playerctl
             impression
