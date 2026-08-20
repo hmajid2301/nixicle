@@ -339,7 +339,7 @@
             Name=Ghostty
             Type=Application
             Comment=A terminal emulator
-            Exec=nixGLIntel ${config.home.homeDirectory}/.nix-profile/bin/ghostty --gtk-single-instance=true
+            Exec=${config.home.homeDirectory}/.nix-profile/bin/ghostty --gtk-single-instance=true
             Icon=com.mitchellh.ghostty
             Categories=System;TerminalEmulator;
             Keywords=terminal;tty;pty;
@@ -356,7 +356,7 @@
 
             [Desktop Action new-window]
             Name=New Window
-            Exec=nixGLIntel ${config.home.homeDirectory}/.nix-profile/bin/ghostty
+            Exec=${config.home.homeDirectory}/.nix-profile/bin/ghostty
           '';
 
           configFile."environment.d/envvars.conf".text = ''
