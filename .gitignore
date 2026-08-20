@@ -55,3 +55,10 @@ node_modules/
 package-lock.json
 package.json
 .codegraph
+
+# pi / playwright
+.playwright/
+.playwright-cli/
+.playwright-browsers/
+.glciconfig.toml
+!
