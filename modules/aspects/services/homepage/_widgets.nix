@@ -1,5 +1,5 @@
 # Homepage widget definitions
-# This file contains all the widget configurations for the homepage dashboard
+# Minimal widgets for the VPS dashboard.
 [
   {
     search = {
@@ -15,12 +15,6 @@
       label = "system";
       cpu = true;
       memory = true;
-    };
-  }
-  {
-    resources = {
-      label = "storage";
-      disk = [ "/mnt/n1/" ];
     };
   }
   {

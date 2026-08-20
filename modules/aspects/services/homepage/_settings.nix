@@ -4,6 +4,8 @@
   title = "Homelab Dashboard";
   favicon = "https://haseebmajid.dev/favicon.ico";
   headerStyle = "clean";
+  theme = "dark";
+  color = "slate";
   layout = {
     external = {
       style = "row";
@@ -13,19 +15,11 @@
       style = "row";
       columns = 3;
     };
-    media = {
-      style = "row";
-      columns = 3;
-    };
-    network = {
-      style = "row";
-      columns = 2;
-    };
     monitoring = {
       style = "row";
       columns = 2;
     };
-    disk = {
+    network = {
       style = "row";
       columns = 2;
     };
