@@ -49,6 +49,7 @@
       {
         config,
         pkgs,
+        lib,
         ...
       }:
       {
@@ -98,6 +99,23 @@
 
         environment.systemPackages = with pkgs; [
           docker-compose
+        ];
+
+        # /mnt/homelab: override the shared nfs-nas aspect's boot-time mount
+        # with an automount. The desktop runs no nixflix/immich/paperless, so
+        # the boot-time mount's mkdir-on-path requirement (which forces the
+        # shared aspect to avoid automount) doesn't apply here. Automount
+        # mounts on access and survives boot-timing issues with tailscale/NAS.
+        fileSystems."/mnt/homelab".options = lib.mkForce [
+          "nfsvers=4"
+          "noatime"
+          "nofail"
+          "x-systemd.automount"
+          "x-systemd.idle-timeout=60"
+          "x-systemd.device-timeout=5s"
+          "x-systemd.mount-timeout=5s"
+          "x-systemd.requires=tailscaled.service"
+          "x-systemd.after=tailscaled.service"
         ];
 
         networking.hostName = "desktop";
