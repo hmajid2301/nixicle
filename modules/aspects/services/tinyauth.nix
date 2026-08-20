@@ -1,6 +1,5 @@
 { ... }:
 let
-  port = 3939;
   authPort = 3000;
   domain = "haseebmajid.dev";
 in
@@ -12,45 +11,29 @@ in
     nixos =
       {
         config,
-        pkgs,
-        lib,
         ...
       }:
       {
-        sops.secrets.tinyauth_env = { };
-
-        users.users.tinyauth = {
-          isSystemUser = true;
+        sops.secrets.tinyauth_env = {
+          owner = "tinyauth";
           group = "tinyauth";
-          home = "/var/lib/tinyauth";
-          createHome = true;
         };
-        users.groups.tinyauth = { };
 
-        systemd.services.tinyauth = {
-          description = "TinyAuth forward-auth (pocket-id OIDC)";
-          wantedBy = [ "multi-user.target" ];
-          after = [ "network-online.target" ];
-          wants = [ "network-online.target" ];
-          environment = {
-            TINYAUTH_APPURL = "https://auth.${domain}";
-            TINYAUTH_SERVER_PORT = toString authPort;
-            TINYAUTH_DATABASE_PATH = "/var/lib/tinyauth/tinyauth.db";
-            TINYAUTH_OAUTH_PROVIDERS_pocketid_AUTHURL = "https://id.${domain}/authorize";
-            TINYAUTH_OAUTH_PROVIDERS_pocketid_TOKENURL = "https://id.${domain}/api/oidc/token";
-            TINYAUTH_OAUTH_PROVIDERS_pocketid_USERINFOURL = "https://id.${domain}/api/oidc/userinfo";
-            TINYAUTH_OAUTH_PROVIDERS_pocketid_REDIRECTURL = "https://auth.${domain}/api/oauth/callback/pocketid";
-            TINYAUTH_OAUTH_PROVIDERS_pocketid_SCOPES = "openid profile email groups";
-            TINYAUTH_OAUTH_PROVIDERS_pocketid_NAME = "Pocket ID";
-            TINYAUTH_OAUTH_AUTOREDIRECT = "pocketid";
-          };
-          serviceConfig = {
-            ExecStart = lib.getExe pkgs.tinyauth;
-            EnvironmentFile = config.sops.secrets.tinyauth_env.path;
-            User = "tinyauth";
-            Group = "tinyauth";
-            StateDirectory = "tinyauth";
-            Restart = "on-failure";
+        services.tinyauth = {
+          enable = true;
+          environmentFile = config.sops.secrets.tinyauth_env.path;
+          settings = {
+            SERVER_ADDRESS = "127.0.0.1";
+            SERVER_PORT = authPort;
+            APPURL = "https://auth.${domain}";
+            ANALYTICS_ENABLED = false;
+            OAUTH_PROVIDERS_pocketid_AUTHURL = "https://id.${domain}/authorize";
+            OAUTH_PROVIDERS_pocketid_TOKENURL = "https://id.${domain}/api/oidc/token";
+            OAUTH_PROVIDERS_pocketid_USERINFOURL = "https://id.${domain}/api/oidc/userinfo";
+            OAUTH_PROVIDERS_pocketid_REDIRECTURL = "https://auth.${domain}/api/oauth/callback/pocketid";
+            OAUTH_PROVIDERS_pocketid_SCOPES = "openid profile email groups";
+            OAUTH_PROVIDERS_pocketid_NAME = "Pocket ID";
+            OAUTH_AUTOREDIRECT = "pocketid";
           };
         };
 

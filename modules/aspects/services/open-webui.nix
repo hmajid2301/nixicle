@@ -16,7 +16,6 @@ in
     ];
     nixos =
       {
-        config,
         secrets,
         lib,
         ...

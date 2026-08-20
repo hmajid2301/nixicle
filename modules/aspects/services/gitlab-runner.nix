@@ -31,6 +31,7 @@
             limit = 10;
             requestConcurrency = 4;
             dockerImage = "debian:stable";
+            dockerPullPolicy = "if-not-present";
             dockerPrivileged = true;
             dockerVolumes = [
               "/cache"

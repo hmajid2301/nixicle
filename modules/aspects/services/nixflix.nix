@@ -1,4 +1,4 @@
-{ inputs, lib, ... }:
+{ inputs, ... }:
 let
   tunnelId = "ecef5dbb-834e-43ed-84c6-355a2ac53e59";
 in
@@ -12,7 +12,6 @@ in
     nixos =
       {
         config,
-        pkgs,
         lib,
         ...
       }:

@@ -12,7 +12,11 @@
       }
     ];
     nixos =
-      { config, lib, ... }:
+      {
+        config,
+        lib,
+        ...
+      }:
       {
         sops.secrets.karakeep_oauth = { };
         services = {
@@ -28,8 +32,10 @@
               DISABLE_PASSWORD_AUTH = "true";
               DISABLE_SIGNUPS = "false";
               OLLAMA_BASE_URL = "http://localhost:11434";
-              INFERENCE_TEXT_MODEL = "gemma2";
-              INFERENCE_IMAGE_MODEL = "llava";
+              INFERENCE_TEXT_MODEL = "deepseek-v4-flash:cloud";
+              INFERENCE_IMAGE_MODEL = "kimi-k2.6:cloud";
+              INFERENCE_JOB_TIMEOUT_SEC = "120";
+              INFERENCE_OUTPUT_SCHEMA = "json";
             };
             environmentFile = config.sops.secrets.karakeep_oauth.path;
           };

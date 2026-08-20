@@ -6,7 +6,6 @@ in
   den.aspects.cloudflare = {
     nixos =
       {
-        config,
         secrets,
         lib,
         ...
