@@ -43,6 +43,7 @@ return {
 			luasnip.config.setup({})
 
 			require("config.plugins.snippets.go").create_go_snippets()
+			require("config.plugins.snippets.markdown").create_markdown_snippets()
 
 			vim.keymap.set({ "i", "s" }, "<M-n>", function()
 				if luasnip.choice_active() then
