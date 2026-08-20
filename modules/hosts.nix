@@ -15,8 +15,14 @@ let
     (_final: prev: {
       zjstatus = inputs.zjstatus.packages.${prev.stdenv.hostPlatform.system}.default;
     })
-    (final: prev: {
+    (final: _prev: {
       nixicle = extendedLib.nixicle.importPackages final ../packages // { };
+      # Unwrap deprecated `stdenv.isLinux`/`isDarwin` aliases (wrapped in
+      # `lib.warn`) so accessors don't spam evaluation warnings.
+      stdenv = _prev.stdenv // {
+        isLinux = _prev.stdenv.hostPlatform.isLinux;
+        isDarwin = _prev.stdenv.hostPlatform.isDarwin;
+      };
     })
   ];
 
@@ -101,6 +107,7 @@ in
       };
 
       desktop = {
+        autologin = false;
         instantiate = mkInstantiate;
         users.haseeb = haseebUser;
       };
@@ -126,10 +133,12 @@ in
     };
 
     homes.x86_64-linux."haseebmajid@dell" = {
+      isLaptop = true;
       instantiate = mkHomeInstantiate;
     };
 
     homes.x86_64-linux."haseeb@framework" = {
+      isLaptop = true;
       instantiate = mkHomeInstantiate;
     };
 

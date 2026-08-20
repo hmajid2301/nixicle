@@ -62,22 +62,31 @@ in
       ];
     };
 
-    schema.home.includes = [
-      (
-        { home, ... }:
-        {
-          homeManager =
-            { pkgs, ... }:
-            {
-              _module.args = {
-                host = home.hostName or "unknown";
-                hostIsLaptop = false;
+    schema.home = {
+      includes = [
+        (
+          { home, ... }:
+          {
+            homeManager =
+              { pkgs, ... }:
+              {
+                _module.args = {
+                  host = home.hostName or "unknown";
+                  hostIsLaptop = home.isLaptop or false;
+                };
+                nix.package = pkgs.nix;
               };
-              nix.package = pkgs.nix;
-            };
-        }
-      )
-    ];
+          }
+        )
+      ];
+
+      options = {
+        isLaptop = lib.mkOption {
+          type = lib.types.bool;
+          default = false;
+        };
+      };
+    };
 
     schema.host =
       { lib, ... }:
@@ -112,9 +121,17 @@ in
       # nixicle packages overlay (needs extendedLib so defined here).
       # nur overlay in common.nix; niri/zjstatus in niri.nix.
       nixpkgs.overlays = [
-        (final: prev: {
+        (final: _prev: {
           inherit (inputs) get-shit-done;
           nixicle = extendedLib.nixicle.importPackages final ../packages // { };
+          # Unwrap nixpkgs' deprecated `stdenv.isLinux`/`isDarwin` aliases
+          # (they are wrapped in `lib.warn`) so accessors downstream don't
+          # spam evaluation warnings. Use `stdenv.hostPlatform.is*` for new
+          # code; this just silences the alias shim.
+          stdenv = _prev.stdenv // {
+            isLinux = _prev.stdenv.hostPlatform.isLinux;
+            isDarwin = _prev.stdenv.hostPlatform.isDarwin;
+          };
         })
       ];
       nixpkgs.config.allowUnfree = true;
