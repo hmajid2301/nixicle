@@ -1,7 +1,7 @@
 ---
 name: plan
 description: Software architect for complex multi-file architectural decisions. NOT for simple tasks, single-file changes, or tasks completable in <5 tool calls.
-tools: read, search, find, bash, lsp, web_search, ast_grep
+tools: Read, Grep, Glob, Bash, WebSearch
 spawns: explore
 thinking-level: high
 ---
