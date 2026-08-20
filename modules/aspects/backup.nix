@@ -60,7 +60,7 @@
 
   den.schema.host.includes = [
     (
-      { class, aspect-chain }:
+      { aspect-chain }:
       den._.forward {
         each = lib.singleton true;
         fromClass = _: "backup";

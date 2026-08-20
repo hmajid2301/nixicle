@@ -2,7 +2,7 @@
 {
   den.aspects.ssh = {
     homeManager =
-      { pkgs, ... }:
+      { ... }:
       {
         programs.keychain = {
           enable = true;
