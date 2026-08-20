@@ -4,6 +4,7 @@
   outputs = inputs: inputs.flake-parts.lib.mkFlake { inherit inputs; } (inputs.import-tree ./modules);
 
   inputs = {
+    agent-skills.url = "github:Kyure-A/agent-skills-nix";
     banterbus = {
       url = "gitlab:hmajid2301/banterbus";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -26,6 +27,18 @@
     flake-parts = {
       url = "github:hercules-ci/flake-parts";
       inputs.nixpkgs-lib.follows = "nixpkgs";
+    };
+    git-hooks-nix = {
+      url = "github:cachix/git-hooks.nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    gitlab-ci-skill = {
+      url = "git+https://gitlab.com/gitlab-org/ci-cd/gitlab-ci-skill.git";
+      flake = false;
+    };
+    glci = {
+      url = "git+https://gitlab.com/gitlab-org/ci-cd/runner-tools/glci.git";
+      flake = false;
     };
     goroutinely = {
       url = "gitlab:hmajid2301/goroutinely/fix-broken";
@@ -53,6 +66,10 @@
     lettucego = {
       url = "gitlab:hmajid2301/lettucego";
       inputs.nixpkgs.follows = "nixpkgs";
+    };
+    matt-skills = {
+      url = "github:mattpocock/skills";
+      flake = false;
     };
     nfsm = {
       url = "github:gvolpe/nfsm";
@@ -108,6 +125,10 @@
     pam-shim = {
       url = "github:Cu3PO42/pam_shim/next";
       inputs.nixpkgs.follows = "nixpkgs";
+    };
+    playwright-cli-skill = {
+      url = "github:microsoft/playwright-cli";
+      flake = false;
     };
     plugins-cmp-dbee = {
       url = "github:MattiasMTS/cmp-dbee";
