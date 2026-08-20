@@ -1,6 +1,6 @@
 # Health, observability, and recovery detection for the NAS.
 # Mirrors the TrueNAS monitoring stack: SMART daemon, ZFS Event Daemon.
-{ config, pkgs, ... }:
+{ pkgs, ... }:
 {
   # SMART monitoring for all local disks (matches TrueNAS DEVICESCAN policy).
   services.smartd = {

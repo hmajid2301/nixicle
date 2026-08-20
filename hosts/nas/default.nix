@@ -23,13 +23,16 @@ in
       den.aspects.server
       den.aspects.boot-secure # LUKS+TPM2 secure boot (includes den.aspects.boot)
       den.aspects.impermanence # ephemeral btrfs root, /persist for state
+      den.aspects.attic-cache
       den.aspects.fish
+      den.aspects.tailscale
     ];
 
     # NAS service state that must survive the impermanence rollback.
     persist.directories = [
       "/var/lib/samba"
       "/var/lib/nfs"
+      "/var/lib/docker" # stash image + container state
     ];
 
     homeManager = { ... }: {
@@ -74,7 +77,17 @@ in
         hostId = "5e0a6087";
       };
 
+      # Docker for the Stash compose stack. /var/lib/docker is persisted
+      # (see persist.directories) so the pulled image + container survive
+      # the impermanence rollback. The compose `restart: unless-stopped`
+      # policy auto-starts the container when the daemon starts at boot.
+      virtualisation.docker = {
+        enable = true;
+        enableOnBoot = true;
+      };
+
       environment.systemPackages = with pkgs; [
+        docker-compose
         git
         hdparm
         jq
@@ -127,10 +140,9 @@ in
         trim.enable = false;
       };
 
-      # Allow SSH during recovery. NFS/SMB firewall openings are declared
-      # in their respective aspect files (nfs.nix / samba.nix) where the
-      # services are enabled.
-      networking.firewall.allowedTCPPorts = [ 22 ];
+      networking.firewall.allowedTCPPorts = [
+        22
+      ];
 
       system.stateVersion = "26.05";
     };
