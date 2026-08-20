@@ -1,11 +1,15 @@
+# Home-manager attic client: installs `attic-client` and a user `watch-store`
+# service that pushes newly-built store paths to the `main` cache. Use this on
+# dev/desktop profiles where you actually build and publish packages; servers
+# that only pull substitutes should use `den.aspects.attic-cache` instead.
 { ... }:
 {
-  den.aspects.attic = {
+  den.aspects.attic-client = {
     homeManager =
       { pkgs, config, ... }:
       {
         sops.secrets.netrc = {
-          sopsFile = ../secrets.yaml;
+          sopsFile = ../../secrets.yaml;
         };
 
         home.packages = [ pkgs.attic-client ];
