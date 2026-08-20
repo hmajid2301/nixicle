@@ -3,7 +3,6 @@ _: {
     homeManager =
       {
         pkgs,
-        config,
         lib,
         ...
       }:

@@ -1,4 +1,4 @@
-{ inputs, ... }:
+{ ... }:
 # IRIS — Fig-style terminal autocomplete assistant.
 #
 # Unlike a normal shell plugin, IRIS is a PTY *wrapper*: you launch `iris`

@@ -1,4 +1,4 @@
-{ den, ... }:
+{ ... }:
 {
   den.aspects.hardening-vps = {
     includes = [ ];
