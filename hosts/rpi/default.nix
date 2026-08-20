@@ -1,5 +1,4 @@
 {
-  inputs,
   den,
   ...
 }:
@@ -26,7 +25,6 @@
 
     nixos =
       {
-        config,
         pkgs,
         lib,
         ...
