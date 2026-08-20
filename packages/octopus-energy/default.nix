@@ -3,7 +3,6 @@
   pkgs,
   fetchFromGitHub,
   buildHomeAssistantComponent,
-  inputs,
   ...
 }:
 buildHomeAssistantComponent rec {
