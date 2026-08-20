@@ -1,18 +1,3 @@
-# Off-site backups for the NAS via Borgmatic.
-#
-# STATUS: scaffolded, NOT yet imported by default.nix. Enable after creating
-# `hosts/nas/secrets.yaml` (see the migration note "Off-site backup" section)
-# and adding `./backup.nix` to the imports list in default.nix.
-#
-# What it backs up: the important, non-media, hard-to-recreate state — the
-# encrypted homelab app data (immich/paperless), the ix-apps stash config +
-# DB, and /mnt/main/main/Data. The bulk media library is intentionally NOT in
-# the borg repo (too large / re-downloadable); replicate that separately if
-# wanted.
-#
-# Lesson baked in (jeffrescignano): the upstream borgmatic systemd unit is
-# hardened so aggressively that a ZFS snapshot hook breaks. The overrides
-# below loosen exactly what the ZFS hook needs.
 {
   config,
   pkgs,
@@ -27,10 +12,6 @@
     enable = true;
     settings = {
       source_directories = [
-        "/mnt/main/main-encrypted/homelab/immich"
-        "/mnt/main/main-encrypted/homelab/paperless"
-        "/mnt/main/main/Data"
-        "/mnt/.ix-apps/app_mounts/stash/config"
       ];
 
       repositories = [
