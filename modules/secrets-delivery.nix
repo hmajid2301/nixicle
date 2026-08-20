@@ -9,7 +9,7 @@ in
   };
 
   den.policies.crowdsec-secrets =
-    { host, ... }:
+    { ... }:
     [
       (pipe.from "secrets" [
         (pipe.filter (_: false))
@@ -20,7 +20,7 @@ in
     ];
 
   den.policies.traefik-secrets =
-    { host, ... }:
+    { ... }:
     [
       (pipe.from "secrets" [
         (pipe.filter (_: false))
@@ -31,7 +31,7 @@ in
     ];
 
   den.policies.openbao-secrets =
-    { host, ... }:
+    { ... }:
     [
       (pipe.from "secrets" [
         (pipe.filter (_: false))
@@ -42,7 +42,7 @@ in
     ];
 
   den.policies.pocketid-secrets =
-    { host, ... }:
+    { ... }:
     [
       (pipe.from "secrets" [
         (pipe.filter (_: false))
@@ -56,7 +56,7 @@ in
     ];
 
   den.policies.cloudflare-secrets =
-    { host, ... }:
+    { ... }:
     [
       (pipe.from "secrets" [
         (pipe.filter (_: false))
@@ -67,7 +67,7 @@ in
     ];
 
   den.policies.searx-secrets =
-    { host, ... }:
+    { ... }:
     [
       (pipe.from "secrets" [
         (pipe.filter (_: false))
@@ -77,19 +77,19 @@ in
       ])
     ];
 
-  den.policies.atticd-secrets =
-    { host, ... }:
+  den.policies.attic-server-secrets =
+    { ... }:
     [
       (pipe.from "secrets" [
         (pipe.filter (_: false))
         (pipe.append { attic = "/run/secrets/attic"; })
         (pipe.for mergeOne)
-        (pipe.to [ den.aspects.atticd ])
+        (pipe.to [ den.aspects.attic-server ])
       ])
     ];
 
   den.policies.btrbk-secrets =
-    { host, ... }:
+    { ... }:
     [
       (pipe.from "secrets" [
         (pipe.filter (_: false))
@@ -103,7 +103,7 @@ in
     ];
 
   den.policies.backup-secrets =
-    { host, ... }:
+    { ... }:
     [
       (pipe.from "secrets" [
         (pipe.filter (_: false))
@@ -118,7 +118,7 @@ in
     ];
 
   den.policies.karakeep-secrets =
-    { host, ... }:
+    { ... }:
     [
       (pipe.from "secrets" [
         (pipe.filter (_: false))
@@ -129,7 +129,7 @@ in
     ];
 
   den.policies.open-webui-secrets =
-    { host, ... }:
+    { ... }:
     [
       (pipe.from "secrets" [
         (pipe.filter (_: false))
@@ -140,7 +140,7 @@ in
     ];
 
   den.policies.paperless-secrets =
-    { host, ... }:
+    { ... }:
     [
       (pipe.from "secrets" [
         (pipe.filter (_: false))
@@ -154,7 +154,7 @@ in
     ];
 
   den.policies.tandoor-secrets =
-    { host, ... }:
+    { ... }:
     [
       (pipe.from "secrets" [
         (pipe.filter (_: false))
@@ -164,19 +164,8 @@ in
       ])
     ];
 
-  den.policies.hortusfox-secrets =
-    { host, ... }:
-    [
-      (pipe.from "secrets" [
-        (pipe.filter (_: false))
-        (pipe.append { hortusfox_env = "/run/secrets/hortusfox_env"; })
-        (pipe.for mergeOne)
-        (pipe.to [ den.aspects.hortusfox ])
-      ])
-    ];
-
   den.policies.homepage-secrets =
-    { host, ... }:
+    { ... }:
     [
       (pipe.from "secrets" [
         (pipe.filter (_: false))
@@ -193,14 +182,13 @@ in
     den.policies.pocketid-secrets
     den.policies.cloudflare-secrets
     den.policies.searx-secrets
-    den.policies.atticd-secrets
+    den.policies.attic-server-secrets
     den.policies.btrbk-secrets
     den.policies.backup-secrets
     den.policies.karakeep-secrets
     den.policies.open-webui-secrets
     den.policies.paperless-secrets
     den.policies.tandoor-secrets
-    den.policies.hortusfox-secrets
     den.policies.homepage-secrets
   ];
 }
