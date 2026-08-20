@@ -8,11 +8,12 @@
       den.aspects.boot
       den.aspects.hardening-vps
       den.aspects.backup-restic
+      den.aspects.attic-cache
 
       den.aspects.tailscale
       den.aspects.traefik
       den.aspects.postgresql
-      # den.aspects.atticd
+      den.aspects.attic-server
       den.aspects.valkey
       den.aspects.crowdsec
       den.aspects.openbao
@@ -33,6 +34,7 @@
       den.aspects.ollama
       den.aspects.monitoring
       den.aspects.sure
+      den.aspects.homepage
 
       den.aspects.fish
     ];
@@ -73,25 +75,33 @@
 
         # Auto-start/attach a persistent zellij session on login (SSH + console).
         # "main" is created on first login and survives disconnects; reattach is seamless.
+        # `options --default-layout bare` is required because `zellij attach --create`
+        # ignores the `default_layout` config key and would otherwise use the builtin
+        # layout (which ships the tab-bar + status-bar chrome). See zellij#4463.
         # Mirrors what framebox used to do before f7045a7e.
         programs.fish.interactiveShellInit = lib.mkAfter ''
           if not set -q ZELLIJ; and status is-interactive
-            exec zellij attach --create main
+            exec zellij attach --create main options --default-layout bare
           end
         '';
 
         # Minimal zellij config for the nixos user (no home-manager on vps):
-        # compact layout removes tab bar, simplified_ui drops the status bar.
+        # use a custom single-pane layout with no UI chrome.
         system.activationScripts.zellij-config = lib.stringAfter [ "users" ] ''
-          mkdir -p /home/nixos/.config/zellij
-          chown nixos:users /home/nixos/.config /home/nixos/.config/zellij
+          mkdir -p /home/nixos/.config/zellij/layouts
+          chown nixos:users /home/nixos/.config /home/nixos/.config/zellij /home/nixos/.config/zellij/layouts
           install -o nixos -g users -m 0644 ${pkgs.writeText "vps-zellij-config" ''
-            default_layout "compact"
+            default_layout "bare"
             simplified_ui true
             pane_frames false
             copy_on_select true
             show_startup_tips false
           ''} /home/nixos/.config/zellij/config.kdl
+          install -o nixos -g users -m 0644 ${pkgs.writeText "vps-zellij-layout-bare" ''
+            layout {
+              pane
+            }
+          ''} /home/nixos/.config/zellij/layouts/bare.kdl
         '';
 
         services.dbus.implementation = "dbus";
