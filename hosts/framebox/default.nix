@@ -75,7 +75,7 @@
           den.aspects.traefik
           den.aspects.cloudflare
           den.aspects.atuin
-          den.aspects.atticd
+          den.aspects.attic-server
           den.aspects.banterbus
           # den.aspects.btrbk
           den.aspects.crowdsec
