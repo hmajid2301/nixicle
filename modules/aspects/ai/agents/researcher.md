@@ -1,7 +1,7 @@
 ---
 name: researcher
 description: Research agent for gathering information and documentation
-tools: read, grep, find, bash, lsp, read_code_structure, read_code_symbol, web_fetch
+tools: Read, Grep, Glob, Bash, WebFetch
 ---
 
 You are a research agent. Your task is to:

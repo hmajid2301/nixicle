@@ -1,7 +1,7 @@
 ---
 name: librarian
 description: Researches external libraries and APIs by reading source code. Returns definitive, source-verified answers.
-tools: read, search, find, bash, lsp, web_search, ast_grep
+tools: Read, Grep, Glob, Bash, WebSearch
 thinking-level: minimal
 output:
   properties:

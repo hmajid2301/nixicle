@@ -77,6 +77,20 @@ let
   ];
 in
 {
+  flake-file.inputs.agent-skills.url = "github:Kyure-A/agent-skills-nix";
+  flake-file.inputs.matt-skills = {
+    url = "github:mattpocock/skills";
+    flake = false;
+  };
+  flake-file.inputs.gitlab-ci-skill = {
+    url = "git+https://gitlab.com/gitlab-org/ci-cd/gitlab-ci-skill.git";
+    flake = false;
+  };
+  flake-file.inputs.playwright-cli-skill = {
+    url = "github:microsoft/playwright-cli";
+    flake = false;
+  };
+
   den.aspects.ai = {
     homeManager =
       {
@@ -87,6 +101,54 @@ in
       }:
       let
         cfg = config.nixicle.ketch;
+        aiCfg = config.nixicle.ai;
+
+        mkModel = id: input: { inherit id input; };
+        mkTextModel = id: mkModel id [ "text" ];
+        mkVisionModel =
+          id:
+          mkModel id [
+            "text"
+            "image"
+          ];
+
+        baseProviders = {
+          llama-swap = {
+            baseUrl = "http://localhost:5800/v1";
+            api = "openai-completions";
+            apiKey = "sk-no-key";
+            models = [
+              (mkTextModel "qwen3-coder-30b")
+              (mkTextModel "qwen3-coder-30b:think")
+              (mkTextModel "qwen25-coder-7b")
+              (mkVisionModel "qwen3-vl:8b")
+            ];
+          };
+          ollama = {
+            baseUrl = "http://localhost:11434/v1";
+            api = "openai-completions";
+            apiKey = "ollama";
+            models = [
+              (mkVisionModel "qwen3.6:27b")
+              (mkVisionModel "qwen3.5:cloud")
+              (mkVisionModel "kimi-k2.7-code:cloud")
+              (mkVisionModel "kimi-k3:cloud")
+              (mkTextModel "glm-5.2:cloud")
+              (mkTextModel "glm-5.1:cloud")
+              (mkTextModel "deepseek-v4-pro:cloud")
+              (mkVisionModel "minimax-m3:cloud")
+            ];
+          };
+        };
+
+        mergedProviders = lib.mapAttrs (
+          name: provider:
+          provider
+          // {
+            models = provider.models ++ (aiCfg.extraPiModels.${name} or [ ]);
+          }
+        ) baseProviders;
+
         configuredKetchSecrets =
           if cfg.enable then
             lib.filterAttrs (_: value: value != null) {
@@ -127,101 +189,118 @@ in
         // ketchSecretPlaceholders;
       in
       {
-        options.nixicle.ketch = {
-          enable = lib.mkOption {
-            type = lib.types.bool;
-            default = true;
-            description = "Whether to manage ketch config.json with Home Manager.";
-          };
+        imports = [ inputs.agent-skills.homeManagerModules.default ];
 
-          settings = lib.mkOption {
-            description = "Non-secret ketch config values.";
-            default = { };
-            type = lib.types.submodule {
-              options = {
-                backend = lib.mkOption {
-                  type = lib.types.enum [
-                    "brave"
-                    "ddg"
-                    "searxng"
-                    "exa"
-                  ];
-                  default = "searxng";
-                };
-                searxngUrl = lib.mkOption {
-                  type = lib.types.str;
-                  default = "http://127.0.0.1:8082";
-                };
-                limit = lib.mkOption {
-                  type = lib.types.ints.positive;
-                  default = 5;
-                };
-                cacheTTL = lib.mkOption {
-                  type = lib.types.str;
-                  default = "72h";
-                };
-                browser = lib.mkOption {
-                  type = lib.types.nullOr lib.types.str;
-                  default = null;
-                };
-                codeBackend = lib.mkOption {
-                  type = lib.types.enum [
-                    "grepapp"
-                    "sourcegraph"
-                    "github"
-                  ];
-                  default = "grepapp";
-                };
-                docsBackend = lib.mkOption {
-                  type = lib.types.enum [
-                    "context7"
-                    "local"
-                  ];
-                  default = "context7";
-                };
-                sourcegraphURL = lib.mkOption {
-                  type = lib.types.str;
-                  default = "https://sourcegraph.com";
-                };
-                urlRewrites = lib.mkOption {
-                  default = [ ];
-                  type = lib.types.listOf (
-                    lib.types.submodule {
-                      options = {
-                        match = lib.mkOption { type = lib.types.str; };
-                        replace = lib.mkOption { type = lib.types.str; };
-                      };
-                    }
-                  );
-                };
-                spaMarkers = lib.mkOption {
-                  type = lib.types.listOf lib.types.str;
-                  default = [ ];
-                };
-              };
+        options.nixicle = {
+          ai = {
+            extraPiModels = lib.mkOption {
+              type = lib.types.attrsOf (lib.types.listOf lib.types.attrs);
+              default = { };
+              description = ''
+                Extra Pi agent provider models keyed by provider name (e.g. `ollama`, `llama-swap`).
+                Use this to add local models like `qwen3.6-27b` or unsloth models and declare their
+                modalities so Pi knows they support image input.
+                Example: `ollama = [ { id = "qwen3.6-27b"; input = [ "text" "image" ]; } ];`
+              '';
             };
           };
 
-          secrets = lib.mkOption {
-            description = "SOPS secret names to inject into ketch config.json.";
-            default = { };
-            type = lib.types.submodule {
-              options = {
-                braveApiKey = lib.mkOption {
-                  type = lib.types.nullOr lib.types.str;
-                  default = null;
+          ketch = {
+            enable = lib.mkOption {
+              type = lib.types.bool;
+              default = true;
+              description = "Whether to manage ketch config.json with Home Manager.";
+            };
+
+            settings = lib.mkOption {
+              description = "Non-secret ketch config values.";
+              default = { };
+              type = lib.types.submodule {
+                options = {
+                  backend = lib.mkOption {
+                    type = lib.types.enum [
+                      "brave"
+                      "ddg"
+                      "searxng"
+                      "exa"
+                    ];
+                    default = "searxng";
+                  };
+                  searxngUrl = lib.mkOption {
+                    type = lib.types.str;
+                    default = "http://127.0.0.1:8082";
+                  };
+                  limit = lib.mkOption {
+                    type = lib.types.ints.positive;
+                    default = 5;
+                  };
+                  cacheTTL = lib.mkOption {
+                    type = lib.types.str;
+                    default = "72h";
+                  };
+                  browser = lib.mkOption {
+                    type = lib.types.nullOr lib.types.str;
+                    default = null;
+                  };
+                  codeBackend = lib.mkOption {
+                    type = lib.types.enum [
+                      "grepapp"
+                      "sourcegraph"
+                      "github"
+                    ];
+                    default = "grepapp";
+                  };
+                  docsBackend = lib.mkOption {
+                    type = lib.types.enum [
+                      "context7"
+                      "local"
+                    ];
+                    default = "context7";
+                  };
+                  sourcegraphURL = lib.mkOption {
+                    type = lib.types.str;
+                    default = "https://sourcegraph.com";
+                  };
+                  urlRewrites = lib.mkOption {
+                    default = [ ];
+                    type = lib.types.listOf (
+                      lib.types.submodule {
+                        options = {
+                          match = lib.mkOption { type = lib.types.str; };
+                          replace = lib.mkOption { type = lib.types.str; };
+                        };
+                      }
+                    );
+                  };
+                  spaMarkers = lib.mkOption {
+                    type = lib.types.listOf lib.types.str;
+                    default = [ ];
+                  };
                 };
-                exaApiKey = lib.mkOption {
-                  type = lib.types.nullOr lib.types.str;
-                  default = null;
-                };
-                context7ApiKey = lib.mkOption {
-                  type = lib.types.nullOr lib.types.str;
-                  default = null;
-                };
-                githubToken = lib.mkOption {
-                  type = lib.types.nullOr lib.types.str;
-                  default = null;
+              };
+            };
+
+            secrets = lib.mkOption {
+              description = "SOPS secret names to inject into ketch config.json.";
+              default = { };
+              type = lib.types.submodule {
+                options = {
+                  braveApiKey = lib.mkOption {
+                    type = lib.types.nullOr lib.types.str;
+                    default = null;
+                  };
+                  exaApiKey = lib.mkOption {
+                    type = lib.types.nullOr lib.types.str;
+                    default = null;
+                  };
+                  context7ApiKey = lib.mkOption {
+                    type = lib.types.nullOr lib.types.str;
+                    default = null;
+                  };
+                  githubToken = lib.mkOption {
+                    type = lib.types.nullOr lib.types.str;
+                    default = null;
+                  };
                 };
               };
             };
@@ -238,32 +317,7 @@ in
 
           home.file = {
             ".pi/agent/models.json".source = (pkgs.formats.json { }).generate "pi-models" {
-              providers = {
-                llama-swap = {
-                  baseUrl = "http://localhost:5800/v1";
-                  api = "openai-completions";
-                  apiKey = "sk-no-key";
-                  models = [
-                    { id = "qwen3-coder-30b"; }
-                    { id = "qwen3-coder-30b:think"; }
-                    { id = "qwen25-coder-7b"; }
-                    { id = "qwen3-vl:8b"; }
-                  ];
-                };
-                ollama = {
-                  baseUrl = "http://localhost:11434/v1";
-                  api = "openai-completions";
-                  apiKey = "ollama";
-                  models = [
-                    { id = "qwen3.5:cloud"; }
-                    { id = "kimi-k2.7-code:cloud"; }
-                    { id = "glm-5.2:cloud"; }
-                    { id = "glm-5.1:cloud"; }
-                    { id = "deepseek-v4-pro:cloud"; }
-                    { id = "minimax-m3:cloud"; }
-                  ];
-                };
-              };
+              providers = mergedProviders;
             };
             ".pi/agent/settings.json".source = (pkgs.formats.json { }).generate "pi-settings" {
               defaultProvider = "openai-codex";
@@ -472,6 +526,33 @@ in
           );
 
           programs = {
+            agent-skills = {
+              enable = true;
+              sources.matt = {
+                path = inputs.matt-skills;
+                subdir = "skills";
+                idPrefix = "matt";
+              };
+              sources.gitlab-ci = {
+                path = inputs.gitlab-ci-skill;
+              };
+              sources.playwright-cli = {
+                path = inputs.playwright-cli-skill;
+                subdir = "skills";
+              };
+              skills.enable = [ "matt/engineering/wayfinder" ];
+              skills.explicit."gitlab-ci-skill" = {
+                from = "gitlab-ci";
+                path = ".";
+              };
+              skills.explicit."playwright-cli" = {
+                from = "playwright-cli";
+                path = "playwright-cli";
+              };
+              targets.claude.enable = true;
+              targets.pi.enable = true;
+            };
+
             claude-code = {
               enable = true;
 
