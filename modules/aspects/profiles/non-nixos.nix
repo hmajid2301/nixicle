@@ -153,15 +153,18 @@
           }
           spawn-at-startup "env" "-u" "LD_LIBRARY_PATH" "-u" "__EGL_VENDOR_LIBRARY_FILENAMES" "-u" "LIBGL_DRIVERS_PATH" "-u" "GBM_BACKENDS_PATH" "xwayland-satellite"
           spawn-at-startup "nfsm"
-          spawn-at-startup "${
-            pkgs.writeShellScript "noctalia-nixgl" ''
-              export PATH="${config.home.profileDirectory}/bin:/run/wrappers/bin:/usr/bin:/bin"
-              exec ${config.lib.nixGL.wrap config.programs.noctalia.package}/bin/noctalia
-            ''
-          }"
+          spawn-at-startup "${pkgs.writeShellScript "noctalia-nixgl" ''
+            export PATH="${config.home.profileDirectory}/bin:/run/wrappers/bin:/usr/bin:/bin"
+            exec ${config.lib.nixGL.wrap config.programs.noctalia.package}/bin/noctalia
+          ''}"
           switch-events {
               lid-close {
-                  spawn "${import ../niri/_lid-guard.nix { inherit pkgs; noctalia = config.programs.noctalia.package; }}"
+                  spawn "${
+                    import ../niri/_lid-guard.nix {
+                      inherit pkgs;
+                      noctalia = config.programs.noctalia.package;
+                    }
+                  }"
               }
           }
           window-rule {
