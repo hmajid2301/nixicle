@@ -103,28 +103,25 @@
     nixos-raspberrypi.url = "github:nvmd/nixos-raspberrypi/main";
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     noctalia = {
-      url = "github:noctalia-dev/noctalia/legacy-v4";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        noctalia-qs.follows = "noctalia-qs";
-      };
-    };
-    noctalia-plugins = {
-      url = "github:Mic92/noctalia-plugins";
+      url = "github:noctalia-dev/noctalia";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    noctalia-qs = {
-      url = "github:noctalia-dev/noctalia-qs";
+    noctalia-community-plugins = {
+      url = "github:noctalia-dev/community-plugins";
+      flake = false;
+    };
+    noctalia-greeter = {
+      url = "github:noctalia-dev/noctalia-greeter";
       inputs.nixpkgs.follows = "nixpkgs";
+    };
+    noctalia-official-plugins = {
+      url = "github:noctalia-dev/official-plugins";
+      flake = false;
     };
     nur.url = "github:nix-community/NUR";
     oxy2dev-nvim-scripts = {
       url = "github:OXY2DEV/nvim";
       flake = false;
-    };
-    pam-shim = {
-      url = "github:Cu3PO42/pam_shim/next";
-      inputs.nixpkgs.follows = "nixpkgs";
     };
     playwright-cli-skill = {
       url = "github:microsoft/playwright-cli";

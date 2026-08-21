@@ -10,7 +10,6 @@
   home-manager.sharedModules = lib.mkForce [ ];
   nixpkgs.overlays = [
     inputs.niri.overlays.niri
-    inputs.noctalia-qs.overlays.default
   ];
 
   nix.settings = {
