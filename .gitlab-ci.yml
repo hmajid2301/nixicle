@@ -90,6 +90,10 @@ build:vps:
   extends: .build:nixos
   variables:
     NIXOS_CONFIG: vps
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+      changes: ["flake.lock"]
 
 build:nas:
   extends: .build:nixos
