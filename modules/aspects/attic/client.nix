@@ -14,7 +14,11 @@
 
         home.packages = [ pkgs.attic-client ];
 
-        nix.settings.netrc-file = config.sops.secrets."netrc".path;
+        nix.settings = {
+          netrc-file = config.sops.secrets."netrc".path;
+          extra-substituters = [ "https://attic.haseebmajid.dev/main" ];
+          extra-trusted-public-keys = [ "main:+A4BR+E8F8FNe1YR6Uq8qGO5dVj8y1kaalW3kQ0WgXo=" ];
+        };
 
         systemd.user.services.attic-watch-store = {
           Unit = {

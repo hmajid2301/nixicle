@@ -32,7 +32,6 @@
         users.groups.atticd = { };
 
         sops.secrets.attic = {
-          sopsFile = ../../nixos/services/secrets.yaml;
           owner = "atticd";
           group = "atticd";
           mode = "0400";
