@@ -7,7 +7,7 @@ let
       ''
         switch-events {
             lid-close {
-                spawn "qs" "-c" "noctalia-shell" "ipc" "call" "lockScreen" "lock"
+                spawn "${lidGuard}"
             }
         }
       ''
