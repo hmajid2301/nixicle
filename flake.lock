@@ -1467,11 +1467,11 @@
         "playwright": "playwright_4"
       },
       "locked": {
-        "lastModified": 1787174926,
-        "narHash": "sha256-0Y9fs/6iT/Spua2RzzPrN+e02wMoABdgiUJh775jOe0=",
+        "lastModified": 1787336103,
+        "narHash": "sha256-gCqa7tTRCyhNcEmvpR1qvNpE+tZi4drOPGtqfVObTxk=",
         "owner": "hmajid2301",
         "repo": "lettucego",
-        "rev": "699ad46cb3b0fcd55dd3449ba58d175b556b25d4",
+        "rev": "24ac482814737b9210184104c3b514bdacdfee00",
         "type": "gitlab"
       },
       "original": {
