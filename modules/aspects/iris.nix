@@ -28,9 +28,9 @@
       };
 
     homeManager =
-      { pkgs, ... }:
+      { pkgs, inputs, ... }:
       {
-        home.packages = [ pkgs.iris ];
+        home.packages = [ inputs.iris.packages.${pkgs.stdenv.hostPlatform.system}.default ];
 
         # `i` launches a PTY-wrapped fish with the iris overlay.
         # Plain `fish` stays clean for TUIs. Do NOT run `iris setup`.
@@ -40,7 +40,7 @@
           [core]
           version = 1
           shell = "fish"      # force fish; empty would auto-detect
-          mode = "last"       # "last" | "spec" | "history"
+          mode = "history"   # "last" | "spec" | "history"
           debug = false
 
           [ui]
@@ -68,8 +68,8 @@
 
           [ai.providers.ollama]
           endpoint = "http://localhost:11434/v1/chat/completions"
-          model = "qwen2.5-coder"
-          timeout_ms = 5000
+          model = "gemma4:cloud"
+          timeout_ms = 15000   # cloud latency, bump from 5s
         '';
       };
   };
