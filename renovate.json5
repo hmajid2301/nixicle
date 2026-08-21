@@ -19,7 +19,7 @@
   "labels": ["dependencies", "renovate"],
   "lockFileMaintenance": {
     "enabled": true,
-    "automerge": false,
+    "automerge": true,
     "schedule": [],
     "commitMessageAction": "chore",
     "commitMessageTopic": "Update flake.lock"
