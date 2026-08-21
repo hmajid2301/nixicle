@@ -175,6 +175,34 @@ in
       ])
     ];
 
+  den.policies.nixflix-secrets =
+    { ... }:
+    [
+      (pipe.from "secrets" [
+        (pipe.filter (_: false))
+        (pipe.append {
+          "sonarr/api_key" = "/run/secrets/sonarr/api_key";
+          "sonarr/password" = "/run/secrets/sonarr/password";
+          "radarr/api_key" = "/run/secrets/radarr/api_key";
+          "radarr/password" = "/run/secrets/radarr/password";
+          "prowlarr/api_key" = "/run/secrets/prowlarr/api_key";
+          "prowlarr/password" = "/run/secrets/prowlarr/password";
+          "jellyfin/admin_password" = "/run/secrets/jellyfin/admin_password";
+          "jellyfin/api_key" = "/run/secrets/jellyfin/api_key";
+          "jellyseerr/api_key" = "/run/secrets/jellyseerr/api_key";
+          "qbittorrent/password" = "/run/secrets/qbittorrent/password";
+          "sonarr-anime/api_key" = "/run/secrets/sonarr-anime/api_key";
+          "sonarr-anime/password" = "/run/secrets/sonarr-anime/password";
+          "opensubtitles/api-key" = "/run/secrets/opensubtitles/api-key";
+          "opensubtitles/password" = "/run/secrets/opensubtitles/password";
+          "jellyfin/client_id" = "/run/secrets/jellyfin/client_id";
+          "jellyfin/client_secret" = "/run/secrets/jellyfin/client_secret";
+        })
+        (pipe.for mergeOne)
+        (pipe.to [ den.aspects.nixflix ])
+      ])
+    ];
+
   den.schema.host.includes = [
     den.policies.crowdsec-secrets
     den.policies.traefik-secrets
@@ -190,5 +218,6 @@ in
     den.policies.paperless-secrets
     den.policies.tandoor-secrets
     den.policies.homepage-secrets
+    den.policies.nixflix-secrets
   ];
 }
