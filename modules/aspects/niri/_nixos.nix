@@ -29,6 +29,13 @@
   };
 
   programs.noctalia.recommendedServices.enable = lib.mkDefault true;
+  services.power-profiles-daemon.enable = lib.mkDefault true;
+
+  users.groups.battery_ctl = lib.mkIf config.services.power-profiles-daemon.enable { };
+  services.udev.extraRules = lib.mkIf config.services.power-profiles-daemon.enable ''
+    ACTION=="add|change", SUBSYSTEM=="power_supply", KERNEL=="BAT*", RUN+="${pkgs.coreutils}/bin/chgrp battery_ctl /sys%p/charge_control_end_threshold", RUN+="${pkgs.coreutils}/bin/chmod 0664 /sys%p/charge_control_end_threshold"
+  '';
+
   nix.settings = {
     extra-substituters = [ "https://niri.cachix.org" ];
     extra-trusted-public-keys = [ "niri.cachix.org-1:Wv0OmO7PsuocRKzfDoJ3mulSl7Z6oezYhGhR+3W2964=" ];

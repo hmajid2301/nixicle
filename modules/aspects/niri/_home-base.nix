@@ -13,9 +13,13 @@
   home.packages =
     with pkgs;
     [
+      bitwarden-cli
       cliphist
       wl-clipboard
       wdisplays
+      glib.bin
+      sshfs
+      upower
     ]
     ++ (with inputs.nfsm.packages.${pkgs.stdenv.hostPlatform.system}; [
       nfsm

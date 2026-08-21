@@ -159,6 +159,11 @@
               exec ${config.lib.nixGL.wrap config.programs.noctalia.package}/bin/noctalia
             ''
           }"
+          switch-events {
+              lid-close {
+                  spawn "${import ../niri/_lid-guard.nix { inherit pkgs; noctalia = config.programs.noctalia.package; }}"
+              }
+          }
           window-rule {
               geometry-corner-radius 10.000000 10.000000 10.000000 10.000000
               clip-to-geometry true

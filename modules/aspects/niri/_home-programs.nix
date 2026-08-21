@@ -2,6 +2,7 @@
   pkgs,
   config,
   lib,
+  inputs,
   hostIsLaptop,
   ...
 }:
@@ -9,6 +10,13 @@ let
   inherit (config.lib.stylix) colors;
   inherit (config.lib.formats.rasi) mkLiteral;
 
+  noctaliaPluginsDir = pkgs.runCommand "noctalia-plugins-nix" { } ''
+    mkdir -p $out
+    ln -s ${inputs.noctalia-community-plugins}/niri-displays $out/niri-displays
+    ln -s ${inputs.noctalia-community-plugins}/phone-connect $out/phone-connect
+    ln -s ${inputs.noctalia-community-plugins}/battery-power-management $out/battery-power-management
+    ln -s ${inputs.noctalia-official-plugins}/bitwarden $out/bitwarden
+  '';
 in
 {
   programs = {
@@ -197,6 +205,23 @@ in
           { type = "notification"; }
           { type = "nightlight"; }
         ];
+        plugins = {
+          enabled = [
+            "raycursive/niri-displays"
+            "noctalia/bitwarden"
+            "icefish/phone-connect"
+            "piero-93/battery-power-management"
+          ];
+          auto_update = "none";
+          source = [
+            {
+              name = "nix-managed";
+              kind = "path";
+              location = "${noctaliaPluginsDir}";
+              enabled = true;
+            }
+          ];
+        };
       };
     };
 
