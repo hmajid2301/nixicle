@@ -263,9 +263,7 @@
         programs = {
           firefox.package = lib.mkForce (config.lib.nixGL.wrap pkgs.firefox);
 
-          ghostty = lib.mkForce {
-            package = config.lib.nixGL.wrap pkgs.ghostty;
-          };
+          ghostty.package = lib.mkForce (config.lib.nixGL.wrap pkgs.ghostty);
         };
 
         systemd.user.services.niri-env-setup = {
@@ -301,6 +299,15 @@
         };
 
         xdg = {
+          configFile."xdg-desktop-portal/niri-portals.conf".text = ''
+            [preferred]
+            default=gnome;gtk;
+            org.freedesktop.impl.portal.FileChooser=gtk;
+            org.freedesktop.impl.portal.Access=gtk;
+            org.freedesktop.impl.portal.Notification=gtk;
+            org.freedesktop.impl.portal.Secret=gnome-keyring;
+          '';
+
           dataFile."applications/google-chrome.desktop".text = ''
             [Desktop Entry]
             Version=1.0
@@ -349,6 +356,18 @@
             [Desktop Action new-window]
             Name=New Window
             Exec=${config.home.homeDirectory}/.nix-profile/bin/ghostty
+          '';
+
+          # The unit shipped in the ghostty package starts the single-instance
+          # daemon with --initial-window=false. A cold `ghostty` therefore
+          # D-Bus activates a daemon that deliberately opens nothing, hands its
+          # request over and exits, so no window appears until some other
+          # ghostty already owns the bus name. Drop the flag via a drop-in so
+          # activation produces a window on its own.
+          configFile."systemd/user/app-com.mitchellh.ghostty.service.d/initial-window.conf".text = ''
+            [Service]
+            ExecStart=
+            ExecStart=${config.programs.ghostty.package}/bin/ghostty --gtk-single-instance=true
           '';
 
           configFile."environment.d/envvars.conf".text = ''
