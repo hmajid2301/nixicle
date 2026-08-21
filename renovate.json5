@@ -12,7 +12,7 @@
   "dependencyDashboardTitle": "🤖 Dependency Updates",
   "suppressNotifications": ["prIgnoreNotification"],
   "rebaseWhen": "conflicted",
-  "schedule": ["after 10pm every weekday", "before 5am every weekday", "every weekend"],
+  "schedule": [],
   "timezone": "Europe/London",
   "prConcurrentLimit": 10,
   "prHourlyLimit": 0,
@@ -20,7 +20,7 @@
   "lockFileMaintenance": {
     "enabled": true,
     "automerge": false,
-    "schedule": ["before 6am on monday"],
+    "schedule": [],
     "commitMessageAction": "chore",
     "commitMessageTopic": "Update flake.lock"
   },
