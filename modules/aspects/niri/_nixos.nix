@@ -6,12 +6,29 @@
   ...
 }:
 {
-  imports = [ inputs.niri.nixosModules.niri ];
+  imports = [
+    inputs.niri.nixosModules.niri
+    inputs.noctalia-greeter.nixosModules.default
+  ];
+
   home-manager.sharedModules = lib.mkForce [ ];
   nixpkgs.overlays = [
     inputs.niri.overlays.niri
   ];
 
+  users.users.greeter = {
+    isSystemUser = true;
+    group = "greeter";
+  };
+  users.groups.greeter = { };
+
+  services.logind = {
+    lidSwitch = lib.mkDefault "ignore";
+    lidSwitchExternalPower = lib.mkDefault "ignore";
+    lidSwitchDocked = lib.mkDefault "ignore";
+  };
+
+  programs.noctalia.recommendedServices.enable = lib.mkDefault true;
   nix.settings = {
     extra-substituters = [ "https://niri.cachix.org" ];
     extra-trusted-public-keys = [ "niri.cachix.org-1:Wv0OmO7PsuocRKzfDoJ3mulSl7Z6oezYhGhR+3W2964=" ];
