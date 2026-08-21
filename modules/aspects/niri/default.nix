@@ -9,18 +9,21 @@
       url = "github:gvolpe/nfsm";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    noctalia-qs = {
-      url = "github:noctalia-dev/noctalia-qs";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     noctalia = {
-      url = "github:noctalia-dev/noctalia/legacy-v4";
+      url = "github:noctalia-dev/noctalia";
       inputs.nixpkgs.follows = "nixpkgs";
-      inputs.noctalia-qs.follows = "noctalia-qs";
     };
-    noctalia-plugins = {
-      url = "github:Mic92/noctalia-plugins";
+    noctalia-greeter = {
+      url = "github:noctalia-dev/noctalia-greeter";
       inputs.nixpkgs.follows = "nixpkgs";
+    };
+    noctalia-community-plugins = {
+      url = "github:noctalia-dev/community-plugins";
+      flake = false;
+    };
+    noctalia-official-plugins = {
+      url = "github:noctalia-dev/official-plugins";
+      flake = false;
     };
   };
 
@@ -43,7 +46,6 @@
             {
               services.greetd = {
                 enable = true;
-                useTextGreeter = !host.autologin;
                 settings =
                   let
                     session = {
@@ -51,13 +53,7 @@
                       user = user.userName;
                     };
                     greeterSession = {
-                      command =
-                        let
-                          theme =
-                            with config.lib.stylix.colors.withHashtag;
-                            "border=${base0D};text=${base05};prompt=${base0E};time=${base04};action=${base0B};button=${base0C};container=${base00};input=${base02}";
-                        in
-                        "${pkgs.tuigreet}/bin/tuigreet --time --remember --remember-session --cmd 'niri-session &> /dev/null' --theme '${theme}'";
+                      command = "${config.programs.noctalia-greeter.package}/bin/noctalia-greeter-session";
                       user = "greeter";
                     };
                   in
@@ -66,12 +62,19 @@
                   }
                   // lib.optionalAttrs host.autologin { initial_session = session; };
               };
+
+              programs.noctalia-greeter = {
+                enable = !host.autologin;
+                settings = {
+                  session.default = "niri";
+                };
+              };
             };
         }
       )
     ];
 
-    persist.directories = [ "/var/cache/tuigreet" ];
+    persist.directories = [ "/var/lib/noctalia-greeter" ];
 
     nixos = { ... }: {
       imports = [ ./_nixos.nix ];
