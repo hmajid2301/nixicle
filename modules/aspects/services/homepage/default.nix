@@ -29,6 +29,7 @@
             enable = true;
             environmentFiles = [ secretPaths.homepage_env ];
             listenPort = 8173;
+            allowedHosts = "homepage.haseebmajid.dev,localhost:8173,127.0.0.1:8173";
             bookmarks = [ ];
             services = import ./_services.nix;
             settings = import ./_settings.nix;
