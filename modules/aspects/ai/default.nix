@@ -162,7 +162,9 @@ in
         declaredKetchSecrets = builtins.listToAttrs (
           map (secretName: {
             name = secretName;
-            value = { };
+            value = {
+              sopsFile = ../../secrets.yaml;
+            };
           }) (lib.unique (builtins.attrValues configuredKetchSecrets))
         );
         ketchSecretPlaceholders = lib.mapAttrs' (

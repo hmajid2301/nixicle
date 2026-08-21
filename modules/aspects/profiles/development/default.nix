@@ -80,6 +80,8 @@
       {
         imports = [ inputs.nix-index-database.homeModules.nix-index ];
 
+        nixicle.ketch.secrets.context7ApiKey = "ketch_context7_api_key";
+
         xdg.desktopEntries = lib.optionalAttrs pkgs.stdenv.hostPlatform.isLinux {
           neovim = {
             name = "Neovim";
