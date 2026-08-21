@@ -1,7 +1,7 @@
 _: {
   den.aspects.hypridle = {
     homeManager =
-      { config, ... }:
+      { config, lib, ... }:
       let
         # Detect which compositor is active
         isNiri = config.wayland.windowManager.niri.enable or false;
@@ -27,13 +27,13 @@ _: {
           if isHyprland then
             "pidof hyprlock || hyprlock"
           else if isNiri then
-            "noctalia-shell ipc call lockScreen lock"
+            "noctalia msg session lock"
           else
             "loginctl lock-session";
       in
       {
         services.hypridle = {
-          enable = true;
+          enable = lib.mkDefault (!isNiri);
           settings = {
             general = {
               before_sleep_cmd = "loginctl lock-session";

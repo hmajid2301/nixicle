@@ -117,47 +117,8 @@
         sops.defaultSymlinkPath = lib.mkForce "/run/user/1003/secrets";
         sops.defaultSecretsMountPoint = lib.mkForce "/run/user/1003/secrets.d";
 
-        # Lock on suspend (e.g. lid close) on this Ubuntu host.
-        #
-        # noctalia's own `general.lockOnSuspend` does not listen for logind's
-        # sleep signals, so a system-initiated suspend resumes unlocked
-        # (noctalia-shell issues #2569 / #1066). The shared lock-before-sleep
-        # service from the niri aspect uses `dbus-monitor --system`, which
-        # needs the D-Bus BecomeMonitor interface — NixOS's bus policy allows
-        # it but Ubuntu's rejects it, so on this host it silently never fires.
-        #
-        # Fix: use swayidle's `-w before-sleep` hook, the approach the niri +
-        # noctalia community settled on. The `-w` flag makes swayidle hold a
-        # logind delay inhibitor, run the lock command, WAIT for it to return,
-        # then release — the race-free "inhibit → lock → release" sequence the
-        # systemd docs require (watching PrepareForSleep without an inhibitor
-        # held first is racy). swayidle uses logind's inhibitor API as an
-        # ordinary client, so it works under Ubuntu's bus policy too.
-        #
-        # Neutralise the shared service and run swayidle instead. Ordered
-        # after niri-env-setup so WAYLAND_DISPLAY/NIRI_SOCKET are in the user
-        # environment.
-        systemd.user.services.lock-before-sleep.Install.WantedBy = lib.mkForce [ ];
-
-        systemd.user.services.swayidle-lock = {
-          Unit = {
-            Description = "swayidle: lock noctalia before sleep";
-            PartOf = [ "graphical-session.target" ];
-            After = [
-              "graphical-session.target"
-              "niri-env-setup.service"
-            ];
-          };
-          Service = {
-            Type = "simple";
-            ExecStart = "${pkgs.swayidle}/bin/swayidle -w before-sleep '${config.programs.noctalia-shell.package}/bin/noctalia-shell ipc call lockScreen lock || ${pkgs.systemd}/bin/loginctl lock-session'";
-            Restart = "on-failure";
-            RestartSec = 2;
-          };
-          Install = {
-            WantedBy = [ "graphical-session.target" ];
-          };
-        };
+        # v5 [lockscreen].lock_before_suspend handles logind sleep signals natively.
+        # Noctalia's own idle service replaces the swayidle workaround.
 
         programs = {
           ghostty.settings = {
@@ -180,28 +141,24 @@
             keybind = [ "ctrl+shift+plus=increase_font_size:1" ];
           };
 
-          noctalia-shell.settings = {
+          noctalia.settings = {
             idle = {
-              enabled = true;
-              screenOffTimeout = 330;
-              lockTimeout = 300;
-              suspendTimeout = 900;
-              fadeDuration = 5;
+              pre_action_fade_seconds = 5.0;
+              behavior = {
+                lock = {
+                  timeout = 300;
+                  action = "lock";
+                };
+                screen-off = {
+                  timeout = 330;
+                  action = "screen_off";
+                };
+                suspend = {
+                  timeout = 900;
+                  action = "lock_and_suspend";
+                };
+              };
             };
-            bar.widgets.right = lib.mkBefore [
-              {
-                id = "Bluetooth";
-                displayMode = "icon";
-              }
-              {
-                id = "Brightness";
-                displayMode = "onhover";
-              }
-              { id = "Battery"; }
-            ];
-            controlCenter.shortcuts.right = lib.mkBefore [
-              { id = "PowerProfile"; }
-            ];
           };
         };
 

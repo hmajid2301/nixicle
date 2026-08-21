@@ -1,4 +1,5 @@
 {
+  config,
   pkgs,
   inputs,
   hostIsLaptop,
@@ -6,6 +7,8 @@
 }:
 {
   imports = [ inputs.noctalia.homeModules.default ];
+
+  programs.noctalia.enable = true;
 
   home.packages =
     with pkgs;
@@ -20,14 +23,12 @@
     ]);
 
   xdg.configFile = {
-    "noctalia/plugins/display-config".source = "${inputs.noctalia-plugins}/display-config";
-    "noctalia/plugins/rbw-provider".source = "${inputs.noctalia-plugins}/rbw-provider";
   };
 
   wayland.windowManager.niri = {
     enable = true;
     package = pkgs.niri;
     xwaylandSatellitePackage = pkgs.xwayland-satellite;
-    extraConfig = import ./_extra-config.nix { inherit hostIsLaptop; };
+    extraConfig = import ./_extra-config.nix { inherit pkgs config hostIsLaptop; };
   };
 }

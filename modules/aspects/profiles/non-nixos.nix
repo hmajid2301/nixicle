@@ -1,10 +1,6 @@
 { ... }:
 {
   flake-file.inputs.nixgl.url = "github:nix-community/nixGL";
-  flake-file.inputs.pam-shim = {
-    url = "github:Cu3PO42/pam_shim/next";
-    inputs.nixpkgs.follows = "nixpkgs";
-  };
 
   den.aspects.non-nixos = {
     homeManager =
@@ -16,10 +12,6 @@
         ...
       }:
       {
-        imports = [
-          inputs.pam-shim.homeModules.default
-        ];
-
         wayland.windowManager.niri.extraConfig = lib.mkForce ''
           input {
               keyboard {
@@ -97,16 +89,16 @@
               Mod+Ctrl+J { focus-workspace-down; }
               Mod+Ctrl+K { focus-workspace-up; }
               Mod+Ctrl+L { consume-or-expel-window-right; }
-              Mod+Ctrl+Shift+0 { move-column-to-workspace 10; }
-              Mod+Ctrl+Shift+1 { move-column-to-workspace 1; }
-              Mod+Ctrl+Shift+2 { move-column-to-workspace 2; }
-              Mod+Ctrl+Shift+3 { move-column-to-workspace 3; }
-              Mod+Ctrl+Shift+4 { move-column-to-workspace 4; }
-              Mod+Ctrl+Shift+5 { move-column-to-workspace 5; }
-              Mod+Ctrl+Shift+6 { move-column-to-workspace 6; }
-              Mod+Ctrl+Shift+7 { move-column-to-workspace 7; }
-              Mod+Ctrl+Shift+8 { move-column-to-workspace 8; }
-              Mod+Ctrl+Shift+9 { move-column-to-workspace 9; }
+              Mod+Ctrl+Shift+0 { move-column-to-workspace focus=false 10; }
+              Mod+Ctrl+Shift+1 { move-column-to-workspace focus=false 1; }
+              Mod+Ctrl+Shift+2 { move-column-to-workspace focus=false 2; }
+              Mod+Ctrl+Shift+3 { move-column-to-workspace focus=false 3; }
+              Mod+Ctrl+Shift+4 { move-column-to-workspace focus=false 4; }
+              Mod+Ctrl+Shift+5 { move-column-to-workspace focus=false 5; }
+              Mod+Ctrl+Shift+6 { move-column-to-workspace focus=false 6; }
+              Mod+Ctrl+Shift+7 { move-column-to-workspace focus=false 7; }
+              Mod+Ctrl+Shift+8 { move-column-to-workspace focus=false 8; }
+              Mod+Ctrl+Shift+9 { move-column-to-workspace focus=false 9; }
               Mod+Ctrl+Shift+H { focus-monitor-left; }
               Mod+Ctrl+Shift+J { focus-monitor-down; }
               Mod+Ctrl+Shift+K { focus-monitor-up; }
@@ -127,16 +119,16 @@
               Mod+R { switch-preset-column-width; }
               Mod+Return { spawn "ghostty"; }
               Mod+S { spawn "noctalia-shell" "ipc" "call" "controlCenter" "toggle"; }
-              Mod+Shift+0 { move-window-to-workspace 10; }
-              Mod+Shift+1 { move-window-to-workspace 1; }
-              Mod+Shift+2 { move-window-to-workspace 2; }
-              Mod+Shift+3 { move-window-to-workspace 3; }
-              Mod+Shift+4 { move-window-to-workspace 4; }
-              Mod+Shift+5 { move-window-to-workspace 5; }
-              Mod+Shift+6 { move-window-to-workspace 6; }
-              Mod+Shift+7 { move-window-to-workspace 7; }
-              Mod+Shift+8 { move-window-to-workspace 8; }
-              Mod+Shift+9 { move-window-to-workspace 9; }
+              Mod+Shift+0 { move-window-to-workspace focus=false 10; }
+              Mod+Shift+1 { move-window-to-workspace focus=false 1; }
+              Mod+Shift+2 { move-window-to-workspace focus=false 2; }
+              Mod+Shift+3 { move-window-to-workspace focus=false 3; }
+              Mod+Shift+4 { move-window-to-workspace focus=false 4; }
+              Mod+Shift+5 { move-window-to-workspace focus=false 5; }
+              Mod+Shift+6 { move-window-to-workspace focus=false 6; }
+              Mod+Shift+7 { move-window-to-workspace focus=false 7; }
+              Mod+Shift+8 { move-window-to-workspace focus=false 8; }
+              Mod+Shift+9 { move-window-to-workspace focus=false 9; }
               Mod+Shift+E { quit; }
               Mod+Shift+Equal { set-window-height "+10%"; }
               Mod+Shift+Escape { spawn "noctalia-shell" "ipc" "call" "sessionMenu" "toggle"; }
@@ -162,13 +154,9 @@
           spawn-at-startup "env" "-u" "LD_LIBRARY_PATH" "-u" "__EGL_VENDOR_LIBRARY_FILENAMES" "-u" "LIBGL_DRIVERS_PATH" "-u" "GBM_BACKENDS_PATH" "xwayland-satellite"
           spawn-at-startup "nfsm"
           spawn-at-startup "${
-            let
-              shimmedQuickshell = config.lib.pamShim.replacePam pkgs.quickshell;
-            in
             pkgs.writeShellScript "noctalia-nixgl" ''
-              export PATH="${pkgs.wlsunset}/bin:${pkgs.wl-clipboard}/bin:${pkgs.cliphist}/bin:${pkgs.coreutils}/bin:${pkgs.gnugrep}/bin:${pkgs.gnused}/bin:${pkgs.bash}/bin:/run/wrappers/bin:${config.home.profileDirectory}/bin:/usr/bin:/bin"
-              export NOCTALIA_PAM_SERVICE="quickshell"
-              exec ${config.lib.nixGL.wrap shimmedQuickshell}/bin/qs -p ${config.programs.noctalia-shell.package}/share/noctalia-shell
+              export PATH="${config.home.profileDirectory}/bin:/run/wrappers/bin:/usr/bin:/bin"
+              exec ${config.lib.nixGL.wrap config.programs.noctalia.package}/bin/noctalia
             ''
           }"
           window-rule {
@@ -213,12 +201,8 @@
           defaultWrapper = "mesa";
         };
 
-        pamShim.enable = true;
-
         nixpkgs.overlays = [
-          inputs.noctalia-qs.overlays.default
           (_final: prev: {
-            quickshell = config.lib.pamShim.replacePam prev.quickshell;
             nautilus = prev.nautilus.overrideAttrs (old: {
               postFixup = (old.postFixup or "") + ''
                 mv $out/bin/nautilus $out/bin/.nautilus-gdk-wrapped

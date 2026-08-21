@@ -1,5 +1,6 @@
-{ hostIsLaptop, ... }:
+{ pkgs, config, hostIsLaptop, ... }:
 let
+  lidGuard = import ./_lid-guard.nix { inherit pkgs; noctalia = config.programs.noctalia.package; };
 
   lidCloseHook =
     if hostIsLaptop then
@@ -33,7 +34,23 @@ in
         focus-follows-mouse max-scroll-amount="0%"
         workspace-auto-back-and-forth
     }
-    output "*" {
+    output "eDP-1" {
+        scale 1.000000
+        transform "normal"
+    }
+    output "DP-1" {
+        scale 1.000000
+        transform "normal"
+    }
+    output "DP-2" {
+        scale 1.000000
+        transform "normal"
+    }
+    output "HDMI-A-1" {
+        scale 1.000000
+        transform "normal"
+    }
+    output "HDMI-A-2" {
         scale 1.000000
         transform "normal"
     }
@@ -85,28 +102,28 @@ in
         Mod+Alt+Shift+L { move-window-to-monitor-right; }
         Mod+B { spawn "rofi" "-show" "drun"; }
         Mod+C { center-column; }
-        Mod+Comma { spawn "noctalia-shell" "ipc" "call" "settings" "toggle"; }
+        Mod+Comma { spawn "noctalia" "msg" "settings-toggle"; }
         Mod+Ctrl+H { consume-or-expel-window-left; }
         Mod+Ctrl+J { focus-workspace-down; }
         Mod+Ctrl+K { focus-workspace-up; }
         Mod+Ctrl+L { consume-or-expel-window-right; }
-        Mod+Ctrl+Shift+0 { move-column-to-workspace 10; }
-        Mod+Ctrl+Shift+1 { move-column-to-workspace 1; }
-        Mod+Ctrl+Shift+2 { move-column-to-workspace 2; }
-        Mod+Ctrl+Shift+3 { move-column-to-workspace 3; }
-        Mod+Ctrl+Shift+4 { move-column-to-workspace 4; }
-        Mod+Ctrl+Shift+5 { move-column-to-workspace 5; }
-        Mod+Ctrl+Shift+6 { move-column-to-workspace 6; }
-        Mod+Ctrl+Shift+7 { move-column-to-workspace 7; }
-        Mod+Ctrl+Shift+8 { move-column-to-workspace 8; }
-        Mod+Ctrl+Shift+9 { move-column-to-workspace 9; }
+        Mod+Ctrl+Shift+0 { move-column-to-workspace focus=false 10; }
+        Mod+Ctrl+Shift+1 { move-column-to-workspace focus=false 1; }
+        Mod+Ctrl+Shift+2 { move-column-to-workspace focus=false 2; }
+        Mod+Ctrl+Shift+3 { move-column-to-workspace focus=false 3; }
+        Mod+Ctrl+Shift+4 { move-column-to-workspace focus=false 4; }
+        Mod+Ctrl+Shift+5 { move-column-to-workspace focus=false 5; }
+        Mod+Ctrl+Shift+6 { move-column-to-workspace focus=false 6; }
+        Mod+Ctrl+Shift+7 { move-column-to-workspace focus=false 7; }
+        Mod+Ctrl+Shift+8 { move-column-to-workspace focus=false 8; }
+        Mod+Ctrl+Shift+9 { move-column-to-workspace focus=false 9; }
         Mod+Ctrl+Shift+H { focus-monitor-left; }
         Mod+Ctrl+Shift+J { focus-monitor-down; }
         Mod+Ctrl+Shift+K { focus-monitor-up; }
         Mod+Ctrl+Shift+L { focus-monitor-right; }
         Mod+E { spawn "nautilus"; }
         Mod+Equal { set-column-width "+10%"; }
-        Mod+Escape { spawn "noctalia-shell" "ipc" "call" "lockScreen" "lock"; }
+        Mod+Escape { spawn "noctalia" "msg" "session" "lock"; }
         Mod+F { fullscreen-window; }
         Mod+H { focus-column-or-monitor-left; }
         Mod+J { focus-window-or-workspace-down; }
@@ -119,20 +136,20 @@ in
         Mod+Q { close-window; }
         Mod+R { switch-preset-column-width; }
         Mod+Return { spawn "ghostty"; }
-        Mod+S { spawn "noctalia-shell" "ipc" "call" "controlCenter" "toggle"; }
-        Mod+Shift+0 { move-window-to-workspace 10; }
-        Mod+Shift+1 { move-window-to-workspace 1; }
-        Mod+Shift+2 { move-window-to-workspace 2; }
-        Mod+Shift+3 { move-window-to-workspace 3; }
-        Mod+Shift+4 { move-window-to-workspace 4; }
-        Mod+Shift+5 { move-window-to-workspace 5; }
-        Mod+Shift+6 { move-window-to-workspace 6; }
-        Mod+Shift+7 { move-window-to-workspace 7; }
-        Mod+Shift+8 { move-window-to-workspace 8; }
-        Mod+Shift+9 { move-window-to-workspace 9; }
+        Mod+S { spawn "noctalia" "msg" "panel-toggle" "control-center"; }
+        Mod+Shift+0 { move-window-to-workspace focus=false 10; }
+        Mod+Shift+1 { move-window-to-workspace focus=false 1; }
+        Mod+Shift+2 { move-window-to-workspace focus=false 2; }
+        Mod+Shift+3 { move-window-to-workspace focus=false 3; }
+        Mod+Shift+4 { move-window-to-workspace focus=false 4; }
+        Mod+Shift+5 { move-window-to-workspace focus=false 5; }
+        Mod+Shift+6 { move-window-to-workspace focus=false 6; }
+        Mod+Shift+7 { move-window-to-workspace focus=false 7; }
+        Mod+Shift+8 { move-window-to-workspace focus=false 8; }
+        Mod+Shift+9 { move-window-to-workspace focus=false 9; }
         Mod+Shift+E { quit; }
         Mod+Shift+Equal { set-window-height "+10%"; }
-        Mod+Shift+Escape { spawn "noctalia-shell" "ipc" "call" "sessionMenu" "toggle"; }
+        Mod+Shift+Escape { spawn "noctalia" "msg" "panel-toggle" "session"; }
         Mod+Shift+F { spawn "nfsm-cli"; }
         Mod+Shift+H { move-column-to-monitor-left; }
         Mod+Shift+J { move-window-to-monitor-down; }
@@ -140,21 +157,21 @@ in
         Mod+Shift+L { move-column-to-monitor-right; }
         Mod+Shift+Minus { set-window-height "-10%"; }
         Mod+Shift+R { switch-preset-column-width-back; }
-        Mod+Space { spawn "noctalia-shell" "ipc" "call" "launcher" "toggle"; }
+        Mod+Space { spawn "noctalia" "msg" "panel-toggle" "launcher"; }
         Mod+T { toggle-window-floating; }
-        Mod+V { spawn "noctalia-shell" "ipc" "call" "launcher" "clipboard"; }
+        Mod+V { spawn "noctalia" "msg" "panel-toggle" "clipboard"; }
         Mod+W { toggle-column-tabbed-display; }
         Print { spawn "niri" "msg" "action" "screenshot"; }
         Shift+Print { spawn "niri" "msg" "action" "screenshot-screen"; }
-        XF86AudioLowerVolume { spawn "noctalia-shell" "ipc" "call" "volume" "decrease"; }
-        XF86AudioMute { spawn "noctalia-shell" "ipc" "call" "volume" "muteOutput"; }
-        XF86AudioRaiseVolume { spawn "noctalia-shell" "ipc" "call" "volume" "increase"; }
-        XF86MonBrightnessDown { spawn "noctalia-shell" "ipc" "call" "brightness" "decrease"; }
-        XF86MonBrightnessUp { spawn "noctalia-shell" "ipc" "call" "brightness" "increase"; }
+        XF86AudioLowerVolume { spawn "noctalia" "msg" "volume-down"; }
+        XF86AudioMute { spawn "noctalia" "msg" "volume-mute"; }
+        XF86AudioRaiseVolume { spawn "noctalia" "msg" "volume-up"; }
+        XF86MonBrightnessDown { spawn "noctalia" "msg" "brightness-down"; }
+        XF86MonBrightnessUp { spawn "noctalia" "msg" "brightness-up"; }
     }
     spawn-at-startup "xwayland-satellite"
     spawn-at-startup "nfsm"
-    spawn-at-startup "noctalia-shell"
+    spawn-at-startup "${config.programs.noctalia.package}/bin/noctalia"
     window-rule {
         geometry-corner-radius 10.000000 10.000000 10.000000 10.000000
         clip-to-geometry true

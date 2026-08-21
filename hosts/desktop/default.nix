@@ -23,12 +23,22 @@
           stateVersion = "24.05";
         };
 
-        programs.noctalia-shell.settings.idle = {
-          enabled = true;
-          screenOffTimeout = 330;
-          lockTimeout = 300;
-          suspendTimeout = 1800;
-          fadeDuration = 5;
+        programs.noctalia.settings.idle = {
+          pre_action_fade_seconds = 5.0;
+          behavior = {
+            lock = {
+              timeout = 300;
+              action = "lock";
+            };
+            screen-off = {
+              timeout = 330;
+              action = "screen_off";
+            };
+            suspend = {
+              timeout = 1800;
+              action = "lock_and_suspend";
+            };
+          };
         };
       };
   };

@@ -8,6 +8,7 @@
 let
   inherit (config.lib.stylix) colors;
   inherit (config.lib.formats.rasi) mkLiteral;
+
 in
 {
   programs = {
@@ -115,121 +116,87 @@ in
       };
     };
 
-    noctalia-shell = {
+    noctalia = {
       enable = true;
       settings = {
-        appLauncher.enableClipboardHistory = true;
-        ui = {
-          fontDefault = config.stylix.fonts.sansSerif.name;
-          fontFixed = config.stylix.fonts.monospace.name;
+        shell = {
+          font_family = config.stylix.fonts.sansSerif.name;
+          clipboard_enabled = true;
+          avatar_path = "/home/${config.home.username}/.face";
         };
-        nightLight = {
+        nightlight = {
           enabled = true;
-          autoSchedule = true;
-          dayTemp = "6500";
-          nightTemp = "4000";
+          temperature_day = 6500;
+          temperature_night = 4000;
         };
-        general = {
-          lockOnSuspend = true;
-          avatarImage = "/home/${config.home.username}/.face";
+        location = {
+          address = "london";
         };
-        dock.enabled = false;
-        bar = {
-          floating = true;
-          marginHorizontal = 0.25;
-          marginVertical = 0.25;
-          widgets = {
-            left = [
-              {
-                id = "Workspace";
-                characterCount = 2;
-              }
-            ];
-            center = [
-              {
-                id = "Clock";
-                formatHorizontal = "HH:mm:ss ddd, MMM dd";
-                usePrimaryColor = true;
-              }
-              { id = "KeepAwake"; }
-            ];
-            right = [
-              { id = "Tray"; }
-              {
-                id = "NotificationHistory";
-                hideWhenZero = true;
-              }
-              {
-                id = "WiFi";
-                displayMode = "icon";
-              }
+        weather = {
+          enabled = true;
+        };
+        control_center.calendar = {
+          show_events_card = true;
+        };
+        dock = {
+          enabled = false;
+        };
+        bar.main = {
+          margin_edge = 8;
+          margin_ends = 8;
+          start = [ "workspaces" ];
+          center = [ "clock" "caffeine" ];
+          end =
+            [
+              "tray"
+              "notifications"
+              "network"
             ]
             ++ lib.optionals hostIsLaptop [
-              {
-                id = "Bluetooth";
-                displayMode = "icon";
-              }
-              {
-                id = "Brightness";
-                displayMode = "onhover";
-              }
-              { id = "Battery"; }
+              "bluetooth"
+              "brightness"
+              "battery"
             ]
             ++ [
-              {
-                id = "Volume";
-                displayMode = "onhover";
-              }
-              {
-                id = "ControlCenter";
-                icon = "noctalia";
-              }
+              "volume"
+              "control_center"
             ];
-          };
+        };
+        widget.workspaces = {
+          max_label_chars = 2;
+        };
+        widget.clock = {
+          format = "{:%H:%M:%S %a, %b %d}";
+        };
+        widget.notifications = {
+          hide_when_no_unread = true;
+        };
+        widget.network = {
+          show_label = false;
+        };
+        widget.bluetooth = lib.mkIf hostIsLaptop {
+          show_label = false;
+        };
+        widget.brightness = lib.mkIf hostIsLaptop {
+          show_label = false;
+        };
+        widget.volume = {
+          show_label = false;
         };
         wallpaper = {
           directory = "/home/${config.home.username}/nixicle/packages/wallpapers/wallpapers";
-          overviewEnabled = true;
         };
-        location = {
-          name = "london";
-          showCalendarWeather = true;
+        lockscreen = {
+          lock_before_suspend = true;
         };
-        calendar.cards = [
-          {
-            enabled = true;
-            id = "calendar-header-card";
-          }
-          {
-            enabled = true;
-            id = "calendar-month-card";
-          }
-          {
-            enabled = false;
-            id = "timer-card";
-          }
-          {
-            enabled = true;
-            id = "weather-card";
-          }
+        control_center.shortcuts = [
+          { type = "wifi"; }
+          { type = "bluetooth"; }
+          { type = "screen_recorder"; }
+          { type = "wallpaper"; }
+          { type = "notification"; }
+          { type = "nightlight"; }
         ];
-        controlCenter.shortcuts = {
-          left = [
-            { id = "WiFi"; }
-            { id = "Bluetooth"; }
-            { id = "ScreenRecorder"; }
-            { id = "WallpaperSelector"; }
-          ];
-          right =
-            lib.optionals hostIsLaptop [
-              { id = "PowerProfile"; }
-            ]
-            ++ [
-              { id = "Notifications"; }
-              { id = "KeepAwake"; }
-              { id = "NightLight"; }
-            ];
-        };
       };
     };
 
@@ -238,7 +205,7 @@ in
       layout = [
         {
           label = "lock";
-          action = "noctalia-shell ipc call lockScreen lock";
+          action = "noctalia msg session lock";
           text = "Lock";
           keybind = "l";
         }
