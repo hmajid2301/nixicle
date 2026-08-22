@@ -21,6 +21,13 @@
       "sensitive": true,
       "value": "${pocketid_client.grafana.client_secret}"
     },
+    "immich_client_id": {
+      "value": "${pocketid_client.immich.id}"
+    },
+    "immich_client_secret": {
+      "sensitive": true,
+      "value": "${pocketid_client.immich.client_secret}"
+    },
     "karakeep_client_id": {
       "value": "${pocketid_client.karakeep.id}"
     },
@@ -78,6 +85,9 @@
   "resource": {
     "pocketid_client": {
       "goroutinely": {
+        "allowed_user_groups": [
+          "55eef39d-16dc-41ad-ad35-702255936488"
+        ],
         "callback_urls": [
           "https://goroutinely.haseebmajid.dev/callback"
         ],
@@ -88,6 +98,9 @@
         "pkce_enabled": true
       },
       "gothreads": {
+        "allowed_user_groups": [
+          "55eef39d-16dc-41ad-ad35-702255936488"
+        ],
         "callback_urls": [
           "https://gothreads.haseebmajid.dev/callback"
         ],
@@ -98,6 +111,9 @@
         "pkce_enabled": true
       },
       "grafana": {
+        "allowed_user_groups": [
+          "55eef39d-16dc-41ad-ad35-702255936488"
+        ],
         "callback_urls": [
           "https://grafana.homelab.haseebmajid.dev/login/generic_oauth"
         ],
@@ -107,7 +123,25 @@
         "name": "Grafana",
         "pkce_enabled": true
       },
+      "immich": {
+        "allowed_user_groups": [
+          "55eef39d-16dc-41ad-ad35-702255936488"
+        ],
+        "callback_urls": [
+          "https://immich.haseebmajid.dev/auth/login",
+          "https://immich.haseebmajid.dev/user-settings",
+          "app.immich:///oauth-callback"
+        ],
+        "client_id": "immich",
+        "is_public": false,
+        "launch_url": "https://immich.haseebmajid.dev",
+        "name": "Immich",
+        "pkce_enabled": true
+      },
       "karakeep": {
+        "allowed_user_groups": [
+          "55eef39d-16dc-41ad-ad35-702255936488"
+        ],
         "callback_urls": [
           "https://karakeep.haseebmajid.dev/api/auth/callback/custom"
         ],
@@ -118,6 +152,9 @@
         "pkce_enabled": true
       },
       "lettucego": {
+        "allowed_user_groups": [
+          "55eef39d-16dc-41ad-ad35-702255936488"
+        ],
         "callback_urls": [
           "https://lettucego.haseebmajid.dev/callback"
         ],
@@ -128,6 +165,9 @@
         "pkce_enabled": true
       },
       "papra": {
+        "allowed_user_groups": [
+          "55eef39d-16dc-41ad-ad35-702255936488"
+        ],
         "callback_urls": [
           "https://papra.haseebmajid.dev/api/auth/oauth2/callback/pocketid"
         ],
@@ -138,6 +178,9 @@
         "pkce_enabled": true
       },
       "sure": {
+        "allowed_user_groups": [
+          "55eef39d-16dc-41ad-ad35-702255936488"
+        ],
         "callback_urls": [
           "https://sure.haseebmajid.dev/auth/pocketid/callback"
         ],
@@ -148,6 +191,9 @@
         "pkce_enabled": true
       },
       "tandoor": {
+        "allowed_user_groups": [
+          "55eef39d-16dc-41ad-ad35-702255936488"
+        ],
         "callback_urls": [
           "https://tandoor-recipes.haseebmajid.dev/accounts/oidc/pocket-id/login/callback/"
         ],
@@ -158,6 +204,9 @@
         "pkce_enabled": false
       },
       "tinyauth": {
+        "allowed_user_groups": [
+          "55eef39d-16dc-41ad-ad35-702255936488"
+        ],
         "callback_urls": [
           "https://auth.haseebmajid.dev/api/oauth/callback/pocketid"
         ],
@@ -179,25 +228,15 @@
         "mount": "${vault_mount.kv.path}",
         "name": "apps/gothreads/oidc"
       },
-      "grafana_oidc": {
-        "data_json": "{\"client_id\":\"${pocketid_client.grafana.id}\",\"client_secret\":\"${pocketid_client.grafana.client_secret}\"}",
+      "immich_oidc": {
+        "data_json": "{\"client_id\":\"${pocketid_client.immich.id}\",\"client_secret\":\"${pocketid_client.immich.client_secret}\"}",
         "mount": "${vault_mount.kv.path}",
-        "name": "apps/grafana/oidc"
+        "name": "apps/immich/oidc"
       },
       "lettucego_oidc": {
         "data_json": "{\"client_id\":\"${pocketid_client.lettucego.id}\",\"client_secret\":\"${pocketid_client.lettucego.client_secret}\"}",
         "mount": "${vault_mount.kv.path}",
         "name": "apps/lettucego/oidc"
-      },
-      "sure_oidc": {
-        "data_json": "{\"client_id\":\"${pocketid_client.sure.id}\",\"client_secret\":\"${pocketid_client.sure.client_secret}\"}",
-        "mount": "${vault_mount.kv.path}",
-        "name": "apps/sure/oidc"
-      },
-      "tinyauth_oidc": {
-        "data_json": "{\"client_id\":\"${pocketid_client.tinyauth.id}\",\"client_secret\":\"${pocketid_client.tinyauth.client_secret}\"}",
-        "mount": "${vault_mount.kv.path}",
-        "name": "apps/tinyauth/oidc"
       }
     },
     "vault_mount": {
