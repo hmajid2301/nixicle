@@ -16,6 +16,19 @@ in
     nixos =
       { config, lib, ... }:
       {
+        sops.secrets = {
+          "immich/client_id" = {
+            owner = config.services.immich.user;
+            group = config.services.immich.group;
+            mode = "0400";
+          };
+          "immich/client_secret" = {
+            owner = config.services.immich.user;
+            group = config.services.immich.group;
+            mode = "0400";
+          };
+        };
+
         users.users.immich.extraGroups = [
           "media"
           "redis-main"
@@ -38,6 +51,20 @@ in
           host = "0.0.0.0";
           inherit mediaLocation;
           redis.host = config.services.redis.servers.main.unixSocket;
+          settings = {
+            library.watch.enabled = false;
+            server.externalDomain = "https://immich.haseebmajid.dev";
+            oauth = {
+              enabled = true;
+              issuerUrl = "https://id.haseebmajid.dev";
+              clientId._secret = config.sops.secrets."immich/client_id".path;
+              clientSecret._secret = config.sops.secrets."immich/client_secret".path;
+              scope = "openid email profile";
+              tokenEndpointAuthMethod = "client_secret_post";
+              buttonText = "Sign in with Pocket ID";
+              autoRegister = true;
+            };
+          };
         };
 
         services.traefik.dynamicConfigOptions.http = lib.nixicle.mkTraefikService {

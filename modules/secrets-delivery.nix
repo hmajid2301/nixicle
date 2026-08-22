@@ -175,6 +175,20 @@ in
       ])
     ];
 
+  den.policies.immich-secrets =
+    { ... }:
+    [
+      (pipe.from "secrets" [
+        (pipe.filter (_: false))
+        (pipe.append {
+          "immich/client_id" = "/run/secrets/immich/client_id";
+          "immich/client_secret" = "/run/secrets/immich/client_secret";
+        })
+        (pipe.for mergeOne)
+        (pipe.to [ den.aspects.immich ])
+      ])
+    ];
+
   den.policies.nixflix-secrets =
     { ... }:
     [
@@ -218,6 +232,7 @@ in
     den.policies.paperless-secrets
     den.policies.tandoor-secrets
     den.policies.homepage-secrets
+    den.policies.immich-secrets
     den.policies.nixflix-secrets
   ];
 }
