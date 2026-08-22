@@ -1,4 +1,8 @@
 let
+  defaultAllowedUserGroups = [
+    "55eef39d-16dc-41ad-ad35-702255936488"
+  ];
+
   apps = {
     goroutinely = {
       name = "Goroutinely";
@@ -101,6 +105,19 @@ let
       is_public = false;
       pkce_enabled = true;
     };
+
+    immich = {
+      name = "Immich";
+      client_id = "immich";
+      launch_url = "https://immich.haseebmajid.dev";
+      callback_urls = [
+        "https://immich.haseebmajid.dev/auth/login"
+        "https://immich.haseebmajid.dev/user-settings"
+        "app.immich:///oauth-callback"
+      ];
+      is_public = false;
+      pkce_enabled = true;
+    };
   };
 
   mkClient = key: cfg: {
@@ -113,6 +130,7 @@ let
         pkce_enabled
         launch_url
         ;
+      allowed_user_groups = cfg.allowed_user_groups or defaultAllowedUserGroups;
     };
 
     output."${key}_client_id" = {
