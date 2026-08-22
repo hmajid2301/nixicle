@@ -1,7 +1,7 @@
 {
   terraform = {
     required_version = ">= 1.0";
-    backend.local = { };
+    backend.http = { };
 
     required_providers = {
       pocketid = {

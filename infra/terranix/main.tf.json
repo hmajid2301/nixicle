@@ -212,7 +212,7 @@
   },
   "terraform": {
     "backend": {
-      "local": {}
+      "http": {}
     },
     "required_providers": {
       "pocketid": {
