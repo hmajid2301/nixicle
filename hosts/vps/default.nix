@@ -12,7 +12,9 @@
 
       den.aspects.tailscale
       den.aspects.traefik
+      den.aspects.nfs-nas
       den.aspects.postgresql
+      den.aspects.redis
       den.aspects.attic-server
       den.aspects.valkey
       den.aspects.crowdsec
@@ -35,6 +37,7 @@
       den.aspects.monitoring
       den.aspects.sure
       den.aspects.homepage
+      den.aspects.immich
 
       den.aspects.fish
     ];
@@ -119,6 +122,8 @@
         };
 
         users.users.root.openssh.authorizedKeys.keys = authorizedKeys;
+
+        users.groups.media.gid = 3000;
 
         users.users.nixos = {
           isNormalUser = true;

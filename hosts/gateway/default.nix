@@ -67,7 +67,7 @@
                 passHostHeader = true;
               };
               immich.loadBalancer = {
-                servers = [ { url = "http://framebox:2283"; } ];
+                servers = [ { url = "http://vps:2283"; } ];
                 passHostHeader = true;
               };
               forgejo.loadBalancer = {
