@@ -3,11 +3,11 @@ let
   instances = {
     dev = {
       port = 8084;
-      domain = "dev.banterbus.games";
+      domain = "dev.banterbus.haseebmajid.dev";
     };
     prod = {
       port = 8083;
-      domain = "banterbus.games";
+      domain = "banterbus.haseebmajid.dev";
     };
   };
   jwksUrl = "https://id.haseebmajid.dev/.well-known/openid-configuration";

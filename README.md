@@ -131,12 +131,11 @@ curl -X POST http://127.0.0.1:8200/v1/auth/userpass/login/admin \
 2. Run Terraform
 
 ```bash
-cd infra/tf
-mv backend.tf backend.tf.disabled  # Disable remote backend
+cd infra/opentofu
 tofu init
 
 # Create terraform.tfvars with admin token
-cat > terraform.tfvars << EOF
+cat > infra/opentofu/terraform.tfvars << EOF
 openbao_address = "http://127.0.0.1:8200"
 openbao_token = "<admin-token-from-step-1>"
 # ... add other required variables
@@ -153,7 +152,7 @@ tofu apply -target=vault_auth_backend.approle \
 3. Add Credentials to SOPS
 
 ```bash
-# Get the credentials from Terraform
+# Get the credentials from OpenTofu
 tofu output spindle_role_id
 tofu output -raw spindle_secret_id
 

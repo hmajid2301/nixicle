@@ -7,11 +7,12 @@ let
   # ------------------------------------------------------------------
   assets = import ./_pixel-assets.nix;
 
-  heroFor = paletteName:
+  heroFor =
+    paletteName:
     let
       prefix = if paletteName == "catppuccin" then "cat" else paletteName;
     in
-    assets.${paletteName}."parpa-hero-${prefix}-64";
+    assets.${paletteName}."icon-${prefix}-hero";
 
   # ------------------------------------------------------------------
   # Palettes
@@ -124,34 +125,21 @@ let
         .dark.theme-slate .services-group[data-pixel-group="${group}"] button.service-group-name::before {
           background-image: ${icon group};
         }
-        .dark.theme-slate .services-group[data-pixel-group="${group}"] .service-icon::before {
-          background-image: ${icon group};
-        }
-      '';
-      svcIcon = dataName: name: ''
-        .dark.theme-slate .service[data-name="${dataName}"] .service-icon::before {
-          background-image: ${icon name};
-        }
       '';
     in
     ''
-      /* Replace default vector icons with 24px pixel sprites */
+      /* Service images are actual embedded pixel SVGs from the service list. */
       .dark.theme-slate .service-icon {
         position: relative !important;
       }
       .dark.theme-slate .service-icon img,
       .dark.theme-slate .service-icon svg {
-        opacity: 0 !important;
-      }
-      .dark.theme-slate .service-icon::before {
-        content: "";
-        position: absolute;
-        inset: 0;
-        background-size: 24px 24px;
-        background-repeat: no-repeat;
-        background-position: center;
-        image-rendering: pixelated;
-        pointer-events: none;
+        width: 100% !important;
+        height: 100% !important;
+        max-width: 100% !important;
+        max-height: 100% !important;
+        object-fit: contain !important;
+        image-rendering: pixelated !important;
       }
 
       /* Hide the default group icon image and inject our own sprite into the group name */
@@ -180,22 +168,53 @@ let
       ${groupIcon "monitoring"}
       ${groupIcon "disk"}
       ${groupIcon "network"}
+    '';
 
-      /* Hobby / service-specific overrides */
-      ${svcIcon "Tandoor" "hobby-cooking"}
-      ${svcIcon "Papra" "hobby-book"}
-      ${svcIcon "Karakeep" "hobby-book"}
-      ${svcIcon "Atuin" "hobby-linux"}
-      ${svcIcon "BanterBus" "hobby-game"}
-      ${svcIcon "Goroutinely" "hobby-linux"}
-      ${svcIcon "LettuceGo" "hobby-game"}
-      ${svcIcon "TinyAuth" "status-on"}
-      ${svcIcon "Grafana" "monitoring"}
-      ${svcIcon "Prometheus" "monitoring"}
-      ${svcIcon "Traefik" "network"}
-      ${svcIcon "Tailscale" "network"}
-      ${svcIcon "Garage" "disk"}
-      ${svcIcon "Tangled" "external"}
+  decorClassesFor =
+    paletteName:
+    let
+      prefix = if paletteName == "catppuccin" then "cat" else paletteName;
+      a = assets.${paletteName};
+      mkClass = name: key: ''
+        .${name} {
+          background-image: url(${a.${key}});
+        }
+      '';
+    in
+    ''
+      /* Scattered decorative pixel sprites */
+      .parpa-scatter {
+        position: fixed;
+        pointer-events: none;
+        z-index: 0;
+        background-repeat: no-repeat;
+        background-position: center;
+        image-rendering: pixelated;
+        opacity: 0.7;
+      }
+      .parpa-scatter-sm { width: 48px; height: 48px; background-size: 48px 48px; }
+      .parpa-scatter-md { width: 72px; height: 72px; background-size: 72px 72px; }
+      .parpa-scatter-lg { width: 96px; height: 96px; background-size: 96px 96px; }
+      .parpa-scatter-xl { width: 128px; height: 128px; background-size: 128px 128px; }
+      ${mkClass "parpa-decor-moon" "icon-${prefix}-decor-moon"}
+      ${mkClass "parpa-decor-cloud" "icon-${prefix}-decor-cloud"}
+      ${mkClass "parpa-decor-potted-plant" "icon-${prefix}-decor-potted-plant"}
+      ${mkClass "parpa-decor-watering-can" "icon-${prefix}-decor-watering-can"}
+      ${mkClass "parpa-decor-fork" "icon-${prefix}-decor-fork"}
+      ${mkClass "parpa-decor-bee" "icon-${prefix}-decor-bee"}
+      ${mkClass "parpa-decor-butterfly" "icon-${prefix}-decor-butterfly"}
+      ${mkClass "parpa-app-cricket" "icon-app-cricket"}
+      ${mkClass "parpa-app-cricket2" "icon-app-cricket2"}
+      ${mkClass "parpa-app-cricket3" "icon-app-cricket3"}
+      ${mkClass "parpa-app-linux" "icon-app-linux"}
+      ${mkClass "parpa-app-linux2" "icon-app-linux2"}
+      ${mkClass "parpa-app-linux3" "icon-app-linux3"}
+      ${mkClass "parpa-app-gardening" "icon-app-gardening"}
+      ${mkClass "parpa-app-gardening2" "icon-app-gardening2"}
+      ${mkClass "parpa-app-gardening3" "icon-app-gardening3"}
+      ${mkClass "parpa-app-gardening4" "icon-app-gardening4"}
+      ${mkClass "parpa-app-gardening5" "icon-app-gardening5"}
+      ${mkClass "parpa-app-gardening6" "icon-app-gardening6"}
     '';
 
   # ------------------------------------------------------------------
@@ -353,7 +372,7 @@ let
 
     /* Top command bar: logo + title */
     .dark.theme-slate #information-widgets::before {
-      content: "PARPA // HOMELAB";
+      content: "HOME // DASHBOARD";
       display: flex;
       align-items: center;
       width: 100%;
@@ -478,38 +497,60 @@ let
 
     /* Catppuccin upsizes the pixel art so it doesn't disappear */
     .dark.theme-slate .service-icon {
-      width: 48px !important;
-      height: 48px !important;
-      min-width: 48px !important;
-      margin-right: 0.9rem !important;
+      width: 128px !important;
+      height: 128px !important;
+      min-width: 128px !important;
+      margin-right: 1.5rem !important;
+      background-color: rgb(${palette.elevated}) !important;
+      border-color: rgb(${palette.border}) !important;
+      box-shadow:
+        inset 0 0 0 2px rgba(${palette.white}, 0.10),
+        inset 0 0 0 4px rgba(${palette.black}, 0.35),
+        3px 3px 0 rgba(${palette.black}, 0.45) !important;
+    }
+    .dark.theme-slate .service-icon img,
+    .dark.theme-slate .service-icon svg {
+      width: 100% !important;
+      height: 100% !important;
+      max-width: 100% !important;
+      max-height: 100% !important;
+      object-fit: contain !important;
+      image-rendering: pixelated !important;
     }
     .dark.theme-slate .service-icon::before,
     .dark.theme-slate .services-group[data-pixel-group] .service-group-name::before,
     .dark.theme-slate .services-group[data-pixel-group] button.service-group-name::before {
-      background-size: 32px 32px !important;
-      filter: drop-shadow(1px 1px 0 rgba(0, 0, 0, 0.65)) !important;
+      background-size: 96px 96px !important;
+      filter:
+        drop-shadow(1px 1px 0 rgba(0, 0, 0, 0.70))
+        drop-shadow(0 0 3px rgba(${palette.gold}, 0.35)) !important;
     }
     .dark.theme-slate .services-group[data-pixel-group] .service-group-name::before,
     .dark.theme-slate .services-group[data-pixel-group] button.service-group-name::before {
-      width: 32px !important;
-      height: 32px !important;
-      margin-right: 0.75rem !important;
+      width: 80px !important;
+      height: 80px !important;
+      margin-right: 1.1rem !important;
     }
     .dark.theme-slate #information-widgets::before {
-      min-height: 72px !important;
-      background-size: 56px 56px !important;
-      text-indent: 76px !important;
-      font-size: 0.62rem !important;
+      min-height: 196px !important;
+      background-size: 160px 160px !important;
+      text-indent: 208px !important;
+      font-size: 1.05rem !important;
+      background-color: rgb(${palette.surface}) !important;
+      border-color: rgb(${palette.border}) !important;
+    }
+    .dark.theme-slate .service-card {
+      padding: 1.1rem 1.25rem !important;
     }
     .dark.theme-slate .service-name {
-      font-size: 0.62rem !important;
+      font-size: 0.92rem !important;
     }
     .dark.theme-slate .service-description {
-      font-size: 0.55rem !important;
+      font-size: 0.8rem !important;
     }
 
     .dark.theme-slate #information-widgets::after {
-      content: "MOCHA // LATTE MODE // OPS ONLINE";
+      content: "PIXEL GARDEN // OPS ONLINE";
     }
   '';
 
@@ -539,5 +580,6 @@ in
     googleFonts
     + colorsFor catppuccin
     + catppuccinBaseFor catppuccin (heroFor "catppuccin")
-    + pixelIconsFor "catppuccin";
+    + pixelIconsFor "catppuccin"
+    + decorClassesFor "catppuccin";
 }

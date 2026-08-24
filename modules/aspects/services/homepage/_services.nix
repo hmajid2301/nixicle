@@ -1,152 +1,255 @@
-# Homepage service definitions
-# Trimmed to only apps currently running on the VPS.
-[
+# Homepage service list.
+#
+# Public hrefs and widget internal URLs are derived from the Traefik routers/services
+# declared by each service module. Services are only shown when the matching NixOS
+# option is enabled on the host.
+#
+# The only values still pulled from /run/secrets/homepage_env are actual secrets:
+#   HOMEPAGE_VAR_TANDOOR_API_KEY
+#   HOMEPAGE_VAR_PAPRA_TOKEN
+#   HOMEPAGE_VAR_PAPRA_ORGANIZATION_ID
+#   HOMEPAGE_VAR_KARAKEEP_API_KEY
+#   HOMEPAGE_VAR_GRAFANA_USERNAME
+#   HOMEPAGE_VAR_GRAFANA_PASSWORD
+#   HOMEPAGE_VAR_TAILSCALE_DEVICE_ID
+#   HOMEPAGE_VAR_TAILSCALE_KEY
+#
+# Papra uses the generic customapi widget because it is not a built-in integration.
+{ config, lib, ... }:
+let
+  l = import ./_lib.nix { inherit config lib; };
+  serviceIcons = import ./_service-icons.nix { };
+  inherit (l)
+    publicUrl
+    internalUrl
+    hrefOr
+    serviceEnabled
+    unitEnabled
+    mkHomepageService
+    ;
+in
+lib.flatten [
   {
-    external = [
-      {
-        Tandoor = {
-          icon = "tandoor.png";
-          href = "{{HOMEPAGE_VAR_TANDOOR_URL}}";
-          description = "recipe management";
-          widget = {
-            type = "tandoor";
-            url = "{{HOMEPAGE_VAR_TANDOOR_INTERNAL_URL}}";
-            key = "{{HOMEPAGE_VAR_TANDOOR_API_KEY}}";
-          };
+    external = lib.flatten [
+      (mkHomepageService {
+        name = "Tandoor";
+        icon = serviceIcons.Tandoor;
+        description = "recipe management";
+        enable = serviceEnabled [
+          "services"
+          "tandoor-recipes"
+          "enable"
+        ];
+        href = publicUrl "tandoor";
+        widget = {
+          type = "tandoor";
+          url = internalUrl "tandoor";
+          key = "{{HOMEPAGE_VAR_TANDOOR_API_KEY}}";
         };
-      }
-      {
-        Papra = {
-          icon = "papra.png";
-          href = "{{HOMEPAGE_VAR_PAPRA_URL}}";
-          description = "read-it-later";
-          widget = {
-            type = "karakeep";
-            url = "{{HOMEPAGE_VAR_PAPRA_INTERNAL_URL}}";
-            key = "{{HOMEPAGE_VAR_PAPRA_API_KEY}}";
+      })
+
+      (mkHomepageService {
+        name = "Papra";
+        icon = serviceIcons.Papra;
+        description = "document organizer";
+        enable = serviceEnabled [
+          "services"
+          "papra"
+          "enable"
+        ];
+        href = publicUrl "papra";
+        widget = {
+          type = "customapi";
+          url = "${internalUrl "papra"}/api/organizations/{{HOMEPAGE_VAR_PAPRA_ORGANIZATION_ID}}/documents/statistics";
+          refreshInterval = 60000;
+          headers = {
+            Authorization = "Bearer {{HOMEPAGE_VAR_PAPRA_TOKEN}}";
           };
+          mappings = [
+            {
+              field = "organizationStats.documentsCount";
+              label = "Documents";
+              format = "number";
+            }
+            {
+              field = "organizationStats.documentsSize";
+              label = "Size";
+              format = "bytes";
+            }
+          ];
         };
-      }
-      {
-        Karakeep = {
-          icon = "karakeep.png";
-          href = "{{HOMEPAGE_VAR_KARAKEEP_URL}}";
-          description = "read-it-later";
-          widget = {
-            type = "karakeep";
-            url = "{{HOMEPAGE_VAR_KARAKEEP_INTERNAL_URL}}";
-            key = "{{HOMEPAGE_VAR_KARAKEEP_API_KEY}}";
-          };
+      })
+
+      (mkHomepageService {
+        name = "Karakeep";
+        icon = serviceIcons.Karakeep;
+        description = "read-it-later";
+        enable = serviceEnabled [
+          "services"
+          "karakeep"
+          "enable"
+        ];
+        href = publicUrl "karakeep";
+        widget = {
+          type = "karakeep";
+          url = internalUrl "karakeep";
+          key = "{{HOMEPAGE_VAR_KARAKEEP_API_KEY}}";
         };
-      }
+      })
+
+      (mkHomepageService {
+        name = "BanterBus";
+        icon = serviceIcons.BanterBus;
+        description = "quiz server";
+        enable = unitEnabled "banterbus_prod";
+        href = publicUrl "banterbus-prod";
+      })
+
+      (mkHomepageService {
+        name = "Goroutinely";
+        icon = serviceIcons.Goroutinely;
+        description = "pixel tracker";
+        enable = serviceEnabled [
+          "services"
+          "goroutinely"
+          "enable"
+        ];
+        href = publicUrl "goroutinely";
+      })
+
+      (mkHomepageService {
+        name = "LettuceGo";
+        icon = serviceIcons.LettuceGo;
+        description = "group decisions";
+        enable = serviceEnabled [
+          "services"
+          "lettucego"
+          "enable"
+        ];
+        href = publicUrl "lettucego";
+      })
+
+      (mkHomepageService {
+        name = "Immich";
+        icon = serviceIcons.Immich;
+        description = "photo library";
+        enable = serviceEnabled [
+          "services"
+          "immich"
+          "enable"
+        ];
+        href = publicUrl "immich";
+      })
+
+      (mkHomepageService {
+        name = "Forgejo";
+        icon = serviceIcons.Forgejo;
+        description = "git forge";
+        enable = serviceEnabled [
+          "services"
+          "forgejo"
+          "enable"
+        ];
+        href = publicUrl "forgejo";
+      })
+
+      (mkHomepageService {
+        name = "Paperless";
+        icon = serviceIcons.Paperless;
+        description = "document archive";
+        enable = serviceEnabled [
+          "services"
+          "paperless"
+          "enable"
+        ];
+        href = "https://paperless.haseebmajid.dev";
+      })
     ];
   }
+
   {
-    internal = [
-      {
-        Atuin = {
-          icon = "atuin.png";
-          href = "{{HOMEPAGE_VAR_ATUIN_URL}}";
-          description = "shell history sync";
+    internal = lib.flatten [
+      (mkHomepageService {
+        name = "Traefik";
+        icon = serviceIcons.Traefik;
+        description = "reverse proxy";
+        enable = serviceEnabled [
+          "services"
+          "traefik"
+          "enable"
+        ];
+        href = "https://traefik.homelab.haseebmajid.dev";
+        widget = {
+          type = "traefik";
+          url = "http://127.0.0.1:8080";
         };
-      }
-      {
-        BanterBus = {
-          icon = "banterbus.png";
-          href = "{{HOMEPAGE_VAR_BANTERBUS_URL}}";
-          description = "quiz server";
-        };
-      }
-      {
-        Goroutinely = {
-          icon = "goroutinely.png";
-          href = "{{HOMEPAGE_VAR_GOROUTINELY_URL}}";
-          description = "background jobs";
-        };
-      }
-      {
-        LettuceGo = {
-          icon = "lettucego.png";
-          href = "{{HOMEPAGE_VAR_LETTUCEGO_URL}}";
-          description = "group decisions";
-        };
-      }
-      {
-        TinyAuth = {
-          icon = "tinyauth.png";
-          href = "{{HOMEPAGE_VAR_TINYAUTH_URL}}";
-          description = "auth proxy";
-        };
-      }
+      })
+
+      (mkHomepageService {
+        name = "Pocket ID";
+        icon = serviceIcons.PocketID;
+        description = "identity provider";
+        enable = serviceEnabled [
+          "services"
+          "pocket-id"
+          "enable"
+        ];
+        href = publicUrl "pocket-id";
+      })
+
+      (mkHomepageService {
+        name = "Home Assistant";
+        icon = serviceIcons.HomeAssistant;
+        description = "smart home";
+        enable = serviceEnabled [
+          "services"
+          "home-assistant"
+          "enable"
+        ];
+        href = publicUrl "homeAssistant";
+      })
     ];
   }
+
   {
-    monitoring = [
-      {
-        Grafana = {
-          icon = "grafana.png";
-          href = "{{HOMEPAGE_VAR_GRAFANA_URL}}";
-          description = "monitoring dashboard";
-          widget = {
-            type = "grafana";
-            url = "{{HOMEPAGE_VAR_GRAFANA_INTERNAL_URL}}";
-            username = "{{HOMEPAGE_VAR_GRAFANA_USERNAME}}";
-            password = "{{HOMEPAGE_VAR_GRAFANA_PASSWORD}}";
-          };
+    monitoring = lib.flatten [
+      (mkHomepageService {
+        name = "Grafana";
+        icon = serviceIcons.Grafana;
+        description = "monitoring dashboard";
+        enable = serviceEnabled [
+          "services"
+          "grafana"
+          "enable"
+        ];
+        href = publicUrl "grafana";
+        widget = {
+          type = "grafana";
+          url = internalUrl "grafana";
+          username = "{{HOMEPAGE_VAR_GRAFANA_USERNAME}}";
+          password = "{{HOMEPAGE_VAR_GRAFANA_PASSWORD}}";
         };
-      }
-      {
-        Prometheus = {
-          icon = "prometheus.png";
-          href = "{{HOMEPAGE_VAR_PROMETHEUS_URL}}";
-          description = "metrics scraper";
-          widget = {
-            type = "prometheus";
-            url = "{{HOMEPAGE_VAR_PROMETHEUS_INTERNAL_URL}}";
-          };
+      })
+
+      (mkHomepageService {
+        name = "Prometheus";
+        icon = serviceIcons.Prometheus;
+        description = "metrics scraper";
+        enable = serviceEnabled [
+          "services"
+          "prometheus"
+          "enable"
+        ];
+        href = hrefOr "prometheus" "http://127.0.0.1:${toString config.services.prometheus.port}";
+        widget = {
+          type = "prometheus";
+          url = hrefOr "prometheus" "http://127.0.0.1:${toString config.services.prometheus.port}";
         };
-      }
-      {
-        Traefik = {
-          icon = "traefik.png";
-          href = "{{HOMEPAGE_VAR_TRAEFIK_URL}}";
-          description = "reverse proxy";
-          widget = {
-            type = "traefik";
-            url = "{{HOMEPAGE_VAR_TRAEFIK_INTERNAL_URL}}";
-          };
-        };
-      }
+      })
     ];
   }
+
   {
-    network = [
-      {
-        Tailscale = {
-          icon = "tailscale.png";
-          href = "{{HOMEPAGE_VAR_TAILSCALE_URL}}";
-          description = "vpn connected devices";
-          widget = {
-            type = "tailscale";
-            deviceid = "{{HOMEPAGE_VAR_TAILSCALE_DEVICE_ID}}";
-            key = "{{HOMEPAGE_VAR_TAILSCALE_KEY}}";
-          };
-        };
-      }
-      {
-        Garage = {
-          icon = "garage.png";
-          href = "{{HOMEPAGE_VAR_GARAGE_URL}}";
-          description = "s3-compatible store";
-        };
-      }
-      {
-        Tangled = {
-          icon = "tangled.png";
-          href = "{{HOMEPAGE_VAR_TANGLED_URL}}";
-          description = "activitypub";
-        };
-      }
-    ];
+    network = lib.flatten [ ];
   }
 ]

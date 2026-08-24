@@ -1,23 +1,19 @@
 version: '3'
 
-tasks:
-  generate:
-    desc: Generate OpenTofu JSON from Terranix for Pocket ID resources
-    cmds:
-      - mkdir -p infra/terranix/generated/prod
-      - terranix infra/terranix/prod.nix > infra/terranix/generated/prod/config.tf.json
+vars:
+  TF_DIR: infra/opentofu
+  VAR_FILE: terraform.tfvars
 
+tasks:
   init:
     desc: Init OpenTofu working dir for Pocket ID resources (requires backend env for remote state)
-    deps: [generate]
-    dir: infra/terranix/generated/prod
+    dir: '{{.TF_DIR}}'
     cmds:
       - tofu init
 
   validate:
-    desc: Validate generated OpenTofu config without backend access
-    deps: [generate]
-    dir: infra/terranix/generated/prod
+    desc: Validate OpenTofu config without backend access
+    dir: '{{.TF_DIR}}'
     cmds:
       - rm -rf .terraform
       - tofu init -backend=false
@@ -25,16 +21,21 @@ tasks:
 
   plan:
     desc: Plan Pocket ID OpenTofu resources (requires Pocket ID + backend env)
-    deps: [generate]
-    dir: infra/terranix/generated/prod
+    dir: '{{.TF_DIR}}'
     cmds:
       - tofu init
-      - tofu plan
+      - tofu plan -var-file={{.VAR_FILE}}
 
   apply:
     desc: Apply Pocket ID OpenTofu resources (manual, requires Pocket ID + backend env)
-    deps: [generate]
-    dir: infra/terranix/generated/prod
+    dir: '{{.TF_DIR}}'
     cmds:
       - tofu init
-      - tofu apply
+      - tofu apply -var-file={{.VAR_FILE}}
+
+  import:
+    desc: "Import an existing Pocket ID resource into OpenTofu state. Usage: task tofu:import ADDRESS=pocketid_client.grafana ID=grafana"
+    dir: '{{.TF_DIR}}'
+    cmds:
+      - tofu init
+      - tofu import -var-file={{.VAR_FILE}} "{{.ADDRESS}}" "{{.ID}}"

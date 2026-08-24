@@ -29,6 +29,30 @@ return {
 		},
 		after = function(plugin)
 			require("snacks").setup({
+				picker = {
+					sources = {
+						files = {
+							exclude = {
+								".codegraph",
+								".direnv",
+								".git",
+								".playwright",
+								".playwright-browsers",
+								".playwright-cli",
+							},
+						},
+						grep = {
+							exclude = {
+								".codegraph",
+								".direnv",
+								".git",
+								".playwright",
+								".playwright-browsers",
+								".playwright-cli",
+							},
+						},
+					},
+				},
 				bigfile = { enabled = true },
 				gitbrowse = { enabled = true },
 				gh = { enabled = true },

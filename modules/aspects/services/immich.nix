@@ -36,14 +36,26 @@ in
 
         systemd.services.immich-server = {
           serviceConfig.BindPaths = [ "/mnt/homelab" ];
-          requires = [ "mnt-homelab.mount" ];
-          after = [ "mnt-homelab.mount" ];
+          requires = [
+            "mnt-homelab.mount"
+            "mnt-homelab-homelab.mount"
+          ];
+          after = [
+            "mnt-homelab.mount"
+            "mnt-homelab-homelab.mount"
+          ];
         };
 
         systemd.services.immich-machine-learning = {
           serviceConfig.BindPaths = [ "/mnt/homelab" ];
-          requires = [ "mnt-homelab.mount" ];
-          after = [ "mnt-homelab.mount" ];
+          requires = [
+            "mnt-homelab.mount"
+            "mnt-homelab-homelab.mount"
+          ];
+          after = [
+            "mnt-homelab.mount"
+            "mnt-homelab-homelab.mount"
+          ];
         };
 
         services.immich = {
@@ -54,6 +66,7 @@ in
           settings = {
             library.watch.enabled = false;
             server.externalDomain = "https://immich.haseebmajid.dev";
+            passwordLogin.enabled = false;
             oauth = {
               enabled = true;
               issuerUrl = "https://id.haseebmajid.dev";
@@ -63,6 +76,7 @@ in
               tokenEndpointAuthMethod = "client_secret_post";
               buttonText = "Sign in with Pocket ID";
               autoRegister = true;
+              autoLaunch = true;
             };
           };
         };
@@ -70,6 +84,8 @@ in
         services.traefik.dynamicConfigOptions.http = lib.nixicle.mkTraefikService {
           name = "immich";
           port = 2283;
+          subdomain = "immich";
+          domain = "haseebmajid.dev";
         };
 
       };
