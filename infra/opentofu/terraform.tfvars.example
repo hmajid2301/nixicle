@@ -1,0 +1,6 @@
+# Copy to infra/opentofu/terraform.tfvars
+pocketid_base_url = "https://id.haseebmajid.dev"
+pocketid_api_token = "<pocket-id admin api token>"
+
+openbao_address = "https://openbao.homelab.haseebmajid.dev"
+openbao_token = "<openbao token>"

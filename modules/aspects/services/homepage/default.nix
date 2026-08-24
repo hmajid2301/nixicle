@@ -31,7 +31,7 @@
             listenPort = 8173;
             allowedHosts = "homepage.haseebmajid.dev,localhost:8173,127.0.0.1:8173";
             bookmarks = [ ];
-            services = import ./_services.nix;
+            services = import ./_services.nix { inherit config lib; };
             settings = import ./_settings.nix;
             widgets = import ./_widgets.nix;
             customCSS = variant;

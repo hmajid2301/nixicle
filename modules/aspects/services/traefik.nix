@@ -29,7 +29,10 @@
           staticConfigOptions = {
             metrics.prometheus = { };
             tracing = { };
-            api.dashboard = true;
+            api = {
+              dashboard = true;
+              insecure = true;
+            };
             certificatesResolvers = {
               tailscale.tailscale = { };
               letsencrypt.acme = {
@@ -78,6 +81,15 @@
                   idleTimeout = "30m";
                 };
               };
+            };
+          };
+
+          dynamicConfigOptions.http = {
+            routers.traefik = {
+              entryPoints = [ "websecure" ];
+              rule = "Host(`traefik.homelab.haseebmajid.dev`)";
+              service = "api@internal";
+              tls.certResolver = "letsencrypt";
             };
           };
         };

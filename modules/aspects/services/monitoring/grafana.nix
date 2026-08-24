@@ -24,12 +24,15 @@
                 enabled = true;
                 client_id = "$__file{${config.sops.secrets.grafana_oauth2_client_id.path}}";
                 client_secret = "$__file{${config.sops.secrets.grafana_oauth2_client_secret.path}}";
-                scopes = "openid profile email";
+                scopes = "openid profile email groups";
                 auth_url = "https://id.haseebmajid.dev/authorize";
                 token_url = "https://id.haseebmajid.dev/api/oidc/token";
                 api_url = "https://id.haseebmajid.dev/api/oidc/userinfo";
                 role_attribute_path = "contains(groups, 'Grafana Admins') && 'Admin' || contains(groups, 'Grafana Editors') && 'Editor' || 'Viewer'";
               };
+              auth.oauth_allow_insecure_email_lookup = true;
+              auth.disable_login_form = true;
+              "auth.basic".enabled = false;
               security.secret_key = "$__file{${config.sops.secrets.grafana_secret_key.path}}";
               database = {
                 host = "/run/postgresql";

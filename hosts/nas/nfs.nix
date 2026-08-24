@@ -11,6 +11,7 @@
     exports = ''
       "/mnt/main/main" *(sec=sys,rw,anonuid=1000,anongid=1000,no_subtree_check,no_root_squash)
       "/mnt/main/main-encrypted" *(sec=sys,rw,anonuid=1000,anongid=1000,no_subtree_check,no_root_squash)
+      "/mnt/main/main-encrypted/homelab" *(sec=sys,rw,anonuid=1000,anongid=1000,no_subtree_check,no_root_squash)
     '';
   };
 

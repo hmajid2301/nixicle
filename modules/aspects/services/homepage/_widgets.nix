@@ -1,5 +1,3 @@
-# Homepage widget definitions
-# Minimal widgets for the VPS dashboard.
 [
   {
     search = {

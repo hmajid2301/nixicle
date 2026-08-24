@@ -257,7 +257,6 @@ in
               git
               gnupg
               opentofu
-              terranix
               mc
               go-task
               gum
