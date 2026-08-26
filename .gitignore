@@ -59,4 +59,6 @@ package.json
 .playwright-cli/
 .playwright-browsers/
 .glciconfig.toml
-!
+
+# local repair scratch
+repair/local-*
