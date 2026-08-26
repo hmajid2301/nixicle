@@ -12,7 +12,6 @@
       den.aspects.gaming
       den.aspects.social
       den.aspects.video
-      den.aspects.iris
     ];
 
     homeManager =

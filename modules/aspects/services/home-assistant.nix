@@ -7,7 +7,6 @@
         services = {
           home-assistant = {
             enable = true;
-            openFirewall = true;
             extraComponents = [
               "esphome"
               "met"
