@@ -73,6 +73,7 @@ lint:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
       changes: ["flake.lock"]
   script:
+    - mkdir -p build-logs
     - test -n "$ATTIC_AUTH_KEY"
     - attic login --set-default ci https://attic.haseebmajid.dev "$ATTIC_AUTH_KEY"
     - echo "Building ${NIXOS_CONFIG} with nix-fast-build and auto-pushing to Attic..."
@@ -80,7 +81,14 @@ lint:
       nix run github:Mic92/nix-fast-build -- \
         --flake ".#nixosConfigurations.${NIXOS_CONFIG}.config.system.build.toplevel" \
         --stream-json-lines --skip-cached --no-nom --max-jobs 4 \
-        --attic-cache main --attic-push-build-closure
+        --attic-cache main --attic-push-build-closure \
+        2>&1 | tee "build-logs/${NIXOS_CONFIG}.log"
+      exit ${PIPESTATUS[0]}
+  artifacts:
+    when: always
+    expire_in: 1 week
+    paths:
+      - build-logs/
 
 build:desktop:
   extends: .build:nixos
@@ -101,14 +109,16 @@ repair:
   extends: .base_setup
   stage: repair
   timeout: 1h
-  services:
-    - name: ollama/ollama:latest
-      alias: ollama
+  interruptible: false
+  variables:
+    OLLAMA_BASE_URL: https://ollama.com/api/chat
+    OLLAMA_MODEL: deepseek-v4-pro
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME =~ /^renovate\//'
-      when: on_failure
+      when: always
     - when: never
   script:
+    - nix-env -iA nixpkgs.curl nixpkgs.jq nixpkgs.gnused >/dev/null
     - bash scripts/ci-repair.sh
   artifacts:
     when: always

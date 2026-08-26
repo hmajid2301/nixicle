@@ -1,0 +1,6 @@
+{
+  "summary": "Add git to repair job dependencies to fix missing git command in ci-repair.sh",
+  "patch": "diff --git a/.gitlab-ci.yml b/.gitlab-ci.yml\nindex ced736ab..f0e1d2c3 100644\n--- a/.gitlab-ci.yml\n+++ b/.gitlab-ci.yml\n@@ -64,7 +64,7 @@ repair:\n     - if: '$CI_PIPELINE_SOURCE == \"merge_request_event\" && $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME =~ /^renovate\\//'\n       when: on_failure\n     - when: never\n   script:\n-    - nix-env -iA nixpkgs.curl nixpkgs.jq nixpkgs.gnused >/dev/null\n+    - nix-env -iA nixpkgs.curl nixpkgs.jq nixpkgs.gnused nixpkgs.git >/dev/null\n     - bash scripts/ci-repair.sh\n   artifacts:\n     when: always\n",
+  "comment": "The repair job failed because `git` was not installed after the script's dependency installation was moved to `.gitlab-ci.yml`. This patch adds `nixpkgs.git` to the `nix-env` command. The `build:desktop` failure appears unrelated and likely stems from the flake.lock update; further investigation is needed.",
+  "confidence": "medium"
+}

@@ -58,10 +58,6 @@
     };
     impermanence.url = "github:nix-community/impermanence";
     import-tree.url = "github:vic/import-tree";
-    iris = {
-      url = "github:versenilvis/iris";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     lanzaboote.url = "github:nix-community/lanzaboote";
     lettucego = {
       url = "gitlab:hmajid2301/lettucego";
