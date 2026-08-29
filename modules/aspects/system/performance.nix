@@ -1,5 +1,4 @@
-{ ... }:
-{
+_: {
   # Tiered power profiles. Include exactly one per host.
   #
   #   den.aspects.performance-base        — servers / VMs (no power management)
