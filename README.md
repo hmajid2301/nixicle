@@ -25,11 +25,10 @@ cd nixcile
 
 nix develop
 
-nixos-anywhere --flake '.#workstation' nixos@192.168.1.8 # Replace with your IP
+nixos-anywhere --flake '.#desktop' nixos@192.168.1.8 # Replace with your IP
 ```
 
 After building it you can copy the ISO from the `result` folder to your USB.
-Then run `nix_installer`, which will then ask you which host you would like to install.
 
 </details>
 
@@ -53,19 +52,10 @@ nh home switch
 nix build .#iso-graphical
 
 # Deploy my to remote server i.e. Home Lab (using SSH)
-deploy .#ms01 --hostname ms01 --ssh-user nixos --skip-checks
+deploy .#vps --hostname vps --ssh-user nixos --skip-checks
 
 # Build Home Lab diagram using nix-topology
 nix build .#topology.config.output
-
-# Build docker image used in ci
-nix build .#containers-ci
-
-# Run neovim
-nix run .#homeConfigurations."haseeb@workstation".config.nixCats.out.packages.nixCats
-
-# Build docker image used in ci
-nix build .#containers-ci
 ```
 
 ## 🚀 Features
@@ -79,8 +69,8 @@ Some features of my config:
 - **Encrypted BTRFS partition**
 - **Secure Boot** with lanzaboote
 - **sops-nix** for secrets management
-- Different environments like **niri**, **hyprland** and **gnome**
-- Custom **Neovim** setup declaratively using **NixCats**
+- Different environments like **niri** and **gnome**
+- Custom **Neovim** setup declaratively using **nix-wrapper-modules**
 - Homelab all configured in nix.
 
 ## 🖼️ Showcase
@@ -99,75 +89,6 @@ Some features of my config:
 ![Go Code](docs/images/nvim/go-code.png)
 ![CMP](docs/images/nvim/cmp.png)
 
-
-## Manual Steps
-
-### AI
-
-Manually installed packages now yet via nix
-
-#### claude code and opencode
-
-- https://github.com/juliusbrussee/caveman
-
-#### pi coding agent
-
-- https://github.com/v2nic/pi-caveman
-- https://github.com/badlogic/pi-telegram
-
-### 🔐 OpenBao Setup
-
-After deploying the system, OpenBao requires manual setup for AppRole authentication:
-
-1. Get Admin Token
-
-```bash
-# Login with admin credentials (password is in SOPS secrets.yaml)
-curl -X POST http://127.0.0.1:8200/v1/auth/userpass/login/admin \
-  -H "Content-Type: application/json" \
-  -d '{"password":"<OPENBAO_ADMIN_PASSWORD>"}' | jq -r '.auth.client_token'
-```
-
-2. Run Terraform
-
-```bash
-cd infra/opentofu
-tofu init
-
-# Create terraform.tfvars with admin token
-cat > infra/opentofu/terraform.tfvars << EOF
-openbao_address = "http://127.0.0.1:8200"
-openbao_token = "<admin-token-from-step-1>"
-# ... add other required variables
-EOF
-
-# Apply Spindle AppRole resources
-tofu apply -target=vault_auth_backend.approle \
-  -target=vault_mount.spindle \
-  -target=vault_policy.spindle \
-  -target=vault_approle_auth_backend_role.spindle \
-  -target=vault_approle_auth_backend_role_secret_id.spindle
-```
-
-3. Add Credentials to SOPS
-
-```bash
-# Get the credentials from OpenTofu
-tofu output spindle_role_id
-tofu output -raw spindle_secret_id
-
-# Add to modules/nixos/services/secrets.yaml
-sops modules/nixos/services/secrets.yaml
-# Add: spindle_role_id and spindle_secret_id
-```
-
-4. Update Configuration & Rebuild
-
-Update `modules/nixos/services/openbao/proxy.nix` to use SOPS secrets, then rebuild:
-
-```bash
-nh os switch
-```
 
 ## Appendix
 

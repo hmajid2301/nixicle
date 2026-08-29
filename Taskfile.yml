@@ -65,7 +65,7 @@ tasks:
         HOST=$(ls -1 hosts/ | gum choose)
         echo "Rebuilding $HOST..."
         rsync -av --exclude='.git' --exclude='result*' ./ haseeb@$HOST:~/nixicle/
-        ssh haseeb@$HOST "cd ~/nixicle && sudo nixos-rebuild switch --flake .#$HOST"
+        ssh haseeb@$HOST "cd ~/nixicle && sudo nh os switch --hostname $HOST"
 
   check:
     desc: "Check flake"
@@ -73,14 +73,14 @@ tasks:
       - nix flake check
 
   fmt:
-    desc: "Format Nix files"
+    desc: "Format files with treefmt"
     cmds:
-      - nixfmt $(find . -name "*.nix" -not -path "./.git/*" -not -path "./.worktrees/*")
+      - nix fmt
 
   lint:
-    desc: "Lint Nix files for dead code and unused imports"
+    desc: "Lint Nix files (check mode)"
     cmds:
-      - deadnix --edit
+      - statix check .
       - deadnix --fail
 
   write-flake:
