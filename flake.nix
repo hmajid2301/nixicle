@@ -10,6 +10,10 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     catppuccin.url = "github:catppuccin/nix";
+    caveman = {
+      url = "github:JuliusBrussee/caveman";
+      flake = false;
+    };
     comma = {
       url = "github:nix-community/comma";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -180,6 +184,10 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     stylix.url = "github:danth/stylix";
+    superpowers = {
+      url = "github:obra/superpowers";
+      flake = false;
+    };
     sure-nix = {
       url = "github:nSimonFR/sure-nix";
       inputs.nixpkgs.follows = "nixpkgs";
