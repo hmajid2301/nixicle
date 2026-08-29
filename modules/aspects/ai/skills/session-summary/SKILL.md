@@ -1,13 +1,6 @@
 ---
-description: Summarize the current session and save to notes
-mode: primary
-tools:
-  write: true
-  edit: true
-  bash: true
-  read: true
-  grep: true
-  glob: true
+name: session-summary
+description: Summarize the current session and save it to notes, updating the weekly journal.
 ---
 
 Summarize what we did in this session:

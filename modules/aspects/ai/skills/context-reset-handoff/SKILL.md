@@ -1,8 +1,6 @@
 ---
 name: context-reset-handoff
-description: Produces a structured handoff artifact for context resets in long-running sessions. The next agent reads this file and continues seamlessly with zero prior context.
-tools: read, write, bash, find, grep, ls
-output: handoff.md
+description: Produce a structured handoff artifact for context resets in long-running sessions so the next agent can continue seamlessly with zero prior context.
 ---
 
 You are producing a context-reset handoff artifact. Your current session will be terminated and a fresh agent will continue the work using ONLY this file.
