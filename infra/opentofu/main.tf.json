@@ -37,6 +37,13 @@
     "hmajid2301_id": {
       "value": "${pocketid_user.hmajid2301.id}"
     },
+    "hister_client_id": {
+      "value": "${pocketid_client.hister.id}"
+    },
+    "hister_client_secret": {
+      "sensitive": true,
+      "value": "${pocketid_client.hister.client_secret}"
+    },
     "immich_client_id": {
       "value": "${pocketid_client.immich.id}"
     },
@@ -139,6 +146,17 @@
         "is_public": false,
         "launch_url": "https://grafana.homelab.haseebmajid.dev",
         "name": "Grafana",
+        "pkce_enabled": false
+      },
+      "hister": {
+        "allowed_user_groups": [],
+        "callback_urls": [
+          "https://hister.haseebmajid.dev/api/oauth/callback?provider=oidc"
+        ],
+        "client_id": "hister",
+        "is_public": false,
+        "launch_url": "https://hister.haseebmajid.dev",
+        "name": "Hister",
         "pkce_enabled": false
       },
       "immich": {

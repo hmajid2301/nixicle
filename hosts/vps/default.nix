@@ -38,6 +38,7 @@
       den.aspects.monitoring
       den.aspects.sure
       den.aspects.homepage
+      den.aspects.hister
       den.aspects.immich
 
       den.aspects.fish
