@@ -25,14 +25,20 @@ stages:
 lint:fmt:
   extends: .lint_setup
   script:
-    - nix-env -iA nixpkgs.nixfmt nixpkgs.go-task
-    - task fmt
+    - nix fmt -- --fail-on-change
 
 lint:
   extends: .lint_setup
   script:
-    - nix-env -iA nixpkgs.go-task nixpkgs.deadnix
-    - task lint
+    - nix profile install nixpkgs#statix nixpkgs#deadnix
+    - statix check .
+    - deadnix --fail
+
+lint:todos:
+  extends: .lint_setup
+  script:
+    - nix profile install nixpkgs#curl nixpkgs#jq
+    - bash scripts/check-todos.sh
 
 .base_setup:
   before_script:
@@ -49,7 +55,7 @@ lint:
       trusted-public-keys = main:+A4BR+E8F8FNe1YR6Uq8qGO5dVj8y1kaalW3kQ0WgXo= cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY= nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs= numtide.cachix.org-1:2ps1kLBUWjxIneOy1Ik6cQjb41X0iXVXeHigGmycPPE=
       netrc-file = /root/.config/nix/netrc
       fallback = true
-      max-jobs = 4
+      max-jobs = 2
       cores = 2
       EOF
     - |
@@ -59,7 +65,7 @@ lint:
       else
         echo "No GITHUB_TOKEN/GH_TOKEN set; GitHub flake fetches may hit rate limits"
       fi
-    - nix-env -iA nixpkgs.attic-client nixpkgs.cacert
+    - nix profile install nixpkgs#attic-client nixpkgs#cacert
 
 .build:nixos:
   extends: .base_setup
@@ -80,7 +86,7 @@ lint:
     - |
       nix run github:Mic92/nix-fast-build -- \
         --flake ".#nixosConfigurations.${NIXOS_CONFIG}.config.system.build.toplevel" \
-        --stream-json-lines --skip-cached --no-nom --max-jobs 4 \
+        --stream-json-lines --skip-cached --no-nom --max-jobs 2 \
         --attic-cache main --attic-push-build-closure \
         2>&1 | tee "build-logs/${NIXOS_CONFIG}.log"
       exit ${PIPESTATUS[0]}
@@ -118,7 +124,7 @@ repair:
       when: always
     - when: never
   script:
-    - nix-env -iA nixpkgs.curl nixpkgs.jq nixpkgs.gnused >/dev/null
+    - nix profile install nixpkgs#curl nixpkgs#jq nixpkgs#gnused >/dev/null
     - bash scripts/ci-repair.sh
   artifacts:
     when: always
