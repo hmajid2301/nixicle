@@ -72,12 +72,17 @@
           nixos_hashed_password.neededForUsers = true;
         };
 
-        nixicle.serverAdmin = {
-          enable = true;
-          inherit authorizedKeys;
-          mediaGid = 3000;
-          hashedPasswordFile = config.sops.secrets.nixos_hashed_password.path;
-          shell = pkgs.fish;
+        nixicle = {
+          serverAdmin = {
+            enable = true;
+            inherit authorizedKeys;
+            mediaGid = 3000;
+            hashedPasswordFile = config.sops.secrets.nixos_hashed_password.path;
+            shell = pkgs.fish;
+          };
+
+          crowdsec.allowlist = [ "82.165.193.60" ];
+          serverConsole.enable = true;
         };
 
         security.sudo.wheelNeedsPassword = lib.mkForce false;
@@ -88,8 +93,6 @@
           interfaces.ens3.useDHCP = lib.mkDefault true;
           firewall.allowedTCPPorts = [ 22 ];
         };
-
-        nixicle.serverConsole.enable = true;
 
         services.dbus.implementation = "dbus";
         services.openssh = {
