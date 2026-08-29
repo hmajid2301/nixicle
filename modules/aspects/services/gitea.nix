@@ -1,5 +1,4 @@
-{ ... }:
-{
+_: {
   den.aspects.gitea = {
     includes = [ ];
     persist.directories = [

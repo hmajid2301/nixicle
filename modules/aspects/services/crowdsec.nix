@@ -1,5 +1,4 @@
-{ ... }:
-{
+_: {
   den.aspects.crowdsec = {
     persist.directories = [
       {
@@ -29,83 +28,88 @@
         # config path. Provide that conventional path so auto-registration works.
         environment.etc."crowdsec/config.yaml".source =
           yaml.generate "crowdsec.yaml" config.services.crowdsec.settings.general;
-        systemd.services.crowdsec.serviceConfig = {
-          NoNewPrivileges = true;
-          PrivateTmp = true;
-          PrivateDevices = true;
-          ProtectHome = true;
-          ProtectKernelLogs = true;
-          ProtectKernelTunables = true;
-          ProtectControlGroups = true;
-          ProtectKernelModules = true;
-          RestrictSUIDSGID = true;
-          LockPersonality = true;
-          RestrictNamespaces = true;
-          RestrictRealtime = true;
-          SystemCallArchitectures = "native";
-        };
-        systemd.services.crowdsec-firewall-bouncer.serviceConfig = {
-          DynamicUser = lib.mkForce false;
-          NoNewPrivileges = true;
-          PrivateTmp = true;
-          PrivateDevices = true;
-          ProtectHome = true;
-          ProtectKernelLogs = true;
-          ProtectKernelTunables = true;
-          ProtectControlGroups = true;
-          ProtectKernelModules = true;
-          RestrictSUIDSGID = true;
-          LockPersonality = true;
-          RestrictNamespaces = true;
-          RestrictRealtime = true;
-          SystemCallArchitectures = "native";
-        };
-        systemd.services.crowdsec-register-firewall-bouncer = {
-          description = "Register the CrowdSec firewall bouncer API key";
-          wantedBy = [ "multi-user.target" ];
-          after = [ "crowdsec.service" ];
-          wants = [ "crowdsec.service" ];
-          serviceConfig = {
-            Type = "oneshot";
-            NoNewPrivileges = true;
-            PrivateTmp = true;
-            ProtectHome = true;
-            ProtectKernelLogs = true;
-            ProtectKernelTunables = true;
-            ProtectControlGroups = true;
-            ProtectKernelModules = true;
-            RestrictSUIDSGID = true;
-            LockPersonality = true;
-            RestrictNamespaces = true;
-            RestrictRealtime = true;
-            SystemCallArchitectures = "native";
-          };
-          path = [ config.services.crowdsec.package ];
-          script = ''
-            set -euo pipefail
-            name="crowdsec-firewall-bouncer"
-            key="$(cat ${config.sops.secrets.crowdsec_bouncer_key.path})"
-            cscli -c /etc/crowdsec/config.yaml bouncers delete "$name" --ignore-missing >/dev/null
-            cscli -c /etc/crowdsec/config.yaml bouncers add "$name" --key "$key" --output raw >/dev/null
-          '';
-        };
+        systemd = {
+          services = {
+            crowdsec.serviceConfig = {
+              NoNewPrivileges = true;
+              PrivateTmp = true;
+              PrivateDevices = true;
+              ProtectHome = true;
+              ProtectKernelLogs = true;
+              ProtectKernelTunables = true;
+              ProtectControlGroups = true;
+              ProtectKernelModules = true;
+              RestrictSUIDSGID = true;
+              LockPersonality = true;
+              RestrictNamespaces = true;
+              RestrictRealtime = true;
+              SystemCallArchitectures = "native";
+            };
 
-        systemd.services.crowdsec-firewall-bouncer = {
-          after = [ "crowdsec-register-firewall-bouncer.service" ];
-          requires = [ "crowdsec-register-firewall-bouncer.service" ];
-          serviceConfig.ExecStartPre = lib.mkBefore [
-            (pkgs.writeShellScript "wait-for-crowdsec-lapi" ''
-              set -euo pipefail
-              for i in $(seq 1 60); do
-                if ${lib.getExe pkgs.curl} -fsS http://127.0.0.1:8081/health >/dev/null 2>&1; then
-                  exit 0
-                fi
-                sleep 1
-              done
-              echo "CrowdSec local API not ready" >&2
-              exit 1
-            '')
-          ];
+            crowdsec-firewall-bouncer = {
+              serviceConfig = {
+                DynamicUser = lib.mkForce false;
+                NoNewPrivileges = true;
+                PrivateTmp = true;
+                PrivateDevices = true;
+                ProtectHome = true;
+                ProtectKernelLogs = true;
+                ProtectKernelTunables = true;
+                ProtectControlGroups = true;
+                ProtectKernelModules = true;
+                RestrictSUIDSGID = true;
+                LockPersonality = true;
+                RestrictNamespaces = true;
+                RestrictRealtime = true;
+                SystemCallArchitectures = "native";
+                ExecStartPre = lib.mkBefore [
+                  (pkgs.writeShellScript "wait-for-crowdsec-lapi" ''
+                    set -euo pipefail
+                    for i in $(seq 1 60); do
+                      if ${lib.getExe pkgs.curl} -fsS http://127.0.0.1:8081/health >/dev/null 2>&1; then
+                        exit 0
+                      fi
+                      sleep 1
+                    done
+                    echo "CrowdSec local API not ready" >&2
+                    exit 1
+                  '')
+                ];
+              };
+              after = [ "crowdsec-register-firewall-bouncer.service" ];
+              requires = [ "crowdsec-register-firewall-bouncer.service" ];
+            };
+
+            crowdsec-register-firewall-bouncer = {
+              description = "Register the CrowdSec firewall bouncer API key";
+              wantedBy = [ "multi-user.target" ];
+              after = [ "crowdsec.service" ];
+              wants = [ "crowdsec.service" ];
+              serviceConfig = {
+                Type = "oneshot";
+                NoNewPrivileges = true;
+                PrivateTmp = true;
+                ProtectHome = true;
+                ProtectKernelLogs = true;
+                ProtectKernelTunables = true;
+                ProtectControlGroups = true;
+                ProtectKernelModules = true;
+                RestrictSUIDSGID = true;
+                LockPersonality = true;
+                RestrictNamespaces = true;
+                RestrictRealtime = true;
+                SystemCallArchitectures = "native";
+              };
+              path = [ config.services.crowdsec.package ];
+              script = ''
+                set -euo pipefail
+                name="crowdsec-firewall-bouncer"
+                key="$(cat ${config.sops.secrets.crowdsec_bouncer_key.path})"
+                cscli -c /etc/crowdsec/config.yaml bouncers delete "$name" --ignore-missing >/dev/null
+                cscli -c /etc/crowdsec/config.yaml bouncers add "$name" --key "$key" --output raw >/dev/null
+              '';
+            };
+          };
         };
 
         services.crowdsec-firewall-bouncer = {
@@ -119,6 +123,7 @@
           hub.collections = [
             "crowdsecurity/linux"
             "crowdsecurity/sshd"
+            "crowdsecurity/traefik"
           ];
           settings = {
             general.api = {
@@ -136,6 +141,11 @@
               source = "journalctl";
               journalctl_filter = [ "_SYSTEMD_UNIT=sshd.service" ];
               labels.type = "syslog";
+            }
+            {
+              source = "journalctl";
+              journalctl_filter = [ "_SYSTEMD_UNIT=traefik.service" ];
+              labels.type = "traefik";
             }
           ];
         };

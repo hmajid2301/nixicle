@@ -12,17 +12,33 @@
   isoImage.makeEfiBootable = true;
   isoImage.makeUsbBootable = true;
 
-  networking.wireless.enable = lib.mkForce false;
-  networking.useDHCP = lib.mkForce false;
-  networking.networkmanager.enable = lib.mkForce false;
+  networking = {
+    wireless.enable = lib.mkForce false;
+    useDHCP = lib.mkForce false;
+    networkmanager.enable = lib.mkForce false;
+    hostId = "8425e349";
+  };
 
-  systemd.network.enable = true;
-  systemd.network.networks."20-recovery" = {
-    matchConfig.Name = [
-      "en*"
-      "eth*"
-    ];
-    DHCP = "yes";
+  systemd = {
+    network.enable = true;
+    network.networks."20-recovery" = {
+      matchConfig.Name = [
+        "en*"
+        "eth*"
+      ];
+      DHCP = "yes";
+    };
+    user.services.disable-gnome-suspend = {
+      enable = true;
+      description = "Disable GNOME auto-suspend on AC power";
+      serviceConfig = {
+        Type = "oneshot";
+        RemainAfterExit = true;
+        ExecStart = "${pkgs.glib}/bin/gsettings set org.gnome.desktop.session idle-delay 0";
+      };
+      wantedBy = [ "graphical-session.target" ];
+      partOf = [ "graphical-session.target" ];
+    };
   };
 
   services = {
@@ -45,7 +61,6 @@
 
   boot.supportedFilesystems = [ "zfs" ];
   boot.zfs.forceImportRoot = false;
-  networking.hostId = "8425e349";
 
   users.users.root.openssh.authorizedKeys.keys = [
     "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKuM4bCeJq0XQ1vd/iNK650Bu3wPVKQTSB0k2gsMKhdE hello@haseebmajid.dev"
@@ -62,18 +77,6 @@
   ];
 
   security.sudo.wheelNeedsPassword = false;
-
-  systemd.user.services.disable-gnome-suspend = {
-    enable = true;
-    description = "Disable GNOME auto-suspend on AC power";
-    serviceConfig = {
-      Type = "oneshot";
-      RemainAfterExit = true;
-      ExecStart = "${pkgs.glib}/bin/gsettings set org.gnome.desktop.session idle-delay 0";
-    };
-    wantedBy = [ "graphical-session.target" ];
-    partOf = [ "graphical-session.target" ];
-  };
 
   environment.systemPackages = with pkgs; [
     gparted

@@ -9,6 +9,7 @@
     includes = [
       den.aspects.performance-base
       den.aspects.server
+      den.aspects.server-admin
       den.aspects.fish
       den.aspects.hardening-vps
       den.aspects.backup-restic
@@ -21,6 +22,7 @@
       den.aspects.romm
       den.aspects.invidious
       den.aspects.redlib
+      (den.batteries.tty-autologin "nixos")
     ];
 
     nixos =
@@ -53,54 +55,62 @@
         sops.defaultSopsFile = ./secrets.yaml;
         sops.age.sshKeyPaths = lib.mkForce [ "/etc/ssh/ssh_host_ed25519_key" ];
 
-        nix.settings = {
-          extra-substituters = [ "https://nixos-raspberrypi.cachix.org" ];
-          extra-trusted-public-keys = [
-            "nixos-raspberrypi.cachix.org-1:4iMO9LXa8BqhU+Rpg6LQKiGa2lsNh/j2oiYLNOQ5sPI="
-          ];
-          experimental-features = [
-            "nix-command"
-            "flakes"
-          ];
-          trusted-users = [
-            "root"
-            "@wheel"
-          ];
+        nix = {
+          settings = {
+            extra-substituters = [ "https://nixos-raspberrypi.cachix.org" ];
+            extra-trusted-public-keys = [
+              "nixos-raspberrypi.cachix.org-1:4iMO9LXa8BqhU+Rpg6LQKiGa2lsNh/j2oiYLNOQ5sPI="
+            ];
+            experimental-features = [
+              "nix-command"
+              "flakes"
+            ];
+            trusted-users = [
+              "root"
+              "@wheel"
+            ];
+          };
+          gc = {
+            automatic = true;
+            dates = "weekly";
+            options = "--delete-older-than 30d";
+          };
+          optimise.automatic = true;
         };
 
-        users.mutableUsers = false;
-        users.groups.media.gid = 3000;
-
-        users.users.root.openssh.authorizedKeys.keys = authorizedKeys;
-        users.users.nixos = {
-          isNormalUser = true;
-          group = "users";
+        nixicle.serverAdmin = {
+          enable = true;
+          inherit authorizedKeys;
           extraGroups = [
             "wheel"
             "media"
           ];
+          mediaGid = 3000;
           initialPassword = "changeme";
-          openssh.authorizedKeys.keys = authorizedKeys;
           shell = pkgs.fish;
         };
 
-        services.getty.autologinUser = "nixos";
-
-        services.openssh = {
-          enable = true;
-          ports = [ 22 ];
+        services = {
+          openssh = {
+            enable = true;
+            ports = [ 22 ];
+          };
+          resolved.settings.Resolve.DNSStubListener = false;
+          navidrome.settings.MusicFolder = lib.mkForce "/data/media/Music";
+          traefik.dynamicConfigOptions.http = lib.mkMerge [
+            (lib.nixicle.mkTraefikService {
+              name = "invidious";
+              port = 3939;
+            })
+            (lib.nixicle.mkTraefikService {
+              name = "redlib";
+              port = 8929;
+            })
+          ];
+          traefik.staticConfigOptions.entryPoints.websecure.http.tls.certResolver = lib.mkForce "tailscale";
         };
 
         time.timeZone = "UTC";
-
-        nix.gc = {
-          automatic = true;
-          dates = "weekly";
-          options = "--delete-older-than 30d";
-        };
-        nix.optimise.automatic = true;
-
-        services.resolved.settings.Resolve.DNSStubListener = false;
 
         system.backup.objects.data = {
           paths = [ "/data" ];
@@ -133,22 +143,6 @@
             enableHardwareEncoding = false;
           };
         };
-
-        services.navidrome.settings.MusicFolder = lib.mkForce "/data/media/Music";
-
-        services.traefik.dynamicConfigOptions.http = lib.mkMerge [
-          (lib.nixicle.mkTraefikService {
-            name = "invidious";
-            port = 3939;
-          })
-          (lib.nixicle.mkTraefikService {
-            name = "redlib";
-            port = 8929;
-          })
-        ];
-
-        services.traefik.staticConfigOptions.entryPoints.websecure.http.tls.certResolver =
-          lib.mkForce "tailscale";
 
         networking.firewall.allowedTCPPorts = [ 22 ];
 

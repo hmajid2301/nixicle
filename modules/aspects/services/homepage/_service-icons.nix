@@ -1,4 +1,4 @@
-{ }:
+_:
 let
   svgData = svg: "data:image/svg+xml;utf8,${builtins.replaceStrings [ "\n" " " ] [ "" "%20" ] svg}";
   makeIcon =

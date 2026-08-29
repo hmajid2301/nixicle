@@ -1,9 +1,7 @@
-{ ... }:
+_:
 let
-  tunnelId = "ecef5dbb-834e-43ed-84c6-355a2ac53e59";
   dataDir = "/var/lib/trek";
   port = 3000;
-  domain = "trek.haseebmajid.dev";
 in
 {
   den.aspects.trek = {
@@ -41,7 +39,6 @@ in
           inherit port;
         };
 
-        services.cloudflared.tunnels.${tunnelId}.ingress.${domain} = "http://localhost:${toString port}";
       };
   };
 }

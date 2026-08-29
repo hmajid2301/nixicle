@@ -1,5 +1,4 @@
-{ ... }:
-{
+_: {
   den.aspects.atuin = {
     includes = [ ];
     persist.directories = [ "/var/lib/atuin" ];
@@ -8,7 +7,7 @@
       {
         services.atuin = {
           enable = true;
-          openRegistration = true;
+          openRegistration = false;
           maxHistoryLength = 99999999;
           port = 8890;
         };

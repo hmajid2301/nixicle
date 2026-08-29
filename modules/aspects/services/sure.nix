@@ -37,7 +37,7 @@ in
 
         sops.secrets.sure_env = {
           owner = cfg.user;
-          group = cfg.group;
+          inherit (cfg) group;
           mode = "0400";
         };
 
@@ -61,7 +61,7 @@ in
             enable = true;
             inherit port;
             databaseUrl = "postgresql:///sure?host=/run/postgresql&user=sure";
-            redisUrl = "redis://127.0.0.1:6379/0";
+            redisUrl = "redis://127.0.0.1:6380/0";
             environmentFile = config.sops.secrets.sure_env.path;
             settings = {
               AUTH_PROVIDERS_SOURCE = "db";

@@ -1,5 +1,4 @@
-{ ... }:
-{
+_: {
   den.aspects.btrbk = {
     nixos =
       {
@@ -28,8 +27,7 @@
           ".cargo/registry"
         ];
         rsyncExcludeArgs = lib.concatStringsSep " " (map (p: "--exclude='${p}'") rsyncExcludes);
-      in
-      let
+
         secretPaths = lib.mergeAttrsList secrets;
       in
       {

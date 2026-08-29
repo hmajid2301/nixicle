@@ -14,33 +14,31 @@
       den.aspects.video
     ];
 
-    homeManager =
-      { ... }:
-      {
-        home = {
-          username = "haseeb";
-          homeDirectory = "/home/haseeb";
-          stateVersion = "24.05";
-        };
+    homeManager = _: {
+      home = {
+        username = "haseeb";
+        homeDirectory = "/home/haseeb";
+        stateVersion = "24.05";
+      };
 
-        programs.noctalia.settings.idle = {
-          pre_action_fade_seconds = 5.0;
-          behavior = {
-            lock = {
-              timeout = 300;
-              action = "lock";
-            };
-            screen-off = {
-              timeout = 330;
-              action = "screen_off";
-            };
-            suspend = {
-              timeout = 1800;
-              action = "lock_and_suspend";
-            };
+      programs.noctalia.settings.idle = {
+        pre_action_fade_seconds = 5.0;
+        behavior = {
+          lock = {
+            timeout = 300;
+            action = "lock";
+          };
+          screen-off = {
+            timeout = 330;
+            action = "screen_off";
+          };
+          suspend = {
+            timeout = 1800;
+            action = "lock_and_suspend";
           };
         };
       };
+    };
   };
 
   den.aspects.desktop = {
@@ -71,23 +69,21 @@
         ];
 
         sops.defaultSopsFile = ./secrets.yaml;
-
         sops.secrets = {
-          user_password = {
-            neededForUsers = true;
-          };
+          user_password.neededForUsers = true;
           searx_secret_key = { };
           gitlab_runner_env = { };
         };
 
         users = {
-          users.haseeb.hashedPasswordFile = config.sops.secrets.user_password.path;
           groups.media.gid = 3000;
-          users.haseeb.extraGroups = [
-            "wheel"
-            "media"
-            "i2c"
-          ];
+          users.haseeb = {
+            hashedPasswordFile = config.sops.secrets.user_password.path;
+            extraGroups = [
+              "media"
+              "i2c"
+            ];
+          };
           extraGroups.docker.members = [ "haseeb" ];
         };
 
@@ -95,6 +91,8 @@
           kernelParams = [ "resume_offset=533760" ];
           kernel.sysctl."net.ipv4.ip_forward" = 1;
         };
+
+        networking.hostName = "desktop";
 
         virtualisation.docker = {
           enable = true;
@@ -107,9 +105,7 @@
           };
         };
 
-        environment.systemPackages = with pkgs; [
-          docker-compose
-        ];
+        environment.systemPackages = with pkgs; [ docker-compose ];
 
         # /mnt/homelab: override the shared nfs-nas aspect's boot-time mount
         # with an automount. The desktop runs no nixflix/immich/paperless, so
@@ -142,7 +138,6 @@
           "x-systemd.after=tailscaled.service"
         ];
 
-        networking.hostName = "desktop";
         system.stateVersion = "24.05";
       };
   };

@@ -1,5 +1,4 @@
-{ ... }:
-{
+_: {
   den.aspects.docker = {
     persist.directories = [
       {

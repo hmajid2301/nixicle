@@ -69,7 +69,7 @@
             package = inputs.goroutinely.packages.${pkgs.stdenv.hostPlatform.system}.default;
             sendremindersPackage = inputs.goroutinely.packages.${pkgs.stdenv.hostPlatform.system}.sendreminders;
             port = 8235;
-            host = "0.0.0.0";
+            host = "127.0.0.1";
             database.createLocally = true;
             notifications = {
               enable = true;

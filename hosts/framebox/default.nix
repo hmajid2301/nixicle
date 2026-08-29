@@ -43,35 +43,31 @@
           den.aspects.video
         ];
 
-        homeManager =
-          {
-            ...
-          }:
-          {
-            home = {
-              username = "haseeb";
-              homeDirectory = "/home/haseeb";
-              stateVersion = "26.05";
-            };
+        homeManager = _: {
+          home = {
+            username = "haseeb";
+            homeDirectory = "/home/haseeb";
+            stateVersion = "26.05";
+          };
 
-            programs.noctalia.settings.idle = {
-              pre_action_fade_seconds = 5.0;
-              behavior = {
-                lock = {
-                  timeout = 300;
-                  action = "lock";
-                };
-                screen-off = {
-                  timeout = 330;
-                  action = "screen_off";
-                };
-                suspend = {
-                  timeout = 0;
-                  action = "lock_and_suspend";
-                };
+          programs.noctalia.settings.idle = {
+            pre_action_fade_seconds = 5.0;
+            behavior = {
+              lock = {
+                timeout = 300;
+                action = "lock";
+              };
+              screen-off = {
+                timeout = 330;
+                action = "screen_off";
+              };
+              suspend = {
+                timeout = 0;
+                action = "lock_and_suspend";
               };
             };
           };
+        };
       };
 
       framebox = {
@@ -83,7 +79,6 @@
           den.aspects.tailscale
           den.aspects.kvm
           den.aspects.traefik
-          den.aspects.cloudflare
           den.aspects.atuin
           den.aspects.attic-server
           den.aspects.banterbus
@@ -95,7 +90,6 @@
           den.aspects.garage
           den.aspects.gothreads
           den.aspects.lettucego
-          den.aspects.gothreads
           den.aspects.gitlab-runner
           den.aspects.immich
           den.aspects.karakeep
@@ -125,7 +119,6 @@
         nixos =
           {
             config,
-            pkgs,
             ...
           }:
           {
@@ -149,9 +142,7 @@
             users = {
               users.haseeb = {
                 hashedPasswordFile = config.sops.secrets.user_password.path;
-                shell = pkgs.fish;
                 extraGroups = [
-                  "wheel"
                   "media"
                   "dialout"
                 ];

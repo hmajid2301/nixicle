@@ -1,7 +1,6 @@
-{ ... }:
+_:
 let
   mediaDir = "/mnt/homelab/homelab/paperless/media";
-  tunnelId = "ecef5dbb-834e-43ed-84c6-355a2ac53e59";
 in
 {
   den.aspects.paperless = {
@@ -77,7 +76,6 @@ in
             ];
           };
 
-          cloudflared.tunnels.${tunnelId}.ingress."paperless.haseebmajid.dev" = "http://localhost:28981";
         };
 
       };

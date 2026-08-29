@@ -1,5 +1,4 @@
-{ ... }:
-{
+_: {
   den.aspects.uptime-kuma = {
     persist.directories = [ "/var/lib/uptime-kuma" ];
 

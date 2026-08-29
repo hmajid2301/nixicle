@@ -1,6 +1,6 @@
 # Pixel / retro homepage theme CSS
 # Provides 8-bit-game variants plus a CRT and Synthwave variant.
-{ }:
+_:
 let
   # ------------------------------------------------------------------
   # Assets
@@ -17,22 +17,6 @@ let
   # ------------------------------------------------------------------
   # Palettes
   # ------------------------------------------------------------------
-  navy = {
-    bg = "20 29 53"; # #141D35
-    surface = "24 35 73"; # #182349
-    surface2 = "29 40 59"; # #1D283B
-    elevated = "53 68 115"; # #354473
-    border = "78 94 148"; # #4E5E94
-    accent = "83 217 240"; # #53D9F0
-    accent2 = "78 188 216"; # #4EBCD8
-    gold = "244 222 107"; # #F4DE6B
-    text = "242 243 231"; # #F2F3E7
-    muted = "172 185 192"; # #ACB9C0
-    danger = "184 107 74"; # #B86B4A
-    good = "125 196 127"; # #7DC47F
-    black = "0 0 0";
-    white = "255 255 255";
-  };
 
   catppuccin = {
     bg = "30 30 46"; # #1E1E2E
@@ -71,43 +55,6 @@ let
       --color-900: ${palette.bg};
       --color-logo-start: ${palette.accent};
       --color-logo-stop: ${palette.gold};
-    }
-  '';
-
-  scanlinesFor = palette: ''
-    .dark.theme-slate::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      z-index: 9999;
-      pointer-events: none;
-      background: repeating-linear-gradient(
-        to bottom,
-        rgba(0,0,0,0) 0px,
-        rgba(0,0,0,0) 2px,
-        rgba(0,0,0,0.18) 3px,
-        rgba(0,0,0,0) 4px
-      );
-      mix-blend-mode: multiply;
-    }
-    .dark.theme-slate::after {
-      content: "";
-      position: fixed;
-      inset: 0;
-      z-index: 9998;
-      pointer-events: none;
-      background: radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,0.45) 100%);
-    }
-  '';
-
-  glowFor = palette: ''
-    .dark.theme-slate h1,
-    .dark.theme-slate h2,
-    .dark.theme-slate h3,
-    .dark.theme-slate h4,
-    .dark.theme-slate .text-theme-400,
-    .dark.theme-slate [class*="text-theme-400"] {
-      text-shadow: 0 0 6px rgba(${palette.accent}, 0.55), 0 0 14px rgba(${palette.accent}, 0.25);
     }
   '';
 
@@ -430,68 +377,6 @@ let
     }
   '';
 
-  gameboyBaseFor = palette: hero: ''
-    /* Game Boy / DMG-style palette variant */
-    ${pixelBaseFor palette hero}
-
-    .dark.theme-slate #background,
-    .dark.theme-slate body {
-      background: rgb(${palette.bg}) !important;
-    }
-
-    .dark.theme-slate .service-card {
-      background-color: rgb(${palette.surface}) !important;
-      border: 2px solid rgb(${palette.border}) !important;
-      box-shadow: 4px 4px 0 rgba(${palette.black}, 0.35) !important;
-    }
-    .dark.theme-slate .service-card:hover {
-      border-color: rgb(${palette.accent}) !important;
-      box-shadow: 5px 5px 0 rgba(${palette.accent}, 0.35) !important;
-    }
-
-    .dark.theme-slate .service-group-name,
-    .dark.theme-slate button.service-group-name {
-      font-family: 'VT323', monospace !important;
-      font-size: 1.05rem !important;
-      line-height: 1.1 !important;
-      color: rgb(${palette.bg}) !important;
-      background-color: rgb(${palette.gold}) !important;
-      border: 2px solid rgb(${palette.border}) !important;
-      box-shadow: 4px 4px 0 rgba(${palette.black}, 0.35) !important;
-    }
-
-    .dark.theme-slate .service-name {
-      font-size: 0.7rem !important;
-    }
-    .dark.theme-slate .service-description {
-      font-size: 0.6rem !important;
-    }
-
-    .dark.theme-slate #__next h1,
-    .dark.theme-slate #__next .title,
-    .dark.theme-slate #__next header .title,
-    .dark.theme-slate #__next header h1 {
-      font-family: 'VT323', monospace !important;
-      color: rgb(${palette.gold}) !important;
-      line-height: 1.2 !important;
-      font-size: 1.6rem !important;
-      text-shadow: 2px 2px 0 rgba(${palette.black}, 0.5) !important;
-    }
-
-    .dark.theme-slate #information-widgets::before {
-      font-family: 'VT323', monospace !important;
-      font-size: 1rem !important;
-      text-indent: 56px;
-      background-image: url(${hero});
-    }
-
-    .dark.theme-slate #information-widgets::after {
-      font-family: 'VT323', monospace !important;
-      font-size: 0.85rem !important;
-      letter-spacing: 0.1em;
-    }
-  '';
-
   catppuccinBaseFor = palette: hero: ''
     ${pixelBaseFor palette hero}
 
@@ -557,20 +442,6 @@ let
   # ------------------------------------------------------------------
   # Theme switcher CSS hooks
   # ------------------------------------------------------------------
-  switcherFor = palette: ''
-    /* Theme switcher bar stays inside the footer */
-    #parpa-theme-switcher {
-      color: rgb(${palette.gold}) !important;
-      border-color: rgb(${palette.border}) !important;
-      background-color: rgb(${palette.surface2}) !important;
-      box-shadow: 4px 4px 0 rgba(${palette.black}, 0.45) !important;
-    }
-    #parpa-theme-switcher button[aria-pressed="true"] {
-      background-color: rgb(${palette.accent}) !important;
-      color: rgb(${palette.bg}) !important;
-      border-color: rgb(${palette.accent}) !important;
-    }
-  '';
 in
 {
   # ------------------------------------------------------------------

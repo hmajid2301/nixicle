@@ -1,8 +1,4 @@
-{ ... }:
-let
-  tunnelId = "ecef5dbb-834e-43ed-84c6-355a2ac53e59";
-in
-{
+_: {
   den.aspects.open-webui = {
     includes = [ ];
     persist.directories = [
@@ -44,9 +40,6 @@ in
             OAUTH_MERGE_ACCOUNTS_BY_EMAIL = "true";
           };
         };
-
-        services.cloudflared.tunnels.${tunnelId}.ingress."open-webui.haseebmajid.dev" =
-          "http://localhost:8185";
 
       };
   };

@@ -2,9 +2,6 @@
   inputs,
   ...
 }:
-let
-  tunnelId = "ecef5dbb-834e-43ed-84c6-355a2ac53e59";
-in
 {
   flake-file.inputs.gothreads = {
     url = "gitlab:hmajid2301/gothreads";
@@ -38,12 +35,14 @@ in
           mode = "0400";
         };
 
-        systemd.services.gothreads.after = [
-          "garage.service"
-          "postgresql.service"
-        ];
-        systemd.services.gothreads.requires = [ "garage.service" ];
-        systemd.services.gothreads.environment.GOTHREADS_OLLAMA_TEXT_MODEL = lib.mkForce "llama3.2";
+        systemd.services.gothreads = {
+          after = [
+            "garage.service"
+            "postgresql.service"
+          ];
+          requires = [ "garage.service" ];
+          environment.GOTHREADS_OLLAMA_TEXT_MODEL = lib.mkForce "llama3.2";
+        };
 
         services = {
           gothreads = {
@@ -63,7 +62,6 @@ in
             };
           };
 
-          cloudflared.tunnels.${tunnelId}.ingress."gothreads.haseebmajid.dev" = "http://localhost:8556";
         };
       };
   };

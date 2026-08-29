@@ -4,6 +4,7 @@
     includes = [
       den.aspects.performance-base
       den.aspects.server
+      den.aspects.server-admin
       den.aspects.tailscale
       den.aspects.traefik
       den.aspects.uptime-kuma
@@ -33,161 +34,155 @@
           initrd.systemd.enable = lib.mkForce false;
         };
 
-        services.dbus.implementation = "dbus";
+        services = {
+          dbus.implementation = "dbus";
+          traefik.staticConfigOptions.entryPoints.ssh = {
+            address = "0.0.0.0:2222";
+          };
+          traefik.dynamicConfigOptions = {
+            http = {
+              services = {
+                jellyfin.loadBalancer = {
+                  servers = [ { url = "http://framebox:8096"; } ];
+                  passHostHeader = true;
+                };
+                immich.loadBalancer = {
+                  servers = [ { url = "http://vps:2283"; } ];
+                  passHostHeader = true;
+                };
+                forgejo.loadBalancer = {
+                  servers = [ { url = "http://framebox:5706"; } ];
+                  passHostHeader = true;
+                  responseForwarding.flushInterval = "100ms";
+                  serversTransport = "forgejo-transport";
+                };
+                attic.loadBalancer = {
+                  servers = [ { url = "http://framebox:8899"; } ];
+                  passHostHeader = true;
+                  responseForwarding.flushInterval = "100ms";
+                  serversTransport = "attic-transport";
+                };
+              };
+
+              middlewares = {
+                jellyfin-headers.headers = {
+                  customResponseHeaders.X-Robots-Tag = "noindex, nofollow, nosnippet, noarchive";
+                  customRequestHeaders.X-Forwarded-Proto = "https";
+                  sslRedirect = true;
+                  sslForceHost = true;
+                  stsSeconds = 315360000;
+                  stsIncludeSubdomains = true;
+                  stsPreload = true;
+                  frameDeny = false;
+                  contentTypeNosniff = true;
+                  customFrameOptionsValue = "SAMEORIGIN";
+                };
+                immich-headers.headers = {
+                  customResponseHeaders.X-Robots-Tag = "noindex, nofollow, nosnippet, noarchive";
+                  customRequestHeaders.X-Forwarded-Proto = "https";
+                  sslRedirect = true;
+                  sslForceHost = true;
+                  stsSeconds = 315360000;
+                  stsIncludeSubdomains = true;
+                  stsPreload = true;
+                  contentTypeNosniff = true;
+                };
+                forgejo-headers.headers = {
+                  customResponseHeaders.X-Robots-Tag = "noindex, nofollow, nosnippet, noarchive";
+                  customRequestHeaders.X-Forwarded-Proto = "https";
+                  sslRedirect = true;
+                  sslForceHost = true;
+                  stsSeconds = 315360000;
+                  stsIncludeSubdomains = true;
+                  stsPreload = true;
+                  contentTypeNosniff = true;
+                };
+                forgejo-timeout.buffering = {
+                  maxRequestBodyBytes = 21474836480;
+                  memRequestBodyBytes = 1073741824;
+                };
+                attic-timeout.buffering = {
+                  maxRequestBodyBytes = 21474836480;
+                  memRequestBodyBytes = 1073741824;
+                };
+              };
+
+              serversTransports = {
+                forgejo-transport.forwardingTimeouts = {
+                  dialTimeout = "30s";
+                  responseHeaderTimeout = "10m";
+                  idleConnTimeout = "10m";
+                };
+                attic-transport.forwardingTimeouts = {
+                  dialTimeout = "30s";
+                  responseHeaderTimeout = "10m";
+                  idleConnTimeout = "10m";
+                };
+              };
+
+              routers = {
+                jellyfin = {
+                  entryPoints = [ "websecure" ];
+                  rule = "Host(`jellyfin.haseebmajid.dev`)";
+                  service = "jellyfin";
+                  middlewares = [ "jellyfin-headers" ];
+                  tls.certResolver = "letsencrypt";
+                };
+                immich = {
+                  entryPoints = [ "websecure" ];
+                  rule = "Host(`immich.haseebmajid.dev`)";
+                  service = "immich";
+                  middlewares = [ "immich-headers" ];
+                  tls.certResolver = "letsencrypt";
+                };
+                forgejo = {
+                  entryPoints = [ "websecure" ];
+                  rule = "Host(`forgejo.haseebmajid.dev`)";
+                  service = "forgejo";
+                  middlewares = [
+                    "forgejo-headers"
+                    "forgejo-timeout"
+                  ];
+                  tls.certResolver = "letsencrypt";
+                };
+                attic = {
+                  entryPoints = [ "websecure" ];
+                  rule = "Host(`attic.haseebmajid.dev`)";
+                  service = "attic";
+                  middlewares = [ "attic-timeout" ];
+                  tls.certResolver = "letsencrypt";
+                };
+              };
+            };
+
+            tcp = {
+              routers.ssh = {
+                entryPoints = [ "ssh" ];
+                rule = "HostSNI(`*`)";
+                service = "ssh";
+              };
+              services.ssh = {
+                loadBalancer.servers = [ { address = "framebox:2223"; } ];
+              };
+            };
+          };
+          openssh.ports = [ 22 ];
+        };
 
         sops.defaultSopsFile = ./secrets.yaml;
         sops.age.sshKeyPaths = lib.mkForce [ "/etc/ssh/ssh_host_ed25519_key" ];
 
-        users.users.root.openssh.authorizedKeys.keys = authorizedKeys;
-
-        users.users.nixos = {
-          isNormalUser = true;
-          group = "users";
-          extraGroups = [ "wheel" ];
+        nixicle.serverAdmin = {
+          enable = true;
+          inherit authorizedKeys;
           initialPassword = "changeme";
-          openssh.authorizedKeys.keys = authorizedKeys;
+          sudo = {
+            wheelNeedsPassword = false;
+            execWheelOnly = true;
+          };
         };
 
         time.timeZone = lib.mkForce "UTC";
-
-        security.sudo = {
-          wheelNeedsPassword = false;
-          execWheelOnly = true;
-        };
-
-        services.traefik.staticConfigOptions.entryPoints.ssh = {
-          address = "0.0.0.0:2222";
-        };
-
-        services.traefik.dynamicConfigOptions = {
-          http = {
-            services = {
-              jellyfin.loadBalancer = {
-                servers = [ { url = "http://framebox:8096"; } ];
-                passHostHeader = true;
-              };
-              immich.loadBalancer = {
-                servers = [ { url = "http://vps:2283"; } ];
-                passHostHeader = true;
-              };
-              forgejo.loadBalancer = {
-                servers = [ { url = "http://framebox:5706"; } ];
-                passHostHeader = true;
-                responseForwarding.flushInterval = "100ms";
-                serversTransport = "forgejo-transport";
-              };
-              attic.loadBalancer = {
-                servers = [ { url = "http://framebox:8899"; } ];
-                passHostHeader = true;
-                responseForwarding.flushInterval = "100ms";
-                serversTransport = "attic-transport";
-              };
-            };
-
-            middlewares = {
-              jellyfin-headers.headers = {
-                customResponseHeaders.X-Robots-Tag = "noindex, nofollow, nosnippet, noarchive";
-                customRequestHeaders.X-Forwarded-Proto = "https";
-                sslRedirect = true;
-                sslForceHost = true;
-                stsSeconds = 315360000;
-                stsIncludeSubdomains = true;
-                stsPreload = true;
-                frameDeny = false;
-                contentTypeNosniff = true;
-                customFrameOptionsValue = "SAMEORIGIN";
-              };
-              immich-headers.headers = {
-                customResponseHeaders.X-Robots-Tag = "noindex, nofollow, nosnippet, noarchive";
-                customRequestHeaders.X-Forwarded-Proto = "https";
-                sslRedirect = true;
-                sslForceHost = true;
-                stsSeconds = 315360000;
-                stsIncludeSubdomains = true;
-                stsPreload = true;
-                contentTypeNosniff = true;
-              };
-              forgejo-headers.headers = {
-                customResponseHeaders.X-Robots-Tag = "noindex, nofollow, nosnippet, noarchive";
-                customRequestHeaders.X-Forwarded-Proto = "https";
-                sslRedirect = true;
-                sslForceHost = true;
-                stsSeconds = 315360000;
-                stsIncludeSubdomains = true;
-                stsPreload = true;
-                contentTypeNosniff = true;
-              };
-              forgejo-timeout.buffering = {
-                maxRequestBodyBytes = 21474836480;
-                memRequestBodyBytes = 1073741824;
-              };
-              attic-timeout.buffering = {
-                maxRequestBodyBytes = 21474836480;
-                memRequestBodyBytes = 1073741824;
-              };
-            };
-
-            serversTransports = {
-              forgejo-transport.forwardingTimeouts = {
-                dialTimeout = "30s";
-                responseHeaderTimeout = "10m";
-                idleConnTimeout = "10m";
-              };
-              attic-transport.forwardingTimeouts = {
-                dialTimeout = "30s";
-                responseHeaderTimeout = "10m";
-                idleConnTimeout = "10m";
-              };
-            };
-
-            routers = {
-              jellyfin = {
-                entryPoints = [ "websecure" ];
-                rule = "Host(`jellyfin.haseebmajid.dev`)";
-                service = "jellyfin";
-                middlewares = [ "jellyfin-headers" ];
-                tls.certResolver = "letsencrypt";
-              };
-              immich = {
-                entryPoints = [ "websecure" ];
-                rule = "Host(`immich.haseebmajid.dev`)";
-                service = "immich";
-                middlewares = [ "immich-headers" ];
-                tls.certResolver = "letsencrypt";
-              };
-              forgejo = {
-                entryPoints = [ "websecure" ];
-                rule = "Host(`forgejo.haseebmajid.dev`)";
-                service = "forgejo";
-                middlewares = [
-                  "forgejo-headers"
-                  "forgejo-timeout"
-                ];
-                tls.certResolver = "letsencrypt";
-              };
-              attic = {
-                entryPoints = [ "websecure" ];
-                rule = "Host(`attic.haseebmajid.dev`)";
-                service = "attic";
-                middlewares = [ "attic-timeout" ];
-                tls.certResolver = "letsencrypt";
-              };
-            };
-          };
-
-          tcp = {
-            routers.ssh = {
-              entryPoints = [ "ssh" ];
-              rule = "HostSNI(`*`)";
-              service = "ssh";
-            };
-            services.ssh = {
-              loadBalancer.servers = [ { address = "framebox:2223"; } ];
-            };
-          };
-        };
-
-        services.openssh.ports = [ 22 ];
 
         networking.firewall.allowedTCPPorts = [
           22

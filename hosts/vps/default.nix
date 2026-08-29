@@ -4,6 +4,8 @@
     includes = [
       den.aspects.performance-base
       den.aspects.server
+      den.aspects.server-admin
+      den.aspects.server-console
       den.aspects.impermanence
       den.aspects.boot
       den.aspects.hardening-vps
@@ -16,7 +18,6 @@
       den.aspects.postgresql
       den.aspects.redis
       den.aspects.attic-server
-      den.aspects.valkey
       den.aspects.crowdsec
       den.aspects.openbao
       den.aspects.pocketid
@@ -40,6 +41,7 @@
       den.aspects.immich
 
       den.aspects.fish
+      (den.batteries.tty-autologin "nixos")
     ];
 
     nixos =
@@ -64,77 +66,37 @@
           ./disks.nix
         ];
 
-        # TODO: Remove when nixpkgs#539168 is closed / karakeep no longer pins pnpm_9.
-        # https://github.com/NixOS/nixpkgs/issues/539168
-        nixpkgs.config.permittedInsecurePackages = [
-          "pnpm-9.15.9"
-        ];
-
-        environment.systemPackages = with pkgs; [
-          jq
-          sqlite-interactive
-          zellij
-        ];
-
-        # Auto-start/attach a persistent zellij session on login (SSH + console).
-        # "main" is created on first login and survives disconnects; reattach is seamless.
-        # `options --default-layout bare` is required because `zellij attach --create`
-        # ignores the `default_layout` config key and would otherwise use the builtin
-        # layout (which ships the tab-bar + status-bar chrome). See zellij#4463.
-        # Mirrors what framebox used to do before f7045a7e.
-        programs.fish.interactiveShellInit = lib.mkAfter ''
-          if not set -q ZELLIJ; and status is-interactive
-            exec zellij attach --create main options --default-layout bare
-          end
-        '';
-
-        # Minimal zellij config for the nixos user (no home-manager on vps):
-        # use a custom single-pane layout with no UI chrome.
-        system.activationScripts.zellij-config = lib.stringAfter [ "users" ] ''
-          mkdir -p /home/nixos/.config/zellij/layouts
-          chown nixos:users /home/nixos/.config /home/nixos/.config/zellij /home/nixos/.config/zellij/layouts
-          install -o nixos -g users -m 0644 ${pkgs.writeText "vps-zellij-config" ''
-            default_layout "bare"
-            simplified_ui true
-            pane_frames false
-            copy_on_select true
-            show_startup_tips false
-          ''} /home/nixos/.config/zellij/config.kdl
-          install -o nixos -g users -m 0644 ${pkgs.writeText "vps-zellij-layout-bare" ''
-            layout {
-              pane
-            }
-          ''} /home/nixos/.config/zellij/layouts/bare.kdl
-        '';
-
-        services.dbus.implementation = "dbus";
-        services.getty.autologinUser = "nixos";
-
-        users.mutableUsers = false;
-
         sops.defaultSopsFile = ./secrets.yaml;
-
         sops.secrets = {
           gitlab_runner_env = { };
-          nixos_hashed_password = {
-            neededForUsers = true;
-          };
+          nixos_hashed_password.neededForUsers = true;
         };
 
-        users.users.root.openssh.authorizedKeys.keys = authorizedKeys;
-
-        users.groups.media.gid = 3000;
-
-        users.users.nixos = {
-          isNormalUser = true;
-          group = "users";
-          extraGroups = [ "wheel" ];
+        nixicle.serverAdmin = {
+          enable = true;
+          inherit authorizedKeys;
+          mediaGid = 3000;
           hashedPasswordFile = config.sops.secrets.nixos_hashed_password.path;
-          openssh.authorizedKeys.keys = authorizedKeys;
           shell = pkgs.fish;
         };
 
-        time.timeZone = lib.mkForce "UTC";
+        security.sudo.wheelNeedsPassword = lib.mkForce false;
+
+        networking = {
+          hostName = "vps";
+          useDHCP = lib.mkDefault true;
+          interfaces.ens3.useDHCP = lib.mkDefault true;
+          firewall.allowedTCPPorts = [ 22 ];
+        };
+
+        nixicle.serverConsole.enable = true;
+
+        services.dbus.implementation = "dbus";
+        services.openssh = {
+          enable = true;
+          ports = [ 22 ];
+          settings.PasswordAuthentication = lib.mkForce false;
+        };
 
         nix.settings = {
           trusted-users = [
@@ -147,35 +109,39 @@
           ];
         };
 
-        security.sudo.wheelNeedsPassword = lib.mkForce false;
+        time.timeZone = lib.mkForce "UTC";
 
-        system.backup.objects.observability = {
-          paths = [
-            "/var/lib/prometheus2"
-            "/var/lib/loki"
-            "/var/lib/grafana"
-          ];
-          timerConfig = {
-            OnCalendar = "daily";
-            RandomizedDelaySec = "2h";
-            Persistent = true;
+        environment.systemPackages = with pkgs; [
+          jq
+          sqlite-interactive
+        ];
+
+        system = {
+          backup.objects.observability = {
+            paths = [
+              "/var/lib/prometheus2"
+              "/var/lib/loki"
+              "/var/lib/grafana"
+            ];
+            timerConfig = {
+              OnCalendar = "daily";
+              RandomizedDelaySec = "2h";
+              Persistent = true;
+            };
           };
+          backup.objects.networking = {
+            paths = [
+              "/var/lib/traefik"
+              "/var/lib/tailscale"
+            ];
+            timerConfig = {
+              OnCalendar = "daily";
+              RandomizedDelaySec = "3h";
+              Persistent = true;
+            };
+          };
+          stateVersion = "24.05";
         };
-
-        services.openssh = {
-          enable = true;
-          ports = [ 22 ];
-          settings.PasswordAuthentication = lib.mkForce false;
-        };
-
-        networking = {
-          firewall.allowedTCPPorts = [ 22 ];
-          hostName = "vps";
-          useDHCP = lib.mkDefault true;
-          interfaces.ens3.useDHCP = lib.mkDefault true;
-        };
-
-        system.stateVersion = "24.05";
       };
   };
 }

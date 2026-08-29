@@ -1,5 +1,4 @@
-{ ... }:
-{
+_: {
   den.aspects.searx = {
     nixos =
       { config, ... }:
@@ -14,15 +13,17 @@
           enable = true;
           environmentFile = config.sops.templates."searx-env".path;
           settings = {
-            server.bind_address = "127.0.0.1";
-            server.port = 8082;
-            server.secret_key = "$SEARX_SECRET_KEY";
+            server = {
+              bind_address = "127.0.0.1";
+              port = 8082;
+              secret_key = "$SEARX_SECRET_KEY";
+            };
             search.formats = [
               "html"
               "json"
             ];
             valkey = {
-              url = "valkey://localhost:6379/0";
+              url = "valkey://localhost:6380/0";
             };
           };
         };

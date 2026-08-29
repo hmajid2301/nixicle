@@ -1,5 +1,4 @@
-{ ... }:
-{
+_: {
   systemd.services.zfs-import-main.unitConfig.RequiresMountsFor = [ "/persist" ];
 
   systemd.tmpfiles.rules = [

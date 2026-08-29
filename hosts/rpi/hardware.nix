@@ -25,12 +25,13 @@ in
     raspberry-pi-5.display-vc4
   ]);
 
-  boot.loader.raspberry-pi.bootloader = "kernel";
-  boot.tmp.useTmpfs = true;
+  boot = {
+    loader.raspberry-pi.bootloader = "kernel";
+    tmp.useTmpfs = true;
+    kernelPackages = lib.mkForce patchedKernelPackages;
+  };
 
   hardware.deviceTree.enable = true;
-
-  boot.kernelPackages = lib.mkForce patchedKernelPackages;
 
   hardware.raspberry-pi.config.all.base-dt-params = {
     pciex1 = {

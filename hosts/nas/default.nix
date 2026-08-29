@@ -21,6 +21,7 @@ in
     includes = [
       den.aspects.performance-base
       den.aspects.server
+      den.aspects.server-admin
       den.aspects.boot-secure # LUKS+TPM2 secure boot (includes den.aspects.boot)
       den.aspects.impermanence # ephemeral btrfs root, /persist for state
       den.aspects.attic-cache
@@ -35,7 +36,7 @@ in
       "/var/lib/docker" # stash image + container state
     ];
 
-    homeManager = { ... }: {
+    homeManager = _: {
       home.stateVersion = "26.05";
     };
 
@@ -54,6 +55,37 @@ in
         { config.facter.reportPath = ./facter.json; }
       ];
 
+      nixicle.serverAdmin = {
+        enable = true;
+
+        # `media` gid 3000 matches the recovered TrueNAS ownership on
+        # /mnt/main/main and the homelab datasets (fleet convention; framebox
+        # uses the same gid). Members can read/write shared data.
+        inherit authorizedKeys;
+        extraGroups = [
+          "wheel"
+          "media"
+        ];
+        uid = 1000; # matches TrueNAS NFS anonuid/anongid and share owner
+        mediaGid = 3000;
+        initialPassword = "changeme";
+        shell = pkgs.fish;
+        sudo = {
+          execWheelOnly = true;
+          wheelNeedsPassword = false;
+        };
+      };
+
+      networking = {
+        hostName = "nas";
+        useDHCP = lib.mkDefault true;
+
+        # Stable hostid is required for clean ZFS imports on Linux.
+        # Observed from `zdb -e -C main`: hostid decimal 1577738375 == 5e0a6087.
+        hostId = "5e0a6087";
+        firewall.allowedTCPPorts = [ 22 ];
+      };
+
       boot = {
         supportedFilesystems = [ "zfs" ];
         zfs = {
@@ -68,22 +100,26 @@ in
         };
       };
 
-      networking = {
-        hostName = "nas";
-        useDHCP = lib.mkDefault true;
-
-        # Stable hostid is required for clean ZFS imports on Linux.
-        # Observed from `zdb -e -C main`: hostid decimal 1577738375 == 5e0a6087.
-        hostId = "5e0a6087";
-      };
-
-      # Docker for the Stash compose stack. /var/lib/docker is persisted
-      # (see persist.directories) so the pulled image + container survive
-      # the impermanence rollback. The compose `restart: unless-stopped`
-      # policy auto-starts the container when the daemon starts at boot.
       virtualisation.docker = {
+        # Docker for the Stash compose stack. /var/lib/docker is persisted
+        # (see persist.directories) so the pulled image + container survive
+        # the impermanence rollback. The compose `restart: unless-stopped`
+        # policy auto-starts the container when the daemon starts at boot.
         enable = true;
         enableOnBoot = true;
+      };
+
+      services.openssh = {
+        enable = true;
+        settings = {
+          PasswordAuthentication = false;
+          PermitRootLogin = "prohibit-password";
+        };
+      };
+
+      services.zfs = {
+        autoScrub.enable = false;
+        trim.enable = false;
       };
 
       environment.systemPackages = with pkgs; [
@@ -98,52 +134,7 @@ in
         zfs
       ];
 
-      users.mutableUsers = false;
-
       home-manager.users.haseeb.home.stateVersion = "26.05";
-
-      # `media` gid 3000 matches the recovered TrueNAS ownership on
-      # /mnt/main/main and the homelab datasets (fleet convention; framebox
-      # uses the same gid). Members can read/write shared data.
-      users.groups.media.gid = 3000;
-
-      users.users.root.openssh.authorizedKeys.keys = authorizedKeys;
-
-      users.users.nixos = {
-        isNormalUser = true;
-        uid = 1000; # matches TrueNAS NFS anonuid/anongid and share owner
-        group = "users";
-        extraGroups = [
-          "wheel"
-          "media"
-        ];
-        initialPassword = "changeme";
-        openssh.authorizedKeys.keys = authorizedKeys;
-        shell = pkgs.fish;
-      };
-
-      services.openssh = {
-        enable = true;
-        settings = {
-          PasswordAuthentication = false;
-          PermitRootLogin = "prohibit-password";
-        };
-      };
-
-      security.sudo = {
-        execWheelOnly = true;
-        wheelNeedsPassword = false;
-      };
-
-      services.zfs = {
-        autoScrub.enable = false;
-        trim.enable = false;
-      };
-
-      networking.firewall.allowedTCPPorts = [
-        22
-      ];
-
       system.stateVersion = "26.05";
     };
   };

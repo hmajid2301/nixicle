@@ -1,4 +1,4 @@
-{ ... }:
+_:
 let
   domain = "papra.haseebmajid.dev";
   port = 1221;
@@ -36,7 +36,7 @@ in
 
         services.traefik.dynamicConfigOptions.http = lib.nixicle.mkTraefikService {
           name = "papra";
-          port = port;
+          inherit port;
           subdomain = "papra";
           domain = "haseebmajid.dev";
           extraServiceConfig.loadBalancer.servers = [
