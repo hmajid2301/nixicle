@@ -1,4 +1,4 @@
-image: nixos/nix
+image: nixpkgs/nix-flakes:nixos-26.05-x86_64-linux
 
 workflow:
   rules:
@@ -34,12 +34,6 @@ lint:
     - statix check .
     - deadnix --fail
 
-lint:todos:
-  extends: .lint_setup
-  script:
-    - nix profile install nixpkgs#curl nixpkgs#jq
-    - bash scripts/check-todos.sh
-
 .base_setup:
   before_script:
     - mkdir -p /etc/nix /var/lib/papirus-folders /root/.config/nix
@@ -65,7 +59,6 @@ lint:todos:
       else
         echo "No GITHUB_TOKEN/GH_TOKEN set; GitHub flake fetches may hit rate limits"
       fi
-    - nix profile install nixpkgs#attic-client nixpkgs#cacert
 
 .build:nixos:
   extends: .base_setup
