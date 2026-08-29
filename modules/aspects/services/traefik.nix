@@ -76,7 +76,7 @@ _: {
                   ];
                 };
                 transport.respondingTimeouts = {
-                  readTimeout = "30m";
+                  readTimeout = "0";
                   writeTimeout = "30m";
                   idleTimeout = "30m";
                 };
