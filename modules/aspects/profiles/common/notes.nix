@@ -1,5 +1,4 @@
-{ ... }:
-{
+_: {
   den.aspects.commonNotes = {
     homeManager = {
       programs.zk = {

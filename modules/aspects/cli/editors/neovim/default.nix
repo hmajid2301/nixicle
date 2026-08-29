@@ -1,4 +1,4 @@
-{ inputs, ... }:
+{ inputs, den, ... }:
 {
   flake-file.inputs = {
     nix-wrapper-modules.url = "github:BirdeeHub/nix-wrapper-modules";
@@ -63,6 +63,8 @@
   };
 
   den.aspects.neovim = {
+    includes = [ (den.batteries.unfree [ "terraform" ]) ];
+
     homeManager =
       {
         config,
