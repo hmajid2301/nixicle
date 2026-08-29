@@ -1,5 +1,4 @@
-{ ... }:
-{
+_: {
   den.aspects.logging = {
     nixos = _: {
       services.loki = {

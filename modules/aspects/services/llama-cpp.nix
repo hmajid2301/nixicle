@@ -1,5 +1,4 @@
-{ ... }:
-{
+_: {
   den.aspects.llama-cpp = {
     includes = [ ];
     persist.directories = [ "/var/lib/private/llama-cpp" ];

@@ -1,5 +1,4 @@
-{ ... }:
-{
+_: {
   den.aspects.monitoringGrafana = {
     persist.directories = [
       {
@@ -17,7 +16,7 @@
             settings = {
               server = {
                 http_port = 3010;
-                http_addr = "0.0.0.0";
+                http_addr = "127.0.0.1";
                 root_url = "https://grafana.homelab.haseebmajid.dev";
               };
               "auth.generic_oauth" = {

@@ -1,5 +1,4 @@
-{ ... }:
-{
+_: {
   den.aspects.ollama = {
     includes = [ ];
     backup.ollama.paths = [ "/var/lib/ollama" ];

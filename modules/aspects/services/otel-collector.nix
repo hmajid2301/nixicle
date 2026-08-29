@@ -1,5 +1,4 @@
-{ ... }:
-{
+_: {
   den.aspects.otel-collector = {
     includes = [ ];
     persist.directories = [
@@ -36,7 +35,7 @@
               transform = { };
             };
             exporters = {
-              "prometheus".endpoint = "0.0.0.0:8889";
+              "prometheus".endpoint = "127.0.0.1:8889";
               "otlphttp/loki".endpoint = "http://127.0.0.1:3030/otlp/v1/logs";
               "otlphttp/tempo".endpoint = "http://127.0.0.1:4318";
             };

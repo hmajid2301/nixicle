@@ -1,5 +1,4 @@
-{ ... }:
-{
+_: {
   den.aspects.tandoor = {
     includes = [ ];
     backup.tandoor.paths = [ "/var/lib/tandoor-recipes" ];
@@ -12,7 +11,12 @@
       }
     ];
     nixos =
-      { config, lib, pkgs, ... }:
+      {
+        config,
+        lib,
+        pkgs,
+        ...
+      }:
       {
         sops.secrets.tandoor = { };
         systemd.services.tandoor-recipes = {
@@ -31,31 +35,29 @@
             # kimi-k2.6 and many other Ollama models do this despite response_format
             # json_object. Strip fences before parsing. See cookbook/views/api.py
             # sites: json.loads(response_text) (4 occurrences).
-            package = pkgs.tandoor-recipes.overrideAttrs (
-              old: {
-                postPatch = (old.postPatch or "") + ''
-                  substituteInPlace cookbook/views/api.py \
-                    --replace-fail "import traceback" "import traceback
+            package = pkgs.tandoor-recipes.overrideAttrs (old: {
+              postPatch = (old.postPatch or "") + ''
+                                  substituteInPlace cookbook/views/api.py \
+                                    --replace-fail "import traceback" "import traceback
 
 
-def _ai_strip_fences(text):
-    if not isinstance(text, str):
-        return text
-    s = text.strip()
-    fence = chr(96) * 3
-    if s.startswith(fence):
-        s = s[3:]
-        if s[:4].lower() == 'json':
-            s = s[4:]
-        s = s.lstrip()
-    if s.endswith(fence):
-        s = s[:-3].rstrip()
-    return s"
-                  substituteInPlace cookbook/views/api.py \
-                    --replace-fail "json.loads(response_text)" "json.loads(_ai_strip_fences(response_text))"
-                '';
-              }
-            );
+                def _ai_strip_fences(text):
+                    if not isinstance(text, str):
+                        return text
+                    s = text.strip()
+                    fence = chr(96) * 3
+                    if s.startswith(fence):
+                        s = s[3:]
+                        if s[:4].lower() == 'json':
+                            s = s[4:]
+                        s = s.lstrip()
+                    if s.endswith(fence):
+                        s = s[:-3].rstrip()
+                    return s"
+                                  substituteInPlace cookbook/views/api.py \
+                                    --replace-fail "json.loads(response_text)" "json.loads(_ai_strip_fences(response_text))"
+              '';
+            });
             extraConfig = {
               ALLOWED_HOSTS = "tandoor-recipes.haseebmajid.dev,localhost,127.0.0.1";
               DB_ENGINE = "django.db.backends.postgresql";

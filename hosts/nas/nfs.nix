@@ -4,8 +4,7 @@
 # aspect (`nfs-nas`) also mounts `/mnt/main/main-encrypted` as `/mnt/homelab`,
 # so both are exported here. The encrypted dataset must be unlocked+mounted
 # for its export to serve data (see the cutover runbook).
-{ ... }:
-{
+_: {
   services.nfs.server = {
     enable = true;
     exports = ''

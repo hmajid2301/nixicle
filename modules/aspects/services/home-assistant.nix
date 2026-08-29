@@ -1,5 +1,4 @@
-{ ... }:
-{
+_: {
   den.aspects.home-assistant = {
     nixos =
       { pkgs, lib, ... }:

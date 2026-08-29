@@ -1,5 +1,4 @@
-{ ... }:
-{
+_: {
   den.aspects.karakeep = {
     includes = [ ];
     backup.karakeep.paths = [ "/var/lib/karakeep" ];

@@ -7,8 +7,7 @@
 #
 # NOTE: `vfs_fruit` must be listed BEFORE `streams_xattr` in `vfs objects`
 # (Samba requirement) — the earlier `streams_xattr fruit` ordering was wrong.
-{ ... }:
-{
+_: {
   services.samba = {
     enable = true;
     openFirewall = true;

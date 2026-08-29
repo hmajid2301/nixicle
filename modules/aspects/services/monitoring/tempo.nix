@@ -1,5 +1,4 @@
-{ ... }:
-{
+_: {
   den.aspects.monitoringTempo = {
     persist.directories = [
       {
@@ -18,8 +17,8 @@
           };
           memberlist.bind_port = 7947;
           distributor.receivers.otlp.protocols = {
-            http.endpoint = "0.0.0.0:4318";
-            grpc.endpoint = "0.0.0.0:4317";
+            http.endpoint = "127.0.0.1:4318";
+            grpc.endpoint = "127.0.0.1:4317";
           };
           storage.trace = {
             backend = "local";

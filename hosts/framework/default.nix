@@ -11,38 +11,36 @@
       den.aspects.video
     ];
 
-    homeManager =
-      { ... }:
-      {
-        home = {
-          username = "haseeb";
-          homeDirectory = "/home/haseeb";
-          stateVersion = "24.05";
-        };
+    homeManager = _: {
+      home = {
+        username = "haseeb";
+        homeDirectory = "/home/haseeb";
+        stateVersion = "24.05";
+      };
 
-        programs.noctalia.settings = {
-          osd = {
-            monitors = [ "eDP-1" ];
-          };
-          idle = {
-            pre_action_fade_seconds = 5.0;
-            behavior = {
-              lock = {
-                timeout = 300;
-                action = "lock";
-              };
-              screen-off = {
-                timeout = 330;
-                action = "screen_off";
-              };
-              suspend = {
-                timeout = 900;
-                action = "lock_and_suspend";
-              };
+      programs.noctalia.settings = {
+        osd = {
+          monitors = [ "eDP-1" ];
+        };
+        idle = {
+          pre_action_fade_seconds = 5.0;
+          behavior = {
+            lock = {
+              timeout = 300;
+              action = "lock";
+            };
+            screen-off = {
+              timeout = 330;
+              action = "screen_off";
+            };
+            suspend = {
+              timeout = 900;
+              action = "lock_and_suspend";
             };
           };
         };
       };
+    };
   };
 
   den.aspects.framework = {
@@ -85,11 +83,7 @@
 
         users.users.haseeb = {
           hashedPasswordFile = config.sops.secrets.user_password.path;
-          extraGroups = [
-            "wheel"
-            "docker"
-            "networkmanager"
-          ];
+          extraGroups = [ "docker" ];
         };
 
         boot = {

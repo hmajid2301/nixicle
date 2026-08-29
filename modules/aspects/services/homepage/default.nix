@@ -1,5 +1,4 @@
-{ ... }:
-{
+_: {
   den.aspects.homepage = {
     nixos =
       {
@@ -43,7 +42,6 @@
             port = 8173;
             subdomain = "homepage";
             domain = "haseebmajid.dev";
-            middlewares = [ "tinyauth" ];
           };
         };
       };

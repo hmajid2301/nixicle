@@ -1,4 +1,4 @@
-{ ... }:
+_:
 let
   mediaLocation = "/mnt/homelab/homelab/immich";
 in
@@ -60,7 +60,7 @@ in
 
         services.immich = {
           enable = true;
-          host = "0.0.0.0";
+          host = "127.0.0.1";
           inherit mediaLocation;
           redis.host = config.services.redis.servers.main.unixSocket;
           settings = {

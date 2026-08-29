@@ -5,7 +5,8 @@ let
   traefikServices = http.services or { };
 in
 rec {
-  parseHost = rule:
+  parseHost =
+    rule:
     let
       m = builtins.match "^Host\\(`([^`]+)`\\).*" rule;
     in
@@ -13,7 +14,8 @@ rec {
 
   publicUrl = name: parseHost ((routers.${name} or { }).rule or "");
 
-  internalUrl = name:
+  internalUrl =
+    name:
     let
       svc = traefikServices.${name} or { };
       servers = svc.loadBalancer.servers or [ ];
@@ -21,30 +23,39 @@ rec {
     in
     if servers == [ ] then null else first.url or null;
 
-  hrefOr = name: fallback:
-    let p = publicUrl name; in if p != null then p else fallback;
+  hrefOr =
+    name: fallback:
+    let
+      p = publicUrl name;
+    in
+    if p != null then p else fallback;
 
   serviceEnabled = path: (lib.attrByPath path false config) == true;
 
-  unitEnabled = name:
-    let unit = config.systemd.services.${name} or { }; in
+  unitEnabled =
+    name:
+    let
+      unit = config.systemd.services.${name} or { };
+    in
     (unit.enable or true) != false && (unit.wantedBy or [ ]) != [ ];
 
   cleanWidget = w: lib.filterAttrs (_: v: v != null) w;
 
   mkHomepageService =
-    { name
-    , icon
-    , description
-    , enable
-    , href
-    , widget ? null
+    {
+      name,
+      icon,
+      description,
+      enable,
+      href,
+      widget ? null,
     }:
     lib.optional enable [
       {
         ${name} = {
           inherit icon description href;
-        } // lib.optionalAttrs (widget != null) {
+        }
+        // lib.optionalAttrs (widget != null) {
           widget = cleanWidget widget;
         };
       }

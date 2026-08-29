@@ -1,4 +1,4 @@
-{ ... }:
+_:
 let
   authPort = 3000;
   domain = "haseebmajid.dev";

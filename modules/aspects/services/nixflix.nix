@@ -1,7 +1,4 @@
 { inputs, ... }:
-let
-  tunnelId = "ecef5dbb-834e-43ed-84c6-355a2ac53e59";
-in
 {
   flake-file.inputs.nixflix = {
     url = "github:kiriwalawren/nixflix";
@@ -295,9 +292,6 @@ in
             qbittorrent.enable = true;
           };
         };
-
-        services.cloudflared.tunnels."${tunnelId}".ingress."seerr.haseebmajid.dev" =
-          "http://localhost:5055";
 
         services.traefik.dynamicConfigOptions.http = lib.mkMerge [
           (lib.nixicle.mkAuthenticatedTraefikService {

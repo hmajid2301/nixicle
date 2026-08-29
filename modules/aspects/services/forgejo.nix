@@ -1,5 +1,4 @@
-{ ... }:
-{
+_: {
   den.aspects.forgejo = {
     includes = [ ];
     persist.directories = [
@@ -173,9 +172,11 @@
                   runner.capacity = 4;
 
                   runner.envs.DOCKER_HOST = "tcp://dind_container.docker.internal:2376";
-                  container.docker_host = "tcp://127.0.0.1:2376";
-                  container.network = "bridge";
-                  container.options = "--add-host=dind_container.docker.internal:host-gateway";
+                  container = {
+                    docker_host = "tcp://127.0.0.1:2376";
+                    network = "bridge";
+                    options = "--add-host=dind_container.docker.internal:host-gateway";
+                  };
                 };
               };
             };

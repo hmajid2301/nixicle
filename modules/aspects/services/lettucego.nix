@@ -72,7 +72,7 @@
             enable = true;
             package = inputs.lettucego.packages.${pkgs.stdenv.hostPlatform.system}.default;
             port = 8236;
-            host = "0.0.0.0";
+            host = "127.0.0.1";
             database.createLocally = true;
             s3 = {
               endpoint = "http://127.0.0.1:3900";

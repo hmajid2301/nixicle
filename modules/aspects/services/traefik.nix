@@ -1,5 +1,4 @@
-{ ... }:
-{
+_: {
   den.aspects.traefik = {
     includes = [ ];
     persist.directories = [ "/var/lib/traefik" ];
@@ -29,9 +28,10 @@
           staticConfigOptions = {
             metrics.prometheus = { };
             tracing = { };
+            accessLog = { };
             api = {
               dashboard = true;
-              insecure = true;
+              insecure = false;
             };
             certificatesResolvers = {
               tailscale.tailscale = { };
@@ -88,6 +88,7 @@
             routers.traefik = {
               entryPoints = [ "websecure" ];
               rule = "Host(`traefik.homelab.haseebmajid.dev`)";
+              middlewares = [ "tinyauth" ];
               service = "api@internal";
               tls.certResolver = "letsencrypt";
             };

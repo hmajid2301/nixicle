@@ -1,4 +1,4 @@
-{ ... }:
+_:
 let
   dataDir = "/data/romm";
   romsDir = "/data/media/roms";

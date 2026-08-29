@@ -11,14 +11,7 @@ let
   ];
   forAllSystems = lib.genAttrs supportedSystems;
 
-  extendedLib = lib.extend (
-    self: _super: {
-      nixicle = import ../lib {
-        inherit inputs;
-        lib = self;
-      };
-    }
-  );
+  inherit ((import ../lib { inherit inputs lib; })) extendedLib;
 
   overlays = [
     inputs.nur.overlays.default
@@ -27,55 +20,13 @@ let
     (_final: prev: {
       zjstatus = inputs.zjstatus.packages.${prev.stdenv.hostPlatform.system}.default;
     })
-    (final: _prev: {
-      nixicle = extendedLib.nixicle.importPackages final ../packages;
-      # Unwrap deprecated `stdenv.isLinux`/`isDarwin` aliases (wrapped in
-      # `lib.warn`) so accessors don't spam evaluation warnings. Cover the
-      # stdenv variants that downstream modules (e.g. microvm) reach through.
-      stdenv = _prev.stdenv // {
-        isLinux = _prev.stdenv.hostPlatform.isLinux;
-        isDarwin = _prev.stdenv.hostPlatform.isDarwin;
-      };
-      buildPackages = _prev.buildPackages // {
-        stdenv = _prev.buildPackages.stdenv // {
-          isLinux = _prev.buildPackages.stdenv.hostPlatform.isLinux;
-          isDarwin = _prev.buildPackages.stdenv.hostPlatform.isDarwin;
-        };
-      };
-      pkgsBuildBuild = _prev.pkgsBuildBuild // {
-        stdenv = _prev.pkgsBuildBuild.stdenv // {
-          isLinux = _prev.pkgsBuildBuild.stdenv.hostPlatform.isLinux;
-          isDarwin = _prev.pkgsBuildBuild.stdenv.hostPlatform.isDarwin;
-        };
-      };
-      pkgsBuildHost = _prev.pkgsBuildHost // {
-        stdenv = _prev.pkgsBuildHost.stdenv // {
-          isLinux = _prev.pkgsBuildHost.stdenv.hostPlatform.isLinux;
-          isDarwin = _prev.pkgsBuildHost.stdenv.hostPlatform.isDarwin;
-        };
-      };
-      pkgsHostHost = _prev.pkgsHostHost // {
-        stdenv = _prev.pkgsHostHost.stdenv // {
-          isLinux = _prev.pkgsHostHost.stdenv.hostPlatform.isLinux;
-          isDarwin = _prev.pkgsHostHost.stdenv.hostPlatform.isDarwin;
-        };
-      };
-      pkgsHostTarget = _prev.pkgsHostTarget // {
-        stdenv = _prev.pkgsHostTarget.stdenv // {
-          isLinux = _prev.pkgsHostTarget.stdenv.hostPlatform.isLinux;
-          isDarwin = _prev.pkgsHostTarget.stdenv.hostPlatform.isDarwin;
-        };
-      };
-    })
+    extendedLib.nixicle.nixicleOverlay
   ];
 
   mkPkgs =
     system:
     import inputs.nixpkgs {
       inherit system overlays;
-      config = {
-        allowUnfree = true;
-      };
     };
 
   mkPreCommitCheck =
@@ -88,6 +39,14 @@ let
       package = pkgs.prek;
       hooks = {
         nixfmt.enable = true;
+        deadnix = {
+          enable = true;
+          settings.edit = true;
+        };
+        statix = {
+          enable = true;
+          args = [ "fix" ];
+        };
       };
     };
 in
@@ -116,18 +75,14 @@ in
     };
   };
 
-  flake = {
-    formatter = forAllSystems (
-      system:
-      let
-        pkgs = mkPkgs system;
-        config = (mkPreCommitCheck system).config;
-      in
-      pkgs.writeShellScriptBin "pre-commit-run" ''
-        ${pkgs.lib.getExe config.package} run --all-files --config ${config.configFile}
-      ''
-    );
+  perSystem = _: {
+    treefmt = {
+      projectRootFile = "flake.nix";
+      programs.nixfmt.enable = true;
+    };
+  };
 
+  flake = {
     packages = forAllSystems (
       system:
       let
@@ -181,8 +136,7 @@ in
                     system = imageSystem;
                     "linux-kernel".target = "bzImage";
                   };
-                  # Apply the same overlays as the rest of the flake so the
-                  # deprecated `stdenv.isLinux`/`isDarwin` alias shim is unwrapped.
+                  # Apply the same overlays as the rest of the flake.
                   nixpkgs.overlays = overlays;
                 }
               ];
@@ -215,14 +169,13 @@ in
       system:
       let
         pkgs = mkPkgs system;
-      in
-      let
+
         preCommitCheck = mkPreCommitCheck system;
       in
       {
         default = pkgs.mkShell {
           NIX_CONFIG = "extra-experimental-features = nix-command flakes";
-          shellHook = preCommitCheck.shellHook;
+          inherit (preCommitCheck) shellHook;
           packages =
             with pkgs;
             [

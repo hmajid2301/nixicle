@@ -4,13 +4,13 @@
     includes = [
       den.aspects.desktopProfile
       den.aspects.non-nixos
+      den.aspects.claude-code
     ];
 
     homeManager =
       {
         pkgs,
         lib,
-        config,
         ...
       }:
       {

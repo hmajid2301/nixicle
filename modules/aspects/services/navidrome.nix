@@ -1,8 +1,4 @@
-{ ... }:
-let
-  tunnelId = "ecef5dbb-834e-43ed-84c6-355a2ac53e59";
-in
-{
+_: {
   den.aspects.navidrome = {
     nixos =
       { lib, ... }:
@@ -24,10 +20,6 @@ in
             domain = "haseebmajid.dev";
           };
 
-          cloudflared.tunnels.${tunnelId}.ingress."navidrome.haseebmajid.dev" = {
-            service = "https://localhost";
-            originRequest.originServerName = "navidrome.haseebmajid.dev";
-          };
         };
       };
   };

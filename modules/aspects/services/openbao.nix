@@ -1,5 +1,4 @@
-{ ... }:
-{
+_: {
   den.aspects.openbao = {
     includes = [ ];
     persist.directories = [
