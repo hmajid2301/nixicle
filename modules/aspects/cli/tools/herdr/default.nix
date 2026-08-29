@@ -34,6 +34,14 @@ _: {
               focus_pane_right = "prefix+l";
               split_vertical = "prefix+v";
               split_horizontal = "prefix+minus";
+              command = [
+                {
+                  key = "alt+f";
+                  type = "plugin_action";
+                  command = "herdr-float.toggle";
+                  description = "Toggle floating shell";
+                }
+              ];
             };
             ui = {
               status_indicators = "symbols";
@@ -42,6 +50,8 @@ _: {
             worktrees.directory = "~/worktrees";
           };
         };
+
+        home.packages = [ pkgs.tmux ];
 
         home.file.".pi/agent/extensions/herdr-agent-state.ts".source = piIntegration;
       };
