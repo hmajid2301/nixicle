@@ -1,5 +1,4 @@
-{ ... }:
-{
+_: {
   den.aspects.git = {
     homeManager = _: {
       programs.git = {

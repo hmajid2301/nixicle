@@ -2,14 +2,18 @@
 # service that pushes newly-built store paths to the `main` cache. Use this on
 # dev/desktop profiles where you actually build and publish packages; servers
 # that only pull substitutes should use `den.aspects.attic-cache` instead.
-{ ... }:
-{
+_: {
   den.aspects.attic-client = {
     homeManager =
-      { pkgs, config, ... }:
+      {
+        pkgs,
+        config,
+        lib,
+        ...
+      }:
       {
         sops.secrets.netrc = {
-          sopsFile = ../../secrets.yaml;
+          sopsFile = lib.nixicle.secretsFile;
         };
 
         home.packages = [ pkgs.attic-client ];

@@ -1,7 +1,6 @@
-{ ... }:
-{
+_: {
   den.aspects.commonTerminals = {
-    homeManager = { ... }: {
+    homeManager = _: {
       programs.foot = {
         enable = true;
         settings = {

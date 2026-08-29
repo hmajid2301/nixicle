@@ -2,8 +2,7 @@
 # attic.haseebmajid.dev) with Postgres + Backblaze B2 storage. Used by the
 # host(s) that actually serve the cache; everyone else consumes it via
 # `den.aspects.attic-cache`.
-{ ... }:
-{
+_: {
   den.aspects.attic-server = {
     includes = [ ];
     persist.directories = [
@@ -52,7 +51,7 @@
             enable = true;
             environmentFile = secretPaths.attic;
             settings = {
-              listen = "[::]:8899";
+              listen = "127.0.0.1:8899";
               allowed-hosts = [ "attic.haseebmajid.dev" ];
               api-endpoint = "https://attic.haseebmajid.dev/";
               database.url = "postgresql:///atticd?host=/run/postgresql&user=atticd";

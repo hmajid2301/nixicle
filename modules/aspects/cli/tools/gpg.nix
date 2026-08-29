@@ -1,5 +1,4 @@
-{ ... }:
-{
+_: {
   den.aspects.gpg = {
     homeManager =
       { pkgs, ... }:

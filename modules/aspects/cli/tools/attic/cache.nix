@@ -3,15 +3,14 @@
 # `netrc` sops secret so the nix daemon authenticates (the cache is private).
 # Desktop-class hosts get the same config inline via the `common` profile; this
 # aspect is for server hosts that don't include `common`.
-{ ... }:
-{
+_: {
   den.aspects.attic-cache = {
     nixos =
-      { config, ... }:
+      { config, lib, ... }:
       {
         # Same netrc secret the common profile + HM attic client use: a 10y
         # pull+push JWT for `machine attic.haseebmajid.dev`.
-        sops.secrets.netrc.sopsFile = ../../secrets.yaml;
+        sops.secrets.netrc.sopsFile = lib.nixicle.secretsFile;
 
         nix.settings = {
           substituters = [
