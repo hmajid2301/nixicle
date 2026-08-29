@@ -1,0 +1,11 @@
+[
+  "claude-code"
+  "davinci-resolve-studio"
+  "firefox-bin"
+  "firefox-bin-unwrapped"
+  "keymapp"
+  "proton-ge-bin"
+  "steam"
+  "steam-unwrapped"
+  "terraform"
+]

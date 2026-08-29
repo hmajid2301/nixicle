@@ -18,11 +18,19 @@ import type { Message } from "@mariozechner/pi-ai";
 import { StringEnum } from "@mariozechner/pi-ai";
 import type { ExtensionAPI } from "@mariozechner/pi-coding-agent";
 import { getAgentDir, parseFrontmatter } from "@mariozechner/pi-coding-agent";
-import { truncateToWidth, visibleWidth } from "@mariozechner/pi-tui";
+import { isKeyRelease, Key, matchesKey, truncateToWidth, visibleWidth } from "@mariozechner/pi-tui";
 import { Type } from "typebox";
 
 function safeWidth(): number {
 	return Math.max(1, (process.stdout.columns ?? 80) - 1);
+}
+
+function rightAlign(left: string, right: string, width: number): string {
+	const rightWidth = visibleWidth(right);
+	const maxLeftWidth = Math.max(0, width - rightWidth - 1);
+	const leftClamped = truncateToWidth(left, maxLeftWidth);
+	const gap = Math.max(1, width - visibleWidth(leftClamped) - rightWidth);
+	return truncateToWidth(`${leftClamped}${" ".repeat(gap)}${right}`, width);
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -454,29 +462,40 @@ function toToolDetails(runs: RunState[], results?: SubagentResult[], availableAg
 // Rendering
 // ─────────────────────────────────────────────────────────────────────────────
 
-function renderBottomWidget(runs: RunState[], theme: any, width: number): string[] {
-	const steps = runs.flatMap((run) => run.steps);
-	const running = steps.filter((s) => s.status === "running");
-	const queued = steps.filter((s) => s.status === "queued");
-	const waiting = steps.filter((s) => s.status === "waiting");
-	const done = steps.filter((s) => s.status === "done");
-	const failed = steps.filter((s) => s.status === "failed" || s.status === "aborted");
-	const summary = [
-		theme.bold("Subagents"),
-		theme.fg("dim", " "),
-		running.length ? theme.fg("accent", `●${running.length} running`) : "",
-		queued.length ? theme.fg("dim", `⏳${queued.length} queued`) : "",
-		waiting.length ? theme.fg("warning", `?${waiting.length} waiting`) : "",
-		done.length ? theme.fg("success", `✓${done.length} done`) : "",
-		failed.length ? theme.fg("error", `✗${failed.length} failed`) : "",
-	].filter(Boolean).join(theme.fg("dim", " · "));
-	const lines = [truncateToWidth(summary, width)];
-	const secondParts: string[] = [];
-	if (running.length) secondParts.push(`Running: ${running.map((s) => s.agentName).slice(0, 2).join(", ")}`);
-	if (waiting.length) secondParts.push(`Waiting: ${waiting.map((s) => s.agentName).slice(0, 2).join(", ")}`);
-	if (!running.length && !waiting.length && (done.length || failed.length)) secondParts.push("Recent done collapsed · /subclear to dismiss");
-	if (secondParts.length) lines.push(truncateToWidth(secondParts.join("   "), width));
-	return lines.map(line => truncateToWidth(line, width));
+type FleetEntry = {
+	key: string;
+	agent: string;
+	state: string;
+	startedAt: number;
+	tokens: number;
+	toolCount: number;
+	currentTool?: string;
+	children: FleetEntry[];
+};
+
+function collectFleetEntries(runs: RunState[]): FleetEntry[] {
+	return runs.map((run) => {
+		const children: FleetEntry[] = run.steps.map((step) => ({
+			key: `step:${step.id}`,
+			agent: step.agentName,
+			state: step.status,
+			startedAt: step.startTime ?? run.createdAt,
+			tokens: step.tokenCount,
+			toolCount: step.toolCount,
+			currentTool: step.currentTool,
+			children: [],
+		}));
+		const agent = run.mode === "single" ? (run.steps[0]?.agentName ?? "subagent") : `${run.mode} #${run.id}`;
+		return {
+			key: `run:${run.id}`,
+			agent,
+			state: run.status,
+			startedAt: run.createdAt,
+			tokens: children.reduce((t, c) => t + c.tokens, 0),
+			toolCount: children.reduce((t, c) => t + c.toolCount, 0),
+			children,
+		};
+	});
 }
 
 function boxForStep(step: ToolDetails["runs"][number]["steps"][number], width: number): string[] {
@@ -643,16 +662,210 @@ export default function (pi: ExtensionAPI) {
 		}
 	}
 
-	function flushWidget() {
-		if (!currentCtx?.hasUI) return;
-		pruneOldRuns();
-		const visibleRuns = getActiveRuns();
-		if (visibleRuns.length === 0) {
-			currentCtx.ui.setWidget("subagents", undefined);
-			return;
+	class FleetView {
+		private ctx: any = null;
+		private tui: any = null;
+		private inputUnsubscribe: (() => void) | null = null;
+		private timer: ReturnType<typeof setInterval> | null = null;
+		private widgetRegistered = false;
+		private active = false;
+		private selectedKey = "main";
+		private entries: FleetEntry[] = [];
+		private lastRenderKey = "";
+
+		setContext(ctx: any): void {
+			if (!ctx?.hasUI) return;
+			if (this.ctx === ctx) { this.refresh(); return; }
+			this.dispose();
+			this.ctx = ctx;
+			if (typeof ctx.ui.onTerminalInput === "function") {
+				this.inputUnsubscribe = ctx.ui.onTerminalInput((data: string) => this.handleKey(data));
+			}
+			this.timer = setInterval(() => this.refresh(), 500);
+			this.timer.unref?.();
+			this.refresh();
 		}
-		const width = safeWidth();
-		currentCtx.ui.setWidget("subagents", renderBottomWidget(visibleRuns, currentCtx.ui.theme, width));
+
+		dispose(): void {
+			if (this.timer) { clearInterval(this.timer); this.timer = null; }
+			this.inputUnsubscribe?.();
+			this.inputUnsubscribe = null;
+			if (this.widgetRegistered) {
+				try { this.ctx?.ui.setWidget("subagents", undefined); } catch {}
+				this.widgetRegistered = false;
+			}
+			this.ctx = null;
+			this.tui = null;
+			this.entries = [];
+			this.active = false;
+			this.selectedKey = "main";
+			this.lastRenderKey = "";
+		}
+
+		refresh(): void {
+			if (!this.ctx?.hasUI) return;
+			pruneOldRuns();
+			this.entries = collectFleetEntries(getActiveRuns());
+			if (this.entries.length === 0) {
+				this.clearWidget();
+				return;
+			}
+			const renderKey = this.getRenderKey();
+			if (!this.widgetRegistered) {
+				this.ctx.ui.setWidget("subagents", (tui: any, theme: any) => {
+					this.tui = tui;
+					return {
+						render: (width: number) => this.render(width, theme),
+						invalidate: () => { this.lastRenderKey = ""; },
+						dispose: () => { if (this.tui === tui) { this.widgetRegistered = false; this.tui = null; } },
+					};
+				});
+				this.widgetRegistered = true;
+				this.lastRenderKey = renderKey;
+				return;
+			}
+			if (renderKey === this.lastRenderKey) return;
+			this.lastRenderKey = renderKey;
+			this.tui?.requestRender?.();
+		}
+
+		handleKey(data: string): void {
+			if (!this.ctx || this.entries.length === 0 || isKeyRelease(data)) return;
+			if (!this.active) {
+				const activates = matchesKey(data, "down") || matchesKey(data, "left");
+				if (!activates || this.ctx.ui.getEditorText() !== "") return;
+				this.active = true;
+				this.selectedKey = "main";
+				this.refresh();
+				return;
+			}
+			const roster = this.rosterKeys();
+			const idx = Math.max(0, roster.indexOf(this.selectedKey));
+			if (matchesKey(data, "down") || matchesKey(data, "j")) {
+				this.selectedKey = roster[Math.min(roster.length - 1, idx + 1)] ?? "main";
+				this.refresh();
+			} else if (matchesKey(data, "up") || matchesKey(data, "k")) {
+				if (idx === 0) { this.active = false; this.refresh(); }
+				else { this.selectedKey = roster[idx - 1] ?? "main"; this.refresh(); }
+			} else if (matchesKey(data, "escape")) {
+				this.active = false;
+				this.refresh();
+			} else if (matchesKey(data, Key.enter)) {
+				if (this.selectedKey === "main") { this.active = false; this.refresh(); }
+				else { this.openInspector(this.selectedKey); }
+			}
+		}
+
+		render(width: number, theme: any): string[] {
+			if (!this.active) return this.renderCollapsed(width, theme);
+			return this.renderActive(width, theme);
+		}
+
+		renderCollapsed(width: number, theme: any): string[] {
+			const running = this.entries.filter((e) => e.state === "running").length;
+			const queued = this.entries.filter((e) => e.state === "queued" || e.state === "waiting").length;
+			const done = this.entries.filter((e) => e.state === "done").length;
+			const failed = this.entries.filter((e) => e.state === "failed" || e.state === "aborted").length;
+			const tokens = this.entries.reduce((t, e) => t + e.tokens, 0);
+			const parts = [
+				theme.bold("Subagents"),
+				running ? theme.fg("accent", `●${running} running`) : "",
+				queued ? theme.fg("warning", `○${queued} queued`) : "",
+				done ? theme.fg("success", `✓${done} done`) : "",
+				failed ? theme.fg("error", `✗${failed} failed`) : "",
+			].filter(Boolean);
+			const label = parts.join(theme.fg("dim", " · "));
+			const detail = theme.fg("dim", `${formatCount(tokens)} tok · ↓/← to inspect`);
+			return [truncateToWidth(`  ${label}${label && detail ? " · " : ""}${detail}`, width)];
+		}
+
+		renderActive(width: number, theme: any): string[] {
+			const roster = this.rosterKeys();
+			const selectedIndex = Math.max(0, roster.indexOf(this.selectedKey));
+			const lines: string[] = [truncateToWidth(`  ${theme.fg("dim", "↑↓/jk select · enter inspect · esc back")}`, width), ""];
+			lines.push(truncateToWidth(`  ${this.bullet(0, selectedIndex, theme)} main`, width));
+			for (const entry of this.entries) {
+				const entryIndex = roster.indexOf(entry.key);
+				lines.push(this.renderEntry(entryIndex, selectedIndex, entry, width, theme));
+				for (const [ci, child] of entry.children.entries()) {
+					const childIndex = roster.indexOf(child.key);
+					const branch = ci === entry.children.length - 1 ? "└─" : "├─";
+					lines.push(this.renderEntry(childIndex, selectedIndex, child, width, theme, branch));
+				}
+			}
+			return lines;
+		}
+
+		renderEntry(rosterIndex: number, selectedIndex: number, entry: FleetEntry, width: number, theme: any, branch?: string): string {
+			const prefix = branch ? `    ${branch}` : " ";
+			const glyph = this.statusGlyph(entry.state, theme);
+			const left = `${prefix} ${this.bullet(rosterIndex, selectedIndex, theme)} ${glyph} ${theme.fg("muted", entry.agent)} · ${entry.state}`;
+			const elapsed = fmtDuration(Date.now() - entry.startedAt);
+			const right = theme.fg("dim", `${elapsed} · ${entry.toolCount}t · ${formatCount(entry.tokens)} tok`);
+			return rightAlign(left, right, width);
+		}
+
+		statusGlyph(state: string, theme: any): string {
+			if (state === "running") return theme.fg("accent", "●");
+			if (state === "queued" || state === "waiting") return theme.fg("muted", "◦");
+			if (state === "done") return theme.fg("success", "✓");
+			if (state === "failed" || state === "aborted") return theme.fg("error", "✗");
+			return theme.fg("warning", "■");
+		}
+
+		bullet(rosterIndex: number, selectedIndex: number, theme: any): string {
+			return rosterIndex === selectedIndex ? theme.fg("accent", ">") : " ";
+		}
+
+		rosterKeys(): string[] {
+			return ["main", ...this.entries.flatMap((e) => [e.key, ...e.children.map((c) => c.key)])];
+		}
+
+		openInspector(key: string): void {
+			const entry = this.findEntry(key);
+			if (!entry) return;
+			const lines = [
+				`${entry.agent} — ${entry.state}`,
+				`elapsed ${fmtDuration(Date.now() - entry.startedAt)} · ${entry.toolCount} tools · ${formatCount(entry.tokens)} tokens`,
+				entry.currentTool ? `current: ${entry.currentTool}` : "",
+			].filter(Boolean);
+			this.ctx?.ui.notify(lines.join("\n"), "info");
+		}
+
+		findEntry(key: string): FleetEntry | undefined {
+			for (const e of this.entries) {
+				if (e.key === key) return e;
+				for (const c of e.children) if (c.key === key) return c;
+			}
+			return undefined;
+		}
+
+		getRenderKey(): string {
+			const now = Date.now();
+			return JSON.stringify({
+				active: this.active,
+				selected: this.selectedKey,
+				entries: this.entries.map((e) => [
+					e.key, e.agent, e.state, e.currentTool,
+					Math.round((now - e.startedAt) / 1000),
+					e.tokens, e.toolCount,
+					e.children.map((c) => [c.key, c.agent, c.state, c.currentTool, Math.round((now - c.startedAt) / 1000), c.tokens, c.toolCount]),
+				]),
+			});
+		}
+
+		clearWidget(): void {
+			if (!this.widgetRegistered) return;
+			this.ctx?.ui.setWidget("subagents", undefined);
+			this.widgetRegistered = false;
+			this.tui = null;
+		}
+	}
+
+	const fleetView = new FleetView();
+
+	function flushWidget() {
+		fleetView.refresh();
 	}
 
 	function ensureAnimation() {
@@ -983,12 +1196,12 @@ export default function (pi: ExtensionAPI) {
 		}
 		if (looksLikeCodeExplorationTask(task)) {
 			return {
-				agent: findFirstAvailableAgent(["librarian", "reviewer", "plan", "explore", "task", "coder", "researcher"]),
+				agent: findFirstAvailableAgent(["librarian", "reviewer", "plan", "explore", "coder"]),
 				purpose: "scout",
 			};
 		}
 		return {
-			agent: findFirstAvailableAgent(["researcher", "librarian", "explore", "reviewer", "plan", "task", "coder"]),
+			agent: findFirstAvailableAgent(["librarian", "explore", "reviewer", "plan", "coder"]),
 			purpose: "research",
 		};
 	}
@@ -1053,11 +1266,12 @@ export default function (pi: ExtensionAPI) {
 		const discovery = discoverAgents(ctx.cwd, "both");
 		discoveredAgents = discovery.agents;
 		agentMap = new Map(discoveredAgents.map((a) => [a.name, a]));
-		flushWidget();
+		fleetView.setContext(ctx);
 	});
 
 	pi.on("session_shutdown", async () => {
 		stopAll();
+		fleetView.dispose();
 	});
 
 	pi.registerCommand("agents", {
@@ -1238,7 +1452,7 @@ export default function (pi: ExtensionAPI) {
 		],
 		parameters: Type.Object({
 			task: Type.String({ description: "Research/scouting task to perform in isolated context" }),
-			agent: Type.Optional(Type.String({ description: "Optional specific agent. Defaults to researcher/librarian/explore/reviewer/plan if available." })),
+			agent: Type.Optional(Type.String({ description: "Optional specific agent. Defaults to librarian/explore/reviewer/plan if available." })),
 			cwd: Type.Optional(Type.String({ description: "Optional working directory" })),
 		}),
 		async execute(_callId, args, signal, _onUpdate, ctx) {

@@ -1,8 +1,25 @@
 { lib, inputs }:
 let
   inherit (inputs) deploy-rs;
+
+  extendedLib = lib.extend (
+    self: _super: {
+      nixicle = import ./. {
+        inherit inputs;
+        lib = self;
+      };
+    }
+  );
 in
 rec {
+  inherit extendedLib;
+
+  secretsFile = ../modules/secrets.yaml;
+
+  nixicleOverlay = final: _prev: {
+    nixicle = importPackages final ../packages;
+  };
+
   importPackages =
     pkgs: dir:
     let
@@ -96,7 +113,7 @@ rec {
       domain ? "homelab.haseebmajid.dev",
       entryPoints ? [ "websecure" ],
       certResolver ? "letsencrypt",
-      middlewares ? [ ],
+      middlewares ? [ "tinyauth" ],
       extraRouterConfig ? { },
       extraServiceConfig ? { },
     }:
@@ -107,7 +124,7 @@ rec {
           rule = lib.mkDefault "Host(`${subdomain}.${domain}`)";
           service = name;
           tls.certResolver = certResolver;
-          middlewares = middlewares;
+          inherit middlewares;
         }
         extraRouterConfig
       ];

@@ -1,5 +1,37 @@
 {
   "nodes": {
+    "superpowers": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1786553601,
+        "narHash": "sha256-EsGNO0dULWf5Bx6bGrCv2kI2Z8aKH0kRvGiuN23wChQ=",
+        "owner": "obra",
+        "repo": "superpowers",
+        "rev": "b36e0829c6d0140e93cfef2ca599b1b07d4a7797",
+        "type": "github"
+      },
+      "original": {
+        "owner": "obra",
+        "repo": "superpowers",
+        "type": "github"
+      }
+    },
+    "caveman": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1787614279,
+        "narHash": "sha256-KQb5xkh+Df4xu6vkVvEql9+TmExYY0yakIxUKleK4/Y=",
+        "owner": "JuliusBrussee",
+        "repo": "caveman",
+        "rev": "81536f57b3303b7de7f5bc5b564cc344f9112d68",
+        "type": "github"
+      },
+      "original": {
+        "owner": "JuliusBrussee",
+        "repo": "caveman",
+        "type": "github"
+      }
+    },
     "actor-typeahead-src": {
       "flake": false,
       "locked": {
@@ -2716,6 +2748,7 @@
         "agent-skills": "agent-skills",
         "banterbus": "banterbus",
         "catppuccin": "catppuccin",
+        "caveman": "caveman",
         "comma": "comma",
         "den": "den",
         "deploy-rs": "deploy-rs",
@@ -2769,6 +2802,7 @@
         "plugins-webify-nvim": "plugins-webify-nvim",
         "sops-nix": "sops-nix",
         "stylix": "stylix",
+        "superpowers": "superpowers",
         "sure-nix": "sure-nix",
         "tangled": "tangled",
         "zjstatus": "zjstatus"
