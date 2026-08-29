@@ -1,13 +1,12 @@
-{ inputs, lib, ... }:
+{
+  inputs,
+  lib,
+  den,
+  ...
+}:
 let
-  extendedLib = lib.extend (
-    self: _super: {
-      nixicle = import ../lib {
-        inherit inputs;
-        lib = self;
-      };
-    }
-  );
+  inherit ((import ../lib { inherit inputs lib; })) extendedLib;
+  unfreePackages = import ../lib/unfree-packages.nix;
 
   overlays = [
     inputs.nur.overlays.default
@@ -15,15 +14,7 @@ let
     (_final: prev: {
       zjstatus = inputs.zjstatus.packages.${prev.stdenv.hostPlatform.system}.default;
     })
-    (final: _prev: {
-      nixicle = extendedLib.nixicle.importPackages final ../packages // { };
-      # Unwrap deprecated `stdenv.isLinux`/`isDarwin` aliases (wrapped in
-      # `lib.warn`) so accessors don't spam evaluation warnings.
-      stdenv = _prev.stdenv // {
-        isLinux = _prev.stdenv.hostPlatform.isLinux;
-        isDarwin = _prev.stdenv.hostPlatform.isDarwin;
-      };
-    })
+    extendedLib.nixicle.nixicleOverlay
   ];
 
   mkInstantiate =
@@ -39,7 +30,7 @@ let
   mkPiInstantiate =
     { modules }:
     inputs.nixos-raspberrypi.lib.nixosSystem {
-      nixpkgs = inputs.nixpkgs;
+      inherit (inputs) nixpkgs;
       inherit modules;
       specialArgs = {
         inherit inputs;
@@ -54,8 +45,8 @@ let
       hmExtendedLib = extendedLib.extend (_self: _super: { hm = hmLib; });
       pkgs = import inputs.nixpkgs {
         system = "x86_64-linux";
-        config.allowUnfree = true;
         inherit overlays;
+        config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) unfreePackages;
       };
     in
     inputs.home-manager.lib.homeManagerConfiguration {
@@ -82,6 +73,13 @@ let
 in
 {
   den = {
+    aspects.haseeb = {
+      includes = [
+        den.batteries.primary-user
+        (den.batteries.user-shell "fish")
+      ];
+    };
+
     hosts.x86_64-linux = {
       framework = {
         isLaptop = true;
@@ -132,22 +130,26 @@ in
       };
     };
 
-    homes.x86_64-linux."haseebmajid@dell" = {
-      isLaptop = true;
-      instantiate = mkHomeInstantiate;
-    };
+    homes = {
+      x86_64-linux = {
+        "haseebmajid@dell" = {
+          isLaptop = true;
+          instantiate = mkHomeInstantiate;
+        };
 
-    homes.x86_64-linux."haseeb@framework" = {
-      isLaptop = true;
-      instantiate = mkHomeInstantiate;
-    };
+        "haseeb@framework" = {
+          isLaptop = true;
+          instantiate = mkHomeInstantiate;
+        };
 
-    homes.x86_64-linux."haseeb@framebox" = {
-      instantiate = mkHomeInstantiate;
-    };
+        "haseeb@framebox" = {
+          instantiate = mkHomeInstantiate;
+        };
 
-    homes.x86_64-linux."haseeb@desktop" = {
-      instantiate = mkHomeInstantiate;
+        "haseeb@desktop" = {
+          instantiate = mkHomeInstantiate;
+        };
+      };
     };
   };
 }

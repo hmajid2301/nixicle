@@ -109,11 +109,9 @@ in
         # Token used by the nix daemon to authenticate against the private
         # `main` attic cache (see netrc-file in nix.settings). The same secret
         # is also consumed by the home-manager attic aspect for user-level nix.
-        sops.secrets.netrc.sopsFile = ../../../secrets.yaml;
+        sops.secrets.netrc.sopsFile = lib.nixicle.secretsFile;
 
         security.pam.services = {
-          swaylock.u2fAuth = true;
-          hyprlock.u2fAuth = true;
           login.u2fAuth = true;
           sudo.u2fAuth = true;
         };

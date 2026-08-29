@@ -5,6 +5,7 @@
       den.aspects.common
       den.aspects.development
       den.aspects.niri
+      den.aspects.noctalia
       den.aspects.audio
       den.aspects.vpn
       den.aspects.ollama
@@ -29,10 +30,7 @@
             powerOnBoot = false;
             settings.General.Experimental = true;
           };
-          logitech.wireless = {
-            enable = true;
-            enableGraphical = true;
-          };
+          logitech.wireless.enable = true;
           keyboard.zsa.enable = true;
         };
         users.groups.i2c = { };
@@ -71,6 +69,7 @@
             flake = "/home/haseeb/nixicle";
           };
           localsend.enable = true;
+          solaar.enable = true;
         };
         nix.gc.automatic = lib.mkForce false;
       };
@@ -95,8 +94,6 @@
           enable = true;
           indicator = true;
         };
-
-        home.sessionVariables.NH_FLAKE = "${config.home.homeDirectory}/nixicle";
 
         xdg = {
           desktopEntries = {
@@ -172,87 +169,90 @@
           };
         };
 
-        home.sessionVariables = {
-          # XDG compliance for various tools
-          HISTFILE = "${config.xdg.stateHome}/bash/history";
-          GTK2_RC_FILES = lib.mkDefault "${config.xdg.configHome}/gtk-2.0/gtkrc";
-          NODE_REPL_HISTORY = "${config.xdg.stateHome}/node_repl_history";
-          NPM_CONFIG_USERCONFIG = "${config.xdg.configHome}/npm/npmrc";
-          NPM_CONFIG_CACHE = "${config.xdg.cacheHome}/npm";
-          NPM_CONFIG_TMP = "\${XDG_RUNTIME_DIR}/npm";
-          DOCKER_CONFIG = "${config.xdg.configHome}/docker";
-          ANDROID_USER_HOME = "${config.xdg.dataHome}/android";
-          PSQL_HISTORY = "${config.xdg.stateHome}/psql_history";
-          REDISCLI_HISTFILE = "${config.xdg.stateHome}/redis/rediscli_history";
-          PARALLEL_HOME = "${config.xdg.configHome}/parallel";
-          TLDR_CACHE_DIR = "${config.xdg.cacheHome}/tldr";
-          XCOMPOSEFILE = "${config.xdg.configHome}/X11/xcompose";
-          XCOMPOSECACHE = "${config.xdg.cacheHome}/X11/xcompose";
-          MOZ_ENABLE_WAYLAND = 1;
-          QT_QPA_PLATFORM = "wayland;xcb";
-          LIBSEAT_BACKEND = "logind";
-          EDITOR = "nvim";
-          MANPAGER = "nvim +Man!";
+        home = {
+          sessionVariables = {
+            NH_FLAKE = "${config.home.homeDirectory}/nixicle";
+            # XDG compliance for various tools
+            HISTFILE = "${config.xdg.stateHome}/bash/history";
+            GTK2_RC_FILES = lib.mkDefault "${config.xdg.configHome}/gtk-2.0/gtkrc";
+            NODE_REPL_HISTORY = "${config.xdg.stateHome}/node_repl_history";
+            NPM_CONFIG_USERCONFIG = "${config.xdg.configHome}/npm/npmrc";
+            NPM_CONFIG_CACHE = "${config.xdg.cacheHome}/npm";
+            NPM_CONFIG_TMP = "\${XDG_RUNTIME_DIR}/npm";
+            DOCKER_CONFIG = "${config.xdg.configHome}/docker";
+            ANDROID_USER_HOME = "${config.xdg.dataHome}/android";
+            PSQL_HISTORY = "${config.xdg.stateHome}/psql_history";
+            REDISCLI_HISTFILE = "${config.xdg.stateHome}/redis/rediscli_history";
+            PARALLEL_HOME = "${config.xdg.configHome}/parallel";
+            TLDR_CACHE_DIR = "${config.xdg.cacheHome}/tldr";
+            XCOMPOSEFILE = "${config.xdg.configHome}/X11/xcompose";
+            XCOMPOSECACHE = "${config.xdg.cacheHome}/X11/xcompose";
+            MOZ_ENABLE_WAYLAND = 1;
+            QT_QPA_PLATFORM = "wayland;xcb";
+            LIBSEAT_BACKEND = "logind";
+            EDITOR = "nvim";
+            MANPAGER = "nvim +Man!";
+          };
+          packages =
+            let
+              swap-input = pkgs.writeShellScriptBin "swap-input" ''
+                display=$(${pkgs.ddcutil}/bin/ddcutil detect 2>/dev/null \
+                  | awk '/^Display/{display=$0; getline; getline; if(/I2C/){print display " -> " $0}}' \
+                  | ${pkgs.gum}/bin/gum choose --header "Select monitor:")
+                if [ -z "$display" ]; then
+                  exit 1
+                fi
+
+                bus=$(echo "$display" | grep -oP '/dev/i2c-\d+')
+
+                current=$(${pkgs.ddcutil}/bin/ddcutil getvcp 60 --brief --bus="$bus" 2>/dev/null | awk '{print $NF}')
+
+                input_map="12:HDMI-1 13:HDMI-2 15:DisplayPort-1 16:DisplayPort-2 17:DisplayPort-3 18:DisplayPort-4 3:DVI-1 4:DVI-2 1:VGA-1 2:VGA-2"
+
+                choices=()
+                for entry in $input_map; do
+                  num=''${entry%%:*}
+                  name=''${entry#*:}
+                  if [ "$num" = "$current" ]; then
+                    choices+=("$name (current)")
+                  else
+                    choices+=("$name")
+                  fi
+                done
+
+                selected=$(${pkgs.gum}/bin/gum choose --header "Select input:" "''${choices[@]}")
+                if [ -z "$selected" ]; then
+                  exit 1
+                fi
+
+                selected=''${selected// (current)/}
+                for entry in $input_map; do
+                  if [ "''${entry#*:}" = "$selected" ]; then
+                    target=''${entry%%:*}
+                    break
+                  fi
+                done
+
+                echo "Switching to $selected..."
+                ${pkgs.ddcutil}/bin/ddcutil setvcp 60 "$target" --bus="$bus"
+              '';
+            in
+            with pkgs;
+            [
+              swap-input
+              ddcutil
+              brightnessctl
+              xdg-utils
+              wl-clipboard
+              pamixer
+              playerctl
+              impression
+              grimblast
+              slurp
+              sway-contrib.grimshot
+              satty
+            ];
         };
-        home.packages =
-          let
-            swap-input = pkgs.writeShellScriptBin "swap-input" ''
-              display=$(${pkgs.ddcutil}/bin/ddcutil detect 2>/dev/null \
-                | awk '/^Display/{display=$0; getline; getline; if(/I2C/){print display " -> " $0}}' \
-                | ${pkgs.gum}/bin/gum choose --header "Select monitor:")
-              if [ -z "$display" ]; then
-                exit 1
-              fi
-
-              bus=$(echo "$display" | grep -oP '/dev/i2c-\d+')
-
-              current=$(${pkgs.ddcutil}/bin/ddcutil getvcp 60 --brief --bus="$bus" 2>/dev/null | awk '{print $NF}')
-
-              input_map="12:HDMI-1 13:HDMI-2 15:DisplayPort-1 16:DisplayPort-2 17:DisplayPort-3 18:DisplayPort-4 3:DVI-1 4:DVI-2 1:VGA-1 2:VGA-2"
-
-              choices=()
-              for entry in $input_map; do
-                num=''${entry%%:*}
-                name=''${entry#*:}
-                if [ "$num" = "$current" ]; then
-                  choices+=("$name (current)")
-                else
-                  choices+=("$name")
-                fi
-              done
-
-              selected=$(${pkgs.gum}/bin/gum choose --header "Select input:" "''${choices[@]}")
-              if [ -z "$selected" ]; then
-                exit 1
-              fi
-
-              selected=''${selected// (current)/}
-              for entry in $input_map; do
-                if [ "''${entry#*:}" = "$selected" ]; then
-                  target=''${entry%%:*}
-                  break
-                fi
-              done
-
-              echo "Switching to $selected..."
-              ${pkgs.ddcutil}/bin/ddcutil setvcp 60 "$target" --bus="$bus"
-            '';
-          in
-          with pkgs;
-          [
-            swap-input
-            ddcutil
-            brightnessctl
-            xdg-utils
-            wl-clipboard
-            pamixer
-            playerctl
-            impression
-            grimblast
-            slurp
-            sway-contrib.grimshot
-            satty
-          ];
       };
   };
 }

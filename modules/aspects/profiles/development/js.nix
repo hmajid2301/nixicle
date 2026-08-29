@@ -1,5 +1,4 @@
-{ ... }:
-{
+_: {
   den.aspects.devJs = {
     homeManager = { pkgs, ... }: {
       home.packages = with pkgs; [

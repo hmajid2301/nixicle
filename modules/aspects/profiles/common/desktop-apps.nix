@@ -1,6 +1,13 @@
-{ ... }:
-{
+{ den, ... }: {
   den.aspects.commonDesktopApps = {
+    includes = [
+      (den.batteries.unfree [
+        "keymapp"
+        "firefox-bin"
+        "firefox-bin-unwrapped"
+      ])
+    ];
+
     homeManager =
       { pkgs, config, ... }:
       {

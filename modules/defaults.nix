@@ -5,113 +5,122 @@
   ...
 }:
 let
-  extendedLib = lib.extend (
-    self: _super: {
-      nixicle = import ../lib {
-        inherit inputs;
-        lib = self;
-      };
-    }
-  );
+  inherit ((import ../lib { inherit inputs lib; })) extendedLib;
+  unfreePackages = import ../lib/unfree-packages.nix;
 in
 {
   imports = [ ./aspects/system/backup.nix ];
 
   den = {
-    schema.user = {
-      includes = [
-        (
-          { host, user, ... }:
-          {
-            nixos.home-manager = {
-              useGlobalPkgs = true;
-              useUserPackages = true;
-              extraSpecialArgs = { inherit inputs; };
-              users.${user.userName}._module.args = {
-                host = host.hostName;
-                hostIsLaptop = host.isLaptop or false;
-              };
-            };
-          }
-        )
-      ];
-      imports = [
-        (
-          { lib, ... }:
-          {
-            config.classes = lib.mkDefault [ "homeManager" ];
-            options = {
-              authorizedKeys = lib.mkOption {
-                type = lib.types.listOf lib.types.str;
-                default = [ ];
-                description = "SSH public keys to add to authorized_keys for this user.";
-              };
-              email = lib.mkOption {
-                type = lib.types.str;
-                default = "hello@haseebmajid.dev";
-                description = "Primary email address used for git commits and notifications.";
-              };
-              signingKey = lib.mkOption {
-                type = lib.types.str;
-                default = "~/.ssh/id_ed25519.pub";
-                description = "Path to the SSH public key used for git commit signing.";
-              };
-            };
-          }
-        )
-      ];
-    };
-
-    schema.home = {
-      includes = [
-        (
-          { home, ... }:
-          {
-            homeManager =
-              { pkgs, ... }:
-              {
-                _module.args = {
-                  host = home.hostName or "unknown";
-                  hostIsLaptop = home.isLaptop or false;
+    schema = {
+      user = {
+        includes = [
+          (
+            { host, user, ... }:
+            {
+              nixos.home-manager = {
+                useUserPackages = true;
+                extraSpecialArgs = { inherit inputs; };
+                users.${user.userName} = {
+                  _module.args = {
+                    host = host.hostName;
+                    hostIsLaptop = host.isLaptop or false;
+                  };
+                  nixpkgs.overlays = [
+                    inputs.nur.overlays.default
+                    inputs.niri.overlays.niri
+                    (_final: prev: {
+                      zjstatus = inputs.zjstatus.packages.${prev.stdenv.hostPlatform.system}.default;
+                    })
+                    extendedLib.nixicle.nixicleOverlay
+                  ];
+                  nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) unfreePackages;
                 };
-                nix.package = pkgs.nix;
               };
-          }
-        )
-      ];
-
-      options = {
-        isLaptop = lib.mkOption {
-          type = lib.types.bool;
-          default = false;
-        };
+            }
+          )
+        ];
+        imports = [
+          (
+            { lib, ... }:
+            {
+              config.classes = lib.mkDefault [ "homeManager" ];
+              options = {
+                authorizedKeys = lib.mkOption {
+                  type = lib.types.listOf lib.types.str;
+                  default = [ ];
+                  description = "SSH public keys to add to authorized_keys for this user.";
+                };
+                email = lib.mkOption {
+                  type = lib.types.str;
+                  default = "hello@haseebmajid.dev";
+                  description = "Primary email address used for git commits and notifications.";
+                };
+                signingKey = lib.mkOption {
+                  type = lib.types.str;
+                  default = "~/.ssh/id_ed25519.pub";
+                  description = "Path to the SSH public key used for git commit signing.";
+                };
+              };
+            }
+          )
+        ];
       };
-    };
 
-    schema.host =
-      { lib, ... }:
-      {
+      home = {
+        includes = [
+          (
+            { home, ... }:
+            {
+              homeManager =
+                { pkgs, lib, ... }:
+                {
+                  _module.args = {
+                    host = home.hostName or "unknown";
+                    hostIsLaptop = home.isLaptop or false;
+                  };
+                  nix.package = pkgs.nix;
+                  nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) unfreePackages;
+                };
+            }
+          )
+        ];
+
         options = {
           isLaptop = lib.mkOption {
             type = lib.types.bool;
             default = false;
           };
-          autologin = lib.mkOption {
-            type = lib.types.bool;
-            default = true;
-          };
-          primaryDisplay = lib.mkOption {
-            type = lib.types.attrsOf lib.types.anything;
-            default = { };
-          };
         };
       };
+
+      host =
+        { lib, ... }:
+        {
+          options = {
+            isLaptop = lib.mkOption {
+              type = lib.types.bool;
+              default = false;
+            };
+            autologin = lib.mkOption {
+              type = lib.types.bool;
+              default = true;
+            };
+            primaryDisplay = lib.mkOption {
+              type = lib.types.attrsOf lib.types.anything;
+              default = { };
+            };
+          };
+        };
+    };
   };
 
   den.default = {
     includes = [
       den._.define-user
       den._.hostname
+      den.batteries.inputs'
+      den.batteries.self'
     ];
   };
 
@@ -121,20 +130,11 @@ in
       # nixicle packages overlay (needs extendedLib so defined here).
       # nur overlay in common.nix; niri/zjstatus in niri.nix.
       nixpkgs.overlays = [
-        (final: _prev: {
+        (_final: _prev: {
           inherit (inputs) get-shit-done;
-          nixicle = extendedLib.nixicle.importPackages final ../packages // { };
-          # Unwrap nixpkgs' deprecated `stdenv.isLinux`/`isDarwin` aliases
-          # (they are wrapped in `lib.warn`) so accessors downstream don't
-          # spam evaluation warnings. Use `stdenv.hostPlatform.is*` for new
-          # code; this just silences the alias shim.
-          stdenv = _prev.stdenv // {
-            isLinux = _prev.stdenv.hostPlatform.isLinux;
-            isDarwin = _prev.stdenv.hostPlatform.isDarwin;
-          };
         })
+        extendedLib.nixicle.nixicleOverlay
       ];
-      nixpkgs.config.allowUnfree = true;
       imports = [
         inputs.sops-nix.nixosModules.sops
         inputs.disko.nixosModules.disko
