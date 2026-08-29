@@ -62,3 +62,5 @@ package.json
 
 # local repair scratch
 repair/local-*
+
+.planning/
