@@ -1,6 +1,14 @@
-{ ... }:
+{ den, ... }:
 {
   den.aspects.gaming = {
+    includes = [
+      (den.batteries.unfree [
+        "steam"
+        "steam-unwrapped"
+        "proton-ge-bin"
+      ])
+    ];
+
     nixos =
       { pkgs, ... }:
       {

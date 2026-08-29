@@ -29,8 +29,11 @@
   den.aspects.development = {
     includes = [
       den.aspects.neovim
-      den.aspects.ai
+      den.aspects.pi-coding-agent
+      den.aspects.skills
       den.aspects.zellij
+      den.aspects.herdr
+      den.aspects.worktrunk
       den.aspects.git
       den.aspects.gpg
       den.aspects.ssh
@@ -50,6 +53,9 @@
         ...
       }:
       let
+        secretsFileText = builtins.readFile ../../../secrets.yaml;
+        hasSecret = name: lib.hasInfix "${name}:" secretsFileText;
+
         atuin-export-fish = pkgs.buildGoModule rec {
           pname = "atuin-export-fish-history";
           version = "unstable-2026-07-07";
@@ -80,154 +86,165 @@
       {
         imports = [ inputs.nix-index-database.homeModules.nix-index ];
 
-        nixicle.ketch.secrets.context7ApiKey = "ketch_context7_api_key";
-
-        xdg.desktopEntries = lib.optionalAttrs pkgs.stdenv.hostPlatform.isLinux {
-          neovim = {
-            name = "Neovim";
-            genericName = "editor";
-            exec = "nvim -f %F";
-            mimeType = [
-              "text/html"
-              "text/xml"
-              "text/plain"
-              "text/english"
-              "text/x-makefile"
-              "text/x-c++hdr"
-              "text/x-tex"
-              "application/x-shellscript"
-            ];
-            terminal = false;
-            type = "Application";
-          };
-        };
-
-        programs.atuin = {
-          enable = true;
-          flags = [
-            "--disable-up-arrow"
-            "--disable-ctrl-r"
-          ];
-          settings = {
-            sync_address = "https://atuin.haseebmajid.dev";
-            sync_frequency = "15m";
-            dialect = "uk";
-            enter_accept = false;
-            records = true;
-            search_mode = "skim";
-          };
-        };
-
-        programs = {
-          bat.enable = true;
-          bottom.enable = true;
-          direnv = {
-            enable = true;
-            nix-direnv.enable = true;
-          };
-          eza.enable = true;
-          fzf = {
-            enable = true;
-            enableFishIntegration = false;
-            colors =
-              with config.lib.stylix.colors.withHashtag;
-              lib.mkForce {
-                bg = base00;
-                "bg+" = base02;
-                fg = base05;
-                "fg+" = base05;
-                header = base0E;
-                hl = base08;
-                "hl+" = base08;
-                info = base0A;
-                marker = base06;
-                pointer = base06;
-                prompt = base0E;
-                spinner = base06;
+        config = lib.mkMerge [
+          {
+            xdg.desktopEntries = lib.optionalAttrs pkgs.stdenv.hostPlatform.isLinux {
+              neovim = {
+                name = "Neovim";
+                genericName = "editor";
+                exec = "nvim -f %F";
+                mimeType = [
+                  "text/html"
+                  "text/xml"
+                  "text/plain"
+                  "text/english"
+                  "text/x-makefile"
+                  "text/x-c++hdr"
+                  "text/x-tex"
+                  "application/x-shellscript"
+                ];
+                terminal = false;
+                type = "Application";
               };
-          };
-          htop = {
-            enable = true;
-            settings = {
-              hide_userland_threads = 1;
-              highlight_base_name = 1;
-              show_cpu_temperature = 1;
-              show_program_path = 0;
             };
-          };
-          nix-index = {
-            enable = true;
-            enableBashIntegration = true;
-          };
-          nix-index-database.comma.enable = true;
-          starship = {
-            enable = true;
-            enableFishIntegration = true;
-            settings = { };
-          };
-          yazi = {
-            enable = true;
-            enableFishIntegration = true;
-            shellWrapperName = "y";
-          };
-          zoxide = {
-            enable = true;
-            enableFishIntegration = true;
-          };
-        };
 
-        home.packages = [
-          atuin-export-fish
-          pkgs.nixicle.glci
-        ]
-        ++ (with pkgs; [
-          gh-dash
-          gum
-          open-in-terminal
-          broot
-          erdtree
-          fd
-          xcp
-          entr
-          choose
-          ripgrep
-          sd
-          grex
-          yq-go
-          jq
-          duf
-          dust
-          dysk
-          gdu
-          procs
-          gping
-          viddy
-          hexyl
-          delta
-          chafa
-          ouch
-          jqp
-          jnv
-          curlie
-          doggo
-          hyperfine
-          tokei
-          gomi
-          tailspin
-          sshx
-          glow
-          (lib.hiPrio parallel)
-          moreutils
-          unzip
-          gnupg
-          optinix
-          gnumake
-          imagemagick
-          ffmpegthumbnailer
-          fontpreview
-          unar
-          poppler
-        ]);
+            programs.atuin = {
+              enable = true;
+              flags = [
+                "--disable-up-arrow"
+                "--disable-ctrl-r"
+              ];
+              settings = {
+                sync_address = "https://atuin.haseebmajid.dev";
+                sync_frequency = "15m";
+                dialect = "uk";
+                enter_accept = false;
+                records = true;
+                search_mode = "skim";
+              };
+            };
+
+            programs = {
+              bat.enable = true;
+              bottom.enable = true;
+              direnv = {
+                enable = true;
+                nix-direnv.enable = true;
+              };
+              eza.enable = true;
+              fzf = {
+                enable = true;
+                enableFishIntegration = false;
+                colors =
+                  with config.lib.stylix.colors.withHashtag;
+                  lib.mkForce {
+                    bg = base00;
+                    "bg+" = base02;
+                    fg = base05;
+                    "fg+" = base05;
+                    header = base0E;
+                    hl = base08;
+                    "hl+" = base08;
+                    info = base0A;
+                    marker = base06;
+                    pointer = base06;
+                    prompt = base0E;
+                    spinner = base06;
+                  };
+              };
+              htop = {
+                enable = true;
+                settings = {
+                  hide_userland_threads = 1;
+                  highlight_base_name = 1;
+                  show_cpu_temperature = 1;
+                  show_program_path = 0;
+                };
+              };
+              nix-index = {
+                enable = true;
+                enableBashIntegration = true;
+              };
+              nix-index-database.comma.enable = true;
+              starship = {
+                enable = true;
+                enableFishIntegration = true;
+                settings = { };
+              };
+              yazi = {
+                enable = true;
+                enableFishIntegration = true;
+                shellWrapperName = "y";
+              };
+              zoxide = {
+                enable = true;
+                enableFishIntegration = true;
+              };
+            };
+
+            home.packages = [
+              atuin-export-fish
+              pkgs.nixicle.glci
+            ]
+            ++ (with pkgs; [
+              gh-dash
+              gum
+              open-in-terminal
+              broot
+              erdtree
+              fd
+              xcp
+              entr
+              choose
+              ripgrep
+              sd
+              grex
+              yq-go
+              jq
+              duf
+              dust
+              dysk
+              gdu
+              procs
+              gping
+              viddy
+              hexyl
+              delta
+              chafa
+              ouch
+              jqp
+              jnv
+              curlie
+              doggo
+              hyperfine
+              tokei
+              gomi
+              tailspin
+              sshx
+              glow
+              (lib.hiPrio parallel)
+              moreutils
+              unzip
+              gnupg
+              optinix
+              gnumake
+              imagemagick
+              ffmpegthumbnailer
+              fontpreview
+              unar
+              poppler
+            ]);
+          }
+          (lib.mkIf (hasSecret "ketch_context7_api_key") {
+            nixicle.ketch.secrets.context7ApiKey = "ketch_context7_api_key";
+          })
+          (lib.mkIf (hasSecret "ketch_github_token") {
+            nixicle.ketch.secrets.githubToken = "ketch_github_token";
+          })
+          (lib.mkIf (hasSecret "ketch_brave_api_key") {
+            nixicle.ketch.secrets.braveApiKey = "ketch_brave_api_key";
+          })
+        ];
       };
   };
 }
