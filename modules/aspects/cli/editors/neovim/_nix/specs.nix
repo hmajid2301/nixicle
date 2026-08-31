@@ -151,6 +151,7 @@
           todo-comments-nvim
           grug-far-nvim
           smart-splits-nvim
+          herdr-splits-nvim
           yanky-nvim
           inc-rename-nvim
           snacks-nvim

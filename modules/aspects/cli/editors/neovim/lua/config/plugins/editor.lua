@@ -65,6 +65,10 @@ return {
 			vim.cmd.packadd(name)
 		end,
 		after = function(plugin)
+			if vim.env.HERDR_ENV == "1" then
+				return
+			end
+
 			require("smart-splits").setup({
 				-- Enable Zellij integration
 				multiplexer_integration = "zellij",
@@ -98,6 +102,47 @@ return {
 
 			vim.keymap.set("n", "<C-n>", "<cmd>tabnext<cr>", { desc = "Next tab" })
 			vim.keymap.set("n", "<C-p>", "<cmd>tabprevious<cr>", { desc = "Previous tab" })
+		end,
+	},
+	{
+		"herdr-splits.nvim",
+		for_cat = "editor",
+		event = "DeferredUIEnter",
+		load = function(name)
+			vim.cmd.packadd(name)
+		end,
+		after = function(plugin)
+			if vim.env.HERDR_ENV ~= "1" then
+				return
+			end
+
+			local herdr_splits = require("herdr-splits")
+			herdr_splits.setup({
+				at_edge = "stop",
+				nav_at_edge = "stop",
+				nav_keys = {
+					left = "<A-h>",
+					down = "<A-j>",
+					up = "<A-k>",
+					right = "<A-l>",
+				},
+				resize_keys = {
+					left = "<C-A-h>",
+					down = "<C-A-j>",
+					up = "<C-A-k>",
+					right = "<C-A-l>",
+				},
+			})
+
+			vim.keymap.set("n", "<A-h>", herdr_splits.move_cursor_left, { desc = "Navigate left" })
+			vim.keymap.set("n", "<A-j>", herdr_splits.move_cursor_down, { desc = "Navigate down" })
+			vim.keymap.set("n", "<A-k>", herdr_splits.move_cursor_up, { desc = "Navigate up" })
+			vim.keymap.set("n", "<A-l>", herdr_splits.move_cursor_right, { desc = "Navigate right" })
+
+			vim.keymap.set("n", "<C-A-h>", herdr_splits.resize_left, { desc = "Resize left" })
+			vim.keymap.set("n", "<C-A-j>", herdr_splits.resize_down, { desc = "Resize down" })
+			vim.keymap.set("n", "<C-A-k>", herdr_splits.resize_up, { desc = "Resize up" })
+			vim.keymap.set("n", "<C-A-l>", herdr_splits.resize_right, { desc = "Resize right" })
 		end,
 	},
 	{

@@ -55,6 +55,14 @@
       url = "github:carderne/pi-nvim";
       flake = false;
     };
+    plugins-herdr-float = {
+      url = "github:meerzulee/herdr-float";
+      flake = false;
+    };
+    plugins-herdr-splits = {
+      url = "github:lmilojevicc/herdr-splits.nvim";
+      flake = false;
+    };
 
     oxy2dev-nvim-scripts = {
       url = "github:OXY2DEV/nvim";
