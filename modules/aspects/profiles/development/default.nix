@@ -33,6 +33,7 @@
       den.aspects.skills
       den.aspects.zellij
       den.aspects.herdr
+      den.aspects.histerClient
       den.aspects.worktrunk
       den.aspects.git
       den.aspects.gpg

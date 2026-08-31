@@ -83,6 +83,14 @@ in
                   configuration_url = "https://id.${domain}/.well-known/openid-configuration";
                 };
               };
+
+              extractors.ytdlp = {
+                enable = true;
+                options = {
+                  binary = "${lib.getExe pkgs.yt-dlp}";
+                  extra_args = [ "--no-cache-dir" ];
+                };
+              };
             };
           };
 
