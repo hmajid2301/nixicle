@@ -27,6 +27,16 @@ in
     apiKey = "ollama";
     models = [
       (mkVisionModel "qwen3.6:27b")
+      (mkTextModel "deepseek-v4-pro:cloud")
+      (mkTextModel "deepseek-v4-flash:cloud")
+      (mkVisionModel "kimi-k2.7-code:cloud")
+      (mkVisionModel "kimi-k2.6:cloud")
+      (mkTextModel "glm-5.3:cloud")
+      (mkVisionModel "glm-5.3-flash:cloud")
+      (mkTextModel "glm-5.2:cloud")
+      (mkVisionModel "gemma4:cloud")
+      (mkVisionModel "minimax-m3:cloud")
+      (mkTextModel "minimax-m2.7:cloud")
     ];
   };
 }
