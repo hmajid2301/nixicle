@@ -7,10 +7,13 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { discoverAgents } from "./agents.ts";
 import { currentBackend, getRun, listRuns, resumePaneRun, spawnRun, type ResolvedSpawn } from "./backends.ts";
+import { paneClose } from "./herdr.ts";
 import { registerCommands } from "./commands.ts";
 import { loadConfig, resolveModel } from "./config.ts";
-import { aggregateText, PipelineEngine, type PipelineHooks, type PipelineState, type StageSpec, type StageState } from "./pipeline.ts";
+import { PipelineEngine, type PipelineHooks, type PipelineState, type StageSpec, type StageState } from "./pipeline.ts";
 import { buildResearchTask, chooseResearchAgent } from "./research.ts";
+import { isCreditLimitError } from "./child-helpers.ts";
+import { log } from "./log.ts";
 import { savePipeline } from "./store.ts";
 import type { CompletionResult, RunHandle } from "./types.ts";
 import { registerWidget, type WidgetModel } from "./widget.ts";
@@ -142,6 +145,24 @@ export default function pipelinesExtension(pi: ExtensionAPI): void {
     handle.completion
       .then((result) => {
         if (runs.get(handle.id)?.handle !== handle) return;
+        const isCreditLimit =
+          result.isCreditLimit === true ||
+          (result.errorMessage ? isCreditLimitError(result.errorMessage) : false);
+        if (isCreditLimit) {
+          log("error", "credit_limit", { id: handle.id, stageLabel, error: result.errorMessage });
+          // The engine's schedule() gate stops further spawning; surface the
+          // billing error here for visibility. No hard cancel — the human can
+          // break the glass with pipeline_cancel or pipeline_proceed.
+          if (!stageLabel) {
+            steer(
+              "failure",
+              `CREDIT LIMIT: ${result.errorMessage ?? "Insufficient balance"}. No further work will spawn.`,
+              { runId: handle.id, stageLabel },
+            );
+            runs.delete(handle.id);
+            return;
+          }
+        }
         if (!stageLabel) {
           if (shouldSteerStandalone(standaloneSteer, handle)) steerResultStandalone(handle.id, handle, result);
           if (result.reason === "ping") runs.set(handle.id, { handle, req, retainedPing: true });
@@ -174,6 +195,42 @@ export default function pipelinesExtension(pi: ExtensionAPI): void {
 
   function launch(id: string, opts: Parameters<typeof makeResolved>[1], stageLabel?: string, standaloneSteer: StandaloneSteer = "pane-only"): RunHandle {
     const req = makeResolved(id, opts);
+    const timeoutMs = (cfg.stageTimeoutMinutes ?? 30) * 60_000;
+    req.timeoutMs = timeoutMs;
+    req.onTimeout = (elapsedSeconds) => {
+      log("warn", "run_timeout", { id, stageLabel, elapsedSeconds });
+      const target = stageLabel ? `Stage "${stageLabel}"` : `Run "${id}"`;
+      steer(
+        "stuck",
+        `${target} has been running ${Math.floor(elapsedSeconds / 60)} min without completing. It may be stuck.\n` +
+          `Cancel it: pipeline_cancel_stage({ pipelineId, stageId }) or subagent_interrupt({ id: "${id}" })\n` +
+          `Proceed past it: pipeline_proceed({ pipelineId, stageId })`,
+        { runId: id, stageLabel },
+      );
+      // Break-glass: after a 2x grace period, auto-fail so the pipeline cannot
+      // run forever. Skipped if the run already settled in the meantime.
+      setTimeout(() => {
+        if (!runs.has(id)) return;
+        if (stageLabel) {
+          const split = stageLabel.indexOf(":");
+          if (split > 0) {
+            const pipelineId = stageLabel.slice(0, split);
+            const stageId = stageLabel.slice(split + 1);
+            const live = findStageRunMeta(pipelineId, stageId);
+            if (live) {
+              runs.delete(live[0]);
+              void live[1].handle.interrupt().catch(() => {});
+            }
+            engine.failStage(pipelineId, stageId, `stage timed out after ${Math.floor(elapsedSeconds / 60)} min`);
+          }
+        }
+        steer(
+          "failure",
+          `Run "${id}" auto-cancelled after ${Math.floor(elapsedSeconds / 60)} min without completing. Proceed past it with pipeline_proceed.`,
+          { runId: id, stageLabel },
+        );
+      }, timeoutMs * 2);
+    };
     const handle = spawnRun(req);
     watchCompletion(handle, req, stageLabel, standaloneSteer);
     return handle;
@@ -191,11 +248,19 @@ export default function pipelinesExtension(pi: ExtensionAPI): void {
   function cancelPipeline(id: string): boolean {
     const pipeline = engine.get(id);
     if (!pipeline || pipeline.status !== "active") return false;
+    log("info", "pipeline_cancelled", { id, name: pipeline.name });
     const prefix = `${id}:`;
     for (const [runId, meta] of runs.entries()) {
       if (!meta.stageLabel?.startsWith(prefix)) continue;
       runs.delete(runId);
       void meta.handle.interrupt().catch(() => {});
+      if (meta.handle.backend === "pane" && meta.handle.paneId) {
+        try {
+          paneClose(meta.handle.paneId);
+        } catch {
+          // best effort
+        }
+      }
     }
     engine.cancel(id);
     return true;
@@ -214,7 +279,6 @@ export default function pipelinesExtension(pi: ExtensionAPI): void {
       if (p.status !== "active") setTimeout(() => savePipeline(p), 0);
     },
     steer(p: PipelineState, s: StageState | undefined, kind, text): void {
-      if (currentBackend() === "headless") return;
       if (kind === "gate" && s) {
         steer(
           "gate",
@@ -300,6 +364,7 @@ export default function pipelinesExtension(pi: ExtensionAPI): void {
           task: Type.String({ description: "Task for this stage" }),
           dependsOn: Type.Optional(Type.Array(Type.String(), { description: "Stage ids that must complete first" })),
           gate: Type.Optional(Type.Boolean({ description: "Pause for user go-ahead after dependencies complete" })),
+          retries: Type.Optional(Type.Number({ description: "Extra attempts on transient errors (default 0)" })),
         }),
         { minItems: 1 },
       ),
@@ -324,17 +389,15 @@ export default function pipelinesExtension(pi: ExtensionAPI): void {
         };
       }
       if (currentBackend() === "headless") {
-        for (;;) {
-          const latest = engine.get(pipeline.id) ?? pipeline;
-          const waiting = latest.stages.find((stage) => stage.status === "waiting-gate" || stage.status === "waiting-help");
-          if (latest.status !== "active" || waiting) {
-            const text = waiting
-              ? `Pipeline "${params.name}" (${pipeline.id}) is waiting at ${waiting.id}.\n${aggregateText(latest)}`
-              : aggregateText(latest);
-            return { content: [{ type: "text" as const, text }], details: { id: pipeline.id, status: latest.status } };
-          }
-          await new Promise((resolve) => setTimeout(resolve, 250));
-        }
+        // Headless mode steers progress back to the parent; return immediately
+        // (like pane mode) and let the parent poll with pipeline_status.
+        const table = pipeline.stages
+          .map((stage) => `  ${stage.id}: ${stage.status}${stage.agent ? ` (agent: ${stage.agent})` : " (gate)"}`)
+          .join("\n");
+        return {
+          content: [{ type: "text" as const, text: `Pipeline "${params.name}" (${pipeline.id}) started. Stages steer back as they complete; poll with pipeline_status.\n${table}` }],
+          details: { id: pipeline.id },
+        };
       }
       const table = pipeline.stages
         .map((stage) => `  ${stage.id}: ${stage.status}${stage.agent ? ` (agent: ${stage.agent})` : " (gate)"}`)
@@ -342,6 +405,28 @@ export default function pipelinesExtension(pi: ExtensionAPI): void {
       return {
         content: [{ type: "text" as const, text: `Pipeline "${params.name}" (${pipeline.id}) started. Stages steer back as they complete.\n${table}` }],
         details: { id: pipeline.id },
+      };
+    },
+  });
+
+  pi.registerTool({
+    name: "pipeline_status",
+    label: "Pipeline Status",
+    description: "Get the current status of a pipeline and its stages.",
+    parameters: Type.Object({
+      pipelineId: Type.String({ description: "Pipeline id" }),
+    }),
+    async execute(_toolCallId, params) {
+      const pipeline = engine.get(params.pipelineId);
+      if (!pipeline) {
+        return { content: [{ type: "text" as const, text: `No pipeline ${params.pipelineId}.` }], isError: true };
+      }
+      const table = pipeline.stages
+        .map((stage) => `  ${stage.id}: ${stage.status}${stage.error ? ` — ${stage.error.slice(0, 60)}` : ""}`)
+        .join("\n");
+      return {
+        content: [{ type: "text" as const, text: `Pipeline "${pipeline.name}" (${pipeline.id}) is ${pipeline.status}.\n${table}` }],
+        details: { id: pipeline.id, status: pipeline.status },
       };
     },
   });
@@ -357,6 +442,56 @@ export default function pipelinesExtension(pi: ExtensionAPI): void {
       return cancelPipeline(params.pipelineId)
         ? { content: [{ type: "text" as const, text: `Cancelled pipeline "${params.pipelineId}".` }] }
         : { content: [{ type: "text" as const, text: `No active pipeline "${params.pipelineId}" to cancel.` }], isError: true };
+    },
+  });
+
+  pi.registerTool({
+    name: "pipeline_cancel_stage",
+    label: "Pipeline Cancel Stage",
+    description: "Fail a specific running/stuck stage and halt its dependents.",
+    parameters: Type.Object({
+      pipelineId: Type.String({ description: "Pipeline id" }),
+      stageId: Type.String({ description: "Stage id to fail" }),
+      reason: Type.Optional(Type.String({ description: "Failure reason" })),
+    }),
+    async execute(_toolCallId, params) {
+      const pipeline = engine.get(params.pipelineId);
+      const stage = pipeline?.stages.find((s) => s.id === params.stageId);
+      if (!pipeline || !stage) {
+        return { content: [{ type: "text" as const, text: `No stage ${params.stageId} in ${params.pipelineId}.` }], isError: true };
+      }
+      if (stage.status !== "running" && stage.status !== "queued" && stage.status !== "waiting-help") {
+        return { content: [{ type: "text" as const, text: `Stage "${stage.id}" is ${stage.status} — not cancellable.` }], isError: true };
+      }
+      const live = findStageRunMeta(params.pipelineId, params.stageId);
+      if (live) {
+        runs.delete(live[0]);
+        void live[1].handle.interrupt().catch(() => {});
+      }
+      engine.failStage(params.pipelineId, params.stageId, params.reason ?? "cancelled by supervisor");
+      return { content: [{ type: "text" as const, text: `Failed stage "${stage.id}"; dependents halted.` }] };
+    },
+  });
+
+  pi.registerTool({
+    name: "pipeline_proceed",
+    label: "Pipeline Proceed",
+    description: "Force-proceed past a failed/halted/waiting stage, marking it done so dependents unblock. Approves a waiting-gate, skips a waiting-help stage, or proceeds past a failed/halted stage.",
+    parameters: Type.Object({
+      pipelineId: Type.String({ description: "Pipeline id" }),
+      stageId: Type.String({ description: "Stage id to proceed past" }),
+    }),
+    async execute(_toolCallId, params) {
+      const pipeline = engine.get(params.pipelineId);
+      const stage = pipeline?.stages.find((s) => s.id === params.stageId);
+      if (!pipeline || !stage) {
+        return { content: [{ type: "text" as const, text: `No stage ${params.stageId} in ${params.pipelineId}.` }], isError: true };
+      }
+      if (stage.status !== "failed" && stage.status !== "halted" && stage.status !== "waiting-gate" && stage.status !== "waiting-help") {
+        return { content: [{ type: "text" as const, text: `Stage "${stage.id}" is ${stage.status} — nothing to proceed past.` }], isError: true };
+      }
+      engine.proceedStage(params.pipelineId, params.stageId);
+      return { content: [{ type: "text" as const, text: `Proceeded past stage "${stage.id}"; dependents unblocked.` }] };
     },
   });
 

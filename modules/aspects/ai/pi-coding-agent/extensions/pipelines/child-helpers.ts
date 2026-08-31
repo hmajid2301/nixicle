@@ -8,6 +8,24 @@ export function shouldMarkUserTookOver(agentStarted: boolean): boolean {
 export interface SubagentErrorInfo {
   errorMessage: string;
   stopReason: "error";
+  isCreditLimit?: boolean;
+}
+
+const CREDIT_LIMIT_RE =
+  /(insufficient balance|insufficient credits|credits?error|billing|credit limit|out of credits|no credits|payment required|402)/i;
+
+export function isCreditLimitError(message: string): boolean {
+  return CREDIT_LIMIT_RE.test(message);
+}
+
+// Transient failures worth retrying: overload, rate limiting, transient
+// network errors, or a busy backend. Deliberately conservative so permanent
+// errors (syntax, validation, auth) are not retried.
+const TRANSIENT_RE =
+  /(overloaded|rate.?limit|too many requests|429|503|temporarily|try again|retry|econnreset|etimedout|connection reset|busy|unavailable|timeout)/i;
+
+export function isTransientError(message: string): boolean {
+  return TRANSIENT_RE.test(message);
 }
 
 export function findLatestAssistantError(
@@ -28,10 +46,12 @@ export function findLatestAssistantError(
     }
     if (msg.stopReason !== "error") return null;
     const raw = typeof msg.errorMessage === "string" ? msg.errorMessage.trim() : "";
-    return {
+    const info: SubagentErrorInfo = {
       errorMessage: raw || "child agent loop ended with stopReason=error (no errorMessage field).",
       stopReason: "error",
     };
+    if (isCreditLimitError(raw)) info.isCreditLimit = true;
+    return info;
   }
   return null;
 }

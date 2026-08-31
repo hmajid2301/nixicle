@@ -5,8 +5,9 @@ import { chmodSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { subDir } from "./config.ts";
 import { readExitFile, waitForCompletion } from "./completion.ts";
+import { log } from "./log.ts";
 import { buildLaunch, isHeadlessCapable, shellQuote, type LaunchOpts } from "./drivers.ts";
-import { createPane, isHerdrAvailable, paneGet, paneReadAsync, paneRun, paneSendKeys } from "./herdr.ts";
+import { createPane, isHerdrAvailable, paneClose, paneGet, paneReadAsync, paneRun, paneSendKeys } from "./herdr.ts";
 import { readSessionTail } from "./session-tail.ts";
 import type { AgentConfig, CompletionResult, HarnessCli, RunHandle } from "./types.ts";
 
@@ -31,6 +32,8 @@ export interface ResolvedSpawn {
   autoExit: boolean;
   childExtPath?: string;
   sessionPath?: string; // override (resume)
+  timeoutMs?: number;
+  onTimeout?: (elapsedSeconds: number) => void;
   watcher?: (handle: RunHandle, result: CompletionResult) => void;
 }
 
@@ -100,7 +103,7 @@ function clearExitFile(exitFile?: string): void {
   }
 }
 
-function buildOpts(req: ResolvedSpawn, backend: "pane" | "headless"): LaunchOpts {
+export function buildOpts(req: ResolvedSpawn, backend: "pane" | "headless"): LaunchOpts {
   const systemPromptAppend = [req.agent?.systemPrompt, req.systemPromptAppend]
     .filter((s): s is string => typeof s === "string" && s.length > 0)
     .join("\n\n") || undefined;
@@ -122,6 +125,8 @@ function buildOpts(req: ResolvedSpawn, backend: "pane" | "headless"): LaunchOpts
     childExtPath: req.childExtPath,
     sessionFile: req.harness === "pi" ? sessionFileOf(req) : undefined,
     exitFile: req.harness === "pi" ? exitFileOf(req) : undefined,
+    timeoutMs: req.timeoutMs,
+    onTimeout: req.onTimeout,
   };
 }
 
@@ -176,6 +181,8 @@ function spawnPane(req: ResolvedSpawn, o: LaunchOpts): RunHandle {
       exitFile: o.exitFile,
       readScreen: () => paneReadAsync(paneId, 30),
       inspectPane: () => paneGet(paneId),
+      timeoutMs: o.timeoutMs,
+      onTimeout: o.onTimeout,
     });
     if (result.reason === "ping") return result;
     const output = result.output ?? (sessionFile
@@ -230,6 +237,8 @@ export function resumePaneRun(
       exitFile: o.exitFile,
       readScreen: () => paneReadAsync(rec.handle.paneId!, 30),
       inspectPane: () => paneGet(rec.handle.paneId!),
+      timeoutMs: o.timeoutMs,
+      onTimeout: o.onTimeout,
     });
     if (result.reason === "ping") return result;
     const output = result.output ?? (o.sessionFile
@@ -266,43 +275,37 @@ function spawnHeadless(req: ResolvedSpawn, o: LaunchOpts): RunHandle {
   child.stdout?.on("data", (d) => { stdout += d; });
   child.stderr?.on("data", (d) => { stderr += d; });
 
-  const completion = new Promise<CompletionResult>((resolve) => {
-    child.on("close", (code) => {
-      if (req.harness === "pi") {
-        const sidecar = readExitFile(o.exitFile);
-        const info = o.sessionFile ? readSessionTail(o.sessionFile) : null;
-        if (sidecar) {
-          resolve({
-            ...sidecar,
-            output: sidecar.reason === "ping" ? undefined : clip(sidecar.output ?? info?.lastText ?? stdout),
-          });
-          return;
-        }
-        if (code === 0) {
-          resolve({ reason: "done", exitCode: 0, output: clip(info?.lastText ?? stdout) });
-          return;
-        }
-        resolve({
-          reason: "error",
-          exitCode: code ?? 1,
-          errorMessage: clip(stderr || `child exited with code ${code}`),
-        });
-        return;
-      }
-      if (code === 0) {
-        resolve({ reason: "done", exitCode: 0, output: clip(stdout) });
-        return;
-      }
-      resolve({
-        reason: "error",
-        exitCode: code ?? 1,
-        errorMessage: clip(stderr || `child exited with code ${code}`),
-      });
-    });
-    controller.signal.addEventListener("abort", () => {
-      child.kill("SIGINT");
-    });
+  // Resolves with the exit code when the child process exits. This is the
+  // headless completion signal (no pane/screen to poll), and it lets
+  // waitForCompletion apply the same watchdog timeout as the pane backend.
+  const childExit = new Promise<number | null>((resolve) => {
+    child.on("close", (code) => resolve(code ?? null));
   });
+  controller.signal.addEventListener("abort", () => {
+    child.kill("SIGINT");
+  });
+
+  const completion = (async () => {
+    const result = await waitForCompletion(controller.signal, {
+      intervalMs: 750,
+      exitFile: o.exitFile,
+      childExit,
+      timeoutMs: o.timeoutMs,
+      onTimeout: o.onTimeout,
+    });
+    if (result.reason === "ping") return result;
+    const info = o.sessionFile ? readSessionTail(o.sessionFile) : null;
+    const output = clip(result.output ?? (req.harness === "pi" ? info?.lastText ?? stdout : stdout));
+    if (result.reason === "error") {
+      // Prefer the sidecar message for pi; otherwise surface stderr.
+      const errorMessage =
+        req.harness === "pi" && result.errorMessage
+          ? result.errorMessage
+          : clip(stderr || result.errorMessage || `child exited with code ${result.exitCode}`);
+      return { ...result, output, errorMessage };
+    }
+    return { ...result, output };
+  })();
 
   const handle: RunHandle = {
     id: req.id,
@@ -320,7 +323,17 @@ function spawnHeadless(req: ResolvedSpawn, o: LaunchOpts): RunHandle {
   return handle;
 }
 
-function register(
+function closePaneIfAny(handle: RunHandle): void {
+  if (handle.backend === "pane" && handle.paneId) {
+    try {
+      paneClose(handle.paneId);
+    } catch {
+      // best effort — pane may already be gone
+    }
+  }
+}
+
+export function register(
   req: ResolvedSpawn,
   handle: RunHandle,
   completion: Promise<CompletionResult>,
@@ -328,18 +341,28 @@ function register(
 ): void {
   handle.completion.catch(() => {}); // avoid unhandled rejection while parent works
   runs.set(handle.id, { handle, req, controller });
+  log("info", "run_spawned", { id: handle.id, name: handle.name, backend: handle.backend });
   completion
     .then((result) => {
       if (runs.get(handle.id)?.handle !== handle) return;
+      log(
+        result.reason === "error" ? "error" : "info",
+        "run_completed",
+        { id: handle.id, reason: result.reason, exitCode: result.exitCode, isCreditLimit: result.isCreditLimit },
+      );
       try {
         req.watcher?.(handle, result);
       } catch {
         // Watchers are advisory; do not break run cleanup on supervisor errors.
       }
-      if (result.reason !== "ping" && runs.get(handle.id)?.handle === handle) runs.delete(handle.id);
+      if (result.reason !== "ping" && runs.get(handle.id)?.handle === handle) {
+        runs.delete(handle.id);
+        closePaneIfAny(handle);
+      }
     })
     .catch((error) => {
       if (runs.get(handle.id)?.handle !== handle) return;
+      log("error", "run_error", { id: handle.id, error: error instanceof Error ? error.message : String(error) });
       try {
         req.watcher?.(handle, {
           reason: "error",
@@ -349,6 +372,9 @@ function register(
       } catch {
         // Watchers are advisory; do not break run cleanup on supervisor errors.
       }
-      if (runs.get(handle.id)?.handle === handle) runs.delete(handle.id);
+      if (runs.get(handle.id)?.handle === handle) {
+        runs.delete(handle.id);
+        closePaneIfAny(handle);
+      }
     });
 }

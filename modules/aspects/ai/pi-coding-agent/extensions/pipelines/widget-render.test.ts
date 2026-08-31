@@ -6,6 +6,8 @@ const vm: DashboardVM = {
   title: "plan-demo",
   active: 1,
   waiting: 1,
+  done: 0,
+  failed: 0,
   tokens: "15.5k",
   attention: false,
   rows: [

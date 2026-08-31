@@ -33,6 +33,7 @@ export interface CompletionResult {
   output?: string;
   ping?: { name: string; message: string };
   errorMessage?: string;
+  isCreditLimit?: boolean;
 }
 
 export interface RunHandle {

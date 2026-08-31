@@ -29,7 +29,9 @@ export function interpretExitSidecar(data: unknown): CompletionResult | null {
       typeof p.errorMessage === "string" && p.errorMessage.trim()
         ? p.errorMessage
         : "child exited with stopReason=error (no message in sidecar)";
-    return { reason: "error", exitCode: 1, errorMessage };
+    const result: CompletionResult = { reason: "error", exitCode: 1, errorMessage };
+    if (p.isCreditLimit === true) result.isCreditLimit = true;
+    return result;
   }
   if (p?.type === "done") {
     const result: CompletionResult = { reason: "done", exitCode: 0 };
@@ -82,6 +84,11 @@ export interface WaitOpts {
   inspectPane?: () => Promise<"present" | "missing" | "unavailable">;
   paneDisappearanceGraceMs?: number;
   onTick?: (elapsedSeconds: number) => void;
+  timeoutMs?: number;
+  onTimeout?: (elapsedSeconds: number) => void;
+  // Resolves with the exit code when the underlying child process exits.
+  // Used by the headless backend, which has no pane/screen to poll.
+  childExit?: Promise<number | null>;
 }
 
 function delay(ms: number, signal: AbortSignal): Promise<void> {
@@ -107,46 +114,77 @@ function sentinelResult(code: number): CompletionResult {
 
 export async function waitForCompletion(signal: AbortSignal, o: WaitOpts): Promise<CompletionResult> {
   const startedAt = Date.now();
-  for (;;) {
-    if (signal.aborted) throw new Error("aborted while waiting for child");
+  // Watchdog: a single timer that fires onTimeout once at the deadline and is
+  // cleared on settle — no per-tick elapsed bookkeeping, no repeated firing.
+  let watchdog: ReturnType<typeof setTimeout> | undefined;
+  if (o.timeoutMs && o.onTimeout) {
+    watchdog = setTimeout(() => {
+      o.onTimeout?.(Math.floor((Date.now() - startedAt) / 1000));
+    }, o.timeoutMs);
+  }
+  try {
+    for (;;) {
+      if (signal.aborted) throw new Error("aborted while waiting for child");
 
-    const sidecar = readExitFile(o.exitFile);
-    if (sidecar) return sidecar;
+      const sidecar = readExitFile(o.exitFile);
+      if (sidecar) return sidecar;
 
-    if (o.readScreen) {
-      try {
-        const code = parseSentinel(await o.readScreen());
-        if (code !== null) return sentinelResult(code);
-      } catch {
-        // screen probe failed — keep polling
+      // A readable screen implies the pane is present, so skip the separate
+      // inspectPane probe (one fewer herdr subprocess spawn per poll).
+      let screenOk = false;
+      if (o.readScreen) {
+        try {
+          const screen = await o.readScreen();
+          screenOk = screen.length > 0;
+          const code = parseSentinel(screen);
+          if (code !== null) return sentinelResult(code);
+        } catch {
+          screenOk = false; // screen probe failed — keep polling
+        }
       }
-    }
 
-    if (o.inspectPane) {
-      let state: "present" | "missing" | "unavailable";
-      try {
-        state = await o.inspectPane();
-      } catch {
-        state = "unavailable";
+      if (o.inspectPane && !screenOk) {
+        let state: "present" | "missing" | "unavailable";
+        try {
+          state = await o.inspectPane();
+        } catch {
+          state = "unavailable";
+        }
+        if (state === "missing") {
+          const graceEnd = Date.now() + (o.paneDisappearanceGraceMs ?? 500);
+          while (Date.now() < graceEnd) {
+            await delay(Math.min(25, graceEnd - Date.now()), signal);
+            const late = readExitFile(o.exitFile);
+            if (late) return late;
+            if (o.readScreen) {
+              try {
+                const code = parseSentinel(await o.readScreen());
+                if (code !== null) return sentinelResult(code);
+              } catch { /* ignore */ }
+            }
+          }
+          return { reason: "error", exitCode: 1, errorMessage: "child pane disappeared before completion" };
+        }
       }
-      if (state === "missing") {
-        const graceEnd = Date.now() + (o.paneDisappearanceGraceMs ?? 500);
-        while (Date.now() < graceEnd) {
-          await delay(Math.min(25, graceEnd - Date.now()), signal);
+
+      o.onTick?.(Math.floor((Date.now() - startedAt) / 1000));
+      if (o.childExit) {
+        const exited = await Promise.race([
+          o.childExit.then((code) => ({ exited: true as const, code })),
+          delay(o.intervalMs, signal).then(() => ({ exited: false as const, code: null })),
+        ]);
+        if (exited.exited) {
+          // Child exited — prefer a late sidecar (pi writes it on clean exit),
+          // otherwise fall back to the exit code.
           const late = readExitFile(o.exitFile);
           if (late) return late;
-          if (o.readScreen) {
-            try {
-              const code = parseSentinel(await o.readScreen());
-              if (code !== null) return sentinelResult(code);
-            } catch { /* ignore */ }
-          }
+          return sentinelResult(exited.code ?? 0);
         }
-        return { reason: "error", exitCode: 1, errorMessage: "child pane disappeared before completion" };
+      } else {
+        await delay(o.intervalMs, signal);
       }
     }
-
-    o.onTick?.(Math.floor((Date.now() - startedAt) / 1000));
-    await delay(o.intervalMs, signal);
+  } finally {
+    if (watchdog) clearTimeout(watchdog);
   }
 }

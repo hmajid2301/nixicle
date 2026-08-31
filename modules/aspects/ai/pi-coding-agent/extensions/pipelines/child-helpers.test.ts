@@ -3,6 +3,8 @@ import { describe, expect, test } from "bun:test";
 import {
   buildCompletionSidecar,
   findLatestAssistantError,
+  isCreditLimitError,
+  isTransientError,
   shouldAutoExitOnAgentEnd,
   shouldMarkUserTookOver,
 } from "./child-helpers.ts";
@@ -34,7 +36,40 @@ describe("shouldAutoExitOnAgentEnd", () => {
   });
 });
 
+describe("isCreditLimitError", () => {
+  test("flags credit/billing patterns", () => {
+    expect(isCreditLimitError("Insufficient balance. Manage your billing here")).toBe(true);
+    expect(isCreditLimitError("CreditsError: out of credits")).toBe(true);
+    expect(isCreditLimitError("payment required (402)")).toBe(true);
+    expect(isCreditLimitError("syntax error in file")).toBe(false);
+  });
+});
+
+describe("isTransientError", () => {
+  test("flags overload/rate-limit/network patterns", () => {
+    expect(isTransientError("overloaded, try again later")).toBe(true);
+    expect(isTransientError("rate limit exceeded (429)")).toBe(true);
+    expect(isTransientError("ECONNRESET: connection reset")).toBe(true);
+    expect(isTransientError("backend temporarily unavailable")).toBe(true);
+  });
+  test("does not flag permanent errors", () => {
+    expect(isTransientError("syntax error in file")).toBe(false);
+    expect(isTransientError("invalid API key")).toBe(false);
+    expect(isTransientError("Insufficient balance")).toBe(false);
+  });
+});
+
 describe("findLatestAssistantError", () => {
+  test("sets isCreditLimit on billing errors", () => {
+    expect(findLatestAssistantError([{ role: "assistant", stopReason: "error", errorMessage: "Insufficient balance" }])).toEqual({
+      errorMessage: "Insufficient balance", stopReason: "error", isCreditLimit: true,
+    });
+  });
+  test("omits isCreditLimit for non-billing errors", () => {
+    expect(findLatestAssistantError(errored)).toEqual({
+      errorMessage: "overloaded", stopReason: "error",
+    });
+  });
   test("finds error info from latest assistant", () => {
     expect(findLatestAssistantError(errored)).toEqual({
       errorMessage: "overloaded", stopReason: "error",

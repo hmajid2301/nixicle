@@ -40,6 +40,11 @@ describe("loadConfig", () => {
     expect(cfg.models?.default).toBe("m-default");
     expect(cfg.widget?.collapsed).toBe(true);
   });
+  test("parses stageTimeoutMinutes", () => {
+    const d = mkdtempSync(join(tmpdir(), "pipelines-config-timeout-"));
+    writeFileSync(join(d, "config.json"), JSON.stringify({ stageTimeoutMinutes: 15 }));
+    expect(loadConfig(d).stageTimeoutMinutes).toBe(15);
+  });
 });
 
 describe("resolveModel", () => {
