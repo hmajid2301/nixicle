@@ -22,6 +22,10 @@ _: {
         url = "github:JuliusBrussee/caveman";
         flake = false;
       };
+      herdr-skills = {
+        url = "github:herdrdev/herdr/v0.8.2";
+        flake = false;
+      };
     };
   };
 
@@ -63,6 +67,11 @@ _: {
 
             caveman = {
               path = inputs.caveman;
+              subdir = "skills";
+            };
+
+            herdr = {
+              path = inputs.herdr-skills;
               subdir = "skills";
             };
           };
@@ -147,9 +156,26 @@ _: {
                 path = ".";
               };
 
+              hister = {
+                from = "nixicle";
+                path = "hister";
+              };
+
+              karpathy-guidelines = {
+                from = "nixicle";
+                path = "karpathy-guidelines";
+              };
+
               "playwright-cli" = {
                 from = "playwright-cli";
                 path = "playwright-cli";
+              };
+
+              herdr = {
+                from = "herdr";
+                path = "herdr";
+                packages = [ pkgs.herdr ];
+                rewriteCommands = false;
               };
             };
           };
