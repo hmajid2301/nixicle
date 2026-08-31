@@ -44,6 +44,13 @@
     }
     {
       output = {
+        _args = [ "DP-3" ];
+        scale = 1.0;
+        transform = "normal";
+      };
+    }
+    {
+      output = {
         _args = [ "HDMI-A-1" ];
         scale = 1.0;
         transform = "normal";
