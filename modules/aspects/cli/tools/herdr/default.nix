@@ -1,7 +1,8 @@
-_: {
+{ inputs, ... }:
+{
   den.aspects.herdr = {
     homeManager =
-      { pkgs, ... }:
+      { pkgs, lib, ... }:
       let
         piIntegration = pkgs.runCommand "herdr-pi-agent-state.ts" { } ''
           export HOME="$TMPDIR/home"
@@ -15,7 +16,10 @@ _: {
           enable = true;
           settings = {
             onboarding = false;
-            theme.name = "terminal";
+            theme = {
+              # TODO: turn into stylix?
+              name = "catppuccin";
+            };
             terminal = {
               default_shell = "fish";
               shell_mode = "auto";
@@ -36,24 +40,95 @@ _: {
               split_horizontal = "prefix+minus";
               command = [
                 {
-                  key = "alt+f";
+                  key = "prefix+f";
                   type = "plugin_action";
                   command = "herdr-float.toggle";
                   description = "Toggle floating shell";
+                }
+                {
+                  key = "alt+h";
+                  type = "plugin_action";
+                  command = "herdr-splits.nav-left";
+                  description = "Navigate left";
+                }
+                {
+                  key = "alt+j";
+                  type = "plugin_action";
+                  command = "herdr-splits.nav-down";
+                  description = "Navigate down";
+                }
+                {
+                  key = "alt+k";
+                  type = "plugin_action";
+                  command = "herdr-splits.nav-up";
+                  description = "Navigate up";
+                }
+                {
+                  key = "alt+l";
+                  type = "plugin_action";
+                  command = "herdr-splits.nav-right";
+                  description = "Navigate right";
+                }
+                {
+                  key = "ctrl+alt+h";
+                  type = "plugin_action";
+                  command = "herdr-splits.resize-left";
+                  description = "Resize left";
+                }
+                {
+                  key = "ctrl+alt+j";
+                  type = "plugin_action";
+                  command = "herdr-splits.resize-down";
+                  description = "Resize down";
+                }
+                {
+                  key = "ctrl+alt+k";
+                  type = "plugin_action";
+                  command = "herdr-splits.resize-up";
+                  description = "Resize up";
+                }
+                {
+                  key = "ctrl+alt+l";
+                  type = "plugin_action";
+                  command = "herdr-splits.resize-right";
+                  description = "Resize right";
                 }
               ];
             };
             ui = {
               status_indicators = "symbols";
               window_title = "{hostname}: {workspace}";
+              tab_bar_position = "top";
+              hide_tab_bar_when_single_tab = true;
+              tab_bar_right = [
+                { type = "zoom"; }
+              ];
+              tab_bar_right_separator = " · ";
+              sidebar_collapsed_mode = "hidden";
+              sidebar_start_collapsed = true;
+              accent = "#89b4fa";
+              sidebar.agents.rows = [
+                [
+                  "state_icon"
+                  "workspace"
+                  "tab"
+                ]
+                [ "terminal_title_stripped" ]
+              ];
             };
-            worktrees.directory = "~/worktrees";
           };
         };
 
-        home.packages = [ pkgs.tmux ];
+        home = {
+          packages = [ pkgs.tmux ];
 
-        home.file.".pi/agent/extensions/herdr-agent-state.ts".source = piIntegration;
+          activation.herdrPlugins = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+            ${pkgs.herdr}/bin/herdr plugin link ${inputs.plugins-herdr-float} --enabled || true
+            ${pkgs.herdr}/bin/herdr plugin link ${inputs.plugins-herdr-splits} --enabled || true
+          '';
+
+          file.".pi/agent/extensions/herdr-agent-state.ts".source = piIntegration;
+        };
       };
   };
 }
