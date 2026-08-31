@@ -2606,6 +2606,22 @@
         "type": "github"
       }
     },
+    "plugins-herdr-worktrunk": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1787858059,
+        "narHash": "sha256-Tx++zTQ1z4H8dLdCjOZ1yX9QGY/i6M3Yvi39KGHDoH4=",
+        "owner": "devashish2203",
+        "repo": "herdr-worktrunk",
+        "rev": "9cde723b7c6ea5d3f4de94760888de0e4090727b",
+        "type": "github"
+      },
+      "original": {
+        "owner": "devashish2203",
+        "repo": "herdr-worktrunk",
+        "type": "github"
+      }
+    },
     "plugins-inline-edit": {
       "flake": false,
       "locked": {
@@ -2859,6 +2875,7 @@
         "plugins-gx-nvim": "plugins-gx-nvim",
         "plugins-herdr-float": "plugins-herdr-float",
         "plugins-herdr-splits": "plugins-herdr-splits",
+        "plugins-herdr-worktrunk": "plugins-herdr-worktrunk",
         "plugins-inline-edit": "plugins-inline-edit",
         "plugins-maximize-nvim": "plugins-maximize-nvim",
         "plugins-neotest": "plugins-neotest",

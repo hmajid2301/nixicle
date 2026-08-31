@@ -155,6 +155,10 @@
       url = "github:lmilojevicc/herdr-splits.nvim";
       flake = false;
     };
+    plugins-herdr-worktrunk = {
+      url = "github:devashish2203/herdr-worktrunk";
+      flake = false;
+    };
     plugins-inline-edit = {
       url = "github:AndrewRadev/inline_edit.vim";
       flake = false;

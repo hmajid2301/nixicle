@@ -93,6 +93,36 @@
                   command = "herdr-splits.resize-right";
                   description = "Resize right";
                 }
+                {
+                  key = "prefix+shift+g";
+                  type = "plugin_action";
+                  command = "worktrunk.open";
+                  description = "Worktree: switch / create from default branch";
+                }
+                {
+                  key = "prefix+shift+c";
+                  type = "plugin_action";
+                  command = "worktrunk.open-current";
+                  description = "Worktree: switch / create from current branch";
+                }
+                {
+                  key = "prefix+shift+r";
+                  type = "plugin_action";
+                  command = "worktrunk.open-with-remotes";
+                  description = "Worktree: switch / create from local or remote branches";
+                }
+                {
+                  key = "prefix+shift+d";
+                  type = "plugin_action";
+                  command = "worktrunk.remove";
+                  description = "Worktree: remove";
+                }
+                {
+                  key = "prefix+shift+m";
+                  type = "plugin_action";
+                  command = "worktrunk.merge";
+                  description = "Worktree: merge into target branch";
+                }
               ];
             };
             ui = {
@@ -125,6 +155,7 @@
           activation.herdrPlugins = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
             ${pkgs.herdr}/bin/herdr plugin link ${inputs.plugins-herdr-float} --enabled || true
             ${pkgs.herdr}/bin/herdr plugin link ${inputs.plugins-herdr-splits} --enabled || true
+            ${pkgs.herdr}/bin/herdr plugin link ${inputs.plugins-herdr-worktrunk} --enabled || true
           '';
 
           file.".pi/agent/extensions/herdr-agent-state.ts".source = piIntegration;
