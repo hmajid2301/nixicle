@@ -31,7 +31,7 @@ _: {
             accessLog = { };
             api = {
               dashboard = true;
-              insecure = false;
+              insecure = true;
             };
             certificatesResolvers = {
               tailscale.tailscale = { };
