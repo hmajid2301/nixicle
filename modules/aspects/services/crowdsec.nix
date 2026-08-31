@@ -19,6 +19,50 @@ _: {
       let
         cfg = config.nixicle.crowdsec;
         yaml = pkgs.formats.yaml { };
+
+        tunedHttpProbing = yaml.generate "http-probing.yaml" {
+          type = "leaky";
+          name = "crowdsecurity/http-probing";
+          description = "Detect site scanning/probing from a single ip";
+          filter = "evt.Meta.service == 'http' && evt.Meta.http_status in ['404', '403', '400'] && evt.Parsed.static_ressource == 'false' && !(evt.Meta.http_path startsWith '/api/document')";
+          groupby = "evt.Meta.source_ip + '/' + evt.Parsed.target_fqdn";
+          distinct = "evt.Meta.http_path";
+          capacity = 100;
+          reprocess = true;
+          leakspeed = "10s";
+          blackhole = "5m";
+          labels = {
+            remediation = true;
+            classification = [ "attack.T1595" ];
+            behavior = "http:scan";
+            label = "HTTP Probing";
+            spoofable = 0;
+            service = "http";
+            confidence = 1;
+          };
+        };
+
+        tunedHttpCrawl = yaml.generate "http-crawl-non_statics.yaml" {
+          type = "leaky";
+          name = "crowdsecurity/http-crawl-non_statics";
+          description = "Detect aggressive crawl on non static resources";
+          filter = "evt.Meta.log_type in ['http_access-log', 'http_error-log'] && evt.Parsed.static_ressource == 'false' && evt.Parsed.verb in ['GET', 'HEAD']";
+          distinct = "evt.Parsed.file_name";
+          leakspeed = "1s";
+          capacity = 200;
+          cache_size = 5;
+          groupby = "evt.Meta.source_ip + '/' + evt.Parsed.target_fqdn";
+          blackhole = "1m";
+          labels = {
+            confidence = 1;
+            spoofable = 0;
+            classification = [ "attack.T1595" ];
+            behavior = "http:crawl";
+            service = "http";
+            label = "Aggressive Crawl";
+            remediation = true;
+          };
+        };
       in
       {
         options.nixicle.crowdsec.allowlist = lib.mkOption {
@@ -79,6 +123,15 @@ _: {
                 RestrictNamespaces = true;
                 RestrictRealtime = true;
                 SystemCallArchitectures = "native";
+                ExecStartPre = lib.mkAfter [
+                  (pkgs.writeShellScript "crowdsec-tune-scenarios" ''
+                    set -euo pipefail
+                    ${lib.getExe' pkgs.coreutils "install"} -m 600 \
+                      ${tunedHttpProbing} /var/lib/crowdsec/state/hub/scenarios/crowdsecurity/http-probing.yaml
+                    ${lib.getExe' pkgs.coreutils "install"} -m 600 \
+                      ${tunedHttpCrawl} /var/lib/crowdsec/state/hub/scenarios/crowdsecurity/http-crawl-non_statics.yaml
+                  '')
+                ];
               };
 
               crowdsec-firewall-bouncer = {
