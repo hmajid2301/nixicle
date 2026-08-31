@@ -1,4 +1,5 @@
 ---
+name: tech-lead
 description: >-
   Use this agent when you need a senior AI developer to orchestrate complex
   development workflows, break down ambiguous user requests into actionable

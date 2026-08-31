@@ -1,4 +1,5 @@
 ---
+name: requirements-clarifier
 description: >-
   Use this agent when the Builder needs precise, well-defined requirements
   before implementing a feature or task. This agent transforms vague or

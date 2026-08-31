@@ -1,7 +1,7 @@
 ---
 name: explore
 description: Fast read-only codebase scout returning compressed context for handoff
-tools: Read, Grep, Glob, WebSearch
+tools: read, grep, find, ketch_search
 thinking-level: med
 output:
   properties:
