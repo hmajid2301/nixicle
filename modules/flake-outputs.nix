@@ -207,6 +207,8 @@ in
               ssh-to-age
               age
 
+              bun
+
               git
               gnupg
               opentofu
