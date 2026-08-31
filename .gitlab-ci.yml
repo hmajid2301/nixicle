@@ -133,14 +133,19 @@ repair:
   interruptible: false
   resource_group: deploy-${DEPLOY_HOST}
   rules:
-    - when: manual
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+      when: manual
+    - when: never
   script:
     - test -n "$TS_AUTHKEY"
     - nix profile add nixpkgs#tailscale >/dev/null
     - tailscaled --state=mem 2>/dev/null &
     - sleep 2
     - tailscale up --authkey="$TS_AUTHKEY" --hostname="ci-deploy-${DEPLOY_HOST}" --ssh --timeout=60s
-    - nix develop --command deploy .#${DEPLOY_HOST} --hostname "${DEPLOY_HOST}" --ssh-user nixos --skip-checks
+    - mkdir -p /root/.ssh && chmod 700 /root/.ssh
+    - ssh-keyscan -H "${DEPLOY_HOST}" >> /root/.ssh/known_hosts
+    - ssh -o BatchMode=yes root@${DEPLOY_HOST} true
+    - nix develop --command deploy .#${DEPLOY_HOST} --hostname "${DEPLOY_HOST}" --ssh-user root --profile-user root --skip-checks
 
 deploy:vps:
   extends: .deploy

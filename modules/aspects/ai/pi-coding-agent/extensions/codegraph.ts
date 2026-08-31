@@ -87,7 +87,7 @@ export default function codegraphExtension(pi: ExtensionAPI) {
 		const cwd = pi.cwd ?? process.cwd();
 		const indexedProject = findIndexedProject(cwd);
 		const text = indexedProject
-			? `[CODEGRAPH PREFERENCE]\nA .codegraph index is available for this project at ${indexedProject}.\nFor codebase exploration and structural questions, prefer codegraph_explore before grep/find/broad file reading.\nUse codegraph_node for a specific symbol or file, and codegraph_impact before refactors.\nTreat code returned by codegraph as already-read context. Only fall back to grep/read when you need live file verification, coverage outside the indexed project, or codegraph indicates stale/missing coverage.`
+			? `[CODEGRAPH PREFERENCE]\nA .codegraph index is available for this project at ${indexedProject}.\nFor codebase exploration and structural questions, prefer codegraph_explore before grep/find/broad file reading.\nUse codegraph_node for a specific symbol or file, and codegraph_impact before refactors.\nTreat code returned by codegraph as already-read context. Only fall back to grep/read when you need live file verification, coverage outside the indexed project, or codegraph indicates stale/missing coverage.\nIf codegraph tools fail or return stale results after files changed, run codegraph_sync (or codegraph_init if not yet indexed).`
 			: `[CODEGRAPH PREFERENCE]\nThe local codegraph CLI is installed. If you want structural exploration for this repo, run codegraph_init first, then prefer codegraph_explore over grep/find for codebase understanding. Until indexed, use normal tools.`;
 		return {
 			message: {
@@ -143,6 +143,21 @@ export default function codegraphExtension(pi: ExtensionAPI) {
 			const cwd = resolveCwd(pi.cwd ?? process.cwd(), params.projectPath);
 			return await runCodegraph(pi, ["init"], cwd, 300_000, {
 				command: "init",
+			});
+		},
+	});
+
+	pi.registerTool({
+		name: "codegraph_sync",
+		label: "codegraph sync",
+		description: "Sync changes since the last index. Run this when codegraph tools fail or return stale results after files changed.",
+		parameters: Type.Object({
+			projectPath: Type.Optional(Type.String({ description: "Project path to sync (defaults to current cwd)" })),
+		}),
+		async execute(_id, params) {
+			const cwd = resolveCwd(pi.cwd ?? process.cwd(), params.projectPath);
+			return await runCodegraph(pi, ["sync"], cwd, 120_000, {
+				command: "sync",
 			});
 		},
 	});

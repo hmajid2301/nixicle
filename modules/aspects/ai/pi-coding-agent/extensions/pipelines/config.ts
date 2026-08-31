@@ -6,6 +6,7 @@ import { join } from "node:path";
 export interface PipelinesConfig {
   models?: { default?: string; agents?: Record<string, string> };
   widget?: { collapsed?: boolean };
+  stageTimeoutMinutes?: number;
 }
 
 export function pipelinesDir(): string {

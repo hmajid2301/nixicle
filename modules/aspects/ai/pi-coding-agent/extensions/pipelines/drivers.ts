@@ -26,6 +26,8 @@ export interface LaunchOpts {
   sessionFile?: string; // pi only
   exitFile?: string; // pi only
   childExtPath?: string; // pi only
+  timeoutMs?: number;
+  onTimeout?: (elapsedSeconds: number) => void;
 }
 
 export function buildToolAllowlist(tools: string[] | undefined): string | null {

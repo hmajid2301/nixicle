@@ -1,5 +1,6 @@
 // extensions/pipelines/pipeline.ts
 // Reactive pipeline engine. Pure logic — spawning/steering are injected hooks.
+import { isTransientError } from "./child-helpers.ts";
 import type { CompletionResult } from "./types.ts";
 
 export type StageStatus =
@@ -17,6 +18,7 @@ export interface StageSpec {
   task: string;
   dependsOn?: string[];
   gate?: boolean;
+  retries?: number; // extra attempts on transient errors (default 0)
 }
 
 export interface StageState {
@@ -27,6 +29,7 @@ export interface StageState {
   gate: boolean;
   gatePassed?: boolean;
   helpNote?: string; // parent guidance attached when resuming a waiting-help stage
+  retries: number;
   status: StageStatus;
   attempt: number;
   result?: string;
@@ -40,10 +43,12 @@ export interface PipelineState {
   name: string;
   createdAt: number;
   status: "active" | "complete" | "failed" | "cancelled";
+  creditLimit?: boolean;
+  finishedAt?: number;
   stages: StageState[];
 }
 
-export type SteerKind = "result" | "failure" | "help" | "aggregate" | "gate";
+export type SteerKind = "result" | "failure" | "help" | "aggregate" | "gate" | "retry";
 
 export interface PipelineHooks {
   spawn(p: PipelineState, s: StageState): void;
@@ -165,6 +170,7 @@ export class PipelineEngine {
         task: s.task,
         dependsOn: [...(s.dependsOn ?? [])],
         gate: s.gate ?? false,
+        retries: s.retries ?? 0,
         status: "queued",
         attempt: 0,
       })),
@@ -192,6 +198,10 @@ export class PipelineEngine {
   private schedule(id: string): void {
     const p = this.get(id);
     if (!p || p.status !== "active") return;
+    // Credit-limit gate: once a stage reports a billing error, stop spawning
+    // any further work. The human can break the glass via proceedStage (clears
+    // the flag) or cancel.
+    if (p.creditLimit) return;
     // A gate can pass mid-pass (queued → done), unblocking stages listed
     // earlier in the array — so iterate to fixpoint rather than one pass.
     let anyChanged = false;
@@ -253,10 +263,35 @@ export class PipelineEngine {
       return;
     }
     if (result.reason === "error") {
+      // Transient failure with retries left: re-queue instead of failing, so
+      // schedule() re-runs it. Credit-limit errors are never retried.
+      if (
+        !result.isCreditLimit &&
+        isTransientError(result.errorMessage ?? "") &&
+        s.attempt <= s.retries
+      ) {
+        s.status = "queued";
+        s.error = undefined;
+        this.hooks.steer(p, s, "retry", `Stage "${s.id}" hit a transient error; retrying (attempt ${s.attempt + 1}).`);
+        this.schedule(id);
+        this.hooks.notify(p);
+        return;
+      }
       s.status = "failed";
       s.error = result.errorMessage ?? "stage failed";
       this.haltDependents(p);
-      this.hooks.steer(p, s, "failure", failText(s));
+      if (result.isCreditLimit) {
+        p.creditLimit = true;
+        this.hooks.steer(
+          p,
+          s,
+          "failure",
+          `CREDIT LIMIT: ${s.error}. Pipeline stopped; no further stages will spawn. ` +
+            `Cancel it (pipeline_cancel) or, if you've topped up, proceed past it (pipeline_proceed).`,
+        );
+      } else {
+        this.hooks.steer(p, s, "failure", failText(s));
+      }
     } else {
       s.status = "done";
       s.result = result.output ?? "";
@@ -290,6 +325,7 @@ export class PipelineEngine {
       s.status === "done" || s.status === "failed" || s.status === "halted";
     if (!p.stages.every(settled)) return;
     p.status = p.stages.every((s) => s.status === "done") ? "complete" : "failed";
+    p.finishedAt = Date.now();
     this.hooks.steer(p, undefined, "aggregate", aggregateText(p));
   }
 
@@ -324,6 +360,69 @@ export class PipelineEngine {
     this.hooks.notify(p);
   }
 
+  failStage(id: string, stageId: string, reason: string): void {
+    const p = this.get(id);
+    const s = p?.stages.find((x) => x.id === stageId);
+    if (!p || !s) return;
+    if (s.status !== "running" && s.status !== "queued" && s.status !== "waiting-help") return;
+    s.status = "failed";
+    s.error = reason;
+    s.endedAt = Date.now();
+    this.haltDependents(p);
+    this.hooks.steer(p, s, "failure", failText(s));
+    this.settle(p);
+    this.schedule(id);
+    this.hooks.notify(p);
+  }
+
+  proceedStage(id: string, stageId: string): void {
+    const p = this.get(id);
+    const s = p?.stages.find((x) => x.id === stageId);
+    if (!p || !s) return;
+    if (s.status === "waiting-gate") {
+      // Human gives the go-ahead: approve the gate; schedule() records the pass.
+      s.gatePassed = true;
+      s.status = "queued";
+      this.hooks.steer(p, s, "result", `Gate "${s.id}" approved via proceed; pipeline continues.`);
+      this.schedule(id);
+      this.hooks.notify(p);
+      return;
+    }
+    if (s.status === "waiting-help") {
+      // Human skips the stage: mark it done and continue.
+      s.status = "done";
+      s.result = s.result ?? "(proceeded past waiting-help)";
+      s.endedAt = Date.now();
+      this.hooks.steer(p, s, "result", `Stage "${s.id}" proceeded past waiting-help; pipeline continues.`);
+      this.settle(p);
+      this.schedule(id);
+      this.hooks.notify(p);
+      return;
+    }
+    if (s.status !== "failed" && s.status !== "halted") return;
+    const wasFailed = s.status === "failed";
+    s.status = "done";
+    s.result = s.result ?? `(proceeded past ${wasFailed ? "failure" : "halt"})`;
+    s.endedAt = Date.now();
+    // Break-glass: proceeding past a credit-limit failure reopens the gate so
+    // the pipeline can spawn again (e.g. after the human topped up credits).
+    p.creditLimit = false;
+    // Un-halt dependents whose dependencies are now all done, so the pipeline
+    // can continue past a manually-proceeded stage.
+    for (const dep of p.stages) {
+      if (dep.status === "halted" && this.depsDone(p, dep)) dep.status = "queued";
+    }
+    // A proceeded stage may leave queued/running work ahead; reopen the
+    // pipeline so schedule() can drive it (failStage had settled it as failed).
+    if (p.stages.some((x) => x.status === "queued" || x.status === "running")) {
+      p.status = "active";
+    }
+    this.hooks.steer(p, s, "result", `Stage "${s.id}" proceeded past ${wasFailed ? "failure" : "halt"}; pipeline continues.`);
+    this.settle(p);
+    this.schedule(id);
+    this.hooks.notify(p);
+  }
+
   cancel(id: string, reason = "cancelled by supervisor"): void {
     const p = this.get(id);
     if (!p || p.status !== "active") return;
@@ -335,6 +434,7 @@ export class PipelineEngine {
       s.error = s.error ?? reason;
     }
     p.status = "cancelled";
+    p.finishedAt = Date.now();
     this.hooks.steer(p, undefined, "aggregate", aggregateText(p));
     this.hooks.notify(p);
   }

@@ -266,6 +266,136 @@ describe("PipelineEngine", () => {
     expect(() => engine.complete("ghost", "x", done("x"))).not.toThrow();
   });
 
+  test("failStage fails a running stage and halts dependents", () => {
+    const { engine } = makeEngine();
+    engine.create("f1", "demo", [
+      { id: "a", agent: "worker", task: "A" },
+      { id: "b", agent: "worker", task: "B", dependsOn: ["a"] },
+    ]);
+    engine.start("f1");
+    engine.failStage("f1", "a", "timed out");
+    expect(engine.get("f1")!.stages[0]!.status).toBe("failed");
+    expect(engine.get("f1")!.stages[0]!.error).toBe("timed out");
+    expect(engine.get("f1")!.stages[1]!.status).toBe("halted");
+    expect(engine.get("f1")!.status).toBe("failed");
+  });
+
+  test("proceedStage marks a failed stage done and unblocks dependents", () => {
+    const { engine } = makeEngine();
+    engine.create("f2", "demo", [
+      { id: "a", agent: "worker", task: "A" },
+      { id: "b", agent: "worker", task: "B", dependsOn: ["a"] },
+    ]);
+    engine.start("f2");
+    engine.failStage("f2", "a", "timed out");
+    engine.proceedStage("f2", "a");
+    expect(engine.get("f2")!.stages[0]!.status).toBe("done");
+    expect(engine.get("f2")!.stages[0]!.result).toContain("proceeded");
+    expect(engine.get("f2")!.stages[1]!.status).toBe("running");
+  });
+
+  test("credit-limit error sets the gate and halts dependents (no new spawns)", () => {
+    const { engine, log } = makeEngine();
+    engine.create("cl1", "demo", [
+      { id: "a", agent: "worker", task: "A" },
+      { id: "b", agent: "worker", task: "B", dependsOn: ["a"] },
+      { id: "c", agent: "worker", task: "C" },
+    ]);
+    engine.start("cl1");
+    const spawnedBefore = log.spawned.length;
+    engine.complete("cl1", "a", { reason: "error", exitCode: 1, errorMessage: "Insufficient balance", isCreditLimit: true });
+    const p = engine.get("cl1")!;
+    expect(p.creditLimit).toBe(true);
+    expect(p.stages[0]!.status).toBe("failed");
+    expect(p.stages[1]!.status).toBe("halted");
+    // c is independent and already running; no NEW stage spawns after the gate.
+    expect(log.spawned.length).toBe(spawnedBefore);
+  });
+
+  test("proceedStage clears the credit-limit gate (break-glass)", () => {
+    const { engine, log } = makeEngine();
+    engine.create("cl2", "demo", [
+      { id: "a", agent: "worker", task: "A" },
+      { id: "b", agent: "worker", task: "B", dependsOn: ["a"] },
+    ]);
+    engine.start("cl2");
+    engine.complete("cl2", "a", { reason: "error", exitCode: 1, errorMessage: "Insufficient balance", isCreditLimit: true });
+    const p = engine.get("cl2")!;
+    expect(p.creditLimit).toBe(true);
+    expect(p.stages[1]!.status).toBe("halted");
+    engine.proceedStage("cl2", "a");
+    expect(p.creditLimit).toBe(false);
+    expect(p.stages[1]!.status).toBe("running");
+  });
+
+  test("proceedStage approves a waiting-gate stage (go-ahead)", () => {
+    const { engine, log } = makeEngine();
+    engine.create("g1", "demo", [
+      { id: "a", agent: "worker", task: "A" },
+      { id: "confirm", gate: true, task: "confirm", dependsOn: ["a"] },
+      { id: "b", agent: "worker", task: "B", dependsOn: ["confirm"] },
+    ]);
+    engine.start("g1");
+    engine.complete("g1", "a", done("a", "A"));
+    const p = engine.get("g1")!;
+    expect(p.stages[1]!.status).toBe("waiting-gate");
+    engine.proceedStage("g1", "confirm");
+    expect(p.stages[1]!.status).toBe("done");
+    expect(p.stages[1]!.gatePassed).toBe(true);
+    expect(p.stages[2]!.status).toBe("running");
+    expect(log.spawned).toContain("b");
+  });
+
+  test("proceedStage skips a waiting-help stage", () => {
+    const { engine } = makeEngine();
+    engine.create("h1", "demo", [
+      { id: "a", agent: "worker", task: "A" },
+      { id: "b", agent: "worker", task: "B", dependsOn: ["a"] },
+    ]);
+    engine.start("h1");
+    engine.complete("h1", "a", { reason: "ping", exitCode: 0, ping: { name: "a", message: "help" } });
+    const p = engine.get("h1")!;
+    expect(p.stages[0]!.status).toBe("waiting-help");
+    engine.proceedStage("h1", "a");
+    expect(p.stages[0]!.status).toBe("done");
+    expect(p.stages[1]!.status).toBe("running");
+  });
+
+  test("transient error retries the stage up to retries count", () => {
+    const { engine } = makeEngine();
+    engine.create("r1", "demo", [
+      { id: "a", agent: "worker", task: "A", retries: 1 },
+      { id: "b", agent: "worker", task: "B", dependsOn: ["a"] },
+    ]);
+    engine.start("r1");
+    engine.complete("r1", "a", { reason: "error", exitCode: 1, errorMessage: "overloaded, try again" });
+    const p = engine.get("r1")!;
+    expect(p.stages[0]!.status).toBe("running"); // retried, not failed
+    expect(p.stages[0]!.attempt).toBe(2);
+    expect(p.stages[1]!.status).toBe("queued"); // dependents not halted
+    engine.complete("r1", "a", { reason: "error", exitCode: 1, errorMessage: "overloaded, try again" });
+    expect(p.stages[0]!.status).toBe("failed"); // retries exhausted
+    expect(p.stages[1]!.status).toBe("halted");
+  });
+
+  test("non-transient error does not retry", () => {
+    const { engine } = makeEngine();
+    engine.create("r2", "demo", [{ id: "a", agent: "worker", task: "A", retries: 2 }]);
+    engine.start("r2");
+    engine.complete("r2", "a", { reason: "error", exitCode: 1, errorMessage: "syntax error in task" });
+    expect(engine.get("r2")!.stages[0]!.status).toBe("failed");
+  });
+
+  test("credit-limit error is never retried", () => {
+    const { engine } = makeEngine();
+    engine.create("r3", "demo", [{ id: "a", agent: "worker", task: "A", retries: 2 }]);
+    engine.start("r3");
+    engine.complete("r3", "a", { reason: "error", exitCode: 1, errorMessage: "Insufficient balance", isCreditLimit: true });
+    const p = engine.get("r3")!;
+    expect(p.stages[0]!.status).toBe("failed");
+    expect(p.creditLimit).toBe(true);
+  });
+
   test("aggregateText lists all stages", () => {
     const p: PipelineState = {
       id: "px", name: "n", createdAt: 0, status: "failed",
