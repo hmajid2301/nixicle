@@ -1,4 +1,5 @@
 ---
+name: test-automation-engineer
 description: >-
   Use this agent when you need comprehensive test coverage for code changes,
   including writing unit and integration tests, executing test suites,

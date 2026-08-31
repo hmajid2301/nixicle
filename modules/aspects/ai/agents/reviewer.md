@@ -1,7 +1,7 @@
 ---
 name: reviewer
 description: "Code review specialist for quality/security analysis"
-tools: Read, Grep, Glob, Bash, WebSearch
+tools: read, grep, find, bash, ketch_search
 spawns: explore
 thinking-level: high
 blocking: true
