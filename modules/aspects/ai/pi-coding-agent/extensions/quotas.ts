@@ -36,6 +36,7 @@ const ERROR_PERCENT = 90;
 const DEFAULT_ZEN_USAGE_URL = "https://opencode.ai/zen/go/v1/usage";
 
 type QuotaProvider = "openai-codex" | "opencode-go";
+type QuotaStatusUIMode = "regular" | "fullscreen" | undefined;
 
 const PROVIDER_LABELS: Record<QuotaProvider, string> = {
 	"openai-codex": "codex",
@@ -79,6 +80,13 @@ function quotaProviderOf(ctx: ExtensionContext): QuotaProvider | undefined {
 
 function clampPercent(value: number): number {
 	return Math.max(0, Math.min(100, value));
+}
+
+function shouldRenderQuotaStatus(
+	{ uiMode, previousText, nextText }: { uiMode: QuotaStatusUIMode; previousText: string | undefined; nextText: string | undefined },
+): boolean {
+	if (uiMode !== "fullscreen") return false;
+	return previousText !== nextText;
 }
 
 function readStoredAuth(): Record<string, any> {
@@ -309,6 +317,7 @@ async function fetchZenUsage(
 export default function providerQuota(pi: ExtensionAPI) {
 	let currentContext: ExtensionContext | undefined;
 	let refreshTimer: ReturnType<typeof setInterval> | undefined;
+	let lastRenderedStatus: string | undefined;
 	// At most one quota warning per turn: after notifying, stay quiet until the
 	// next user message (turn_start) re-arms it. By then the previous warning
 	// has scrolled out of view, so repeating is useful again.
@@ -333,6 +342,12 @@ export default function providerQuota(pi: ExtensionAPI) {
 		}
 	}
 
+	function getQuotaStatusUIMode(ctx: ExtensionContext | undefined): QuotaStatusUIMode {
+		if (!ctx || ctx.mode !== "tui") return undefined;
+		const ui = ctx.ui as typeof ctx.ui & { mode?: QuotaStatusUIMode };
+		return ui.mode;
+	}
+
 	function startTimer(): void {
 		if (refreshTimer) return;
 		refreshTimer = setInterval(() => {
@@ -352,7 +367,13 @@ export default function providerQuota(pi: ExtensionAPI) {
 		if (!ctx) return;
 		try {
 			if (!ctx.hasUI) return;
+			if (!shouldRenderQuotaStatus({
+				uiMode: getQuotaStatusUIMode(ctx),
+				previousText: lastRenderedStatus,
+				nextText: text,
+			})) return;
 			ctx.ui.setStatus(STATUS_ID, text);
+			lastRenderedStatus = text;
 		} catch {
 			// stale context after session switch/shutdown; ignore
 		}
@@ -500,6 +521,7 @@ export default function providerQuota(pi: ExtensionAPI) {
 			setStatusSafely(ctx, undefined);
 			return;
 		}
+		lastRenderedStatus = "__reset__";
 		startTimer();
 		void refresh(ctx).catch(() => undefined);
 	});
@@ -529,6 +551,7 @@ export default function providerQuota(pi: ExtensionAPI) {
 			setStatusSafely(ctx, undefined);
 			return;
 		}
+		lastRenderedStatus = "__reset__";
 		startTimer();
 		void refresh(ctx, { force: true }).catch(() => undefined);
 	});
@@ -541,5 +564,6 @@ export default function providerQuota(pi: ExtensionAPI) {
 		cache.clear();
 		inFlight.clear();
 		setStatusSafely(ctx, undefined);
+		lastRenderedStatus = undefined;
 	});
 }

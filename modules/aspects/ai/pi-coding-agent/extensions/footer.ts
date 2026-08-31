@@ -61,10 +61,6 @@ export default function statusline(pi: ExtensionAPI) {
 		return theme.fg("dim", `${s}s`);
 	}
 
-	function toolCount(theme: any): string {
-		return theme.fg("dim", `[${pi.getActiveTools().length}t]`);
-	}
-
 	function thinkingBadge(theme: any): string {
 		const level = pi.getThinkingLevel();
 		if (!level || level === "off") return "";
@@ -74,14 +70,25 @@ export default function statusline(pi: ExtensionAPI) {
 		return theme.fg("warning", `${icons[level] || "·"} ${level}`);
 	}
 
-	function planBadge(theme: any): string {
-		if (!pi.getFlag("plan")) return "";
-		return theme.fg("warning", "PLAN");
-	}
-
 	function contextLimit(theme: any, total: number): string {
 		if (!total) return "";
 		return theme.fg("dim", `lim:${fmt(total)}`);
+	}
+
+	function buildRightFooterParts(
+		{
+			modelId,
+			sessionName,
+			thinkingBadge,
+		}: {
+			modelId: string;
+			sessionName?: string;
+			thinkingBadge?: string;
+		},
+	): string[] {
+		return [modelId, sessionName, thinkingBadge].filter(
+			(part): part is string => Boolean(part),
+		);
 	}
 
 	function sep(theme: any): string {
@@ -146,12 +153,12 @@ export default function statusline(pi: ExtensionAPI) {
 					const center = `${stateIcon} ${stateLabel} #${turnCount} ${sessionTime(theme)}`;
 
 					const modelId = ctx.model?.id || "no-model";
-					const rightParts = [
-						theme.fg("accent", modelId),
-						thinkingBadge(theme),
-						toolCount(theme),
-						planBadge(theme),
-					].filter(Boolean);
+					const sessionName = pi.getSessionName();
+					const rightParts = buildRightFooterParts({
+						modelId: theme.fg("accent", modelId),
+						sessionName: sessionName ? theme.fg("muted", sessionName) : undefined,
+						thinkingBadge: thinkingBadge(theme),
+					});
 					const right = rightParts.join(sep(theme).trimEnd() + " ");
 
 					const s = sep(theme);
@@ -165,13 +172,17 @@ export default function statusline(pi: ExtensionAPI) {
 						return [noCenter + " ".repeat(width - visibleWidth(noCenter))];
 					}
 
-					const slimRight = [theme.fg("accent", modelId), contextLimit(theme, total)].filter(Boolean).join(" ");
+					const slimRight = [
+						theme.fg("accent", modelId),
+						contextLimit(theme, total),
+						sessionName ? theme.fg("muted", sessionName) : "",
+					].filter(Boolean).join(" ");
 					const slim = `${left}${s}${slimRight}`;
 					if (visibleWidth(slim) <= width) {
 						return [slim + " ".repeat(width - visibleWidth(slim))];
 					}
 
-					const minimal = `${bar} ${theme.fg("accent", modelId)}`;
+					const minimal = `${bar} ${theme.fg("accent", modelId)}${sessionName ? ` ${theme.fg("muted", sessionName)}` : ""}`;
 					if (visibleWidth(minimal) <= width) {
 						return [minimal + " ".repeat(width - visibleWidth(minimal))];
 					}
