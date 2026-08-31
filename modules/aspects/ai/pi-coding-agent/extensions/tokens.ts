@@ -203,17 +203,29 @@ export default function tokenUsage(pi: ExtensionAPI) {
 	let refreshTimer: ReturnType<typeof setInterval> | undefined;
 	let inFlight = false;
 
+	function statusText(ctx: ExtensionContext, kind: "total" | "unavailable", totalCost?: number): string {
+		if (kind === "unavailable") return "token tracking unavailable";
+		return `${ctx.ui.theme.fg("dim", "spend:")}${ctx.ui.theme.fg("accent", formatCost(totalCost ?? 0))}`;
+	}
+
+	function setStatusSafely(ctx: ExtensionContext | undefined, text: string | undefined): void {
+		if (!ctx) return;
+		try {
+			if (!ctx.hasUI) return;
+			ctx.ui.setStatus(STATUS_ID, text);
+		} catch {
+			// stale context after session switch/shutdown; ignore
+		}
+	}
+
 	async function refresh(ctx: ExtensionContext): Promise<void> {
 		if (inFlight) return;
 		inFlight = true;
 		try {
 			const result = await aggregateAllSessions();
-			ctx.ui.setStatus(
-				STATUS_ID,
-				`${ctx.ui.theme.fg("dim", "spend:")}${ctx.ui.theme.fg("accent", formatCost(result.totals.costTotal))}`,
-			);
+			setStatusSafely(ctx, statusText(ctx, "total", result.totals.costTotal));
 		} catch {
-			ctx.ui.setStatus(STATUS_ID, ctx.ui.theme.fg("warning", "token tracking unavailable"));
+			setStatusSafely(ctx, "token tracking unavailable");
 		} finally {
 			inFlight = false;
 		}
@@ -260,6 +272,6 @@ export default function tokenUsage(pi: ExtensionAPI) {
 			clearInterval(refreshTimer);
 			refreshTimer = undefined;
 		}
-		ctx.ui.setStatus(STATUS_ID, undefined);
+		setStatusSafely(ctx, undefined);
 	});
 }

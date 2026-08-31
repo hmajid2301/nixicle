@@ -496,28 +496,33 @@ function setupPermissionGate(pi: ExtensionAPI, config: SecurityConfig): void {
 
 		// action === "prompt" — interactive confirmation
 		if (config.permissionGate.requireConfirmation && ctx.hasUI) {
-			let result = await ctx.ui.custom<ConfirmResult>(
-				createConfirmComponent(command, description),
-			);
+			pi.events.emit("herdr:blocked", { active: true, label: `Security: ${description}` });
+			try {
+				let result = await ctx.ui.custom<ConfirmResult>(
+					createConfirmComponent(command, description),
+				);
 
-			// Fallback for RPC/headless where custom() returns undefined
-			if (result === undefined) {
-				try {
-					const selection = await ctx.ui.select(
-						`Dangerous command: ${description}`,
-						["Allow once", "Deny"],
-					);
-					result = selection === "Allow once" ? "allow" : "deny";
-				} catch {
-					result = "deny";
+				// Fallback for RPC/headless where custom() returns undefined
+				if (result === undefined) {
+					try {
+						const selection = await ctx.ui.select(
+							`Dangerous command: ${description}`,
+							["Allow once", "Deny"],
+						);
+						result = selection === "Allow once" ? "allow" : "deny";
+					} catch {
+						result = "deny";
+					}
 				}
-			}
 
-			if (result === "deny") {
-				return { block: true, reason: `User denied: ${description}` };
+				if (result === "deny") {
+					return { block: true, reason: `User denied: ${description}` };
+				}
+				// allowed — continue
+				return;
+			} finally {
+				pi.events.emit("herdr:blocked", { active: false });
 			}
-			// allowed — continue
-			return;
 		}
 
 		// No confirmation required or no UI — just warn
