@@ -4,8 +4,6 @@
       provider = "custom";
       url = "https://kagi.com/search?q=";
       target = "_blank";
-      suggestionUrl = "https://kagi.com/autocomplete?type=list&q=";
-      showSearchSuggestions = true;
     };
   }
   {
