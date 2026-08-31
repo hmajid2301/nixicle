@@ -875,7 +875,17 @@ export default function planModeExtension(pi: ExtensionAPI): void {
 
 	pi.registerCommand("plan", {
 		description: "Toggle plan mode (read-only exploration)",
-		handler: async (_args, ctx) => togglePlanMode(ctx),
+		handler: async (args, ctx) => {
+			// Delegate /plan <goal> to the pipelines extension (spawn plan preset).
+			if (typeof args === "string" && args.trim()) {
+				const start = (globalThis as { __pipelinesStartPlan?: (g: { goal: string }) => void }).__pipelinesStartPlan;
+				if (start) {
+					start({ goal: args.trim() });
+					return;
+				}
+			}
+			togglePlanMode(ctx);
+		},
 	});
 
 	pi.registerCommand("todos", {
