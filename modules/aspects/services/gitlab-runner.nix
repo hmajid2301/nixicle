@@ -38,7 +38,7 @@
             requestConcurrency = 2;
             dockerImage = "nixpkgs/nix-flakes:nixos-26.05-${pkgs.stdenv.hostPlatform.system}";
             dockerPullPolicy = "if-not-present";
-            dockerPrivileged = false;
+            dockerPrivileged = true;
             preBuildScript = pkgs.writeScript "setup-container" ''
               mkdir -p -m 0755 /nix/var/log/nix/drvs
               mkdir -p -m 0755 /nix/var/nix/gcroots
