@@ -10,6 +10,7 @@ stages:
   - lint
   - build
   - repair
+  - deploy
 
 .lint_setup:
   stage: lint
@@ -117,10 +118,36 @@ repair:
       when: always
     - when: never
   script:
-    - nix profile install nixpkgs#curl nixpkgs#jq nixpkgs#gnused >/dev/null
+    - nix profile add nixpkgs#curl nixpkgs#jq nixpkgs#gnused >/dev/null
     - bash scripts/ci-repair.sh
   artifacts:
     when: always
     expire_in: 1 week
     paths:
       - repair/
+
+.deploy:
+  extends: .base_setup
+  stage: deploy
+  timeout: 1h
+  interruptible: false
+  resource_group: deploy-${DEPLOY_HOST}
+  rules:
+    - when: manual
+  script:
+    - test -n "$TS_AUTHKEY"
+    - nix profile add nixpkgs#tailscale >/dev/null
+    - tailscaled --state=mem 2>/dev/null &
+    - sleep 2
+    - tailscale up --authkey="$TS_AUTHKEY" --hostname="ci-deploy-${DEPLOY_HOST}" --ssh --timeout=60s
+    - nix develop --command deploy .#${DEPLOY_HOST} --hostname "${DEPLOY_HOST}" --ssh-user nixos --skip-checks
+
+deploy:vps:
+  extends: .deploy
+  variables:
+    DEPLOY_HOST: vps
+
+deploy:nas:
+  extends: .deploy
+  variables:
+    DEPLOY_HOST: nas
