@@ -4,8 +4,8 @@ _: [
     src = extensions/footer.ts;
   }
   {
-    rel = "subagents.ts";
-    src = extensions/subagents.ts;
+    rel = "pipelines";
+    src = extensions/pipelines;
   }
   {
     rel = "plan-mode.ts";
