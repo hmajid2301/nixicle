@@ -9,8 +9,8 @@
 #   HOMEPAGE_VAR_PAPRA_TOKEN
 #   HOMEPAGE_VAR_PAPRA_ORGANIZATION_ID
 #   HOMEPAGE_VAR_KARAKEEP_API_KEY
-#   HOMEPAGE_VAR_GRAFANA_USERNAME
-#   HOMEPAGE_VAR_GRAFANA_PASSWORD
+# HOMEPAGE_VAR_GRAFANA_USERNAME
+# HOMEPAGE_VAR_GRAFANA_PASSWORD
 #   HOMEPAGE_VAR_TAILSCALE_DEVICE_ID
 #   HOMEPAGE_VAR_TAILSCALE_KEY
 #
@@ -18,7 +18,8 @@
 { config, lib, ... }:
 let
   l = import ./_lib.nix { inherit config lib; };
-  serviceIcons = import ./_service-icons.nix { };
+  iconSet = import ./_service-icons.nix { };
+  inherit (iconSet) serviceIcons;
   inherit (l)
     publicUrl
     internalUrl
