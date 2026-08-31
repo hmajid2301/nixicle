@@ -35,16 +35,11 @@ override.tf.json
 # Include tfplan files to ignore the plan output of command: terraform plan -out=tfplan
 # example: *tfplan*
 
-# Ignore CLI configuration files
 .terraformrc
 terraform.rc
-
-# OpenTofu specific
 .tofu
 *.tofu
-
 terraform.tfvars
-# Terraform
 *.tfvars
 *.tfvars.json
 packages/zellij-detach/src/target/
@@ -54,13 +49,10 @@ package-lock.json
 package.json
 .codegraph
 
-# pi / playwright
 .playwright/
 .playwright-cli/
 .playwright-browsers/
 .glciconfig.toml
-
-# local repair scratch
-repair/local-*
-
+.superpowers/
 .planning/
+docs/superpowers/
