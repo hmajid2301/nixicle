@@ -4,6 +4,7 @@
       den.aspects.pi-coding-agent
       den.aspects.skills
       den.aspects.claude-code
+      den.aspects.histerClient
     ];
   };
 }
