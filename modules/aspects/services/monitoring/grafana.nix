@@ -31,7 +31,9 @@ _: {
               };
               auth.oauth_allow_insecure_email_lookup = true;
               auth.disable_login_form = true;
-              "auth.basic".enabled = false;
+              # Homepage widget hits /api/admin/stats, which needs server-admin
+              # basic auth (service accounts can't hold the Grafana Admin role).
+              "auth.basic".enabled = true;
               security.secret_key = "$__file{${config.sops.secrets.grafana_secret_key.path}}";
               database = {
                 host = "/run/postgresql";
