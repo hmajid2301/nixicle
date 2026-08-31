@@ -12,7 +12,7 @@ import {
 import { Type, type Static } from "typebox";
 
 const QuestionOptionSchema = Type.Object({
-	value: Type.String({ description: "Stable value returned to the agent" }),
+	value: Type.Optional(Type.String({ description: "Stable value returned to the agent. Defaults to label if omitted." })),
 	label: Type.String({ description: "Short label shown to the user" }),
 	description: Type.Optional(Type.String({ description: "Optional explanation or trade-off" })),
 	preview: Type.Optional(
@@ -48,7 +48,7 @@ type AskUserQuestionInput = Static<typeof AskUserQuestionParams>;
 type QuestionKind = "single" | "multi" | "free_text";
 
 interface QuestionOption {
-	value: string;
+	value?: string;
 	label: string;
 	description?: string;
 	preview?: string;
@@ -111,7 +111,10 @@ function normalizeQuestions(params: AskUserQuestionInput): Question[] {
 			header: q.header?.trim() || `Q${index + 1}`,
 			prompt: q.prompt,
 			kind,
-			options: q.options ?? [],
+			options: (q.options ?? []).map((opt) => ({
+				...opt,
+				value: opt.value ?? opt.label,
+			})),
 			allowOther: q.allowOther !== false,
 			placeholder: q.placeholder,
 		};
@@ -201,7 +204,18 @@ Guidelines:
 			const validationError = validateQuestions(questions);
 			if (validationError) return makeErrorResult(validationError, questions);
 
-			const result = (await ctx.ui.custom((tui, theme, _kb, done) => {
+			const emitBlocked = (active: boolean) => {
+				try {
+					pi.events.emit("herdr:blocked", active ? { active: true, label: "Waiting for user input" } : { active: false });
+				} catch {
+					/* events emitter not available */
+				}
+			};
+
+			emitBlocked(true);
+			let result: AskUserQuestionResult;
+			try {
+				result = (await ctx.ui.custom((tui, theme, _kb, done) => {
 				const answers = new Map<string, Answer>();
 				const selectedByQuestion = new Map<string, Set<number>>();
 				let currentTab = 0;
@@ -437,7 +451,7 @@ Guidelines:
 										.map((idx) => {
 											const picked = options[idx]!;
 											return {
-												value: picked.value,
+												value: picked.value ?? picked.label,
 												label: picked.label,
 												description: picked.description,
 											};
@@ -468,7 +482,7 @@ Guidelines:
 
 					saveAnswer(question, [
 						{
-							value: option.value,
+							value: option.value ?? option.label,
 							label: option.label,
 							description: option.description,
 						},
@@ -619,6 +633,9 @@ Guidelines:
 					handleInput,
 				};
 			})) as AskUserQuestionResult;
+			} finally {
+				emitBlocked(false);
+			}
 
 			if (result.cancelled) {
 				return {
