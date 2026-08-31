@@ -27,6 +27,10 @@
       url = "github:nix-community/disko";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    fenix = {
+      url = "github:nix-community/fenix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     flake-file.url = "github:vic/flake-file";
     flake-parts = {
       url = "github:hercules-ci/flake-parts";
@@ -55,6 +59,10 @@
     gsesh = {
       url = "gitlab:hmajid2301/gsesh";
       inputs.nixpkgs.follows = "nixpkgs";
+    };
+    herdr-skills = {
+      url = "github:herdrdev/herdr/v0.8.2";
+      flake = false;
     };
     home-manager = {
       url = "github:nix-community/home-manager";
@@ -139,6 +147,14 @@
       url = "github:chrishrb/gx.nvim";
       flake = false;
     };
+    plugins-herdr-float = {
+      url = "github:meerzulee/herdr-float";
+      flake = false;
+    };
+    plugins-herdr-splits = {
+      url = "github:lmilojevicc/herdr-splits.nvim";
+      flake = false;
+    };
     plugins-inline-edit = {
       url = "github:AndrewRadev/inline_edit.vim";
       flake = false;
@@ -194,7 +210,10 @@
     };
     tangled = {
       url = "git+https://tangled.sh/@tangled.sh/core";
-      inputs.nixpkgs.follows = "nixpkgs";
+      inputs = {
+        fenix.follows = "fenix";
+        nixpkgs.follows = "nixpkgs";
+      };
     };
     treefmt-nix = {
       url = "github:numtide/treefmt-nix";
