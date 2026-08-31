@@ -82,7 +82,10 @@
             shell = pkgs.fish;
           };
 
-          crowdsec.allowlist = [ "82.165.193.60" ];
+          crowdsec.allowlist = [
+            "82.165.193.60"
+            "146.70.189.96"
+          ];
           serverConsole.enable = true;
         };
 
