@@ -2,7 +2,7 @@
 # This file contains the settings and layout configuration for the homepage dashboard
 {
   title = "Homelab Dashboard";
-  favicon = "https://haseebmajid.dev/favicon.ico";
+  favicon = "https://homepage.haseebmajid.dev/icons/favicon.svg";
   headerStyle = "clean";
   theme = "dark";
   color = "slate";
