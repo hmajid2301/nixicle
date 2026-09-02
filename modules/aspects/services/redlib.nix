@@ -1,21 +1,25 @@
-_:
-let
-  port = 8929;
-in
-{
+_: {
   den.aspects.redlib = {
     includes = [ ];
 
-    nixos = _: {
-      services.redlib = {
-        enable = true;
-        address = "127.0.0.1";
-        inherit port;
-        settings = {
-          REDLIB_DEFAULT_HIDE_NSFW = "on";
-          REDLIB_ROBOTS_DISABLE_INDEXING = "on";
+    nixos =
+      { lib, ... }:
+      {
+        services.redlib = {
+          enable = true;
+          address = "127.0.0.1";
+          port = 8929;
+          settings = {
+            REDLIB_DEFAULT_HIDE_NSFW = "on";
+            REDLIB_ROBOTS_DISABLE_INDEXING = "on";
+          };
+        };
+
+        services.traefik.dynamicConfigOptions.http = lib.nixicle.mkAuthenticatedTraefikService {
+          name = "redlib";
+          port = 8929;
+          domain = "haseebmajid.dev";
         };
       };
-    };
   };
 }
