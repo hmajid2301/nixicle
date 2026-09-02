@@ -70,6 +70,7 @@
         sops.defaultSopsFile = ./secrets.yaml;
         sops.secrets = {
           gitlab_runner_env = { };
+          gitlab_runner_docker_env = { };
           nixos_hashed_password.neededForUsers = true;
         };
 
