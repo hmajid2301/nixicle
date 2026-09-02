@@ -22,6 +22,51 @@ const EXT_DIR = dirname(fileURLToPath(import.meta.url));
 const CHILD_EXT = join(EXT_DIR, "child.ts");
 const THINKING_LEVELS = ["off", "minimal", "low", "medium", "high", "xhigh", "max"] as const;
 
+function hasAgent(availableAgents: string[], name: string): boolean {
+  return availableAgents.includes(name);
+}
+
+export function buildPlanPresetStages(goal: string, availableAgents: string[]): StageSpec[] {
+  const scout = hasAgent(availableAgents, "scout") ? "scout" : hasAgent(availableAgents, "planner") ? "planner" : "worker";
+  const planner = hasAgent(availableAgents, "planner") ? "planner" : "scout";
+  const worker = hasAgent(availableAgents, "worker") ? "worker" : "coder";
+  const reviewer = hasAgent(availableAgents, "adversarial-qa") ? "adversarial-qa" : hasAgent(availableAgents, "reviewer") ? "reviewer" : "scout";
+  const tester = hasAgent(availableAgents, "test-automation-engineer") ? "test-automation-engineer" : hasAgent(availableAgents, "visual-tester") ? "visual-tester" : "scout";
+
+  return [
+    {
+      id: "scout",
+      agent: scout,
+      task: `Survey repository context for this goal: ${goal}\n\nOutput: 1) key findings first, 2) relevant file paths and symbols, 3) constraints or existing patterns to preserve, 4) recommended next step for planning. Max ~300 words.`,
+    },
+    {
+      id: "plan",
+      agent: planner,
+      task: `Produce an implementation plan for: ${goal}\n\nScout context:\n{stage:scout}\n\nOutput: 1) one-paragraph approach, 2) numbered todos (max 15, each concrete and verifiable), 3) top-3 risks.`,
+      dependsOn: ["scout"],
+    },
+    { id: "confirm", gate: true, task: "Review the plan with the user before implementation.", dependsOn: ["plan"] },
+    {
+      id: "implement",
+      agent: worker,
+      task: `Implement the approved plan for: ${goal}\n\nPlan/context:\n{stage:plan}`,
+      dependsOn: ["confirm"],
+    },
+    {
+      id: "review",
+      agent: reviewer,
+      task: `Review the implementation for: ${goal}\n\nImplementation summary:\n{stage:implement}`,
+      dependsOn: ["implement"],
+    },
+    {
+      id: "test",
+      agent: tester,
+      task: `Verify/test the implementation for: ${goal}\n\nReview notes:\n{stage:review}`,
+      dependsOn: ["review"],
+    },
+  ];
+}
+
 function clip(text: string, n = 8000): string {
   return text.length > n ? `${text.slice(0, n)}\n…(truncated ${text.length - n} chars)` : text;
 }
@@ -707,36 +752,7 @@ export default function pipelinesExtension(pi: ExtensionAPI): void {
 
   function startPlanPreset(goal: string): string {
     const id = newId("pl");
-    const planner = byName.has("planner") ? "planner" : "scout";
-    const worker = byName.has("worker") ? "worker" : "coder";
-    const reviewer = byName.has("adversarial-qa") ? "adversarial-qa" : byName.has("reviewer") ? "reviewer" : "scout";
-    const tester = byName.has("test-automation-engineer") ? "test-automation-engineer" : byName.has("visual-tester") ? "visual-tester" : "scout";
-    engine.create(id, goal.slice(0, 24) || "plan", [
-      {
-        id: "plan",
-        agent: planner,
-        task: `Produce an implementation plan for: ${goal}\n\nOutput: 1) one-paragraph approach, 2) numbered todos (max 15, each concrete and verifiable), 3) top-3 risks.`,
-      },
-      { id: "confirm", gate: true, task: "Review the plan with the user before implementation.", dependsOn: ["plan"] },
-      {
-        id: "implement",
-        agent: worker,
-        task: `Implement the approved plan for: ${goal}\n\nPlan/context:\n{stage:plan}`,
-        dependsOn: ["confirm"],
-      },
-      {
-        id: "review",
-        agent: reviewer,
-        task: `Review the implementation for: ${goal}\n\nImplementation summary:\n{stage:implement}`,
-        dependsOn: ["implement"],
-      },
-      {
-        id: "test",
-        agent: tester,
-        task: `Verify/test the implementation for: ${goal}\n\nReview notes:\n{stage:review}`,
-        dependsOn: ["review"],
-      },
-    ]);
+    engine.create(id, goal.slice(0, 24) || "plan", buildPlanPresetStages(goal, agents.map((agent) => agent.name)));
     engine.start(id);
     return id;
   }

@@ -65,9 +65,19 @@ describe("parseAgentFile", () => {
     expect(agent?.extensions).toEqual(["ketch.ts"]);
     expect(agent?.thinking).toBe("high");
   });
-  test("returns null without frontmatter or name", () => {
+  test("returns null without frontmatter", () => {
     expect(parseAgentFile("no frontmatter", "user", "/x/a.md")).toBeNull();
-    expect(parseAgentFile("---\ndescription: no name\n---\nbody", "user", "/x/a.md")).toBeNull();
+  });
+
+  test("falls back to filename stem when name is missing", () => {
+    const agent = parseAgentFile("---\ndescription: no explicit name\n---\nbody", "user", "/x/fallback-agent.md");
+    expect(agent?.name).toBe("fallback-agent");
+    expect(agent?.description).toBe("no explicit name");
+  });
+
+  test("keeps explicit frontmatter name over filename stem", () => {
+    const agent = parseAgentFile("---\nname: explicit-name\n---\nbody", "user", "/x/fallback-agent.md");
+    expect(agent?.name).toBe("explicit-name");
   });
 });
 

@@ -2,7 +2,7 @@
 // Agent discovery: project > user > bundled (first wins).
 import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
 import { homedir } from "node:os";
-import { dirname, join } from "node:path";
+import { basename, dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import type { AgentConfig, HarnessCli } from "./types.ts";
 
@@ -73,10 +73,11 @@ export function parseAgentFile(
   const match = content.match(/^---\n([\s\S]*?)\n---\n?([\s\S]*)$/);
   if (!match) return null;
   const fm = parseFrontmatterBlock(match[1]);
-  if (!fm.name) return null;
+  const name = fm.name || basename(filePath, ".md");
+  if (!name) return null;
   const bool = (v?: string) => (v === undefined ? undefined : v.toLowerCase() === "true");
   return {
-    name: fm.name,
+    name,
     description: fm.description ?? "",
     systemPrompt: match[2].trim(),
     tools: fm.tools ? parseList(fm.tools) : undefined,
