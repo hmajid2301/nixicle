@@ -106,35 +106,43 @@ collect_diff_context() {
 render_prompt() {
   {
     cat "$prompt_template"
-    cat <<EOF
+    cat <<'EOF'
 
 ## Repository
 
-- Project: $CI_PROJECT_PATH
-- MR IID: ${CI_MERGE_REQUEST_IID:-}
-- MR Title: ${CI_MERGE_REQUEST_TITLE:-}
+EOF
+    printf -- '- Project: %s\n' "$CI_PROJECT_PATH"
+    printf -- '- MR IID: %s\n' "${CI_MERGE_REQUEST_IID:-}"
+    printf -- '- MR Title: %s\n' "${CI_MERGE_REQUEST_TITLE:-}"
+    cat <<'EOF'
 
 ## Failed jobs JSON
 
 ```json
-$failed_jobs_json
+EOF
+    printf '%s\n' "$failed_jobs_json"
+    cat <<'EOF'
 ```
 
 ## Changed files
 
 ```text
-$files
+EOF
+    printf '%s\n' "$files"
+    cat <<'EOF'
 ```
 
 ## Diff context
 
 ```diff
-$diff
+EOF
+    printf '%s\n' "$diff"
+    cat <<'EOF'
 ```
 
 ## Job traces
-$traces
 EOF
+    printf '%s\n' "$traces"
   } > "$repair_dir/prompt.md"
 }
 
@@ -193,7 +201,7 @@ write_summary() {
         "- none"
       else
         .[]
-        | "- `\(.file // \"unknown\")` (\(.lines // \"unknown\"))\n  - problem: \(.problem // \"\")\n  - change: \(.change // \"\")\n  - replacement:\n\n```\n\(.replacement // \"\")\n```"
+        | "- `\(.file // "unknown")` (\(.lines // "unknown"), \(.location // "unknown"))\n  - problem: \(.problem // "")\n  - change: \(.change // "")\n  - replacement:\n\n```\n\(.replacement // "")\n```"
       end
     '
   } > "$repair_dir/summary.md"
