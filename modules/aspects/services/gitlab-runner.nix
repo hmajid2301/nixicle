@@ -97,6 +97,8 @@
               USER = "root";
             };
           };
+        }
+        // lib.optionalAttrs (config.sops.secrets ? gitlab_runner_docker_env) {
           # Tagged "docker" runner for jobs on prebuilt nix images such as
           # lettucego ci:vX: plain executor keeps each image's own /nix/store
           # intact, privileged allows docker:dind services. Tags live on the
