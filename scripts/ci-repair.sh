@@ -34,11 +34,33 @@ post_mr_note() {
 
 render_suggested_fixes_markdown() {
   printf '%s' "$suggested_fixes_json" | jq -r '
+    def fence_lang($file):
+      if ($file | endswith(".nix")) then "nix"
+      elif ($file | endswith(".sh")) then "bash"
+      elif ($file | endswith(".bash")) then "bash"
+      elif ($file | endswith(".zsh")) then "zsh"
+      elif ($file | endswith(".fish")) then "fish"
+      elif ($file | endswith(".json")) then "json"
+      elif ($file | endswith(".jsonc")) then "json"
+      elif ($file | endswith(".yaml")) or ($file | endswith(".yml")) then "yaml"
+      elif ($file | endswith(".toml")) then "toml"
+      elif ($file | endswith(".md")) then "md"
+      elif ($file | endswith(".ts")) then "ts"
+      elif ($file | endswith(".tsx")) then "tsx"
+      elif ($file | endswith(".js")) then "js"
+      elif ($file | endswith(".jsx")) then "jsx"
+      elif ($file | endswith(".py")) then "python"
+      elif ($file | endswith(".go")) then "go"
+      elif ($file | endswith(".rs")) then "rust"
+      elif ($file | endswith(".lua")) then "lua"
+      else ""
+      end;
     if length == 0 then
       ""
     else
       .[]
-      | "#### `\(.file // "unknown")`\n\n- lines: \(.lines // "unknown")\n- location: \(.location // "unknown")\n- problem: \(.problem // "")\n- change: \(.change // "")\n\n```\n\(.replacement // "")\n```\n"
+      | (.file // "unknown") as $file
+      | "#### `\($file)`\n\n- lines: \(.lines // "unknown")\n- location: \(.location // "unknown")\n- problem: \(.problem // "")\n- change: \(.change // "")\n\n```\(fence_lang($file))\n\(.replacement // "")\n```\n"
     end
   '
 }
