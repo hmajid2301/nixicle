@@ -115,8 +115,6 @@
           "x-systemd.idle-timeout=60"
           "x-systemd.device-timeout=5s"
           "x-systemd.mount-timeout=5s"
-          "x-systemd.requires=tailscaled.service"
-          "x-systemd.after=tailscaled.service"
         ];
 
         fileSystems."/mnt/homelab/homelab".options = lib.mkForce [
@@ -129,8 +127,6 @@
           "x-systemd.mount-timeout=5s"
           "x-systemd.requires=mnt-homelab.mount"
           "x-systemd.after=mnt-homelab.mount"
-          "x-systemd.requires=tailscaled.service"
-          "x-systemd.after=tailscaled.service"
         ];
 
         system.stateVersion = "24.05";
