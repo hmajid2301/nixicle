@@ -53,7 +53,6 @@
               "browser.urlbar.suggest.addons" = false;
               "browser.urlbar.suggest.pocket" = false;
               "browser.urlbar.suggest.topsites" = false;
-              "widget.content.gtk-theme-override" = "adw-gtk3";
             };
             search = {
               force = true;
