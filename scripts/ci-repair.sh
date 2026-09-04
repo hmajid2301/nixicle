@@ -32,9 +32,23 @@ post_mr_note() {
     "$CI_API_V4_URL/projects/$CI_PROJECT_ID/merge_requests/$CI_MERGE_REQUEST_IID/notes" >/dev/null
 }
 
+render_suggested_fixes_markdown() {
+  printf '%s' "$suggested_fixes_json" | jq -r '
+    if length == 0 then
+      ""
+    else
+      .[]
+      | "#### `\(.file // "unknown")`\n\n- lines: \(.lines // "unknown")\n- location: \(.location // "unknown")\n- problem: \(.problem // "")\n- change: \(.change // "")\n\n```\n\(.replacement // "")\n```\n"
+    end
+  '
+}
+
 build_note() {
   local title="$1"
   local extra_artifacts="$2"
+  local suggested_fixes_markdown
+
+  suggested_fixes_markdown="$(render_suggested_fixes_markdown)"
 
   note="$({
     printf '## 🤖 Repair attempt\n\n'
@@ -42,6 +56,9 @@ build_note() {
     printf '### Summary\n\n%s\n\n' "${summary:-n/a}"
     printf '### Diagnosis\n\n%s\n\n' "${diagnosis:-n/a}"
     printf '### Confidence\n\n- `%s`\n\n' "$confidence"
+    if [ -n "$suggested_fixes_markdown" ]; then
+      printf '### Suggested fixes\n\n%s\n' "$suggested_fixes_markdown"
+    fi
     printf '### Artifacts\n\n'
     printf -- '- `repair/repair.patch`\n'
     [ -n "$extra_artifacts" ] && printf '%s\n' "$extra_artifacts"
