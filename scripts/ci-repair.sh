@@ -32,6 +32,25 @@ post_mr_note() {
     "$CI_API_V4_URL/projects/$CI_PROJECT_ID/merge_requests/$CI_MERGE_REQUEST_IID/notes" >/dev/null
 }
 
+build_note() {
+  local title="$1"
+  local extra_artifacts="$2"
+
+  note="$({
+    printf '## 🤖 Repair attempt\n\n'
+    printf '**Status:** %s\n\n' "$title"
+    printf '### Summary\n\n%s\n\n' "${summary:-n/a}"
+    printf '### Diagnosis\n\n%s\n\n' "${diagnosis:-n/a}"
+    printf '### Confidence\n\n- `%s`\n\n' "$confidence"
+    printf '### Artifacts\n\n'
+    printf -- '- `repair/repair.patch`\n'
+    [ -n "$extra_artifacts" ] && printf '%s\n' "$extra_artifacts"
+    if [ -n "$comment" ]; then
+      printf '\n### Note\n\n%s\n' "$comment"
+    fi
+  } )"
+}
+
 fetch_failed_jobs_json() {
   curl -fsS \
     --header "PRIVATE-TOKEN: $REPAIR_GITLAB_TOKEN" \
@@ -212,32 +231,27 @@ write_summary() {
 
 apply_patch_and_retest() {
   if [ -z "$patch" ]; then
-    note="🤖 Repair attempt produced no patch.\n\nSummary: ${summary:-n/a}\nDiagnosis: ${diagnosis:-n/a}\nConfidence: ${confidence}\n\nPatch artifact: \`repair/repair.patch\`"
-    [ -n "$comment" ] && note+="\n\n${comment}"
+    build_note "no patch produced" ""
     return
   fi
 
   if ! grep -q '^diff --git ' "$repair_dir/repair.patch"; then
-    note="🤖 Repair attempt produced an invalid patch.\n\nSummary: ${summary:-n/a}\nDiagnosis: ${diagnosis:-n/a}\nConfidence: ${confidence}\n\nPatch artifact: \`repair/repair.patch\`"
-    [ -n "$comment" ] && note+="\n\n${comment}"
+    build_note "invalid patch produced" "- `repair/git-apply-check.log`"
     return
   fi
 
   if ! git apply --check --whitespace=nowarn "$repair_dir/repair.patch" >/dev/null 2>"$repair_dir/git-apply-check.log"; then
-    note="🤖 Repair attempt produced an invalid patch.\n\nSummary: ${summary:-n/a}\nDiagnosis: ${diagnosis:-n/a}\nConfidence: ${confidence}\n\nPatch artifact: \`repair/repair.patch\`"
-    [ -n "$comment" ] && note+="\n\n${comment}"
+    build_note "invalid patch produced" "- `repair/git-apply-check.log`"
     return
   fi
 
   git apply --whitespace=nowarn "$repair_dir/repair.patch"
 
   if nix flake check --print-build-logs 2>&1 | tee "$repair_dir/retest.log"; then
-    note="🤖 Repair attempt: ${summary:-applied a patch and re-tested successfully.}\n\nDiagnosis: ${diagnosis:-n/a}\nConfidence: ${confidence}\n\nPatch stored in job artifacts: \`repair/repair.patch\`"
+    build_note "patch applied and retest passed" ""
   else
-    note="🤖 Repair attempt produced a patch but the retest still failed.\n\nSummary: ${summary:-n/a}\nDiagnosis: ${diagnosis:-n/a}\nConfidence: ${confidence}\n\nPatch artifact: \`repair/repair.patch\`\nRetest log: \`repair/retest.log\`"
+    build_note "patch applied but retest failed" "- `repair/retest.log`"
   fi
-
-  [ -n "$comment" ] && note+="\n\n${comment}"
 }
 
 failed_jobs_json="$(fetch_failed_jobs_json)"
