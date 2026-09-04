@@ -73,7 +73,6 @@
           user_password.neededForUsers = true;
           searx_secret_key = { };
           gitlab_runner_env = { };
-          gitlab_runner_docker_env = { };
         };
 
         users = {
