@@ -134,6 +134,7 @@
 
             sops.secrets = {
               gitlab_runner_env = { };
+              gitlab_runner_docker_env = { };
               user_password = {
                 neededForUsers = true;
               };
