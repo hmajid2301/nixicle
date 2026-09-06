@@ -14,6 +14,9 @@ ollama_url="${OLLAMA_BASE_URL:-https://ollama.com/api/chat}"
 model="${OLLAMA_MODEL:-deepseek-v4-pro}"
 max_trace_chars="${REPAIR_MAX_TRACE_CHARS:-40000}"
 ollama_auth_header=( -H "Authorization: Bearer $OLLAMA_API_KEY" )
+repair_note_id=""
+repair_note_body=""
+fixed_commit_sha=""
 traces=""
 summary=""
 diagnosis=""
@@ -21,15 +24,53 @@ suggested_fixes_json='[]'
 patch=""
 comment=""
 confidence="unknown"
+note=""
 
-post_mr_note() {
+# The repair bot keeps a single note per MR, identified by its heading.
+repair_note_marker='## 🤖 Repair attempt'
+
+find_repair_note() {
+  local page=1
+  local notes_json
+  local matched
+
+  while :; do
+    notes_json="$(curl -fsS \
+      --header "PRIVATE-TOKEN: $REPAIR_GITLAB_TOKEN" \
+      "$CI_API_V4_URL/projects/$CI_PROJECT_ID/merge_requests/$CI_MERGE_REQUEST_IID/notes?per_page=100&page=$page" \
+      || printf '[]')"
+    if [ "$(printf '%s' "$notes_json" | jq 'length')" -eq 0 ]; then
+      return
+    fi
+
+    matched="$(printf '%s' "$notes_json" \
+      | jq -c --arg marker "$repair_note_marker" '[.[] | select(.system != true and (.body | contains($marker)))] | .[0] // empty')"
+    if [ -n "$matched" ] && [ "$matched" != "null" ]; then
+      repair_note_id="$(printf '%s' "$matched" | jq -r '.id')"
+      repair_note_body="$(printf '%s' "$matched" | jq -r '.body')"
+      return
+    fi
+
+    page=$((page + 1))
+  done
+}
+
+upsert_mr_note() {
   local body="$1"
 
-  curl -fsS --request POST \
-    --header "PRIVATE-TOKEN: $REPAIR_GITLAB_TOKEN" \
-    --header 'Content-Type: application/json' \
-    --data "$(jq -nc --arg body "$body" '{body:$body}')" \
-    "$CI_API_V4_URL/projects/$CI_PROJECT_ID/merge_requests/$CI_MERGE_REQUEST_IID/notes" >/dev/null
+  if [ -n "$repair_note_id" ]; then
+    curl -fsS --request PUT \
+      --header "PRIVATE-TOKEN: $REPAIR_GITLAB_TOKEN" \
+      --header 'Content-Type: application/json' \
+      --data "$(jq -nc --arg body "$body" '{body:$body}')" \
+      "$CI_API_V4_URL/projects/$CI_PROJECT_ID/merge_requests/$CI_MERGE_REQUEST_IID/notes/$repair_note_id" >/dev/null
+  else
+    curl -fsS --request POST \
+      --header "PRIVATE-TOKEN: $REPAIR_GITLAB_TOKEN" \
+      --header 'Content-Type: application/json' \
+      --data "$(jq -nc --arg body "$body" '{body:$body}')" \
+      "$CI_API_V4_URL/projects/$CI_PROJECT_ID/merge_requests/$CI_MERGE_REQUEST_IID/notes" >/dev/null
+  fi
 }
 
 render_suggested_fixes_markdown() {
@@ -73,8 +114,19 @@ build_note() {
   suggested_fixes_markdown="$(render_suggested_fixes_markdown)"
 
   note="$({
-    printf '## 🤖 Repair attempt\n\n'
+    # Hidden markers: one note per MR, one repair attempt per MR.
+    printf '<!--repair:note--><!--repair:attempted-->'
+    if [ -n "$fixed_commit_sha" ]; then
+      printf '<!--repair:applied-->'
+    fi
+    printf '\n\n'
+    printf '%s\n\n' "$repair_note_marker"
     printf '**Status:** %s\n\n' "$title"
+    if [ -n "$fixed_commit_sha" ]; then
+      printf '### Fix applied\n\n'
+      printf -- '- Commit `%s` pushed to `%s` by the AI repair bot (`%s`)\n\n' \
+        "$fixed_commit_sha" "${CI_MERGE_REQUEST_SOURCE_BRANCH_NAME:-unknown branch}" "$model"
+    fi
     printf '### Summary\n\n%s\n\n' "${summary:-n/a}"
     printf '### Diagnosis\n\n%s\n\n' "${diagnosis:-n/a}"
     printf '### Confidence\n\n- `%s`\n\n' "$confidence"
@@ -83,7 +135,9 @@ build_note() {
     fi
     printf '### Artifacts\n\n'
     printf -- '- `repair/repair.patch`\n'
-    [ -n "$extra_artifacts" ] && printf '%s\n' "$extra_artifacts"
+    if [ -n "$extra_artifacts" ]; then
+      printf '%b\n' "$extra_artifacts"
+    fi
     if [ -n "$comment" ]; then
       printf '\n### Note\n\n%s\n' "$comment"
     fi
@@ -265,39 +319,113 @@ write_summary() {
   } > "$repair_dir/summary.md"
 
   printf '%s\n' "$patch" > "$repair_dir/repair.patch"
-  [ -n "$comment" ] && printf '%s\n' "$comment" > "$repair_dir/comment.md"
+  if [ -n "$comment" ]; then
+    printf '%s\n' "$comment" > "$repair_dir/comment.md"
+  fi
+}
+
+patch_files_from_patch() {
+  printf '%s\n' "$patch" \
+    | grep '^diff --git ' \
+    | sed -E 's|^diff --git a/\S+ b/||' \
+    || true
+}
+
+commit_and_push_fix() {
+  git config user.name "ci-repair bot"
+  git config user.email "ci-repair@noreply.gitlab.com"
+
+  if ! git commit \
+    -m 'fix(ci-repair): apply AI repair patch' \
+    -m "AI repair bot (${model}) generated this fix for the failed jobs on MR !${CI_MERGE_REQUEST_IID}.
+
+${summary:-}
+
+Diagnosis: ${diagnosis:-n/a}
+
+Confidence: ${confidence}" \
+    -m 'GitLab-CI-Repair: true' \
+    >"$repair_dir/commit.log" 2>&1; then
+    return 1
+  fi
+
+  fixed_commit_sha="$(git rev-parse --short HEAD)"
+
+  git push \
+    "https://oauth2:${REPAIR_GITLAB_TOKEN}@${CI_SERVER_HOST}/${CI_PROJECT_PATH}.git" \
+    "HEAD:${CI_MERGE_REQUEST_SOURCE_BRANCH_NAME}" \
+    >"$repair_dir/push.log" 2>&1 || return 1
 }
 
 apply_patch_and_retest() {
+  local patch_files=()
+
   if [ -z "$patch" ]; then
     build_note "no patch produced" ""
     return
   fi
 
   if ! grep -q '^diff --git ' "$repair_dir/repair.patch"; then
-    build_note "invalid patch produced" "- `repair/git-apply-check.log`"
+    build_note "invalid patch produced" "- \`repair/git-apply-check.log\`"
     return
   fi
 
   if ! git apply --check --whitespace=nowarn "$repair_dir/repair.patch" >/dev/null 2>"$repair_dir/git-apply-check.log"; then
-    build_note "invalid patch produced" "- `repair/git-apply-check.log`"
+    build_note "invalid patch produced" "- \`repair/git-apply-check.log\`"
     return
   fi
 
-  git apply --whitespace=nowarn "$repair_dir/repair.patch"
+  mapfile -t patch_files < <(patch_files_from_patch)
+  if [ "${#patch_files[@]}" -eq 0 ]; then
+    build_note "invalid patch produced" "- \`repair/git-apply-check.log\`"
+    return
+  fi
+
+  if ! git apply --index --whitespace=nowarn "$repair_dir/repair.patch"; then
+    build_note "patch could not be applied" "- \`repair/git-apply-check.log\`"
+    return
+  fi
+
+  if ! nix fmt -- "${patch_files[@]}" >"$repair_dir/fmt.log" 2>&1; then
+    build_note "patch applied but formatting failed" "- \`repair/fmt.log\`"
+    return
+  fi
+  git add -- "${patch_files[@]}"
 
   if nix flake check --print-build-logs 2>&1 | tee "$repair_dir/retest.log"; then
-    build_note "patch applied and retest passed" ""
+    if commit_and_push_fix; then
+      build_note "fix applied and pushed to the MR branch" ""
+    else
+      build_note "patch applied but commit or push failed" "- \`repair/commit.log\`\n- \`repair/push.log\`"
+    fi
   else
-    build_note "patch applied but retest failed" "- `repair/retest.log`"
+    build_note "patch applied but retest failed" "- \`repair/retest.log\`"
   fi
 }
+
+find_repair_note
 
 failed_jobs_json="$(fetch_failed_jobs_json)"
 printf '%s\n' "$failed_jobs_json" > "$repair_dir/failed-jobs.json"
 
 if [ "$(printf '%s' "$failed_jobs_json" | jq 'length')" -eq 0 ]; then
-  post_mr_note "🤖 Repair attempt skipped: no failed non-repair jobs found in the current pipeline."
+  # Green pipeline: nothing to report; never touch the existing repair note.
+  exit 0
+fi
+
+# One repair attempt per MR: once a note carries the attempted marker, only
+# update that note for later failures; never attempt another automatic fix.
+if [ -n "$repair_note_id" ] && printf '%s' "$repair_note_body" | grep -q '<!--repair:attempted-->'; then
+  if ! printf '%s' "$repair_note_body" | grep -q 'repair already attempted'; then
+    upsert_mr_note "$(
+      {
+        printf '%s\n\n' "$repair_note_marker"
+        printf '**Status:** repair already attempted on this MR — skipping automatic fix for this later pipeline failure.\n\n'
+        printf '%s\n' '---'
+        printf '\n%s\n' "$repair_note_body"
+      }
+    )"
+  fi
   exit 0
 fi
 
@@ -308,4 +436,4 @@ request_model
 parse_model_response
 write_summary
 apply_patch_and_retest
-post_mr_note "$note"
+upsert_mr_note "$note"
