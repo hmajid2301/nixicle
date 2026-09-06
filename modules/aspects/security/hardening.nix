@@ -54,13 +54,13 @@ _: {
             MaxStartups = "10:30:60";
             UseDns = false;
           };
-          journald.extraConfig = ''
-            SystemMaxUse=1G
-            RuntimeMaxUse=256M
-            MaxRetentionSec=14day
-            Compress=yes
-            Storage=persistent
-          '';
+          journald.settings.Journal = {
+            SystemMaxUse = "1G";
+            RuntimeMaxUse = "256M";
+            MaxRetentionSec = "14day";
+            Compress = "yes";
+            Storage = "persistent";
+          };
         };
 
         boot.kernel.sysctl = {
