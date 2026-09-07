@@ -20,6 +20,23 @@ _: {
         cfg = config.nixicle.crowdsec;
         yaml = pkgs.formats.yaml { };
 
+        allowlistYaml = yaml.generate "nixicle-allowlist.yaml" {
+          name = "nixicle/allowlist";
+          description = "Whitelist own host and private ranges";
+          whitelist = {
+            reason = "trusted self and private traffic";
+            ip = lib.filter (e: !lib.hasInfix "/" e) cfg.allowlist;
+            cidr = [
+              "127.0.0.0/8"
+              "10.0.0.0/8"
+              "172.16.0.0/12"
+              "192.168.0.0/16"
+              "100.64.0.0/10"
+            ]
+            ++ (lib.filter (e: lib.hasInfix "/" e) cfg.allowlist);
+          };
+        };
+
         tunedHttpProbing = yaml.generate "http-probing.yaml" {
           type = "leaky";
           name = "crowdsecurity/http-probing";
@@ -89,49 +106,35 @@ _: {
           # content edits swap the symlink instead of accumulating stale
           # hash-named files (services.crowdsec.localConfig tmpfiles L+ links
           # never clean old ones, and duplicate parser names crash the engine).
-          environment.etc."crowdsec/parsers/s02-enrich/nixicle-allowlist.yaml".source =
-            yaml.generate "nixicle-allowlist.yaml"
-              {
-                name = "nixicle/allowlist";
-                description = "Whitelist own host and private ranges";
-                whitelist = {
-                  reason = "trusted self and private traffic";
-                  ip = lib.filter (e: !lib.hasInfix "/" e) cfg.allowlist;
-                  cidr = [
-                    "127.0.0.0/8"
-                    "10.0.0.0/8"
-                    "172.16.0.0/12"
-                    "192.168.0.0/16"
-                    "100.64.0.0/10"
-                  ]
-                  ++ (lib.filter (e: lib.hasInfix "/" e) cfg.allowlist);
-                };
-              };
+          environment.etc."crowdsec/parsers/s02-enrich/nixicle-allowlist.yaml".source = allowlistYaml;
           systemd = {
             services = {
-              crowdsec.serviceConfig = {
-                NoNewPrivileges = true;
-                PrivateTmp = true;
-                PrivateDevices = true;
-                ProtectHome = true;
-                ProtectKernelLogs = true;
-                ProtectKernelTunables = true;
-                ProtectControlGroups = true;
-                ProtectKernelModules = true;
-                RestrictSUIDSGID = true;
-                LockPersonality = true;
-                RestrictNamespaces = true;
-                RestrictRealtime = true;
-                SystemCallArchitectures = "native";
-                ExecStartPre = lib.mkAfter [
-                  (pkgs.writeShellScript "crowdsec-tune-scenarios" ''
-                    set -euo pipefail
-                    ${lib.getExe' pkgs.coreutils "install"} -m 600 \
-                      ${tunedHttpProbing} /var/lib/crowdsec/state/hub/scenarios/crowdsecurity/http-probing.yaml
-                    ${lib.getExe' pkgs.coreutils "install"} -m 600 \
-                      ${tunedHttpCrawl} /var/lib/crowdsec/state/hub/scenarios/crowdsecurity/http-crawl-non_statics.yaml
-                  '')
-                ];
+              crowdsec = {
+                restartTriggers = [ allowlistYaml ];
+                serviceConfig = {
+                  NoNewPrivileges = true;
+                  PrivateTmp = true;
+                  PrivateDevices = true;
+                  ProtectHome = true;
+                  ProtectKernelLogs = true;
+                  ProtectKernelTunables = true;
+                  ProtectControlGroups = true;
+                  ProtectKernelModules = true;
+                  RestrictSUIDSGID = true;
+                  LockPersonality = true;
+                  RestrictNamespaces = true;
+                  RestrictRealtime = true;
+                  SystemCallArchitectures = "native";
+                  ExecStartPre = lib.mkAfter [
+                    (pkgs.writeShellScript "crowdsec-tune-scenarios" ''
+                      set -euo pipefail
+                      ${lib.getExe' pkgs.coreutils "install"} -m 600 \
+                        ${tunedHttpProbing} /var/lib/crowdsec/state/hub/scenarios/crowdsecurity/http-probing.yaml
+                      ${lib.getExe' pkgs.coreutils "install"} -m 600 \
+                        ${tunedHttpCrawl} /var/lib/crowdsec/state/hub/scenarios/crowdsecurity/http-crawl-non_statics.yaml
+                    '')
+                  ];
+                };
               };
 
               crowdsec-firewall-bouncer = {
