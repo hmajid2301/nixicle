@@ -56,3 +56,4 @@ package.json
 .superpowers/
 .planning/
 docs/superpowers/
+infra/opentofu/backend.tf

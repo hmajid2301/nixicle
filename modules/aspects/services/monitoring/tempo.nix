@@ -16,6 +16,10 @@ _: {
             grpc_listen_port = 4401;
           };
           memberlist.bind_port = 7947;
+          live_store = {
+            shutdown_marker_dir = "/var/lib/tempo/live-store/shutdown-marker";
+            wal.path = "/var/lib/tempo/live-store/traces";
+          };
           distributor.receivers.otlp.protocols = {
             http.endpoint = "127.0.0.1:4318";
             grpc.endpoint = "127.0.0.1:4317";

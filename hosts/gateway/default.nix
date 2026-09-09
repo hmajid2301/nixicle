@@ -43,7 +43,7 @@
             http = {
               services = {
                 jellyfin.loadBalancer = {
-                  servers = [ { url = "http://framebox:8096"; } ];
+                  servers = [ { url = "http://vps:8096"; } ];
                   passHostHeader = true;
                 };
                 immich.loadBalancer = {

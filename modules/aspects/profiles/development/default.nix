@@ -228,6 +228,7 @@
               unzip
               gnupg
               optinix
+              gcx
               gnumake
               imagemagick
               ffmpegthumbnailer

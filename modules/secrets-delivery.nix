@@ -152,6 +152,20 @@ in
         ])
       ];
 
+      jellyfin-secrets = _: [
+        (pipe.from "secrets" [
+          (pipe.filter (_: false))
+          (pipe.append {
+            "jellyfin/admin_password" = "/run/secrets/jellyfin/admin_password";
+            "jellyfin/api_key" = "/run/secrets/jellyfin/api_key";
+            "jellyfin/client_id" = "/run/secrets/jellyfin/client_id";
+            "jellyfin/client_secret" = "/run/secrets/jellyfin/client_secret";
+          })
+          (pipe.for mergeOne)
+          (pipe.to [ den.aspects.jellyfin ])
+        ])
+      ];
+
       nixflix-secrets = _: [
         (pipe.from "secrets" [
           (pipe.filter (_: false))
@@ -195,6 +209,7 @@ in
       den.policies.homepage-secrets
       den.policies.immich-secrets
       den.policies.nixflix-secrets
+      den.policies.jellyfin-secrets
     ];
   };
 }

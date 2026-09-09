@@ -83,10 +83,13 @@
             shell = pkgs.fish;
           };
 
-          crowdsec.allowlist = [
-            "82.165.193.60"
-            "146.70.189.96"
-          ];
+          crowdsec = {
+            allowlist = [
+              "82.165.193.60"
+              "146.70.189.96"
+            ];
+            allowlistUris = [ "/api/add" ];
+          };
           serverConsole.enable = true;
         };
 
@@ -99,11 +102,22 @@
           firewall.allowedTCPPorts = [ 22 ];
         };
 
-        services.dbus.implementation = "dbus";
-        services.openssh = {
-          enable = true;
-          ports = [ 22 ];
-          settings.PasswordAuthentication = lib.mkForce false;
+        services = {
+          dbus.implementation = "dbus";
+          openssh = {
+            enable = true;
+            ports = [ 22 ];
+            settings.PasswordAuthentication = lib.mkForce false;
+          };
+          traefik.dynamicConfigOptions.http = lib.nixicle.mkTraefikService {
+            name = "jellyfin";
+            port = 8096;
+            subdomain = "jellyfin";
+            domain = "haseebmajid.dev";
+            extraServiceConfig = {
+              loadBalancer.servers = lib.mkForce [ { url = "http://nas:8096"; } ];
+            };
+          };
         };
 
         nix.settings = {

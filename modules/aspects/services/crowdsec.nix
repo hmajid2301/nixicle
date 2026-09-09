@@ -34,6 +34,7 @@ _: {
               "100.64.0.0/10"
             ]
             ++ (lib.filter (e: lib.hasInfix "/" e) cfg.allowlist);
+            target_uri = cfg.allowlistUris;
           };
         };
 
@@ -90,6 +91,17 @@ _: {
             ranges are always whitelisted).
           '';
           example = [ "82.165.193.60" ];
+        };
+
+        options.nixicle.crowdsec.allowlistUris = lib.mkOption {
+          type = lib.types.listOf lib.types.str;
+          default = [ ];
+          description = ''
+            URL paths CrowdSec should never alert on, regardless of source
+            IP. Useful for endpoints that legitimately return 403s to
+            dynamic-IP clients, e.g. attic pushes with stale credentials.
+          '';
+          example = [ "/api/add" ];
         };
 
         config = {

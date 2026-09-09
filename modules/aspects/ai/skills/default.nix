@@ -146,6 +146,16 @@ _: {
                 path = "code-reviewer";
               };
 
+              thermo-nuclear-code-quality-review = {
+                from = "nixicle";
+                path = "thermo-nuclear-code-quality-review";
+              };
+
+              papercuts = {
+                from = "nixicle";
+                path = "papercuts";
+              };
+
               caveman = {
                 from = "caveman";
                 path = "caveman";

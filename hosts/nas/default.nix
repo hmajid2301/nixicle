@@ -27,6 +27,8 @@ in
       den.aspects.attic-cache
       den.aspects.fish
       den.aspects.tailscale
+      den.aspects.jellyfin
+      den.aspects.otel-collector-forwarder
     ];
 
     # NAS service state that must survive the impermanence rollback.
@@ -55,9 +57,10 @@ in
         { config.facter.reportPath = ./facter.json; }
       ];
 
+      sops.defaultSopsFile = ./secrets.yaml;
+
       nixicle.serverAdmin = {
         enable = true;
-
         # `media` gid 3000 matches the recovered TrueNAS ownership on
         # /mnt/main/main and the homelab datasets (fleet convention; framebox
         # uses the same gid). Members can read/write shared data.
