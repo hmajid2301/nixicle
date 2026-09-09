@@ -51,6 +51,13 @@
       "sensitive": true,
       "value": "${pocketid_client.immich.client_secret}"
     },
+    "jellyfin_client_id": {
+      "value": "${pocketid_client.jellyfin.id}"
+    },
+    "jellyfin_client_secret": {
+      "sensitive": true,
+      "value": "${pocketid_client.jellyfin.client_secret}"
+    },
     "karakeep_client_id": {
       "value": "${pocketid_client.karakeep.id}"
     },
@@ -174,6 +181,20 @@
         "name": "Immich",
         "pkce_enabled": true
       },
+      "jellyfin": {
+        "allowed_user_groups": [
+          "${data.pocketid_group.family.id}"
+        ],
+        "callback_urls": [
+          "https://jellyfin.haseebmajid.dev/sso/OID/r/pocketid",
+          "https://jellyfin.haseebmajid.dev/sso/OID/redirect/pocketid"
+        ],
+        "client_id": "jellyfin",
+        "is_public": false,
+        "launch_url": "https://jellyfin.haseebmajid.dev",
+        "name": "Jellyfin",
+        "pkce_enabled": true
+      },
       "karakeep": {
         "allowed_user_groups": [
           "${data.pocketid_group.family.id}"
@@ -261,6 +282,10 @@
       "grafana_editors": {
         "friendly_name": "Grafana Editors",
         "name": "Grafana Editors"
+      },
+      "jellyfin_admins": {
+        "friendly_name": "Jellyfin Admins",
+        "name": "jellyfin_admins"
       }
     },
     "pocketid_user": {
@@ -270,7 +295,8 @@
         "first_name": "Haseeb",
         "groups": [
           "${data.pocketid_group.family.id}",
-          "${pocketid_group.grafana_admins.id}"
+          "${pocketid_group.grafana_admins.id}",
+          "${pocketid_group.jellyfin_admins.id}"
         ],
         "is_admin": true,
         "last_name": "Majid",
@@ -310,9 +336,6 @@
     }
   },
   "terraform": {
-    "backend": {
-      "http": {}
-    },
     "required_providers": {
       "pocketid": {
         "source": "trozz/pocketid",

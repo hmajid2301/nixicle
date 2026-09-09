@@ -12,6 +12,7 @@
       den.aspects.gaming
       den.aspects.social
       den.aspects.video
+      den.aspects.helix
     ];
 
     homeManager = _: {

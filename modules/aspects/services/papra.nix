@@ -24,7 +24,7 @@ in
 
         services.papra = {
           enable = true;
-          environmentFile = config.sops.secrets.papra-env.path;
+          environmentFiles = [ config.sops.secrets.papra-env.path ];
           environment = {
             APP_BASE_URL = "https://${domain}";
             NODE_ENV = "production";
