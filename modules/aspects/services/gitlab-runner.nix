@@ -39,6 +39,8 @@
               dockerPullPolicy = "if-not-present";
               dockerPrivileged = true;
               preBuildScript = pkgs.writeScript "setup-container" ''
+                mkdir -p -m 0755 /etc/nix
+                touch /etc/nix/nix.conf
                 mkdir -p -m 0755 /nix/var/log/nix/drvs
                 mkdir -p -m 0755 /nix/var/nix/gcroots
                 mkdir -p -m 0755 /nix/var/nix/profiles
@@ -124,6 +126,50 @@
           })
         ];
 
+        # The runner never cleans up its docker cache volumes
+        # (https://gitlab.com/gitlab-org/gitlab-runner/-/issues/27332) and they
+        # accumulate per runner-ID rotation (~6 volumes per ID, forever).
+        # Prune them weekly. `docker volume rm` refuses in-use volumes, so any
+        # cache belonging to a runner mid-job is skipped automatically and we
+        # don't need to pause the runner. Removing an idle cache volume only
+        # costs a cache miss on the next job that used it.
+        systemd.services.gitlab-runner-cache-prune = {
+          description = "Prune orphaned gitlab-runner docker cache volumes";
+          after = [ "docker.service" ];
+          requires = [ "docker.service" ];
+          serviceConfig = {
+            Type = "oneshot";
+            User = "root";
+          };
+          path = [
+            pkgs.docker
+            pkgs.gnugrep
+            pkgs.findutils
+          ];
+          script = ''
+            set -euo pipefail
+            volumes=$(${pkgs.docker}/bin/docker volume ls -q --filter name=runner- 2>/dev/null \
+              | ${pkgs.gnugrep}/bin/grep -E '^runner-[0-9a-f]{32}-cache-[0-9a-f]{32}(-protected)?$' || true)
+            if [ -n "$volumes" ]; then
+              count=$(printf '%s\n' "$volumes" | wc -l)
+              echo "Pruning $count orphaned runner cache volumes..."
+              printf '%s\n' "$volumes" \
+                | ${pkgs.findutils}/bin/xargs -r ${pkgs.docker}/bin/docker volume rm 2>&1 || true
+            else
+              echo "No runner cache volumes to prune."
+            fi
+          '';
+        };
+
+        systemd.timers.gitlab-runner-cache-prune = {
+          description = "Weekly prune of orphaned gitlab-runner cache volumes";
+          wantedBy = [ "timers.target" ];
+          timerConfig = {
+            OnCalendar = "Sun *-*-* 04:00:00";
+            Persistent = true;
+            RandomizedDelaySec = "10m";
+          };
+        };
       };
   };
 }
