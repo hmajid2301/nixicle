@@ -1,5 +1,9 @@
 _: {
   den.aspects.gpg = {
+    nixos = { pkgs, ... }: {
+      services.dbus.packages = [ pkgs.gcr_4 ];
+    };
+
     homeManager =
       { pkgs, ... }:
       {
