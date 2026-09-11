@@ -4,3 +4,5 @@ pocketid_api_token = "<pocket-id admin api token>"
 
 openbao_address = "https://openbao.homelab.haseebmajid.dev"
 openbao_token = "<openbao token>"
+
+desec_api_token = "<desec api token>"
