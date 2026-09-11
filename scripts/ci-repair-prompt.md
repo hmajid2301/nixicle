@@ -51,7 +51,8 @@ Your answer must be concrete and limited:
 - If the failure is caused by a missing input/import/dependency, name exactly where it should be added.
 - If the failure is caused by syntax, show the corrected syntax exactly.
 - Keep `comment` concise.
-- Return a unified diff in `patch` when you are confident enough to propose a fix.
+- Return a unified diff in `patch` when confidence is `medium` or `high`.
+- Leave `patch` empty only when confidence is `low` or no safe edit exists.
 
 ## Patch rules
 
@@ -61,7 +62,8 @@ Your answer must be concrete and limited:
 - Do not include prose inside `patch`.
 - Do not modify unrelated files.
 - Do not add broad refactors.
-- If confidence is low, leave `patch` empty rather than guessing.
+- If confidence is `low`, leave `patch` empty rather than guessing.
+- If confidence is `medium` or `high`, include the smallest valid patch for the top suggested fix.
 
 ## Output format
 
