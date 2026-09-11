@@ -1,0 +1,30 @@
+$ORIGIN haseebmajid.dev.
+$TTL 3600
+
+; Generated from current deSEC RRsets on 2026-09-10.
+; Target provider: deSEC via OpenTofu desec_records.
+; deSEC manages apex NS/SOA/DNSSEC records automatically.
+
+@ 3600 IN A 35.185.44.232
+@ 3600 IN AAAA 2600:1901:0:7b8a::
+*.haseebmajid.dev. 3600 IN A 82.165.193.60
+*.haseebmajid.dev. 3600 IN AAAA 2a00:da00:f478:c700::1
+*.homelab.haseebmajid.dev. 3600 IN A 100.96.71.17
+*.homelab.haseebmajid.dev. 3600 IN AAAA fd7a:115c:a1e0::4632:4712
+talks 3600 IN A 35.185.44.232
+
+www 3600 IN CNAME hmajid2301.gitlab.io.
+
+protonmail._domainkey 3600 IN CNAME protonmail.domainkey.dpe6jbu2ezg2se2h5zt6ulva555s5bjljx7y63lnh2xjxdl7c4zdq.domains.proton.ch.
+protonmail2._domainkey 3600 IN CNAME protonmail2.domainkey.dpe6jbu2ezg2se2h5zt6ulva555s5bjljx7y63lnh2xjxdl7c4zdq.domains.proton.ch.
+protonmail3._domainkey 3600 IN CNAME protonmail3.domainkey.dpe6jbu2ezg2se2h5zt6ulva555s5bjljx7y63lnh2xjxdl7c4zdq.domains.proton.ch.
+startpage 3600 IN CNAME hmajid2301.github.io.
+stats 3600 IN CNAME haseebmajid.goatcounter.com.
+
+@ 3600 IN MX 10 mail.protonmail.ch.
+@ 3600 IN MX 20 mailsec.protonmail.ch.
+
+@ 3600 IN TXT "v=spf1 include:_spf.protonmail.ch ~all"
+@ 3600 IN TXT "protonmail-verification=e5c36576cbb7c29adb533869365687b3673c88d4"
+_dmarc 3600 IN TXT "v=DMARC1; p=quarantine; rua=mailto:a20971b42d314803bb4de90264510943@dmarc-reports.cloudflare.net;"
+_gitlab-pages-verification-code 3600 IN TXT "gitlab-pages-verification-code=43458cdab5c97d1284f390edc5f60e3f"
