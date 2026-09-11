@@ -13,6 +13,7 @@ rec {
     Goroutinely = "goroutinely";
     LettuceGo = "lettucego";
     Immich = "immich";
+    Jellyfin = "jellyfin";
     Forgejo = "forgejo";
     Paperless = "paperless";
     Traefik = "traefik";
@@ -79,6 +80,15 @@ rec {
       <rect x='13' y='12' width='6' height='6' fill='rgb(137,180,250)'/>
       <rect x='15' y='14' width='2' height='2' fill='rgb(24,24,37)'/>
       <rect x='21' y='11' width='2' height='2' fill='rgb(245,194,231)'/>
+    '';
+    Jellyfin = renderIcon ''
+      <rect x='9' y='8' width='14' height='2' fill='rgb(203,166,247)'/>
+      <rect x='8' y='10' width='16' height='6' fill='rgb(203,166,247)'/>
+      <rect x='10' y='16' width='2' height='8' fill='rgb(180,190,254)'/>
+      <rect x='14' y='16' width='2' height='10' fill='rgb(180,190,254)'/>
+      <rect x='18' y='16' width='2' height='7' fill='rgb(180,190,254)'/>
+      <rect x='12' y='12' width='2' height='2' fill='rgb(24,24,37)'/>
+      <rect x='18' y='12' width='2' height='2' fill='rgb(24,24,37)'/>
     '';
     Forgejo = renderIcon ''
       <rect x='9' y='8' width='4' height='4' fill='rgb(203,166,247)'/>

@@ -143,6 +143,14 @@ lib.flatten [
       })
 
       (mkHomepageService {
+        name = "Jellyfin";
+        icon = serviceIcons.Jellyfin;
+        description = "media server";
+        enable = publicUrl "jellyfin" != null;
+        href = publicUrl "jellyfin";
+      })
+
+      (mkHomepageService {
         name = "Forgejo";
         icon = serviceIcons.Forgejo;
         description = "git forge";
