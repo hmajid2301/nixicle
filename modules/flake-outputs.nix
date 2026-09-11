@@ -47,6 +47,11 @@ let
           enable = true;
           args = [ "fix" ];
         };
+        terraform-format = {
+          enable = true;
+          # upstream default is \.tf$; also match tofu/tfvars variants
+          files = "\\.(tf|tofu|tfvars)$";
+        };
       };
     };
 in
