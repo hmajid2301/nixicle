@@ -76,6 +76,23 @@
             bun
             awscli2
             terraform
+            (
+              let
+                nixGL = inputs.nixgl.packages.${pkgs.stdenv.hostPlatform.system}.nixGLIntel;
+              in
+              pkgs.symlinkJoin {
+                name = "cursor-nixgl-${pkgs.code-cursor.version}";
+                paths = [ pkgs.code-cursor ];
+                nativeBuildInputs = [ pkgs.makeWrapper ];
+                postBuild = ''
+                  rm "$out/bin/cursor"
+                  makeWrapper "${nixGL}/bin/nixGLIntel" "$out/bin/cursor" \
+                    --add-flags "${pkgs.code-cursor}/bin/cursor" \
+                    --add-flags "--no-sandbox" \
+                    --add-flags "--password-store=gnome-libsecret"
+                '';
+              }
+            )
             nixicle.monolisa
             noto-fonts-color-emoji
             noto-fonts
