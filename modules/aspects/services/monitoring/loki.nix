@@ -53,6 +53,12 @@ _: {
             reject_old_samples_max_age = "168h";
             allow_structured_metadata = true;
             retention_period = "4320h";
+            otlp_config.resource_attributes.attributes_config = [
+              {
+                action = "index_label";
+                attributes = [ "host.name" ];
+              }
+            ];
           };
           compactor = {
             working_directory = "/var/lib/loki";

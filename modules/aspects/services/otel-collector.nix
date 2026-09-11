@@ -11,6 +11,7 @@ _: {
     nixos =
       {
         config,
+        lib,
         pkgs,
         ...
       }:
@@ -20,7 +21,7 @@ _: {
           package = pkgs.opentelemetry-collector-contrib;
           settings = {
             receivers = {
-              otlp.protocols.http.endpoint = "0.0.0.0:3333";
+              otlp.protocols.http.endpoint = "127.0.0.1:3333";
               journald = {
                 directory = "/var/log/journal";
                 files = [ "/var/log/journal/*/*" ];
@@ -40,8 +41,18 @@ _: {
                   action = "insert";
                 }
               ];
+              transform = {
+                error_mode = "ignore";
+                log_statements = [
+                  {
+                    context = "log";
+                    statements = [
+                      "set(resource.attributes[\"service.name\"], log.body[\"SYSLOG_IDENTIFIER\"]) where log.body[\"SYSLOG_IDENTIFIER\"] != nil"
+                    ];
+                  }
+                ];
+              };
               batch = { };
-              transform = { };
             };
             exporters = {
               "prometheus".endpoint = "127.0.0.1:8889";
@@ -66,6 +77,7 @@ _: {
                   ];
                   processors = [
                     "resource"
+                    "transform"
                     "batch"
                   ];
                   exporters = [ "otlphttp/loki" ];
@@ -79,12 +91,25 @@ _: {
             };
           };
         };
+
+        services.traefik.dynamicConfigOptions.http = lib.nixicle.mkTraefikService {
+          name = "otel-collector";
+          port = 3333;
+          subdomain = "otel";
+        };
       };
   };
 
   den.aspects.otel-collector-forwarder = {
     includes = [ ];
-    persist.directories = [ "/var/log/journal" ];
+    persist.directories = [
+      {
+        directory = "/var/log/journal";
+        user = "root";
+        group = "systemd-journal";
+        mode = "2755";
+      }
+    ];
 
     nixos =
       {
@@ -119,13 +144,25 @@ _: {
                   action = "insert";
                 }
               ];
+              transform = {
+                error_mode = "ignore";
+                log_statements = [
+                  {
+                    context = "log";
+                    statements = [
+                      "set(resource.attributes[\"service.name\"], log.body[\"SYSLOG_IDENTIFIER\"]) where log.body[\"SYSLOG_IDENTIFIER\"] != nil"
+                    ];
+                  }
+                ];
+              };
               batch = { };
             };
-            exporters."otlphttp/vps".endpoint = "http://vps:3333";
+            exporters."otlphttp/vps".endpoint = "https://otel.homelab.haseebmajid.dev";
             service.pipelines."logs/vps" = {
               receivers = [ "journald" ];
               processors = [
                 "resource"
+                "transform"
                 "batch"
               ];
               exporters = [ "otlphttp/vps" ];
