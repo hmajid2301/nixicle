@@ -13,6 +13,7 @@
     nixos =
       {
         lib,
+        pkgs,
         secrets,
         ...
       }:
@@ -31,6 +32,10 @@
 
         nixflix = {
           enable = true;
+          theme = {
+            enable = true;
+            name = "catppuccin-macchiato";
+          };
           mediaDir = "/mnt/main/main-encrypted/homelab/media";
           stateDir = "/persist/nixflix";
           downloadsDir = "/persist/nixflix/downloads";
@@ -46,6 +51,22 @@
               hardwareAccelerationType = "vaapi";
               vaapiDevice = "/dev/dri/renderD128";
               enableHardwareEncoding = true;
+            };
+
+            system.trickplayOptions = {
+              enableHwAcceleration = true;
+              enableHwEncoding = true;
+            };
+
+            libraries = {
+              Movies = {
+                collectionType = "movies";
+                paths = [ "/mnt/main/main-encrypted/homelab/media/movies" ];
+              };
+              Shows = {
+                collectionType = "tvshows";
+                paths = [ "/mnt/main/main-encrypted/homelab/media/tv" ];
+              };
             };
 
             system.pluginRepositories = {
@@ -97,6 +118,7 @@
                 </form>
               '';
               customCss = ''
+                @import url("https://theme-park.dev/css/base/jellyfin/catppuccin-macchiato.css");
                 a.raised.emby-button {
                     padding:0.9em 1em;
                     color: inherit !important;
@@ -115,7 +137,10 @@
           };
         };
 
-        hardware.graphics.enable = true;
+        hardware.graphics = {
+          enable = true;
+          extraPackages = [ pkgs.intel-media-driver ];
+        };
         boot.kernelModules = [ "i915" ];
       };
   };
