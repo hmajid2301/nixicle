@@ -34,7 +34,9 @@ _: {
               "100.64.0.0/10"
             ]
             ++ (lib.filter (e: lib.hasInfix "/" e) cfg.allowlist);
-            target_uri = cfg.allowlistUris;
+          }
+          // lib.optionalAttrs (cfg.allowlistUris != [ ]) {
+            expression = map (uri: "evt.Parsed.request == '${uri}'") cfg.allowlistUris;
           };
         };
 
