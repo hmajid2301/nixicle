@@ -13,6 +13,7 @@ mkdir -p "$repair_dir"
 ollama_url="${OLLAMA_BASE_URL:-https://ollama.com/api/chat}"
 model="${OLLAMA_MODEL:-deepseek-v4-pro}"
 max_trace_chars="${REPAIR_MAX_TRACE_CHARS:-40000}"
+max_repair_attempts="${REPAIR_MAX_ATTEMPTS:-3}"
 ollama_auth_header=( -H "Authorization: Bearer $OLLAMA_API_KEY" )
 repair_note_id=""
 repair_note_body=""
@@ -25,6 +26,7 @@ patch=""
 comment=""
 confidence="unknown"
 note=""
+repair_attempts=0
 
 # The repair bot keeps a single note per MR, identified by its heading.
 repair_note_marker='## 🤖 Repair attempt'
@@ -114,7 +116,7 @@ build_note() {
   suggested_fixes_markdown="$(render_suggested_fixes_markdown)"
 
   note="$({
-    # Hidden markers: one note per MR, one repair attempt per MR.
+    # Hidden markers: one note per MR, multiple repair attempts allowed up to REPAIR_MAX_ATTEMPTS.
     printf '<!--repair:note--><!--repair:attempted-->'
     if [ -n "$fixed_commit_sha" ]; then
       printf '<!--repair:applied-->'
@@ -122,6 +124,7 @@ build_note() {
     printf '\n\n'
     printf '%s\n\n' "$repair_note_marker"
     printf '**Status:** %s\n\n' "$title"
+    printf '**Attempt:** %s of %s\n\n' "$((repair_attempts + 1))" "$max_repair_attempts"
     if [ -n "$fixed_commit_sha" ]; then
       printf '### Fix applied\n\n'
       printf -- '- Commit `%s` pushed to `%s` by the AI repair bot (`%s`)\n\n' \
@@ -140,6 +143,9 @@ build_note() {
     fi
     if [ -n "$comment" ]; then
       printf '\n### Note\n\n%s\n' "$comment"
+    fi
+    if [ -n "$repair_note_body" ]; then
+      printf '\n---\n\n### Previous repair notes\n\n%s\n' "$repair_note_body"
     fi
   } )"
 }
@@ -360,6 +366,14 @@ Confidence: ${confidence}" \
 apply_patch_and_retest() {
   local patch_files=()
 
+  case "$confidence" in
+    high|medium) ;;
+    *)
+      build_note "low confidence; no patch applied" ""
+      return
+      ;;
+  esac
+
   if [ -z "$patch" ]; then
     build_note "no patch produced" ""
     return
@@ -394,6 +408,11 @@ apply_patch_and_retest() {
 
   if nix flake check --print-build-logs 2>&1 | tee "$repair_dir/retest.log"; then
     if commit_and_push_fix; then
+      if [ "$confidence" = "medium" ]; then
+        comment="${comment:+$comment
+
+}Medium-confidence repair pushed. Human review required before automerge."
+      fi
       build_note "fix applied and pushed to the MR branch" ""
     else
       build_note "patch applied but commit or push failed" "- \`repair/commit.log\`\n- \`repair/push.log\`"
@@ -413,19 +432,20 @@ if [ "$(printf '%s' "$failed_jobs_json" | jq 'length')" -eq 0 ]; then
   exit 0
 fi
 
-# One repair attempt per MR: once a note carries the attempted marker, only
-# update that note for later failures; never attempt another automatic fix.
-if [ -n "$repair_note_id" ] && printf '%s' "$repair_note_body" | grep -q '<!--repair:attempted-->'; then
-  if ! printf '%s' "$repair_note_body" | grep -q 'repair already attempted'; then
-    upsert_mr_note "$(
-      {
-        printf '%s\n\n' "$repair_note_marker"
-        printf '**Status:** repair already attempted on this MR — skipping automatic fix for this later pipeline failure.\n\n'
-        printf '%s\n' '---'
-        printf '\n%s\n' "$repair_note_body"
-      }
-    )"
-  fi
+if [ -n "$repair_note_body" ]; then
+  repair_attempts="$( (grep -o '<!--repair:attempted-->' <<<"$repair_note_body" || true) | wc -l | tr -d ' ')"
+fi
+
+if [ "$repair_attempts" -ge "$max_repair_attempts" ]; then
+  upsert_mr_note "$(
+    {
+      printf '<!--repair:note-->\n\n'
+      printf '%s\n\n' "$repair_note_marker"
+      printf '**Status:** reached automatic repair limit (%s attempts); waiting for human intervention.\n\n' "$max_repair_attempts"
+      printf '%s\n' '---'
+      printf '\n%s\n' "$repair_note_body"
+    }
+  )"
   exit 0
 fi
 
