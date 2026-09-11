@@ -97,7 +97,6 @@ in
                RUN+="${pkgs.systemd}/bin/loginctl lock-sessions"
             '';
           };
-          dbus.packages = [ pkgs.gcr ];
           xserver.xkb = {
             layout = "gb";
             variant = "";
