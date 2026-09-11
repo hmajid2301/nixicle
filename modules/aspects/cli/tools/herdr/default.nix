@@ -10,6 +10,25 @@
           ${pkgs.herdr}/bin/herdr integration install pi >/dev/null
           cp "$HOME/.pi/agent/extensions/herdr-agent-state.ts" "$out"
         '';
+
+        agent-session-sync = pkgs.callPackage ./plugins/agent-session-sync/_package.nix { };
+
+        # The plugin's scripts shell out to the binary, so pin the store path
+        # rather than relying on whatever PATH the plugin runner happens to have.
+        sessionSyncPlugin = pkgs.runCommand "herdr-plugin-agent-session-sync" { } ''
+          mkdir -p "$out"
+          cp ${./plugins/agent-session-sync}/herdr-plugin.toml "$out/"
+          cp ${./plugins/agent-session-sync}/*.sh "$out/"
+          chmod +w "$out"/*.sh
+          for f in "$out"/*.sh; do
+            substituteInPlace "$f" \
+              --replace-quiet 'AGENT_SESSION_SYNC_BIN:-agent-session-sync' \
+                              'AGENT_SESSION_SYNC_BIN:-${lib.getExe agent-session-sync}'
+          done
+        '';
+
+        # SSH host aliases whose agent transcripts should be mirrored locally.
+        syncHosts = [ ];
       in
       {
         programs.herdr = {
@@ -123,6 +142,12 @@
                   command = "worktrunk.merge";
                   description = "Worktree: merge into target branch";
                 }
+                {
+                  key = "prefix+shift+s";
+                  type = "plugin_action";
+                  command = "agent-session-sync.open";
+                  description = "Sessions: browse mirrored transcripts";
+                }
               ];
             };
             ui = {
@@ -150,16 +175,41 @@
         };
 
         home = {
-          packages = [ pkgs.tmux ];
+          packages = [
+            pkgs.tmux
+            agent-session-sync
+          ];
 
           activation.herdrPlugins = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
             ${pkgs.herdr}/bin/herdr plugin link ${inputs.plugins-herdr-float} --enabled || true
             ${pkgs.herdr}/bin/herdr plugin link ${inputs.plugins-herdr-splits} --enabled || true
             ${pkgs.herdr}/bin/herdr plugin link ${inputs.plugins-herdr-worktrunk} --enabled || true
+            ${pkgs.herdr}/bin/herdr plugin link ${sessionSyncPlugin} --enabled || true
           '';
 
           file.".pi/agent/extensions/herdr-agent-state.ts".source = piIntegration;
         };
+
+        # Mirror agent transcripts off each remote box so losing one does not
+        # lose the conversations running on it. Add SSH host aliases here to
+        # switch it on; empty means no units are generated.
+        systemd.user.services = lib.listToAttrs (
+          map (host: {
+            name = "agent-session-sync-${host}";
+            value = {
+              Unit = {
+                Description = "Mirror agent transcripts from ${host}";
+                After = [ "network-online.target" ];
+              };
+              Service = {
+                ExecStart = "${lib.getExe agent-session-sync} daemon ${host}";
+                Restart = "on-failure";
+                RestartSec = 60;
+              };
+              Install.WantedBy = [ "default.target" ];
+            };
+          }) syncHosts
+        );
       };
   };
 }
