@@ -23,7 +23,7 @@
         boot = {
           resumeDevice = "/dev/disk/by-label/nixos";
           initrd.systemd.enable = true;
-          initrd.systemd.emergencyAccess = true;
+          initrd.systemd.emergencyAccess = false;
           loader = {
             efi.canTouchEfiVariables = true;
             systemd-boot = {

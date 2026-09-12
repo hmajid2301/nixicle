@@ -42,6 +42,7 @@ _: {
           openssh.settings = {
             PermitRootLogin = "no";
             KbdInteractiveAuthentication = false;
+            PasswordAuthentication = false;
             AllowUsers = [ "nixos" ];
             AllowAgentForwarding = false;
             AllowTcpForwarding = false;

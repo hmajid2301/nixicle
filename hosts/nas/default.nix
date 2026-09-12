@@ -71,7 +71,6 @@ in
         ];
         uid = 1000; # matches TrueNAS NFS anonuid/anongid and share owner
         mediaGid = 3000;
-        initialPassword = "changeme";
         shell = pkgs.fish;
         sudo = {
           execWheelOnly = true;
