@@ -27,6 +27,7 @@ stages:
   stage: lint
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
   before_script:
     - mkdir -p /etc/nix
     - |
@@ -80,9 +81,21 @@ lint:
   rules:
     - if: $CI_PIPELINE_SOURCE == "schedule"
     - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
-      changes: ["flake.lock"]
+      changes:
+        - "flake.nix"
+        - "flake.lock"
+        - "hosts/**/*"
+        - "lib/**/*"
+        - "modules/**/*"
+        - "packages/**/*"
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-      changes: ["flake.lock"]
+      changes:
+        - "flake.nix"
+        - "flake.lock"
+        - "hosts/**/*"
+        - "lib/**/*"
+        - "modules/**/*"
+        - "packages/**/*"
   script:
     - mkdir -p build-logs
     - test -n "$ATTIC_AUTH_KEY"
@@ -110,6 +123,35 @@ build:vps:
   extends: .build:nixos
   variables:
     NIXOS_CONFIG: vps
+
+check:nixos-evaluations:
+  extends: .base_setup
+  stage: build
+  timeout: 2h
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+      changes:
+        - "flake.nix"
+        - "flake.lock"
+        - "hosts/**/*"
+        - "lib/**/*"
+        - "modules/**/*"
+        - "packages/**/*"
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      changes:
+        - "flake.nix"
+        - "flake.lock"
+        - "hosts/**/*"
+        - "lib/**/*"
+        - "modules/**/*"
+        - "packages/**/*"
+  script:
+    - nix flake check --no-build
+    - |
+      for host in desktop framework nas rpi vm vps; do
+        nix eval ".#nixosConfigurations.${host}.config.system.build.toplevel.drvPath"
+      done
 
 build:nas:
   extends: .build:nixos
