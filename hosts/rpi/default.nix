@@ -98,16 +98,12 @@
           };
           resolved.settings.Resolve.DNSStubListener = false;
           navidrome.settings.MusicFolder = lib.mkForce "/data/media/Music";
-          traefik.dynamicConfigOptions.http = lib.mkMerge [
-            (lib.nixicle.mkTraefikService {
-              name = "invidious";
-              port = 3939;
-            })
-            (lib.nixicle.mkTraefikService {
-              name = "redlib";
-              port = 8929;
-            })
-          ];
+          traefik.dynamicConfigOptions.http = {
+            # invidious/redlib run on the tailnet only (no tinyauth on this
+            # host), so drop the authenticated middleware the aspects declare.
+            routers.invidious.middlewares = [ ];
+            routers.redlib.middlewares = [ ];
+          };
           traefik.staticConfigOptions.entryPoints.websecure.http.tls.certResolver = lib.mkForce "tailscale";
         };
 

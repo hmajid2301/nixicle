@@ -18,7 +18,6 @@ _: {
         services.traefik.dynamicConfigOptions.http = lib.nixicle.mkAuthenticatedTraefikService {
           name = "redlib";
           port = 8929;
-          domain = "haseebmajid.dev";
         };
       };
   };
