@@ -8,8 +8,8 @@ _: [
     src = extensions/pipelines;
   }
   {
-    rel = "plan-mode.ts";
-    src = extensions/plan-mode.ts;
+    rel = "plan-mode";
+    src = extensions/plan-mode;
   }
   {
     rel = "nvim-edit/index.ts";
