@@ -129,12 +129,7 @@ in
     {
       # nixicle packages overlay (needs extendedLib so defined here).
       # nur overlay in common.nix; niri/zjstatus in niri.nix.
-      nixpkgs.overlays = [
-        (_final: _prev: {
-          inherit (inputs) get-shit-done;
-        })
-        extendedLib.nixicle.nixicleOverlay
-      ];
+      nixpkgs.overlays = [ extendedLib.nixicle.nixicleOverlay ];
       imports = [
         inputs.sops-nix.nixosModules.sops
         inputs.disko.nixosModules.disko
