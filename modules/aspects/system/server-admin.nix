@@ -117,6 +117,13 @@ _: {
             // lib.optionalAttrs (cfg.sudo.wheelNeedsPassword != null) {
               wheelNeedsPassword = cfg.sudo.wheelNeedsPassword;
             };
+
+          assertions = [
+            {
+              assertion = cfg.initialPassword != "changeme" && cfg.initialPassword != "REPLACE_ME";
+              message = "nixicle.serverAdmin.initialPassword must not be a placeholder; use hashedPasswordFile (SOPS) or omit it and rely on authorizedKeys with PasswordAuthentication = false.";
+            }
+          ];
         };
       };
   };

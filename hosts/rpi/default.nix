@@ -86,9 +86,10 @@
             "media"
           ];
           mediaGid = 3000;
-          initialPassword = "changeme";
           shell = pkgs.fish;
         };
+
+        security.sudo.wheelNeedsPassword = lib.mkForce false;
 
         services = {
           openssh = {
