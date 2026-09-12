@@ -22,6 +22,9 @@ Produce the **smallest correct patch** that fixes the failure.
 - If a trace names a file, target that file first.
 - If a diff hunk already shows the broken area, prefer fixing that exact spot instead of proposing a broader change.
 - For every proposed fix, state whether it belongs **inside the current MR diff** or **outside the current MR diff but still required**, and prefer inside-the-diff fixes when possible.
+- For dependency-update MRs, do not revert the updated dependency unless no forward-compatible code or config fix is available. Prefer adapting local code/config to the new dependency.
+- If a dependency update exposes an option, module, package, or plugin conflict, prefer removing or updating the local duplicate/configuration that now conflicts. Treat pinning the dependency back as a last resort.
+- Do not propose repo changes for external service failures such as 5xx responses, timeouts, or unavailable hosts unless the trace points to a changed repo URL or credential name. Mark those as retry/manual infrastructure issues.
 - Match the failing command or error text to the exact config, package, attribute, function, variable, or file path that caused it.
 - If line numbers are visible in diff hunks or traces, cite them.
 - If exact line numbers are not visible, derive the smallest likely range from the diff or file path and say it is approximate.
@@ -51,12 +54,14 @@ Your answer must be concrete and limited:
 - If the failure is caused by a missing input/import/dependency, name exactly where it should be added.
 - If the failure is caused by syntax, show the corrected syntax exactly.
 - Keep `comment` concise.
+- In `comment`, do not frame dependency rollback as the fix unless the patch actually rolls back the dependency as a last resort. State forward-compatible fixes first.
 - Return a unified diff in `patch` when confidence is `medium` or `high`.
 - Leave `patch` empty only when confidence is `low` or no safe edit exists.
 
 ## Patch rules
 
 - `patch` must be a valid unified diff string starting with `diff --git` when non-empty.
+- The `patch` must use real unified-diff hunk headers and exact file context from the supplied diff or trace. Do not use approximate hunk headers.
 - The `patch` must implement the same fix described in the first item of `suggested_fixes`.
 - Prefer a patch that touches the fewest files and lines necessary.
 - Do not include prose inside `patch`.
@@ -64,6 +69,7 @@ Your answer must be concrete and limited:
 - Do not add broad refactors.
 - If confidence is `low`, leave `patch` empty rather than guessing.
 - If confidence is `medium` or `high`, include the smallest valid patch for the top suggested fix.
+- If you cannot produce a valid unified diff, leave `patch` empty and explain the exact manual edit in `suggested_fixes` and `comment`.
 
 ## Output format
 
