@@ -18,6 +18,8 @@ ollama_auth_header=( -H "Authorization: Bearer $OLLAMA_API_KEY" )
 repair_note_id=""
 repair_note_body=""
 fixed_commit_sha=""
+fixed_commit_full_sha=""
+auto_merge_enabled="false"
 traces=""
 summary=""
 diagnosis=""
@@ -127,8 +129,12 @@ build_note() {
     printf '**Attempt:** %s of %s\n\n' "$((repair_attempts + 1))" "$max_repair_attempts"
     if [ -n "$fixed_commit_sha" ]; then
       printf '### Fix applied\n\n'
-      printf -- '- Commit `%s` pushed to `%s` by the AI repair bot (`%s`)\n\n' \
+      printf -- '- Commit `%s` pushed to `%s` by the AI repair bot (`%s`)\n' \
         "$fixed_commit_sha" "${CI_MERGE_REQUEST_SOURCE_BRANCH_NAME:-unknown branch}" "$model"
+      if [ "$auto_merge_enabled" = "true" ]; then
+        printf -- '- Auto-merge enabled for this MR after the repair commit passes CI\n'
+      fi
+      printf '\n'
     fi
     printf '### Summary\n\n%s\n\n' "${summary:-n/a}"
     printf '### Diagnosis\n\n%s\n\n' "${diagnosis:-n/a}"
@@ -356,11 +362,32 @@ Confidence: ${confidence}" \
   fi
 
   fixed_commit_sha="$(git rev-parse --short HEAD)"
+  fixed_commit_full_sha="$(git rev-parse HEAD)"
 
   git push \
     "https://oauth2:${REPAIR_GITLAB_TOKEN}@${CI_SERVER_HOST}/${CI_PROJECT_PATH}.git" \
     "HEAD:${CI_MERGE_REQUEST_SOURCE_BRANCH_NAME}" \
     >"$repair_dir/push.log" 2>&1 || return 1
+}
+
+enable_auto_merge() {
+  local http_code
+
+  http_code="$(curl -sS --request PUT \
+    --header "PRIVATE-TOKEN: $REPAIR_GITLAB_TOKEN" \
+    --header 'Content-Type: application/json' \
+    --data "$(jq -nc --arg sha "$fixed_commit_full_sha" '{auto_merge:true, sha:$sha, should_remove_source_branch:true}')" \
+    -o "$repair_dir/auto-merge.json" \
+    -w '%{http_code}' \
+    "$CI_API_V4_URL/projects/$CI_PROJECT_ID/merge_requests/$CI_MERGE_REQUEST_IID/merge")"
+
+  if [[ "$http_code" =~ ^2 ]]; then
+    auto_merge_enabled="true"
+    return 0
+  fi
+
+  printf 'auto-merge API returned HTTP %s\n' "$http_code" >"$repair_dir/auto-merge.log"
+  return 1
 }
 
 apply_patch_and_retest() {
@@ -384,8 +411,8 @@ apply_patch_and_retest() {
     return
   fi
 
-  if ! git apply --check --whitespace=nowarn "$repair_dir/repair.patch" >/dev/null 2>"$repair_dir/git-apply-check.log"; then
-    build_note "invalid patch produced" "- \`repair/git-apply-check.log\`"
+  if ! git apply --recount --check --whitespace=nowarn "$repair_dir/repair.patch" >/dev/null 2>"$repair_dir/git-apply-check.log"; then
+    build_note "invalid patch produced; no commit pushed" "- \`repair/git-apply-check.log\`"
     return
   fi
 
@@ -395,8 +422,8 @@ apply_patch_and_retest() {
     return
   fi
 
-  if ! git apply --index --whitespace=nowarn "$repair_dir/repair.patch"; then
-    build_note "patch could not be applied" "- \`repair/git-apply-check.log\`"
+  if ! git apply --recount --index --whitespace=nowarn "$repair_dir/repair.patch"; then
+    build_note "patch could not be applied; no commit pushed" "- \`repair/git-apply-check.log\`"
     return
   fi
 
@@ -408,12 +435,27 @@ apply_patch_and_retest() {
 
   if nix flake check --print-build-logs 2>&1 | tee "$repair_dir/retest.log"; then
     if commit_and_push_fix; then
-      if [ "$confidence" = "medium" ]; then
-        comment="${comment:+$comment
+      case "$confidence" in
+        high)
+          if enable_auto_merge; then
+            comment="${comment:+$comment
 
-}Medium-confidence repair pushed. Human review required before automerge."
-      fi
-      build_note "fix applied and pushed to the MR branch" ""
+}High-confidence repair pushed. Auto-merge enabled after CI passes."
+            build_note "fix applied, pushed, and auto-merge enabled" "- \`repair/auto-merge.json\`"
+          else
+            comment="${comment:+$comment
+
+}High-confidence repair pushed, but enabling auto-merge failed."
+            build_note "fix applied and pushed, but auto-merge failed" "- \`repair/auto-merge.json\`\n- \`repair/auto-merge.log\`"
+          fi
+          ;;
+        medium)
+          comment="${comment:+$comment
+
+}Medium-confidence repair pushed. Human review required before auto-merge."
+          build_note "fix applied and pushed to the MR branch" ""
+          ;;
+      esac
     else
       build_note "patch applied but commit or push failed" "- \`repair/commit.log\`\n- \`repair/push.log\`"
     fi
