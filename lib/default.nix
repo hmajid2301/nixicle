@@ -82,10 +82,14 @@ rec {
       domain ? "homelab.haseebmajid.dev",
       entryPoints ? [ "websecure" ],
       certResolver ? "letsencrypt",
+      auth ? false,
       middlewares ? [ ],
       extraRouterConfig ? { },
       extraServiceConfig ? { },
     }:
+    let
+      allMiddlewares = (lib.optional auth "tinyauth") ++ middlewares;
+    in
     {
       routers.${name} = lib.mkMerge [
         {
@@ -93,7 +97,7 @@ rec {
           rule = lib.mkDefault "Host(`${subdomain}.${domain}`)";
           service = name;
           tls.certResolver = certResolver;
-          inherit middlewares;
+          middlewares = lib.mkDefault allMiddlewares;
         }
         extraRouterConfig
       ];
@@ -105,34 +109,7 @@ rec {
       ];
     };
 
-  mkAuthenticatedTraefikService =
-    {
-      name,
-      port,
-      subdomain ? name,
-      domain ? "homelab.haseebmajid.dev",
-      entryPoints ? [ "websecure" ],
-      certResolver ? "letsencrypt",
-      middlewares ? [ "tinyauth" ],
-      extraRouterConfig ? { },
-      extraServiceConfig ? { },
-    }:
-    {
-      routers.${name} = lib.mkMerge [
-        {
-          inherit entryPoints;
-          rule = lib.mkDefault "Host(`${subdomain}.${domain}`)";
-          service = name;
-          tls.certResolver = certResolver;
-          inherit middlewares;
-        }
-        extraRouterConfig
-      ];
-      services.${name} = lib.mkMerge [
-        {
-          loadBalancer.servers = lib.mkDefault [ { url = "http://localhost:${toString port}"; } ];
-        }
-        extraServiceConfig
-      ];
-    };
+  # Convenience wrapper kept for existing callers; equivalent to
+  # mkTraefikService with auth = true (prepends the tinyauth middleware).
+  mkAuthenticatedTraefikService = args: mkTraefikService (args // { auth = true; });
 }

@@ -24,7 +24,6 @@ _: {
         services.traefik.dynamicConfigOptions.http = lib.nixicle.mkAuthenticatedTraefikService {
           name = "invidious";
           port = 3939;
-          domain = "haseebmajid.dev";
         };
       };
   };
