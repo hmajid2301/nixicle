@@ -25,21 +25,6 @@
         lib,
         ...
       }:
-      let
-        waitForPocketId = ''
-          echo "Waiting for Pocket ID OIDC discovery..."
-          for i in $(seq 1 60); do
-            if ${pkgs.curl}/bin/curl --fail --silent --show-error \
-              https://id.haseebmajid.dev/.well-known/openid-configuration >/dev/null; then
-              echo "Pocket ID OIDC discovery is ready"
-              exit 0
-            fi
-            sleep 2
-          done
-          echo "Pocket ID OIDC discovery did not become ready in time" >&2
-          exit 1
-        '';
-      in
       {
         imports = [ inputs.lettucego.nixosModules.default ];
 
@@ -63,7 +48,7 @@
             "pocket-id.service"
             "traefik.service"
           ];
-          preStart = lib.mkBefore waitForPocketId;
+          requires = [ "pocket-id.service" ];
           environment.LETTUCEGO_S3_PUBLIC_URL = "https://lettucego.haseebmajid.dev/lettucego";
         };
 
