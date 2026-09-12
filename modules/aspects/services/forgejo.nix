@@ -62,19 +62,11 @@ _: {
             image = "docker:dind";
             autoStart = true;
             privileged = true;
-            # Host networking avoids Tailscale routing table issues (table 52)
-            # and Docker bridge conflicts — DIND can reach Docker Hub directly.
-            # Use a non-conflicting bridge subnet so job containers inside DIND
-            # can reach the DIND daemon via host-gateway.
             extraOptions = [
               "--network"
               "host"
             ];
             cmd = [
-              # Listen on all interfaces (0.0.0.0) because dockerd needs to bind
-              # BEFORE it creates the bridge at --bip. The firewall blocks external
-              # access to port 2376. Job containers reach DIND via host-gateway
-              # (172.20.0.1:2376 after dockerd creates the bridge).
               "dockerd"
               "-H"
               "tcp://0.0.0.0:2376"
@@ -85,9 +77,6 @@ _: {
           };
         };
 
-        # bridge-nf-call-iptables=1 causes bridge traffic to go through iptables.
-        # DIND cannot set up iptables (nft missing from docker:dind). Host rule
-        # allows traffic from DIND bridge to the API port.
         networking.firewall.extraCommands = ''
           iptables -I nixos-fw 1 -p tcp --dport 2376 -s 172.20.0.0/16 -j ACCEPT 2>/dev/null || true
         '';
