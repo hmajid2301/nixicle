@@ -77,7 +77,7 @@
             neededForUsers = true;
           };
           searx_secret_key = {
-            sopsFile = ../framebox/secrets.yaml;
+            sopsFile = ./secrets.yaml;
           };
         };
 
