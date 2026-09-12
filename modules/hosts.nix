@@ -99,19 +99,10 @@ in
         users.haseeb = haseebUser;
       };
 
-      framebox = {
-        instantiate = mkInstantiate;
-        users.haseeb = haseebUser;
-      };
-
       desktop = {
         autologin = false;
         instantiate = mkInstantiate;
         users.haseeb = haseebUser;
-      };
-
-      gateway = {
-        instantiate = mkInstantiate;
       };
 
       nas = {
@@ -139,10 +130,6 @@ in
 
         "haseeb@framework" = {
           isLaptop = true;
-          instantiate = mkHomeInstantiate;
-        };
-
-        "haseeb@framebox" = {
           instantiate = mkHomeInstantiate;
         };
 
