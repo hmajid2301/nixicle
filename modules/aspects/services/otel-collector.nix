@@ -47,11 +47,12 @@ _: {
                   {
                     context = "log";
                     statements = [
-                      "set(resource.attributes[\"service.name\"], log.body[\"SYSLOG_IDENTIFIER\"]) where log.body[\"SYSLOG_IDENTIFIER\"] != nil"
+                      "set(log.attributes[\"service.name\"], log.body[\"SYSLOG_IDENTIFIER\"]) where log.body[\"SYSLOG_IDENTIFIER\"] != nil"
                     ];
                   }
                 ];
               };
+              groupbyattrs.keys = [ "service.name" ];
               batch = { };
             };
             exporters = {
@@ -78,6 +79,7 @@ _: {
                   processors = [
                     "resource"
                     "transform"
+                    "groupbyattrs"
                     "batch"
                   ];
                   exporters = [ "otlphttp/loki" ];
@@ -150,11 +152,12 @@ _: {
                   {
                     context = "log";
                     statements = [
-                      "set(resource.attributes[\"service.name\"], log.body[\"SYSLOG_IDENTIFIER\"]) where log.body[\"SYSLOG_IDENTIFIER\"] != nil"
+                      "set(log.attributes[\"service.name\"], log.body[\"SYSLOG_IDENTIFIER\"]) where log.body[\"SYSLOG_IDENTIFIER\"] != nil"
                     ];
                   }
                 ];
               };
+              groupbyattrs.keys = [ "service.name" ];
               batch = { };
             };
             exporters."otlphttp/vps".endpoint = "https://otel.homelab.haseebmajid.dev";
@@ -163,6 +166,7 @@ _: {
               processors = [
                 "resource"
                 "transform"
+                "groupbyattrs"
                 "batch"
               ];
               exporters = [ "otlphttp/vps" ];
