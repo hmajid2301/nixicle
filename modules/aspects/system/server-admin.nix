@@ -25,8 +25,11 @@ _: {
 
           authorizedKeys = lib.mkOption {
             type = lib.types.listOf lib.types.str;
-            default = [ ];
-            description = "SSH public keys installed for both root and the server admin user.";
+            default = lib.nixicle.authorizedKeys;
+            description = ''
+              SSH public keys installed for both root and the server admin user.
+              Defaults to the fleet-wide keys from lib.nixicle.authorizedKeys.
+            '';
           };
 
           extraGroups = lib.mkOption {
