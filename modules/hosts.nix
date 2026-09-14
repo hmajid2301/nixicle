@@ -112,17 +112,45 @@ in
               Install.WantedBy = [ "default.target" ];
             };
 
+            programs = {
+              bat.enable = true;
+              bottom.enable = true;
+              direnv = {
+                enable = true;
+                nix-direnv.enable = true;
+              };
+              eza.enable = true;
+              fzf.enable = true;
+              htop.enable = true;
+              yazi = {
+                enable = true;
+                enableFishIntegration = true;
+                shellWrapperName = "y";
+              };
+              zoxide = {
+                enable = true;
+                enableFishIntegration = true;
+              };
+            };
+
             home = {
               stateVersion = "26.05";
               packages = with pkgs; [
-                bat
-                eza
+                curlie
+                delta
+                duf
+                dust
                 fd
-                fzf
+                gnumake
+                hyperfine
                 jq
                 neovim
+                procs
                 ripgrep
+                tokei
                 tmux
+                unzip
+                yq-go
               ];
             };
           };
