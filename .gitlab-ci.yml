@@ -147,10 +147,11 @@ check:nixos-evaluations:
         - "modules/**/*"
         - "packages/**/*"
   script:
-    - nix flake check --no-build
+    # Avoid stale cached .drv paths on persistent runners after store GC.
+    - nix flake check --no-build --option eval-cache false
     - |
       for host in desktop framework nas rpi vm vps; do
-        nix eval ".#nixosConfigurations.${host}.config.system.build.toplevel.drvPath"
+        nix eval --option eval-cache false ".#nixosConfigurations.${host}.config.system.build.toplevel.drvPath"
       done
 
 build:nas:
