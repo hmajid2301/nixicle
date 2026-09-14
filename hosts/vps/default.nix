@@ -5,7 +5,6 @@
       den.aspects.performance-base
       den.aspects.server
       den.aspects.server-admin
-      den.aspects.server-console
       den.aspects.impermanence
       den.aspects.boot
       den.aspects.hardening-vps
@@ -80,7 +79,6 @@
             ];
             allowlistUris = [ "/api/add" ];
           };
-          serverConsole.enable = true;
         };
 
         security.sudo.wheelNeedsPassword = lib.mkForce false;
@@ -110,6 +108,8 @@
           useDHCP = lib.mkDefault true;
           interfaces.ens3.useDHCP = lib.mkDefault true;
           firewall.allowedTCPPorts = [ 22 ];
+          # Mosh UDP 60000-61000 is reachable through trusted tailscale0 only.
+          # Public firewall intentionally exposes no UDP ports.
         };
 
         services = {
@@ -119,6 +119,7 @@
             ports = [ 22 ];
             settings.PasswordAuthentication = lib.mkForce false;
           };
+          tailscale.extraSetFlags = [ "--ssh" ];
           traefik.dynamicConfigOptions.http = lib.nixicle.mkTraefikService {
             name = "jellyfin";
             port = 8096;
@@ -150,27 +151,44 @@
         ];
 
         system = {
-          backup.objects.observability = {
-            paths = [
-              "/var/lib/prometheus2"
-              "/var/lib/loki"
-              "/var/lib/grafana"
-            ];
-            timerConfig = {
-              OnCalendar = "daily";
-              RandomizedDelaySec = "2h";
-              Persistent = true;
+          backup.objects = {
+            observability = {
+              paths = [
+                "/var/lib/prometheus2"
+                "/var/lib/loki"
+                "/var/lib/grafana"
+              ];
+              timerConfig = {
+                OnCalendar = "daily";
+                RandomizedDelaySec = "2h";
+                Persistent = true;
+              };
             };
-          };
-          backup.objects.networking = {
-            paths = [
-              "/var/lib/traefik"
-              "/var/lib/tailscale"
-            ];
-            timerConfig = {
-              OnCalendar = "daily";
-              RandomizedDelaySec = "3h";
-              Persistent = true;
+            networking = {
+              paths = [
+                "/var/lib/traefik"
+                "/var/lib/tailscale"
+              ];
+              timerConfig = {
+                OnCalendar = "daily";
+                RandomizedDelaySec = "3h";
+                Persistent = true;
+              };
+            };
+            herdr = {
+              paths = [ "/home/herdr" ];
+              exclude = [
+                "/home/herdr/.cache"
+                "/home/herdr/.local/share/Trash"
+                "**/.direnv"
+                "**/node_modules"
+                "**/target"
+              ];
+              timerConfig = {
+                OnCalendar = "daily";
+                RandomizedDelaySec = "4h";
+                Persistent = true;
+              };
             };
           };
           stateVersion = "24.05";
