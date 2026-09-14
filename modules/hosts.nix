@@ -66,11 +66,50 @@ let
 in
 {
   den = {
-    aspects.haseeb = {
-      includes = [
+    aspects = {
+      haseeb.includes = [
         den.batteries.primary-user
         (den.batteries.user-shell "fish")
       ];
+
+      herdr = {
+        includes = [
+          (den.batteries.user-shell "fish")
+          den.aspects.fish
+          den.aspects.git
+          den.aspects.ssh
+          den.aspects.herdr-cli
+          den.aspects.pi-coding-agent
+          den.aspects.claude-code
+          den.aspects.skills
+          den.aspects.worktrunk
+        ];
+
+        homeManager =
+          { pkgs, ... }:
+          {
+            imports = [
+              inputs.sops-nix.homeManagerModules.sops
+              inputs.stylix.homeModules.stylix
+            ];
+
+            stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-mocha.yaml";
+
+            home = {
+              stateVersion = "26.05";
+              packages = with pkgs; [
+                bat
+                eza
+                fd
+                fzf
+                jq
+                neovim
+                ripgrep
+                tmux
+              ];
+            };
+          };
+      };
     };
 
     hosts.x86_64-linux = {
@@ -105,6 +144,11 @@ in
 
       vps = {
         instantiate = mkInstantiate;
+        users.herdr = {
+          authorizedKeys = [ ];
+          email = "hello@haseebmajid.dev";
+          signingKey = "~/.ssh/id_ed25519.pub";
+        };
       };
     };
 
