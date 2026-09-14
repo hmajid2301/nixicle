@@ -60,8 +60,12 @@
       url = "gitlab:hmajid2301/gsesh";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    herdr = {
+      url = "github:herdrdev/herdr/v0.9.0";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     herdr-skills = {
-      url = "github:herdrdev/herdr/v0.8.2";
+      url = "github:herdrdev/herdr/v0.9.0";
       flake = false;
     };
     home-manager = {

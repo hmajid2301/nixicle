@@ -1,16 +1,28 @@
 { inputs, ... }:
 {
-  den.aspects.herdr = {
+  flake-file.inputs = {
+    herdr = {
+      url = "github:herdrdev/herdr/v0.9.0";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    plugins-herdr-worktrunk = {
+      url = "github:devashish2203/herdr-worktrunk";
+      flake = false;
+    };
+  };
+
+  den.aspects.herdr-cli = {
     homeManager =
       { pkgs, lib, ... }:
       let
         piIntegration = pkgs.runCommand "herdr-pi-agent-state.ts" { } ''
           export HOME="$TMPDIR/home"
           mkdir -p "$HOME/.pi/agent"
-          ${pkgs.herdr}/bin/herdr integration install pi >/dev/null
+          ${herdrPackage}/bin/herdr integration install pi >/dev/null
           cp "$HOME/.pi/agent/extensions/herdr-agent-state.ts" "$out"
         '';
 
+        herdrPackage = inputs.herdr.packages.${pkgs.stdenv.hostPlatform.system}.default;
         agent-session-sync = pkgs.callPackage ./plugins/agent-session-sync/_package.nix { };
 
         # The plugin's scripts shell out to the binary, so pin the store path
@@ -33,6 +45,7 @@
       {
         programs.herdr = {
           enable = true;
+          package = herdrPackage;
           settings = {
             onboarding = false;
             theme = {
@@ -181,10 +194,10 @@
           ];
 
           activation.herdrPlugins = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-            ${pkgs.herdr}/bin/herdr plugin link ${inputs.plugins-herdr-float} --enabled || true
-            ${pkgs.herdr}/bin/herdr plugin link ${inputs.plugins-herdr-splits} --enabled || true
-            ${pkgs.herdr}/bin/herdr plugin link ${inputs.plugins-herdr-worktrunk} --enabled || true
-            ${pkgs.herdr}/bin/herdr plugin link ${sessionSyncPlugin} --enabled || true
+            ${herdrPackage}/bin/herdr plugin link ${inputs.plugins-herdr-float} --enabled || true
+            ${herdrPackage}/bin/herdr plugin link ${inputs.plugins-herdr-splits} --enabled || true
+            ${herdrPackage}/bin/herdr plugin link ${inputs.plugins-herdr-worktrunk} --enabled || true
+            ${herdrPackage}/bin/herdr plugin link ${sessionSyncPlugin} --enabled || true
           '';
 
           file.".pi/agent/extensions/herdr-agent-state.ts".source = piIntegration;
