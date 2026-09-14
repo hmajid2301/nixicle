@@ -85,6 +85,26 @@
 
         security.sudo.wheelNeedsPassword = lib.mkForce false;
 
+        users.users.herdr = {
+          extraGroups = [ ];
+          hashedPassword = "!";
+        };
+
+        systemd.tmpfiles.rules = [
+          "d /home/herdr 0700 herdr users -"
+          "d /home/herdr/projects 0700 herdr users -"
+        ];
+
+        assertions = [
+          {
+            assertion = builtins.all (group: !builtins.elem group config.users.users.herdr.extraGroups) [
+              "wheel"
+              "networkmanager"
+            ];
+            message = "The herdr user must not belong to privileged groups";
+          }
+        ];
+
         networking = {
           hostName = "vps";
           useDHCP = lib.mkDefault true;
@@ -125,6 +145,7 @@
 
         environment.systemPackages = with pkgs; [
           jq
+          mosh
           sqlite-interactive
         ];
 
