@@ -95,6 +95,23 @@ in
 
             stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-mocha.yaml";
 
+            systemd.user.services.herdr-server = {
+              Unit = {
+                Description = "Persistent Herdr agent server";
+                After = [ "network-online.target" ];
+                Wants = [ "network-online.target" ];
+                X-RestartIfChanged = false;
+              };
+              Service = {
+                ExecStart = "${inputs.herdr.packages.${pkgs.stdenv.hostPlatform.system}.default}/bin/herdr server";
+                Restart = "on-failure";
+                RestartSec = 5;
+                UMask = "0077";
+                WorkingDirectory = "/home/herdr";
+              };
+              Install.WantedBy = [ "default.target" ];
+            };
+
             home = {
               stateVersion = "26.05";
               packages = with pkgs; [

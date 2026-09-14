@@ -86,6 +86,7 @@
         users.users.herdr = {
           extraGroups = [ ];
           hashedPassword = "!";
+          linger = true;
         };
 
         systemd.tmpfiles.rules = [
