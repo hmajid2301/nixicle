@@ -23,7 +23,7 @@ _: {
         flake = false;
       };
       herdr-skills = {
-        url = "github:herdrdev/herdr/v0.8.2";
+        url = "github:herdrdev/herdr/v0.9.0";
         flake = false;
       };
     };

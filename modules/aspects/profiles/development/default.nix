@@ -32,7 +32,7 @@
       den.aspects.pi-coding-agent
       den.aspects.skills
       den.aspects.zellij
-      den.aspects.herdr
+      den.aspects.herdr-cli
       den.aspects.histerClient
       den.aspects.worktrunk
       den.aspects.git
