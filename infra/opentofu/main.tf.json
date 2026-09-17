@@ -27,6 +27,13 @@
     "grafana_client_id": {
       "value": "${pocketid_client.grafana.id}"
     },
+    "gotify_client_id": {
+      "value": "${pocketid_client.gotify.id}"
+    },
+    "gotify_client_secret": {
+      "sensitive": true,
+      "value": "${pocketid_client.gotify.client_secret}"
+    },
     "grafana_client_secret": {
       "sensitive": true,
       "value": "${pocketid_client.grafana.client_secret}"
@@ -125,6 +132,21 @@
         "is_public": false,
         "launch_url": "https://goroutinely.haseebmajid.dev",
         "name": "Goroutinely",
+        "pkce_enabled": true
+      },
+      "gotify": {
+        "allowed_user_groups": [
+          "${data.pocketid_group.family.id}",
+          "${pocketid_group.gotify_admins.id}"
+        ],
+        "callback_urls": [
+          "https://gotify.haseebmajid.dev/auth/oidc/callback",
+          "gotify://oidc/callback"
+        ],
+        "client_id": "gotify",
+        "is_public": false,
+        "launch_url": "https://gotify.haseebmajid.dev",
+        "name": "Gotify",
         "pkce_enabled": true
       },
       "gothreads": {
@@ -275,6 +297,10 @@
       }
     },
     "pocketid_group": {
+      "gotify_admins": {
+        "friendly_name": "Gotify Admins",
+        "name": "Gotify Admins"
+      },
       "grafana_admins": {
         "friendly_name": "Grafana Admins",
         "name": "Grafana Admins"
@@ -295,6 +321,7 @@
         "first_name": "Haseeb",
         "groups": [
           "${data.pocketid_group.family.id}",
+          "${pocketid_group.gotify_admins.id}",
           "${pocketid_group.grafana_admins.id}",
           "${pocketid_group.jellyfin_admins.id}"
         ],
@@ -345,9 +372,9 @@
         "source": "hashicorp/vault",
         "version": "~> 4.0"
       },
-      "desec": {
-        "source": "timofurrer/desec",
-        "version": "~> 0.6"
+      "gandi": {
+        "source": "go-gandi/gandi",
+        "version": "~> 2.3"
       }
     },
     "required_version": ">= 1.0"
