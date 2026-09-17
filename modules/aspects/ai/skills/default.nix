@@ -26,6 +26,14 @@ _: {
         url = "github:herdrdev/herdr/v0.9.0";
         flake = false;
       };
+      pauldambra-dotfiles = {
+        url = "github:pauldambra/dotfiles";
+        flake = false;
+      };
+      i-have-adhd = {
+        url = "github:ayghri/i-have-adhd";
+        flake = false;
+      };
     };
   };
 
@@ -72,6 +80,16 @@ _: {
 
             herdr = {
               path = inputs.herdr-skills;
+              subdir = "skills";
+            };
+
+            pauldambra = {
+              path = inputs.pauldambra-dotfiles;
+              subdir = "ai/skills";
+            };
+
+            adhd = {
+              path = inputs.i-have-adhd;
               subdir = "skills";
             };
           };
@@ -184,8 +202,25 @@ _: {
               herdr = {
                 from = "herdr";
                 path = "herdr";
-                packages = [ pkgs.herdr ];
+                # Keep the binary on the same version as the skill docs, which
+                # come from the herdr-skills input; pkgs.herdr lags behind.
+                packages = [ inputs.herdr.packages.${pkgs.stdenv.hostPlatform.system}.default ];
                 rewriteCommands = false;
+              };
+
+              "review-triage" = {
+                from = "pauldambra";
+                path = "review-triage";
+              };
+
+              "qa-swarm" = {
+                from = "pauldambra";
+                path = "qa-swarm";
+              };
+
+              "i-have-adhd" = {
+                from = "adhd";
+                path = "i-have-adhd";
               };
             };
           };
