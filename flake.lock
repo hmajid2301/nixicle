@@ -391,6 +391,28 @@
         "type": "github"
       }
     },
+    "fenix_3": {
+      "inputs": {
+        "nixpkgs": [
+          "nirinit",
+          "nixpkgs"
+        ],
+        "rust-analyzer-src": "rust-analyzer-src_3"
+      },
+      "locked": {
+        "lastModified": 1771917501,
+        "narHash": "sha256-pyjD5s19JzH/aw6OnjyxYddoQWD/F1ygj9bku9td+MI=",
+        "owner": "nix-community",
+        "repo": "fenix",
+        "rev": "1d6ea44fd28bd5ad7cfd4bb39a7a225225484593",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-community",
+        "repo": "fenix",
+        "type": "github"
+      }
+    },
     "fetch-tangled": {
       "inputs": {
         "nixpkgs": [
@@ -1406,6 +1428,22 @@
         "url": "https://cdn.jsdelivr.net/npm/htmx-ext-ws@2.0.4"
       }
     },
+    "i-have-adhd": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1789572625,
+        "narHash": "sha256-wnD5crIal23Vtk6GReG2vCkjDuhrpmhWXvrNUq5mZfE=",
+        "owner": "ayghri",
+        "repo": "i-have-adhd",
+        "rev": "b15d0be58f55b33972ba3e39709e0e5208ef30cb",
+        "type": "github"
+      },
+      "original": {
+        "owner": "ayghri",
+        "repo": "i-have-adhd",
+        "type": "github"
+      }
+    },
     "ibm-plex-mono-src": {
       "flake": false,
       "locked": {
@@ -1718,6 +1756,27 @@
       "original": {
         "owner": "YaLTeR",
         "repo": "niri",
+        "type": "github"
+      }
+    },
+    "nirinit": {
+      "inputs": {
+        "fenix": "fenix_3",
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1774415025,
+        "narHash": "sha256-jpSYhiJNI5u/1CJ1RY+9BkSQtvishCfm5n+l9r7hdEk=",
+        "owner": "amaanq",
+        "repo": "nirinit",
+        "rev": "0e43f61069f81bba1114475cae2e84aa0965a1a3",
+        "type": "github"
+      },
+      "original": {
+        "owner": "amaanq",
+        "repo": "nirinit",
         "type": "github"
       }
     },
@@ -2452,6 +2511,22 @@
         "type": "github"
       }
     },
+    "pauldambra-dotfiles": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1789208970,
+        "narHash": "sha256-F50C3dr6TWkHb7RQ4dFVDSUkDUBEFqY592pfktqb7zY=",
+        "owner": "pauldambra",
+        "repo": "dotfiles",
+        "rev": "491d5ffeea995fd2fa84def405d0f0b7581e47d6",
+        "type": "github"
+      },
+      "original": {
+        "owner": "pauldambra",
+        "repo": "dotfiles",
+        "type": "github"
+      }
+    },
     "playwright": {
       "inputs": {
         "flake-utils": "flake-utils_2",
@@ -2609,6 +2684,22 @@
       "original": {
         "owner": "meerzulee",
         "repo": "herdr-float",
+        "type": "github"
+      }
+    },
+    "plugins-herdr-resurrect": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1787559056,
+        "narHash": "sha256-t4HCaLy2yWkeuvDovFTRdG0jQvlyKf5Z+u5UIU3xvts=",
+        "owner": "ntindle",
+        "repo": "herdr-resurrect",
+        "rev": "5afa6755d4f35c62c7522ba4fd04922d1ac69602",
+        "type": "github"
+      },
+      "original": {
+        "owner": "ntindle",
+        "repo": "herdr-resurrect",
         "type": "github"
       }
     },
@@ -2868,6 +2959,7 @@
         "herdr": "herdr",
         "herdr-skills": "herdr-skills",
         "home-manager": "home-manager_2",
+        "i-have-adhd": "i-have-adhd",
         "impermanence": "impermanence",
         "import-tree": "import-tree",
         "lanzaboote": "lanzaboote",
@@ -2875,6 +2967,7 @@
         "matt-skills": "matt-skills",
         "nfsm": "nfsm",
         "niri": "niri",
+        "nirinit": "nirinit",
         "nix-index-database": "nix-index-database",
         "nix-topology": "nix-topology",
         "nix-wrapper-modules": "nix-wrapper-modules",
@@ -2892,11 +2985,13 @@
         "noctalia-official-plugins": "noctalia-official-plugins",
         "nur": "nur",
         "oxy2dev-nvim-scripts": "oxy2dev-nvim-scripts",
+        "pauldambra-dotfiles": "pauldambra-dotfiles",
         "playwright-cli-skill": "playwright-cli-skill",
         "plugins-cmp-dbee": "plugins-cmp-dbee",
         "plugins-cmp-go-deep": "plugins-cmp-go-deep",
         "plugins-gx-nvim": "plugins-gx-nvim",
         "plugins-herdr-float": "plugins-herdr-float",
+        "plugins-herdr-resurrect": "plugins-herdr-resurrect",
         "plugins-herdr-splits": "plugins-herdr-splits",
         "plugins-herdr-worktrunk": "plugins-herdr-worktrunk",
         "plugins-inline-edit": "plugins-inline-edit",
@@ -2944,6 +3039,23 @@
         "owner": "rust-lang",
         "repo": "rust-analyzer",
         "rev": "f3120321073d8046795c6824976be8b0ae92c999",
+        "type": "github"
+      },
+      "original": {
+        "owner": "rust-lang",
+        "ref": "nightly",
+        "repo": "rust-analyzer",
+        "type": "github"
+      }
+    },
+    "rust-analyzer-src_3": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1771830288,
+        "narHash": "sha256-Key/V7kjPYdPFeAw6cPS9M//6hGb6l1pLJroy7aUcfU=",
+        "owner": "rust-lang",
+        "repo": "rust-analyzer",
+        "rev": "05da4cf3c4dfb8aa3430343f41e73c4cfad46bd5",
         "type": "github"
       },
       "original": {
