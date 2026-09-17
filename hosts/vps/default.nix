@@ -85,24 +85,26 @@
 
         security.sudo.wheelNeedsPassword = lib.mkForce false;
 
-        users.users.herdr = {
-          extraGroups = [ ];
+        users.users.haseeb = {
+          # The base haseeb aspect grants wheel/networkmanager (primary-user);
+          # this agent account must stay unprivileged.
+          extraGroups = lib.mkForce [ ];
           hashedPassword = "!";
           linger = true;
         };
 
         systemd.tmpfiles.rules = [
-          "d /home/herdr 0700 herdr users -"
-          "d /home/herdr/projects 0700 herdr users -"
+          "d /home/haseeb 0700 haseeb users -"
+          "d /home/haseeb/projects 0700 haseeb users -"
         ];
 
         assertions = [
           {
-            assertion = builtins.all (group: !builtins.elem group config.users.users.herdr.extraGroups) [
+            assertion = builtins.all (group: !builtins.elem group config.users.users.haseeb.extraGroups) [
               "wheel"
               "networkmanager"
             ];
-            message = "The herdr user must not belong to privileged groups";
+            message = "The haseeb user must not belong to privileged groups";
           }
         ];
 
@@ -178,11 +180,11 @@
                 Persistent = true;
               };
             };
-            herdr = {
-              paths = [ "/home/herdr" ];
+            haseeb = {
+              paths = [ "/home/haseeb" ];
               exclude = [
-                "/home/herdr/.cache"
-                "/home/herdr/.local/share/Trash"
+                "/home/haseeb/.cache"
+                "/home/haseeb/.local/share/Trash"
                 "**/.direnv"
                 "**/node_modules"
                 "**/target"
