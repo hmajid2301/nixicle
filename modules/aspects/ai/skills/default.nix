@@ -39,7 +39,7 @@ _: {
 
   den.aspects.skills = {
     homeManager =
-      { inputs, pkgs, ... }:
+      { inputs, ... }:
       {
         imports = [ inputs.agent-skills.homeManagerModules.default ];
 
@@ -113,15 +113,11 @@ _: {
               zellij = {
                 from = "nixicle";
                 path = "zellij";
-                packages = [ pkgs.zellij ];
-                rewriteCommands = false;
               };
 
               zk = {
                 from = "nixicle";
                 path = "zk";
-                packages = [ pkgs.zk ];
-                rewriteCommands = false;
               };
 
               atomic-committer = {
@@ -202,10 +198,6 @@ _: {
               herdr = {
                 from = "herdr";
                 path = "herdr";
-                # Keep the binary on the same version as the skill docs, which
-                # come from the herdr-skills input; pkgs.herdr lags behind.
-                packages = [ inputs.herdr.packages.${pkgs.stdenv.hostPlatform.system}.default ];
-                rewriteCommands = false;
               };
 
               "review-triage" = {
