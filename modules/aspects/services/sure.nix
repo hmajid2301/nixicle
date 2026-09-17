@@ -14,7 +14,6 @@ in
 
   den.aspects.sure = {
     includes = [ ];
-    backup.sure.paths = [ "/var/lib/sure" ];
     persist.directories = [
       {
         directory = "/var/lib/sure";
@@ -33,6 +32,7 @@ in
         cfg = config.services.sure;
       in
       {
+        system.backup.objects.sure.paths = [ "/var/lib/sure" ];
         imports = [ inputs.sure-nix.nixosModules.sure ];
 
         sops.secrets.sure_env = {

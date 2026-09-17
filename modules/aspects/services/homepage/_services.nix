@@ -161,18 +161,6 @@ lib.flatten [
         ];
         href = publicUrl "forgejo";
       })
-
-      (mkHomepageService {
-        name = "Paperless";
-        icon = serviceIcons.Paperless;
-        description = "document archive";
-        enable = serviceEnabled [
-          "services"
-          "paperless"
-          "enable"
-        ];
-        href = "https://paperless.haseebmajid.dev";
-      })
     ];
   }
 

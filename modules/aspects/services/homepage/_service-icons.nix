@@ -15,7 +15,6 @@ rec {
     Immich = "immich";
     Jellyfin = "jellyfin";
     Forgejo = "forgejo";
-    Paperless = "paperless";
     Traefik = "traefik";
     PocketID = "pocket-id";
     HomeAssistant = "home-assistant";
@@ -96,14 +95,6 @@ rec {
       <rect x='14' y='18' width='4' height='4' fill='rgb(203,166,247)'/>
       <rect x='11' y='10' width='8' height='2' fill='rgb(137,180,250)'/>
       <rect x='15' y='12' width='2' height='6' fill='rgb(137,180,250)'/>
-    '';
-    Paperless = renderIcon ''
-      <rect x='8' y='6' width='16' height='20' fill='rgb(205,214,244)'/>
-      <rect x='10' y='8' width='16' height='20' fill='rgb(147,153,178)'/>
-      <rect x='12' y='10' width='16' height='20' fill='rgb(249,226,175)'/>
-      <rect x='13' y='12' width='10' height='2' fill='rgb(24,24,37)'/>
-      <rect x='13' y='16' width='8' height='2' fill='rgb(24,24,37)'/>
-      <rect x='13' y='20' width='6' height='2' fill='rgb(24,24,37)'/>
     '';
     Traefik = renderIcon ''
       <rect x='6' y='18' width='20' height='4' fill='rgb(137,180,250)'/>

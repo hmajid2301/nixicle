@@ -6,7 +6,6 @@ in
 {
   den.aspects.papra = {
     includes = [ ];
-    backup.papra.paths = [ "/var/lib/papra" ];
     persist.directories = [
       {
         directory = "/var/lib/papra";
@@ -18,6 +17,7 @@ in
     nixos =
       { config, lib, ... }:
       {
+        system.backup.objects.papra.paths = [ "/var/lib/papra" ];
         sops.secrets.papra-env = {
           restartUnits = [ "papra.service" ];
         };

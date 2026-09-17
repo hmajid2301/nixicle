@@ -1,7 +1,6 @@
 _: {
   den.aspects.tandoor = {
     includes = [ ];
-    backup.tandoor.paths = [ "/var/lib/tandoor-recipes" ];
     persist.directories = [
       {
         directory = "/var/lib/tandoor-recipes";
@@ -18,6 +17,7 @@ _: {
         ...
       }:
       {
+        system.backup.objects.tandoor.paths = [ "/var/lib/tandoor-recipes" ];
         sops.secrets.tandoor = { };
         systemd.services.tandoor-recipes = {
           serviceConfig.EnvironmentFile = [ config.sops.secrets.tandoor.path ];

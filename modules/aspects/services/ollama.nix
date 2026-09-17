@@ -1,7 +1,6 @@
 _: {
   den.aspects.ollama = {
     includes = [ ];
-    backup.ollama.paths = [ "/var/lib/ollama" ];
     persist.directories = [
       {
         directory = "/var/lib/ollama";

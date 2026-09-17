@@ -5,7 +5,6 @@ _: {
       "/var/lib/postgresql"
       "/var/backup/postgresql"
     ];
-    backup.postgresql-dumps.paths = [ "/var/backup/postgresql" ];
     nixos =
       {
         config,
@@ -13,6 +12,7 @@ _: {
         ...
       }:
       {
+        system.backup.objects.postgresql-dumps.paths = [ "/var/backup/postgresql" ];
         sops.secrets.postgres_terraform_password = {
         };
 

@@ -2,18 +2,6 @@ _: {
   den.aspects.garage = {
     includes = [ ];
     persist.directories = [ "/var/lib/private/garage" ];
-    backup.garage = {
-      paths = [
-        "/var/lib/garage/meta"
-        "/var/lib/garage/data"
-      ];
-      backupPrepareCommand = ''
-        systemctl stop garage.service
-      '';
-      backupCleanupCommand = ''
-        systemctl start garage.service
-      '';
-    };
     nixos =
       {
         pkgs,
@@ -22,6 +10,19 @@ _: {
       }:
       {
         config = {
+          system.backup.objects.garage = {
+            paths = [
+              "/var/lib/garage/meta"
+              "/var/lib/garage/data"
+            ];
+            backupPrepareCommand = ''
+              systemctl stop garage.service
+            '';
+            backupCleanupCommand = ''
+              systemctl start garage.service
+            '';
+          };
+
           sops.secrets.garage_rpc_secret = {
             key = "garage_rpc_secret";
             mode = "0400";
