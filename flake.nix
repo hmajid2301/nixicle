@@ -74,6 +74,10 @@
     };
     impermanence.url = "github:nix-community/impermanence";
     import-tree.url = "github:vic/import-tree";
+    i-have-adhd = {
+      url = "github:ayghri/i-have-adhd";
+      flake = false;
+    };
     lanzaboote.url = "github:nix-community/lanzaboote";
     lettucego = {
       url = "gitlab:hmajid2301/lettucego";
@@ -89,6 +93,10 @@
     };
     niri = {
       url = "github:sodiboo/niri-flake";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    nirinit = {
+      url = "github:amaanq/nirinit";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nix-index-database.url = "github:nix-community/nix-index-database";
@@ -135,6 +143,10 @@
       url = "github:OXY2DEV/nvim";
       flake = false;
     };
+    pauldambra-dotfiles = {
+      url = "github:pauldambra/dotfiles";
+      flake = false;
+    };
     playwright-cli-skill = {
       url = "github:microsoft/playwright-cli";
       flake = false;
@@ -153,6 +165,10 @@
     };
     plugins-herdr-float = {
       url = "github:meerzulee/herdr-float";
+      flake = false;
+    };
+    plugins-herdr-resurrect = {
+      url = "github:ntindle/herdr-resurrect";
       flake = false;
     };
     plugins-herdr-splits = {
