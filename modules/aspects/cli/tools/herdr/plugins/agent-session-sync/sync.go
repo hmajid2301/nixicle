@@ -41,6 +41,13 @@ const (
 	rsyncTimeout      = 30 * time.Minute
 )
 
+// shellQuote wraps s in single quotes for a POSIX shell, escaping any embedded
+// single quote. Needed because ssh concatenates its command arguments into one
+// string for the remote shell rather than passing them as separate argv items.
+func shellQuote(s string) string {
+	return "'" + strings.ReplaceAll(s, "'", `'\''`) + "'"
+}
+
 // RemoteHome asks the remote what its home directory is. Only the last line is
 // taken, so a login shell that prints a banner does not corrupt the answer.
 func RemoteHome(ctx context.Context, host string) (string, error) {
@@ -59,13 +66,17 @@ func RemoteHome(ctx context.Context, host string) (string, error) {
 	return home, nil
 }
 
-// remoteDirExists probes for a directory. The path is passed as a positional
-// argument rather than interpolated into the command string, so a home
-// directory containing a quote cannot break out of the remote shell.
+// remoteDirExists probes for a directory.
+//
+// ssh does not bind extra argv entries as positional parameters — it joins them
+// onto the command string with spaces. So `test -d "$1" _ <path>` reaches the
+// remote shell as literally that, and test fails with "too many arguments",
+// making every probe report "absent". The path must instead be quoted into the
+// command by us; shellQuote makes that safe for paths containing quotes.
 func remoteDirExists(ctx context.Context, host, dir string) (bool, error) {
 	ctx, cancel := context.WithTimeout(ctx, sshCommandTimeout)
 	defer cancel()
-	args := append(baseSSHArgs(), "--", host, "test -d \"$1\"", "_", dir)
+	args := append(baseSSHArgs(), "--", host, "test -d "+shellQuote(dir))
 	err := exec.CommandContext(ctx, "ssh", args...).Run()
 	if err == nil {
 		return true, nil
@@ -93,10 +104,15 @@ func rsyncArgs(src, dst string) []string {
 	// --append-verify treats the mirror as append-only: it extends a file whose
 	// existing bytes still checksum-match, and never shrinks one. Without it a
 	// remote-side truncation (disk corruption, an errant sed -i, an agent bug)
-	// propagates into the mirror and destroys the last surviving copy. If the
-	// prefix no longer matches, rsync retransmits the whole file rather than
-	// splicing, so genuine rewrites still converge.
-	args := []string{"-az", "--append-verify", "--partial-dir=.rsync-partial", "--prune-empty-dirs"}
+	// propagates into the mirror and destroys the last surviving copy.
+	//
+	// It cannot be combined with --partial-dir — rsync rejects the pair outright
+	// ("--append cannot be used with --partial-dir"). Append-only wins: an
+	// interrupted transfer leaves a torn tail at the real path, which is benign
+	// here because Compare treats a torn file as a valid prefix and promote
+	// strips the partial record via CompleteSize. Losing the last copy is not
+	// benign, so the shrink protection is the one worth keeping.
+	args := []string{"-az", "--append-verify", "--prune-empty-dirs"}
 	for _, ex := range []string{
 		"tmp/", "npm/", "node_modules/", "paste-cache/", "shell-snapshots/",
 		"file-history/", ".credentials.json", "auth.json", "*.db", "*.db-*", "*.log",
@@ -209,8 +225,8 @@ func syncErrIfPartial(failed bool) error {
 	return nil
 }
 
-// countTranscripts counts what Sessions would list, so status and list cannot
-// disagree — incomplete transfers under .rsync-partial are excluded.
+// countTranscripts counts only what Sessions would list, so status cannot
+// over-report how much is actually recoverable.
 func countTranscripts(dir string) int {
 	n := 0
 	filepath.WalkDir(dir, func(p string, d os.DirEntry, err error) error {
@@ -231,19 +247,16 @@ func countTranscripts(dir string) int {
 // Daemon pulls on an interval until the context is cancelled. Consecutive
 // failures back off linearly up to 4x the interval, so a dead host does not
 // spin ssh, but it never gives up — the box may come back.
+// The lock is taken per pass, not for the daemon's lifetime: holding it
+// between ticks would make promote — the one command that recovers your data —
+// permanently unavailable while the daemon runs.
 func (s *Store) Daemon(ctx context.Context, host string, interval time.Duration) error {
-	unlock, err := s.lockHost(host)
-	if err != nil {
-		return err
-	}
-	defer unlock()
-
 	s.logf("daemon start: %s every %s", host, interval)
 	defer s.logf("daemon stop: %s", host)
 
 	fails := 0
 	for {
-		results, err := s.pullLocked(ctx, host) // lock already held for the daemon's lifetime
+		results, err := s.Pull(ctx, host) // takes and releases the lock per pass
 		if ctx.Err() != nil {
 			return nil
 		}

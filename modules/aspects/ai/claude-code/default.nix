@@ -35,6 +35,19 @@ _: {
             };
             includeCoAuthoredBy = false;
             alwaysThinkingEnabled = false;
+
+            hooks.SessionStart = [
+              {
+                matcher = "*";
+                hooks = [
+                  {
+                    type = "command";
+                    command = "bash '${config.home.homeDirectory}/.claude/hooks/herdr-agent-state.sh' session";
+                    timeout = 10;
+                  }
+                ];
+              }
+            ];
           };
 
           mcpServers = {

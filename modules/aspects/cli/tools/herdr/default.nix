@@ -9,18 +9,22 @@
       url = "github:devashish2203/herdr-worktrunk";
       flake = false;
     };
+    plugins-herdr-resurrect = {
+      url = "github:ntindle/herdr-resurrect";
+      flake = false;
+    };
   };
 
   den.aspects.herdr-cli = {
     homeManager =
-      { pkgs, lib, ... }:
+      {
+        pkgs,
+        lib,
+        ...
+      }:
       let
-        piIntegration = pkgs.runCommand "herdr-pi-agent-state.ts" { } ''
-          export HOME="$TMPDIR/home"
-          mkdir -p "$HOME/.pi/agent"
-          ${herdrPackage}/bin/herdr integration install pi >/dev/null
-          cp "$HOME/.pi/agent/extensions/herdr-agent-state.ts" "$out"
-        '';
+        # herdr-skills must stay pinned to the same version as herdrPackage.
+        integrationAsset = agent: "${inputs.herdr-skills}/src/integration/assets/${agent}";
 
         herdrPackage = inputs.herdr.packages.${pkgs.stdenv.hostPlatform.system}.default;
         agent-session-sync = pkgs.callPackage ./plugins/agent-session-sync/_package.nix { };
@@ -40,7 +44,28 @@
         '';
 
         # SSH host aliases whose agent transcripts should be mirrored locally.
-        syncHosts = [ ];
+
+        pluginPackages = [
+          inputs.plugins-herdr-float
+          inputs.plugins-herdr-splits
+          inputs.plugins-herdr-worktrunk
+          inputs.plugins-herdr-resurrect
+          sessionSyncPlugin
+        ];
+
+        # https://github.com/nix-community/home-manager/pull/9815
+        desiredPluginManifests = builtins.toJSON (map (p: "${p}/herdr-plugin.toml") pluginPackages);
+
+        stalePluginIds = ''
+          .result.plugins[]?
+          | select((.manifest_path // "") | startswith($store))
+          | select((.manifest_path as $p | $desired | index($p)) | not)
+          | .plugin_id
+        '';
+
+        missingPluginManifests = ''
+          ($desired - [.result.plugins[]?.manifest_path?])[]
+        '';
       in
       {
         programs.herdr = {
@@ -56,6 +81,9 @@
               default_shell = "fish";
               shell_mode = "auto";
               new_cwd = "follow";
+            };
+            experimental = {
+              pane_history = true;
             };
             keys = {
               prefix = "ctrl+a";
@@ -156,10 +184,16 @@
                   description = "Worktree: merge into target branch";
                 }
                 {
-                  key = "prefix+shift+s";
+                  key = "prefix+ctrl+s";
                   type = "plugin_action";
-                  command = "agent-session-sync.open";
-                  description = "Sessions: browse mirrored transcripts";
+                  command = "ntindle.herdr-resurrect.save";
+                  description = "Resurrect: save snapshot";
+                }
+                {
+                  key = "prefix+ctrl+r";
+                  type = "plugin_action";
+                  command = "ntindle.herdr-resurrect.restore";
+                  description = "Resurrect: restore last snapshot";
                 }
               ];
             };
@@ -187,42 +221,48 @@
           };
         };
 
+        xdg.configFile."herdr/plugins/config/ntindle.herdr-resurrect/settings.json".text = builtins.toJSON {
+          autoRestore = true;
+        };
+
+        xdg.configFile."herdr/plugins/config/ntindle.herdr-resurrect/allowlist.txt".text = "*\n";
+
         home = {
           packages = [
             pkgs.tmux
-            agent-session-sync
+            pkgs.nodejs
           ];
 
           activation.herdrPlugins = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-            ${herdrPackage}/bin/herdr plugin link ${inputs.plugins-herdr-float} --enabled || true
-            ${herdrPackage}/bin/herdr plugin link ${inputs.plugins-herdr-splits} --enabled || true
-            ${herdrPackage}/bin/herdr plugin link ${inputs.plugins-herdr-worktrunk} --enabled || true
-            ${herdrPackage}/bin/herdr plugin link ${sessionSyncPlugin} --enabled || true
+            registered="$(${herdrPackage}/bin/herdr plugin list --json 2>/dev/null || true)"
+
+            printf '%s' "$registered" \
+              | ${lib.getExe pkgs.jq} -r \
+                --arg store "/nix/store/" \
+                --argjson desired ${lib.escapeShellArg desiredPluginManifests} \
+                ${lib.escapeShellArg stalePluginIds} \
+              | while read -r id; do
+                  [ -n "$id" ] && ${herdrPackage}/bin/herdr plugin unlink "$id" >/dev/null 2>&1 || true
+                done
+
+            printf '%s' "$registered" \
+              | ${lib.getExe pkgs.jq} -r \
+                --argjson desired ${lib.escapeShellArg desiredPluginManifests} \
+                ${lib.escapeShellArg missingPluginManifests} \
+              | while read -r manifest; do
+                  [ -n "$manifest" ] && ${herdrPackage}/bin/herdr plugin link "$manifest" --enabled >/dev/null 2>&1 || true
+                done
           '';
 
-          file.".pi/agent/extensions/herdr-agent-state.ts".source = piIntegration;
-        };
-
-        # Mirror agent transcripts off each remote box so losing one does not
-        # lose the conversations running on it. Add SSH host aliases here to
-        # switch it on; empty means no units are generated.
-        systemd.user.services = lib.listToAttrs (
-          map (host: {
-            name = "agent-session-sync-${host}";
-            value = {
-              Unit = {
-                Description = "Mirror agent transcripts from ${host}";
-                After = [ "network-online.target" ];
-              };
-              Service = {
-                ExecStart = "${lib.getExe agent-session-sync} daemon ${host}";
-                Restart = "on-failure";
-                RestartSec = 60;
-              };
-              Install.WantedBy = [ "default.target" ];
+          file = {
+            ".pi/agent/extensions/herdr-agent-state.ts".source =
+              "${integrationAsset "pi"}/herdr-agent-state.ts";
+            ".claude/hooks/herdr-agent-state.sh" = {
+              source = "${integrationAsset "claude"}/herdr-agent-state.sh";
+              executable = true;
             };
-          }) syncHosts
-        );
+          };
+        };
       };
   };
 }

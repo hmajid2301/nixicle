@@ -106,6 +106,14 @@ func (s *Store) mappings(remoteHome string) []PathMapping {
 	return maps
 }
 
+func (s *Store) countHostTranscripts(host string) int {
+	n := 0
+	for _, agent := range Agents {
+		n += countTranscripts(s.agentDir(host, agent.Name))
+	}
+	return n
+}
+
 // Session is one mirrored transcript, resolved against the local machine.
 type Session struct {
 	Host       string
@@ -155,8 +163,8 @@ func (s *Store) Sessions(host string) ([]Session, error) {
 			if err != nil {
 				return nil
 			}
-			// rsync parks incomplete transfers in .rsync-partial. Those files are
-			// truncated mid-line, so they must never be listed or promotable.
+			// Skip dot-directories: rsync scratch dirs and anything else not part
+			// of the agent's own layout must never be listed or promotable.
 			if d.IsDir() && strings.HasPrefix(d.Name(), ".") && p != adir {
 				return filepath.SkipDir
 			}
@@ -218,12 +226,15 @@ func (s *Store) Find(host, id string) (Session, error) {
 	case 1:
 		return hits[0], nil
 	default:
+		// Include the project, since two different projects can hold the same
+		// uuid — in that case a longer id is impossible advice.
 		var b strings.Builder
 		fmt.Fprintf(&b, "ambiguous — %d matches:\n", len(hits))
 		for _, h := range hits {
-			fmt.Fprintf(&b, "  %s %s\n", h.Agent, h.UUID)
+			fmt.Fprintf(&b, "  %-7s %-40s %s\n", h.Agent, h.UUID,
+				orString(h.LocalCWD, h.Slug))
 		}
-		b.WriteString("use a longer session id")
+		b.WriteString("use a longer session id, or a different host")
 		return Session{}, errors.New(b.String())
 	}
 }
@@ -272,7 +283,10 @@ func (s *Store) Promote(host, id string) (PromoteResult, error) {
 	// does not have. Writing it into the live store would put the transcript in
 	// a directory the agent never reads, while reporting success — so refuse,
 	// and tell the user exactly what to add to the mapping file.
-	if !mapped && rhome != s.Home {
+	// Note this does not depend on the homes differing: a project outside the
+	// remote home is unmapped even when both machines use the same home path,
+	// and writing it under the remote slug would still be wrong.
+	if !mapped {
 		return PromoteResult{}, fmt.Errorf(
 			"no local path known for %s\n  add a line to %s, e.g.:\n    %s  %s",
 			orString(sess.RemoteCWD, sess.Slug), s.MapFile,
@@ -333,6 +347,23 @@ func (s *Store) Promote(host, id string) (PromoteResult, error) {
 			"%s changed while promoting (the agent is probably still writing to it)\n"+
 				"  nothing was overwritten; local copy also saved at %s\n"+
 				"  close that session and retry", filepath.Base(dest), res.BackedUp)
+	}
+	// Never install fewer bytes than the live file already holds. A forked
+	// mirror whose complete portion is shorter than the live copy would
+	// otherwise silently drop local records — the backup makes that
+	// recoverable, but the user is told "promoted" with no hint of loss.
+	if guard.set {
+		n, err := CompleteSize(sess.MirrorPath)
+		if err != nil {
+			return res, err
+		}
+		if n < guard.size {
+			return res, fmt.Errorf(
+				"refusing to shrink %s: the mirror holds %d complete bytes, the local copy has %d\n"+
+					"  the two have diverged and the mirror is behind; local copy saved at %s\n"+
+					"  inspect both before overwriting",
+				filepath.Base(dest), n, guard.size, res.BackedUp)
+		}
 	}
 	if _, err := copyWholeRecords(sess.MirrorPath, dest); err != nil {
 		return res, err
@@ -491,9 +522,12 @@ func (s *Store) Status(staleAfter time.Duration) ([]HostStatus, error) {
 		host := e.Name()
 		last := s.lastSync(host)
 		st := HostStatus{
-			Host:        host,
-			LastSync:    last,
-			Transcripts: countTranscripts(s.hostDir(host)),
+			Host:     host,
+			LastSync: last,
+			// Count only the known agent roots, matching what Sessions lists.
+			// Walking the whole host dir would count strays under an unrecognised
+			// agent name and over-report how much is actually recoverable.
+			Transcripts: s.countHostTranscripts(host),
 		}
 		if !last.IsZero() && time.Since(last) > staleAfter {
 			st.Stale = true
