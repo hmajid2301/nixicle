@@ -35,6 +35,8 @@
       den.aspects.otel-collector
       den.aspects.ollama
       den.aspects.monitoring
+      den.aspects.monitoringAlerts
+      den.aspects.gotify
       den.aspects.sure
       den.aspects.homepage
       den.aspects.hister
