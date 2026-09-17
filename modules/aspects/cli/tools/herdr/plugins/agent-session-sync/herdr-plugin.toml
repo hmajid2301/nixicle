@@ -5,12 +5,13 @@ min_herdr_version = "0.8.0"
 description = "Mirror remote agent transcripts locally, and promote one back into the live store"
 platforms = ["linux", "macos"]
 
-# Browse mirrored sessions and promote one. Overlay restores the previous focus
-# on close — you are usually mid-task when you reach for this.
+# Browse mirrored sessions and promote one. Popup keeps the layout untouched —
+# you are usually mid-task when you reach for this. Note herdr rejects width and
+# height on any placement other than popup.
 [[panes]]
 id = "picker"
 title = "Mirrored agent sessions"
-placement = "overlay"
+placement = "popup"
 width = "90%"
 height = 22
 command = ["sh", "picker.sh"]

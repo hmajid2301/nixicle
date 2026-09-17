@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"strings"
 	"testing"
@@ -224,8 +225,10 @@ func TestPromoteLocalAheadLeavesLiveFileIntact(t *testing.T) {
 func TestPromoteDivergedBacksUpLocalBytes(t *testing.T) {
 	root, home := mkMirror(t, "/home/other/repo", "/home/other", "-home-other-repo")
 	mirror := filepath.Join(root, "wb", "claude", "-home-other-repo", "sess-1.jsonl")
+	// Diverged, and the mirror is the longer side — otherwise the shrink guard
+	// refuses before divergence handling is reached.
 	if err := os.WriteFile(mirror,
-		[]byte(`{"cwd":"/home/other/repo"}`+"\n"+`{"remote":"x"}`+"\n"), 0o644); err != nil {
+		[]byte(`{"cwd":"/home/other/repo"}`+"\n"+`{"remote":"x"}`+"\n"+`{"remote":"y"}`+"\n"), 0o644); err != nil {
 		t.Fatal(err)
 	}
 	s := &Store{Root: root, Home: home, MapFile: filepath.Join(root, "none")}
@@ -235,7 +238,7 @@ func TestPromoteDivergedBacksUpLocalBytes(t *testing.T) {
 	if err := os.MkdirAll(filepath.Dir(live), 0o755); err != nil {
 		t.Fatal(err)
 	}
-	localBody := `{"cwd":"/home/other/repo"}` + "\n" + `{"local":"DIFFERENT"}` + "\n"
+	localBody := `{"cwd":"/home/other/repo"}` + "\n" + `{"local":"DIFF"}` + "\n"
 	if err := os.WriteFile(live, []byte(localBody), 0o644); err != nil {
 		t.Fatal(err)
 	}
@@ -409,5 +412,140 @@ func TestPromoteAbortsIfLiveFileChangesMidway(t *testing.T) {
 	}
 	if !changed {
 		t.Error("a concurrent append must be detected before overwriting")
+	}
+}
+
+// A forked mirror whose complete portion is shorter than the live copy would
+// silently drop local records. Refuse rather than "promote" a shrink.
+func TestPromoteRefusesToShrinkLiveFile(t *testing.T) {
+	root, home := mkMirror(t, "/home/other/repo", "/home/other", "-home-other-repo")
+	mirror := filepath.Join(root, "wb", "claude", "-home-other-repo", "sess-1.jsonl")
+	// Diverges at record 2, and its complete portion is shorter than the live file.
+	if err := os.WriteFile(mirror,
+		[]byte(`{"cwd":"/home/other/repo"}`+"\n"+`{"n":9}`+"\n"+`{"torn":`), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	s := &Store{Root: root, Home: home, MapFile: filepath.Join(root, "none")}
+
+	live := filepath.Join(home, ".claude/projects",
+		Slugify("claude", filepath.Join(home, "repo")), "sess-1.jsonl")
+	if err := os.MkdirAll(filepath.Dir(live), 0o755); err != nil {
+		t.Fatal(err)
+	}
+	body := `{"cwd":"/home/other/repo"}` + "\n" + `{"n":2}` + "\n" + `{"n":99,"local":"IRREPLACEABLE"}` + "\n"
+	if err := os.WriteFile(live, []byte(body), 0o644); err != nil {
+		t.Fatal(err)
+	}
+
+	if _, err := s.Promote("wb", "sess-1"); err == nil {
+		t.Error("expected promote to refuse a mirror shorter than the live file")
+	}
+	got, _ := os.ReadFile(live)
+	if string(got) != body {
+		t.Errorf("live file was modified: %q", got)
+	}
+}
+
+// The unmapped-path guard must not depend on the two machines having different
+// home directories — same username on both is the common case.
+func TestPromoteRefusesUnmappedPathWhenHomesMatch(t *testing.T) {
+	root, home := mkMirror(t, "/opt/work/repo", "", "-opt-work-repo")
+	// Remote home identical to local home.
+	if err := os.WriteFile(filepath.Join(root, "wb", ".remote-home"), []byte(home), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	s := &Store{Root: root, Home: home, MapFile: filepath.Join(root, "none")}
+	if _, err := s.Promote("wb", "sess-1"); err == nil {
+		t.Error("expected promote to refuse an unmapped path even when homes match")
+	}
+	if _, err := os.Stat(filepath.Join(home, ".claude/projects/-opt-work-repo")); err == nil {
+		t.Error("promote wrote under the remote-derived slug")
+	}
+}
+
+// rsyncArgs is only correct if rsync actually accepts it. Asserting flag order
+// in isolation cannot catch a mutually-exclusive pair.
+func TestRsyncArgsAreAcceptedByRsync(t *testing.T) {
+	if _, err := exec.LookPath("rsync"); err != nil {
+		t.Skip("rsync not available")
+	}
+	dir := t.TempDir()
+	src := filepath.Join(dir, "src")
+	dst := filepath.Join(dir, "dst")
+	for _, d := range []string{filepath.Join(src, "proj"), filepath.Join(src, "proj", "tmp"), dst} {
+		if err := os.MkdirAll(d, 0o755); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if err := os.WriteFile(filepath.Join(src, "proj", "a.jsonl"), []byte("{}\n"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	// Must not be transferred: excluded dir, and a credential file.
+	if err := os.WriteFile(filepath.Join(src, "proj", "tmp", "b.jsonl"), []byte("{}\n"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(src, "proj", "auth.json"), []byte("secret"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+
+	// Local paths, so no ssh is involved; the -e flag is simply unused.
+	args := rsyncArgs(src+"/", dst+"/")
+	out, err := exec.Command("rsync", args...).CombinedOutput()
+	if err != nil {
+		t.Fatalf("rsync rejected the arguments: %v\n%s\nargs: %v", err, out, args)
+	}
+
+	if _, err := os.Stat(filepath.Join(dst, "proj", "a.jsonl")); err != nil {
+		t.Errorf("transcript was not transferred: %v", err)
+	}
+	for _, unwanted := range []string{
+		filepath.Join(dst, "proj", "tmp", "b.jsonl"),
+		filepath.Join(dst, "proj", "auth.json"),
+	} {
+		if _, err := os.Stat(unwanted); err == nil {
+			t.Errorf("%s should not have been transferred", unwanted)
+		}
+	}
+}
+
+// The mirror must survive a remote-side truncation — that is the whole point
+// of treating it as append-only.
+func TestRsyncMirrorDoesNotShrink(t *testing.T) {
+	if _, err := exec.LookPath("rsync"); err != nil {
+		t.Skip("rsync not available")
+	}
+	dir := t.TempDir()
+	src := filepath.Join(dir, "src", "proj")
+	dst := filepath.Join(dir, "dst")
+	if err := os.MkdirAll(src, 0o755); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.MkdirAll(dst, 0o755); err != nil {
+		t.Fatal(err)
+	}
+	full := `{"n":1}` + "\n" + `{"n":2}` + "\n" + `{"n":3}` + "\n"
+	f := filepath.Join(src, "s.jsonl")
+	if err := os.WriteFile(f, []byte(full), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	run := func() {
+		out, err := exec.Command("rsync", rsyncArgs(filepath.Dir(src)+"/", dst+"/")...).CombinedOutput()
+		if err != nil {
+			t.Fatalf("rsync failed: %v\n%s", err, out)
+		}
+	}
+	run()
+	// Remote loses records — corruption, an errant sed -i, an agent bug.
+	if err := os.WriteFile(f, []byte(`{"n":1}`+"\n"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	run()
+
+	got, err := os.ReadFile(filepath.Join(dst, "proj", "s.jsonl"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if string(got) != full {
+		t.Errorf("mirror shrank to %q; a remote truncation must not destroy the last copy", got)
 	}
 }

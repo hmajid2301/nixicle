@@ -18,8 +18,10 @@ if [ -z "$hosts" ]; then
 fi
 
 # "<host>  <rest of the list line>" so the host survives into the selection.
+# awk with the host passed as a variable, not sed with it spliced into the
+# script — a host containing the delimiter would otherwise break the expression.
 rows=$(for h in $hosts; do
-  "$SYNC" list "$h" 2>/dev/null | sed "s|^|$h |"
+  "$SYNC" list "$h" 2>/dev/null | awk -v h="$h" '{print h " " $0}'
 done)
 
 if [ -z "$rows" ]; then
@@ -33,9 +35,18 @@ if [ -n "$FZF" ]; then
     --no-sort --reverse --height=100%) || exit 0
 else
   printf '%s\n' "$rows" | nl -w3 -s'  '
+  total=$(printf '%s\n' "$rows" | wc -l)
   printf '\nNumber to promote (enter to cancel): '
   read -r n
   [ -z "$n" ] && exit 0
+  # Validate before it reaches sed: "1p;1" would silently select a different
+  # row, and "0" or "-1" are sed errors rather than useful messages.
+  case "$n" in
+    ''|*[!0-9]*) printf 'Not a number: %s\n' "$n"; pause; exit 1 ;;
+  esac
+  if [ "$n" -lt 1 ] || [ "$n" -gt "$total" ]; then
+    printf 'Out of range (1-%s): %s\n' "$total" "$n"; pause; exit 1
+  fi
   sel=$(printf '%s\n' "$rows" | sed -n "${n}p")
 fi
 

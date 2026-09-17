@@ -1,5 +1,6 @@
 [
   "claude-code"
+  "cursor"
   "davinci-resolve-studio"
   "firefox-bin"
   "firefox-bin-unwrapped"
