@@ -15,7 +15,7 @@ let
     {
       name = "traefik";
       aspect = den.aspects.traefik;
-      secrets = [ "cloudflare_api_key" ];
+      secrets = [ "gandi_personal_access_token" ];
     }
     {
       name = "openbao";
@@ -66,14 +66,6 @@ let
       name = "open-webui";
       aspect = den.aspects.open-webui;
       secrets = [ "open_webui_oauth" ];
-    }
-    {
-      name = "paperless";
-      aspect = den.aspects.paperless;
-      secrets = [
-        "paperless"
-        "paperless_pass"
-      ];
     }
     {
       name = "tandoor";

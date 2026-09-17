@@ -67,93 +67,93 @@ in
 {
   den = {
     aspects = {
-      haseeb.includes = [
-        den.batteries.primary-user
-        (den.batteries.user-shell "fish")
-      ];
-
-      herdr = {
+      haseeb = {
         includes = [
+          den.batteries.primary-user
           (den.batteries.user-shell "fish")
-          den.aspects.fish
-          den.aspects.git
-          den.aspects.ssh
-          den.aspects.herdr-cli
-          den.aspects.pi-coding-agent
-          den.aspects.claude-code
-          den.aspects.skills
-          den.aspects.worktrunk
         ];
 
-        homeManager =
-          { pkgs, ... }:
-          {
-            imports = [
-              inputs.sops-nix.homeManagerModules.sops
-              inputs.stylix.homeModules.stylix
-            ];
+        provides.vps = {
+          includes = [
+            den.aspects.fish
+            den.aspects.git
+            den.aspects.ssh
+            den.aspects.herdr-cli
+            den.aspects.ai
+            den.aspects.worktrunk
+          ];
 
-            stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-mocha.yaml";
-
-            systemd.user.services.herdr-server = {
-              Unit = {
-                Description = "Persistent Herdr agent server";
-                After = [ "network-online.target" ];
-                Wants = [ "network-online.target" ];
-                X-RestartIfChanged = false;
-              };
-              Service = {
-                ExecStart = "${inputs.herdr.packages.${pkgs.stdenv.hostPlatform.system}.default}/bin/herdr server";
-                Restart = "on-failure";
-                RestartSec = 5;
-                UMask = "0077";
-                WorkingDirectory = "/home/herdr";
-              };
-              Install.WantedBy = [ "default.target" ];
-            };
-
-            programs = {
-              bat.enable = true;
-              bottom.enable = true;
-              direnv = {
-                enable = true;
-                nix-direnv.enable = true;
-              };
-              eza.enable = true;
-              fzf.enable = true;
-              htop.enable = true;
-              yazi = {
-                enable = true;
-                enableFishIntegration = true;
-                shellWrapperName = "y";
-              };
-              zoxide = {
-                enable = true;
-                enableFishIntegration = true;
-              };
-            };
-
-            home = {
-              stateVersion = "26.05";
-              packages = with pkgs; [
-                curlie
-                delta
-                duf
-                dust
-                fd
-                gnumake
-                hyperfine
-                jq
-                neovim
-                procs
-                ripgrep
-                tokei
-                tmux
-                unzip
-                yq-go
+          homeManager =
+            { pkgs, ... }:
+            {
+              imports = [
+                inputs.sops-nix.homeManagerModules.sops
+                inputs.stylix.homeModules.stylix
               ];
+
+              stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-mocha.yaml";
+
+              systemd.user.services.herdr-server = {
+                Unit = {
+                  Description = "Persistent Herdr agent server";
+                  After = [ "network-online.target" ];
+                  Wants = [ "network-online.target" ];
+                  X-RestartIfChanged = false;
+                };
+                Service = {
+                  ExecStart = "${inputs.herdr.packages.${pkgs.stdenv.hostPlatform.system}.default}/bin/herdr server";
+                  Restart = "on-failure";
+                  RestartSec = 5;
+                  UMask = "0077";
+                  WorkingDirectory = "/home/haseeb";
+                };
+                Install.WantedBy = [ "default.target" ];
+              };
+
+              programs = {
+                bat.enable = true;
+                bottom.enable = true;
+                direnv = {
+                  enable = true;
+                  nix-direnv.enable = true;
+                };
+                eza.enable = true;
+                fzf.enable = true;
+                htop.enable = true;
+                yazi = {
+                  enable = true;
+                  enableFishIntegration = true;
+                  shellWrapperName = "y";
+                };
+                zoxide = {
+                  enable = true;
+                  enableFishIntegration = true;
+                };
+              };
+
+              home = {
+                stateVersion = "26.05";
+                packages = with pkgs; [
+                  curlie
+                  delta
+                  duf
+                  dust
+                  fd
+                  gnumake
+                  hyperfine
+                  jq
+                  mutagen
+                  neovim
+                  procs
+                  ripgrep
+                  tokei
+                  tmux
+                  unzip
+                  yq-go
+                ];
+              };
             };
-          };
+        };
       };
     };
 
@@ -189,7 +189,7 @@ in
 
       vps = {
         instantiate = mkInstantiate;
-        users.herdr = {
+        users.haseeb = {
           authorizedKeys = [ ];
           email = "hello@haseebmajid.dev";
           signingKey = "~/.ssh/id_ed25519.pub";

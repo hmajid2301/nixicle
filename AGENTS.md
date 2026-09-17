@@ -37,6 +37,11 @@ failure, so fixing first avoids a re-stage loop.
   `refactor(scope): ...`, `style(nix): ...`, `chore(...)`).
 - Keep each commit atomic: one logical change, repo still evals.
 
+## Comments
+
+Strongly prefer no comments. Only add one when it is absolutely necessary to
+explain something the code cannot express on its own.
+
 ## Validation
 
 Prefer evaluating affected hosts before pushing:
