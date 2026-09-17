@@ -5,6 +5,11 @@
     inputs.nixpkgs.follows = "nixpkgs";
   };
 
+  flake-file.inputs.flowfin-sso = {
+    url = "github:Flowfin/jellyfin-plugin-sso/manifest-beta";
+    flake = false;
+  };
+
   den.aspects.nixflix = {
     nixos =
       {
@@ -15,6 +20,13 @@
       }:
       let
         secretPaths = lib.mergeAttrsList secrets;
+        flowfinManifest = "${inputs.flowfin-sso}/manifest.json";
+        flowfinRev = inputs.flowfin-sso.rev;
+        flowfinManifestHash = builtins.convertHash {
+          hash = builtins.hashFile "sha256" flowfinManifest;
+          hashAlgo = "sha256";
+          toHashFormat = "nix32";
+        };
       in
       {
         imports = [ inputs.nixflix.nixosModules.nixflix ];
@@ -25,8 +37,6 @@
           '';
 
           # TODO: jellyfin-libraries service fails on boot, disabled for now.
-          # Fix properly later — needs to align with nixflix upstream changes
-          # or rewrite the library provisioning script.
           jellyfin-libraries.enable = lib.mkForce false;
         };
 
@@ -142,9 +152,10 @@
                 processThreads = 1;
               };
               pluginRepositories = {
-                "SSO-Auth" = {
-                  url = "https://raw.githubusercontent.com/9p4/jellyfin-plugin-sso/manifest-release/manifest.json";
-                  hash = "sha256-lX45HueVfT/xfIxkYn5eQobmVXBoi5jdpJCx43edRA0=";
+                "Flowfin-SSO" = {
+                  # TODO: switch to manifest-release once stable 12.0 ships
+                  url = "https://raw.githubusercontent.com/Flowfin/jellyfin-plugin-sso/${flowfinRev}/manifest.json";
+                  hash = flowfinManifestHash;
                 };
               };
             };
@@ -175,13 +186,13 @@
                 config.ExtractionDuringLibraryScan = true;
               };
 
-              "SSO Authentication" = {
+              "Community SSO for Jellyfin" = {
                 enable = true;
-                apiName = "SSO-Auth";
+                apiName = "Community SSO for Jellyfin";
                 package = inputs.nixflix.lib.jellyfinPlugins.fromRepo {
-                  version = "4.0.0.4";
-                  hash = "sha256-MJTyE6CeVLk7mlugauJ/F6bpi1kYwNtzNmQeH3+CFeQ=";
-                  repository = "SSO-Auth";
+                  version = "5.0.0.88";
+                  hash = "sha256-cFtP21GyBgiNBI92WvbCvFAU7W4k8HL8S9LWD6T2yNI=";
+                  repository = "Flowfin-SSO";
                 };
                 config = {
                   OidConfigs = {
