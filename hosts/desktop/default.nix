@@ -15,31 +15,79 @@
       den.aspects.helix
     ];
 
-    homeManager = _: {
-      home = {
-        username = "haseeb";
-        homeDirectory = "/home/haseeb";
-        stateVersion = "24.05";
-      };
+    homeManager =
+      { pkgs, ... }:
+      {
+        home = {
+          username = "haseeb";
+          homeDirectory = "/home/haseeb";
+          stateVersion = "24.05";
+          packages = [ pkgs.mutagen ];
+        };
 
-      programs.noctalia.settings.idle = {
-        pre_action_fade_seconds = 5.0;
-        behavior = {
-          lock = {
-            timeout = 300;
-            action = "lock";
-          };
-          screen-off = {
-            timeout = 330;
-            action = "screen_off";
-          };
-          suspend = {
-            timeout = 1800;
-            action = "lock_and_suspend";
+        programs.noctalia.settings.idle = {
+          pre_action_fade_seconds = 5.0;
+          behavior = {
+            lock = {
+              timeout = 300;
+              action = "lock";
+            };
+            screen-off = {
+              timeout = 330;
+              action = "screen_off";
+            };
+            suspend = {
+              timeout = 1800;
+              action = "lock_and_suspend";
+            };
           };
         };
+
+        systemd.user.services.mutagen-agent-sync = {
+          Unit = {
+            Description = "Sync agent transcripts with the VPS";
+            After = [ "network-online.target" ];
+            Wants = [ "network-online.target" ];
+            ConditionPathExists = "%h/.config/mutagen/sync-enabled";
+          };
+          Service = {
+            Type = "oneshot";
+            RemainAfterExit = true;
+            ExecStart = pkgs.writeShellScript "mutagen-agent-sync" ''
+              set -euo pipefail
+
+              mutagen=${pkgs.mutagen}/bin/mutagen
+              "$mutagen" daemon start
+
+              ensure_sync() {
+                local name="$1"
+                local local_path="$2"
+                local remote_path="$3"
+                if "$mutagen" sync list "$name" >/dev/null 2>&1; then
+                  "$mutagen" sync resume "$name" >/dev/null 2>&1 || true
+                else
+                  "$mutagen" sync create \
+                    --name "$name" \
+                    --mode two-way-safe \
+                    "$local_path" \
+                    "haseeb@vps:$remote_path"
+                fi
+              }
+
+              ensure_sync \
+                pi-sessions \
+                "$HOME/.pi/agent/sessions" \
+                "/home/haseeb/.pi/agent/sessions"
+
+              ensure_sync \
+                claude-projects \
+                "$HOME/.claude/projects" \
+                "/home/haseeb/.claude/projects"
+            '';
+          };
+          Install.WantedBy = [ "default.target" ];
+        };
       };
-    };
   };
 
   den.aspects.desktop = {

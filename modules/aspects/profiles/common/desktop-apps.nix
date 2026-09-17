@@ -1,4 +1,5 @@
-{ den, ... }: {
+{ den, lib, ... }:
+{
   den.aspects.commonDesktopApps = {
     includes = [
       (den.batteries.unfree [
@@ -10,6 +11,16 @@
 
     homeManager =
       { pkgs, config, ... }:
+      let
+        colors = config.lib.stylix.colors.withHashtag;
+        # Catppuccin latte equivalents for light-scheme pages
+        latte = {
+          base00 = "#eff1f5";
+          base01 = "#e6e9ef";
+          base05 = "#4c4f69";
+          base0D = "#7287fd";
+        };
+      in
       {
         xdg = {
           mimeApps.defaultApplications = {
@@ -53,7 +64,41 @@
               "browser.urlbar.suggest.addons" = false;
               "browser.urlbar.suggest.pocket" = false;
               "browser.urlbar.suggest.topsites" = false;
+              "widget.disable-native-themes" = true;
             };
+            userChrome = lib.concatStringsSep "\n" [
+              "  :root {"
+              "    --gnome-menu-color: ${colors.base05} !important;"
+              "    --gnome-selected-color: color-mix(in srgb, ${colors.base0D} 40%, transparent) !important;"
+              "    --gnome-selected-hover-color: color-mix(in srgb, ${colors.base0D} 50%, transparent) !important;"
+              "  }"
+              ""
+              "  menupopup > menuitem[_moz-menuactive]:not([disabled=\"true\"]),"
+              "  menupopup > menu[_moz-menuactive]:not([disabled=\"true\"]) {"
+              "    color: ${colors.base00} !important;"
+              "    background-color: ${colors.base0D} !important;"
+              "  }"
+            ];
+            # No background on the closed select: unstyled selects keep the
+            # page/OS box so we don't force a palette that clashes, and sites
+            # styling their own selects win. Theme only the native dropdown
+            # option list for readability.
+            userContent = lib.concatStringsSep "\n" [
+              "  select {"
+              "    color: light-dark(${latte.base05}, ${colors.base05});"
+              "  }"
+              ""
+              "  select option, select optgroup {"
+              "    color: light-dark(${latte.base05}, ${colors.base05});"
+              "    background-color: light-dark(${latte.base01}, ${colors.base01});"
+              "  }"
+              ""
+              "  select option:checked,"
+              "  select option:hover {"
+              "    color: light-dark(${latte.base00}, ${colors.base00});"
+              "    background-color: light-dark(${latte.base0D}, ${colors.base0D});"
+              "  }"
+            ];
             search = {
               force = true;
               default = "Kagi";
