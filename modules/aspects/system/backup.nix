@@ -1,5 +1,4 @@
-{ den, lib, ... }:
-{
+_: {
   den = {
     default.nixos =
       { lib, ... }:
@@ -58,24 +57,6 @@
           );
         };
       };
-
-    schema.host.includes = [
-      (
-        { aspect-chain }:
-        den._.forward {
-          each = lib.singleton true;
-          fromClass = _: "backup";
-          intoClass = _: "nixos";
-          intoPath = _: [
-            "system"
-            "backup"
-            "objects"
-          ];
-          fromAspect = _: lib.head aspect-chain;
-          guard = { options, ... }: options ? system && options.system ? backup;
-        }
-      )
-    ];
 
     aspects.backup-restic = {
       includes = [ ];
