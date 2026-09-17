@@ -1,16 +1,8 @@
-{ inputs, ... }:
-{
-  flake-file.inputs.worktrunk = {
-    url = "github:max-sixty/worktrunk";
-    inputs.nixpkgs.follows = "nixpkgs";
-  };
-
+_: {
   den.aspects.worktrunk = {
     homeManager =
       { pkgs, ... }:
       {
-        imports = [ inputs.worktrunk.homeModules.default ];
-
         programs.worktrunk = {
           enable = true;
           package = pkgs.worktrunk;
