@@ -48,6 +48,7 @@ _: {
                 {
                   name = "Prometheus";
                   type = "prometheus";
+                  uid = "prometheus";
                   access = "proxy";
                   editable = true;
                   url = "http://127.0.0.1:${toString config.services.prometheus.port}";
@@ -55,6 +56,7 @@ _: {
                 {
                   name = "Loki";
                   type = "loki";
+                  uid = "loki";
                   access = "proxy";
                   editable = true;
                   url = "http://127.0.0.1:${toString config.services.loki.configuration.server.http_listen_port}";
@@ -62,6 +64,7 @@ _: {
                 {
                   name = "Tempo";
                   type = "tempo";
+                  uid = "tempo";
                   access = "proxy";
                   editable = true;
                   url = "http://127.0.0.1:${toString config.services.tempo.settings.server.http_listen_port}";
