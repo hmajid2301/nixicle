@@ -15,6 +15,7 @@
       den.aspects.boot-secure # LUKS+TPM2 secure boot (includes den.aspects.boot)
       den.aspects.impermanence # ephemeral btrfs root, /persist for state
       den.aspects.attic-cache
+      den.aspects.backup-restic
       den.aspects.fish
       den.aspects.tailscale
       den.aspects.jellyfin
@@ -43,6 +44,7 @@
         ./nfs.nix
         ./samba.nix
         ./health.nix
+        ./backup.nix
         inputs.nixos-facter-modules.nixosModules.facter
         { config.facter.reportPath = ./facter.json; }
       ];

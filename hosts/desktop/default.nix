@@ -52,6 +52,7 @@
       den.aspects.kvm
       den.aspects.searx
       den.aspects.gitlab-runner
+      den.aspects.backup-restic
     ];
 
     nixos =
@@ -74,6 +75,36 @@
           user_password.neededForUsers = true;
           searx_secret_key = { };
           gitlab_runner_env = { };
+        };
+
+        system.backup.objects = {
+          home = {
+            paths = [ "/home/haseeb" ];
+            exclude = [
+              "/home/haseeb/.local/share/Trash"
+              "/home/haseeb/.gomi"
+              "/home/haseeb/.local/share/Steam"
+              "/home/haseeb/Games"
+              "/home/haseeb/.config/gtk"
+              "/home/haseeb/.local/share/docker"
+              "/home/haseeb/.local/cache"
+              "/home/haseeb/.cache"
+              "/home/haseeb/.local/share/go"
+              "/home/haseeb/.local/share/pnpm"
+              "**/.direnv"
+              "**/node_modules"
+              "**/target"
+            ];
+          };
+          systemState = {
+            paths = [
+              "/persist/etc/ssh"
+              "/persist/etc/secureboot"
+              "/persist/etc/machine-id"
+              "/persist/var/lib/bluetooth"
+              "/persist/var/lib/NetworkManager"
+            ];
+          };
         };
 
         users = {
