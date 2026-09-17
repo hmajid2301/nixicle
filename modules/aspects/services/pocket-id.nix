@@ -2,7 +2,6 @@
 {
   den.aspects.pocketid = {
     includes = [ den.aspects.postgresql ];
-    backup.pocketid.paths = [ "/var/lib/pocket-id" ];
     persist.directories = [
       {
         directory = "/var/lib/pocket-id";
@@ -18,6 +17,7 @@
         ...
       }:
       {
+        system.backup.objects.pocketid.paths = [ "/var/lib/pocket-id" ];
         sops.secrets = {
           pocketid_encryption_key = {
             owner = config.services.pocket-id.user;

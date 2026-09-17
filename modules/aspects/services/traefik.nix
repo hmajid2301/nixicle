@@ -10,15 +10,12 @@ _: {
           443
         ];
 
-        sops.secrets.cloudflare_api_key = {
+        sops.secrets.gandi_personal_access_token = {
           owner = "traefik";
         };
 
         systemd.services.traefik = {
-          serviceConfig.EnvironmentFile = config.sops.secrets.cloudflare_api_key.path;
-          environment = {
-            CF_API_EMAIL = "hello@haseebmajid.dev";
-          };
+          serviceConfig.EnvironmentFile = config.sops.secrets.gandi_personal_access_token.path;
         };
 
         services.tailscale.permitCertUid = "traefik";
@@ -39,7 +36,7 @@ _: {
                 email = "hello@haseebmajid.dev";
                 storage = "/var/lib/traefik/cert.json";
                 dnsChallenge = {
-                  provider = "cloudflare";
+                  provider = "gandiv5";
                   propagation = {
                     disableANSChecks = true;
                     delayBeforeChecks = 30;

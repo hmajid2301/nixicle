@@ -1,7 +1,6 @@
 _: {
   den.aspects.karakeep = {
     includes = [ ];
-    backup.karakeep.paths = [ "/var/lib/karakeep" ];
     persist.directories = [
       {
         directory = "/var/lib/karakeep";
@@ -17,6 +16,7 @@ _: {
         ...
       }:
       {
+        system.backup.objects.karakeep.paths = [ "/var/lib/karakeep" ];
         sops.secrets.karakeep_oauth = { };
         services = {
           karakeep = {

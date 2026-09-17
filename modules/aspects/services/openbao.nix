@@ -5,15 +5,6 @@ _: {
       "/var/lib/openbao"
       "/var/log/openbao"
     ];
-    backup.openbao = {
-      paths = [ "/var/lib/openbao" ];
-      backupPrepareCommand = ''
-        systemctl stop openbao.service
-      '';
-      backupCleanupCommand = ''
-        systemctl start openbao.service
-      '';
-    };
     nixos =
       {
         config,
@@ -22,6 +13,15 @@ _: {
         ...
       }:
       {
+        system.backup.objects.openbao = {
+          paths = [ "/var/lib/openbao" ];
+          backupPrepareCommand = ''
+            systemctl stop openbao.service
+          '';
+          backupCleanupCommand = ''
+            systemctl start openbao.service
+          '';
+        };
         services.traefik.dynamicConfigOptions.http = lib.nixicle.mkTraefikService {
           name = "openbao";
           port = 8200;
