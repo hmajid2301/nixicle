@@ -8,6 +8,10 @@
       url = "github:gvolpe/nfsm";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    nirinit = {
+      url = "github:amaanq/nirinit";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   den.aspects.niri = {
@@ -49,6 +53,7 @@
       imports = [
         ./_shell.nix
         ./_niri.nix
+        ./_nirinit.nix
       ];
     };
   };
