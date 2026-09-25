@@ -32,7 +32,7 @@ _: {
             certificatesResolvers = {
               tailscale.tailscale = { };
               letsencrypt.acme = {
-                email = "hello@haseebmajid.dev";
+                email = config.nixicle.identity.adminEmail;
                 storage = "/var/lib/traefik/cert.json";
                 dnsChallenge = {
                   provider = "gandiv5";
@@ -58,12 +58,12 @@ _: {
                   certResolver = "letsencrypt";
                   domains = [
                     {
-                      main = "homelab.haseebmajid.dev";
-                      sans = [ "*.homelab.haseebmajid.dev" ];
+                      main = config.nixicle.domains.homelab;
+                      sans = [ "*.${config.nixicle.domains.homelab}" ];
                     }
                     {
-                      main = "haseebmajid.dev";
-                      sans = [ "*.haseebmajid.dev" ];
+                      main = config.nixicle.domains.root;
+                      sans = [ "*.${config.nixicle.domains.root}" ];
                     }
                     {
                       main = "banterbus.games";

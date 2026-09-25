@@ -1,11 +1,5 @@
-_:
-let
-  port = 8051;
-  domain = "haseebmajid.dev";
-in
-{
+_: {
   den.aspects.gotify = {
-    includes = [ ];
 
     persist.directories = [
       {
@@ -18,6 +12,10 @@ in
 
     nixos =
       { config, lib, ... }:
+      let
+        port = 8051;
+        domain = config.nixicle.domains.root;
+      in
       {
         users = {
           users.gotify = {

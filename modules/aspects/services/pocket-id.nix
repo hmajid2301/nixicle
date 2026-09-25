@@ -55,7 +55,7 @@
             user = "pocketid";
             group = "pocketid";
             settings = {
-              APP_URL = "https://id.haseebmajid.dev";
+              APP_URL = "https://${config.nixicle.domains.sso}";
               TRUST_PROXY = true;
               HOST = "127.0.0.1";
               PORT = 1411;
@@ -75,7 +75,7 @@
             name = "pocket-id";
             port = 1411;
             subdomain = "id";
-            domain = "haseebmajid.dev";
+            domain = config.nixicle.domains.root;
           };
         };
       };

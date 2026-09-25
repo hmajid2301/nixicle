@@ -9,12 +9,12 @@ _: {
       { config, lib, ... }:
       {
         # Same netrc secret the common profile + HM attic client use: a 10y
-        # pull+push JWT for `machine attic.haseebmajid.dev`.
+        # pull+push JWT for `machine attic.${config.nixicle.domains.root}`.
         sops.secrets.netrc.sopsFile = lib.nixicle.secretsFile;
 
         nix.settings = {
           substituters = [
-            "https://attic.haseebmajid.dev/main"
+            "https://attic.${config.nixicle.domains.root}/main"
             "https://cache.nixos.org"
             "https://nix-community.cachix.org"
             "https://numtide.cachix.org"

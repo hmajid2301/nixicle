@@ -1,11 +1,5 @@
-_:
-let
-  authPort = 3000;
-  domain = "haseebmajid.dev";
-in
-{
+_: {
   den.aspects.tinyauth = {
-    includes = [ ];
     persist.directories = [ "/var/lib/tinyauth" ];
 
     nixos =
@@ -13,6 +7,10 @@ in
         config,
         ...
       }:
+      let
+        authPort = 3000;
+        domain = config.nixicle.domains.root;
+      in
       {
         sops.secrets.tinyauth_env = {
           owner = "tinyauth";

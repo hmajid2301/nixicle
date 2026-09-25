@@ -9,7 +9,6 @@
   };
 
   den.aspects.lettucego = {
-    includes = [ ];
     persist.directories = [
       {
         directory = "/var/lib/lettucego";
@@ -49,7 +48,7 @@
             "traefik.service"
           ];
           requires = [ "pocket-id.service" ];
-          environment.LETTUCEGO_S3_PUBLIC_URL = "https://lettucego.haseebmajid.dev/lettucego";
+          environment.LETTUCEGO_S3_PUBLIC_URL = "https://lettucego.${config.nixicle.domains.root}/lettucego";
         };
 
         services = {
@@ -64,7 +63,7 @@
               region = "garage";
             };
             oauth = {
-              issuerUrl = "https://id.haseebmajid.dev";
+              issuerUrl = "https://${config.nixicle.domains.sso}";
               clientId = "lettucego";
               provider = "pocketid";
             };
@@ -75,7 +74,7 @@
             name = "lettucego";
             port = 8236;
             subdomain = "lettucego";
-            domain = "haseebmajid.dev";
+            domain = config.nixicle.domains.root;
           };
         };
       };

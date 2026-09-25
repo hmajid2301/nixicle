@@ -1,8 +1,10 @@
 # Homepage settings configuration
 # This file contains the settings and layout configuration for the homepage dashboard
+{ lib }:
+
 {
   title = "Homelab Dashboard";
-  favicon = "https://homepage.haseebmajid.dev/icons/favicon.svg";
+  favicon = "https://homepage.${lib.nixicle.domains.root}/icons/favicon.svg";
   headerStyle = "clean";
   theme = "dark";
   color = "slate";

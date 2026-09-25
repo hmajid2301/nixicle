@@ -3,7 +3,7 @@
   pkgs ? null,
 }:
 rec {
-  iconsUrl = "https://homepage.haseebmajid.dev/icons";
+  iconsUrl = "https://homepage.${lib.nixicle.domains.root}/icons";
 
   slugs = {
     Tandoor = "tandoor";

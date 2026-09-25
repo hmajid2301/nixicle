@@ -1,6 +1,6 @@
 _: {
   den.aspects.ssh = {
-    homeManager = _: {
+    homeManager = { lib, ... }: {
       programs.keychain = {
         enable = true;
         keys = [ "id_ed25519" ];
@@ -16,8 +16,8 @@ _: {
             ServerAliveInterval = 60;
             ServerAliveCountMax = 3;
           };
-          "git.haseebmajid.dev" = {
-            HostName = "git.haseebmajid.dev";
+          "git.${lib.nixicle.domains.root}" = {
+            HostName = "git.${lib.nixicle.domains.root}";
             User = "git";
             Port = 22;
           };

@@ -1,8 +1,8 @@
 { den, inputs, ... }:
 let
-  sharedNixConfig = {
+  sharedNixConfig = atticRoot: {
     substituters = [
-      "https://attic.haseebmajid.dev/main"
+      "https://attic.${atticRoot}/main"
       # "https://staging.attic.rs/attic-ci"
       "https://cache.nixos.org"
       "https://nix-community.cachix.org"
@@ -134,7 +134,7 @@ in
             fallback = true;
             netrc-file = config.sops.secrets."netrc".path;
           }
-          // sharedNixConfig;
+          // sharedNixConfig config.nixicle.domains.root;
           registry.nixpkgs.flake = inputs.nixpkgs;
           gc = {
             automatic = lib.mkDefault true;

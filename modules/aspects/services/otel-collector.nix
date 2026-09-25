@@ -1,6 +1,5 @@
 _: {
   den.aspects.otel-collector = {
-    includes = [ ];
     persist.directories = [
       {
         directory = "/var/lib/private/opentelemetry-collector";
@@ -103,7 +102,6 @@ _: {
   };
 
   den.aspects.otel-collector-forwarder = {
-    includes = [ ];
     persist.directories = [
       {
         directory = "/var/log/journal";
@@ -160,7 +158,7 @@ _: {
               groupbyattrs.keys = [ "service.name" ];
               batch = { };
             };
-            exporters."otlphttp/vps".endpoint = "https://otel.homelab.haseebmajid.dev";
+            exporters."otlphttp/vps".endpoint = "https://otel.${config.nixicle.domains.homelab}";
             service.pipelines."logs/vps" = {
               receivers = [ "journald" ];
               processors = [

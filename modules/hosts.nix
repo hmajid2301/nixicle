@@ -60,7 +60,7 @@ let
 
   haseebUser = {
     authorizedKeys = extendedLib.nixicle.authorizedKeys;
-    email = "hello@haseebmajid.dev";
+    email = extendedLib.nixicle.adminEmail;
     signingKey = "~/.ssh/id_ed25519.pub";
   };
 in
@@ -191,7 +191,7 @@ in
         instantiate = mkInstantiate;
         users.haseeb = {
           authorizedKeys = [ ];
-          email = "hello@haseebmajid.dev";
+          email = extendedLib.nixicle.adminEmail;
           signingKey = "~/.ssh/id_ed25519.pub";
         };
       };

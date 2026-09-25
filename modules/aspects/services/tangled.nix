@@ -36,6 +36,7 @@
 
     nixos =
       {
+        config,
         pkgs,
         lib,
         ...
@@ -58,7 +59,7 @@
               openFirewall = false;
               server = {
                 owner = ownerDid;
-                hostname = "knot.haseebmajid.dev";
+                hostname = "knot.${config.nixicle.domains.root}";
                 listenAddr = "127.0.0.1:5555";
                 internalListenAddr = "127.0.0.1:5444";
                 secureMode = true;
@@ -70,7 +71,7 @@
               package = inputs.tangled.packages.${system}.spindle;
               server = {
                 owner = ownerDid;
-                hostname = "spindle.haseebmajid.dev";
+                hostname = "spindle.${config.nixicle.domains.root}";
                 listenAddr = "127.0.0.1:6555";
                 maxJobCount = 1;
                 # Use sqlite for first VPS bring-up. The OpenBao backend expects an
@@ -112,13 +113,13 @@
               name = "knot";
               port = 5555;
               subdomain = "knot";
-              domain = "haseebmajid.dev";
+              domain = config.nixicle.domains.root;
             })
             (lib.nixicle.mkTraefikService {
               name = "spindle";
               port = 6555;
               subdomain = "spindle";
-              domain = "haseebmajid.dev";
+              domain = config.nixicle.domains.root;
             })
           ];
 

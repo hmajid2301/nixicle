@@ -15,7 +15,7 @@ _: {
         sops.templates."hister-config.yml" = {
           content = ''
             server:
-              base_url: https://hister.haseebmajid.dev
+              base_url: https://hister.${lib.nixicle.domains.root}
             app:
               access_token: ${config.sops.placeholder.hister_token}
           '';
