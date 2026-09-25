@@ -178,25 +178,11 @@ in
           packages =
             with pkgs;
             [
-              (pkgs.nh.override {
-                nix-output-monitor = pkgs.nix-output-monitor.overrideAttrs (old: {
-                  postPatch = old.postPatch or "" + ''
-                    substituteInPlace lib/NOM/Print.hs \
-                      --replace 'down = "↓"' 'down = "\xf072e"' \
-                      --replace 'up = "↑"' 'up = "\xf0737"' \
-                      --replace 'clock = "⏱"' 'clock = "\xf520"' \
-                      --replace 'running = "⏵"' 'running = "\xf04b"' \
-                      --replace 'done = "✔"' 'done = "\xf00c"' \
-                      --replace 'todo = "⏸"' 'todo = "\xf04d"' \
-                      --replace 'warning = "⚠"' 'warning = "\xf071"' \
-                      --replace 'average = "∅"' 'average = "\xf1da"' \
-                      --replace 'bigsum = "∑"' 'bigsum = "\xf04a0"'
-                  '';
-                });
-              })
               inputs.nixos-anywhere.packages.${pkgs.stdenv.hostPlatform.system}.nixos-anywhere
               inputs.deploy-rs.packages.${pkgs.stdenv.hostPlatform.system}.default
               inputs.home-manager.packages.${pkgs.stdenv.hostPlatform.system}.default
+
+              nh
 
               statix
               deadnix
