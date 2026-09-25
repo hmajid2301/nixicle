@@ -86,9 +86,7 @@
         security.sudo.wheelNeedsPassword = lib.mkForce false;
 
         users.users.haseeb = {
-          # The base haseeb aspect grants wheel/networkmanager (primary-user);
-          # this agent account must stay unprivileged.
-          extraGroups = lib.mkForce [ ];
+          extraGroups = lib.mkForce [ "docker" ];
           hashedPassword = "!";
           linger = true;
         };
