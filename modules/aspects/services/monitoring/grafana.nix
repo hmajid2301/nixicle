@@ -62,6 +62,7 @@ _: {
                   access = "proxy";
                   editable = true;
                   url = "http://127.0.0.1:${toString config.services.loki.configuration.server.http_listen_port}";
+                  jsonData.manageAlerts = false;
                 }
                 {
                   name = "Tempo";
@@ -72,6 +73,26 @@ _: {
                   url = "http://127.0.0.1:${toString config.services.tempo.settings.server.http_listen_port}";
                 }
               ];
+              dashboards.settings = {
+                apiVersion = 1;
+                providers = [
+                  {
+                    name = "nixicle";
+                    orgId = 1;
+                    type = "file";
+                    disableDeletion = false;
+                    updateIntervalSeconds = 30;
+                    allowUiUpdates = false;
+                    options = {
+                      path = builtins.path {
+                        path = ./dashboards;
+                        name = "grafana-dashboards";
+                      };
+                      foldersFromFilesStructure = true;
+                    };
+                  }
+                ];
+              };
             };
           };
 
