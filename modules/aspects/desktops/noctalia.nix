@@ -33,11 +33,11 @@
 
         nixicle.desktop.greeter = {
           enable = lib.mkDefault (!host.autologin);
-          command = lib.mkDefault "${config.programs.noctalia-greeter.package}/bin/noctalia-greeter-session";
+          command = lib.mkDefault "${config.services.displayManager.noctalia-greeter.package}/bin/noctalia-greeter-session";
           user = lib.mkDefault "greeter";
         };
 
-        programs.noctalia-greeter = {
+        services.displayManager.noctalia-greeter = {
           enable = config.nixicle.desktop.greeter.enable;
           settings.session.default = "niri";
         };
