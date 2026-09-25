@@ -16,7 +16,6 @@ _: {
       in
       {
         home.packages = with pkgs; [
-          sesh
           lsof
           python311
         ];

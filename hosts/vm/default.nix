@@ -4,6 +4,7 @@
     includes = [
       den.aspects.desktopProfile
       den.aspects.gaming
+      den.aspects.kitchenSink
     ];
 
     homeManager = _: {
