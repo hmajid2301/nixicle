@@ -39,7 +39,7 @@ _: {
 
   den.aspects.skills = {
     homeManager =
-      { inputs, ... }:
+      { inputs, config, ... }:
       {
         imports = [ inputs.agent-skills.homeManagerModules.default ];
 
@@ -218,6 +218,7 @@ _: {
           };
 
           targets.agents.enable = true;
+          targets.claude.enable = config.programs.claude-code.enable;
         };
       };
   };
