@@ -17,7 +17,6 @@
       den.aspects.traefik
       den.aspects.nixflix
       den.aspects.adguard
-      den.aspects.navidrome
       den.aspects.docker
       den.aspects.romm
       den.aspects.invidious
