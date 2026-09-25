@@ -1,6 +1,5 @@
 _: {
   den.aspects.invidious = {
-    includes = [ ];
 
     nixos =
       { lib, ... }:

@@ -1,6 +1,5 @@
 _: {
   den.aspects.tandoor = {
-    includes = [ ];
     persist.directories = [
       {
         directory = "/var/lib/tandoor-recipes";

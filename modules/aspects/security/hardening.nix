@@ -1,6 +1,5 @@
 _: {
   den.aspects.hardening-vps = {
-    includes = [ ];
     nixos =
       { config, lib, ... }:
       let

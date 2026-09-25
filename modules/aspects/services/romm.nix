@@ -9,7 +9,6 @@ let
 in
 {
   den.aspects.romm = {
-    includes = [ ];
 
     nixos =
       {

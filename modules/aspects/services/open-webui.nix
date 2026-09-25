@@ -1,6 +1,5 @@
 _: {
   den.aspects.open-webui = {
-    includes = [ ];
     persist.directories = [
       {
         directory = "/var/lib/private/open-webui";

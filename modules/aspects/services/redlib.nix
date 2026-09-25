@@ -1,6 +1,5 @@
 _: {
   den.aspects.redlib = {
-    includes = [ ];
 
     nixos =
       { lib, ... }:

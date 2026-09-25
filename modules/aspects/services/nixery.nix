@@ -12,7 +12,6 @@ in
     flake = false;
   };
   den.aspects.nixery = {
-    includes = [ ];
     persist.directories = [ "/var/lib/private/nixery" ];
     nixos =
       {
