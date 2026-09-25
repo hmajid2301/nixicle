@@ -98,8 +98,8 @@
           (lib.optionalAttrs (config.sops.secrets ? gitlab_runner_docker_env) {
             services.docker = {
               authenticationTokenConfigFile = config.sops.secrets.gitlab_runner_docker_env.path;
-              limit = 2;
-              requestConcurrency = 2;
+              limit = 4;
+              requestConcurrency = 4;
               dockerImage = "nixpkgs/nix-flakes:nixos-26.05-${pkgs.stdenv.hostPlatform.system}";
               dockerPullPolicy = "if-not-present";
               dockerPrivileged = true;
