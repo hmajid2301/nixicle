@@ -65,23 +65,26 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     herdr = {
-      url = "github:herdrdev/herdr/v0.9.0";
-      inputs.nixpkgs.follows = "nixpkgs";
+      url = "github:herdrdev/herdr/v0.9.1";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        rust-overlay.follows = "rust-overlay";
+      };
     };
     herdr-skills = {
-      url = "github:herdrdev/herdr/v0.9.0";
+      url = "github:herdrdev/herdr/v0.9.1";
       flake = false;
     };
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    impermanence.url = "github:nix-community/impermanence";
-    import-tree.url = "github:vic/import-tree";
     i-have-adhd = {
       url = "github:ayghri/i-have-adhd";
       flake = false;
     };
+    impermanence.url = "github:nix-community/impermanence";
+    import-tree.url = "github:vic/import-tree";
     lanzaboote.url = "github:nix-community/lanzaboote";
     lettucego = {
       url = "gitlab:hmajid2301/lettucego";
@@ -172,7 +175,7 @@
       flake = false;
     };
     plugins-herdr-resurrect = {
-      url = "github:ntindle/herdr-resurrect";
+      url = "github:cantona/herdr-resurrect";
       flake = false;
     };
     plugins-herdr-splits = {
@@ -222,6 +225,10 @@
     plugins-webify-nvim = {
       url = "github:pabloariasal/webify.nvim";
       flake = false;
+    };
+    rust-overlay = {
+      url = "github:oxalica/rust-overlay";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
     sops-nix = {
       url = "github:mic92/sops-nix";
