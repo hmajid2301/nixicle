@@ -13,7 +13,7 @@ tasks:
 
             echo "📁 Searching for files matching: $pattern"
 
-            find . -type f \( -name "*.yaml" -o -name "*.yml" \) | grep -E "$pattern" | while read -r file; do
+            git ls-files "*.yaml" "*.yml" | grep -E "$pattern" | while read -r file; do
               if [ -f "$file" ]; then
                 echo "  🔄 Updating: $file"
                 sops updatekeys -y "$file" || echo "  ⚠️  Failed to update: $file"
