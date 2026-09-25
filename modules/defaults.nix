@@ -6,7 +6,6 @@
 }:
 let
   inherit ((import ../lib { inherit inputs lib; })) extendedLib;
-  unfreePackages = import ../lib/unfree-packages.nix;
 in
 {
   imports = [ ./aspects/system/backup.nix ];
@@ -27,14 +26,12 @@ in
                     hostIsLaptop = host.isLaptop or false;
                   };
                   nixpkgs.overlays = [
-                    inputs.nur.overlays.default
-                    inputs.niri.overlays.niri
-                    (_final: prev: {
-                      zjstatus = inputs.zjstatus.packages.${prev.stdenv.hostPlatform.system}.default;
-                    })
-                    extendedLib.nixicle.nixicleOverlay
+                    extendedLib.nixicle.overlays.nur
+                    extendedLib.nixicle.overlays.niri
+                    extendedLib.nixicle.overlays.zjstatus
+                    extendedLib.nixicle.overlays.nixicle
                   ];
-                  nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) unfreePackages;
+                  nixpkgs.config.allowUnfreePredicate = extendedLib.nixicle.allowUnfreePredicate;
                 };
               };
             }
@@ -73,14 +70,14 @@ in
             { home, ... }:
             {
               homeManager =
-                { pkgs, lib, ... }:
+                { pkgs, ... }:
                 {
                   _module.args = {
                     host = home.hostName or "unknown";
                     hostIsLaptop = home.isLaptop or false;
                   };
                   nix.package = pkgs.nix;
-                  nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) unfreePackages;
+                  nixpkgs.config.allowUnfreePredicate = extendedLib.nixicle.allowUnfreePredicate;
                 };
             }
           )

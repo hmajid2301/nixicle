@@ -46,15 +46,13 @@ in
     nixos =
       {
         pkgs,
-        lib,
         inputs,
+        lib,
         config,
         ...
       }:
       {
-        nixpkgs.overlays = [
-          inputs.nur.overlays.default
-        ];
+        nixpkgs.overlays = [ lib.nixicle.overlays.nur ];
 
         networking.firewall.enable = true;
         networking.networkmanager.enable = true;

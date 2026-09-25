@@ -14,19 +14,18 @@ let
   inherit ((import ../lib { inherit inputs lib; })) extendedLib;
 
   overlays = [
-    inputs.nur.overlays.default
-    inputs.nix-topology.overlays.default
-    inputs.niri.overlays.niri
-    (_final: prev: {
-      zjstatus = inputs.zjstatus.packages.${prev.stdenv.hostPlatform.system}.default;
-    })
-    extendedLib.nixicle.nixicleOverlay
+    extendedLib.nixicle.overlays.nur
+    extendedLib.nixicle.overlays."nix-topology"
+    extendedLib.nixicle.overlays.niri
+    extendedLib.nixicle.overlays.zjstatus
+    extendedLib.nixicle.overlays.nixicle
   ];
 
   mkPkgs =
     system:
     import inputs.nixpkgs {
       inherit system overlays;
+      config.allowUnfreePredicate = extendedLib.nixicle.allowUnfreePredicate;
     };
 
   mkPreCommitCheck =
