@@ -22,11 +22,14 @@ _: {
         ...
       }:
       {
-        sops.secrets.forgejo_smtp_password = {
-          owner = "forgejo";
-        };
-
-        sops.secrets.forgejo_runner_token = {
+        # Usable without host wiring: fall back to the shared secrets file when
+        # the host does not set sops.defaultSopsFile itself.
+        sops = {
+          defaultSopsFile = lib.mkDefault lib.nixicle.secretsFile;
+          secrets = {
+            forgejo_smtp_password.owner = "forgejo";
+            forgejo_runner_token = { };
+          };
         };
 
         systemd = {
@@ -96,9 +99,9 @@ _: {
             settings = {
               server = {
                 HTTP_PORT = 5706;
-                DOMAIN = "forgejo.haseebmajid.dev";
-                ROOT_URL = "https://forgejo.haseebmajid.dev/";
-                SSH_DOMAIN = "git.haseebmajid.dev";
+                DOMAIN = "forgejo.${config.nixicle.domains.root}";
+                ROOT_URL = "https://forgejo.${config.nixicle.domains.root}/";
+                SSH_DOMAIN = "git.${config.nixicle.domains.root}";
                 SSH_PORT = 2222;
                 START_SSH_SERVER = true;
                 SSH_LISTEN_PORT = 2223;
@@ -108,7 +111,7 @@ _: {
                 PROTOCOL = "smtps";
                 SMTP_PORT = 587;
                 SMTP_ADDRESS = "smtp.mailgun.org";
-                FROM = "do-not-reply@haseebmajid.dev";
+                FROM = "do-not-reply@${config.nixicle.domains.root}";
                 USER = "postmaster@sandbox92beea2c073042199273861834e24d1f.mailgun.org";
                 SENDMAIL_PATH = "${pkgs.system-sendmail}/bin/sendmail";
               };
@@ -147,7 +150,7 @@ _: {
             instances = {
               forgejo-runner = {
                 enable = true;
-                url = "https://forgejo.homelab.haseebmajid.dev";
+                url = "https://forgejo.${config.nixicle.domains.homelab}";
                 name = "homelab";
                 tokenFile = config.sops.secrets.forgejo_runner_token.path;
                 labels = [

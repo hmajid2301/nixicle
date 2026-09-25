@@ -5,7 +5,6 @@ _: {
         config,
         pkgs,
         lib,
-        secrets,
         ...
       }:
       let
@@ -27,8 +26,6 @@ _: {
           ".cargo/registry"
         ];
         rsyncExcludeArgs = lib.concatStringsSep " " (map (p: "--exclude='${p}'") rsyncExcludes);
-
-        secretPaths = lib.mergeAttrsList secrets;
       in
       {
         sops.secrets.b2_access_key = { };
@@ -97,8 +94,8 @@ _: {
             };
             script = ''
               set -euo pipefail
-              export AWS_ACCESS_KEY_ID=$(cat ${secretPaths.b2_access_key})
-              export AWS_SECRET_ACCESS_KEY=$(cat ${secretPaths.b2_secret_key})
+              export AWS_ACCESS_KEY_ID=$(cat ${config.sops.secrets.b2_access_key.path})
+              export AWS_SECRET_ACCESS_KEY=$(cat ${config.sops.secrets.b2_secret_key.path})
               for path in /persist/.snapshots /home/.snapshots; do
                 if [ -d "$path" ]; then
                   echo "Syncing $path to B2..."

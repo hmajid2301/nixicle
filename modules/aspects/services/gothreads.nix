@@ -27,6 +27,8 @@
       {
         imports = [ inputs.gothreads.nixosModules.default ];
 
+        sops.defaultSopsFile = lib.mkDefault lib.nixicle.secretsFile;
+
         sops.secrets.gothreads = {
           key = "gothreads";
           owner = config.services.gothreads.user;
@@ -52,7 +54,7 @@
             database.createLocally = true;
             secretsFile = config.sops.secrets.gothreads.path;
             oauth = {
-              issuerUrl = "https://id.haseebmajid.dev";
+              issuerUrl = "https://${config.nixicle.domains.sso}";
               clientId = "UMLLRCgGhl1ljj48lbhTVMCyulz77hMl6ELEKHUI";
             };
             s3 = {

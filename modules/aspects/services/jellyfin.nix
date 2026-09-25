@@ -17,13 +17,11 @@
   den.aspects.jellyfin = {
     nixos =
       {
-        lib,
+        config,
         pkgs,
-        secrets,
         ...
       }:
       let
-        secretPaths = lib.mergeAttrsList secrets;
         flowfinManifest = "${inputs.flowfin-sso}/manifest.json";
         flowfinRev = inputs.flowfin-sso.rev;
         flowfinManifestHash = builtins.convertHash {
@@ -57,7 +55,7 @@
 
           jellyfin = {
             enable = true;
-            apiKey._secret = secretPaths."jellyfin/api_key";
+            apiKey._secret = config.sops.secrets."jellyfin/api_key".path;
 
             encoding = {
               hardwareAccelerationType = "vaapi";
@@ -103,9 +101,9 @@
                     Enabled = true;
                     EnableAuthorization = true;
                     EnableAllFolders = true;
-                    OidEndpoint = "https://id.haseebmajid.dev/.well-known/openid-configuration";
-                    OidClientId._secret = secretPaths."jellyfin/client_id";
-                    OidSecret._secret = secretPaths."jellyfin/client_secret";
+                    OidEndpoint = "https://${config.nixicle.domains.sso}/.well-known/openid-configuration";
+                    OidClientId._secret = config.sops.secrets."jellyfin/client_id".path;
+                    OidSecret._secret = config.sops.secrets."jellyfin/client_secret".path;
                     OidScopes = [
                       "openid"
                       "profile"
@@ -124,7 +122,7 @@
 
             branding = {
               loginDisclaimer = ''
-                <form action="https://jellyfin.haseebmajid.dev/sso/OID/p/pocketid">
+                <form action="https://jellyfin.${config.nixicle.domains.root}/sso/OID/p/pocketid">
                   <button class="raised block emby-button button-submit">
                     Sign in with SSO
                   </button>
@@ -145,7 +143,7 @@
             users.admin = {
               mutable = false;
               policy.isAdministrator = true;
-              password._secret = secretPaths."jellyfin/admin_password";
+              password._secret = config.sops.secrets."jellyfin/admin_password".path;
             };
           };
         };

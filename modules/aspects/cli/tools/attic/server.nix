@@ -1,10 +1,9 @@
 # The atticd server: runs the attic binary-cache daemon (behind traefik on
-# attic.haseebmajid.dev) with Postgres + Backblaze B2 storage. Used by the
+# attic.<root domain>) with Postgres + Backblaze B2 storage. Used by the
 # host(s) that actually serve the cache; everyone else consumes it via
 # `den.aspects.attic-cache`.
 _: {
   den.aspects.attic-server = {
-    includes = [ ];
     persist.directories = [
       {
         directory = "/var/lib/atticd";
@@ -16,13 +15,10 @@ _: {
 
     nixos =
       {
-        secrets,
+        config,
         lib,
         ...
       }:
-      let
-        secretPaths = lib.mergeAttrsList secrets;
-      in
       {
         users.users.atticd = {
           isSystemUser = true;
@@ -49,17 +45,27 @@ _: {
 
           atticd = {
             enable = true;
-            environmentFile = secretPaths.attic;
+            environmentFile = config.sops.secrets.attic.path;
             settings = {
               listen = "127.0.0.1:8899";
-              allowed-hosts = [ "attic.haseebmajid.dev" ];
-              api-endpoint = "https://attic.haseebmajid.dev/";
+              allowed-hosts = [ "attic.${config.nixicle.domains.root}" ];
+              api-endpoint = "https://attic.${config.nixicle.domains.root}/";
               database.url = "postgresql:///atticd?host=/run/postgresql&user=atticd";
+              chunking = {
+                nar-size-threshold = 0;
+                min-size = 16384;
+                avg-size = 65536;
+                max-size = 262144;
+              };
+              garbage-collection = {
+                interval = "1 day";
+                default-retention-period = "3 months";
+              };
               storage = {
                 type = "s3";
-                endpoint = "https://s3.us-west-004.backblazeb2.com";
-                region = "us-west-004";
-                bucket = "majiy00-nix-cache";
+                endpoint = "http://vps:3900";
+                region = "garage";
+                bucket = "attic";
               };
             };
           };
@@ -78,7 +84,7 @@ _: {
               };
               routers.attic = {
                 entryPoints = [ "websecure" ];
-                rule = "Host(`attic.haseebmajid.dev`)";
+                rule = "Host(`attic.${config.nixicle.domains.root}`)";
                 service = "attic";
                 tls.certResolver = "letsencrypt";
               };

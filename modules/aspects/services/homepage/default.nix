@@ -5,11 +5,9 @@ _: {
         config,
         lib,
         pkgs,
-        secrets,
         ...
       }:
       let
-        secretPaths = lib.mergeAttrsList secrets;
         theme = import ./_theme.nix { };
         cfg = config.nixicle.homepage;
         variant = theme.${cfg.themeVariant} or theme.crt;
@@ -30,12 +28,12 @@ _: {
           services = {
             homepage-dashboard = {
               enable = true;
-              environmentFiles = [ secretPaths.homepage_env ];
+              environmentFiles = [ config.sops.secrets.homepage_env.path ];
               listenPort = 8173;
-              allowedHosts = "homepage.haseebmajid.dev,localhost:8173,127.0.0.1:8173";
+              allowedHosts = "homepage.${config.nixicle.domains.root},localhost:8173,127.0.0.1:8173";
               bookmarks = [ ];
               services = import ./_services.nix { inherit config lib; };
-              settings = import ./_settings.nix;
+              settings = import ./_settings.nix { inherit lib; };
               widgets = import ./_widgets.nix;
               customCSS = variant;
               customJS = builtins.readFile ./custom.js;
@@ -59,14 +57,14 @@ _: {
                 name = "homepage";
                 port = 8173;
                 subdomain = "homepage";
-                domain = "haseebmajid.dev";
+                domain = config.nixicle.domains.root;
               })
               (lib.nixicle.mkTraefikService {
                 name = "homepage-icons";
                 port = 8174;
                 subdomain = "homepage";
-                domain = "haseebmajid.dev";
-                extraRouterConfig.rule = "Host(`homepage.haseebmajid.dev`) && PathPrefix(`/icons`)";
+                domain = config.nixicle.domains.root;
+                extraRouterConfig.rule = "Host(`homepage.${config.nixicle.domains.root}`) && PathPrefix(`/icons`)";
               })
             ];
           };
