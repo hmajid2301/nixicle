@@ -34,7 +34,7 @@ tasks:
       - tofu apply -var-file={{.VAR_FILE}}
 
   import:
-    desc: "Import an existing Pocket ID resource into OpenTofu state. Usage: task tofu:import ADDRESS=pocketid_client.grafana ID=grafana"
+    desc: "Import an existing Pocket ID resource into OpenTofu state. Usage: task tofu:import ADDRESS='pocketid_client.app["grafana"]' ID=grafana"
     dir: '{{.TF_DIR}}'
     cmds:
       - tofu init
