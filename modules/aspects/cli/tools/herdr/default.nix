@@ -2,7 +2,12 @@
 {
   flake-file.inputs = {
     herdr = {
-      url = "github:herdrdev/herdr/v0.9.0";
+      url = "github:herdrdev/herdr/v0.9.1";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.rust-overlay.follows = "rust-overlay";
+    };
+    rust-overlay = {
+      url = "github:oxalica/rust-overlay";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     plugins-herdr-worktrunk = {
@@ -10,7 +15,7 @@
       flake = false;
     };
     plugins-herdr-resurrect = {
-      url = "github:ntindle/herdr-resurrect";
+      url = "github:cantona/herdr-resurrect";
       flake = false;
     };
   };
