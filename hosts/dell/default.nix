@@ -11,9 +11,52 @@
       {
         pkgs,
         lib,
+        config,
         ...
       }:
       {
+        # Determinate Nix owns /etc/nix/nix.conf (lazy-trees, eval-cores);
+        # nixpkgs' nix on the activation PATH warns "unknown setting" on both.
+        # `nix.package = null` matches determinate's own homeManagerModules,
+        # but it stops HM writing nix.conf, so render it from the settings the
+        # aspects (attic-client, neovim) still define.
+        # HM asserts a package whenever nix.settings is non-empty, so clear it
+        # and write the same values ourselves.
+        nix = {
+          package = lib.mkForce null;
+          settings = lib.mkForce { };
+        };
+
+        xdg = {
+          configFile."nix/nix.conf".text =
+            let
+              atticKey = "main:+A4BR+E8F8FNe1YR6Uq8qGO5dVj8y1kaalW3kQ0WgXo=";
+              substituters = [
+                "https://nix-community.cachix.org"
+                "https://attic.${lib.nixicle.domains.root}/main"
+                "https://catppuccin.cachix.org"
+              ];
+              keys = [
+                "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
+                atticKey
+                "catppuccin.cachix.org-1:noG/4HkbhJb+lUAdKrph6LaozJvAeEEZj4N732IysmU="
+              ];
+            in
+            ''
+              extra-substituters = ${lib.concatStringsSep " " substituters}
+              extra-trusted-public-keys = ${lib.concatStringsSep " " keys}
+              netrc-file = ${config.sops.secrets."netrc".path}
+            '';
+
+          mimeApps.defaultApplications = lib.mkForce {
+            "text/html" = [ "google-chrome.desktop" ];
+            "x-scheme-handler/http" = [ "google-chrome.desktop" ];
+            "x-scheme-handler/https" = [ "google-chrome.desktop" ];
+            "x-scheme-handler/about" = [ "google-chrome.desktop" ];
+            "x-scheme-handler/unknown" = [ "google-chrome.desktop" ];
+          };
+        };
+
         home = {
           stateVersion = "23.11";
 
@@ -180,14 +223,6 @@
         };
 
         fonts.fontconfig.enable = true;
-
-        xdg.mimeApps.defaultApplications = lib.mkForce {
-          "text/html" = [ "google-chrome.desktop" ];
-          "x-scheme-handler/http" = [ "google-chrome.desktop" ];
-          "x-scheme-handler/https" = [ "google-chrome.desktop" ];
-          "x-scheme-handler/about" = [ "google-chrome.desktop" ];
-          "x-scheme-handler/unknown" = [ "google-chrome.desktop" ];
-        };
 
         programs.git = {
           settings.user.email = lib.mkForce "haseeb.majid@nala.money";
