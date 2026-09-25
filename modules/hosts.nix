@@ -78,6 +78,7 @@ in
             den.aspects.herdr-cli
             den.aspects.ai
             den.aspects.worktrunk
+            den.aspects.devTools
           ];
 
           homeManager =
