@@ -81,9 +81,14 @@ _: {
           };
 
           dynamicConfigOptions.http = {
+            middlewares.tailnet-only.ipAllowList.sourceRange = [
+              "100.64.0.0/10"
+              "fd7a:115c:a1e0::/48"
+            ];
+
             routers.traefik = {
               entryPoints = [ "websecure" ];
-              rule = "Host(`traefik.homelab.haseebmajid.dev`)";
+              rule = "Host(`traefik.${config.nixicle.domains.homelab}`)";
               middlewares = [ "tinyauth" ];
               service = "api@internal";
               tls.certResolver = "letsencrypt";
