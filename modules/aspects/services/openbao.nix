@@ -1,6 +1,5 @@
 _: {
   den.aspects.openbao = {
-    includes = [ ];
     persist.directories = [
       "/var/lib/openbao"
       "/var/log/openbao"

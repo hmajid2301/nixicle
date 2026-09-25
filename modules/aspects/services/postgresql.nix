@@ -1,6 +1,5 @@
 _: {
   den.aspects.postgresql = {
-    includes = [ ];
     persist.directories = [
       "/var/lib/postgresql"
       "/var/backup/postgresql"

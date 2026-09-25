@@ -1,6 +1,5 @@
 _: {
   den.aspects.garage = {
-    includes = [ ];
     persist.directories = [ "/var/lib/private/garage" ];
     nixos =
       {

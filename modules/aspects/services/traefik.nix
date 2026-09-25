@@ -1,6 +1,5 @@
 _: {
   den.aspects.traefik = {
-    includes = [ ];
     persist.directories = [ "/var/lib/traefik" ];
     nixos =
       { config, ... }:

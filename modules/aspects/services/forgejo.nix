@@ -1,6 +1,5 @@
 _: {
   den.aspects.forgejo = {
-    includes = [ ];
     persist.directories = [
       {
         directory = "/var/lib/forgejo";

@@ -9,7 +9,6 @@
   };
 
   den.aspects.gothreads = {
-    includes = [ ];
     persist.directories = [
       {
         directory = "/var/lib/gothreads";

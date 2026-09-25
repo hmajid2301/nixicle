@@ -1,6 +1,5 @@
 _: {
   den.aspects.unbound = {
-    includes = [ ];
     persist.directories = [ "/var/lib/unbound" ];
     nixos = _: {
       services.unbound = {

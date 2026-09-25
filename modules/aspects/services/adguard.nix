@@ -1,6 +1,5 @@
 _: {
   den.aspects.adguard = {
-    includes = [ ];
     persist.directories = [ "/var/lib/private/AdGuardHome" ];
     nixos =
       { lib, ... }:

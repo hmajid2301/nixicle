@@ -1,6 +1,5 @@
 _: {
   den.aspects.tailscale = {
-    includes = [ ];
     persist.directories = [ "/var/lib/tailscale" ];
     nixos = _: {
       services.tailscale = {
