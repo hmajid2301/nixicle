@@ -9,5 +9,19 @@
   "widget": {
     "collapsed": false
   },
-  "stageTimeoutMinutes": 30
+  "stageTimeoutMinutes": 30,
+  "panes": {
+    "mode": "grouped",
+    "direction": "right",
+    "maxPerTab": 4
+  },
+  "persistent": {
+    "maxAgents": 3
+  },
+  "supervision": {
+    "stallGraceMs": 5000
+  },
+  "btw": {
+    "tools": ["read", "grep", "find", "ls"]
+  }
 }

@@ -1,5 +1,6 @@
 // extensions/pipelines/herdr.ts
-// herdr CLI wrappers. Builders/parsers are pure; exec paths are exercised by later integration tasks.
+// Thin herdr CLI seam: availability, exec, and pane/tab primitives.
+// Placement policy and ownership live in placement.ts.
 import { execFileSync, execSync } from "node:child_process";
 
 let availableCache: boolean | null = null;
@@ -20,11 +21,11 @@ function hasBinary(cmd: string): boolean {
   }
 }
 
-function run(args: string[]): string {
+export function herdrExec(args: string[]): string {
   return execFileSync("herdr", args, { encoding: "utf8" });
 }
 
-function parseJson(value: string): any {
+export function parseJson(value: string): any {
   try {
     return JSON.parse(value);
   } catch {
@@ -48,18 +49,21 @@ export function extractRootPaneId(output: string): string {
 }
 
 export function currentPaneInfo(): { paneId: string; tabId: string; workspaceId: string } {
+  // Resolve the calling pane fresh: inherited HERDR_* IDs go stale after a
+  // pane moves, and `--current` keeps us on the caller rather than the
+  // UI-focused pane (which may belong to another client/workspace).
+  try {
+    const pane = parseJson(herdrExec(["pane", "current", "--current"]))?.result?.pane;
+    if (pane?.pane_id && pane?.tab_id && pane?.workspace_id) {
+      return { paneId: pane.pane_id, tabId: pane.tab_id, workspaceId: pane.workspace_id };
+    }
+  } catch {
+    // not inside a herdr pane yet — fall back to inherited env below
+  }
   const paneId = process.env.HERDR_PANE_ID;
   const tabId = process.env.HERDR_TAB_ID;
   const workspaceId = process.env.HERDR_WORKSPACE_ID;
-  if (!paneId || !tabId || !workspaceId) {
-    // --current: target the calling pane; without it herdr may pick the
-    // UI-focused pane, which can belong to another client (wrong workspace).
-    const pane = parseJson(run(["pane", "current", "--current"]))?.result?.pane;
-    if (!pane?.pane_id || !pane?.tab_id || !pane?.workspace_id) {
-      throw new Error("herdr pane current: no pane info");
-    }
-    return { paneId: pane.pane_id, tabId: pane.tab_id, workspaceId: pane.workspace_id };
-  }
+  if (!paneId || !tabId || !workspaceId) throw new Error("herdr pane current: no pane info");
   return { paneId, tabId, workspaceId };
 }
 
@@ -75,9 +79,9 @@ export function parsePaneGet(output: string, paneId: string): PaneState {
 
 export function createPane(name: string, cwd: string): string {
   const { workspaceId } = currentPaneInfo();
-  const paneId = extractRootPaneId(run(buildTabCreateArgs(name, cwd, workspaceId)));
+  const paneId = extractRootPaneId(herdrExec(buildTabCreateArgs(name, cwd, workspaceId)));
   try {
-    run(["pane", "rename", paneId, name]);
+    herdrExec(["pane", "rename", paneId, name]);
   } catch {
     // cosmetic — pane label is optional
   }
@@ -85,15 +89,15 @@ export function createPane(name: string, cwd: string): string {
 }
 
 export function paneRun(paneId: string, command: string): void {
-  run(["pane", "run", paneId, command]);
+  herdrExec(["pane", "run", paneId, command]);
 }
 
 export function paneSendKeys(paneId: string, keys: string): void {
-  run(["pane", "send-keys", paneId, keys]);
+  herdrExec(["pane", "send-keys", paneId, keys]);
 }
 
 export function paneRead(paneId: string, lines = 50): string {
-  return run(["pane", "read", paneId, "--source", "visible", "--lines", String(lines)]);
+  return herdrExec(["pane", "read", paneId, "--source", "visible", "--lines", String(lines)]);
 }
 
 export async function paneReadAsync(paneId: string, lines = 50): Promise<string> {
@@ -124,5 +128,5 @@ export async function paneGet(paneId: string): Promise<PaneState> {
 }
 
 export function paneClose(paneId: string): void {
-  run(["pane", "close", paneId]);
+  herdrExec(["pane", "close", paneId]);
 }

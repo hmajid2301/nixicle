@@ -1,24 +1,11 @@
 // extensions/pipelines/session-tail.ts
 // Reads the tail of a child pi session (JSONL) for widget + result data.
-// Defensive: handles bare-message lines and {type:"message", message:{...}}
-// wrappers, text content as string or parts array, several usage shapes.
-import { existsSync, readFileSync } from "node:fs";
+import { readSessionEntries, textOf } from "./session-log.ts";
 
 export interface TailInfo {
   lastText: string;
   lastTool?: string;
   tokens?: number;
-}
-
-function textOf(content: unknown): string {
-  if (typeof content === "string") return content;
-  if (Array.isArray(content)) {
-    return content
-      .filter((c: any) => c?.type === "text")
-      .map((c: any) => c.text ?? "")
-      .join("\n");
-  }
-  return "";
 }
 
 function tokensOf(usage: any): number | undefined {
@@ -43,25 +30,14 @@ function toolNameOf(content: unknown): string | undefined {
 }
 
 export function readSessionTail(sessionFile: string, maxLines = 400): TailInfo | null {
-  if (!existsSync(sessionFile)) return null;
-  const lines = readFileSync(sessionFile, "utf8")
-    .split("\n")
-    .filter((l) => l.trim())
-    .slice(-maxLines);
   let lastText = "";
   let lastTool: string | undefined;
   let tokens: number | undefined;
-  for (const line of lines) {
-    let entry: any;
-    try {
-      entry = JSON.parse(line);
-    } catch {
-      continue;
-    }
+  for (const entry of readSessionEntries(sessionFile, maxLines)) {
     const msg = entry?.message ?? entry;
     if (msg?.role === "assistant") {
-      const t = textOf(msg.content);
-      if (t.trim()) lastText = t;
+      const text = textOf(msg.content);
+      if (text.trim()) lastText = text;
       const tok = tokensOf(msg.usage);
       if (tok !== undefined) tokens = tok;
       const tool = toolNameOf(msg.content);

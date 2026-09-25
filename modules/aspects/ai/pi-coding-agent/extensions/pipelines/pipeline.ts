@@ -19,6 +19,8 @@ export interface StageSpec {
   dependsOn?: string[];
   gate?: boolean;
   retries?: number; // extra attempts on transient errors (default 0)
+  model?: string; // per-stage model override, e.g. "opencode-go/glm-5.3"
+  thinking?: string; // per-stage thinking level
 }
 
 export interface StageState {
@@ -30,6 +32,8 @@ export interface StageState {
   gatePassed?: boolean;
   helpNote?: string; // parent guidance attached when resuming a waiting-help stage
   retries: number;
+  model?: string; // per-stage model override (inherited by every attempt)
+  thinking?: string;
   status: StageStatus;
   attempt: number;
   result?: string;
@@ -89,6 +93,25 @@ export function validateSpecs(specs: StageSpec[]): string | null {
     if (visit(s.id)) return `cycle detected at stage "${s.id}"`;
   }
   return null;
+}
+
+// Pipeline-level model/thinking act as defaults for every stage; a stage that
+// sets its own value wins. Pure so the tool surface stays testable.
+export interface StageDefaults {
+  model?: string;
+  thinking?: string;
+}
+
+export function applyStageDefaults(specs: StageSpec[], defaults: StageDefaults): StageSpec[] {
+  return specs.map((s) => {
+    const model = s.model ?? defaults.model;
+    const thinking = s.thinking ?? defaults.thinking;
+    return {
+      ...s,
+      ...(model ? { model } : {}),
+      ...(thinking ? { thinking } : {}),
+    };
+  });
 }
 
 export function substituteTask(task: string, stages: StageState[], deps: string[]): string {
@@ -171,6 +194,8 @@ export class PipelineEngine {
         dependsOn: [...(s.dependsOn ?? [])],
         gate: s.gate ?? false,
         retries: s.retries ?? 0,
+        model: s.model,
+        thinking: s.thinking,
         status: "queued",
         attempt: 0,
       })),

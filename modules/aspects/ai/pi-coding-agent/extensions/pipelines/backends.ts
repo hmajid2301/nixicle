@@ -3,11 +3,12 @@
 import { spawn } from "node:child_process";
 import { chmodSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
-import { subDir } from "./config.ts";
-import { readExitFile, waitForCompletion } from "./completion.ts";
+import { DEFAULT_PANE_CONFIG, DEFAULT_STALL_GRACE_MS, subDir } from "./config.ts";
+import { readExitFile, waitForCompletion, type WaitOpts } from "./completion.ts";
 import { log } from "./log.ts";
 import { buildLaunch, isHeadlessCapable, shellQuote, type LaunchOpts } from "./drivers.ts";
-import { createPane, isHerdrAvailable, paneClose, paneGet, paneReadAsync, paneRun, paneSendKeys } from "./herdr.ts";
+import { isHerdrAvailable, paneClose, paneGet, paneReadAsync, paneRun, paneSendKeys } from "./herdr.ts";
+import { placePane, type PanePlacement } from "./placement.ts";
 import { readSessionTail } from "./session-tail.ts";
 import type { AgentConfig, CompletionResult, HarnessCli, RunHandle } from "./types.ts";
 
@@ -34,10 +35,17 @@ export interface ResolvedSpawn {
   sessionPath?: string; // override (resume)
   timeoutMs?: number;
   onTimeout?: (elapsedSeconds: number) => void;
+  onStall?: (elapsedSeconds: number) => void;
+  onRecover?: (elapsedSeconds: number) => void;
   watcher?: (handle: RunHandle, result: CompletionResult) => void;
+  panePlacement?: PanePlacement;
+  env?: Record<string, string>;
+  /** Keep the pane after the run settles so a follow-up can resume in it. */
+  retainPane?: boolean;
+  stallGraceMs?: number;
 }
 
-interface RunRecord {
+export interface RunRecord {
   handle: RunHandle;
   req: ResolvedSpawn;
   controller?: AbortController;
@@ -69,6 +77,20 @@ export function listRuns(): RunRecord[] {
   return [...runs.values()];
 }
 
+/** Stop a retained run: interrupt, close its pane, and forget it. */
+export function stopRun(id: string): boolean {
+  const rec = runs.get(id);
+  if (!rec) return false;
+  runs.delete(id);
+  try {
+    void rec.handle.interrupt().catch(() => {});
+  } catch {
+    // best effort — the process may already be gone
+  }
+  closePaneIfAny(rec.handle);
+  return true;
+}
+
 const ANSI_RE = /\x1b\[[0-9;]*[a-zA-Z]/g;
 
 // The five CLIs drivers.ts has dedicated launch builders for; anything else
@@ -92,6 +114,20 @@ function sessionFileOf(req: ResolvedSpawn): string {
 
 function exitFileOf(req: ResolvedSpawn): string {
   return join(subDir("exit"), `${req.id}.json`);
+}
+
+function paneWaitOptions(req: ResolvedSpawn, o: LaunchOpts, paneId: string): WaitOpts {
+  return {
+    intervalMs: 750,
+    exitFile: o.exitFile,
+    readScreen: () => paneReadAsync(paneId, 30),
+    inspectPane: () => paneGet(paneId),
+    timeoutMs: o.timeoutMs,
+    onTimeout: o.onTimeout,
+    stallGraceMs: req.stallGraceMs ?? DEFAULT_STALL_GRACE_MS,
+    onStall: req.onStall,
+    onRecover: req.onRecover,
+  };
 }
 
 function clearExitFile(exitFile?: string): void {
@@ -127,6 +163,7 @@ export function buildOpts(req: ResolvedSpawn, backend: "pane" | "headless"): Lau
     exitFile: req.harness === "pi" ? exitFileOf(req) : undefined,
     timeoutMs: req.timeoutMs,
     onTimeout: req.onTimeout,
+    env: req.env,
   };
 }
 
@@ -167,7 +204,7 @@ function writeLaunchScript(o: LaunchOpts): string {
 }
 
 function spawnPane(req: ResolvedSpawn, o: LaunchOpts): RunHandle {
-  const paneId = createPane(req.name, req.cwd);
+  const paneId = placePane(req.name, req.cwd, req.panePlacement ?? DEFAULT_PANE_CONFIG);
   clearExitFile(o.exitFile);
   const scriptPath = writeLaunchScript(o);
   paneRun(paneId, `bash ${shellQuote(scriptPath)}`);
@@ -176,14 +213,7 @@ function spawnPane(req: ResolvedSpawn, o: LaunchOpts): RunHandle {
   const sessionFile = o.sessionFile;
 
   const completion = (async (): Promise<CompletionResult> => {
-    const result = await waitForCompletion(controller.signal, {
-      intervalMs: 750,
-      exitFile: o.exitFile,
-      readScreen: () => paneReadAsync(paneId, 30),
-      inspectPane: () => paneGet(paneId),
-      timeoutMs: o.timeoutMs,
-      onTimeout: o.onTimeout,
-    });
+    const result = await waitForCompletion(controller.signal, paneWaitOptions(req, o, paneId));
     if (result.reason === "ping") return result;
     const output = result.output ?? (sessionFile
       ? (readSessionTail(sessionFile)?.lastText || (await paneOutputOf(paneId)))
@@ -232,14 +262,7 @@ export function resumePaneRun(
 
   const controller = new AbortController();
   const completion = (async (): Promise<CompletionResult> => {
-    const result = await waitForCompletion(controller.signal, {
-      intervalMs: 750,
-      exitFile: o.exitFile,
-      readScreen: () => paneReadAsync(rec.handle.paneId!, 30),
-      inspectPane: () => paneGet(rec.handle.paneId!),
-      timeoutMs: o.timeoutMs,
-      onTimeout: o.onTimeout,
-    });
+    const result = await waitForCompletion(controller.signal, paneWaitOptions(req, o, rec.handle.paneId!));
     if (result.reason === "ping") return result;
     const output = result.output ?? (o.sessionFile
       ? (readSessionTail(o.sessionFile)?.lastText || (await paneOutputOf(rec.handle.paneId!)))
@@ -355,7 +378,7 @@ export function register(
       } catch {
         // Watchers are advisory; do not break run cleanup on supervisor errors.
       }
-      if (result.reason !== "ping" && runs.get(handle.id)?.handle === handle) {
+      if (!req.retainPane && result.reason !== "ping" && runs.get(handle.id)?.handle === handle) {
         runs.delete(handle.id);
         closePaneIfAny(handle);
       }

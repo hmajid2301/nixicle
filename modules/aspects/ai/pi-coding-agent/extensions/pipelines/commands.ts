@@ -10,6 +10,8 @@ export interface CommandDeps {
 	startPlanPreset: (goal: string) => string;
 	startIteratePreset: (instruction: string) => string;
 	sub: (agent: string, task: string) => Promise<string>;
+	startBtw: (question: string, sessionFile?: string) => string;
+	closeBtw: () => boolean;
 }
 
 function agentLines(agents: AgentConfig[]): string[] {
@@ -94,6 +96,28 @@ export function registerCommands(pi: ExtensionAPI, deps: CommandDeps): void {
 				return;
 			}
 			ctx.ui.notify(active.flatMap(pipelineLines).join("\n"), "info");
+		},
+	});
+
+	pi.registerCommand("btw", {
+		description: "Ask a side question in a Herdr side pane: /btw <question>",
+		handler: async (args: string, ctx: any) => {
+			try {
+				const id = deps.startBtw(args, ctx.sessionManager?.getSessionFile?.());
+				ctx.ui.notify(
+					`Opened /btw side thread (${id}). Run /btw-merge <prompt> in that pane to fold it back.`,
+					"info",
+				);
+			} catch (error) {
+				ctx.ui.notify(error instanceof Error ? error.message : String(error), "warning");
+			}
+		},
+	});
+
+	pi.registerCommand("btw-close", {
+		description: "Close the current /btw side thread",
+		handler: async (_args: string, ctx: any) => {
+			ctx.ui.notify(deps.closeBtw() ? "Closed /btw side thread." : "No /btw side thread is open.", "info");
 		},
 	});
 

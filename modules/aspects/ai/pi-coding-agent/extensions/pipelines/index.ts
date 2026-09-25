@@ -6,12 +6,25 @@ import { homedir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { discoverAgents } from "./agents.ts";
-import { currentBackend, getRun, listRuns, resumePaneRun, spawnRun, type ResolvedSpawn } from "./backends.ts";
+import { currentBackend, getRun, listRuns, resumePaneRun, spawnRun, stopRun, type ResolvedSpawn } from "./backends.ts";
 import { paneClose } from "./herdr.ts";
 import { registerCommands } from "./commands.ts";
-import { loadConfig, resolveModel } from "./config.ts";
-import { PipelineEngine, type PipelineHooks, type PipelineState, type StageSpec, type StageState } from "./pipeline.ts";
+import {
+  loadConfig,
+  parentModelFor,
+  resolveBtwTools,
+  resolveModel,
+  resolvePaneConfig,
+  resolvePersistentMax,
+  resolveStallGraceMs,
+  subDir,
+} from "./config.ts";
+import { createBtwController } from "./btw-controller.ts";
+import { registerSpecialistTools } from "./specialists.ts";
+import { newId } from "./ids.ts";
+import { PipelineEngine, type PipelineHooks, type PipelineState, type StageSpec, type StageState, applyStageDefaults } from "./pipeline.ts";
 import { buildResearchTask, chooseResearchAgent } from "./research.ts";
+import { createSessionModel, envModel, safeModelFrom } from "./session-model.ts";
 import { isCreditLimitError } from "./child-helpers.ts";
 import { log } from "./log.ts";
 import { savePipeline } from "./store.ts";
@@ -85,23 +98,24 @@ function extensionPath(extensionName: string): string {
   return join(agentRoot(), "extensions", extensionName);
 }
 
-function newId(prefix: string): string {
-  return `${prefix}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
-}
-
 type StandaloneSteer = "always" | "pane-only" | "never";
 
 interface RunMeta {
   handle: RunHandle;
   req: ResolvedSpawn;
   stageLabel?: string; // `${pipelineId}:${stageId}` when spawned by a pipeline
-  retainedPing?: boolean;
+  retained?: boolean; // settled and kept (pinged, or idle persistent specialist)
 }
 
 export default function pipelinesExtension(pi: ExtensionAPI): void {
   const cwd = process.cwd();
   const agents = discoverAgents(cwd);
   const cfg = loadConfig();
+  // Children inherit the caller's model unless a stage, agent or config says otherwise.
+  // Seeded from the env, updated from pi's context when the model changes.
+  const sessionModel = createSessionModel(envModel());
+  pi.on("session_start", (_event, ctx) => sessionModel.observe(safeModelFrom(ctx)));
+  pi.on("model_select", (event, ctx) => sessionModel.observe(event?.model ?? safeModelFrom(ctx)));
   const byName = new Map(agents.map((agent) => [agent.name, agent]));
   const runs = new Map<string, RunMeta>();
 
@@ -130,12 +144,14 @@ export default function pipelinesExtension(pi: ExtensionAPI): void {
       systemPromptAppend?: string;
       autoExit?: boolean;
       sessionPath?: string;
+      persistent?: boolean;
     },
   ): ResolvedSpawn {
     const agent = opts.agentName ? byName.get(opts.agentName) : undefined;
     if (opts.agentName && !agent) {
       throw new Error(`Unknown agent "${opts.agentName}". Available: ${agents.map((a) => a.name).join(", ")}`);
     }
+    const harness = agent?.cli ?? "pi";
     return {
       id,
       name: opts.name,
@@ -143,16 +159,23 @@ export default function pipelinesExtension(pi: ExtensionAPI): void {
       agent,
       task: opts.task,
       cwd: agent?.cwd ?? cwd,
-      harness: agent?.cli ?? "pi",
-      model: resolveModel(cfg, opts.agentName, agent?.model, opts.model, undefined),
+      harness,
+      // Precedence: stage/run override → agent definition → config → parent session.
+      // The parent fallback (pi harness only) is what keeps children on a model
+      // the caller can actually use.
+      model: resolveModel(cfg, opts.agentName, agent?.model, opts.model, parentModelFor(harness, sessionModel.current())),
       thinking: opts.thinking ?? agent?.thinking,
       tools: opts.tools ?? agent?.tools,
       skills: (opts.skills ?? agent?.skills)?.map(skillPath),
       extensions: (opts.extensions ?? agent?.extensions)?.map(extensionPath),
       systemPromptAppend: opts.systemPromptAppend,
-      autoExit: opts.autoExit ?? agent?.autoExit ?? true,
+      // A retained specialist runs each task one-shot so its pane is free to
+      // resume between tasks; the backend keeps the pane itself.
+      autoExit: opts.persistent ? true : (opts.autoExit ?? agent?.autoExit ?? true),
       childExtPath: CHILD_EXT,
       sessionPath: opts.sessionPath,
+      panePlacement: resolvePaneConfig(cfg),
+      retainPane: opts.persistent,
     };
   }
 
@@ -210,7 +233,7 @@ export default function pipelinesExtension(pi: ExtensionAPI): void {
         }
         if (!stageLabel) {
           if (shouldSteerStandalone(standaloneSteer, handle)) steerResultStandalone(handle.id, handle, result);
-          if (result.reason === "ping") runs.set(handle.id, { handle, req, retainedPing: true });
+          if (result.reason === "ping" || req.retainPane) runs.set(handle.id, { handle, req, retained: true });
           else runs.delete(handle.id);
           return;
         }
@@ -242,6 +265,7 @@ export default function pipelinesExtension(pi: ExtensionAPI): void {
     const req = makeResolved(id, opts);
     const timeoutMs = (cfg.stageTimeoutMinutes ?? 30) * 60_000;
     req.timeoutMs = timeoutMs;
+    req.stallGraceMs = resolveStallGraceMs(cfg);
     req.onTimeout = (elapsedSeconds) => {
       log("warn", "run_timeout", { id, stageLabel, elapsedSeconds });
       const target = stageLabel ? `Stage "${stageLabel}"` : `Run "${id}"`;
@@ -255,7 +279,8 @@ export default function pipelinesExtension(pi: ExtensionAPI): void {
       // Break-glass: after a 2x grace period, auto-fail so the pipeline cannot
       // run forever. Skipped if the run already settled in the meantime.
       setTimeout(() => {
-        if (!runs.has(id)) return;
+        const meta = runs.get(id);
+        if (!meta || meta.retained) return;
         if (stageLabel) {
           const split = stageLabel.indexOf(":");
           if (split > 0) {
@@ -276,6 +301,20 @@ export default function pipelinesExtension(pi: ExtensionAPI): void {
         );
       }, timeoutMs * 2);
     };
+    req.onStall = (elapsedSeconds) => {
+      if (!stageLabel && standaloneSteer !== "always") return;
+      const target = stageLabel ? `Stage "${stageLabel}"` : `Run "${id}"`;
+      steer(
+        "stalled",
+        `${target}: pane unreadable for ${elapsedSeconds}s — supervision degraded; the run may still be working.`,
+        { runId: id, stageLabel },
+      );
+    };
+    req.onRecover = (stalledSeconds) => {
+      if (!stageLabel && standaloneSteer !== "always") return;
+      const target = stageLabel ? `Stage "${stageLabel}"` : `Run "${id}"`;
+      steer("recovered", `${target}: pane supervision recovered after ${stalledSeconds}s.`, { runId: id, stageLabel });
+    };
     const handle = spawnRun(req);
     watchCompletion(handle, req, stageLabel, standaloneSteer);
     return handle;
@@ -287,8 +326,44 @@ export default function pipelinesExtension(pi: ExtensionAPI): void {
 
   function findStageRunMeta(pipelineId: string, stageId: string): [string, RunMeta] | undefined {
     const label = stageLabelOf(pipelineId, stageId);
-    return [...runs.entries()].find(([, meta]) => meta.stageLabel === label && !meta.retainedPing);
+    return [...runs.entries()].find(([, meta]) => meta.stageLabel === label && !meta.retained);
   }
+
+  function findRun(idOrName: string | undefined): [string, RunMeta] | undefined {
+    if (!idOrName) return undefined;
+    const direct = runs.get(idOrName);
+    if (direct) return [idOrName, direct];
+    return [...runs.entries()].find(([, meta]) => meta.handle.name === idOrName);
+  }
+
+  function persistentCount(): number {
+    return [...runs.values()].filter((meta) => meta.req.retainPane).length;
+  }
+
+  /** Resume a settled pane run in place and re-watch it. Shared by resume/send. */
+  function resumeStandalone(runId: string, meta: RunMeta, message: string): RunHandle | null {
+    const resumed = resumePaneRun(runId, message);
+    if (!resumed) return null;
+    runs.delete(runId);
+    watchCompletion(resumed, { ...meta.req, id: resumed.id, task: message }, undefined, "always");
+    return resumed;
+  }
+
+  const btw = createBtwController({
+    available: () => currentBackend() === "pane",
+    exitDir: subDir("exit"),
+    tools: resolveBtwTools(cfg),
+    makeRequest: (id, question, systemPromptAppend, tools) =>
+      makeResolved(id, { name: "btw", task: question, autoExit: false, systemPromptAppend, tools }),
+    spawn: spawnRun,
+    closePane: paneClose,
+    sendMerge: (message, prompt) => {
+      pi.sendMessage({ customType: "pipelines-btw", content: message, display: true }, { triggerTurn: false });
+      pi.sendUserMessage(prompt);
+    },
+  });
+  const startBtw = (question: string, sessionFile?: string) => btw.start(question, sessionFile);
+  const closeBtw = () => btw.close();
 
   function cancelPipeline(id: string): boolean {
     const pipeline = engine.get(id);
@@ -315,7 +390,7 @@ export default function pipelinesExtension(pi: ExtensionAPI): void {
     spawn(p: PipelineState, s: StageState): void {
       launch(
         `${p.id}-${s.id}-${s.attempt}`,
-        { name: s.id, agentName: s.agent, task: s.task, autoExit: true },
+        { name: s.id, agentName: s.agent, task: s.task, model: s.model, thinking: s.thinking, autoExit: true },
         `${p.id}:${s.id}`,
       );
     },
@@ -342,7 +417,7 @@ export default function pipelinesExtension(pi: ExtensionAPI): void {
 
   const widgetModel = (): WidgetModel => ({
     pipelines: engine.list(),
-    runs: [...runs.values()].filter((run) => !run.retainedPing).map((run) => ({ handle: run.handle, stageLabel: run.stageLabel })),
+    runs: [...runs.values()].filter((run) => !run.retained).map((run) => ({ handle: run.handle, stageLabel: run.stageLabel })),
   });
   registerWidget(pi, widgetModel, { collapsedDefault: cfg.widget?.collapsed ?? false });
 
@@ -359,11 +434,23 @@ export default function pipelinesExtension(pi: ExtensionAPI): void {
       thinking: Type.Optional(StringEnum(THINKING_LEVELS)),
       tools: Type.Optional(Type.String({ description: "Comma-separated tool allowlist" })),
       await_result: Type.Optional(Type.Boolean({ description: "Wait for completion and return the result" })),
+      persistent: Type.Optional(
+        Type.Boolean({ description: "Keep this specialist's pane for follow-up subagent_send calls (cap: persistent.maxAgents)" }),
+      ),
     }),
     async execute(_toolCallId, params, _signal, onUpdate) {
       const agentName = params.agent ?? "scout";
       const id = newId("run");
       const standaloneSteer: StandaloneSteer = params.await_result === true ? "never" : params.await_result === false ? "always" : "pane-only";
+      if (params.persistent) {
+        const cap = resolvePersistentMax(cfg);
+        if (persistentCount() >= cap) {
+          return {
+            content: [{ type: "text" as const, text: `Persistent specialist cap (${cap}) reached. Stop one with subagent_stop.` }],
+            isError: true,
+          };
+        }
+      }
       const handle = launch(id, {
         name: params.name ?? agentName,
         agentName,
@@ -371,6 +458,7 @@ export default function pipelinesExtension(pi: ExtensionAPI): void {
         model: params.model,
         thinking: params.thinking,
         tools: params.tools?.split(",").map((tool) => tool.trim()).filter(Boolean),
+        persistent: params.persistent,
       }, undefined, standaloneSteer);
       const wantResult = params.await_result ?? handle.backend === "headless";
       if (!wantResult) {
@@ -399,9 +487,13 @@ export default function pipelinesExtension(pi: ExtensionAPI): void {
     name: "pipeline",
     label: "Pipeline",
     description:
-      "Declare a dependency graph of subagent stages and return immediately. gate:true stages pause for a user go-ahead via subagent_resume.",
+      "Declare a dependency graph of subagent stages and return immediately. gate:true stages pause for a user go-ahead via subagent_resume. A top-level model/thinking applies to every stage unless the stage sets its own.",
     parameters: Type.Object({
       name: Type.String({ description: "Pipeline display name" }),
+      model: Type.Optional(
+        Type.String({ description: 'Model for every stage, e.g. "opencode-go/glm-5.3". Defaults to each agent, then config, then this session\'s model.' }),
+      ),
+      thinking: Type.Optional(StringEnum(THINKING_LEVELS)),
       stages: Type.Array(
         Type.Object({
           id: Type.String({ description: "Unique stage id" }),
@@ -410,12 +502,16 @@ export default function pipelinesExtension(pi: ExtensionAPI): void {
           dependsOn: Type.Optional(Type.Array(Type.String(), { description: "Stage ids that must complete first" })),
           gate: Type.Optional(Type.Boolean({ description: "Pause for user go-ahead after dependencies complete" })),
           retries: Type.Optional(Type.Number({ description: "Extra attempts on transient errors (default 0)" })),
+          model: Type.Optional(
+            Type.String({ description: 'Per-stage model override, e.g. "opencode-go/glm-5.3". Defaults to the agent, config, then this session\'s model.' }),
+          ),
+          thinking: Type.Optional(StringEnum(THINKING_LEVELS)),
         }),
         { minItems: 1 },
       ),
     }),
     async execute(_toolCallId, params) {
-      const specs = params.stages as StageSpec[];
+      const specs = applyStageDefaults(params.stages as StageSpec[], { model: params.model, thinking: params.thinking });
       const unknownAgents = [...new Set(specs.map((stage) => stage.agent).filter((agent): agent is string => !!agent && !byName.has(agent)))];
       if (unknownAgents.length > 0) {
         return {
@@ -638,10 +734,8 @@ export default function pipelinesExtension(pi: ExtensionAPI): void {
 
       if (params.id) {
         const meta = runs.get(params.id);
-        const resumed = resumePaneRun(params.id, params.message ?? "continue");
-        if (resumed && meta) {
-          runs.delete(params.id);
-          watchCompletion(resumed, { ...meta.req, id: resumed.id, task: params.message ?? "continue" }, undefined, "always");
+        const resumed = meta ? resumeStandalone(params.id, meta, params.message ?? "continue") : null;
+        if (resumed) {
           return { content: [{ type: "text" as const, text: `Resumed "${resumed.name}" in its pane (${resumed.id}).` }] };
         }
         if (meta?.handle.sessionPath) {
@@ -685,6 +779,18 @@ export default function pipelinesExtension(pi: ExtensionAPI): void {
     },
   });
 
+  registerSpecialistTools(pi, {
+    find: (idOrName) => {
+      const found = findRun(idOrName);
+      return found ? { runId: found[0], run: found[1] } : undefined;
+    },
+    send: (runId, run, message) => resumeStandalone(runId, run, message),
+    stop: (runId) => {
+      runs.delete(runId);
+      stopRun(runId);
+    },
+  });
+
   pi.registerTool({
     name: "subagents_list",
     label: "Subagents List",
@@ -693,13 +799,9 @@ export default function pipelinesExtension(pi: ExtensionAPI): void {
     async execute() {
       const lines: string[] = [];
       lines.push("Agents:", ...agents.map((agent) => `  ${agent.name} [${agent.source}] — ${agent.description}`));
-      const backendRuns = listRuns();
-      const seen = new Set(backendRuns.map((run) => run.handle.id));
-      const retainedPings = [...runs.values()].filter((run) => run.retainedPing && !seen.has(run.handle.id));
-      const active = [
-        ...backendRuns.map((run) => `  ${run.handle.id} ${run.handle.name} (${run.handle.backend})`),
-        ...retainedPings.map((run) => `  ${run.handle.id} ${run.handle.name} (${run.handle.backend}, pinged)`),
-      ];
+      const active = listRuns().map(
+        (run) => `  ${run.handle.id} ${run.handle.name} (${run.handle.backend}${run.req.retainPane ? ", persistent" : ""})`,
+      );
       lines.push("Runs:", ...(active.length ? active : ["  (none)"]));
       lines.push("Pipelines:", ...(engine.list().length ? engine.list().map((pipeline) => `  ${pipeline.id} "${pipeline.name}" (${pipeline.status})`) : ["  (none)"]));
       return { content: [{ type: "text" as const, text: lines.join("\n") }] };
@@ -781,6 +883,8 @@ export default function pipelinesExtension(pi: ExtensionAPI): void {
     startPlanPreset,
     startIteratePreset,
     sub,
+    startBtw,
+    closeBtw,
   });
 
   (globalThis as { __pipelinesStartPlan?: (goal: { goal: string }) => string }).__pipelinesStartPlan = ({ goal }) =>

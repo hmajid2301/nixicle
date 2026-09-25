@@ -3,6 +3,7 @@ import { describe, expect, test } from "bun:test";
 import {
   PipelineEngine,
   aggregateText,
+  applyStageDefaults,
   substituteTask,
   validateSpecs,
   type PipelineHooks,
@@ -31,6 +32,20 @@ function makeEngine() {
 
 const done = (id: string, output = ""): CompletionResult => ({ reason: "done", exitCode: 0, output });
 
+describe("create", () => {
+  test("carries per-stage model and thinking into stage state", () => {
+    const { engine } = makeEngine();
+    const p = engine.create("p1", "demo", [
+      { id: "a", agent: "scout", task: "look", model: "opencode-go/glm-5.3", thinking: "high" },
+      { id: "b", agent: "worker", task: "build" },
+    ]);
+    expect(p.stages[0]?.model).toBe("opencode-go/glm-5.3");
+    expect(p.stages[0]?.thinking).toBe("high");
+    expect(p.stages[1]?.model).toBeUndefined();
+    expect(p.stages[1]?.thinking).toBeUndefined();
+  });
+});
+
 describe("validateSpecs", () => {
   test("accepts valid graph", () => {
     expect(validateSpecs([
@@ -56,6 +71,34 @@ describe("validateSpecs", () => {
   });
   test("rejects self-dependency", () => {
     expect(validateSpecs([{ id: "a", agent: "x", task: "t", dependsOn: ["a"] }])).toContain("itself");
+  });
+});
+
+describe("applyStageDefaults", () => {
+  test("pipeline-level model/thinking apply to every stage", () => {
+    const out = applyStageDefaults(
+      [
+        { id: "a", agent: "scout", task: "t" },
+        { id: "b", agent: "worker", task: "t" },
+      ],
+      { model: "opencode-go/glm-5.3", thinking: "high" },
+    );
+    expect(out.map((s) => s.model)).toEqual(["opencode-go/glm-5.3", "opencode-go/glm-5.3"]);
+    expect(out.map((s) => s.thinking)).toEqual(["high", "high"]);
+  });
+
+  test("a stage override wins over the pipeline default", () => {
+    const out = applyStageDefaults(
+      [{ id: "a", agent: "scout", task: "t", model: "openai-codex/gpt-5.4", thinking: "low" }],
+      { model: "opencode-go/glm-5.3", thinking: "high" },
+    );
+    expect(out[0]?.model).toBe("openai-codex/gpt-5.4");
+    expect(out[0]?.thinking).toBe("low");
+  });
+
+  test("no defaults leaves specs untouched", () => {
+    const specs = [{ id: "a", agent: "scout", task: "t" }];
+    expect(applyStageDefaults(specs, {})).toEqual(specs);
   });
 });
 

@@ -219,4 +219,42 @@ describe("waitForCompletion", () => {
     await expect(p).resolves.toEqual({ reason: "done", exitCode: 0 });
     rmSync(dir, { recursive: true, force: true });
   });
+  test("reports stall once, then recovery, when the pane stays unreadable", async () => {
+    const c = new AbortController();
+    const stalls: number[] = [];
+    const recovers: number[] = [];
+    let healthy = false;
+    const restore = setTimeout(() => {
+      healthy = true;
+    }, 200);
+    const p = waitForCompletion(c.signal, {
+      intervalMs: 10,
+      stallGraceMs: 10,
+      onStall: (s) => stalls.push(s),
+      onRecover: (s) => recovers.push(s),
+      inspectPane: async () => (healthy ? "present" : "unavailable"),
+    });
+    await new Promise((r) => setTimeout(r, 400));
+    clearTimeout(restore);
+    c.abort();
+    await expect(p).rejects.toThrow(/aborted/);
+    expect(stalls).toHaveLength(1);
+    expect(recovers).toHaveLength(1);
+  });
+  test("does not report a stall while the pane stays readable", async () => {
+    const c = new AbortController();
+    let stalls = 0;
+    const p = waitForCompletion(c.signal, {
+      intervalMs: 5,
+      stallGraceMs: 5,
+      onStall: () => {
+        stalls++;
+      },
+      inspectPane: async () => "present",
+    });
+    await new Promise((r) => setTimeout(r, 30));
+    c.abort();
+    await expect(p).rejects.toThrow(/aborted/);
+    expect(stalls).toBe(0);
+  });
 });

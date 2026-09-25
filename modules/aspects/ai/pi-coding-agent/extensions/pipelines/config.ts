@@ -3,10 +3,42 @@ import { existsSync, mkdirSync, readFileSync } from "node:fs";
 import { homedir } from "node:os";
 import { join } from "node:path";
 
+export type PaneMode = "grouped" | "tab" | "split";
+export type PaneDirection = "right" | "down";
+
+export interface PaneConfig {
+  mode: PaneMode;
+  direction: PaneDirection;
+  maxPerTab: number;
+}
+
 export interface PipelinesConfig {
   models?: { default?: string; agents?: Record<string, string> };
   widget?: { collapsed?: boolean };
   stageTimeoutMinutes?: number;
+  panes?: { mode?: PaneMode; direction?: PaneDirection; maxPerTab?: number };
+  persistent?: { maxAgents?: number };
+  supervision?: { stallGraceMs?: number };
+  btw?: { tools?: string[] };
+}
+
+export const DEFAULT_STALL_GRACE_MS = 5000;
+
+// A side question should not be able to mutate the checkout by default.
+const DEFAULT_BTW_TOOLS = ["read", "grep", "find", "ls"];
+
+export const DEFAULT_PANE_CONFIG: PaneConfig = { mode: "grouped", direction: "right", maxPerTab: 4 };
+
+export function resolvePaneConfig(cfg: PipelinesConfig): PaneConfig {
+  const panes = cfg.panes ?? {};
+  return {
+    mode: panes.mode === "grouped" || panes.mode === "split" || panes.mode === "tab" ? panes.mode : DEFAULT_PANE_CONFIG.mode,
+    direction: panes.direction === "down" ? "down" : "right",
+    maxPerTab:
+      typeof panes.maxPerTab === "number" && Number.isSafeInteger(panes.maxPerTab) && panes.maxPerTab >= 1
+        ? panes.maxPerTab
+        : DEFAULT_PANE_CONFIG.maxPerTab,
+  };
 }
 
 export function pipelinesDir(): string {
@@ -32,6 +64,21 @@ export function loadConfig(dir?: string): PipelinesConfig {
   }
 }
 
+export function resolveStallGraceMs(cfg: PipelinesConfig): number {
+  const ms = cfg.supervision?.stallGraceMs;
+  return typeof ms === "number" && Number.isSafeInteger(ms) && ms >= 0 ? ms : DEFAULT_STALL_GRACE_MS;
+}
+
+export function resolveBtwTools(cfg: PipelinesConfig): string[] {
+  const tools = cfg.btw?.tools;
+  return Array.isArray(tools) && tools.length > 0 && tools.every((t) => typeof t === "string") ? tools : DEFAULT_BTW_TOOLS;
+}
+
+export function resolvePersistentMax(cfg: PipelinesConfig): number {
+  const max = cfg.persistent?.maxAgents;
+  return typeof max === "number" && Number.isSafeInteger(max) && max >= 1 ? max : 3;
+}
+
 export function resolveModel(
   cfg: PipelinesConfig,
   agentName: string | undefined,
@@ -46,4 +93,11 @@ export function resolveModel(
     ?? cfg.models?.default
     ?? parentModel
   );
+}
+
+// A parent model id is only meaningful to the same harness: pi's
+// "provider/model" strings mean nothing to the codex/claude/grok CLIs, so those
+// children must be given a model explicitly (stage, agent, or config).
+export function parentModelFor(harness: string | undefined, parentModel: string | undefined): string | undefined {
+  return (harness ?? "pi") === "pi" ? parentModel : undefined;
 }

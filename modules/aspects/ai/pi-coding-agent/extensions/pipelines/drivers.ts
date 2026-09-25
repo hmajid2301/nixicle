@@ -28,6 +28,7 @@ export interface LaunchOpts {
   childExtPath?: string; // pi only
   timeoutMs?: number;
   onTimeout?: (elapsedSeconds: number) => void;
+  env?: Record<string, string>;
 }
 
 export function buildToolAllowlist(tools: string[] | undefined): string | null {
@@ -52,6 +53,7 @@ export function buildLaunch(o: LaunchOpts): string {
   if (process.env.PI_CODING_AGENT_DIR) {
     env.push(`PI_CODING_AGENT_DIR=${q(process.env.PI_CODING_AGENT_DIR)}`);
   }
+  for (const [key, value] of Object.entries(o.env ?? {})) env.push(`${key}=${q(value)}`);
 
   let args: string[];
   switch (o.harness) {
