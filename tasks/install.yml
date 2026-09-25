@@ -164,7 +164,6 @@ tasks:
           --flake ".#$HOST" \
           --disk-encryption-keys /tmp/disk-encryption.key "$MY_PASS" \
           --extra-files "$SSH_KEYS" \
-          # --build-on-remote \
           "$USER@$TARGET"
 
         INSTALL_STATUS=$?

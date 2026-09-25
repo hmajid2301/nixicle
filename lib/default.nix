@@ -54,7 +54,8 @@ rec {
         result: name:
         let
           host = hosts.${name};
-          user = host.config.user.name or null;
+          normalUsers = lib.filterAttrs (_: u: u.isNormalUser or false) (host.config.users.users or { });
+          user = if normalUsers == { } then null else builtins.head (builtins.attrNames normalUsers);
           inherit (host.pkgs.stdenv.hostPlatform) system;
         in
         result
@@ -62,18 +63,14 @@ rec {
           ${name} = (overrides.${name} or { }) // {
             hostname = overrides.${name}.hostname or "${name}";
             profiles = (overrides.${name}.profiles or { }) // {
-              system =
-                (overrides.${name}.profiles.system or { })
-                // {
-                  path = deploy-rs.lib.${system}.activate.nixos host;
-                }
-                // lib.optionalAttrs (user != null) {
-                  user = "root";
-                  sshUser = user;
-                }
-                // lib.optionalAttrs (host.config.security.nixicle.doas.enable or false) {
-                  sudo = "doas -u";
-                };
+              system = {
+                path = deploy-rs.lib.${system}.activate.nixos host;
+              }
+              // lib.optionalAttrs (user != null) {
+                user = "root";
+                sshUser = user;
+              }
+              // (overrides.${name}.profiles.system or { });
             };
           };
         }
