@@ -7,20 +7,27 @@ _: {
         ...
       }:
       {
-        home.file = builtins.listToAttrs (
-          map
-            (name: {
-              name = ".claude/agents/${name}";
-              value = {
-                source = ../agents + "/${name}";
-              };
-            })
-            (
-              builtins.filter (name: builtins.match ".*\\.md" name != null) (
-                builtins.attrNames (builtins.readDir ../agents)
+        home.file =
+          builtins.listToAttrs (
+            map
+              (name: {
+                name = ".claude/agents/${name}";
+                value = {
+                  source = ../agents + "/${name}";
+                };
+              })
+              (
+                builtins.filter (name: builtins.match ".*\\.md" name != null) (
+                  builtins.attrNames (builtins.readDir ../agents)
+                )
               )
-            )
-        );
+          )
+          // {
+            ".claude/statusline.sh" = {
+              source = ./statusline.sh;
+              executable = true;
+            };
+          };
 
         programs.claude-code = {
           enable = true;
@@ -35,6 +42,12 @@ _: {
             };
             includeCoAuthoredBy = false;
             alwaysThinkingEnabled = false;
+
+            statusLine = {
+              type = "command";
+              command = "${config.home.homeDirectory}/.claude/statusline.sh";
+              padding = 0;
+            };
 
             hooks.SessionStart = [
               {
