@@ -40,7 +40,7 @@ _: {
               rpc_public_addr = "127.0.0.1:3901";
               s3_api = {
                 s3_region = "garage";
-                api_bind_addr = "127.0.0.1:3900";
+                api_bind_addr = "0.0.0.0:3900";
                 root_domain = ".s3.garage.localhost";
               };
               admin = {
