@@ -9,7 +9,6 @@
   };
 
   den.aspects.goroutinely = {
-    includes = [ ];
     persist.directories = [
       {
         directory = "/var/lib/goroutinely";
@@ -30,7 +29,7 @@
           echo "Waiting for Pocket ID OIDC discovery..."
           for i in $(seq 1 60); do
             if ${pkgs.curl}/bin/curl --fail --silent --show-error \
-              https://id.haseebmajid.dev/.well-known/openid-configuration >/dev/null; then
+              https://${config.nixicle.domains.sso}/.well-known/openid-configuration >/dev/null; then
               echo "Pocket ID OIDC discovery is ready"
               exit 0
             fi
@@ -73,11 +72,11 @@
             database.createLocally = true;
             notifications = {
               enable = true;
-              vapidSubject = "mailto:admin@haseebmajid.dev";
+              vapidSubject = "mailto:admin@${config.nixicle.domains.root}";
               vapidPublicKey = "BN91igKCVVyiiDggAN4poSUaEKL_-CNV_3mnioXKghZd00x5fFkjLra8HvAhfwZkHTymFsXHsRwVYpTqyGja-II";
             };
             oauth = {
-              issuerUrl = "https://id.haseebmajid.dev/.well-known/openid-configuration";
+              issuerUrl = "https://${config.nixicle.domains.sso}/.well-known/openid-configuration";
               clientId = "goroutinely";
             };
             secretsFile = config.sops.secrets.goroutinely.path;
@@ -87,7 +86,7 @@
             name = "goroutinely";
             port = 8235;
             subdomain = "goroutinely";
-            domain = "haseebmajid.dev";
+            domain = config.nixicle.domains.root;
           };
         };
 

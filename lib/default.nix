@@ -83,12 +83,20 @@ rec {
       inherit nodes;
     };
 
+  domains = {
+    root = "haseebmajid.dev";
+    homelab = "homelab.haseebmajid.dev";
+    sso = "id.haseebmajid.dev";
+  };
+
+  adminEmail = "hello@haseebmajid.dev";
+
   mkTraefikService =
     {
       name,
       port,
       subdomain ? name,
-      domain ? "homelab.haseebmajid.dev",
+      domain ? domains.homelab,
       entryPoints ? [ "websecure" ],
       certResolver ? "letsencrypt",
       auth ? false,

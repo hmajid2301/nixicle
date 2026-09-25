@@ -25,9 +25,10 @@ _: {
           name = "openbao";
           port = 8200;
           subdomain = "openbao";
-          domain = "homelab.haseebmajid.dev";
+          domain = config.nixicle.domains.homelab;
           entryPoints = [ "websecure" ];
           certResolver = "letsencrypt";
+          middlewares = [ "tailnet-only" ];
         };
 
         sops = {

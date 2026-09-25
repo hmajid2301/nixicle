@@ -131,6 +131,7 @@ in
       # nur overlay in common.nix; niri/zjstatus in niri.nix.
       nixpkgs.overlays = [ extendedLib.nixicle.nixicleOverlay ];
       imports = [
+        ./aspects/system/identity-options.nix
         inputs.sops-nix.nixosModules.sops
         inputs.disko.nixosModules.disko
         inputs.nix-topology.nixosModules.default

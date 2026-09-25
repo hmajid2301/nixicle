@@ -20,7 +20,7 @@ _: {
 
         nix.settings = {
           netrc-file = config.sops.secrets."netrc".path;
-          extra-substituters = [ "https://attic.haseebmajid.dev/main" ];
+          extra-substituters = [ "https://attic.${lib.nixicle.domains.root}/main" ];
           extra-trusted-public-keys = [ "main:+A4BR+E8F8FNe1YR6Uq8qGO5dVj8y1kaalW3kQ0WgXo=" ];
         };
 

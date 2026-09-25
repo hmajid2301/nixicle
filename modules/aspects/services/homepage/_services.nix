@@ -18,7 +18,7 @@
 { config, lib, ... }:
 let
   l = import ./_lib.nix { inherit config lib; };
-  iconSet = import ./_service-icons.nix { };
+  iconSet = import ./_service-icons.nix { inherit lib; };
   inherit (iconSet) serviceIcons;
   inherit (l)
     publicUrl
@@ -175,7 +175,7 @@ lib.flatten [
           "traefik"
           "enable"
         ];
-        href = "https://traefik.homelab.haseebmajid.dev";
+        href = "https://traefik.${lib.nixicle.domains.homelab}";
         widget = {
           type = "traefik";
           url = "http://127.0.0.1:8080";

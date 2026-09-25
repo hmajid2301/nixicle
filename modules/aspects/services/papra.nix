@@ -1,11 +1,5 @@
-_:
-let
-  domain = "papra.haseebmajid.dev";
-  port = 1221;
-in
-{
+_: {
   den.aspects.papra = {
-    includes = [ ];
     persist.directories = [
       {
         directory = "/var/lib/papra";
@@ -16,6 +10,10 @@ in
     ];
     nixos =
       { config, lib, ... }:
+      let
+        domain = "papra.${config.nixicle.domains.root}";
+        port = 1221;
+      in
       {
         system.backup.objects.papra.paths = [ "/var/lib/papra" ];
         sops.secrets.papra-env = {
@@ -38,7 +36,7 @@ in
           name = "papra";
           inherit port;
           subdomain = "papra";
-          domain = "haseebmajid.dev";
+          domain = config.nixicle.domains.root;
           extraServiceConfig.loadBalancer.servers = [
             { url = "http://127.0.0.1:${toString port}"; }
           ];

@@ -4,7 +4,6 @@ let
 in
 {
   den.aspects.immich = {
-    includes = [ ];
     persist.directories = [
       {
         directory = "/var/lib/immich";
@@ -65,11 +64,11 @@ in
           redis.host = config.services.redis.servers.main.unixSocket;
           settings = {
             library.watch.enabled = false;
-            server.externalDomain = "https://immich.haseebmajid.dev";
+            server.externalDomain = "https://immich.${config.nixicle.domains.root}";
             passwordLogin.enabled = false;
             oauth = {
               enabled = true;
-              issuerUrl = "https://id.haseebmajid.dev";
+              issuerUrl = "https://${config.nixicle.domains.sso}";
               clientId._secret = config.sops.secrets."immich/client_id".path;
               clientSecret._secret = config.sops.secrets."immich/client_secret".path;
               scope = "openid email profile";
@@ -85,7 +84,7 @@ in
           name = "immich";
           port = 2283;
           subdomain = "immich";
-          domain = "haseebmajid.dev";
+          domain = config.nixicle.domains.root;
         };
 
       };

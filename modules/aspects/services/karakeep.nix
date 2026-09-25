@@ -1,6 +1,5 @@
 _: {
   den.aspects.karakeep = {
-    includes = [ ];
     persist.directories = [
       {
         directory = "/var/lib/karakeep";
@@ -24,10 +23,10 @@ _: {
             browser.enable = true;
             extraEnvironment = {
               PORT = "3035";
-              NEXTAUTH_URL = "https://karakeep.haseebmajid.dev";
+              NEXTAUTH_URL = "https://karakeep.${config.nixicle.domains.root}";
               OAUTH_PROVIDER_NAME = "Pocket ID";
               OAUTH_ALLOW_DANGEROUS_EMAIL_ACCOUNT_LINKING = "true";
-              OAUTH_WELLKNOWN_URL = "https://id.haseebmajid.dev/.well-known/openid-configuration";
+              OAUTH_WELLKNOWN_URL = "https://${config.nixicle.domains.sso}/.well-known/openid-configuration";
               DISABLE_PASSWORD_AUTH = "true";
               DISABLE_SIGNUPS = "false";
               OLLAMA_BASE_URL = "http://localhost:11434";
@@ -43,7 +42,7 @@ _: {
             name = "karakeep";
             port = 3035;
             subdomain = "karakeep";
-            domain = "haseebmajid.dev";
+            domain = config.nixicle.domains.root;
           };
         };
 

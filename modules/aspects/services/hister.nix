@@ -1,11 +1,5 @@
-_:
-let
-  port = 4433;
-  domain = "haseebmajid.dev";
-in
-{
+_: {
   den.aspects.hister = {
-    includes = [ ];
     persist.directories = [
       {
         directory = "/var/lib/hister";
@@ -23,6 +17,8 @@ in
         ...
       }:
       let
+        port = 4433;
+        domain = config.nixicle.domains.root;
         waitForPocketId = ''
           echo "Waiting for Pocket ID OIDC discovery..."
           for i in $(seq 1 60); do

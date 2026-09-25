@@ -58,14 +58,14 @@ _: {
               '';
             });
             extraConfig = {
-              ALLOWED_HOSTS = "tandoor-recipes.haseebmajid.dev,localhost,127.0.0.1";
+              ALLOWED_HOSTS = "tandoor-recipes.${config.nixicle.domains.root},localhost,127.0.0.1";
               DB_ENGINE = "django.db.backends.postgresql";
               POSTGRES_HOST = "/run/postgresql";
               POSTGRES_USER = "tandoor_recipes";
               POSTGRES_DB = "tandoor_recipes";
               SOCIAL_DEFAULT_GROUP = "user";
               SOCIAL_PROVIDERS = "allauth.socialaccount.providers.openid_connect";
-              MEDIA_URL = "https://tandoor-recipes-media.haseebmajid.dev/media/";
+              MEDIA_URL = "https://tandoor-recipes-media.${config.nixicle.domains.root}/media/";
               MEDIA_ROOT = "/var/lib/tandoor-recipes/";
               SPACE_AI_ENABLED = "1";
               SPACE_AI_CREDITS_MONTHLY = "1000";
@@ -104,13 +104,13 @@ _: {
               name = "tandoor";
               port = 8099;
               subdomain = "tandoor-recipes";
-              domain = "haseebmajid.dev";
+              domain = config.nixicle.domains.root;
             })
             {
               services.tandoor-media.loadBalancer.servers = [ { url = "http://localhost:8100"; } ];
               routers.tandoor-media = {
                 entryPoints = [ "websecure" ];
-                rule = "Host(`tandoor-recipes-media.haseebmajid.dev`) && PathPrefix(`/media/`)";
+                rule = "Host(`tandoor-recipes-media.${config.nixicle.domains.root}`) && PathPrefix(`/media/`)";
                 service = "tandoor-media";
                 priority = 100;
                 tls.certResolver = "letsencrypt";

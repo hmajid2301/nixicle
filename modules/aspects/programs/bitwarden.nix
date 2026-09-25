@@ -1,14 +1,14 @@
 _: {
   den.aspects.bitwarden = {
     homeManager =
-      { pkgs, ... }:
+      { lib, pkgs, ... }:
       {
         home.packages = [ pkgs.rbw ];
 
         programs.rbw = {
           enable = true;
           settings = {
-            email = "hello@haseebmajid.dev";
+            email = lib.nixicle.adminEmail;
           };
         };
       };

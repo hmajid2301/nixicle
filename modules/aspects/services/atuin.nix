@@ -1,9 +1,8 @@
 _: {
   den.aspects.atuin = {
-    includes = [ ];
     persist.directories = [ "/var/lib/atuin" ];
     nixos =
-      { lib, ... }:
+      { config, lib, ... }:
       {
         services.atuin = {
           enable = true;
@@ -16,7 +15,7 @@ _: {
           name = "atuin";
           port = 8890;
           subdomain = "atuin";
-          domain = "haseebmajid.dev";
+          domain = config.nixicle.domains.root;
         };
       };
   };

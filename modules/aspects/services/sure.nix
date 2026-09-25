@@ -13,7 +13,6 @@ in
   };
 
   den.aspects.sure = {
-    includes = [ ];
     persist.directories = [
       {
         directory = "/var/lib/sure";
@@ -65,7 +64,7 @@ in
             environmentFile = config.sops.secrets.sure_env.path;
             settings = {
               AUTH_PROVIDERS_SOURCE = "db";
-              OIDC_ISSUER = "https://id.haseebmajid.dev";
+              OIDC_ISSUER = "https://${config.nixicle.domains.sso}";
               OIDC_CLIENT_ID = "sure";
               OIDC_BUTTON_LABEL = "Sign in with Pocket ID";
               RAILS_RELATIVE_URL_ROOT = "";
@@ -77,7 +76,7 @@ in
 
           traefik.dynamicConfigOptions.http = lib.nixicle.mkTraefikService {
             name = "sure";
-            domain = "haseebmajid.dev";
+            domain = config.nixicle.domains.root;
             inherit port subdomain;
           };
         };

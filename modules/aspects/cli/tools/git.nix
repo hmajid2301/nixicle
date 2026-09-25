@@ -1,12 +1,12 @@
 _: {
   den.aspects.git = {
-    homeManager = _: {
+    homeManager = { lib, ... }: {
       programs.git = {
         enable = true;
         settings = {
           user = {
             name = "Haseeb Majid";
-            email = "hello@haseebmajid.dev";
+            email = lib.nixicle.adminEmail;
             signingkey = "~/.ssh/id_ed25519.pub";
           };
           gpg = {
