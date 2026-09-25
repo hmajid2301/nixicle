@@ -5,10 +5,6 @@ _: {
         directory = "/var/lib/prometheus2";
         mode = "0755";
       }
-      {
-        directory = "/var/lib/private/alertmanager";
-        mode = "0750";
-      }
     ];
 
     nixos =
@@ -26,7 +22,10 @@ _: {
 
           exporters = {
             redis.enable = true;
-            postgres.enable = true;
+            postgres = {
+              enable = true;
+              runAsLocalSuperUser = true;
+            };
             node = {
               port = 3021;
               enabledCollectors = [ "systemd" ];
@@ -58,26 +57,31 @@ _: {
                 { targets = [ "127.0.0.1:${toString config.services.prometheus.exporters.node.port}" ]; }
               ];
             }
+            {
+              job_name = "crowdsec";
+              static_configs = [ { targets = [ "127.0.0.1:6060" ]; } ];
+            }
+            {
+              job_name = "traefik";
+              static_configs = [ { targets = [ "127.0.0.1:8080" ]; } ];
+            }
+            {
+              job_name = "loki";
+              static_configs = [ { targets = [ "127.0.0.1:3030" ]; } ];
+            }
+            {
+              job_name = "tempo";
+              static_configs = [ { targets = [ "127.0.0.1:4400" ]; } ];
+            }
+            {
+              job_name = "garage";
+              static_configs = [ { targets = [ "127.0.0.1:3903" ]; } ];
+            }
+            {
+              job_name = "prometheus";
+              static_configs = [ { targets = [ "127.0.0.1:${toString config.services.prometheus.port}" ]; } ];
+            }
           ];
-
-          alertmanager = {
-            enable = true;
-            configuration = {
-              route = {
-                receiver = "all";
-                group_by = [ "instance" ];
-                group_wait = "30s";
-                group_interval = "2m";
-                repeat_interval = "24h";
-              };
-              receivers = [
-                {
-                  name = "all";
-                  webhook_configs = [ { url = "http://127.0.0.1:11000/alert"; } ];
-                }
-              ];
-            };
-          };
         };
       };
   };
