@@ -32,9 +32,7 @@
 
   config = {
     home-manager.sharedModules = lib.mkForce [ ];
-    nixpkgs.overlays = [
-      inputs.niri.overlays.niri
-    ];
+    nixpkgs.overlays = [ lib.nixicle.overlays.niri ];
 
     users = {
       users.greeter = lib.mkIf config.nixicle.desktop.greeter.enable {

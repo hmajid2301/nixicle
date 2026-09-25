@@ -29,6 +29,18 @@ rec {
     nixicle = importPackages final ../packages;
   };
 
+  overlays = {
+    nur = inputs.nur.overlays.default;
+    niri = inputs.niri.overlays.niri;
+    nix-topology = inputs.nix-topology.overlays.default;
+    zjstatus = _final: prev: {
+      zjstatus = inputs.zjstatus.packages.${prev.stdenv.hostPlatform.system}.default;
+    };
+    nixicle = nixicleOverlay;
+  };
+
+  allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) (import ./unfree-packages.nix);
+
   importPackages =
     pkgs: dir:
     let
