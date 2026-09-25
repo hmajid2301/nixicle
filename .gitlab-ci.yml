@@ -17,6 +17,14 @@ workflow:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
     - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
 
+.nix_changes: &nix_changes
+  - "flake.nix"
+  - "flake.lock"
+  - "hosts/**/*"
+  - "lib/**/*"
+  - "modules/**/*"
+  - "packages/**/*"
+
 stages:
   - lint
   - build
@@ -43,9 +51,7 @@ lint:fmt:
 lint:
   extends: .lint_setup
   script:
-    - nix profile install nixpkgs#statix nixpkgs#deadnix
-    - statix check .
-    - deadnix --fail
+    - nix develop --command bash -c 'files=$(git ls-files "*.nix"); deadnix --fail $files; statix check .'
 
 .base_setup:
   before_script:
@@ -81,21 +87,9 @@ lint:
   rules:
     - if: $CI_PIPELINE_SOURCE == "schedule"
     - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
-      changes:
-        - "flake.nix"
-        - "flake.lock"
-        - "hosts/**/*"
-        - "lib/**/*"
-        - "modules/**/*"
-        - "packages/**/*"
+      changes: *nix_changes
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-      changes:
-        - "flake.nix"
-        - "flake.lock"
-        - "hosts/**/*"
-        - "lib/**/*"
-        - "modules/**/*"
-        - "packages/**/*"
+      changes: *nix_changes
   script:
     - mkdir -p build-logs
     - test -n "$ATTIC_AUTH_KEY"
@@ -131,21 +125,9 @@ check:nixos-evaluations:
   rules:
     - if: $CI_PIPELINE_SOURCE == "schedule"
     - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
-      changes:
-        - "flake.nix"
-        - "flake.lock"
-        - "hosts/**/*"
-        - "lib/**/*"
-        - "modules/**/*"
-        - "packages/**/*"
+      changes: *nix_changes
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-      changes:
-        - "flake.nix"
-        - "flake.lock"
-        - "hosts/**/*"
-        - "lib/**/*"
-        - "modules/**/*"
-        - "packages/**/*"
+      changes: *nix_changes
   script:
     # Avoid stale cached .drv paths on persistent runners after store GC.
     - nix flake check --no-build --option eval-cache false
@@ -172,8 +154,7 @@ repair:
       when: always
     - when: never
   script:
-    - nix profile add nixpkgs#curl nixpkgs#jq nixpkgs#gnused >/dev/null
-    - bash scripts/ci-repair.sh
+    - nix shell nixpkgs#curl nixpkgs#jq nixpkgs#gnused -c bash scripts/ci-repair.sh
   artifacts:
     when: always
     expire_in: 1 week
