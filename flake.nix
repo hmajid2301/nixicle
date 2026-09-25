@@ -14,10 +14,6 @@
       url = "github:JuliusBrussee/caveman";
       flake = false;
     };
-    comma = {
-      url = "github:nix-community/comma";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     den.url = "github:denful/den";
     deploy-rs = {
       url = "github:serokell/deploy-rs";
