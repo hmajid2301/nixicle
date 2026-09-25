@@ -1,29 +1,31 @@
-_: {
-  networks.home = {
-    name = "Home";
-    cidrv4 = "192.168.1.1/24";
+{ config, ... }:
+let
+  inherit (config.lib.topology) mkConnection mkRouter;
+in
+{
+  networks = {
+    home = {
+      name = "Home";
+      cidrv4 = "192.168.1.0/24";
+    };
+    tailscale = {
+      name = "Tailscale";
+      cidrv4 = "100.64.0.0/10";
+    };
   };
 
   nodes = {
-    ms01.interfaces.tailscale0.network = "home";
-    vps.interfaces.tailscale0.network = "home";
-    s100.interfaces.tailscale0.network = "home";
+    router = mkRouter "Linksys" {
+      info = "Linksys0218";
+      interfaceGroups = [ [ "lan" ] ];
+      connections.lan = [
+        (mkConnection "nas" "enp1s0")
+        (mkConnection "vps" "ens3")
+      ];
+      interfaces.lan.network = "home";
+    };
 
-    # internet = mkInternet {
-    #   connections = mkConnection "router" "wan1";
-    # };
-    #
-    # router = mkRouter "linksys" {
-    #   info = "Linksys0218";
-    #   interfaceGroups = [
-    #     ["eth1" "eth2"]
-    #     ["wan1"]
-    #   ];
-    #   connections.eth1 = mkConnection "aurora" "enp0s31f6";
-    #   connections.eth2 = mkConnection "equinox" "eno1";
-    #
-    #   interfaces.eth1.network = "home";
-    #   interfaces.eth2.network = "home";
-    # };
+    nas.interfaces.tailscale0.network = "tailscale";
+    vps.interfaces.tailscale0.network = "tailscale";
   };
 }

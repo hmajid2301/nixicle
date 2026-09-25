@@ -82,6 +82,26 @@ _: {
             };
           };
 
+          topology.self.services =
+            (lib.mapAttrs (_: _: { hidden = true; }) config.services.restic.backups)
+            // lib.optionalAttrs (config.services.restic.backups != { }) {
+              restic = {
+                name = "Restic backups";
+                icon = "services.restic";
+                info = "${toString (lib.length (lib.attrNames config.services.restic.backups))} repositories";
+                details.repositories.text = lib.concatStringsSep "\n" (
+                  lib.attrNames config.services.restic.backups
+                );
+              };
+            }
+            // lib.optionalAttrs (config.services.karakeep.enable or false) {
+              karakeep = {
+                hidden = lib.mkForce false;
+                name = lib.mkForce "Karakeep";
+                icon = lib.mkForce "services.karakeep";
+              };
+            };
+
           services.restic.backups = lib.mapAttrs (_name: backup: {
             inherit (backup)
               paths
