@@ -15,11 +15,9 @@
       {
         config,
         lib,
-        secrets,
         ...
       }:
       let
-        secretPaths = lib.mergeAttrsList secrets;
         flowfinManifest = "${inputs.flowfin-sso}/manifest.json";
         flowfinRev = inputs.flowfin-sso.rev;
         flowfinManifestHash = builtins.convertHash {
@@ -92,9 +90,9 @@
           sonarr = {
             enable = true;
             config = {
-              apiKey._secret = secretPaths."sonarr/api_key";
+              apiKey._secret = config.sops.secrets."sonarr/api_key".path;
               hostConfig = {
-                password._secret = secretPaths."sonarr/password";
+                password._secret = config.sops.secrets."sonarr/password".path;
               };
             };
           };
@@ -102,17 +100,17 @@
           sonarr-anime = {
             enable = true;
             config = {
-              apiKey._secret = secretPaths."sonarr-anime/api_key";
-              hostConfig.password._secret = secretPaths."sonarr-anime/password";
+              apiKey._secret = config.sops.secrets."sonarr-anime/api_key".path;
+              hostConfig.password._secret = config.sops.secrets."sonarr-anime/password".path;
             };
           };
 
           radarr = {
             enable = true;
             config = {
-              apiKey._secret = secretPaths."radarr/api_key";
+              apiKey._secret = config.sops.secrets."radarr/api_key".path;
               hostConfig = {
-                password._secret = secretPaths."radarr/password";
+                password._secret = config.sops.secrets."radarr/password".path;
               };
             };
           };
@@ -120,9 +118,9 @@
           prowlarr = {
             enable = true;
             config = {
-              apiKey._secret = secretPaths."prowlarr/api_key";
+              apiKey._secret = config.sops.secrets."prowlarr/api_key".path;
               hostConfig = {
-                password._secret = secretPaths."prowlarr/password";
+                password._secret = config.sops.secrets."prowlarr/password".path;
               };
               indexers = [
                 { name = "Torrent Downloads"; }
@@ -136,7 +134,7 @@
 
           jellyfin = {
             enable = true;
-            apiKey._secret = secretPaths."jellyfin/api_key";
+            apiKey._secret = config.sops.secrets."jellyfin/api_key".path;
 
             encoding = {
               hardwareAccelerationType = "vaapi";
@@ -165,8 +163,8 @@
                 enable = true;
                 config = {
                   OpenSubUserName = "b7n1mytj6@mozmail.com";
-                  OpenSubPassword._secret = secretPaths."opensubtitles/password";
-                  OpenSubApiKey._secret = secretPaths."opensubtitles/api-key";
+                  OpenSubPassword._secret = config.sops.secrets."opensubtitles/password".path;
+                  OpenSubApiKey._secret = config.sops.secrets."opensubtitles/api-key".path;
                   EnableOpenSubtitles = true;
                   EnableYifySubtitles = true;
                   Cache.SubLifeInMinutes = "Always";
@@ -177,7 +175,7 @@
                 enable = true;
                 config = {
                   Username = "b7n1mytj6@mozmail.com";
-                  Password._secret = secretPaths."opensubtitles/password";
+                  Password._secret = config.sops.secrets."opensubtitles/password".path;
                 };
               };
 
@@ -200,9 +198,9 @@
                       Enabled = true;
                       EnableAuthorization = true;
                       EnableAllFolders = true;
-                      OidEndpoint = "https://id.haseebmajid.dev/.well-known/openid-configuration";
-                      OidClientId._secret = secretPaths."jellyfin/client_id";
-                      OidSecret._secret = secretPaths."jellyfin/client_secret";
+                      OidEndpoint = "https://${config.nixicle.domains.sso}/.well-known/openid-configuration";
+                      OidClientId._secret = config.sops.secrets."jellyfin/client_id".path;
+                      OidSecret._secret = config.sops.secrets."jellyfin/client_secret".path;
                       OidScopes = [
                         "openid"
                         "profile"
@@ -220,7 +218,7 @@
 
             branding = {
               loginDisclaimer = ''
-                <form action="https://jellyfin.haseebmajid.dev/sso/OID/p/pocketid">
+                <form action="https://jellyfin.${config.nixicle.domains.root}/sso/OID/p/pocketid">
                   <button class="raised block emby-button button-submit">
                     Sign in with SSO
                   </button>
@@ -268,23 +266,23 @@
               admin = {
                 mutable = false;
                 policy.isAdministrator = true;
-                password._secret = secretPaths."jellyfin/admin_password";
+                password._secret = config.sops.secrets."jellyfin/admin_password".path;
               };
             };
           };
 
           seerr = {
             enable = true;
-            apiKey._secret = secretPaths."jellyseerr/api_key";
+            apiKey._secret = config.sops.secrets."jellyseerr/api_key".path;
             jellyfin = {
-              # externalHostname = "https://jellyfin.haseebmajid.dev";
+              # externalHostname = "https://jellyfin.${config.nixicle.domains.root}";
             };
           };
 
           torrentClients.qbittorrent = {
             enable = true;
             password = {
-              _secret = secretPaths."qbittorrent/password";
+              _secret = config.sops.secrets."qbittorrent/password".path;
             };
             # TODO: Move Password_PBKDF2 to sops once nixflix/nixpkgs supports _secret for serverConfig.
             # Currently must be a static string because serverConfig is a freeform type written at build time.

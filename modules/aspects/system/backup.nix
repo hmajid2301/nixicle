@@ -59,17 +59,14 @@ _: {
       };
 
     aspects.backup-restic = {
-      includes = [ ];
       nixos =
         {
           config,
           lib,
           pkgs,
-          secrets,
           ...
         }:
         let
-          secretPaths = lib.mergeAttrsList secrets;
           backupObjects = config.system.backup.objects;
           resticWrapped = pkgs.writeShellScriptBin "restic" ''
             exec ${pkgs.util-linux}/bin/flock /run/restic-backups-global.lock \
@@ -99,9 +96,9 @@ _: {
             runCheck = backup.checkOpts != [ ];
             inherit (backup) checkOpts;
             package = resticWrapped;
-            passwordFile = secretPaths.restic_password;
-            environmentFile = secretPaths.backblaze_env;
-            repositoryFile = secretPaths.restic_repository;
+            passwordFile = config.sops.secrets.restic_password.path;
+            environmentFile = config.sops.secrets.backblaze_env.path;
+            repositoryFile = config.sops.secrets.restic_repository.path;
           }) backupObjects;
 
           systemd.services = lib.mapAttrs' (
