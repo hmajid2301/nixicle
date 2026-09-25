@@ -229,8 +229,6 @@ in
     deploy = extendedLib.nixicle.mkDeploy {
       inherit (inputs) self;
       overrides = {
-        framework.profiles.system.sshUser = "haseeb";
-        vm.profiles.system.sshUser = "haseeb";
         vps.profiles.system = {
           user = "root";
           sshUser = "nixos";
