@@ -86,9 +86,48 @@ export interface WaitOpts {
   onTick?: (elapsedSeconds: number) => void;
   timeoutMs?: number;
   onTimeout?: (elapsedSeconds: number) => void;
+  // Supervision: advisory fired when a managed pane stays unreadable long
+  // enough that liveness can no longer be trusted, and again on recovery.
+  stallGraceMs?: number;
+  onStall?: (elapsedSeconds: number) => void;
+  onRecover?: (elapsedSeconds: number) => void;
   // Resolves with the exit code when the underlying child process exits.
   // Used by the headless backend, which has no pane/screen to poll.
   childExit?: Promise<number | null>;
+}
+
+interface StallTracker {
+  observe(healthy: boolean): void;
+}
+
+/** Fire onStall once after `graceMs` of unhealthy probes, and onRecover on recovery. */
+function createStallTracker(
+  graceMs: number,
+  onStall?: (stalledSeconds: number) => void,
+  onRecover?: (stalledSeconds: number) => void,
+): StallTracker {
+  let unhealthySince: number | undefined;
+  let stalled = false;
+  return {
+    observe(healthy) {
+      if (!healthy) {
+        if (unhealthySince === undefined) unhealthySince = Date.now();
+        else if (!stalled && Date.now() - unhealthySince >= graceMs) {
+          stalled = true;
+          onStall?.(Math.floor((Date.now() - unhealthySince) / 1000));
+        }
+        return;
+      }
+      if (stalled) {
+        const stalledSeconds = unhealthySince ? Math.floor((Date.now() - unhealthySince) / 1000) : 0;
+        stalled = false;
+        unhealthySince = undefined;
+        onRecover?.(stalledSeconds);
+      } else {
+        unhealthySince = undefined;
+      }
+    },
+  };
 }
 
 function delay(ms: number, signal: AbortSignal): Promise<void> {
@@ -114,6 +153,7 @@ function sentinelResult(code: number): CompletionResult {
 
 export async function waitForCompletion(signal: AbortSignal, o: WaitOpts): Promise<CompletionResult> {
   const startedAt = Date.now();
+  const stall = o.inspectPane ? createStallTracker(o.stallGraceMs ?? 5000, o.onStall, o.onRecover) : undefined;
   // Watchdog: a single timer that fires onTimeout once at the deadline and is
   // cleared on settle — no per-tick elapsed bookkeeping, no repeated firing.
   let watchdog: ReturnType<typeof setTimeout> | undefined;
@@ -143,6 +183,7 @@ export async function waitForCompletion(signal: AbortSignal, o: WaitOpts): Promi
         }
       }
 
+      let inspectedPresent = false;
       if (o.inspectPane && !screenOk) {
         let state: "present" | "missing" | "unavailable";
         try {
@@ -150,6 +191,7 @@ export async function waitForCompletion(signal: AbortSignal, o: WaitOpts): Promi
         } catch {
           state = "unavailable";
         }
+        inspectedPresent = state === "present";
         if (state === "missing") {
           const graceEnd = Date.now() + (o.paneDisappearanceGraceMs ?? 500);
           while (Date.now() < graceEnd) {
@@ -167,7 +209,9 @@ export async function waitForCompletion(signal: AbortSignal, o: WaitOpts): Promi
         }
       }
 
-      o.onTick?.(Math.floor((Date.now() - startedAt) / 1000));
+      const elapsed = Math.floor((Date.now() - startedAt) / 1000);
+      stall?.observe(screenOk || inspectedPresent);
+      o.onTick?.(elapsed);
       if (o.childExit) {
         const exited = await Promise.race([
           o.childExit.then((code) => ({ exited: true as const, code })),

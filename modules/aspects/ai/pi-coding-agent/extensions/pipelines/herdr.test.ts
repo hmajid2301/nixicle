@@ -1,11 +1,6 @@
 // extensions/pipelines/herdr.test.ts
 import { describe, expect, test } from "bun:test";
-import {
-  buildTabCreateArgs,
-  extractRootPaneId,
-  isHerdrAvailable,
-  parsePaneGet,
-} from "./herdr.ts";
+import { buildTabCreateArgs, extractRootPaneId, isHerdrAvailable, parsePaneGet } from "./herdr.ts";
 
 describe("buildTabCreateArgs", () => {
   test("targets workspace, labels, cwd, no focus", () => {

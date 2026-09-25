@@ -9,6 +9,7 @@ import {
   shouldAutoExitOnAgentEnd,
   shouldMarkUserTookOver,
 } from "./child-helpers.ts";
+import { mergeFileFor, writeMergeRequest } from "./btw.ts";
 
 const exitFile = process.env.PI_SUBAGENT_EXIT_FILE;
 const autoExit = process.env.PI_SUBAGENT_AUTO_EXIT === "1";
@@ -98,4 +99,22 @@ export default function (pi: ExtensionAPI): void {
       };
     },
   });
+
+  if (process.env.PI_BTW === "1") {
+    pi.registerCommand("btw-merge", {
+      description: "Fold this /btw side thread into the parent and continue there: /btw-merge <prompt>",
+      handler: async (args: string, ctx: any) => {
+        const prompt = args.trim();
+        if (!prompt) {
+          ctx.ui.notify("Usage: /btw-merge <prompt>", "warning");
+          return;
+        }
+        // Signal the merge via a mailbox beside the exit sidecar; the parent
+        // builds the transcript from this session and delivers the prompt.
+        if (exitFile) writeMergeRequest(mergeFileFor(exitFile), prompt);
+        writeExit({ type: "done" }, true);
+        ctx.shutdown();
+      },
+    });
+  }
 }

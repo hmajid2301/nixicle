@@ -80,6 +80,11 @@ describe("buildLaunch", () => {
     expect(s).toContain("-e '/ext/ketch.ts'");
     expect(s).toContain("--append-system-prompt 'be terse'");
   });
+  test("pi passes extra env vars", () => {
+    delete process.env.PI_CODING_AGENT_DIR;
+    const s = buildLaunch({ ...base, env: { PI_BTW: "1" } });
+    expect(s).toContain("PI_BTW='1'");
+  });
   test("pi without session/exit files throws", () => {
     expect(() => buildLaunch({ ...base, sessionFile: undefined })).toThrow(/sessionFile/);
     expect(() => buildLaunch({ ...base, exitFile: undefined })).toThrow(/exitFile/);
