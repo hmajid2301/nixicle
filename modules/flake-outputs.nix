@@ -63,7 +63,6 @@ in
       url = "github:cachix/git-hooks.nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    # nixos-generators is deprecated; using upstream iso-image.nix directly
     nixos-anywhere = {
       url = "github:numtide/nixos-anywhere";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -226,14 +225,16 @@ in
 
     topology =
       let
-        host =
-          inputs.self.nixosConfigurations.${builtins.head (builtins.attrNames inputs.self.nixosConfigurations)};
+        hosts = {
+          inherit (inputs.self.nixosConfigurations) nas vps;
+        };
+        host = hosts.vps;
       in
       import inputs.nix-topology {
-        inherit (host) pkgs;
+        pkgs = host.pkgs.extend inputs.nix-topology.overlays.default;
         modules = [
           (import ../topology { inherit (host) config; })
-          { inherit (inputs.self) nixosConfigurations; }
+          { nixosConfigurations = hosts; }
         ];
       };
   };
