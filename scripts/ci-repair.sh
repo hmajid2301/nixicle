@@ -25,6 +25,7 @@ summary=""
 diagnosis=""
 suggested_fixes_json='[]'
 patch=""
+commands_json='[]'
 comment=""
 confidence="unknown"
 note=""
@@ -309,6 +310,7 @@ parse_model_response() {
   diagnosis="$(printf '%s' "$result_json" | jq -r '.diagnosis // ""')"
   suggested_fixes_json="$(printf '%s' "$result_json" | jq -c '.suggested_fixes // []')"
   patch="$(printf '%s' "$result_json" | jq -r '.patch // ""')"
+  commands_json="$(printf '%s' "$result_json" | jq -c '(.commands // []) | if type == "array" then . else [.] end')"
   comment="$(printf '%s' "$result_json" | jq -r '.comment // ""')"
   confidence="$(printf '%s' "$result_json" | jq -r '.confidence // "unknown"')"
 }
@@ -331,6 +333,7 @@ write_summary() {
   } > "$repair_dir/summary.md"
 
   printf '%s\n' "$patch" > "$repair_dir/repair.patch"
+  printf '%s\n' "$commands_json" > "$repair_dir/commands.json"
   if [ -n "$comment" ]; then
     printf '%s\n' "$comment" > "$repair_dir/comment.md"
   fi
@@ -390,6 +393,64 @@ enable_auto_merge() {
   return 1
 }
 
+run_commands_and_retest() {
+  local cmd
+  local green=false
+
+  if [ "$(printf '%s' "$commands_json" | jq 'length')" -eq 0 ]; then
+    return
+  fi
+
+  : > "$repair_dir/commands.log"
+
+  while IFS= read -r cmd; do
+    [ -n "$cmd" ] || continue
+
+    case "$cmd" in
+      nix\ *|git\ *) ;;
+      *)
+        build_note "invalid command produced (must start with nix or git); no commit pushed" "- \`repair/commands.log\`"
+        return
+        ;;
+    esac
+
+    printf '$ %s\n' "$cmd" >> "$repair_dir/commands.log"
+
+    if ! bash -c "$cmd" >> "$repair_dir/commands.log" 2>&1; then
+      build_note "rollback command failed; no commit pushed" "- \`repair/commands.log\`"
+      return
+    fi
+
+    git add -- flake.lock 2>/dev/null || true
+
+    if nix flake check --print-build-logs 2>&1 | tee "$repair_dir/retest.log"; then
+      green=true
+      break
+    fi
+  done < <(printf '%s' "$commands_json" | jq -r '.[]')
+
+  if [ "$green" != "true" ]; then
+    build_note "commands applied but retest failed" "- \`repair/retest.log\`\n- \`repair/commands.log\`"
+    return
+  fi
+
+  if commit_and_push_fix; then
+    if enable_auto_merge; then
+      comment="${comment:+$comment
+
+}Rollback applied and pushed. Auto-merge enabled after CI passes."
+      build_note "rollback applied, pushed, and auto-merge enabled" "- \`repair/auto-merge.json\`\n- \`repair/commands.log\`"
+    else
+      comment="${comment:+$comment
+
+}Rollback applied and pushed, but enabling auto-merge failed."
+      build_note "rollback applied and pushed, but auto-merge failed" "- \`repair/auto-merge.json\`\n- \`repair/auto-merge.log\`\n- \`repair/commands.log\`"
+    fi
+  else
+    build_note "rollback applied but commit or push failed" "- \`repair/commit.log\`\n- \`repair/push.log\`\n- \`repair/commands.log\`"
+  fi
+}
+
 apply_patch_and_retest() {
   local patch_files=()
 
@@ -400,6 +461,11 @@ apply_patch_and_retest() {
       return
       ;;
   esac
+
+  if [ "$(printf '%s' "$commands_json" | jq 'length')" -gt 0 ]; then
+    run_commands_and_retest
+    return
+  fi
 
   if [ -z "$patch" ]; then
     build_note "no patch produced" ""
