@@ -22,7 +22,7 @@ Produce the **smallest correct patch** that fixes the failure.
 - If a trace names a file, target that file first.
 - If a diff hunk already shows the broken area, prefer fixing that exact spot instead of proposing a broader change.
 - For every proposed fix, state whether it belongs **inside the current MR diff** or **outside the current MR diff but still required**, and prefer inside-the-diff fixes when possible.
-- For dependency-update MRs, do not revert the updated dependency unless no forward-compatible code or config fix is available. Prefer adapting local code/config to the new dependency.
+- For dependency-update MRs, do not revert the updated dependency unless no forward-compatible code or config fix is available. Prefer adapting local code/config to the new dependency. Lock-file-only refreshes (`lockFileMaintenance`) are the exception — see "Nix flake.lock rollbacks" below.
 - If a dependency update exposes an option, module, package, or plugin conflict, prefer removing or updating the local duplicate/configuration that now conflicts. Treat pinning the dependency back as a last resort.
 - Do not propose repo changes for external service failures such as 5xx responses, timeouts, or unavailable hosts unless the trace points to a changed repo URL or credential name. Mark those as retry/manual infrastructure issues.
 - Match the failing command or error text to the exact config, package, attribute, function, variable, or file path that caused it.
@@ -55,8 +55,8 @@ Your answer must be concrete and limited:
 - If the failure is caused by syntax, show the corrected syntax exactly.
 - Keep `comment` concise.
 - In `comment`, do not frame dependency rollback as the fix unless the patch actually rolls back the dependency as a last resort. State forward-compatible fixes first.
-- Return a unified diff in `patch` when confidence is `medium` or `high`.
-- Leave `patch` empty only when confidence is `low` or no safe edit exists.
+- Return a unified diff in `patch` when confidence is `medium` or `high`, except for `lockFileMaintenance` rollbacks, which use `commands` instead.
+- Leave `patch` empty when confidence is `low`, when no safe edit exists, or when the fix is a `commands` rollback.
 
 ## Patch rules
 
@@ -71,6 +71,31 @@ Your answer must be concrete and limited:
 - If confidence is `medium` or `high`, include the smallest valid patch for the top suggested fix.
 - If you cannot produce a valid unified diff, leave `patch` empty and explain the exact manual edit in `suggested_fixes` and `comment`.
 
+## Nix flake.lock rollbacks
+
+For renovate `lockFileMaintenance` MRs (the only real change is `flake.lock`)
+whose evaluation or build fails, do not hand-edit `rev`, `narHash`, or
+`lastModified`. A hand-written `narHash` causes
+`error: path '...-source' is not valid` and the retest fails.
+
+Instead, roll back the single most-likely-breaking input to its previous
+revision with `nix flake update`:
+
+    nix flake update <input> --override-input <input> github:<owner>/<repo>/<rev>
+
+Rules:
+
+- Read the previous revision from the target branch lock file, never by
+  guessing:
+      git show origin/main:flake.lock
+- Put one rollback command per `commands` entry. Order best-first. Each entry
+  rolls back exactly one input.
+- `nix flake update` recomputes `narHash` and `lastModified`, so the lock stays
+  consistent.
+- Leave `patch` empty when `commands` is non-empty.
+- Only roll back inputs the trace implicates. Keep every other input at its
+  updated revision.
+
 ## Output format
 
 Return **JSON only** with these keys:
@@ -79,6 +104,7 @@ Return **JSON only** with these keys:
 - `diagnosis`: short string describing the most likely root cause
 - `suggested_fixes`: array of up to 3 objects with keys `file`, `lines`, `location`, `problem`, `change`, `replacement`
 - `patch`: unified diff string, or empty string
+- `commands`: array of shell command strings, or empty array. Use for `nix flake update` rollbacks
 - `comment`: short markdown note for the MR
 - `confidence`: one of `low`, `medium`, `high`
 
@@ -88,3 +114,4 @@ Before returning, check:
 - every suggested fix includes a narrow line/range
 - every replacement is a real final snippet
 - `patch`, if present, matches the top suggested fix
+- when `commands` is non-empty, `patch` is empty (and vice versa)
