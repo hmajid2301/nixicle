@@ -214,7 +214,6 @@
       in
       {
         home.packages = [
-          pkgs.tmate
           sesh
           inputs.gsesh.packages.${pkgs.stdenv.hostPlatform.system}.default
         ];

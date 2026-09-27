@@ -1,5 +1,16 @@
 image: nixpkgs/nix-flakes:nixos-26.05-x86_64-linux
 
+.tofu_rules: &tofu_rules
+  - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    changes:
+      - "infra/opentofu/**/*"
+  - if: $CI_PIPELINE_SOURCE == "parent_pipeline"
+  - if: $CI_OPEN_MERGE_REQUESTS
+    when: never
+  - if: $CI_COMMIT_BRANCH
+    changes:
+      - "infra/opentofu/**/*"
+
 include:
   - component: gitlab.com/components/opentofu/validate-plan-apply@4.9.0
     inputs:
@@ -10,6 +21,9 @@ include:
       stage_deploy: deploy
       auto_define_backend: true
       use_lockfile_for_cache_key: true
+      fmt_rules: *tofu_rules
+      validate_rules: *tofu_rules
+      plan_rules: *tofu_rules
 
 workflow:
   rules:
