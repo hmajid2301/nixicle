@@ -39,4 +39,12 @@ in
       (mkTextModel "minimax-m2.7:cloud")
     ];
   };
+  solheim = {
+    baseUrl = "https://api.solheim.ai/v1";
+    api = "openai-completions";
+    apiKey = "$SOLHEIM_API_KEY";
+    models = [
+      (mkTextModel "qwen3.8-27b")
+    ];
+  };
 }
