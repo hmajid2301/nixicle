@@ -1,4 +1,7 @@
-_:
+{
+  config,
+  ...
+}:
 let
   mkModel = id: input: { inherit id input; };
   mkTextModel = id: mkModel id [ "text" ];
@@ -42,7 +45,7 @@ in
   solheim = {
     baseUrl = "https://api.solheim.ai/v1";
     api = "openai-completions";
-    apiKey = "$SOLHEIM_API_KEY";
+    apiKey = "!cat ${config.sops.secrets.solheim_api_key.path}";
     models = [
       (mkTextModel "qwen3.8-27b")
     ];
