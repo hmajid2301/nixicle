@@ -12,7 +12,7 @@ _: {
         themeModule = import ./_theme.nix { inherit config pkgs; };
         aiCfg = config.nixicle.ai;
         piExtensionFiles = import ./_extensions.nix { };
-        baseProviders = import ./_providers.nix { };
+        baseProviders = import ./_providers.nix { inherit config; };
         piInputType = lib.types.enum [
           "text"
           "image"
@@ -109,6 +109,10 @@ _: {
                 value.source = ext.src;
               }) piExtensionFiles
             );
+
+            sops.secrets.solheim_api_key = {
+              sopsFile = lib.nixicle.secretsFile;
+            };
 
             programs.pi-coding-agent = {
               enable = true;
