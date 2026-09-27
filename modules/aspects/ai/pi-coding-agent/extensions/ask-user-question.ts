@@ -607,7 +607,7 @@ Guidelines:
 							}
 							if (i === cursorIndex && opt.preview && !useSplitPreview) {
 								add("");
-								renderPanelContent(lines, Math.max(24, Math.min(width, 80)), opt.label, opt.preview);
+								renderPanelContent(lines, Math.min(width, 80), opt.label, opt.preview);
 							}
 						}
 					}

@@ -17,6 +17,17 @@
         pkgs,
         ...
       }:
+      let
+        isDesktop = config.networking.hostName == "desktop";
+        desktopResourceFlags = lib.optionals isDesktop [
+          "--docker-cpus=3"
+          "--docker-memory=6g"
+          "--docker-memory-swap=8g"
+          "--docker-service-cpus=1.5"
+          "--docker-service-memory=3g"
+          "--docker-services-limit=4"
+        ];
+      in
       {
         virtualisation.docker = {
           enable = true;
@@ -27,14 +38,15 @@
           {
             enable = true;
             settings = {
-              concurrent = 4;
+              concurrent = if isDesktop then 6 else 4;
               check_interval = 3;
               listen_address = "127.0.0.1:9252";
             };
             services.default = {
               authenticationTokenConfigFile = config.sops.secrets.gitlab_runner_env.path;
-              limit = 3;
+              limit = if isDesktop then 6 else 3;
               requestConcurrency = 2;
+              registrationFlags = desktopResourceFlags;
               dockerImage = "nixpkgs/nix-flakes:nixos-26.05-${pkgs.stdenv.hostPlatform.system}";
               dockerPullPolicy = "if-not-present";
               dockerPrivileged = true;
@@ -62,6 +74,7 @@
                       git
                       openssh
                       attic-client
+                      docker-client
                       findutils
                     ]
                   )
@@ -73,7 +86,7 @@
                 "/nix/store:/nix/store:ro"
                 "/nix/var/nix/db:/nix/var/nix/db:ro"
                 "/nix/var/nix/daemon-socket:/nix/var/nix/daemon-socket:ro"
-                "/nix/var/nix/profiles/system/etc/ssl:/etc/ssl:ro"
+                "/nix/var/nix/profiles/system/etc/ssl:/etc/nixicle-ssl:ro"
                 "${lib.getExe pkgs.pkgsStatic.gnugrep}:/usr/bin/grep:ro"
                 "${lib.getExe' pkgs.pkgsStatic.coreutils "mkdir"}:/usr/bin/mkdir:ro"
                 "${lib.getExe' pkgs.pkgsStatic.coreutils "rm"}:/usr/bin/rm:ro"
@@ -84,13 +97,14 @@
                 "${lib.getExe pkgs.pkgsStatic.bash}:/usr/bin/bash:ro"
               ];
               environmentVariables = {
+                COMPOSE_PARALLEL_LIMIT = "2";
                 DOCKER_TLS_CERTDIR = "/certs";
                 ENV = "/etc/profile";
                 FF_NETWORK_PER_BUILD = "1";
                 NIX_REMOTE = "daemon";
-                NIX_SSL_CERT_FILE = "/etc/ssl/certs/ca-bundle.crt";
+                NIX_SSL_CERT_FILE = "/etc/nixicle-ssl/certs/ca-bundle.crt";
                 PATH = "/nix/var/nix/profiles/default/bin:/nix/var/nix/profiles/default/sbin:/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:/bin:/sbin";
-                SSL_CERT_FILE = "/etc/ssl/certs/ca-bundle.crt";
+                SSL_CERT_FILE = "/etc/nixicle-ssl/certs/ca-bundle.crt";
                 USER = "root";
               };
             };
@@ -98,8 +112,9 @@
           (lib.optionalAttrs (config.sops.secrets ? gitlab_runner_docker_env) {
             services.docker = {
               authenticationTokenConfigFile = config.sops.secrets.gitlab_runner_docker_env.path;
-              limit = 4;
-              requestConcurrency = 4;
+              limit = if isDesktop then 6 else 4;
+              requestConcurrency = 2;
+              registrationFlags = desktopResourceFlags;
               dockerImage = "nixpkgs/nix-flakes:nixos-26.05-${pkgs.stdenv.hostPlatform.system}";
               dockerPullPolicy = "if-not-present";
               dockerPrivileged = true;
@@ -116,6 +131,7 @@
                 "${lib.getExe pkgs.pkgsStatic.bash}:/usr/bin/bash:ro"
               ];
               environmentVariables = {
+                COMPOSE_PARALLEL_LIMIT = "2";
                 DOCKER_TLS_CERTDIR = "/certs";
                 ENV = "/etc/profile";
                 FF_NETWORK_PER_BUILD = "1";
