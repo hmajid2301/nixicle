@@ -34,6 +34,14 @@ _: {
         url = "github:ayghri/i-have-adhd";
         flake = false;
       };
+      ponytail = {
+        url = "github:DietrichGebert/ponytail";
+        flake = false;
+      };
+      visual-explainer = {
+        url = "github:nicobailon/visual-explainer";
+        flake = false;
+      };
     };
   };
 
@@ -91,6 +99,16 @@ _: {
             adhd = {
               path = inputs.i-have-adhd;
               subdir = "skills";
+            };
+
+            ponytail = {
+              path = inputs.ponytail;
+              subdir = "skills";
+            };
+
+            visual-explainer = {
+              path = inputs.visual-explainer;
+              subdir = "plugins";
             };
           };
 
@@ -190,6 +208,11 @@ _: {
                 path = "karpathy-guidelines";
               };
 
+              debugging = {
+                from = "nixicle";
+                path = "debugging";
+              };
+
               "playwright-cli" = {
                 from = "playwright-cli";
                 path = "playwright-cli";
@@ -213,6 +236,27 @@ _: {
               "i-have-adhd" = {
                 from = "adhd";
                 path = "i-have-adhd";
+              };
+
+              ponytail = {
+                from = "ponytail";
+                path = "ponytail";
+              };
+
+              visual-explainer = {
+                from = "visual-explainer";
+                path = "visual-explainer";
+                transform =
+                  { original, ... }:
+                  original
+                  + ''
+
+                    ## Command procedures
+
+                    The per-command workflows live in `./commands/`: `diff-review.md`, `plan-review.md`, `project-recap.md`, `fact-check.md`, `generate-web-diagram.md`, `generate-visual-plan.md`, `generate-slides.md`. Read the matching one before starting that task.
+
+                    No native `visual_explainer` tool is installed here; write the HTML with the normal file tools and open it with `xdg-open`.
+                  '';
               };
             };
           };

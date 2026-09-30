@@ -9,11 +9,11 @@
         "rev": "677fe7f743050a4e7f09d4a6f87bbf1325a06f6b",
         "revCount": 6,
         "type": "git",
-        "url": "https://tangled.org/@jakelazaroff.com/actor-typeahead"
+        "url": "https://tangled.sh/@jakelazaroff.com/actor-typeahead"
       },
       "original": {
         "type": "git",
-        "url": "https://tangled.org/@jakelazaroff.com/actor-typeahead"
+        "url": "https://tangled.sh/@jakelazaroff.com/actor-typeahead"
       }
     },
     "agent-skills": {
@@ -342,11 +342,11 @@
         "rev": "2e3744d31b990248f277d16a11ef81753b366f0f",
         "revCount": 22,
         "type": "git",
-        "url": "https://tangled.org/isabelroses.com/fetch-tangled"
+        "url": "https://tangled.sh/isabelroses.com/fetch-tangled"
       },
       "original": {
         "type": "git",
-        "url": "https://tangled.org/isabelroses.com/fetch-tangled"
+        "url": "https://tangled.sh/isabelroses.com/fetch-tangled"
       }
     },
     "firefox-gnome-theme": {
@@ -2752,6 +2752,22 @@
         "type": "github"
       }
     },
+    "ponytail": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1789396482,
+        "narHash": "sha256-PES5XrSYx0VBXWVHEDRykGy0SAmJfV/luzy8Gfg0aAQ=",
+        "owner": "DietrichGebert",
+        "repo": "ponytail",
+        "rev": "e3ba2aa6f1e6f0bc4d69eb09c9f0d0a93af56156",
+        "type": "github"
+      },
+      "original": {
+        "owner": "DietrichGebert",
+        "repo": "ponytail",
+        "type": "github"
+      }
+    },
     "pre-commit": {
       "inputs": {
         "flake-compat": "flake-compat_4",
@@ -2841,6 +2857,7 @@
         "plugins-tiny-code-actions": "plugins-tiny-code-actions",
         "plugins-warp-nvim": "plugins-warp-nvim",
         "plugins-webify-nvim": "plugins-webify-nvim",
+        "ponytail": "ponytail",
         "rust-overlay": "rust-overlay_2",
         "sops-nix": "sops-nix",
         "stylix": "stylix",
@@ -2848,6 +2865,7 @@
         "sure-nix": "sure-nix",
         "tangled": "tangled",
         "treefmt-nix": "treefmt-nix_3",
+        "visual-explainer": "visual-explainer",
         "zjstatus": "zjstatus"
       }
     },
@@ -3483,6 +3501,22 @@
       "original": {
         "owner": "numtide",
         "repo": "flake-utils",
+        "type": "github"
+      }
+    },
+    "visual-explainer": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1787955819,
+        "narHash": "sha256-QO7jv6vK30shxJ+iKWfiSf04PSFeNESWx//yur7RcTc=",
+        "owner": "nicobailon",
+        "repo": "visual-explainer",
+        "rev": "7163c3e10660912e0b89e1af465db9f387282b88",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nicobailon",
+        "repo": "visual-explainer",
         "type": "github"
       }
     },

@@ -222,6 +222,10 @@
       url = "github:pabloariasal/webify.nvim";
       flake = false;
     };
+    ponytail = {
+      url = "github:DietrichGebert/ponytail";
+      flake = false;
+    };
     rust-overlay = {
       url = "github:oxalica/rust-overlay";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -249,6 +253,10 @@
     treefmt-nix = {
       url = "github:numtide/treefmt-nix";
       inputs.nixpkgs.follows = "nixpkgs";
+    };
+    visual-explainer = {
+      url = "github:nicobailon/visual-explainer";
+      flake = false;
     };
     zjstatus.url = "github:dj95/zjstatus";
   };
