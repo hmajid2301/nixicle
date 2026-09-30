@@ -195,6 +195,54 @@ lib.flatten [
       })
 
       (mkHomepageService {
+        name = "Sonarr";
+        icon = serviceIcons.Sonarr;
+        description = "TV series";
+        enable = publicUrl "sonarr" != null;
+        href = publicUrl "sonarr";
+      })
+
+      (mkHomepageService {
+        name = "Sonarr Anime";
+        icon = serviceIcons.SonarrAnime;
+        description = "anime series";
+        enable = publicUrl "sonarr-anime" != null;
+        href = publicUrl "sonarr-anime";
+      })
+
+      (mkHomepageService {
+        name = "Radarr";
+        icon = serviceIcons.Radarr;
+        description = "movies";
+        enable = publicUrl "radarr" != null;
+        href = publicUrl "radarr";
+      })
+
+      (mkHomepageService {
+        name = "Prowlarr";
+        icon = serviceIcons.Prowlarr;
+        description = "indexer manager";
+        enable = publicUrl "prowlarr" != null;
+        href = publicUrl "prowlarr";
+      })
+
+      (mkHomepageService {
+        name = "Seerr";
+        icon = serviceIcons.Seerr;
+        description = "media requests";
+        enable = publicUrl "seerr" != null;
+        href = publicUrl "seerr";
+      })
+
+      (mkHomepageService {
+        name = "Maintainerr";
+        icon = serviceIcons.Maintainerr;
+        description = "media cleanup";
+        enable = publicUrl "maintainerr" != null;
+        href = publicUrl "maintainerr";
+      })
+
+      (mkHomepageService {
         name = "Home Assistant";
         icon = serviceIcons.HomeAssistant;
         description = "smart home";

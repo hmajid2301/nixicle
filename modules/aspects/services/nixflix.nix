@@ -34,8 +34,12 @@
             mkdir -p '${config.services.qbittorrent.profileDir}/qBittorrent/config'
           '';
 
-          # TODO: jellyfin-libraries service fails on boot, disabled for now.
           jellyfin-libraries.enable = lib.mkForce false;
+
+          jellyfin-plugins.serviceConfig = {
+            Restart = "on-failure";
+            RestartSec = 5;
+          };
         };
 
         environment.etc =
@@ -80,7 +84,7 @@
 
           theme = {
             enable = true;
-            name = "catppuccin-mocchiato";
+            name = "catppuccin-macchiato";
           };
 
           postgres.enable = false;
@@ -127,7 +131,6 @@
                 { name = "TorrentDownload"; }
                 { name = "TorrentKitty"; }
                 { name = "The Pirate Bay"; }
-                { name = "showRSS"; }
               ];
             };
           };
