@@ -26,7 +26,6 @@
 
       den.aspects.atuin
       den.aspects.banterbus
-      den.aspects.changedetection-io
       den.aspects.goroutinely
       den.aspects.lettucego
       den.aspects.karakeep
