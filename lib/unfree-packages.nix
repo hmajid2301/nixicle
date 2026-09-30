@@ -1,5 +1,4 @@
 [
-  "changedetection-io"
   "claude-code"
   "cursor"
   "davinci-resolve-studio"
