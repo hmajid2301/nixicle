@@ -12,8 +12,11 @@ let
 
   # mirrors upstream `services.nirinit.settings` defaults
   settings = {
-    skip.apps = [ ];
-    launch = { };
+    skip.apps = [ "steam" ];
+    launch = {
+      "com.mitchellh.ghostty" = "ghostty";
+      "org.gnome.Nautilus" = "nautilus";
+    };
   };
 
   configFile = (pkgs.formats.toml { }).generate "nirinit-config.toml" settings;
