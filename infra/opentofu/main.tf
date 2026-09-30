@@ -58,6 +58,15 @@ data "pocketid_group" "family" {
 # attributes, verbatim; `client_id` doubles as the map key for readability.
 locals {
   oidc_apps = {
+    dynacat = {
+      client_id           = "dynacat"
+      name                = "Dynacat"
+      launch_url          = "https://dynacat.haseebmajid.dev"
+      callback_urls       = ["https://dynacat.haseebmajid.dev/api/oidc/callback"]
+      pkce_enabled        = true
+      is_public           = false
+      allowed_user_groups = [data.pocketid_group.family.id]
+    }
     goroutinely = {
       client_id           = "goroutinely"
       name                = "Goroutinely"
@@ -272,6 +281,15 @@ output "gotify_client_id" {
 
 output "gotify_client_secret" {
   value     = pocketid_client.app["gotify"].client_secret
+  sensitive = true
+}
+
+output "dynacat_client_id" {
+  value = pocketid_client.app["dynacat"].id
+}
+
+output "dynacat_client_secret" {
+  value     = pocketid_client.app["dynacat"].client_secret
   sensitive = true
 }
 
