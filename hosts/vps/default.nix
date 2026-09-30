@@ -13,6 +13,7 @@
 
       den.aspects.tailscale
       den.aspects.traefik
+      den.aspects.anubis
       den.aspects.nfs-nas
       den.aspects.postgresql
       den.aspects.redis
