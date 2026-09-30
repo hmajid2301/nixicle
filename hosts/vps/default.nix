@@ -123,15 +123,45 @@
             settings.PasswordAuthentication = lib.mkForce false;
           };
           tailscale.extraSetFlags = [ "--ssh" ];
-          traefik.dynamicConfigOptions.http = lib.nixicle.mkTraefikService {
-            name = "jellyfin";
-            port = 8096;
-            subdomain = "jellyfin";
-            domain = "haseebmajid.dev";
-            extraServiceConfig = {
-              loadBalancer.servers = lib.mkForce [ { url = "http://nas:8096"; } ];
-            };
-          };
+          traefik.dynamicConfigOptions.http = lib.mkMerge [
+            (lib.nixicle.mkTraefikService {
+              name = "jellyfin";
+              port = 8096;
+              subdomain = "jellyfin";
+              domain = "haseebmajid.dev";
+              host = "nas";
+            })
+            (lib.nixicle.mkAuthenticatedTraefikService {
+              name = "seerr";
+              port = 5055;
+              host = "nas";
+            })
+            (lib.nixicle.mkAuthenticatedTraefikService {
+              name = "sonarr";
+              port = 8989;
+              host = "nas";
+            })
+            (lib.nixicle.mkAuthenticatedTraefikService {
+              name = "sonarr-anime";
+              port = 8990;
+              host = "nas";
+            })
+            (lib.nixicle.mkAuthenticatedTraefikService {
+              name = "radarr";
+              port = 7878;
+              host = "nas";
+            })
+            (lib.nixicle.mkAuthenticatedTraefikService {
+              name = "prowlarr";
+              port = 9696;
+              host = "nas";
+            })
+            (lib.nixicle.mkAuthenticatedTraefikService {
+              name = "maintainerr";
+              port = 6246;
+              host = "nas";
+            })
+          ];
         };
 
         nix.settings = {

@@ -14,6 +14,12 @@ rec {
     LettuceGo = "lettucego";
     Immich = "immich";
     Jellyfin = "jellyfin";
+    Sonarr = "sonarr";
+    SonarrAnime = "sonarr-anime";
+    Radarr = "radarr";
+    Prowlarr = "prowlarr";
+    Seerr = "seerr";
+    Maintainerr = "maintainerr";
     Forgejo = "forgejo";
     Traefik = "traefik";
     PocketID = "pocket-id";
@@ -131,8 +137,47 @@ rec {
       <rect x='12' y='12' width='8' height='8' fill='rgb(243,139,168)'/>
       <rect x='14' y='13' width='4' height='4' fill='rgb(24,24,37)'/>
     '';
+    Sonarr = renderIcon ''
+      <rect x='5' y='10' width='22' height='13' fill='rgb(137,180,250)'/>
+      <rect x='7' y='12' width='18' height='9' fill='rgb(24,24,37)'/>
+      <rect x='13' y='14' width='6' height='5' fill='rgb(203,166,247)'/>
+      <rect x='12' y='6' width='8' height='3' fill='rgb(137,180,250)'/>
+    '';
+    SonarrAnime = renderIcon ''
+      <rect x='5' y='10' width='22' height='13' fill='rgb(180,190,254)'/>
+      <rect x='7' y='12' width='18' height='9' fill='rgb(24,24,37)'/>
+      <rect x='13' y='14' width='6' height='5' fill='rgb(243,139,168)'/>
+      <rect x='12' y='6' width='8' height='3' fill='rgb(180,190,254)'/>
+    '';
+    Radarr = renderIcon ''
+      <rect x='5' y='10' width='22' height='13' fill='rgb(245,194,231)'/>
+      <rect x='8' y='12' width='4' height='4' fill='rgb(24,24,37)'/>
+      <rect x='14' y='12' width='4' height='4' fill='rgb(24,24,37)'/>
+      <rect x='20' y='12' width='4' height='4' fill='rgb(24,24,37)'/>
+      <rect x='8' y='17' width='4' height='4' fill='rgb(24,24,37)'/>
+      <rect x='14' y='17' width='4' height='4' fill='rgb(24,24,37)'/>
+      <rect x='20' y='17' width='4' height='4' fill='rgb(24,24,37)'/>
+    '';
+    Prowlarr = renderIcon ''
+      <rect x='7' y='7' width='14' height='14' fill='rgb(203,166,247)'/>
+      <rect x='10' y='10' width='8' height='8' fill='rgb(24,24,37)'/>
+      <rect x='18' y='18' width='4' height='7' fill='rgb(203,166,247)'/>
+      <rect x='20' y='22' width='5' height='4' fill='rgb(203,166,247)'/>
+    '';
+    Seerr = renderIcon ''
+      <rect x='6' y='6' width='20' height='20' fill='rgb(166,227,161)'/>
+      <rect x='9' y='9' width='14' height='14' fill='rgb(24,24,37)'/>
+      <rect x='14' y='11' width='4' height='10' fill='rgb(166,227,161)'/>
+      <rect x='11' y='14' width='10' height='4' fill='rgb(166,227,161)'/>
+    '';
+    Maintainerr = renderIcon ''
+      <rect x='13' y='6' width='6' height='2' fill='rgb(249,226,175)'/>
+      <rect x='10' y='8' width='12' height='3' fill='rgb(249,226,175)'/>
+      <rect x='8' y='11' width='16' height='15' fill='rgb(243,139,168)'/>
+      <rect x='11' y='14' width='10' height='2' fill='rgb(24,24,37)'/>
+      <rect x='11' y='18' width='10' height='2' fill='rgb(24,24,37)'/>
+    '';
   };
-
   favicon = renderIcon ''
     <rect x='4' y='7' width='24' height='3' fill='rgb(243,139,168)'/>
     <rect x='6' y='10' width='20' height='3' fill='rgb(243,139,168)'/>

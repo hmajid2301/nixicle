@@ -109,12 +109,14 @@ rec {
       entryPoints ? [ "websecure" ],
       certResolver ? "letsencrypt",
       auth ? false,
+      host ? null,
       middlewares ? [ ],
       extraRouterConfig ? { },
       extraServiceConfig ? { },
     }:
     let
       allMiddlewares = (lib.optional auth "tinyauth") ++ middlewares;
+      serverHost = if host == null then "localhost" else host;
     in
     {
       routers.${name} = lib.mkMerge [
@@ -129,7 +131,7 @@ rec {
       ];
       services.${name} = lib.mkMerge [
         {
-          loadBalancer.servers = lib.mkDefault [ { url = "http://localhost:${toString port}"; } ];
+          loadBalancer.servers = lib.mkDefault [ { url = "http://${serverHost}:${toString port}"; } ];
         }
         extraServiceConfig
       ];

@@ -1,7 +1,6 @@
 {
   den,
   inputs,
-  lib,
   ...
 }:
 {
@@ -18,7 +17,7 @@
       den.aspects.backup-restic
       den.aspects.fish
       den.aspects.tailscale
-      den.aspects.jellyfin
+      den.aspects.nixflix
       den.aspects.otel-collector-forwarder
     ];
 
@@ -33,102 +32,123 @@
       home.stateVersion = "26.05";
     };
 
-    nixos = { pkgs, ... }: {
-      # Split into the small files recommended by the migration notes
-      # (storage import, shares, health, app recovery), mirroring the
-      # nijho.lt TrueNAS->NixOS migration structure.
-      imports = [
-        ./hardware-configuration.nix
-        ./disks.nix
-        ./storage.nix
-        ./nfs.nix
-        ./samba.nix
-        ./health.nix
-        ./backup.nix
-        inputs.nixos-facter-modules.nixosModules.facter
-        { config.facter.reportPath = ./facter.json; }
-      ];
-
-      sops.defaultSopsFile = ./secrets.yaml;
-
-      nixicle.serverAdmin = {
-        enable = true;
-        # `media` gid 3000 matches the recovered TrueNAS ownership on
-        # /mnt/main/main and the homelab datasets (fleet convention; framebox
-        # uses the same gid). Members can read/write shared data.
-        extraGroups = [
-          "wheel"
-          "media"
+    nixos =
+      {
+        lib,
+        pkgs,
+        ...
+      }:
+      {
+        imports = [
+          ./hardware-configuration.nix
+          ./disks.nix
+          ./storage.nix
+          ./nfs.nix
+          ./samba.nix
+          ./health.nix
+          ./backup.nix
+          inputs.nixos-facter-modules.nixosModules.facter
+          { config.facter.reportPath = ./facter.json; }
         ];
-        uid = 1000; # matches TrueNAS NFS anonuid/anongid and share owner
-        mediaGid = 3000;
-        shell = pkgs.fish;
-        sudo = {
-          execWheelOnly = true;
-          wheelNeedsPassword = false;
+
+        sops.defaultSopsFile = ./secrets.yaml;
+
+        nixicle.serverAdmin = {
+          enable = true;
+          extraGroups = [
+            "wheel"
+            "media"
+          ];
+          uid = 1000;
+          mediaGid = 3000;
+          shell = pkgs.fish;
+          sudo = {
+            execWheelOnly = true;
+            wheelNeedsPassword = false;
+          };
         };
-      };
 
-      networking = {
-        hostName = "nas";
-        useDHCP = lib.mkDefault true;
+        networking = {
+          hostName = "nas";
+          useDHCP = lib.mkDefault true;
 
-        # Stable hostid is required for clean ZFS imports on Linux.
-        # Observed from `zdb -e -C main`: hostid decimal 1577738375 == 5e0a6087.
-        hostId = "5e0a6087";
-        firewall.allowedTCPPorts = [ 22 ];
-      };
-
-      boot = {
-        supportedFilesystems = [ "zfs" ];
-        zfs = {
-          # Import the preserved TrueNAS data pool by name after NixOS boots.
-          # Production data-pool disks must never appear in hosts/nas/disks.nix.
-          extraPools = [ "main" ];
-
-          # Avoid automatic force-import behaviour. The observed pool hostid is set
-          # below so normal imports should not require -f after cutover.
-          forceImportRoot = false;
-          forceImportAll = false;
+          hostId = "5e0a6087";
+          firewall.allowedTCPPorts = [ 22 ];
         };
-      };
 
-      virtualisation.docker = {
-        # Docker for the Stash compose stack. /var/lib/docker is persisted
-        # (see persist.directories) so the pulled image + container survive
-        # the impermanence rollback. The compose `restart: unless-stopped`
-        # policy auto-starts the container when the daemon starts at boot.
-        enable = true;
-        enableOnBoot = true;
-      };
+        boot = {
+          supportedFilesystems = [ "zfs" ];
+          zfs = {
+            extraPools = [ "main" ];
 
-      services.openssh = {
-        enable = true;
-        settings = {
-          PasswordAuthentication = false;
-          PermitRootLogin = "prohibit-password";
+            forceImportRoot = false;
+            forceImportAll = false;
+          };
         };
+
+        virtualisation.docker = {
+          enable = true;
+          enableOnBoot = true;
+        };
+
+        services.openssh = {
+          enable = true;
+          settings = {
+            PasswordAuthentication = false;
+            PermitRootLogin = "prohibit-password";
+          };
+        };
+
+        services.zfs = {
+          autoScrub.enable = false;
+          trim.enable = false;
+        };
+
+        nixflix = {
+          globals.gids = {
+            media = 3000;
+            autobrr = 188;
+            cross-seed = 183;
+            jellyfin = 146;
+            prowlarr = 287;
+            recyclarr = 269;
+            seerr = 250;
+          };
+          mediaDir = lib.mkForce "/mnt/main/main-encrypted/homelab/media";
+          stateDir = lib.mkForce "/persist/nixflix";
+          downloadsDir = lib.mkForce "/persist/nixflix/downloads";
+          maintainerr.enable = true;
+        };
+
+        environment.etc = {
+          "tmpfiles.d/10-nixflix.conf" = lib.mkForce {
+            text = ''
+              d /persist/nixflix 0775 root media - -
+              d /persist/nixflix/downloads 0775 root media - -
+            '';
+          };
+          "tmpfiles.d/10-sonarr.conf" = lib.mkForce {
+            text = "d /persist/nixflix/sonarr 0775 root media - -\n";
+          };
+          "tmpfiles.d/10-radarr.conf" = lib.mkForce {
+            text = "d /persist/nixflix/radarr 0775 root media - -\n";
+          };
+        };
+
+        environment.systemPackages = with pkgs; [
+          docker-compose
+          git
+          hdparm
+          jq
+          lsof
+          rsync
+          tmux
+          vim
+          zfs
+        ];
+
+        home-manager.users.haseeb.home.stateVersion = "26.05";
+        system.stateVersion = "26.05";
       };
-
-      services.zfs = {
-        autoScrub.enable = false;
-        trim.enable = false;
-      };
-
-      environment.systemPackages = with pkgs; [
-        docker-compose
-        git
-        hdparm
-        jq
-        lsof
-        rsync
-        tmux
-        vim
-        zfs
-      ];
-
-      home-manager.users.haseeb.home.stateVersion = "26.05";
-      system.stateVersion = "26.05";
-    };
   };
 }
