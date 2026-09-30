@@ -136,6 +136,7 @@ check:nixos-evaluations:
   extends: .base_setup
   stage: build
   timeout: 2h
+  tags: [powerful]
   rules:
     - if: $CI_PIPELINE_SOURCE == "schedule"
     - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
