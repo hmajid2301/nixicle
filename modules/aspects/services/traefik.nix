@@ -45,7 +45,7 @@ _: {
             };
             entryPoints = {
               web = {
-                address = "0.0.0.0:80";
+                address = ":80";
                 http.redirections.entryPoint = {
                   to = "websecure";
                   scheme = "https";
@@ -53,7 +53,7 @@ _: {
                 };
               };
               websecure = {
-                address = "0.0.0.0:443";
+                address = ":443";
                 http.tls = {
                   certResolver = "letsencrypt";
                   domains = [
