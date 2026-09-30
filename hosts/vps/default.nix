@@ -40,6 +40,7 @@
       den.aspects.gotify
       den.aspects.sure
       den.aspects.homepage
+      den.aspects.dynacat
       den.aspects.hister
       den.aspects.immich
 
@@ -65,6 +66,10 @@
           gitlab_runner_env = { };
           gitlab_runner_docker_env = { };
           nixos_hashed_password.neededForUsers = true;
+          dynacat_env = {
+            owner = "dynacat";
+            group = "dynacat";
+          };
         };
 
         nixicle = {
@@ -81,6 +86,215 @@
               "146.70.189.96"
             ];
             allowlistUris = [ "/api/add" ];
+          };
+
+          dynacat = {
+            enable = true;
+            environmentFile = config.sops.secrets.dynacat_env.path;
+            settings = {
+              theme = {
+                background-color = "240 21 15";
+                contrast-multiplier = 1.2;
+                primary-color = "217 92 83";
+                positive-color = "115 54 76";
+                negative-color = "347 70 65";
+              };
+
+              auth = {
+                secret-key = "\${DYNACAT_SECRET_KEY}";
+                disable-password = true;
+                oidc = {
+                  issuer-url = "https://id.haseebmajid.dev";
+                  client-id = "dynacat";
+                  client-secret = "\${OIDC_CLIENT_SECRET}";
+                  redirect-url = "https://dynacat.haseebmajid.dev/api/oidc/callback";
+                  allowed-groups = [ "family" ];
+                };
+              };
+
+              pages = [
+                {
+                  name = "Home";
+                  columns = [
+                    {
+                      size = "small";
+                      widgets = [
+                        {
+                          type = "server-stats";
+                          servers = [
+                            {
+                              type = "local";
+                              name = "vps";
+                            }
+                          ];
+                        }
+                        {
+                          type = "torrenting";
+                          hosts = [
+                            {
+                              url = "http://nas:8282";
+                              username = "admin";
+                              password = "\${QBIT_PASSWORD}";
+                            }
+                          ];
+                        }
+                        {
+                          type = "monitor";
+                          cache = "1m";
+                          title = "Networking";
+                          sites = [
+                            {
+                              title = "Tailscale Admin";
+                              url = "https://login.tailscale.com/admin/machines";
+                              icon = "si:tailscale";
+                            }
+                          ];
+                        }
+                      ];
+                    }
+                    {
+                      size = "full";
+                      widgets = [
+                        {
+                          type = "search";
+                          autofocus = true;
+                        }
+                        {
+                          type = "rss";
+                          title = "News";
+                          style = "horizontal-cards";
+                          feeds = [ ];
+                        }
+                        {
+                          type = "monitor";
+                          cache = "1m";
+                          title = "Services";
+                          sites = [
+                            {
+                              title = "Jellyfin";
+                              url = "https://jellyfin.haseebmajid.dev";
+                              icon = "si:jellyfin";
+                            }
+                            {
+                              title = "qBittorrent";
+                              url = "http://nas:8282";
+                              icon = "si:qbittorrent";
+                            }
+                            {
+                              title = "Sonarr";
+                              url = "https://sonarr.homelab.haseebmajid.dev";
+                              icon = "si:sonarr";
+                            }
+                            {
+                              title = "Radarr";
+                              url = "https://radarr.homelab.haseebmajid.dev";
+                              icon = "si:radarr";
+                            }
+                            {
+                              title = "Prowlarr";
+                              url = "https://prowlarr.homelab.haseebmajid.dev";
+                              icon = "si:prowlarr";
+                            }
+                            {
+                              title = "Seerr";
+                              url = "https://seerr.homelab.haseebmajid.dev";
+                              icon = "si:overseerr";
+                            }
+                            {
+                              title = "Maintainerr";
+                              url = "https://maintainerr.homelab.haseebmajid.dev";
+                              icon = "mdi:delete-sweep";
+                            }
+                            {
+                              title = "Immich";
+                              url = "https://immich.haseebmajid.dev";
+                              icon = "si:immich";
+                            }
+                            {
+                              title = "Homepage";
+                              url = "https://homepage.haseebmajid.dev";
+                              icon = "mdi:home";
+                            }
+                            {
+                              title = "ChangeDetection";
+                              url = "https://changedetect.haseebmajid.dev";
+                              icon = "si:changedetection";
+                            }
+                          ];
+                        }
+                      ];
+                    }
+                    {
+                      size = "small";
+                      widgets = [
+                        {
+                          type = "weather";
+                          units = "metric";
+                          hour-format = "24h";
+                          location = "London, United Kingdom";
+                        }
+                        {
+                          type = "bookmarks";
+                          groups = [
+                            {
+                              title = "General";
+                              links = [
+                                {
+                                  title = "Gmail";
+                                  url = "https://mail.google.com/mail/u/0/";
+                                }
+                                {
+                                  title = "Amazon";
+                                  url = "https://www.amazon.com/";
+                                }
+                                {
+                                  title = "Github";
+                                  url = "https://github.com/";
+                                }
+                              ];
+                            }
+                            {
+                              title = "Entertainment";
+                              links = [
+                                {
+                                  title = "YouTube";
+                                  url = "https://www.youtube.com/";
+                                }
+                                {
+                                  title = "Prime Video";
+                                  url = "https://www.primevideo.com/";
+                                }
+                                {
+                                  title = "Disney+";
+                                  url = "https://www.disneyplus.com/";
+                                }
+                              ];
+                            }
+                            {
+                              title = "Social";
+                              links = [
+                                {
+                                  title = "Reddit";
+                                  url = "https://www.reddit.com/";
+                                }
+                                {
+                                  title = "Twitter";
+                                  url = "https://twitter.com/";
+                                }
+                                {
+                                  title = "Instagram";
+                                  url = "https://www.instagram.com/";
+                                }
+                              ];
+                            }
+                          ];
+                        }
+                      ];
+                    }
+                  ];
+                }
+              ];
+            };
           };
         };
 
