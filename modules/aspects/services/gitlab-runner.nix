@@ -21,8 +21,8 @@
         isDesktop = config.networking.hostName == "desktop";
         desktopResourceFlags = lib.optionals isDesktop [
           "--docker-cpus=3"
-          "--docker-memory=6g"
-          "--docker-memory-swap=8g"
+          "--docker-memory=12g"
+          "--docker-memory-swap=16g"
           "--docker-service-cpus=1.5"
           "--docker-service-memory=3g"
           "--docker-services-limit=4"
