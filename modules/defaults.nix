@@ -127,6 +127,7 @@ in
       # nixicle packages overlay (needs extendedLib so defined here).
       # nur overlay in common.nix; niri/zjstatus in niri.nix.
       nixpkgs.overlays = [ extendedLib.nixicle.nixicleOverlay ];
+      nixpkgs.config.allowUnfreePredicate = extendedLib.nixicle.allowUnfreePredicate;
       imports = [
         ./aspects/system/identity-options.nix
         inputs.sops-nix.nixosModules.sops
