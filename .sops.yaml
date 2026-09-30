@@ -22,6 +22,7 @@ keys:
     - &haseeb_framebox age1zm36rngg07hrm8nj3r8wj5ucz85njxzfwsxftsx3gtdmzkgw3peqh8vf55
     - &haseeb_vm age1x4x5ujnd9em23jhs53lgwqcmw9t6hx64xtdt3x0u4n66fsuygf9s4njjla
     - &haseeb_desktop age1et5u4u20utu2hethuaddhjjnj67p3r43l2jq4e32hm2a0m595qessmakpp
+    - &haseeb_vps age126h8n6lxcxdvmk7d9js526d0gaa7szruh66qdvtxz0zyvjqhaejq5mys02
   - &hosts:
     - &framework age199ny6lhask8zc65auwygqhj0svjkpp5kr7lhht8hvj947vaclecqrt4yg7
     - &vm age1pc0qdk5d2fen55cstvtch588wcqgzemgavlsvsc5dm0r4uw00vrq297et7
@@ -53,6 +54,7 @@ creation_rules:
       - *haseeb_framework
       - *haseeb_framebox
       - *haseebmajid_dell
+      - *haseeb_vps
 
   - path_regex: hosts/framework/secrets.ya?ml$
     key_groups:
@@ -75,6 +77,7 @@ creation_rules:
       - *haseeb_framework
       - *haseeb_framebox
       - *haseebmajid_dell
+      - *haseeb_vps
 
   - path_regex: hosts/desktop/secrets.ya?ml$
     key_groups:
@@ -95,6 +98,7 @@ creation_rules:
       - *haseeb_vm
       - *haseebmajid_dell
       - *haseeb_desktop
+      - *haseeb_vps
       - *vps
       - *nas
       - *framework
