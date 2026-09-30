@@ -82,12 +82,26 @@ in
           ];
 
           homeManager =
-            { pkgs, ... }:
+            {
+              config,
+              pkgs,
+              ...
+            }:
             {
               imports = [
                 inputs.sops-nix.homeManagerModules.sops
                 inputs.stylix.homeModules.stylix
               ];
+
+              sops = {
+                age = {
+                  generateKey = true;
+                  keyFile = "/home/${config.home.username}/.config/sops/age/keys.txt";
+                  sshKeyPaths = [ "/home/${config.home.username}/.ssh/id_ed25519" ];
+                };
+                defaultSymlinkPath = "/run/user/1002/secrets";
+                defaultSecretsMountPoint = "/run/user/1002/secrets.d";
+              };
 
               stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-mocha.yaml";
 
