@@ -121,7 +121,6 @@ _: {
               "matt/productivity/handoff"
               "matt/productivity/to-questionnaire"
               "matt/productivity/wait-what"
-              "matt/engineering/resolving-merge-conflicts"
               "matt/engineering/improve-codebase-architecture"
             ];
 
