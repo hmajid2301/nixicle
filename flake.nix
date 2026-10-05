@@ -33,7 +33,7 @@
       inputs.nixpkgs-lib.follows = "nixpkgs";
     };
     flowfin-sso = {
-      url = "github:Flowfin/jellyfin-plugin-sso/manifest-beta";
+      url = "github:K0lin/jellyfin-plugin-sso/manifest-release";
       flake = false;
     };
     git-hooks-nix = {

@@ -6,7 +6,7 @@
   };
 
   flake-file.inputs.flowfin-sso = {
-    url = "github:Flowfin/jellyfin-plugin-sso/manifest-beta";
+    url = "github:K0lin/jellyfin-plugin-sso/manifest-release";
     flake = false;
   };
 
@@ -153,9 +153,8 @@
                 processThreads = 1;
               };
               pluginRepositories = {
-                "Flowfin-SSO" = {
-                  # TODO: switch to manifest-release once stable 12.0 ships
-                  url = "https://raw.githubusercontent.com/Flowfin/jellyfin-plugin-sso/${flowfinRev}/manifest.json";
+                "SSO" = {
+                  url = "https://raw.githubusercontent.com/K0lin/jellyfin-plugin-sso/${flowfinRev}/manifest.json";
                   hash = flowfinManifestHash;
                 };
               };
@@ -187,13 +186,13 @@
                 config.ExtractionDuringLibraryScan = true;
               };
 
-              "Community SSO for Jellyfin" = {
+              "SSO Authentication" = {
                 enable = true;
-                apiName = "Community SSO for Jellyfin";
+                apiName = "SSO-Auth";
                 package = inputs.nixflix.lib.jellyfinPlugins.fromRepo {
-                  version = "5.0.0.88";
-                  hash = "sha256-cFtP21GyBgiNBI92WvbCvFAU7W4k8HL8S9LWD6T2yNI=";
-                  repository = "Flowfin-SSO";
+                  version = "5.1.1";
+                  hash = "sha256-2xJrR2O9o6N1T6IQMjL8A+8b+SnP7aNfLprznIdSM7E=";
+                  repository = "SSO";
                 };
                 config = {
                   OidConfigs = {

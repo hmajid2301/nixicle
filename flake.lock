@@ -830,16 +830,16 @@
     "flowfin-sso": {
       "flake": false,
       "locked": {
-        "lastModified": 1790517707,
-        "narHash": "sha256-pc3wtZb4QrFzMJRZVKfvUcUh3KQVea+BEt4W8kw1BWY=",
-        "owner": "Flowfin",
+        "lastModified": 1790596927,
+        "narHash": "sha256-SLnUwHvkr2HCzPchFzI1Xn3YAKNt4/mNvRtk1z3uJY4=",
+        "owner": "K0lin",
         "repo": "jellyfin-plugin-sso",
-        "rev": "1a8bfe9a350650fd83758858b39ac0f86cd81e42",
+        "rev": "9e76a43b81bde1a4ae99f330713bc9e8dc381954",
         "type": "github"
       },
       "original": {
-        "owner": "Flowfin",
-        "ref": "manifest-beta",
+        "owner": "K0lin",
+        "ref": "manifest-release",
         "repo": "jellyfin-plugin-sso",
         "type": "github"
       }
