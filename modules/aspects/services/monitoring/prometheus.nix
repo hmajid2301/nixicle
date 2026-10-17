@@ -54,7 +54,23 @@ _: {
             {
               job_name = "nodes";
               static_configs = [
-                { targets = [ "127.0.0.1:${toString config.services.prometheus.exporters.node.port}" ]; }
+                {
+                  targets = [ "127.0.0.1:${toString config.services.prometheus.exporters.node.port}" ];
+                  labels.host = "vps";
+                }
+                {
+                  targets = [ "nas:3021" ];
+                  labels.host = "nas";
+                }
+              ];
+            }
+            {
+              job_name = "zfs";
+              static_configs = [
+                {
+                  targets = [ "nas:9134" ];
+                  labels.host = "nas";
+                }
               ];
             }
             {

@@ -141,7 +141,7 @@ in
                 (mkThresholdRule {
                   uid = "vps-root-disk-low";
                   title = "VPS root filesystem below 15% free";
-                  expr = ''100 * node_filesystem_avail_bytes{fstype="btrfs",mountpoint="/"} / node_filesystem_size_bytes{fstype="btrfs",mountpoint="/"}'';
+                  expr = ''100 * node_filesystem_avail_bytes{host="vps",fstype="btrfs",mountpoint="/"} / node_filesystem_size_bytes{host="vps",fstype="btrfs",mountpoint="/"}'';
                   threshold = 15;
                   description = ''
                     Free space on the vps root filesystem has been below 15% for 15m.
@@ -151,7 +151,7 @@ in
                 (mkThresholdRule {
                   uid = "vps-root-disk-critical";
                   title = "VPS root filesystem below 7% free";
-                  expr = ''100 * node_filesystem_avail_bytes{fstype="btrfs",mountpoint="/"} / node_filesystem_size_bytes{fstype="btrfs",mountpoint="/"}'';
+                  expr = ''100 * node_filesystem_avail_bytes{host="vps",fstype="btrfs",mountpoint="/"} / node_filesystem_size_bytes{host="vps",fstype="btrfs",mountpoint="/"}'';
                   threshold = 7;
                   severity = "critical";
                   for = "5m";
@@ -205,7 +205,7 @@ in
                   uid = "restic-backup-not-run";
                   title = "Restic backup not run within 24h";
                   expr = ''
-                    (time() - max(node_systemd_timer_last_trigger_seconds{name=~"restic-backups-.*"})) > bool 90000
+                    (time() - max(node_systemd_timer_last_trigger_seconds{host="vps",name=~"restic-backups-.*"})) > bool 90000
                   '';
                   cmp = "gt";
                   threshold = 0;
@@ -222,7 +222,7 @@ in
                   uid = "restic-backup-timer-dead";
                   title = "Restic backup timer not active";
                   expr = ''
-                    min(node_systemd_unit_state{name=~"restic-backups-.*\\.timer",state="active"})
+                    min(node_systemd_unit_state{host="vps",name=~"restic-backups-.*\\.timer",state="active"})
                   '';
                   cmp = "lt";
                   threshold = 1;
