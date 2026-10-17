@@ -40,7 +40,9 @@ _: {
           };
         };
 
-        tunedHttpProbing = yaml.generate "http-probing.yaml" {
+        atticCacheRequest = "(evt.Parsed.traefik_router_name == 'attic@file' && (evt.Meta.http_path matches '^/main/[0-9abcdfghijklmnpqrsvwxyz]{32}[.]narinfo$' || evt.Meta.http_path matches '^/main/nar/[0-9abcdfghijklmnpqrsvwxyz]{32}[.]nar$'))";
+
+        httpProbing = {
           type = "leaky";
           name = "crowdsecurity/http-probing";
           description = "Detect site scanning/probing from a single ip";
@@ -62,7 +64,7 @@ _: {
           };
         };
 
-        tunedHttpCrawl = yaml.generate "http-crawl-non_statics.yaml" {
+        httpCrawl = {
           type = "leaky";
           name = "crowdsecurity/http-crawl-non_statics";
           description = "Detect aggressive crawl on non static resources";
@@ -83,6 +85,33 @@ _: {
             remediation = true;
           };
         };
+
+        tunedHttpProbing = yaml.generate "http-probing.yaml" (
+          httpProbing // { filter = "${httpProbing.filter} && !${atticCacheRequest}"; }
+        );
+        tunedHttpCrawl = yaml.generate "http-crawl-non_statics.yaml" (
+          httpCrawl // { filter = "${httpCrawl.filter} && !${atticCacheRequest}"; }
+        );
+        atticHttpProbing = yaml.generate "attic-probing.yaml" (
+          httpProbing
+          // {
+            name = "nixicle/attic-probing";
+            description = "Detect excessive Attic cache misses";
+            filter = "${httpProbing.filter} && ${atticCacheRequest}";
+            capacity = 1000;
+            leakspeed = "100ms";
+          }
+        );
+        atticHttpCrawl = yaml.generate "attic-crawl.yaml" (
+          httpCrawl
+          // {
+            name = "nixicle/attic-crawl";
+            description = "Detect excessive Attic cache downloads";
+            filter = "${httpCrawl.filter} && ${atticCacheRequest}";
+            capacity = 2000;
+            leakspeed = "50ms";
+          }
+        );
       in
       {
         options.nixicle.crowdsec.allowlist = lib.mkOption {
@@ -110,21 +139,26 @@ _: {
           sops.secrets.crowdsec_enroll_key = { };
           sops.secrets.crowdsec_bouncer_key = { };
 
-          # The upstream NixOS firewall-bouncer registration unit calls raw cscli,
-          # which defaults to /etc/crowdsec/config.yaml instead of the NixOS-generated
-          # config path. Provide that conventional path so auto-registration works.
-          environment.etc."crowdsec/config.yaml".source =
-            yaml.generate "crowdsec.yaml" config.services.crowdsec.settings.general;
+          # cscli defaults to this path.
+          environment.etc = {
+            "crowdsec/config.yaml".source =
+              yaml.generate "crowdsec.yaml" config.services.crowdsec.settings.general;
 
-          # Local parsers written via environment.etc keep a stable filename, so
-          # content edits swap the symlink instead of accumulating stale
-          # hash-named files (services.crowdsec.localConfig tmpfiles L+ links
-          # never clean old ones, and duplicate parser names crash the engine).
-          environment.etc."crowdsec/parsers/s02-enrich/nixicle-allowlist.yaml".source = allowlistYaml;
+            # Stable filenames prevent duplicate parsers after updates.
+            "crowdsec/parsers/s02-enrich/nixicle-allowlist.yaml".source = allowlistYaml;
+            "crowdsec/scenarios/nixicle-attic-probing.yaml".source = atticHttpProbing;
+            "crowdsec/scenarios/nixicle-attic-crawl.yaml".source = atticHttpCrawl;
+          };
           systemd = {
             services = {
               crowdsec = {
-                restartTriggers = [ allowlistYaml ];
+                restartTriggers = [
+                  allowlistYaml
+                  tunedHttpProbing
+                  tunedHttpCrawl
+                  atticHttpProbing
+                  atticHttpCrawl
+                ];
                 serviceConfig = {
                   NoNewPrivileges = true;
                   PrivateTmp = true;
