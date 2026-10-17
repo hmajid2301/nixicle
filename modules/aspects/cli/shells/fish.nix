@@ -121,7 +121,7 @@ in
             nrs = "sudo nixos-rebuild switch --flake ~/nixicle#(hostname)";
             weather = "curl wttr.in/London";
             pfile = "fzf --preview 'bat --style=numbers --color=always --line-range :500 {}'";
-            gdub = "git fetch -p && git branch -vv | grep ': gone]' | awk '{print }' | xargs git branch -D $argv;";
+            gdub = "git fetch -p && git for-each-ref --format='%(refname:short) %(upstream:track) %(worktreepath)' refs/heads | awk '$2 == \"[gone]\" && $3 == \"\" {print $1}' | xargs -r git branch -D";
             tldrf = ''${pkgs.tldr}/bin/tldr --list | fzf --preview "${pkgs.tldr}/bin/tldr {1} --color" --preview-window=right,70% | xargs tldr'';
             wcat = "wellcat";
             imp = "sudo ${pkgs.fd}/bin/fd --one-file-system --base-directory / --type f --hidden --exclude '{tmp,etc/passwd,var/lib/systemd/coredump,proc,sys,dev,run,nix,boot}'";
