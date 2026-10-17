@@ -118,7 +118,12 @@ return {
 
 			local herdr_splits = require("herdr-splits")
 			herdr_splits.setup({
-				at_edge = "stop",
+				at_edge = function(ctx)
+					local step = ({ left = "prev", right = "next" })[ctx.direction]
+					if step then
+						vim.system({ "herdr-tab-step", step })
+					end
+				end,
 				nav_at_edge = "stop",
 				nav_keys = {
 					left = "<A-h>",
