@@ -7,11 +7,8 @@ _: {
           enable = true;
           package = pkgs.worktrunk;
           enableFishIntegration = true;
+          settings.worktree-path = "~/worktrees/{{ repo }}/{{ branch | sanitize }}";
         };
-
-        xdg.configFile."worktrunk/config.toml".text = ''
-          worktree-path = "~/worktrees/{{ repo }}/{{ branch | sanitize }}"
-        '';
       };
   };
 }

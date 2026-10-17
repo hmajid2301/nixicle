@@ -188,6 +188,15 @@
         # Noctalia's own idle service replaces the swayidle workaround.
 
         programs = {
+          worktrunk.settings.projects."github.com/NalaMoney/nala-backend".post-start.copy =
+            "wt step copy-ignored";
+          git = {
+            settings.user.email = lib.mkForce "haseeb.majid@nala.money";
+            signing = {
+              format = "ssh";
+              signByDefault = true;
+            };
+          };
           ghostty.settings = {
             "font-family" = [
               "MonoLisa"
@@ -231,13 +240,6 @@
 
         fonts.fontconfig.enable = true;
 
-        programs.git = {
-          settings.user.email = lib.mkForce "haseeb.majid@nala.money";
-          signing = {
-            format = "ssh";
-            signByDefault = true;
-          };
-        };
         home.file.".ssh/allowed_signers".text =
           "* ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDUF0LHH63pGkd1m7FGdbZirVXULDS5WSDzerJ0sskoq haseeb.majid@nala.money";
       };
