@@ -114,6 +114,12 @@ _: {
               path = inputs.visual-explainer;
               subdir = "plugins";
             };
+
+            slidev = {
+              path = inputs.slidev-skills;
+              subdir = "skills";
+              idPrefix = "slidev";
+            };
           };
 
           skills = {
@@ -128,7 +134,10 @@ _: {
               "matt/engineering/improve-codebase-architecture"
             ];
 
-            enableAll = [ "superpowers" ];
+            enableAll = [
+              "superpowers"
+              "slidev"
+            ];
 
             explicit = {
               zellij = {
