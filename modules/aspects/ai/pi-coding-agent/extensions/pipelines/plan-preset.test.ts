@@ -1,14 +1,5 @@
-import { describe, expect, mock, test } from "bun:test";
-
-mock.module("@mariozechner/pi-ai", () => ({
-  StringEnum: {},
-  Type: {},
-}));
-mock.module("@mariozechner/pi-tui", () => ({
-  truncateToWidth: (text: string) => text,
-}));
-
-const { buildPlanPresetStages } = await import("./index.ts");
+import { describe, expect, test } from "bun:test";
+import { buildPlanPresetStages } from "./index.ts";
 
 describe("buildPlanPresetStages", () => {
   test("inserts scout before planner", () => {

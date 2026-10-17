@@ -47,6 +47,7 @@ packages/zellij-detach/src/target/
 node_modules/
 package-lock.json
 package.json
+!/package.json
 .codegraph
 
 .playwright/
