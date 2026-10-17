@@ -30,6 +30,8 @@ comment=""
 confidence="unknown"
 note=""
 repair_attempts=0
+todo_mode=false
+todo_candidates_json='[]'
 
 # The repair bot keeps a single note per MR, identified by its heading.
 repair_note_marker='## 🤖 Repair attempt'
@@ -239,6 +241,9 @@ EOF
     printf -- '- Project: %s\n' "$CI_PROJECT_PATH"
     printf -- '- MR IID: %s\n' "${CI_MERGE_REQUEST_IID:-}"
     printf -- '- MR Title: %s\n' "${CI_MERGE_REQUEST_TITLE:-}"
+    if [ "$todo_mode" = "true" ]; then
+      printf '\n## Verified TODO restoration candidates\n\n```json\n%s\n```\n' "$todo_candidates_json"
+    fi
     cat <<'EOF'
 
 ## Failed jobs JSON
@@ -352,7 +357,7 @@ commit_and_push_fix() {
 
   if ! git commit \
     -m 'fix(ci-repair): apply AI repair patch' \
-    -m "AI repair bot (${model}) generated this fix for the failed jobs on MR !${CI_MERGE_REQUEST_IID}.
+    -m "AI repair bot (${model}) generated this fix for MR !${CI_MERGE_REQUEST_IID} (TODO restoration: ${todo_mode}).
 
 ${summary:-}
 
@@ -454,6 +459,11 @@ run_commands_and_retest() {
 apply_patch_and_retest() {
   local patch_files=()
 
+  if [ "$todo_mode" = "true" ] && { [ "$confidence" != "high" ] || [ "$(printf '%s' "$commands_json" | jq 'length')" -gt 0 ]; }; then
+    build_note "TODO restoration requires high-confidence agent approval without commands; no commit pushed" ""
+    return
+  fi
+
   case "$confidence" in
     high|medium) ;;
     *)
@@ -488,8 +498,18 @@ apply_patch_and_retest() {
     return
   fi
 
+  if [ "$todo_mode" = "true" ] && ! bash "$todo_validator" check-patch "$repair_dir/todo-candidates.json" "$repair_dir/repair.patch"; then
+    build_note "TODO patch touches disallowed paths; no patch applied" ""
+    return
+  fi
+
   if ! git apply --recount --index --whitespace=nowarn "$repair_dir/repair.patch"; then
     build_note "patch could not be applied; no commit pushed" "- \`repair/git-apply-check.log\`"
+    return
+  fi
+
+  if [ "$todo_mode" = "true" ] && ! bash "$todo_validator" validate "$repair_dir/todo-candidates.json" >"$repair_dir/todo-validation.log" 2>&1; then
+    build_note "TODO patch exceeds allowed restoration or affected configuration build failed; no commit pushed" "- \`repair/todo-validation.log\`"
     return
   fi
 
@@ -536,8 +556,15 @@ failed_jobs_json="$(fetch_failed_jobs_json)"
 printf '%s\n' "$failed_jobs_json" > "$repair_dir/failed-jobs.json"
 
 if [ "$(printf '%s' "$failed_jobs_json" | jq 'length')" -eq 0 ]; then
-  # Green pipeline: nothing to report; never touch the existing repair note.
-  exit 0
+  todo_candidates_json="$(bash "$script_dir/ci-repair-todos.sh" collect 2>"$repair_dir/todo-checks.log")"
+  printf '%s\n' "$todo_candidates_json" > "$repair_dir/todo-candidates.json"
+  if [ "$(printf '%s' "$todo_candidates_json" | jq 'length')" -eq 0 ]; then
+    exit 0
+  fi
+  todo_mode=true
+  todo_validator="$(mktemp)"
+  cp "$script_dir/ci-repair-todos.sh" "$todo_validator"
+  trap 'rm -f -- "$todo_validator"' EXIT
 fi
 
 if [ -n "$repair_note_body" ]; then
