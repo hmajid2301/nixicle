@@ -87,6 +87,11 @@
           };
         };
 
+        hardware.graphics = {
+          enable = true;
+          extraPackages = [ pkgs.intel-media-driver ];
+        };
+
         virtualisation.docker = {
           enable = true;
           enableOnBoot = true;
