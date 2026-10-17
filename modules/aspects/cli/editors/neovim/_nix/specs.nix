@@ -100,7 +100,10 @@
           neogit
           git-worktree-nvim
           config.nvim-lib.neovimPlugins.webify-nvim
+          config.nvim-lib.neovimPlugins.wt-nvim
+          config.nvim-lib.neovimPlugins.herdr-review-nvim
         ];
+        postpkgs = with pkgs; [ worktrunk ];
       };
 
       debug = {

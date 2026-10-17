@@ -236,6 +236,14 @@ return {
 		end,
 	},
 	{
+		"herdr-review-nvim",
+		for_cat = "git",
+		cmd = { "ReviewDiff" },
+		after = function()
+			require("herdr-review").setup()
+		end,
+	},
+	{
 		"neogit",
 		for_cat = "git",
 		event = "DeferredUIEnter",
@@ -276,6 +284,31 @@ return {
 					vim.cmd("e .")
 				end)
 			end
+		end,
+	},
+	{
+		"wt-nvim",
+		for_cat = "git",
+		cmd = { "Worktrunk" },
+		keys = {
+			{ "<leader>ww", mode = { "n" }, desc = "Worktrunk switch" },
+			{ "<leader>wc", mode = { "n" }, desc = "Worktrunk create" },
+			{ "<leader>wd", mode = { "n" }, desc = "Worktrunk remove" },
+		},
+		after = function(plugin)
+			require("worktrunk").setup()
+
+			vim.keymap.set("n", "<leader>ww", function()
+				require("worktrunk").list()
+			end, { desc = "Worktrunk switch" })
+
+			vim.keymap.set("n", "<leader>wc", function()
+				require("worktrunk").create()
+			end, { desc = "Worktrunk create" })
+
+			vim.keymap.set("n", "<leader>wd", function()
+				require("worktrunk").remove()
+			end, { desc = "Worktrunk remove" })
 		end,
 	},
 }
