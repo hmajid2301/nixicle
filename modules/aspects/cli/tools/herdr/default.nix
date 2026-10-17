@@ -41,6 +41,59 @@
           done
         '';
 
+        herdrTabStep = pkgs.writeShellApplication {
+          name = "herdr-tab-step";
+          runtimeInputs = [ pkgs.jq ];
+          text = ''
+            herdr="''${HERDR_BIN_PATH:-herdr}"
+            case "''${1:-}" in
+              next) step=1 ;;
+              prev) step=-1 ;;
+              *) echo "usage: herdr-tab-step <next|prev>" >&2; exit 2 ;;
+            esac
+            ws=$("$herdr" pane current --current | jq -r '.result.pane.workspace_id')
+            target=$("$herdr" tab list --workspace "$ws" | jq -r --argjson step "$step" '
+              .result.tabs as $t
+              | ($t | map(.focused) | index(true)) as $i
+              | $t[($i + $step) % ($t | length)].tab_id
+            ')
+            exec "$herdr" tab focus "$target"
+          '';
+        };
+
+        herdrNavOrTab = pkgs.writeShellApplication {
+          name = "herdr-nav-or-tab";
+          runtimeInputs = [
+            pkgs.jq
+            pkgs.gnugrep
+            pkgs.gnused
+            herdrTabStep
+          ];
+          text = ''
+            dir="$1"
+            herdr="''${HERDR_BIN_PATH:-herdr}"
+            case "$dir" in
+              left) step=prev ;;
+              right) step=next ;;
+            esac
+            if [ -n "''${step:-}" ] \
+              && "$herdr" pane edges --current \
+                | jq -e --arg d "$dir" '.result.edges[$d] and (.result.edges.layout.zoomed | not)' >/dev/null \
+              && ! "$herdr" pane process-info --current \
+                | grep -qiE '"name"[[:space:]]*:[[:space:]]*"(g?(view|l?n?vim?x?)(diff)?)"'; then
+              exec herdr-tab-step "$step"
+            fi
+            exec ${lib.getExe pkgs.bash} ${inputs.plugins-herdr-splits}/scripts/herdr-nav.sh "$dir"
+          '';
+        };
+
+        navKey = key: dir: {
+          inherit key;
+          type = "shell";
+          command = "${lib.getExe herdrNavOrTab} ${dir}";
+          description = "Navigate ${dir} (tab at edge)";
+        };
+
         # SSH host aliases whose agent transcripts should be mirrored locally.
 
         pluginPackages = [
@@ -103,12 +156,7 @@
                   command = "herdr-float.toggle";
                   description = "Toggle floating shell";
                 }
-                {
-                  key = "alt+h";
-                  type = "plugin_action";
-                  command = "herdr-splits.nav-left";
-                  description = "Navigate left";
-                }
+                (navKey "alt+h" "left")
                 {
                   key = "alt+j";
                   type = "plugin_action";
@@ -121,12 +169,7 @@
                   command = "herdr-splits.nav-up";
                   description = "Navigate up";
                 }
-                {
-                  key = "alt+l";
-                  type = "plugin_action";
-                  command = "herdr-splits.nav-right";
-                  description = "Navigate right";
-                }
+                (navKey "alt+l" "right")
                 {
                   key = "ctrl+alt+h";
                   type = "plugin_action";
@@ -227,6 +270,7 @@
 
         home = {
           packages = [
+            herdrTabStep
             pkgs.tmux
             pkgs.nodejs
           ];
