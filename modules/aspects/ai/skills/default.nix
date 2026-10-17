@@ -155,11 +155,6 @@ _: {
                 path = "atomic-committer";
               };
 
-              context-reset-handoff = {
-                from = "nixicle";
-                path = "context-reset-handoff";
-              };
-
               session-summary = {
                 from = "nixicle";
                 path = "session-summary";
