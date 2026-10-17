@@ -108,14 +108,15 @@ lint:
     - mkdir -p build-logs
     - test -n "$ATTIC_AUTH_KEY"
     - attic login --set-default ci https://attic.haseebmajid.dev "$ATTIC_AUTH_KEY"
-    - echo "Building ${NIXOS_CONFIG} with nix-fast-build and auto-pushing to Attic..."
+    - echo "Building ${NIXOS_CONFIG}, then pushing its closure to Attic..."
     - |
-      nix run github:Mic92/nix-fast-build -- \
-        --flake ".#nixosConfigurations.${NIXOS_CONFIG}.config.system.build.toplevel" \
-        --stream-json-lines --skip-cached --no-nom --max-jobs 2 \
-        --attic-cache main --attic-push-build-closure \
+      set -euo pipefail
+      nix build ".#nixosConfigurations.${NIXOS_CONFIG}.config.system.build.toplevel" \
+        --out-link "build-result-${NIXOS_CONFIG}" --max-jobs 2 -L \
         2>&1 | tee "build-logs/${NIXOS_CONFIG}.log"
-      exit ${PIPESTATUS[0]}
+    - |
+      attic push main --jobs 1 "$(readlink -f "build-result-${NIXOS_CONFIG}")" \
+        2>&1 | tee -a "build-logs/${NIXOS_CONFIG}.log"
   artifacts:
     when: always
     expire_in: 1 week
@@ -136,7 +137,7 @@ check:nixos-evaluations:
   extends: .base_setup
   stage: build
   timeout: 2h
-  tags: [powerful]
+  resource_group: nix-builds
   rules:
     - if: $CI_PIPELINE_SOURCE == "schedule"
     - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
