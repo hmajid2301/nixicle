@@ -33,6 +33,8 @@
           defaultSecretsMountPoint = lib.mkForce "/run/user/1003/secrets.d";
         };
 
+        manual.manpages.enable = false;
+
         xdg = {
           configFile."nix/nix.conf".text =
             let
