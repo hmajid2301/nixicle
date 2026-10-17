@@ -28,6 +28,7 @@ in
       Wants = [ "graphical-session.target" ];
       After = [ "graphical-session.target" ];
       PartOf = [ "graphical-session.target" ];
+      X-SwitchMethod = "keep-old";
     };
 
     Service = {
