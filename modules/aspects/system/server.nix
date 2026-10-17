@@ -12,18 +12,21 @@ _: {
         };
         nix.optimise.automatic = lib.mkDefault true;
 
-        systemd.services.nix-prune-generations = {
-          description = "Prune old system generations, keeping the most recent";
-          serviceConfig = {
-            Type = "oneshot";
-            ExecStart = "${pkgs.nix}/bin/nix-env -p /nix/var/nix/profiles/system --delete-generations +10";
+        systemd = {
+          services.tailscaled.restartIfChanged = false;
+          services.nix-prune-generations = {
+            description = "Prune old system generations, keeping the most recent";
+            serviceConfig = {
+              Type = "oneshot";
+              ExecStart = "${pkgs.nix}/bin/nix-env -p /nix/var/nix/profiles/system --delete-generations +10";
+            };
           };
-        };
-        systemd.timers.nix-prune-generations = {
-          wantedBy = [ "timers.target" ];
-          timerConfig = {
-            OnCalendar = lib.mkDefault "*-*-* 23:30:00";
-            Persistent = true;
+          timers.nix-prune-generations = {
+            wantedBy = [ "timers.target" ];
+            timerConfig = {
+              OnCalendar = lib.mkDefault "*-*-* 23:30:00";
+              Persistent = true;
+            };
           };
         };
       };
