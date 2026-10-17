@@ -114,7 +114,8 @@
                   ${pkgs.pulseaudio}/bin/pactl set-default-sink "$SOURCE1"
               fi
             '')
-            semgrep
+            # TODO(nixpkgs): pr=569851 input=nixpkgs package=semgrep target=homeConfigurations."haseebmajid@dell".activationPackage
+            # semgrep
             pre-commit
             bun
             awscli2

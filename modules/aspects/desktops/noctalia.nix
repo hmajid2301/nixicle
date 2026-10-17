@@ -1,9 +1,6 @@
 { inputs, ... }: {
   flake-file.inputs = {
-    noctalia = {
-      url = "github:noctalia-dev/noctalia";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    noctalia.url = "github:noctalia-dev/noctalia/cachix";
     noctalia-greeter = {
       url = "github:noctalia-dev/noctalia-greeter";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -31,6 +28,13 @@
       {
         imports = [ inputs.noctalia-greeter.nixosModules.default ];
 
+        nix.settings = {
+          extra-substituters = [ "https://noctalia.cachix.org" ];
+          extra-trusted-public-keys = [
+            "noctalia.cachix.org-1:pCOR47nnMEo5thcxNDtzWpOxNFQsBRglJzxWPp3dkU4="
+          ];
+        };
+
         nixicle.desktop.greeter = {
           enable = lib.mkDefault (!host.autologin);
           command = lib.mkDefault "${config.services.displayManager.noctalia-greeter.package}/bin/noctalia-greeter-session";
@@ -44,10 +48,19 @@
       };
 
     homeManager = { inputs, ... }: {
+      disabledModules = [ "programs/noctalia" ];
+
       imports = [
         inputs.noctalia.homeModules.default
         ./noctalia/_home.nix
       ];
+
+      nix.settings = {
+        extra-substituters = [ "https://noctalia.cachix.org" ];
+        extra-trusted-public-keys = [
+          "noctalia.cachix.org-1:pCOR47nnMEo5thcxNDtzWpOxNFQsBRglJzxWPp3dkU4="
+        ];
+      };
     };
   };
 }

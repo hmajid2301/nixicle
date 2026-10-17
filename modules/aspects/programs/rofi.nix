@@ -12,11 +12,16 @@ _: {
         inherit (config.lib.formats.rasi) mkLiteral;
       in
       {
+        # TODO(stylix): pr=2501 input=stylix option=stylix.targets.rofi.fonts.enable target=homeConfigurations."haseebmajid@dell".activationPackage
+        # Remove this and programs.rofi.settings.font once nix-community/stylix#2501 is merged and locked.
+        stylix.targets.rofi.fonts.enable = false;
+
         programs.rofi = {
           enable = true;
           package = pkgs.rofi;
-          terminal = "${pkgs.foot}/bin/foot";
-          extraConfig = {
+          settings = {
+            font = "${config.stylix.fonts.monospace.name} ${toString config.stylix.fonts.sizes.popups}";
+            terminal = "${pkgs.foot}/bin/foot";
             modi = "run,drun,window";
             show-icons = true;
             drun-display-format = "{icon} {name}";

@@ -113,7 +113,9 @@ in
                   X-RestartIfChanged = false;
                 };
                 Service = {
-                  ExecStart = "${inputs.herdr.packages.${pkgs.stdenv.hostPlatform.system}.default}/bin/herdr server";
+                  ExecStart = "${
+                    inputs.herdr-nix.packages.${pkgs.stdenv.hostPlatform.system}.default
+                  }/bin/herdr server";
                   Restart = "on-failure";
                   RestartSec = 5;
                   UMask = "0077";

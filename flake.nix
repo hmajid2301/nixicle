@@ -32,10 +32,6 @@
       url = "github:hercules-ci/flake-parts";
       inputs.nixpkgs-lib.follows = "nixpkgs";
     };
-    flowfin-sso = {
-      url = "github:K0lin/jellyfin-plugin-sso/manifest-release";
-      flake = false;
-    };
     git-hooks-nix = {
       url = "github:cachix/git-hooks.nix";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -60,15 +56,12 @@
       url = "gitlab:hmajid2301/gsesh";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    herdr = {
-      url = "github:herdrdev/herdr/v0.9.1";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        rust-overlay.follows = "rust-overlay";
-      };
+    herdr-nix = {
+      url = "github:herdrdev/herdr-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
     herdr-skills = {
-      url = "github:herdrdev/herdr/v0.9.1";
+      url = "github:herdrdev/herdr/v0.9.3";
       flake = false;
     };
     home-manager = {
@@ -81,6 +74,10 @@
     };
     impermanence.url = "github:nix-community/impermanence";
     import-tree.url = "github:vic/import-tree";
+    jellyfin-sso = {
+      url = "github:K0lin/jellyfin-plugin-sso/manifest-release";
+      flake = false;
+    };
     lanzaboote.url = "github:nix-community/lanzaboote";
     lettucego = {
       url = "gitlab:hmajid2301/lettucego";
@@ -116,7 +113,10 @@
       url = "github:kiriwalawren/nixflix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    nixgl.url = "github:nix-community/nixGL";
+    nixgl = {
+      url = "github:nix-community/nixGL";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     nixos-anywhere = {
       url = "github:numtide/nixos-anywhere";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -125,10 +125,7 @@
     nixos-hardware.url = "github:nixos/nixos-hardware";
     nixos-raspberrypi.url = "github:nvmd/nixos-raspberrypi/main";
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-    noctalia = {
-      url = "github:noctalia-dev/noctalia";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    noctalia.url = "github:noctalia-dev/noctalia/cachix";
     noctalia-community-plugins = {
       url = "github:noctalia-dev/community-plugins";
       flake = false;
@@ -145,6 +142,10 @@
     oxy2dev-nvim-scripts = {
       url = "github:OXY2DEV/nvim";
       flake = false;
+    };
+    pam-shim = {
+      url = "github:Cu3PO42/pam_shim";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
     pauldambra-dotfiles = {
       url = "github:pauldambra/dotfiles";
@@ -172,6 +173,10 @@
     };
     plugins-herdr-resurrect = {
       url = "github:cantona/herdr-resurrect";
+      flake = false;
+    };
+    plugins-herdr-review-nvim = {
+      url = "github:inferst/herdr-review.nvim";
       flake = false;
     };
     plugins-herdr-splits = {
@@ -222,13 +227,17 @@
       url = "github:pabloariasal/webify.nvim";
       flake = false;
     };
+    plugins-wt-nvim = {
+      url = "github:emeren/wt.nvim";
+      flake = false;
+    };
     ponytail = {
       url = "github:DietrichGebert/ponytail";
       flake = false;
     };
-    rust-overlay = {
-      url = "github:oxalica/rust-overlay";
-      inputs.nixpkgs.follows = "nixpkgs";
+    slidev-skills = {
+      url = "github:yoanbernabeu/slidev-skills";
+      flake = false;
     };
     sops-nix = {
       url = "github:mic92/sops-nix";

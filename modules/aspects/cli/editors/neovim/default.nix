@@ -51,6 +51,14 @@
       url = "github:y3owk1n/warp.nvim";
       flake = false;
     };
+    plugins-herdr-review-nvim = {
+      url = "github:inferst/herdr-review.nvim";
+      flake = false;
+    };
+    plugins-wt-nvim = {
+      url = "github:emeren/wt.nvim";
+      flake = false;
+    };
     plugins-pi-nvim = {
       url = "github:carderne/pi-nvim";
       flake = false;
