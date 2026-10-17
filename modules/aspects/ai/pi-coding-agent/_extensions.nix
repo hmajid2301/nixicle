@@ -43,4 +43,8 @@ _: [
     rel = "tokens.ts";
     src = extensions/tokens.ts;
   }
+  {
+    rel = "session-name.ts";
+    src = extensions/session-name.ts;
+  }
 ]
