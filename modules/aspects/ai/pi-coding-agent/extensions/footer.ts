@@ -1,39 +1,110 @@
 /**
  * Footer Extension
  *
- * Replaces pi's built-in footer with a lualine-inspired status bar.
+ * Replaces pi's built-in footer with a Catppuccin Mocha status bar.
  *
- * Left:   [████░░░░░░] 35% ↑23k ↓8k $0.12
- * Center: ● working #7 12m
- * Right:  openai-codex/gpt-5.4 │ ● high [8t] │ PLAN
+ * Left: rounded branch, session, and activity tabs.
+ * Right: context usage, tokens, cost, model, and thinking level.
  */
 
-import type { AssistantMessage } from "@mariozechner/pi-ai";
-import type { ExtensionAPI, ExtensionContext } from "@mariozechner/pi-coding-agent";
+import type { AssistantMessage } from "@earendil-works/pi-ai";
+import type { ExtensionAPI, ExtensionContext } from "@earendil-works/pi-coding-agent";
 import { truncateToWidth, visibleWidth } from "@mariozechner/pi-tui";
+
+const mocha = {
+	mauve: "203;166;247",
+	lavender: "180;190;254",
+	green: "166;227;161",
+	yellow: "249;226;175",
+	peach: "250;179;135",
+	red: "243;139;168",
+	sky: "137;220;235",
+	text: "205;214;244",
+	overlay: "88;91;112",
+	surface: "49;50;68",
+	crust: "17;17;27",
+};
+
+export interface FooterStats {
+	branch?: string | null;
+	sessionName?: string;
+	modelId: string;
+	thinkingLevel?: string;
+	used: number | null;
+	total: number;
+	input: number;
+	output: number;
+	cost: number;
+	working: boolean;
+	turnCount: number;
+	elapsed: string;
+}
+
+function fg(color: keyof typeof mocha, text: string): string {
+	return `\x1b[38;2;${mocha[color]}m${text}\x1b[0m`;
+}
+
+function clean(text: string): string {
+	return text.replace(/[\x00-\x1f\x7f-\x9f]/g, " ").replace(/\s+/g, " ").trim();
+}
+
+function tab(color: keyof typeof mocha, icon: string, text: string, maxWidth: number): string {
+	return fg(color, "")
+		+ `\x1b[48;2;${mocha[color]}m\x1b[38;2;${mocha.crust}m\x1b[1m ${icon} \x1b[0m`
+		+ `\x1b[48;2;${mocha.surface}m\x1b[38;2;${mocha.text}m ${truncateToWidth(clean(text), maxWidth)} \x1b[0m`
+		+ fg("surface", "");
+}
+
+function fmt(n: number): string {
+	if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1)}m`;
+	if (n >= 1_000) return `${(n / 1_000).toFixed(1)}k`;
+	return `${n}`;
+}
+
+export function renderFooterLine(data: FooterStats, width: number): string {
+	if (width <= 0) return "";
+	const pct = data.used === null ? null : Math.max(0, Math.min(100, data.total > 0 ? data.used / data.total * 100 : 0));
+	const color = pct === null ? "sky" : pct >= 90 ? "red" : pct >= 70 ? "peach" : pct >= 40 ? "yellow" : "green";
+	const filled = pct === null ? 0 : Math.floor(pct / 10);
+	const bar = fg(color, "▓".repeat(filled)) + fg("overlay", "░".repeat(10 - filled));
+	const percent = pct === null ? "--" : `${Math.round(pct)}%`;
+	const context = `${fg(color, "")} ${bar} ${fg(color, `${data.used === null ? "--" : fmt(data.used)}/${fmt(data.total)} ${percent}`)}`;
+	const tokens = fg("overlay", `↑${fmt(data.input)} ↓${fmt(data.output)} $${data.cost.toFixed(3)}`);
+	const thinking = data.thinkingLevel && data.thinkingLevel !== "off" ? ` · ${clean(data.thinkingLevel)}` : "";
+	const model = fg("mauve", `󰚩 ${clean(data.modelId)}${thinking}`);
+	const branch = data.branch ? tab("lavender", "", data.branch, 24) : "";
+	const session = data.sessionName ? tab("mauve", "", data.sessionName, 32) : "";
+	const state = tab(data.working ? "peach" : "green", data.working ? "●" : "○", `${data.working ? "working" : "idle"} #${data.turnCount} ${data.elapsed}`, 28);
+	const separator = fg("overlay", " │ ");
+	const left = (...parts: string[]) => parts.filter(Boolean).join(" ");
+	const right = (...parts: string[]) => parts.filter(Boolean).join(separator);
+	const candidates = [
+		[left(branch, session, state), right(context, tokens, model)],
+		[left(branch, session), right(context, tokens, model)],
+		[session, right(context, tokens, model)],
+		[session, right(context, model)],
+		["", right(context, model)],
+		["", right(fg(color, ` ${percent}`), model)],
+	];
+	for (const [lhs, rhs] of candidates) {
+		const length = visibleWidth(lhs) + visibleWidth(rhs);
+		if (length + (lhs ? 1 : 0) <= width) {
+			return lhs + " ".repeat(width - length) + rhs;
+		}
+	}
+	return truncateToWidth(right(fg(color, percent), model), width);
+}
 
 export default function statusline(pi: ExtensionAPI) {
 	let enabled = false;
 	let turnCount = 0;
 	let agentState: "idle" | "working" = "idle";
-	let errorCount = 0;
 	let sessionStart = Date.now();
 	let ctxUpdateTimer: ReturnType<typeof setInterval> | null = null;
-	let tuiRef: any = null;
+	let tuiRef: { requestRender(): void } | null = null;
 
-	function contextBar(theme: any, used: number, total: number): string {
-		const pct = total > 0 ? used / total : 0;
-		const w = 10;
-		const filled = Math.max(0, Math.min(w, Math.round(pct * w)));
-		const bar = "█".repeat(filled) + "░".repeat(w - filled);
-		const color = pct > 0.85 ? "error" : pct > 0.6 ? "warning" : "success";
-		return theme.fg(color, `[${bar}] ${Math.round(pct * 100)}%`);
-	}
-
-	function fmt(n: number): string {
-		if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1)}m`;
-		if (n >= 1_000) return `${(n / 1_000).toFixed(1)}k`;
-		return `${n}`;
+	function stopTimer() {
+		if (ctxUpdateTimer) { clearInterval(ctxUpdateTimer); ctxUpdateTimer = null; }
 	}
 
 	function getTokenStats(ctx: ExtensionContext) {
@@ -51,143 +122,66 @@ export default function statusline(pi: ExtensionAPI) {
 		return { input, output, cost };
 	}
 
-	function sessionTime(theme: any): string {
+	function sessionTime(): string {
 		const s = Math.floor((Date.now() - sessionStart) / 1000);
-		if (s === 0) return theme.fg("dim", "–");
 		const h = Math.floor(s / 3600);
 		const m = Math.floor((s % 3600) / 60);
-		if (h > 0) return theme.fg("dim", `${h}h${m}m`);
-		if (m > 0) return theme.fg("dim", `${m}m`);
-		return theme.fg("dim", `${s}s`);
+		if (h > 0) return `${h}h${m}m`;
+		if (m > 0) return `${m}m`;
+		return `${s}s`;
 	}
-
-	function thinkingBadge(theme: any): string {
-		const level = pi.getThinkingLevel();
-		if (!level || level === "off") return "";
-		const icons: Record<string, string> = {
-			minimal: "·", low: "··", medium: "···", high: "●", xhigh: "●●",
-		};
-		return theme.fg("warning", `${icons[level] || "·"} ${level}`);
-	}
-
-	function contextLimit(theme: any, total: number): string {
-		if (!total) return "";
-		return theme.fg("dim", `lim:${fmt(total)}`);
-	}
-
-	function buildRightFooterParts(
-		{
-			modelId,
-			sessionName,
-			thinkingBadge,
-		}: {
-			modelId: string;
-			sessionName?: string;
-			thinkingBadge?: string;
-		},
-	): string[] {
-		return [modelId, sessionName, thinkingBadge].filter(
-			(part): part is string => Boolean(part),
-		);
-	}
-
-	function sep(theme: any): string {
-		return theme.fg("dim", " │ ");
-	}
-
 
 	pi.on("turn_start", async () => {
 		turnCount++;
 		agentState = "working";
 		if (!ctxUpdateTimer) {
-			ctxUpdateTimer = setInterval(() => {
-				if (tuiRef) try { tuiRef.requestRender(); } catch {}
-			}, 5000);
-			if (ctxUpdateTimer.unref) ctxUpdateTimer.unref();
+			ctxUpdateTimer = setInterval(() => tuiRef?.requestRender(), 5000);
+			ctxUpdateTimer.unref();
 		}
 	});
 
 	pi.on("turn_end", async () => {
 		agentState = "idle";
-		if (ctxUpdateTimer) { clearInterval(ctxUpdateTimer); ctxUpdateTimer = null; }
+		stopTimer();
 	});
-
-	pi.on("tool_execution_end", async (event: { isError?: boolean }) => {
-		if (event.isError) errorCount++;
-	});
+	pi.on("session_shutdown", stopTimer);
 
 	function buildFooter(ctx: ExtensionContext) {
-		return (tui: any, theme: any, _footerData: any) => {
+		let currentCtx = ctx;
+		return (tui: any, _theme: any, footerData: any) => {
+			const refresh = (_event: unknown, nextCtx: ExtensionContext) => {
+				currentCtx = nextCtx;
+				tui.requestRender();
+			};
 			const unsub = [
-				pi.on("turn_start", () => tui.requestRender()),
-				pi.on("turn_end", () => tui.requestRender()),
-				pi.on("model_select", () => tui.requestRender()),
-				pi.on("tool_execution_end", () => tui.requestRender()),
+				pi.on("turn_start", refresh),
+				pi.on("turn_end", refresh),
+				pi.on("model_select", refresh),
+				pi.on("session_info_changed", refresh),
+				footerData.onBranchChange(() => tui.requestRender()),
 			];
 			tuiRef = tui;
 
 			return {
 				dispose() {
-					unsub.forEach((fn: unknown) => { if (typeof fn === "function") fn(); });
+					unsub.forEach((fn) => fn());
 					tuiRef = null;
 				},
 				invalidate() {},
 				render(width: number): string[] {
-					const usage = ctx.getContextUsage();
-					const used = usage?.tokens || 0;
-					const total = usage?.maxTokens || ctx.model?.contextWindow || 128000;
-					const { input, output, cost } = getTokenStats(ctx);
-
-					const bar = contextBar(theme, used, total);
-					const lim = contextLimit(theme, total);
-					const tokens = theme.fg("dim", `↑${fmt(input)} ↓${fmt(output)}`);
-					const costStr = theme.fg("dim", `$${cost.toFixed(3)}`);
-					const left = `${bar}${lim ? " " + lim : ""} ${tokens} ${costStr}`;
-
-					const stateIcon = agentState === "working"
-						? theme.fg("accent", "●")
-						: theme.fg("dim", "○");
-					const stateLabel = agentState === "working"
-						? theme.fg("accent", "working")
-						: theme.fg("dim", "idle");
-					const center = `${stateIcon} ${stateLabel} #${turnCount} ${sessionTime(theme)}`;
-
-					const modelId = ctx.model?.id || "no-model";
-					const sessionName = pi.getSessionName();
-					const rightParts = buildRightFooterParts({
-						modelId: theme.fg("accent", modelId),
-						sessionName: sessionName ? theme.fg("muted", sessionName) : undefined,
-						thinkingBadge: thinkingBadge(theme),
-					});
-					const right = rightParts.join(sep(theme).trimEnd() + " ");
-
-					const s = sep(theme);
-					const raw = `${left}${s}${center}${s}${right}`;
-					if (visibleWidth(raw) <= width) {
-						return [raw + " ".repeat(width - visibleWidth(raw))];
-					}
-
-					const noCenter = `${left}${s}${right}`;
-					if (visibleWidth(noCenter) <= width) {
-						return [noCenter + " ".repeat(width - visibleWidth(noCenter))];
-					}
-
-					const slimRight = [
-						theme.fg("accent", modelId),
-						contextLimit(theme, total),
-						sessionName ? theme.fg("muted", sessionName) : "",
-					].filter(Boolean).join(" ");
-					const slim = `${left}${s}${slimRight}`;
-					if (visibleWidth(slim) <= width) {
-						return [slim + " ".repeat(width - visibleWidth(slim))];
-					}
-
-					const minimal = `${bar} ${theme.fg("accent", modelId)}${sessionName ? ` ${theme.fg("muted", sessionName)}` : ""}`;
-					if (visibleWidth(minimal) <= width) {
-						return [minimal + " ".repeat(width - visibleWidth(minimal))];
-					}
-
-					return [truncateToWidth(bar, width)];
+					const usage = currentCtx.getContextUsage();
+					return [renderFooterLine({
+						...getTokenStats(currentCtx),
+						used: usage?.tokens ?? null,
+						total: usage?.contextWindow ?? currentCtx.model?.contextWindow ?? 128000,
+						branch: footerData.getGitBranch(),
+						sessionName: pi.getSessionName(),
+						modelId: currentCtx.model?.id || "no-model",
+						thinkingLevel: pi.getThinkingLevel(),
+						working: agentState === "working",
+						turnCount,
+						elapsed: sessionTime(),
+					}, width)];
 				},
 			};
 		};
@@ -207,13 +201,12 @@ export default function statusline(pi: ExtensionAPI) {
 		},
 	});
 
-	pi.on("session_start", async (_event: any, ctx: ExtensionContext) => {
+	pi.on("session_start", async (_event, ctx) => {
 		turnCount = 0;
-		errorCount = 0;
 		agentState = "idle";
 		sessionStart = Date.now();
-		if (ctxUpdateTimer) { clearInterval(ctxUpdateTimer); ctxUpdateTimer = null; }
-
+		stopTimer();
+		if (!ctx.hasUI) return;
 		enabled = true;
 		ctx.ui.setFooter(buildFooter(ctx));
 	});
