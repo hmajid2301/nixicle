@@ -58,6 +58,7 @@
           extraGroups = [
             "wheel"
             "media"
+            "docker"
           ];
           uid = 1000;
           mediaGid = 3000;
@@ -146,6 +147,8 @@
           vim
           zfs
         ];
+
+        users.users.haseeb.extraGroups = [ "docker" ];
 
         home-manager.users.haseeb.home.stateVersion = "26.05";
         system.stateVersion = "26.05";
