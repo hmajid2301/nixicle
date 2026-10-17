@@ -19,7 +19,7 @@
         # nixpkgs' nix on the activation PATH warns "unknown setting" on both.
         # `nix.package = null` matches determinate's own homeManagerModules,
         # but it stops HM writing nix.conf, so render it from the settings the
-        # aspects (attic-client, neovim) still define.
+        # aspects (attic-client, neovim, noctalia) still define.
         # HM asserts a package whenever nix.settings is non-empty, so clear it
         # and write the same values ourselves.
         nix = {
@@ -35,11 +35,13 @@
                 "https://nix-community.cachix.org"
                 "https://attic.${lib.nixicle.domains.root}/main"
                 "https://catppuccin.cachix.org"
+                "https://noctalia.cachix.org"
               ];
               keys = [
                 "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
                 atticKey
                 "catppuccin.cachix.org-1:noG/4HkbhJb+lUAdKrph6LaozJvAeEEZj4N732IysmU="
+                "noctalia.cachix.org-1:pCOR47nnMEo5thcxNDtzWpOxNFQsBRglJzxWPp3dkU4="
               ];
             in
             ''
