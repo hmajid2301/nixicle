@@ -189,6 +189,29 @@
               ];
             };
 
+        systemd.user.services = {
+          attic-watch-store.Install.WantedBy = lib.mkForce [ ];
+
+          nirinit.Unit.After = [ "app-com.mitchellh.ghostty.service" ];
+
+          # Ubuntu's unit Wants=graphical-session.target, starting it before niri
+          # and stalling GTK apps on a portal with no display.
+          twingate-desktop-notifier = {
+            Unit = {
+              Description = "Desktop notifications for Twingate Client";
+              After = [ "graphical-session.target" ];
+              PartOf = [ "graphical-session.target" ];
+            };
+            Service = {
+              Environment = "LOG_LEVEL=info";
+              Restart = "on-failure";
+              RestartSec = "3s";
+              ExecStart = "/usr/bin/twingate-notifier";
+            };
+            Install.WantedBy = [ "graphical-session.target" ];
+          };
+        };
+
         # v5 [lockscreen].lock_before_suspend handles logind sleep signals natively.
         # Noctalia's own idle service replaces the swayidle workaround.
 

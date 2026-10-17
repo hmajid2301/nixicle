@@ -1,5 +1,10 @@
-{ config, ... }:
+{ config, lib, ... }:
 {
+  wayland.windowManager.niri.settings.binds."Mod+Return".spawn = lib.mkForce [
+    "ghostty"
+    "+new-window"
+  ];
+
   xdg = {
     configFile = {
       "xdg-desktop-portal/niri-portals.conf".text = ''
@@ -11,11 +16,8 @@
         org.freedesktop.impl.portal.Secret=gnome-keyring;
       '';
 
-      "systemd/user/app-com.mitchellh.ghostty.service.d/initial-window.conf".text = ''
-        [Service]
-        ExecStart=
-        ExecStart=${config.programs.ghostty.package}/bin/ghostty --gtk-single-instance=true
-      '';
+      "systemd/user/graphical-session.target.wants/app-com.mitchellh.ghostty.service".source =
+        "${config.programs.ghostty.package}/share/systemd/user/app-com.mitchellh.ghostty.service";
 
       "environment.d/envvars.conf".text = ''
         PATH="$PATH:${config.home.homeDirectory}/.nix-profile/bin"
@@ -26,7 +28,6 @@
         MOZ_ENABLE_WAYLAND=1
         _JAVA_AWT_WM_NONREPARENTING=1
         MESA_LOADER_DRIVER_OVERRIDE=iris
-        intel_idle.max_cstate=1
       '';
     };
 
