@@ -141,6 +141,11 @@
           };
         };
 
+        systemd.tmpfiles.rules = [
+          "d /mnt/main/main-encrypted 0770 root media - -"
+          "d /mnt/main/main-encrypted/homelab 0770 root media - -"
+        ];
+
         environment.systemPackages = with pkgs; [
           docker-compose
           git
