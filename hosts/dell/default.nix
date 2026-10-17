@@ -59,7 +59,10 @@
               !include ${config.sops.secrets.nix_access_tokens.path}
             '';
 
+          configFile."mimeapps.list".force = true;
+
           mimeApps.defaultApplications = lib.mkForce {
+            "x-scheme-handler/claude-cli" = [ "claude-code-url-handler.desktop" ];
             "text/html" = [ "google-chrome.desktop" ];
             "x-scheme-handler/http" = [ "google-chrome.desktop" ];
             "x-scheme-handler/https" = [ "google-chrome.desktop" ];
