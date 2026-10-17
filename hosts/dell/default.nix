@@ -27,6 +27,12 @@
           settings = lib.mkForce { };
         };
 
+        sops = {
+          secrets.nix_access_tokens.sopsFile = lib.nixicle.secretsFile;
+          defaultSymlinkPath = lib.mkForce "/run/user/1003/secrets";
+          defaultSecretsMountPoint = lib.mkForce "/run/user/1003/secrets.d";
+        };
+
         xdg = {
           configFile."nix/nix.conf".text =
             let
@@ -48,6 +54,7 @@
               extra-substituters = ${lib.concatStringsSep " " substituters}
               extra-trusted-public-keys = ${lib.concatStringsSep " " keys}
               netrc-file = ${config.sops.secrets."netrc".path}
+              !include ${config.sops.secrets.nix_access_tokens.path}
             '';
 
           mimeApps.defaultApplications = lib.mkForce {
@@ -176,9 +183,6 @@
                 }
               ];
             };
-
-        sops.defaultSymlinkPath = lib.mkForce "/run/user/1003/secrets";
-        sops.defaultSecretsMountPoint = lib.mkForce "/run/user/1003/secrets.d";
 
         # v5 [lockscreen].lock_before_suspend handles logind sleep signals natively.
         # Noctalia's own idle service replaces the swayidle workaround.
