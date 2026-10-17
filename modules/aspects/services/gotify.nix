@@ -11,7 +11,12 @@ _: {
     ];
 
     nixos =
-      { config, lib, ... }:
+      {
+        config,
+        lib,
+        pkgs,
+        ...
+      }:
       let
         port = 8051;
         domain = config.nixicle.domains.root;
@@ -49,11 +54,27 @@ _: {
           };
         };
 
-        systemd.services.gotify-server.serviceConfig = {
-          DynamicUser = lib.mkForce false;
-          User = "gotify";
-          Group = "gotify";
-          EnvironmentFile = [ config.sops.secrets.gotify_env.path ];
+        systemd.services.gotify-server = {
+          after = [
+            "traefik.service"
+            "pocket-id.service"
+          ];
+          wants = [
+            "traefik.service"
+            "pocket-id.service"
+          ];
+          preStart = ''
+            ${lib.getExe pkgs.curl} --fail --silent --show-error \
+              --retry 60 --retry-all-errors --retry-delay 1 --retry-max-time 60 --max-time 5 \
+              ${lib.escapeShellArg "${config.services.gotify.environment.GOTIFY_OIDC_ISSUER}/.well-known/openid-configuration"} \
+              --output /dev/null
+          '';
+          serviceConfig = {
+            DynamicUser = lib.mkForce false;
+            User = "gotify";
+            Group = "gotify";
+            EnvironmentFile = [ config.sops.secrets.gotify_env.path ];
+          };
         };
 
         sops.secrets.gotify_env.owner = "gotify";
