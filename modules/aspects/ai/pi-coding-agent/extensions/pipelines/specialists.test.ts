@@ -1,19 +1,9 @@
 // extensions/pipelines/specialists.test.ts
-import { describe, expect, mock, test } from "bun:test";
+import { describe, expect, test } from "bun:test";
 import type { SpecialistDeps, SpecialistRun } from "./specialists.ts";
 import type { RunHandle } from "./types.ts";
 
-// specialists.ts builds tool schemas with pi-ai's Type at import time; stub it
-// so the module loads outside the Pi runtime.
-mock.module("@mariozechner/pi-ai", () => ({
-  Type: {
-    Object: (shape: unknown) => shape,
-    Optional: (schema: unknown) => schema,
-    String: (options: unknown) => options,
-  },
-}));
-
-const { registerSpecialistTools } = await import("./specialists.ts");
+import { registerSpecialistTools } from "./specialists.ts";
 
 function runHandle(id: string, name = "expert"): RunHandle {
   return {
