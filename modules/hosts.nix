@@ -139,6 +139,7 @@ in
                   enableFishIntegration = true;
                   shellWrapperName = "y";
                 };
+                superfile.enable = true;
                 zoxide = {
                   enable = true;
                   enableFishIntegration = true;
