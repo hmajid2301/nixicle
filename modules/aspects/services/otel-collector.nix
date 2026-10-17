@@ -97,6 +97,7 @@ _: {
           name = "otel-collector";
           port = 3333;
           subdomain = "otel";
+          middlewares = [ "tailnet-only" ];
         };
       };
   };
@@ -158,7 +159,16 @@ _: {
               groupbyattrs.keys = [ "service.name" ];
               batch = { };
             };
-            exporters."otlphttp/vps".endpoint = "https://otel.${config.nixicle.domains.homelab}";
+            exporters."otlphttp/vps" = {
+              endpoint = "https://otel.${config.nixicle.domains.homelab}";
+              compression = "gzip";
+              timeout = "30s";
+              sending_queue = {
+                enabled = true;
+                num_consumers = 4;
+                queue_size = 2000;
+              };
+            };
             service.pipelines."logs/vps" = {
               receivers = [ "journald" ];
               processors = [
