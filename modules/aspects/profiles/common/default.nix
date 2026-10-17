@@ -105,10 +105,14 @@ in
 
         sops.age.sshKeyPaths = [ "/persist/etc/ssh/ssh_host_ed25519_key" ];
 
-        # Token used by the nix daemon to authenticate against the private
-        # `main` attic cache (see netrc-file in nix.settings). The same secret
-        # is also consumed by the home-manager attic aspect for user-level nix.
-        sops.secrets.netrc.sopsFile = lib.nixicle.secretsFile;
+        sops.secrets = {
+          netrc.sopsFile = lib.nixicle.secretsFile;
+          nix_access_tokens = {
+            sopsFile = lib.nixicle.secretsFile;
+            group = "wheel";
+            mode = "0440";
+          };
+        };
 
         security.pam.services = {
           login.u2fAuth = true;
@@ -118,6 +122,9 @@ in
         nix = {
           channel.enable = false;
           nixPath = [ "nixpkgs=flake:nixpkgs" ];
+          extraOptions = ''
+            !include ${config.sops.secrets.nix_access_tokens.path}
+          '';
           settings = {
             trusted-users = [
               "@wheel"
