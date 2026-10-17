@@ -1,13 +1,8 @@
 { inputs, ... }:
 {
   flake-file.inputs = {
-    herdr = {
-      url = "github:herdrdev/herdr/v0.9.1";
-      inputs.nixpkgs.follows = "nixpkgs";
-      inputs.rust-overlay.follows = "rust-overlay";
-    };
-    rust-overlay = {
-      url = "github:oxalica/rust-overlay";
+    herdr-nix = {
+      url = "github:herdrdev/herdr-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     plugins-herdr-worktrunk = {
@@ -28,10 +23,8 @@
         ...
       }:
       let
-        # herdr-skills must stay pinned to the same version as herdrPackage.
         integrationAsset = agent: "${inputs.herdr-skills}/src/integration/assets/${agent}";
-
-        herdrPackage = inputs.herdr.packages.${pkgs.stdenv.hostPlatform.system}.default;
+        herdrPackage = inputs.herdr-nix.packages.${pkgs.stdenv.hostPlatform.system}.default;
         agent-session-sync = pkgs.callPackage ./plugins/agent-session-sync/_package.nix { };
 
         # The plugin's scripts shell out to the binary, so pin the store path

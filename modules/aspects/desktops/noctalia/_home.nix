@@ -32,6 +32,7 @@ in
 
     programs.noctalia = {
       enable = true;
+      package = pkgs.noctalia;
       settings = {
         shell = {
           font_family = config.stylix.fonts.sansSerif.name;

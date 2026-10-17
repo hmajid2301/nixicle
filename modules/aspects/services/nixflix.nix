@@ -5,7 +5,7 @@
     inputs.nixpkgs.follows = "nixpkgs";
   };
 
-  flake-file.inputs.flowfin-sso = {
+  flake-file.inputs.jellyfin-sso = {
     url = "github:K0lin/jellyfin-plugin-sso/manifest-release";
     flake = false;
   };
@@ -18,10 +18,10 @@
         ...
       }:
       let
-        flowfinManifest = "${inputs.flowfin-sso}/manifest.json";
-        flowfinRev = inputs.flowfin-sso.rev;
-        flowfinManifestHash = builtins.convertHash {
-          hash = builtins.hashFile "sha256" flowfinManifest;
+        ssoManifest = "${inputs.jellyfin-sso}/manifest.json";
+        ssoRev = inputs.jellyfin-sso.rev;
+        ssoManifestHash = builtins.convertHash {
+          hash = builtins.hashFile "sha256" ssoManifest;
           hashAlgo = "sha256";
           toHashFormat = "nix32";
         };
@@ -154,8 +154,8 @@
               };
               pluginRepositories = {
                 "SSO" = {
-                  url = "https://raw.githubusercontent.com/K0lin/jellyfin-plugin-sso/${flowfinRev}/manifest.json";
-                  hash = flowfinManifestHash;
+                  url = "https://raw.githubusercontent.com/K0lin/jellyfin-plugin-sso/${ssoRev}/manifest.json";
+                  hash = ssoManifestHash;
                 };
               };
             };
@@ -191,7 +191,7 @@
                 apiName = "SSO-Auth";
                 package = inputs.nixflix.lib.jellyfinPlugins.fromRepo {
                   version = "5.1.1";
-                  hash = "sha256-2xJrR2O9o6N1T6IQMjL8A+8b+SnP7aNfLprznIdSM7E=";
+                  hash = "sha256-QYzyg8pJvsLvmJbgOujhms7vY7BmLlqgcndxqNGyJcI=";
                   repository = "SSO";
                 };
                 config = {

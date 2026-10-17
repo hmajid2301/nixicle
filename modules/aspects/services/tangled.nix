@@ -22,9 +22,13 @@
         directory = "/home/git";
         user = "git";
         group = "git";
-        # Secure-mode git subprocesses run as per-owner virtual UIDs outside the
-        # git group; they need traverse on the home dir, but not list/read.
         mode = "0711";
+      }
+      {
+        directory = "/var/lib/knot";
+        user = "knot";
+        group = "knot";
+        mode = "0750";
       }
       {
         directory = "/var/lib/spindle";
@@ -44,25 +48,84 @@
       let
         system = pkgs.stdenv.hostPlatform.system;
         ownerDid = "did:plc:reouqbpvl2kbkhvok2pwhlzg";
+
+        # TODO: Send upstream fix for nix's musl static build to include
+        # <sys/syscall.h> for SYS_close_range, then drop this local workaround.
+        alpineImage = inputs.tangled.packages.${system}.spindle-alpine-image.override {
+          pkgsStatic = pkgs.pkgsStatic.extend (
+            _: prev:
+            let
+              components =
+                prev.nixVersions."nixComponents_${
+                  lib.replaceStrings [ "." ] [ "_" ] (lib.versions.majorMinor prev.nix.version)
+                }";
+            in
+            {
+              nixStatic =
+                (components.overrideScope (
+                  _: prevComponents: {
+                    "nix-util" = prevComponents."nix-util".overrideAttrs (old: {
+                      postPatch = (old.postPatch or "") + ''
+                        substituteInPlace unix/file-descriptor.cc \
+                          --replace-fail '#include <unistd.h>' '#include <unistd.h>
+                        #include <sys/syscall.h>'
+                      '';
+                    });
+                  }
+                )).nix-everything;
+            }
+          );
+        };
       in
       {
         imports = [
-          inputs.tangled.nixosModules.knot
+          inputs.tangled.nixosModules.knot-rs
           inputs.tangled.nixosModules.spindle
         ];
 
+        sops.secrets.knot_master_key = { };
+        sops.templates."knot-env".content = ''
+          KNOT_MASTER_KEY=${config.sops.placeholder.knot_master_key}
+        '';
+
+        users.users.git = {
+          isSystemUser = true;
+          group = "git";
+          home = "/home/git";
+        };
+        users.groups.git = { };
+
+        system.backup.objects.knot.paths = [ config.services.tangled.knot-rs.stateDir ];
+
+        systemd.services.knot-rs = {
+          unitConfig.RequiresMountsFor = [ config.services.tangled.knot-rs.stateDir ];
+          serviceConfig.ExecStartPre = lib.mkBefore [
+            "+${lib.getExe' pkgs.coreutils "install"} -d -m 0750 -o ${config.services.tangled.knot-rs.user} -g ${config.services.tangled.knot-rs.group} ${lib.escapeShellArg config.services.tangled.knot-rs.settings.repo.scan_path}"
+          ];
+        };
+
         services = {
           tangled = {
-            knot = {
+            knot-rs = {
               enable = true;
-              package = inputs.tangled.packages.${system}.knot;
-              openFirewall = false;
-              server = {
-                owner = ownerDid;
-                hostname = "knot.${config.nixicle.domains.root}";
-                listenAddr = "127.0.0.1:5555";
-                internalListenAddr = "127.0.0.1:5444";
-                secureMode = true;
+              package = inputs.tangled.packages.${system}.knot-rs;
+              environmentFile = config.sops.templates."knot-env".path;
+              settings = {
+                server = {
+                  hostname = "knot.${config.nixicle.domains.root}";
+                  admins = [ ownerDid ];
+                  listen_addr = "127.0.0.1:5555";
+                  ssh_listen_addr = "[::]:2222";
+                };
+                atproto.plc_directory = "https://plc.directory";
+                git.object_format = "sha1";
+                xrpc = {
+                  trusted_proxy_header = "x-forwarded-for";
+                  trusted_proxies = [
+                    "127.0.0.1"
+                    "::1"
+                  ];
+                };
               };
             };
 
@@ -122,13 +185,6 @@
               domain = config.nixicle.domains.root;
             })
           ];
-
-          # Avoid replacing hardening-vps' admin SSH allowlist and locking out nixos.
-          openssh.settings.AllowUsers = lib.mkAfter [ "git" ];
-          openssh.extraConfig = ''
-            Match User git
-                PermitTTY no
-          '';
         };
 
         # Spindle discovers microVM images by name under imageDir; mirror
@@ -139,22 +195,9 @@
             inputs.self.packages.${system}.tangled-spindle-nixos-image
           }"
           "L+ /var/lib/spindle/images/nixos - - - - /var/lib/spindle/images/nixos-x86_64"
-          "L+ /var/lib/spindle/images/alpine-x86_64 - - - - ${
-            inputs.tangled.packages.${system}.spindle-alpine-image
-          }"
+          "L+ /var/lib/spindle/images/alpine-x86_64 - - - - ${alpineImage}"
           "L+ /var/lib/spindle/images/alpine - - - - /var/lib/spindle/images/alpine-x86_64"
         ];
-
-        system.activationScripts.tangled-git-home-permissions = {
-          deps = [
-            "users"
-            "groups"
-          ];
-          text = ''
-            chown git:git /home/git
-            chmod 0711 /home/git
-          '';
-        };
       };
   };
 }

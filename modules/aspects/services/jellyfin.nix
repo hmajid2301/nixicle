@@ -5,11 +5,6 @@
     inputs.nixpkgs.follows = "nixpkgs";
   };
 
-  flake-file.inputs.flowfin-sso = {
-    url = "github:Flowfin/jellyfin-plugin-sso/manifest-beta";
-    flake = false;
-  };
-
   # Jellyfin-only aspect (no arr stack). Reuses the nixflix module but enables
   # only `nixflix.jellyfin`; every other service defaults to `false`.
   #
@@ -22,10 +17,10 @@
         ...
       }:
       let
-        flowfinManifest = "${inputs.flowfin-sso}/manifest.json";
-        flowfinRev = inputs.flowfin-sso.rev;
-        flowfinManifestHash = builtins.convertHash {
-          hash = builtins.hashFile "sha256" flowfinManifest;
+        ssoManifest = "${inputs.jellyfin-sso}/manifest.json";
+        ssoRev = inputs.jellyfin-sso.rev;
+        ssoManifestHash = builtins.convertHash {
+          hash = builtins.hashFile "sha256" ssoManifest;
           hashAlgo = "sha256";
           toHashFormat = "nix32";
         };
@@ -80,20 +75,19 @@
             };
 
             system.pluginRepositories = {
-              "Flowfin-SSO" = {
-                # TODO: switch to manifest-release once stable 12.0 ships
-                url = "https://raw.githubusercontent.com/Flowfin/jellyfin-plugin-sso/${flowfinRev}/manifest.json";
-                hash = flowfinManifestHash;
+              "SSO" = {
+                url = "https://raw.githubusercontent.com/K0lin/jellyfin-plugin-sso/${ssoRev}/manifest.json";
+                hash = ssoManifestHash;
               };
             };
 
-            plugins."Community SSO for Jellyfin" = {
+            plugins."SSO Authentication" = {
               enable = true;
-              apiName = "Community SSO for Jellyfin";
+              apiName = "SSO-Auth";
               package = inputs.nixflix.lib.jellyfinPlugins.fromRepo {
-                version = "5.0.0.88";
-                hash = "sha256-cFtP21GyBgiNBI92WvbCvFAU7W4k8HL8S9LWD6T2yNI=";
-                repository = "Flowfin-SSO";
+                version = "5.1.1";
+                hash = "sha256-QYzyg8pJvsLvmJbgOujhms7vY7BmLlqgcndxqNGyJcI=";
+                repository = "SSO";
               };
               config = {
                 OidConfigs = {

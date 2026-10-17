@@ -5,9 +5,10 @@
   ...
 }:
 let
+  noctaliaShimmed = config.lib.pamShim.replacePam config.programs.noctalia.package;
   noctaliaNixGL = pkgs.writeShellScript "noctalia-nixgl" ''
     export PATH="${config.home.profileDirectory}/bin:/run/wrappers/bin:/usr/bin:/bin"
-    exec ${config.lib.nixGL.wrap config.programs.noctalia.package}/bin/noctalia "$@"
+    exec ${config.lib.nixGL.wrap noctaliaShimmed}/bin/noctalia "$@"
   '';
 in
 {
