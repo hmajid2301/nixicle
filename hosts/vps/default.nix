@@ -326,8 +326,6 @@
           useDHCP = lib.mkDefault true;
           interfaces.ens3.useDHCP = lib.mkDefault true;
           firewall.allowedTCPPorts = [ 22 ];
-          # Mosh UDP 60000-61000 is reachable through trusted tailscale0 only.
-          # Public firewall intentionally exposes no UDP ports.
         };
 
         services = {
