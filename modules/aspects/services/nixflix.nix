@@ -143,6 +143,7 @@
               hardwareAccelerationType = "vaapi";
               vaapiDevice = "/dev/dri/renderD128";
               enableHardwareEncoding = true;
+              downMixAudioBoost = 1;
             };
 
             system = {
@@ -153,6 +154,10 @@
                 processThreads = 1;
               };
               pluginRepositories = {
+                "ReplayGain" = {
+                  url = "https://skproch.github.io/JellyfinReplayGain/manifest.json";
+                  hash = "sha256-wShAtrzCm8gn0Iaxgm4WeodjcNilfqK2zfurLZPlIcw=";
+                };
                 "SSO" = {
                   url = "https://raw.githubusercontent.com/K0lin/jellyfin-plugin-sso/${ssoRev}/manifest.json";
                   hash = ssoManifestHash;
@@ -161,6 +166,23 @@
             };
 
             plugins = {
+              "ReplayGain" = {
+                enable = true;
+                apiName = "Replay Gain";
+                package = inputs.nixflix.lib.jellyfinPlugins.fromRepo {
+                  version = "12.0.1.1";
+                  hash = "sha256-c3E3zsPaUGP+vJhyLCdfkeOfaKJ1s99HkzbvECCSX1M=";
+                  repository = "ReplayGain";
+                };
+                config = {
+                  Enabled = true;
+                  PreserveDynamicRange = false;
+                  LoudnormIntegratedLoudness = -16.0;
+                  LoudnormTruePeak = -1.5;
+                  LoudnormLoudnessRange = 11.0;
+                };
+              };
+
               subbuzz = {
                 enable = true;
                 config = {
