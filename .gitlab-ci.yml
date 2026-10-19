@@ -25,6 +25,24 @@ include:
       validate_rules: *tofu_rules
       plan_rules: *tofu_rules
 
+.tofu_tailscale: &tofu_tailscale
+  before_script:
+    - test -n "$TS_AUTHKEY"
+    - nix profile add nixpkgs#tailscale nixpkgs#iptables >/dev/null
+    - mkdir -p /dev/net
+    - test -c /dev/net/tun || mknod /dev/net/tun c 10 200
+    - tailscaled --state="mem:" &
+    - timeout 15 sh -c 'until [ -S /var/run/tailscale/tailscaled.sock ]; do sleep 1; done'
+    - tailscale up --authkey="$TS_AUTHKEY" --hostname="ci-tofu-${CI_JOB_ID}" --timeout=60s
+  after_script:
+    - tailscale logout
+
+plan:
+  <<: *tofu_tailscale
+
+apply:
+  <<: *tofu_tailscale
+
 workflow:
   rules:
     - if: $CI_PIPELINE_SOURCE == "schedule"
