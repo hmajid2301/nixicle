@@ -37,12 +37,20 @@
 
     aspects.impermanence = {
       nixos =
-        { config, lib, ... }:
+        {
+          config,
+          lib,
+          pkgs,
+          ...
+        }:
         {
           imports = [ inputs.impermanence.nixosModules.impermanence ];
           system.impermanence.enable = true;
 
           boot.initrd.systemd.enable = true;
+
+          systemd.services.systemd-machine-id-commit.serviceConfig.ExecCondition =
+            "${pkgs.util-linux}/bin/findmnt --noheadings --types tmpfs,ramfs --mountpoint /etc/machine-id";
 
           security.sudo.extraConfig = ''
             # rollback results in sudo lectures after each reboot

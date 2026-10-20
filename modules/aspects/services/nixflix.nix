@@ -91,6 +91,8 @@
 
           flaresolverr.enable = true;
 
+          notif.jellyfin.dependencies = [ "jellyfin-plugins.service" ];
+
           sonarr = {
             enable = true;
             config = {
