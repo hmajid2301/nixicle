@@ -8,7 +8,7 @@ _: {
     ];
 
     nixos =
-      { config, ... }:
+      { config, pkgs, ... }:
       {
         services.prometheus = {
           port = 3020;
@@ -21,6 +21,48 @@ _: {
           ];
 
           exporters = {
+            blackbox = {
+              enable = true;
+              listenAddress = "127.0.0.1";
+              configFile = (pkgs.formats.yaml { }).generate "blackbox.yml" {
+                modules = {
+                  grafana-health = {
+                    prober = "http";
+                    timeout = "10s";
+                    http = {
+                      valid_status_codes = [ 200 ];
+                      follow_redirects = false;
+                      fail_if_not_ssl = true;
+                      fail_if_body_not_matches_regexp = [ ''"database"\s*:\s*"ok"'' ];
+                    };
+                  };
+                  jellyfin-health = {
+                    prober = "http";
+                    timeout = "10s";
+                    http = {
+                      valid_status_codes = [ 200 ];
+                      follow_redirects = false;
+                      fail_if_not_ssl = true;
+                      fail_if_body_not_matches_regexp = [ "Healthy" ];
+                    };
+                  };
+                  oidc-discovery = {
+                    prober = "http";
+                    timeout = "10s";
+                    http = {
+                      valid_status_codes = [ 200 ];
+                      follow_redirects = false;
+                      fail_if_not_ssl = true;
+                      fail_if_body_not_matches_regexp = [ ''"issuer"\s*:'' ];
+                    };
+                  };
+                  tcp-connect = {
+                    prober = "tcp";
+                    timeout = "5s";
+                  };
+                };
+              };
+            };
             redis.enable = true;
             postgres = {
               enable = true;
@@ -34,6 +76,78 @@ _: {
           };
 
           scrapeConfigs = [
+            {
+              job_name = "blackbox";
+              metrics_path = "/probe";
+              scrape_interval = "60s";
+              scrape_timeout = "15s";
+              static_configs = [
+                {
+                  targets = [ "https://grafana.${config.nixicle.domains.homelab}/api/health" ];
+                  labels = {
+                    service = "grafana";
+                    module = "grafana-health";
+                  };
+                }
+                {
+                  targets = [ "https://jellyfin.haseebmajid.dev/health" ];
+                  labels = {
+                    service = "jellyfin";
+                    module = "jellyfin-health";
+                  };
+                }
+                {
+                  targets = [ "https://${config.nixicle.domains.sso}/.well-known/openid-configuration" ];
+                  labels = {
+                    service = "sso";
+                    module = "oidc-discovery";
+                  };
+                }
+                {
+                  targets = [ "nas:2049" ];
+                  labels = {
+                    service = "nas-nfs";
+                    module = "tcp-connect";
+                  };
+                }
+              ];
+              relabel_configs = [
+                {
+                  source_labels = [ "__address__" ];
+                  target_label = "__param_target";
+                }
+                {
+                  source_labels = [ "module" ];
+                  target_label = "__param_module";
+                }
+                {
+                  source_labels = [ "__param_target" ];
+                  target_label = "instance";
+                }
+                {
+                  target_label = "__address__";
+                  replacement = "127.0.0.1:${toString config.services.prometheus.exporters.blackbox.port}";
+                }
+              ];
+            }
+            {
+              job_name = "smartctl";
+              scrape_interval = "60s";
+              static_configs = [
+                {
+                  targets = [ "nas:9633" ];
+                  labels.host = "nas";
+                }
+              ];
+            }
+            {
+              job_name = "grafana";
+              static_configs = [ { targets = [ "127.0.0.1:3010" ]; } ];
+            }
+            {
+              job_name = "otel-internal";
+              static_configs = [ { targets = [ "127.0.0.1:8888" ]; } ];
+            }
             {
               job_name = "redis";
               metrics_path = "/metrics";

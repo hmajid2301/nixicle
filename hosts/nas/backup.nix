@@ -10,11 +10,6 @@ let
   backupPath = "/mnt/main/main-encrypted/homelab/.zfs/snapshot/restic-pre";
 in
 {
-  # Alerting is Grafana-side, not unit-side: the whole NAS journal
-  # ships to Loki on the VPS (otel-collector-forwarder aspect), where
-  # the nas-restic-backup-failed / nas-restic-backup-silent rules in
-  # alerts.nix watch for Fatal lines and for a missing "snapshot ...
-  # saved" line. No gotify hooks here.
   system.backup.objects.homelab = {
     # Backup the restic-pre snapshot, never the live dataset mid-write.
     paths = [ backupPath ];
