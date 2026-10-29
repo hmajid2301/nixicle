@@ -131,6 +131,16 @@ in
       services.grafana.provision.alerting = {
         rules.settings = {
           apiVersion = 1;
+          deleteRules = [
+            {
+              orgId = 1;
+              uid = "nas-restic-backup-failed";
+            }
+            {
+              orgId = 1;
+              uid = "nas-restic-backup-silent";
+            }
+          ];
           groups = [
             {
               orgId = 1;
@@ -203,83 +213,156 @@ in
                 })
                 (mkThresholdRule {
                   uid = "restic-backup-not-run";
-                  title = "Restic backup not run within 24h";
+                  title = "Restic backup has no successful run within 30h";
                   expr = ''
-                    (time() - max(node_systemd_timer_last_trigger_seconds{host="vps",name=~"restic-backups-.*"})) > bool 90000
+                    time() - (
+                      (restic_backup_last_success_timestamp_seconds and on(host, backup) restic_backup_expected)
+                      or on(host, backup) (0 * restic_backup_expected)
+                    )
                   '';
                   cmp = "gt";
-                  threshold = 0;
+                  threshold = 108000;
                   severity = "critical";
-                  for = "0m";
-                  summary = "No restic-backups timer fired in the last 25h";
-                  legendFormat = "__auto";
+                  for = "5m";
+                  summary = "Backup {{ $labels.backup }} on {{ $labels.host }} has no recent success";
+                  legendFormat = "{{host}} / {{backup}}";
                   description = ''
-                    max(node_systemd_timer_last_trigger_seconds{name=~"restic-backups-.*"}) is older than 25h.
-                      Backups may have silently stopped (timer disabled, dead, or never triggered).
+                    No successful backup job completion for 30h, or this expected job has never reported success.
+                    A skipped run (including a locked NAS dataset) does not update the success timestamp.
                   '';
                 })
                 (mkThresholdRule {
                   uid = "restic-backup-timer-dead";
                   title = "Restic backup timer not active";
                   expr = ''
-                    min(node_systemd_unit_state{host="vps",name=~"restic-backups-.*\\.timer",state="active"})
-                  '';
-                  cmp = "lt";
-                  threshold = 1;
-                  severity = "critical";
-                  for = "5m";
-                  summary = "Restic backup timer {{ $labels.name }} is not active";
-                  legendFormat = "__auto";
-                  description = ''
-                    min(node_systemd_unit_state{name=~"restic-backups-.*\\.timer",state="active"}) == 0.
-                      A restic-backups timer is disabled, masked, or missing.
-                  '';
-                })
-                (mkThresholdRule {
-                  uid = "nas-restic-backup-failed";
-                  title = "NAS restic backup failed";
-                  datasource = {
-                    type = "loki";
-                    uid = "loki";
-                  };
-                  expr = ''
-                    sum(count_over_time({host_name="nas",service_name=~"restic|restic-backups-homelab-.*"} |~ "Fatal" [10m])) or sum(count_over_time({host_name="nas",service_name="systemd"} |= "Failed with result" |= "restic-backups-homelab" [10m]))
+                    label_replace(restic_backup_expected, "name", "restic-backups-$1.timer", "backup", "(.+)")
+                    unless on(host, name) (node_systemd_unit_state{name=~"restic-backups-.*\\.timer",state="active"} == 1)
                   '';
                   cmp = "gt";
                   threshold = 0;
-                  severity = "critical";
-                  for = "0m";
                   noDataState = "OK";
-                  summary = "NAS restic-backups-homelab hit a Fatal error or failed unit";
+                  severity = "critical";
+                  for = "5m";
+                  summary = "Restic backup timer {{ $labels.name }} is not active on {{ $labels.host }}";
                   legendFormat = "__auto";
                   description = ''
-                    Fatal lines from the NAS restic stream, or a
-                      "Failed with result" line for restic-backups-homelab,
-                      in the last 10m (host_name="nas" in Loki).
+                    An expected backup timer is inactive or missing from systemd metrics.
                   '';
                 })
                 (mkThresholdRule {
-                  uid = "nas-restic-backup-silent";
-                  title = "NAS restic backup not run within 24h";
-                  datasource = {
-                    type = "loki";
-                    uid = "loki";
-                  };
-                  expr = ''
-                    (sum(count_over_time({host_name="nas",service_name="restic"} |= "snapshot" |= "saved" [25h])) or vector(0))
-                  '';
-                  cmp = "lt";
+                  uid = "restic-inventory-missing";
+                  title = "Backup metrics inventory missing";
+                  expr = ''up{job="nodes"} unless on(host) restic_backup_expected'';
+                  cmp = "gt";
+                  threshold = 0;
+                  noDataState = "OK";
+                  severity = "critical";
+                  for = "5m";
+                  description = "A reachable node is missing its expected-backup inventory. Check the node textfile collector.";
+                })
+              ];
+            }
+            {
+              orgId = 1;
+              name = "homelab-health";
+              folder = "System";
+              interval = "1m";
+              rules = map mkThresholdRule [
+                {
+                  uid = "homelab-filesystem-low";
+                  title = "Homelab filesystem below 10% free";
+                  expr = ''100 * node_filesystem_avail_bytes{job="nodes",fstype!~"tmpfs|devtmpfs|overlay|squashfs",mountpoint!~"/boot.*"} / node_filesystem_size_bytes'';
+                  threshold = 10;
+                  description = "Filesystem {{ $labels.mountpoint }} on {{ $labels.host }} is below 10% available space.";
+                }
+                {
+                  uid = "nas-pool-unhealthy";
+                  title = "NAS ZFS pool unhealthy";
+                  expr = ''zfs_pool_health{host="nas",pool="main"}'';
+                  cmp = "gt";
+                  threshold = 0;
+                  severity = "critical";
+                  for = "5m";
+                  description = "ZFS pool main is not ONLINE. Check zpool status on the NAS.";
+                }
+                {
+                  uid = "nas-pool-capacity";
+                  title = "NAS ZFS pool above 80% allocated";
+                  expr = ''100 * zfs_pool_allocated_bytes{host="nas"} / zfs_pool_size_bytes{host="nas"}'';
+                  cmp = "gt";
+                  threshold = 80;
+                  description = "ZFS pool capacity is above 80%; plan capacity before performance and free-space headroom deteriorate.";
+                }
+                {
+                  uid = "nas-smart-failed";
+                  title = "NAS disk SMART health failed";
+                  expr = ''smartctl_device_smart_status{host="nas"}'';
+                  threshold = 1;
+                  noDataState = "OK";
+                  severity = "critical";
+                  for = "5m";
+                  description = "Disk {{ $labels.device }} reports a failed SMART health check. Sleeping disks may not report until awake.";
+                }
+                {
+                  uid = "nas-scrub-overdue";
+                  title = "NAS ZFS scrub overdue or never recorded";
+                  expr = ''time() - (homelab_zfs_scrub_last_completed_timestamp_seconds or on(host,pool) (0 * zfs_pool_health{host="nas",pool="main"}))'';
+                  cmp = "gt";
+                  threshold = 3888000;
+                  description = "No completed scheduled scrub recorded for pool main in 45 days. The first deployment needs a completed scrub to establish history.";
+                }
+                {
+                  uid = "nas-dataset-unmounted";
+                  title = "NAS encrypted homelab dataset is not mounted";
+                  expr = "homelab_dataset_mounted";
                   threshold = 1;
                   severity = "critical";
-                  for = "0m";
-                  summary = "No NAS restic snapshot saved in the last 25h";
-                  legendFormat = "__auto";
-                  description = ''
-                    count_over_time({host_name="nas",service_name="restic"} |= "snapshot" |= "saved" [25h]) == 0.
-                      NAS dead, timer disabled, restic failing, or the log
-                      shipper broke — silence means no completed backup.
-                  '';
-                })
+                  for = "10m";
+                  description = "Unlock and mount the encrypted homelab dataset; services and backups depend on it.";
+                }
+                {
+                  uid = "nas-storage-metrics-stale";
+                  title = "NAS storage health collection is stale";
+                  expr = "time() - homelab_storage_last_collection_timestamp_seconds";
+                  cmp = "gt";
+                  threshold = 900;
+                  for = "5m";
+                  description = "NAS storage metrics have not updated in 15 minutes. Check nas-storage-metrics.service.";
+                }
+                {
+                  uid = "service-probe-failed";
+                  title = "Critical service health probe failed";
+                  expr = ''probe_success{job="blackbox"}'';
+                  threshold = 1;
+                  severity = "critical";
+                  for = "5m";
+                  description = "Health probe for {{ $labels.service }} ({{ $labels.instance }}) is failing. This is separate from exporter scrape availability.";
+                }
+                {
+                  uid = "service-tls-expiry";
+                  title = "Service TLS certificate expires within 14 days";
+                  expr = ''probe_ssl_earliest_cert_expiry{job="blackbox"} - time()'';
+                  threshold = 1209600;
+                  description = "Certificate for {{ $labels.service }} expires within 14 days. Check ACME renewal.";
+                }
+                {
+                  uid = "homelab-critical-unit-failed";
+                  title = "Homelab systemd service failed";
+                  expr = ''node_systemd_unit_state{job="nodes",state="failed",name!~"restic-backups-.*"}'';
+                  cmp = "gt";
+                  threshold = 0;
+                  for = "5m";
+                  description = "Unit {{ $labels.name }} has failed on {{ $labels.host }}.";
+                }
+                {
+                  uid = "node-textfile-errors";
+                  title = "Node textfile collector failed";
+                  expr = "node_textfile_scrape_error";
+                  cmp = "gt";
+                  threshold = 0;
+                  for = "5m";
+                  description = "Node textfile metrics are unreadable or invalid on {{ $labels.host }}.";
+                }
               ];
             }
           ];

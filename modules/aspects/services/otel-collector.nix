@@ -60,7 +60,14 @@ _: {
               "otlphttp/tempo".endpoint = "http://127.0.0.1:4318";
             };
             service = {
-              telemetry = { };
+              telemetry.metrics.readers = [
+                {
+                  pull.exporter.prometheus = {
+                    host = "127.0.0.1";
+                    port = 8888;
+                  };
+                }
+              ];
               pipelines = {
                 "metrics/prometheus" = {
                   receivers = [ "otlp" ];

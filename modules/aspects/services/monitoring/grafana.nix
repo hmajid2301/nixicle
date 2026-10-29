@@ -14,6 +14,7 @@ _: {
           grafana = {
             enable = true;
             settings = {
+              dashboards.default_home_dashboard_path = "${./dashboards/health/overview.json}";
               server = {
                 http_port = 3010;
                 http_addr = "127.0.0.1";
