@@ -1,8 +1,130 @@
 # Handoff: move from Pi to PiG and port extensions to Go
 
-Researched 2026-10-13 against PiG `main` at `e63c61c3` (latest tag `v0.4.1`,
-Go SDK tag `extensions/sdk/v0.4.1`). Anything marked **unverified** was read
-from docs but not run.
+## Latest recheck: 2026-10-24
+
+This section supersedes conflicting claims in the original 2026-10-13 handoff
+below. This was a source/documentation recheck, not a runtime compatibility test.
+No Nix commands, builds, logins, or extension spikes were run. The local extension
+inventory below was not re-audited.
+
+### Versions to target
+
+- **Latest Pi release:** [`v1.4.0`](https://github.com/earendil-works/pi/releases/tag/v1.4.0),
+  commit `4a080252f06caf63a525d7873c5d94d3c23887e0`.
+- **Latest PiG release:** [`v0.5.3`](https://github.com/MichaelKinsy/PiG/releases/tag/v0.5.3),
+  commit `526c86df885eba5e214355e7f70205e06d59bfa2`.
+- PiG's behavior pin is **Pi `1.4.0+74f46864`**, commit
+  `74f46864025c68504cd10c89eeb626b7e3d64cea`: v1.4.0 plus 13 commits.
+  This is not a claim of parity with the latest Pi `main`.
+- Pin the Go extension SDK to **`v0.5.3`**
+  (`extensions/sdk/v0.5.3` tag), together with PiG.
+- [Root `go.mod`](https://github.com/MichaelKinsy/PiG/blob/v0.5.3/go.mod)
+  declares `go 1.26.0`, `toolchain go1.27.3`; the SDK declares `go 1.26`.
+  Use Go 1.27.3 for the reproducible packaging attempt, matching upstream's
+  release toolchain. Nix availability and the build remain unverified.
+- Do not use v0.5.0: upstream retracts it because its module exceeds Go's
+  module size limit. v0.5.3 includes security and validation fixes absent
+  from the original v0.4.1 target.
+
+### Changes to the migration assessment
+
+The tagged [API parity report](https://github.com/MichaelKinsy/PiG/blob/v0.5.3/docs/extension-api-parity.md)
+records upstream tests; these are not local spike results.
+
+- **`model_select` is now implemented and marked complete.** Current/previous
+  model and source are exposed across SDKs. Drop the proposed `turn_start`
+  polling workaround. Test footer, quotas, and pipelines with `/model`.
+- **Active theme access exists in Go:** `Context.UITheme`, including
+  `UITheme.Fg`, `Bg`, and styling helpers, appears in the tagged
+  [SDK surface map](https://github.com/MichaelKinsy/PiG/blob/v0.5.3/docs/extension-sdk-surface.md).
+  The old named-theme-only limitation and mandatory hardcoded palette advice
+  no longer apply. Some theme metadata, such as `sourceInfo`, remains missing.
+- **Custom UI support is broader.** The shared component kit (D107) covers
+  standard components, widget/header/footer views, and tool/message renderers.
+  Go has `ViewComponent`, `SetFooterView`, and related view APIs. Native Pi
+  objects still do not cross a subprocess boundary; do not treat the old
+  “not planned” wording as meaning no supported Go UI equivalent exists.
+- **Editor remains a spike gate.** The component kit does not establish that
+  our embedded editor workflow works. Probe a custom editor before porting
+  `ask-user-question`; keep TS if the probe fails. `tui` is now described as a
+  public package, but the adapter and its dependency cost still need testing.
+- **`setActiveTools` coverage improved:** activating registered built-ins
+  outside the initial active set and next-turn tool instructions are covered.
+  Still test our plan-mode restrictions and restore behavior.
+- **Discovery order needs correction:** the current parity report says `-e`
+  loads first and Package extensions last. Do not rely on the old order in §4.3.
+  It covers exact standalone `-e` paths with `--no-extensions`; verify our full
+  mixed TS/Go allowlist and absence of duplicate registration in the spike.
+
+### Issue status and remaining risks
+
+- [#136](https://github.com/MichaelKinsy/PiG/issues/136), Herdr agent-state
+  reporting: **open**. Keep Herdr-dependent flows on Pi until a local test
+  proves they work. Do not port pipelines first.
+- [#115](https://github.com/MichaelKinsy/PiG/issues/115), terminal height after
+  `/reload`: **closed**. Include reload/resize in the UI spike as a regression check.
+- [#200](https://github.com/MichaelKinsy/PiG/issues/200), inconsistent XDG
+  roots: **closed**. Current environment docs say host and SDKs follow the same
+  root rule. With this user's `XDG_CONFIG_HOME`, the default remains
+  `~/.config/pig`; `PIG_USE_PI_DIRS=1` still selects Pi's agent/project directories.
+- [#201](https://github.com/MichaelKinsy/PiG/issues/201), dropped OAuth/login
+  callbacks: **closed**. Test `openai-codex` login rather than assuming failure
+  or success from the issue state.
+- UI parity is not absolute. The report still lists component-kit callback
+  constraints and partial mouse support. Exercise actual forms, cancellation,
+  concurrent dialogs, terminal handoff, and shutdown.
+- Settings remain shared, writable-state-sensitive files when using
+  `PIG_USE_PI_DIRS=1`. Test against a writable scratch copy first; do not let
+  the first spike modify the Home Manager-managed setup or live credentials.
+
+### Multiplexer direction: generic backends
+
+The user wants pipeline pane integration to support TUIOS, Zellij, and tmux
+rather than depend on Herdr. Keep the Go port multiplexer-neutral.
+
+- Separate agent launch construction (`pi`, `pig`, etc.) from pane operations.
+- Put pane creation, output reads, input delivery, and close behind a small
+  backend interface. Implement only operations the existing flows need.
+- Support TUIOS, Zellij, and tmux through separate adapters; retain headless
+  execution without a multiplexer. Implementation order is not yet decided.
+- Keep agent busy/idle/blocked reporting optional. A backend without reporting
+  must still support execution and result collection.
+- Replace Herdr-specific blocked notifications with a backend-neutral signal
+  when porting the affected extensions. Retain compatibility only where needed
+  for the existing Pi setup.
+- Verify each multiplexer's control API and lifecycle behavior before
+  implementing its adapter. No backend compatibility spike has been run yet.
+
+Herdr issue #136 is therefore not a go/no-go gate for the chosen migration.
+References below to keeping Herdr flows on Pi or deferring pipelines because of
+Herdr apply only to the old integration. Gate each backend on successful pane
+control and result collection; verify headless fallback independently. The embedded-editor
+spike remains a separate gate.
+
+### Revised next steps
+
+1. Keep the incremental strategy and Pi fallback. No extension port yet.
+2. Target Pi v1.4.0 for the TS baseline. Check the installed Pi version before
+   changing imports or dependency pins; this running harness reports Pi 1.2.0.
+   Standardize on the current `@earendil-works/*` namespace for that baseline,
+   update test dependencies together, and run TS tests.
+3. Package PiG v0.5.3 and SDK v0.5.3, not v0.4.1. Ask before any Nix command.
+   Keep wrapper flags `PIG_USE_PI_DIRS=1`, `PI_TELEMETRY=0`, and
+   `PI_SKIP_VERSION_CHECK=1`.
+4. Run Phase 2 against writable scratch resources first. Expect `/model`
+   notifications to work, not fail. Add `/reload`, resize, concurrent prompts,
+   and resume/tool activation checks.
+5. Build/load one standalone Go extension before the port batches. Keep Pi's
+   TS list intact; isolate PiG's mixed TS/Go list through explicit wrapper
+   arguments. Never replace a shared TS entry while Pi still needs it.
+6. Proceed with the original smallest-first batches only after the spike.
+   The generic multiplexer backend and embedded-editor gates above apply.
+
+## Original handoff: 2026-10-13 (historical)
+
+Researched against PiG `main` at `e63c61c3` (then latest tag `v0.4.1`,
+Go SDK tag `extensions/sdk/v0.4.1`). The latest recheck above takes precedence.
+Anything marked **unverified** was read from docs but not run.
 
 ## 1. Goal and decision so far
 
