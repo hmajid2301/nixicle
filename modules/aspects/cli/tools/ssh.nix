@@ -1,10 +1,7 @@
 _: {
   den.aspects.ssh = {
     homeManager = { lib, ... }: {
-      programs.keychain = {
-        enable = true;
-        keys = [ "id_ed25519" ];
-      };
+      services.ssh-agent.enable = true;
 
       programs.ssh = {
         enable = true;
