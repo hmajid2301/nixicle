@@ -70,26 +70,29 @@ export function renderFooterLine(data: FooterStats, width: number): string {
 	const percent = pct === null ? "--" : `${Math.round(pct)}%`;
 	const context = `${fg(color, "")} ${bar} ${fg(color, `${data.used === null ? "--" : fmt(data.used)}/${fmt(data.total)} ${percent}`)}`;
 	const tokens = fg("overlay", `↑${fmt(data.input)} ↓${fmt(data.output)} $${data.cost.toFixed(3)}`);
-	const thinking = data.thinkingLevel && data.thinkingLevel !== "off" ? ` · ${clean(data.thinkingLevel)}` : "";
-	const model = fg("mauve", `󰚩 ${clean(data.modelId)}${thinking}`);
-	const branch = data.branch ? tab("lavender", "", data.branch, 24) : "";
-	const session = data.sessionName ? tab("mauve", "", data.sessionName, 32) : "";
+	const thinking = data.thinkingLevel && data.thinkingLevel !== "off" ? fg("peach", ` · ${clean(data.thinkingLevel)}`) : "";
+	const model = fg("lavender", `󰚩 ${clean(data.modelId)}`) + thinking;
+	const branch = data.branch ? tab("mauve", "", data.branch, 24) : "";
+	const session = data.sessionName ? tab("sky", "", data.sessionName, 32) : "";
+	const shortBranch = data.branch ? tab("mauve", "", data.branch, 12) : "";
+	const shortSession = data.sessionName ? tab("sky", "", data.sessionName, 18) : "";
 	const state = tab(data.working ? "peach" : "green", data.working ? "●" : "○", `${data.working ? "working" : "idle"} #${data.turnCount} ${data.elapsed}`, 28);
 	const separator = fg("overlay", " │ ");
 	const left = (...parts: string[]) => parts.filter(Boolean).join(" ");
 	const right = (...parts: string[]) => parts.filter(Boolean).join(separator);
 	const candidates = [
 		[left(branch, session, state), right(context, tokens, model)],
-		[left(branch, session), right(context, tokens, model)],
-		[session, right(context, tokens, model)],
-		[session, right(context, model)],
+		[left(branch, session, state), right(context, model)],
+		[left(branch, session), right(context, model)],
+		[left(shortBranch, shortSession), right(context, model)],
+		[shortSession, right(context, model)],
 		["", right(context, model)],
 		["", right(fg(color, ` ${percent}`), model)],
 	];
 	for (const [lhs, rhs] of candidates) {
 		const length = visibleWidth(lhs) + visibleWidth(rhs);
 		if (length + (lhs ? 1 : 0) <= width) {
-			return lhs + " ".repeat(width - length) + rhs;
+			return lhs + (lhs ? " ".repeat(Math.min(2, width - length)) : "") + rhs;
 		}
 	}
 	return truncateToWidth(right(fg(color, percent), model), width);
