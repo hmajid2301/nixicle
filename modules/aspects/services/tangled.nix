@@ -83,6 +83,8 @@
           inputs.tangled.nixosModules.spindle
         ];
 
+        networking.firewall.allowedTCPPorts = [ 2222 ];
+
         sops.secrets.knot_master_key = { };
         sops.templates."knot-env".content = ''
           KNOT_MASTER_KEY=${config.sops.placeholder.knot_master_key}
@@ -117,6 +119,7 @@
                   listen_addr = "127.0.0.1:5555";
                   ssh_listen_addr = "[::]:2222";
                 };
+                resources.max_memory_bytes = 1024 * 1024 * 1024;
                 atproto.plc_directory = "https://plc.directory";
                 git.object_format = "sha1";
                 xrpc = {
