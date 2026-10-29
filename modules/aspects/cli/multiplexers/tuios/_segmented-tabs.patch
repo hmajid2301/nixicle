@@ -1,0 +1,1524 @@
+--- a/docs/look-keys.json
++++ b/docs/look-keys.json
+@@ -264,6 +264,16 @@
+       ]
+     },
+     {
++      "path": "appearance.palette_density",
++      "type": "string",
++      "description": "Command palette row spacing: compact or roomy",
++      "default": "compact",
++      "accepted": [
++        "compact",
++        "roomy"
++      ]
++    },
++    {
+       "path": "appearance.pane_background",
+       "type": "string",
+       "description": "Background behind pane content: off, theme, or a colour (#rrggbb, 0-255, a slot name or a role name); empty follows appearance.background",
+@@ -500,6 +510,16 @@
+       "type": "bool",
+       "description": "Draw a nerd font icon per file type in the files section",
+       "default": "true"
++    },
++    {
++      "path": "appearance.sidebar.frame",
++      "type": "string",
++      "description": "Attached edge rule or detached rounded frame inside the reserved rail width",
++      "default": "attached",
++      "accepted": [
++        "attached",
++        "detached"
++      ]
+     },
+     {
+       "path": "appearance.sidebar.header_case",
+@@ -842,6 +862,14 @@
+       "max_bytes": 32
+     },
+     {
++      "path": "dock.tabs.cap_colors",
++      "type": "list",
++      "description": "Segmented icon-cap colours, cycling by workspace number. Empty uses the theme accent.",
++      "default": "[]",
++      "max_items": 9,
++      "max_bytes": 32
++    },
++    {
+       "path": "dock.tabs.inactive_bg",
+       "type": "string",
+       "description": "Background colour of the flat tabs of the other workspaces",
+@@ -892,12 +920,13 @@
+     {
+       "path": "dock.tabs.style",
+       "type": "string",
+-      "description": "How the workspace strip draws its tabs: pill, or flat for coloured runs of text",
++      "description": "How the workspace strip draws its tabs: pill, flat, or segmented with an accent icon cap",
+       "default": "",
+       "accepted": [
+         "",
+         "pill",
+-        "flat"
++        "flat",
++        "segmented"
+       ],
+       "max_bytes": 32
+     },
+--- /dev/null
++++ b/internal/app/command_palette_density_test.go
+@@ -0,0 +1,120 @@
++package app
++
++import (
++	"fmt"
++	"reflect"
++	"strings"
++	"testing"
++
++	"charm.land/lipgloss/v2"
++	"github.com/Gaurav-Gosain/tuios/internal/config"
++	"github.com/Gaurav-Gosain/tuios/internal/overlay"
++	"github.com/charmbracelet/x/ansi"
++	"github.com/pelletier/go-toml/v2"
++)
++
++func TestPaletteCompactDensityUnchanged(t *testing.T) {
++	m := newNarrowOS(t, 80, 30)
++	m.UserConfig = config.DefaultConfig()
++	m.PaletteItems = []CommandPaletteItem{{Name: "Entry", Category: "Group"}}
++	m.UserConfig.Appearance.CommandPaletteDensity = ""
++	before, beforeGeo, beforeHits := m.renderCommandPalette()
++	m.UserConfig.Appearance.CommandPaletteDensity = "compact"
++	after, afterGeo, afterHits := m.renderCommandPalette()
++	if before != after || !reflect.DeepEqual(beforeGeo, afterGeo) || !reflect.DeepEqual(beforeHits, afterHits) {
++		t.Fatal("explicit compact changed default rendering or hit geometry")
++	}
++}
++
++func TestPaletteRoomyEmptyAndPageFit(t *testing.T) {
++	for _, width := range []int{24, 80} {
++		for _, height := range []int{9, 12, 18, 40} {
++			m := newNarrowOS(t, width, height)
++			m.UserConfig = config.DefaultConfig()
++			m.UserConfig.Appearance.CommandPaletteDensity = "roomy"
++			m.PaletteItems = []CommandPaletteItem{}
++			content, _, hits := m.renderCommandPalette()
++			if lipgloss.Height(content) > m.panelRoomHeight() || len(hits) != 0 {
++				t.Fatalf("empty %dx%d: height=%d hits=%d", width, height, lipgloss.Height(content), len(hits))
++			}
++			for i := range 24 {
++				m.PaletteItems = append(m.PaletteItems, CommandPaletteItem{Name: fmt.Sprintf("Entry %02d", i), Category: "Group"})
++			}
++			m.CommandPaletteQuery = "Entry"
++			_, _, hits = m.renderCommandPalette()
++			if m.PalettePageRows() != len(hits) {
++				t.Fatalf("page step=%d, visible commands=%d", m.PalettePageRows(), len(hits))
++			}
++			m.PaletteMove(m.PalettePageRows())
++			_, _, hits = m.renderCommandPalette()
++			found := false
++			for _, hit := range hits {
++				found = found || hit.Idx == m.CommandPaletteSelected
++			}
++			if !found {
++				t.Fatal("page navigation hid the selection")
++			}
++		}
++	}
++}
++
++func TestPaletteDensityRendering(t *testing.T) {
++	for _, density := range []string{"", "compact", "roomy", "invalid"} {
++		for _, grouped := range []bool{false, true} {
++			for _, height := range []int{9, 10, 12, 18, 40} {
++				t.Run(fmt.Sprintf("%s/grouped=%v/h=%d", density, grouped, height), func(t *testing.T) {
++					m := newNarrowOS(t, 80, height)
++					m.UserConfig = config.DefaultConfig()
++					if err := toml.Unmarshal([]byte(fmt.Sprintf("[appearance]\npalette_density = %q\n", density)), m.UserConfig); err != nil {
++						t.Fatal(err)
++					}
++					oldPadding := m.UserConfig.Appearance.PanelPadding
++					overlay.SetPanelPadding(1)
++					t.Cleanup(func() { overlay.SetPanelPadding(oldPadding) })
++					m.PaletteItems = nil
++					for i := range 24 {
++						m.PaletteItems = append(m.PaletteItems, CommandPaletteItem{Name: fmt.Sprintf("Entry %02d", i), Category: fmt.Sprintf("Group %d", i/4)})
++					}
++					if !grouped {
++						m.CommandPaletteQuery = "Entry"
++					}
++					stride := 1
++					if density == "roomy" {
++						stride = 2
++					}
++					for step := range 48 {
++						content, geo, hits := m.renderCommandPalette()
++						if lipgloss.Height(content) > m.panelRoomHeight() {
++							t.Fatalf("panel height %d exceeds room %d", lipgloss.Height(content), m.panelRoomHeight())
++						}
++						rendered := strings.Split(ansi.Strip(content), "\n")
++						selected := false
++						for _, hit := range hits {
++							if hit.Rect.Y1-hit.Rect.Y0 != stride {
++								t.Fatalf("row height = %d, want %d", hit.Rect.Y1-hit.Rect.Y0, stride)
++							}
++							if !strings.Contains(rendered[hit.Rect.Y0], m.filteredPaletteItems()[hit.Idx].Name) {
++								t.Fatalf("hit %d misses rendered name: %q", hit.Idx, rendered[hit.Rect.Y0])
++							}
++							if hit.Rect.Y1 > geo.Height-1 {
++								t.Fatalf("hit extends past body: %+v, %+v", hit, geo)
++							}
++							if stride == 2 && strings.TrimSpace(rendered[hit.Rect.Y0+1]) != "" {
++								t.Fatalf("roomy row has no blank spacing: %q", rendered[hit.Rect.Y0+1])
++							}
++							selected = selected || hit.Idx == m.CommandPaletteSelected
++						}
++						if !selected {
++							t.Fatalf("selection %d not visible", m.CommandPaletteSelected)
++						}
++						delta := 1
++						if step >= 24 {
++							delta = -1
++						}
++						m.PaletteMove(delta)
++					}
++				})
++			}
++		}
++	}
++}
+--- /dev/null
++++ b/internal/app/dock_multicolor_test.go
+@@ -0,0 +1,99 @@
++package app
++
++import (
++	"charm.land/lipgloss/v2"
++	"github.com/Gaurav-Gosain/tuios/internal/config"
++	"image/color"
++	"testing"
++	"tuios.dev/vt"
++)
++
++func TestSegmentedDockColorsFollowWorkspaceNotVisibleOrder(t *testing.T) {
++	m := pillCapsOS(t, 160, map[int]string{1: "code", 2: "shell", 3: "review", 4: "docs"}, 1, 2, 3, 4)
++	m.Settings.DockWorkspaceTabFormat = "{icon}  {name}"
++	m.UserConfig = &config.UserConfig{}
++	m.UserConfig.Dock.Tabs.Style = "segmented"
++	if err := config.SetLookValue(m.UserConfig, "dock.tabs.cap_colors", `["#b4befe","#cba6f7","#a6e3a1"]`); err != nil {
++		t.Fatal(err)
++	}
++	for _, active := range []int{1, 2} {
++		m.CurrentWorkspace = active
++		layout := m.CalculateDockLayout()
++		strip := layout.WorkspaceStrip
++		for _, omitFirst := range []bool{false, true} {
++			shown := strip
++			if omitFirst {
++				shown.Pills = shown.Pills[1:]
++			}
++			drawn := m.renderDockWorkspaceStrip(shown, 0)
++			term := vt.New(200, 1)
++			_, _ = term.Write([]byte(drawn))
++			wants := map[int]color.Color{1: lipgloss.Color("#b4befe"), 2: lipgloss.Color("#cba6f7"), 3: lipgloss.Color("#a6e3a1"), 4: lipgloss.Color("#b4befe")}
++			for _, hit := range m.dockWorkspaceHits {
++				if hit.Workspace == 0 {
++					continue
++				}
++				got := term.CellAt(hit.X0+2, 0).Style.Bg
++				want := wants[hit.Workspace]
++				if got == nil || !sameDockColor(got, want) {
++					t.Errorf("workspace %d cap = %v want %v", hit.Workspace, got, want)
++				}
++				label := term.CellAt(hit.X1-3, 0).Style.Bg
++				if !sameDockColor(label, m.groundUI().Panel) {
++					t.Errorf("workspace %d lost dark label", hit.Workspace)
++				}
++			}
++		}
++	}
++}
++
++func TestSegmentedDockInvalidCapColorFallsBackAndOtherStylesIgnoreColors(t *testing.T) {
++	for _, style := range []string{"segmented", "pill", "flat"} {
++		m := pillCapsOS(t, 160, map[int]string{1: "code"}, 1)
++		m.Settings.DockWorkspaceTabFormat = "{icon}  {name}"
++		m.UserConfig = &config.UserConfig{}
++		m.UserConfig.Dock.Tabs.Style = style
++		layout := m.CalculateDockLayout()
++		want := m.renderDockWorkspaceStrip(layout.WorkspaceStrip, 0)
++		colors := []string{"#a6e3a1"}
++		if style == "segmented" {
++			colors = []string{"not-a-colour"}
++		}
++		m.UserConfig.Dock.Tabs.CapColors = colors
++		if got := m.renderDockWorkspaceStrip(layout.WorkspaceStrip, 0); got != want {
++			t.Errorf("%s changed when cap colours should be ignored", style)
++		}
++	}
++}
++
++func TestSegmentedDockCapColorsDoNotTintFallbackPills(t *testing.T) {
++	for _, mode := range []string{"ascii", "no-caps", "one-token"} {
++		m := pillCapsOS(t, 160, map[int]string{1: "code"}, 1)
++		m.Settings.DockWorkspaceTabFormat = "{icon}  {name}"
++		switch mode {
++		case "ascii":
++			m.Settings.UseASCIIOnly = true
++		case "no-caps":
++			m.Settings.DockPillCaps = false
++		case "one-token":
++			m.Settings.DockWorkspaceTabFormat = "{name}"
++		}
++		m.UserConfig = &config.UserConfig{}
++		m.UserConfig.Dock.Tabs.Style = "segmented"
++		layout := m.CalculateDockLayout()
++		want := m.renderDockWorkspaceStrip(layout.WorkspaceStrip, 0)
++		m.UserConfig.Dock.Tabs.CapColors = []string{"#a6e3a1"}
++		if got := m.renderDockWorkspaceStrip(layout.WorkspaceStrip, 0); got != want {
++			t.Errorf("%s fallback pill was tinted by cap colours", mode)
++		}
++	}
++}
++
++func sameDockColor(a, b color.Color) bool {
++	if a == nil || b == nil {
++		return a == b
++	}
++	ar, ag, ab, aa := a.RGBA()
++	br, bg, bb, ba := b.RGBA()
++	return ar == br && ag == bg && ab == bb && aa == ba
++}
+--- /dev/null
++++ b/internal/app/dock_segmented_test.go
+@@ -0,0 +1,109 @@
++package app
++
++import (
++	"image/color"
++	"strings"
++	"testing"
++
++	"charm.land/lipgloss/v2"
++	"github.com/Gaurav-Gosain/tuios/internal/config"
++	"github.com/Gaurav-Gosain/tuios/internal/overlay"
++	uv "github.com/charmbracelet/ultraviolet"
++	"tuios.dev/vt"
++)
++
++func TestSegmentedDockTabUsesSeparateIconAndLabelGrounds(t *testing.T) {
++	m := pillCapsOS(t, 160, map[int]string{1: "code"}, 1)
++	pal := overlay.Palette{
++		Canvas: lipgloss.Color("#11111b"), Surface: lipgloss.Color("#181825"),
++		Panel: lipgloss.Color("#313244"), Accent: lipgloss.Color("#b4befe"),
++		Fg: lipgloss.Color("#cdd6f4"), FgDim: lipgloss.Color("#bac2de"), PillFg: lipgloss.Color("#11111b"),
++	}
++	same := func(a, b color.Color) bool {
++		if a == nil || b == nil {
++			return a == b
++		}
++		ar, ag, ab, aa := a.RGBA()
++		br, bg, bb, ba := b.RGBA()
++		return ar == br && ag == bg && ab == bb && aa == ba
++	}
++	for _, active := range []bool{false, true} {
++		for _, dragged := range []bool{false, true} {
++			for _, attention := range []bool{false, true} {
++				cfg := config.DockTabsConfig{Style: "segmented", AttentionFg: "#f9e2af"}
++				drawn := m.dockTab(&cfg, "1 code", active, dragged, attention, pal, 1)
++				if got := lipgloss.Width(drawn); got != 10 {
++					t.Fatalf("width = %d, want 10", got)
++				}
++				term := vt.New(12, 1)
++				_, _ = term.Write([]byte(drawn))
++				wantGround := pal.Panel
++				if dragged {
++					wantGround = pal.Surface
++				}
++				if !same(term.CellAt(2, 0).Style.Bg, pal.Accent) {
++					t.Error("icon does not have accent background")
++				}
++				if !same(term.CellAt(4, 0).Style.Bg, wantGround) {
++					t.Error("label does not have its own background")
++				}
++				if !same(term.CellAt(0, 0).Style.Fg, pal.Accent) || !same(term.CellAt(9, 0).Style.Fg, wantGround) {
++					t.Error("outer caps do not match their segments")
++				}
++				if bold := term.CellAt(4, 0).Style.Attrs&uv.AttrBold != 0; bold != active {
++					t.Error("label emphasis does not identify the active workspace")
++				}
++				if attention && !active && !same(term.CellAt(4, 0).Style.Fg, lipgloss.Color("#f9e2af")) {
++					t.Error("inactive attention ink was lost")
++				}
++			}
++		}
++	}
++}
++
++func TestSegmentedDockTabFallsBackWithoutTwoTokensOrColor(t *testing.T) {
++	m := pillCapsOS(t, 160, map[int]string{1: "code"}, 1)
++	pal := m.groundUI()
++	cfg := config.DockTabsConfig{Style: "segmented"}
++	for _, label := range []string{"", "+", "code", " code", "1 "} {
++		if got, want := m.dockTab(&cfg, label, true, false, false, pal, 1), workspacePill(label, true, false, pal, &m.Settings, nil); got != want {
++			t.Errorf("%q did not fall back to an ordinary pill", label)
++		}
++	}
++	m.Settings.UseASCIIOnly = true
++	if got, want := m.dockTab(&cfg, "1 code", true, false, false, pal, 1), workspacePill("1 code", true, false, pal, &m.Settings, nil); got != want {
++		t.Error("ASCII output did not preserve the ordinary pill")
++	}
++	m.Settings.UseASCIIOnly = false
++	pal.Panel, pal.Surface = overlay.NoColor, overlay.NoColor
++	if got, want := m.dockTab(&cfg, "1 code", true, false, false, pal, 1), workspacePill("1 code", true, false, pal, &m.Settings, nil); got != want {
++		t.Error("no-color output did not preserve the ordinary pill")
++	}
++}
++
++func TestSegmentedDockTabKeepsUnicodeAndNarrowHitGeometry(t *testing.T) {
++	for _, width := range []int{40, 80, 160} {
++		m := pillCapsOS(t, width, map[int]string{1: "code", 2: "日本語", 3: "review"}, 1, 2, 3)
++		m.Settings.DockWorkspaceTabFormat = "{icon}  {name}"
++		m.UserConfig = &config.UserConfig{}
++		m.UserConfig.Dock.Tabs = config.DockTabsConfig{Style: "segmented", NumberGlyphs: []string{"", "", "󰚩"}}
++		layout := m.CalculateDockLayout()
++		drawn := m.renderDockWorkspaceStrip(layout.WorkspaceStrip, 0)
++		if got := lipgloss.Width(drawn); got != layout.WorkspaceStrip.Width {
++			t.Errorf("%d-column layout planned %d but drew %d", width, layout.WorkspaceStrip.Width, got)
++		}
++		for _, hit := range m.dockWorkspaceHits {
++			if hit.Workspace == 0 {
++				continue
++			}
++			if m.DockWorkspaceAt(hit.X0, hit.Y) != hit.Workspace || m.DockWorkspaceAt(hit.X1-1, hit.Y) != hit.Workspace {
++				t.Error("pill edges are not clickable")
++			}
++		}
++		for _, tab := range layout.WorkspaceStrip.Pills {
++			if !strings.Contains(stripANSIForTrace(drawn), tab.Label) {
++				t.Errorf("planned label %q was clipped", tab.Label)
++			}
++		}
++	}
++}
+--- a/internal/app/render_command_palette.go
++++ b/internal/app/render_command_palette.go
+@@ -63,8 +63,16 @@
+ 	width = m.panelWidth(paletteInnerWidth)
+ 	// Body lines that are not command rows: the search input and its rule. The
+ 	// match count rides the search line.
+-	rows, hints = m.panelBody(paletteMaxVisible, 2, width, nil, m.paletteFooter())
+-	return width, rows, hints
++	stride := m.paletteRowHeight()
++	rows, hints = m.panelBody(paletteMaxVisible*stride, 2, width, nil, m.paletteFooter())
++	return width, max(rows/stride, 1), hints
++}
++
++func (m *OS) paletteRowHeight() int {
++	if m.UserConfig != nil && m.UserConfig.Appearance.CommandPaletteDensity == "roomy" {
++		return 2
++	}
++	return 1
+ }
+ 
+ // paletteLine is one row of the palette's list: a command, or the header of
+@@ -146,6 +154,7 @@
+ 	bg := pal.Surface
+ 
+ 	width, visible, hints := m.paletteLayout()
++	stride := m.paletteRowHeight()
+ 	list := paletteLines(filtered, grouped)
+ 	m.CommandPaletteScroll = paletteScroll(m.CommandPaletteScroll, list, m.CommandPaletteSelected, visible)
+ 	metaW := paletteMetaWidth(filtered, grouped, width)
+@@ -203,18 +212,21 @@
+ 		}
+ 		// The empty state takes the rows the list would have, so the panel
+ 		// keeps its height.
+-		lines = append(lines, empty.Lines(width, visible, bg, pal)...)
++		lines = append(lines, empty.Lines(width, visible*stride, bg, pal)...)
+ 	} else {
+ 		headerStyle := overlay.Style(bg).Foreground(theme.Readable(pal.Accent, bg)).Bold(true)
+ 		for _, l := range list[start:end] {
+ 			if l.item < 0 {
+ 				lines = append(lines, headerStyle.Render(overlay.Truncate(l.header, width)))
+-				continue
++			} else {
++				st := overlay.RowState{Cursor: l.item == m.CommandPaletteSelected, Focused: true}
++				lines = append(lines, pal.Row(paletteRow(filtered[l.item], st.Cursor, pal, width, metaW), width, st, bg))
+ 			}
+-			st := overlay.RowState{Cursor: l.item == m.CommandPaletteSelected, Focused: true}
+-			lines = append(lines, pal.Row(paletteRow(filtered[l.item], st.Cursor, pal, width, metaW), width, st, bg))
+-		}
+-		for len(lines) < visible+2 {
++			if stride > 1 {
++				lines = append(lines, overlay.Style(bg).Render(" "))
++			}
++		}
++		for len(lines) < visible*stride+2 {
+ 			lines = append(lines, overlay.Style(bg).Render(" "))
+ 		}
+ 	}
+@@ -241,9 +253,9 @@
+ 			if l.item < 0 {
+ 				continue
+ 			}
+-			rowY := geo.BodyY + i + 2 // +2 for the search line and rule
++			rowY := geo.BodyY + i*stride + 2 // +2 for the search line and rule
+ 			rows = append(rows, overlayRowHit{
+-				Rect: overlay.Rect{X0: 0, Y0: rowY, X1: geo.Width, Y1: rowY + 1},
++				Rect: overlay.Rect{X0: 0, Y0: rowY, X1: geo.Width, Y1: rowY + stride},
+ 				Idx:  l.item,
+ 			})
+ 		}
+--- a/internal/app/render_dock.go
++++ b/internal/app/render_dock.go
+@@ -90,6 +90,27 @@
+ 	return caps.Render(lc) + pill + caps.Render(rc)
+ }
+ 
++func segmentedWorkspaceTab(label string, active, dragged bool, pal overlay.Palette, s *config.Settings, ink, accent color.Color) string {
++	prefix, text, split := strings.Cut(label, " ")
++	ground := pal.Panel
++	if dragged {
++		ground = pal.Surface
++	}
++	lc, rc := s.GetDockWorkspaceCapLeft(), s.GetDockWorkspaceCapRight()
++	if !split || prefix == "" || strings.TrimSpace(text) == "" || lc == "" || rc == "" || overlay.IsNoColor(ground) || overlay.IsNoColor(pal.Accent) {
++		return workspacePill(label, active, dragged, pal, s, ink)
++	}
++	fg := pal.Fg
++	if ink != nil {
++		fg = ink
++	}
++	icon := sidebarStyle(accent, theme.Readable(pal.PillFg, accent)).Bold(true)
++	body := sidebarStyle(ground, theme.Readable(fg, ground)).Bold(active)
++	left := lipgloss.NewStyle().Foreground(accent).Render(lc)
++	right := lipgloss.NewStyle().Foreground(ground).Render(rc)
++	return left + icon.Render(" "+prefix+" ") + body.Render(text+" ") + right
++}
++
+ // tabColor is a configured [dock.tabs] colour on the dock's palette, or nil
+ // when it is unset or not a colour. lipgloss turns a value it cannot parse
+ // into no colour at all, which would paint the terminal's default in the
+@@ -170,7 +191,7 @@
+ }
+ 
+ // dockTab renders one tab in whichever style [dock.tabs] asks for.
+-func (m *OS) dockTab(t *config.DockTabsConfig, label string, active, dragged, attention bool, pal overlay.Palette) string {
++func (m *OS) dockTab(t *config.DockTabsConfig, label string, active, dragged, attention bool, pal overlay.Palette, workspace int) string {
+ 	// A workspace that wants a person takes [dock.tabs] attention_fg as its
+ 	// ink. Only a tab that is not current is marked: the current one is on
+ 	// screen already.
+@@ -180,6 +201,15 @@
+ 	}
+ 	if t.Flat() {
+ 		return flatWorkspaceTab(label, active, dragged, t, pal, ink)
++	}
++	if strings.TrimSpace(t.Style) == config.DockTabStyleSegmented {
++		accent := pal.Accent
++		if workspace > 0 && len(t.CapColors) > 0 && !overlay.IsNoColor(pal.Accent) {
++			if c := tabColor(t.CapColors[(workspace-1)%len(t.CapColors)], &pal); c != nil {
++				accent = c
++			}
++		}
++		return segmentedWorkspaceTab(label, active, dragged, pal, &m.Settings, ink, accent)
+ 	}
+ 	return workspacePill(label, active, dragged, pal, &m.Settings, ink)
+ }
+@@ -233,7 +263,7 @@
+ 			b.WriteString(gapText)
+ 			x, drawn = x+t.Gap, drawn+t.Gap
+ 		}
+-		b.WriteString(m.dockTab(&style, t.Label, t.Active, t.Dragged, t.Attention, pal))
++		b.WriteString(m.dockTab(&style, t.Label, t.Active, t.Dragged, t.Attention, pal, t.Workspace))
+ 		m.dockWorkspaceHits = append(m.dockWorkspaceHits, dockWorkspaceHit{
+ 			X0: x, X1: x + t.Width, Y: y, Workspace: t.Workspace,
+ 		})
+@@ -253,7 +283,7 @@
+ 			b.WriteString(gapText)
+ 			x += s.Add.Gap
+ 		}
+-		b.WriteString(m.dockTab(&style, s.Add.Label, false, false, false, pal))
++		b.WriteString(m.dockTab(&style, s.Add.Label, false, false, false, pal, 0))
+ 		m.dockWorkspaceHits = append(m.dockWorkspaceHits, dockWorkspaceHit{
+ 			X0: x, X1: x + s.Add.Width, Y: y, Workspace: 0,
+ 		})
+--- a/internal/app/render_sidebar.go
++++ b/internal/app/render_sidebar.go
+@@ -1296,8 +1296,8 @@
+ 	if panel == "" {
+ 		return nil
+ 	}
+-	sidebarX := sidebarEdgeX(m.legacySidebarEdge(), w, m.GetRenderWidth())
+-	return lipgloss.NewLayer(panel).X(sidebarX).Y(m.viewReserve().Top).Z(config.ZIndexDock).ID(sidebarLayerID)
++	g := m.sidebarGeometryFor(m.legacySidebarEdge(), w)
++	return lipgloss.NewLayer(panel).X(g.Frame.X).Y(g.Frame.Y).Z(config.ZIndexDock).ID(sidebarLayerID)
+ }
+ 
+ // renderSecondarySidebar draws the opt-in opposite edge with its own layout
+@@ -1348,7 +1348,8 @@
+ 	if panel == "" {
+ 		return nil
+ 	}
+-	return lipgloss.NewLayer(panel).X(sidebarEdgeX(edge, w, m.GetRenderWidth())).Y(m.viewReserve().Top).Z(config.ZIndexDock).ID("sidebar-secondary")
++	g := m.sidebarGeometryFor(edge, w)
++	return lipgloss.NewLayer(panel).X(g.Frame.X).Y(g.Frame.Y).Z(config.ZIndexDock).ID("sidebar-secondary")
+ }
+ 
+ // sidebarWindowSection windows one section's rows onto the lines it was given,
+@@ -1376,9 +1377,6 @@
+ // on-screen hit geometry of every row into m.SidebarHits, returning the rows
+ // and the reserved width. It returns nil rows when the sidebar reserves
+ // nothing.
+-//
+-// Every emitted line is exactly the reserved width: the content columns plus
+-// the one-cell edge rule on the side facing the panes.
+ func (m *OS) sidebarPanelLinesForTree(tree sessiontree.Tree) ([]string, int) {
+ 	m.SidebarHits = m.SidebarHits[:0]
+ 	m.motion.rail = m.motion.rail[:0]
+@@ -1407,29 +1405,30 @@
+ 		return nil, 0
+ 	}
+ 
+-	topMargin := m.viewReserve().Top
+-	side := m.legacySidebarEdge()
+-	if m.sidebarDrawing {
+-		side = m.sidebarDrawingEdge
+-	}
+-	sidebarX := sidebarEdgeX(side, w, m.GetRenderWidth())
+-	edgeLeft := side == sidebarLeft
+-	// First content column: a right-hand rail spends its first band column on
+-	// the edge rule, so the content starts one cell in.
+-	contentX0 := sidebarX
+-	if !edgeLeft {
+-		contentX0++
+-	}
++	g := m.railGeometry()
++	height = g.Content.H
++	topMargin := g.Content.Y
++	sidebarX := g.Frame.X
++	edgeLeft := m.railEdge() == sidebarLeft
++	contentX0 := g.Content.X
+ 
+ 	pal := m.groundUI()
+ 	variant := sidebarVariant(w)
+-	cw := w - 1 // content columns beside the edge rule
++	cw := g.Content.W
+ 	edge := sidebarEdgeRule(&m.Settings, m.railRule())
++	vertical := m.Settings.GetWindowBorderLeft()
++	if g.Detached {
++		vertical = lipgloss.RoundedBorder().Left
++		if m.Settings.UseASCIIOnly {
++			vertical = lipgloss.ASCIIBorder().Left
++		}
++		edge = lipgloss.NewStyle().Foreground(m.railRule()).Render(vertical)
++	}
+ 	// While the rail owns the keyboard its edge rule burns accent instead of the
+ 	// dock's muted hairline, so the focus is legible at the frame, not only on a
+ 	// single highlighted row.
+ 	if m.sidebarRailFocused() {
+-		edge = lipgloss.NewStyle().Foreground(pal.Accent).Render(m.Settings.GetWindowBorderLeft())
++		edge = lipgloss.NewStyle().Foreground(pal.Accent).Render(vertical)
+ 	}
+ 
+ 	// The rail as drawn so far. len(lines) is the line compose is building, in
+@@ -1444,6 +1443,12 @@
+ 		rule := edge
+ 		if y := len(lines); y < len(barCell) && barCell[y] != "" {
+ 			rule = barCell[y]
++		}
++		if g.Detached {
++			if edgeLeft {
++				return edge + content + rule
++			}
++			return rule + content + edge
+ 		}
+ 		if edgeLeft {
+ 			return content + rule
+@@ -1876,7 +1881,7 @@
+ 		}
+ 		if barCell == nil {
+ 			barCell = make([]string, height)
+-			glyph := m.Settings.GetRailScrollThumbBeside(m.Settings.GetWindowBorderLeft())
++			glyph := m.Settings.GetRailScrollThumbBeside(vertical)
+ 			thumb = sidebarStyle(nil, pal.ScrollThumb).Render(glyph)
+ 		}
+ 		for i := top; i < top+size && place[s].top+i < height; i++ {
+@@ -1899,7 +1904,7 @@
+ 	for s := range headerHoverX {
+ 		headerHoverX[s] = -1
+ 	}
+-	if !m.SidebarDrag.Dragging && m.SidebarHoverActive && m.SidebarBandContains(m.SidebarHoverX, m.SidebarHoverY) {
++	if !m.SidebarDrag.Dragging && m.SidebarHoverActive && m.SidebarBandContains(m.SidebarHoverX, m.SidebarHoverY) && (!g.Detached || g.Content.contains(m.SidebarHoverX, m.SidebarHoverY)) {
+ 		delta := m.SidebarHoverY - topMargin
+ 		footerTop := height - footerH
+ 		onHeader := -1
+@@ -1940,10 +1945,14 @@
+ 	// rows carry a second line when the budget allows. The rectangle grows and
+ 	// the nav entry does not, so one agent stays one target for the keyboard and
+ 	// the mouse both, and a click on either line resolves to the same row.
++	hitX0, hitX1 := sidebarX, sidebarX+w
++	if g.Detached {
++		hitX0, hitX1 = g.Content.X, g.Content.X+cw
++	}
+ 	recordHit := func(kind sidebarRowKind, sessionID, windowID string, windowIndex, h int) {
+ 		y := topMargin + len(lines)
+ 		m.SidebarHits = append(m.SidebarHits, sidebarRowHit{
+-			X0: sidebarX, X1: sidebarX + w,
++			X0: hitX0, X1: hitX1,
+ 			Y0: y, Y1: y + max(h, 1),
+ 			Kind:        kind,
+ 			SessionID:   sessionID,
+@@ -1958,7 +1967,7 @@
+ 	recordClick := func(kind sidebarRowKind, sessionID, windowID string, windowIndex, h int) {
+ 		y := topMargin + len(lines)
+ 		m.SidebarHits = append(m.SidebarHits, sidebarRowHit{
+-			X0: sidebarX, X1: sidebarX + w,
++			X0: hitX0, X1: hitX1,
+ 			Y0: y, Y1: y + max(h, 1),
+ 			Kind:        kind,
+ 			SessionID:   sessionID,
+@@ -2360,6 +2369,20 @@
+ 	}
+ 
+ 	m.sidebarPublishNav(nav, cursorTarget, haveCursorTarget)
++	if g.Detached {
++		border := lipgloss.RoundedBorder()
++		if m.Settings.UseASCIIOnly {
++			border = lipgloss.ASCIIBorder()
++		}
++		style := lipgloss.NewStyle().Foreground(m.railRule())
++		if m.sidebarRailFocused() {
++			style = style.Foreground(pal.Accent)
++		}
++		top := style.Render(border.TopLeft + strings.Repeat(border.Top, cw) + border.TopRight)
++		bottom := style.Render(border.BottomLeft + strings.Repeat(border.Bottom, cw) + border.BottomRight)
++		lines = append([]string{top}, lines...)
++		lines = append(lines, bottom)
++	}
+ 	return lines, w
+ }
+ 
+--- a/internal/app/settings.go
++++ b/internal/app/settings.go
+@@ -432,6 +432,7 @@
+ 			opt("appearance.modal_dim"),
+ 			opt("appearance.popup_dim"),
+ 			opt("appearance.panel_padding"),
++			opt("appearance.palette_density"),
+ 			opt("appearance.zen_mode"),
+ 			opt("appearance.links"),
+ 			opt("appearance.link_click"),
+@@ -469,6 +470,7 @@
+ 		Items: m.resolveRows([]settingsRow{
+ 			opt("appearance.sidebar.enabled"),
+ 			opt("appearance.sidebar.position"),
++			opt("appearance.sidebar.frame"),
+ 			opt("appearance.sidebar.width"),
+ 			custom("appearance.sidebar.sections", m.sectionLayoutItem()),
+ 			opt("appearance.sidebar.header_case"),
+--- a/internal/app/settings_registry.go
++++ b/internal/app/settings_registry.go
+@@ -64,6 +64,7 @@
+ 	"appearance.sidebar.enabled":          "Sidebar",
+ 	"spotlight.shake":                     "Shake to toggle",
+ 	"appearance.sidebar.position":         "Position",
++	"appearance.sidebar.frame":            "Frame",
+ 	"appearance.sidebar.width":            "Width",
+ 	"appearance.window_title_position":    "Window title",
+ 	"appearance.whichkey_enabled":         "Which-key",
+--- a/internal/app/sidebar_cache.go
++++ b/internal/app/sidebar_cache.go
+@@ -128,6 +128,8 @@
+ 	mixI(m.viewReserve().Top)
+ 	mixI(m.GetRenderWidth())
+ 	mixS(m.Settings.SidebarPosition)
++	mixS(m.Settings.SidebarFrame)
++	mixB(m.railGeometry().Detached)
+ 	// The layout: which sections are stacked, in what order, with what share,
+ 	// and where the spacers are. It carries what show_windows used to say, and
+ 	// it was missing from this key for as long as it has existed: a rail redrawn
+--- /dev/null
++++ b/internal/app/sidebar_detached_geometry_test.go
+@@ -0,0 +1,113 @@
++package app
++
++import (
++	"strings"
++	"testing"
++
++	"github.com/Gaurav-Gosain/tuios/internal/config"
++	"github.com/charmbracelet/x/ansi"
++)
++
++func TestSidebarDetachedSplitOrigin(t *testing.T) {
++	m := detachedRail(t, 120, 40, "left")
++	m.sidebarPanelLines()
++	if !m.sidebarSplitGeom.Valid {
++		t.Fatal("no divider")
++	}
++	m.sidebarSplit.Active = true
++	y := m.railGeometry().Content.Y + 12
++	want := m.sidebarSplitGeom.sidebarSplitShareFor(12)
++	m.SidebarSplitMotion(3, y)
++	if m.SidebarSectionSplit != want {
++		t.Fatalf("split = %d, want %d", m.SidebarSectionSplit, want)
++	}
++}
++
++func TestSidebarDetachedUsesRoundedSides(t *testing.T) {
++	m := detachedRail(t, 120, 40, "left")
++	m.Settings.BorderStyle = "double"
++	lines, _ := m.sidebarPanelLines()
++	if line := ansi.Strip(lines[1]); !strings.HasPrefix(line, "│") || !strings.HasSuffix(line, "│") {
++		t.Fatalf("detached rounded sides = %q", line)
++	}
++}
++
++func TestSidebarDetachedLayerAndFooter(t *testing.T) {
++	for _, side := range []string{"left", "right"} {
++		t.Run(side, func(t *testing.T) {
++			m := detachedRail(t, 120, 40, side)
++			width := m.GetSidebarWidth()
++			contentWidth := m.GetContentWidth()
++			g := m.railGeometry()
++			layer := m.renderSidebar()
++			if m.GetSidebarWidth() != width || m.GetContentWidth() != contentWidth {
++				t.Fatal("frame changed reservation")
++			}
++			if layer.GetX() != g.Frame.X || layer.GetY() != g.Frame.Y {
++				t.Fatal("layer origin disagrees with geometry")
++			}
++			for _, hit := range m.SidebarHits {
++				if hit.Kind != sidebarRowCollapse {
++					continue
++				}
++				m.SidebarMotion(hit.X0, hit.Y0)
++				if !m.SidebarHoverActive {
++					t.Fatal("footer not hoverable")
++				}
++				m.sidebarPanelLines()
++				if !m.SidebarClick(hit.X0, hit.Y0, false) || !m.SidebarCollapsed {
++					t.Fatal("footer click did not collapse")
++				}
++				return
++			}
++			t.Fatal("no collapse control")
++		})
++	}
++}
++
++func TestSidebarDetachedResizeTracksFrame(t *testing.T) {
++	for _, side := range []string{"left", "right"} {
++		t.Run(side, func(t *testing.T) {
++			m := detachedRail(t, 120, 40, side)
++			g := m.railGeometry()
++			x := g.Frame.X + g.Frame.W - 1
++			if side == "right" {
++				x = g.Frame.X
++			}
++			m.SidebarClick(x, g.Content.Y, false)
++			if !m.SidebarEdge.Active {
++				t.Fatal("frame edge did not arm resize")
++			}
++			m.SidebarEdgeMotion(x, g.Content.Y)
++			if m.GetSidebarWidth() != g.Band.W {
++				t.Fatalf("stationary resize changed reservation: %d -> %d", g.Band.W, m.GetSidebarWidth())
++			}
++		})
++	}
++}
++
++func TestSidebarDetachedSecondaryGeometry(t *testing.T) {
++	m := detachedRail(t, 120, 40, "left")
++	m.UserConfig = config.DefaultConfig()
++	on := true
++	m.UserConfig.Appearance.Sidebar.Right = &config.SidebarEdgeConfig{Enabled: &on, Width: 24}
++	layer := m.renderSecondarySidebar()
++	if layer == nil {
++		t.Fatal("no secondary rail")
++	}
++	g := m.sidebarGeometryFor(sidebarRight, m.secondarySidebarWidth())
++	if layer.GetX() != g.Frame.X || layer.GetY() != g.Frame.Y {
++		t.Fatal("secondary layer origin mismatch")
++	}
++	if len(m.secondarySidebarHits) == 0 {
++		t.Fatal("no secondary hits")
++	}
++	for _, hit := range m.secondarySidebarHits {
++		if !g.Content.contains(hit.X0, hit.Y0) || !g.Content.contains(hit.X1-1, hit.Y1-1) {
++			t.Fatalf("secondary hit outside content: %+v", hit)
++		}
++	}
++	if !m.SidebarMotion(g.Band.X, g.Content.Y) || m.secondaryRailView.hover {
++		t.Fatal("secondary margin hover activated")
++	}
++}
+--- /dev/null
++++ b/internal/app/sidebar_detached_scroll_test.go
+@@ -0,0 +1,112 @@
++package app
++
++import (
++	"strconv"
++	"strings"
++	"testing"
++
++	"charm.land/lipgloss/v2"
++	"github.com/Gaurav-Gosain/tuios/internal/terminal"
++	"github.com/charmbracelet/x/ansi"
++)
++
++func TestSidebarDetachedScrollAndFooterRows(t *testing.T) {
++	for _, side := range []string{"left", "right"} {
++		t.Run(side, func(t *testing.T) {
++			m := detachedRail(t, 120, 20, side)
++			m.Settings.SidebarSections = "terminals"
++			m.Windows = nil
++			for i := range 40 {
++				m.Windows = append(m.Windows, &terminal.Window{ID: strconv.Itoa(i), CustomName: "terminal", Workspace: 1})
++			}
++			lines, _ := m.sidebarPanelLines()
++			g := m.railGeometry()
++			band := m.sidebarSectionY[sidebarSectionTerminals]
++			if band[0] < g.Content.Y || band[1] > g.Content.Y+g.Content.H {
++				t.Fatalf("scroll band outside inner content: %v", band)
++			}
++			thumb := m.Settings.GetRailScrollThumbBeside(m.Settings.GetWindowBorderLeft())
++			found := false
++			for i, line := range lines {
++				raw := ansi.Strip(line)
++				if !strings.Contains(raw, thumb) {
++					continue
++				}
++				found = true
++				y := g.Frame.Y + i
++				if y < band[0] || y >= band[1] {
++					t.Fatal("thumb outside scroll band")
++				}
++				if side == "left" && !strings.HasSuffix(raw, thumb) || side == "right" && !strings.HasPrefix(raw, thumb) {
++					t.Fatalf("thumb not on pane-facing frame: %q", raw)
++				}
++			}
++			if !found {
++				t.Fatal("no scroll thumb")
++			}
++			if !m.SidebarWheel(g.Content.X, band[0]+1, false) || m.SidebarScrollT == 0 {
++				t.Fatal("wheel did not scroll rendered section")
++			}
++			before := m.SidebarScrollT
++			if !m.SidebarWheel(g.Band.X, band[0]+1, false) || m.SidebarScrollT != before {
++				t.Fatal("margin wheel changed section")
++			}
++			for _, hit := range m.SidebarHits {
++				if hit.Kind == sidebarRowCollapse || hit.Kind == sidebarRowFiles {
++					if hit.Y0 != g.Content.Y+g.Content.H-1 {
++						t.Fatalf("footer is not on last content row: %+v", hit)
++					}
++				}
++			}
++		})
++	}
++}
++
++func TestSidebarDetachedShortFallbackKeepsTerminalReachable(t *testing.T) {
++	for height := 5; height <= 12; height++ {
++		m := detachedRail(t, 120, height, "left")
++		if h := m.ViewUsableHeight(); h != 5 && h != 6 {
++			continue
++		}
++		m.Settings.SidebarSections = "terminals"
++		m.Windows = []*terminal.Window{{ID: "one", CustomName: "visible-terminal", Workspace: 1}}
++		m.sidebarPanelLines()
++		found := false
++		for _, hit := range m.SidebarHits {
++			found = found || hit.Kind == sidebarRowWindow && hit.WindowID == "one"
++		}
++		if !found {
++			t.Errorf("usable height %d hid the only terminal", m.ViewUsableHeight())
++		}
++	}
++}
++
++func TestSidebarDetachedFitsSizesAndASCII(t *testing.T) {
++	for _, width := range []int{30, 40, 51, 80, 120} {
++		for height := 3; height < 12; height++ {
++			m := detachedRail(t, width, height, "left")
++			m.Settings.UseASCIIOnly = true
++			lines, w := m.sidebarPanelLines()
++			if w == 0 {
++				continue
++			}
++			g := m.railGeometry()
++			if len(lines) != g.Frame.H {
++				t.Fatalf("size %dx%d frame height %d, want %d", width, height, len(lines), g.Frame.H)
++			}
++			for _, line := range lines {
++				if lipgloss.Width(line) != g.Frame.W {
++					t.Fatalf("size %dx%d width %d, want %d", width, height, lipgloss.Width(line), g.Frame.W)
++				}
++			}
++			if g.Detached && (!strings.HasPrefix(ansi.Strip(lines[0]), "+") || !strings.HasSuffix(ansi.Strip(lines[len(lines)-1]), "+")) {
++				t.Fatal("missing ASCII frame")
++			}
++			for _, hit := range m.SidebarHits {
++				if !g.Band.contains(hit.X0, hit.Y0) || !g.Band.contains(hit.X1-1, hit.Y1-1) {
++					t.Fatalf("hit outside band at %dx%d: %+v", width, height, hit)
++				}
++			}
++		}
++	}
++}
+--- /dev/null
++++ b/internal/app/sidebar_detached_session_test.go
+@@ -0,0 +1,23 @@
++package app
++
++import (
++	"testing"
++
++	"github.com/Gaurav-Gosain/tuios/internal/config"
++	"github.com/Gaurav-Gosain/tuios/internal/session"
++)
++
++func TestSidebarDetachedLeavesSessionRailAttached(t *testing.T) {
++	m := detachedRail(t, 120, 40, "left")
++	m.UserConfig = config.DefaultConfig()
++	on := true
++	m.UserConfig.Appearance.Sidebar.Left = &config.SidebarEdgeConfig{Enabled: &on, Session: "tools"}
++	m.DaemonClient = &session.TUIClient{}
++	if !m.sidebarSessionVisible(sidebarLeft) {
++		t.Fatal("session rail not visible")
++	}
++	g := m.railGeometry()
++	if g.Detached || g.Frame != g.Band {
++		t.Fatal("detached regular frame shifted full-band session rail")
++	}
++}
+--- /dev/null
++++ b/internal/app/sidebar_detached_test.go
+@@ -0,0 +1,93 @@
++package app
++
++import (
++	"strings"
++	"testing"
++
++	"charm.land/lipgloss/v2"
++	"github.com/Gaurav-Gosain/tuios/internal/config"
++	"github.com/charmbracelet/x/ansi"
++	"github.com/pelletier/go-toml/v2"
++)
++
++func detachedRail(t *testing.T, width, height int, side string) *OS {
++	t.Helper()
++	m := sidebarTestOS(t, width, height, side)
++	cfg := config.DefaultConfig()
++	if err := toml.Unmarshal([]byte("[appearance.sidebar]\nframe = 'detached'\nposition = '"+side+"'\n"), cfg); err != nil {
++		t.Fatal(err)
++	}
++	config.ApplyAppearanceConfig(cfg, &m.Settings)
++	return m
++}
++
++func TestSidebarDetachedFrame(t *testing.T) {
++	for _, side := range []string{"left", "right"} {
++		t.Run(side, func(t *testing.T) {
++			m := detachedRail(t, 120, 40, side)
++			lines, w := m.sidebarPanelLines()
++			x := sidebarEdgeX(m.legacySidebarEdge(), w, m.GetRenderWidth())
++			top := m.viewReserve().Top
++			if len(lines) != m.ViewUsableHeight()-2 {
++				t.Fatalf("frame height = %d, want %d", len(lines), m.ViewUsableHeight()-2)
++			}
++			for i, line := range lines {
++				if lipgloss.Width(line) != w-2 {
++					t.Fatalf("line %d width = %d, want %d", i, lipgloss.Width(line), w-2)
++				}
++			}
++			if !strings.HasPrefix(ansi.Strip(lines[0]), "╭") || !strings.HasSuffix(ansi.Strip(lines[len(lines)-1]), "╯") {
++				t.Fatal("missing rounded frame")
++			}
++			if len(m.SidebarHits) == 0 {
++				t.Fatal("no row hits")
++			}
++			for _, h := range m.SidebarHits {
++				if h.X0 < x+2 || h.X1 > x+w-2 || h.Y0 < top+2 || h.Y1 > top+m.ViewUsableHeight()-2 {
++					t.Fatalf("hit outside inner content: %+v", h)
++				}
++				if got, ok := m.sidebarRowAt(h.X0, h.Y0); !ok || got.Kind != h.Kind {
++					t.Fatalf("unreachable hit: %+v", h)
++				}
++			}
++			for _, p := range [][2]int{{x, top + 5}, {x + w - 1, top + 5}, {x + 3, top}, {x + 3, top + m.ViewUsableHeight() - 1}} {
++				if !m.SidebarClick(p[0], p[1], false) {
++					t.Fatal("margin press leaked")
++				}
++				if m.SidebarFocused || m.SidebarEdge.Active {
++					t.Fatal("margin press activated rail")
++				}
++				if !m.SidebarMotion(p[0], p[1]) || m.SidebarHoverActive {
++					t.Fatal("margin motion should be consumed without hover")
++				}
++			}
++			edgeX := x + w - 2
++			if side == "right" {
++				edgeX = x + 1
++			}
++			if !m.sidebarOnEdge(edgeX) || m.sidebarOnEdge(x+w-1) {
++				t.Fatal("resize edge does not match frame")
++			}
++			before := m.sidebarSignature()
++			config.ApplyAppearanceConfig(config.DefaultConfig(), &m.Settings)
++			if m.sidebarSignature() == before {
++				t.Fatal("frame omitted from cache signature")
++			}
++		})
++	}
++}
++
++func TestSidebarDetachedGlyphAndShortFallback(t *testing.T) {
++	for _, size := range [][2]int{{51, 37}, {120, 4}} {
++		m := detachedRail(t, size[0], size[1], "left")
++		lines, w := m.sidebarPanelLines()
++		if len(lines) != m.ViewUsableHeight() {
++			t.Fatalf("fallback height %d, want %d", len(lines), m.ViewUsableHeight())
++		}
++		for _, line := range lines {
++			if lipgloss.Width(line) != w {
++				t.Fatal("fallback changed width")
++			}
++		}
++	}
++}
+--- a/internal/app/sidebar_edge.go
++++ b/internal/app/sidebar_edge.go
+@@ -38,6 +38,38 @@
+ 		return screenWidth - w
+ 	}
+ 	return 0
++}
++
++type sidebarRect struct {
++	X, Y, W, H int
++}
++
++func (r sidebarRect) contains(x, y int) bool {
++	return x >= r.X && x < r.X+r.W && y >= r.Y && y < r.Y+r.H
++}
++
++type sidebarGeometry struct {
++	Band, Frame, Content sidebarRect
++	Detached             bool
++}
++
++func (m *OS) sidebarGeometryFor(edge sidebarEdge, w int) sidebarGeometry {
++	band := sidebarRect{sidebarEdgeX(edge, w, m.GetRenderWidth()), m.viewReserve().Top, w, m.ViewUsableHeight()}
++	g := sidebarGeometry{Band: band, Frame: band, Content: band}
++	g.Content.W--
++	if edge == sidebarRight {
++		g.Content.X++
++	}
++	if m.Settings.SidebarFrame == "detached" && sidebarVariant(w) != sidebarVariantGlyph && w >= 7 && band.H >= 7 && !m.sidebarSessionVisible(edge) {
++		g.Detached = true
++		g.Frame = sidebarRect{band.X + 1, band.Y + 1, w - 2, band.H - 2}
++		g.Content = sidebarRect{band.X + 2, band.Y + 2, w - 4, band.H - 4}
++	}
++	return g
++}
++
++func (m *OS) railGeometry() sidebarGeometry {
++	return m.sidebarGeometryFor(m.railEdge(), m.GetSidebarWidth())
+ }
+ 
+ func (m *OS) secondarySidebarBandContains(x, y int) bool {
+--- a/internal/app/sidebar_mouse.go
++++ b/internal/app/sidebar_mouse.go
+@@ -376,6 +376,10 @@
+ 	// The edge rule is the rail's frame, so a left press on it arms the width
+ 	// resize before any row routing: the column belongs to the sidebar, not to
+ 	// the session row whose hit rectangle spans it.
++	g := m.railGeometry()
++	if g.Detached && !g.Content.contains(x, y) && !(y >= g.Content.Y && y < g.Content.Y+g.Content.H && m.sidebarOnEdge(x)) {
++		return true
++	}
+ 	if !right && m.sidebarOnEdge(x) {
+ 		m.SidebarEdge = sidebarEdgeState{Active: true, PressX: x}
+ 		if sidebarVariant(m.GetSidebarWidth()) == sidebarVariantGlyph {
+@@ -501,10 +505,11 @@
+ 	if m.sidebarDrawing {
+ 		edge = m.sidebarDrawingEdge
+ 	}
++	g := m.sidebarGeometryFor(edge, w)
+ 	if edge == sidebarRight {
+-		return x == m.GetRenderWidth()-w
+-	}
+-	return x == w-1
++		return x == g.Frame.X
++	}
++	return x == g.Frame.X+g.Frame.W-1
+ }
+ 
+ // SidebarEdgeActive reports whether a width-resize gesture is in progress, so
+@@ -549,6 +554,9 @@
+ 		w = m.GetRenderWidth() - x
+ 	} else {
+ 		w = x + 1
++	}
++	if m.railGeometry().Detached {
++		w++
+ 	}
+ 	lo, hi := m.sidebarWidthBounds()
+ 	w = max(min(w, hi), lo)
+@@ -834,6 +842,13 @@
+ 		m.tooltipClear()
+ 		return false
+ 	}
++	g := m.railGeometry()
++	if g.Detached && !g.Content.contains(x, y) {
++		m.SidebarHoverActive = false
++		m.sidebarClearPeek()
++		m.tooltipClear()
++		return true
++	}
+ 	m.SidebarHoverActive = true
+ 	m.SidebarHoverX, m.SidebarHoverY = x, y
+ 	m.sidebarPeekAt(x, y)
+@@ -855,6 +870,10 @@
+ func (m *OS) sidebarWheel(x, y int, up bool) bool {
+ 	if !m.SidebarBandContains(x, y) {
+ 		return false
++	}
++	g := m.railGeometry()
++	if g.Detached && !g.Content.contains(x, y) {
++		return true
+ 	}
+ 	offsets := m.sidebarScrollOffsets()
+ 	for s, band := range m.sidebarSectionY {
+--- a/internal/app/sidebar_split.go
++++ b/internal/app/sidebar_split.go
+@@ -196,7 +196,7 @@
+ 	if !g.Valid || g.Avail <= 0 {
+ 		return true
+ 	}
+-	share := g.sidebarSplitShareFor(y - m.viewReserve().Top)
++	share := g.sidebarSplitShareFor(y - m.railGeometry().Content.Y)
+ 	if share != m.SidebarSectionSplit {
+ 		m.SidebarSectionSplit = share
+ 		m.MarkAllDirty()
+--- /dev/null
++++ b/internal/config/command_palette_density_test.go
+@@ -0,0 +1,25 @@
++package config
++
++import "testing"
++
++func TestCommandPaletteDensityOption(t *testing.T) {
++	const path = "appearance.palette_density"
++	cfg := DefaultConfig()
++	if got, ok := GetOptionValue(cfg, path); !ok || got != "compact" {
++		t.Fatalf("default = %q, registered = %v; want compact", got, ok)
++	}
++	for _, value := range []string{"roomy", "compact"} {
++		if err := SetLookValue(cfg, path, value); err != nil {
++			t.Fatal(err)
++		}
++		if cfg.Appearance.CommandPaletteDensity != value {
++			t.Fatalf("density = %q, want %q", cfg.Appearance.CommandPaletteDensity, value)
++		}
++	}
++	if err := SetOptionValue(cfg, path, "spacious"); err == nil {
++		t.Fatal("accepted invalid density")
++	}
++	if cfg.Appearance.CommandPaletteDensity != "compact" {
++		t.Fatal("invalid value changed density")
++	}
++}
+--- a/internal/config/dock.go
++++ b/internal/config/dock.go
+@@ -145,16 +145,19 @@
+ 
+ // Workspace tab styles accepted by [dock.tabs] style.
+ const (
+-	DockTabStylePill = "pill"
+-	DockTabStyleFlat = "flat"
++	DockTabStylePill      = "pill"
++	DockTabStyleFlat      = "flat"
++	DockTabStyleSegmented = "segmented"
+ )
+ 
+ // DockTabsConfig is [dock.tabs]. With style left empty (or "pill") the strip
+ // draws its rounded pills as it always has and the other fields are ignored;
+ // "flat" draws each tab as a coloured run of text, the tabs joined by
+-// Separator, the way a tmux status line draws its window list.
++// Separator, the way a tmux status line draws its window list. "segmented"
++// draws the label's first token on an accent cap and the rest on a quiet pill.
+ type DockTabsConfig struct {
+-	Style string `toml:"style,omitempty"`
++	Style     string   `toml:"style,omitempty"`
++	CapColors []string `toml:"cap_colors,omitempty"`
+ 
+ 	// Separator is drawn between two flat tabs. Empty is one bare column.
+ 	Separator   string `toml:"separator,omitempty"`
+@@ -521,13 +524,16 @@
+ 		}
+ 	}
+ 
+-	if st := strings.TrimSpace(cfg.Dock.Tabs.Style); st != "" && st != DockTabStylePill && st != DockTabStyleFlat {
++	if st := strings.TrimSpace(cfg.Dock.Tabs.Style); st != "" && st != DockTabStylePill && st != DockTabStyleFlat && st != DockTabStyleSegmented {
+ 		result.Warnings = append(result.Warnings, ValidationError{
+ 			Field: "dock.tabs", Key: "style",
+-			Message: fmt.Sprintf("style %q is not %s or %s; drawing pills", st, DockTabStylePill, DockTabStyleFlat),
++			Message: fmt.Sprintf("style %q is not %s, %s or %s; drawing pills", st, DockTabStylePill, DockTabStyleFlat, DockTabStyleSegmented),
+ 		})
+ 	}
+ 	t := cfg.Dock.Tabs
++	for i, value := range t.CapColors {
++		validateDockColors(result, "dock.tabs", map[string]string{fmt.Sprintf("cap_colors[%d]", i): value})
++	}
+ 	validateDockColors(result, "dock.tabs", map[string]string{
+ 		"separator_fg": t.SeparatorFg, "active_fg": t.ActiveFg, "active_bg": t.ActiveBg,
+ 		"inactive_fg": t.InactiveFg, "inactive_bg": t.InactiveBg,
+--- /dev/null
++++ b/internal/config/dock_multicolor_test.go
+@@ -0,0 +1,31 @@
++package config
++
++import "testing"
++
++func TestSegmentedDockCapColorsValidateAndRoundTrip(t *testing.T) {
++	for _, value := range []string{`[]`, `["#b4befe","#a6e3a1"]`} {
++		cfg := DefaultConfig()
++		if err := SetLookValue(cfg, "dock.tabs.cap_colors", value); err != nil {
++			t.Fatal(err)
++		}
++		if _, err := ParseLook([]byte("look = 1\n[dock.tabs]\nstyle = \"segmented\"\ncap_colors = " + value + "\n")); err != nil {
++			t.Fatal(err)
++		}
++	}
++	for _, value := range []string{`["invalid"]`, `[""]`, `["#ffffff\u001b"]`, `["#ffffff","#ffffff","#ffffff","#ffffff","#ffffff","#ffffff","#ffffff","#ffffff","#ffffff","#ffffff"]`} {
++		cfg := DefaultConfig()
++		if err := SetLookValue(cfg, "dock.tabs.cap_colors", value); err == nil {
++			t.Errorf("accepted %s", value)
++		}
++		if _, err := ParseLook([]byte("look = 1\n[dock.tabs]\ncap_colors = " + value + "\n")); err == nil {
++			t.Errorf("look accepted %s", value)
++		}
++	}
++	cfg := DefaultConfig()
++	cfg.Dock.Tabs.CapColors = []string{"invalid"}
++	result := &ValidationResult{}
++	validateDock(cfg, result)
++	if len(result.Warnings) == 0 {
++		t.Error("invalid raw config colour not reported")
++	}
++}
+--- /dev/null
++++ b/internal/config/dock_segmented_test.go
+@@ -0,0 +1,18 @@
++package config
++
++import "testing"
++
++func TestSegmentedDockStyleAcceptedInLooksAndConfig(t *testing.T) {
++	if _, err := ParseLook([]byte("look = 1\n[dock.tabs]\nstyle = \"segmented\"\n")); err != nil {
++		t.Fatalf("segmented look rejected: %v", err)
++	}
++	cfg := DefaultConfig()
++	cfg.Dock.Tabs.Style = "segmented"
++	result := &ValidationResult{}
++	validateDock(cfg, result)
++	for _, warning := range result.Warnings {
++		if warning.Field == "dock.tabs" && warning.Key == "style" {
++			t.Errorf("segmented config rejected: %v", warning)
++		}
++	}
++}
+--- a/internal/config/look.go
++++ b/internal/config/look.go
+@@ -111,6 +111,7 @@
+ 	"appearance.shared_borders",
+ 	"appearance.gap",
+ 	"appearance.panel_padding",
++	"appearance.palette_density",
+ 	"appearance.zen_mode",
+ 	"appearance.hide_window_buttons",
+ 	"appearance.window_button_position",
+@@ -155,6 +156,7 @@
+ 	// The rail.
+ 	"appearance.sidebar.enabled",
+ 	"appearance.sidebar.position",
++	"appearance.sidebar.frame",
+ 	"appearance.sidebar.width",
+ 	"appearance.sidebar.background",
+ 	"appearance.sidebar.density",
+--- a/internal/config/look_items.go
++++ b/internal/config/look_items.go
+@@ -73,8 +73,8 @@
+ 	"dock.right":  dockListKey("on the right end", defaultDockRight),
+ 
+ 	"dock.tabs.style": {
+-		Type: OptionString, Description: "How the workspace strip draws its tabs: pill, or flat for coloured runs of text",
+-		Accepted: []string{"", DockTabStylePill, DockTabStyleFlat}, MaxBytes: lookMarkBytes,
++		Type: OptionString, Description: "How the workspace strip draws its tabs: pill, flat, or segmented with an accent icon cap",
++		Accepted: []string{"", DockTabStylePill, DockTabStyleFlat, DockTabStyleSegmented}, MaxBytes: lookMarkBytes,
+ 	},
+ 	"dock.tabs.separator":    tabMarkKey("Text between two flat tabs. Empty is one blank column."),
+ 	"dock.tabs.separator_fg": tabColourKey("Colour of the text between two flat tabs"),
+@@ -86,6 +86,10 @@
+ 	"dock.tabs.inactive_bold": {
+ 		Type: OptionBool, Description: "Draw the flat tabs of the other workspaces in bold", Default: "false",
+ 	},
++	"dock.tabs.cap_colors": {
++		Type: LookList, Description: "Segmented icon-cap colours, cycling by workspace number. Empty uses the theme accent.",
++		Default: "[]", MaxBytes: lookMarkBytes, MaxItems: 9,
++	},
+ 	"dock.tabs.number_glyphs": {
+ 		Type:        LookList,
+ 		Description: "What {icon} in appearance.dock_workspace_tab_format shows for each workspace, the first item for workspace 1. A workspace past the end shows its number.",
+@@ -232,8 +236,16 @@
+ 			return fmt.Errorf("%s must be true or false", path)
+ 		}
+ 	case LookList:
+-		if _, ok := v.([]string); !ok {
++		items, ok := v.([]string)
++		if !ok {
+ 			return fmt.Errorf("%s must be a list of text, such as [\"a\", \"b\"]", path)
++		}
++		if path == "dock.tabs.cap_colors" {
++			for _, value := range items {
++				if !theme.IsColor(value) {
++					return fmt.Errorf("%s: %s", path, ColourProblem(value))
++				}
++			}
+ 		}
+ 	case OptionString:
+ 		s, ok := v.(string)
+--- a/internal/config/options.go
++++ b/internal/config/options.go
+@@ -549,6 +549,11 @@
+ 		Min:         PrefixRepeatTimeMin, Max: PrefixRepeatTimeMax,
+ 	},
+ 	{
++		Path: "appearance.palette_density", Type: OptionString, Section: "appearance",
++		Description: "Command palette row spacing: compact or roomy",
++		Accepted:    []string{"compact", "roomy"}, Default: "compact",
++	},
++	{
+ 		Path: "appearance.panel_padding", Type: OptionInt, Section: "appearance",
+ 		Description: "Columns of padding each side of an overlay panel's content",
+ 		Default:     strconv.Itoa(overlay.DefaultPanelPadding), Min: 1, Max: overlay.MaxPanelPadding,
+@@ -842,6 +847,11 @@
+ 	},
+ 
+ 	// [appearance.sidebar]
++	{
++		Path: "appearance.sidebar.frame", Type: OptionString, Section: "sidebar",
++		Description: "Attached edge rule or detached rounded frame inside the reserved rail width",
++		Accepted:    []string{"attached", "detached"}, Default: "attached",
++	},
+ 	{
+ 		Path: "appearance.sidebar.enabled", Type: OptionBool, Section: "sidebar",
+ 		Description: "Show the session rail",
+--- a/internal/config/settings.go
++++ b/internal/config/settings.go
+@@ -174,6 +174,7 @@
+ 	// SidebarPosition is which edge the sidebar reserves: "left", "right", or
+ 	// "hidden" (reserves nothing even when enabled).
+ 	SidebarPosition string
++	SidebarFrame    string
+ 
+ 	// SidebarWidth is the preferred sidebar width in columns for a wide screen.
+ 	// GetSidebarWidth folds this together with the narrow-screen breakpoints.
+@@ -852,6 +853,7 @@
+ 		DockbarPosition:             DefaultDockbarPosition,
+ 		SidebarEnabled:              true,
+ 		SidebarPosition:             DefaultSidebarPosition,
++		SidebarFrame:                "attached",
+ 		SidebarWidth:                SidebarDefaultWidth,
+ 		SidebarShowGlyphs:           true,
+ 		SidebarShowCounts:           true,
+--- /dev/null
++++ b/internal/config/sidebar_frame_test.go
+@@ -0,0 +1,24 @@
++package config
++
++import "testing"
++
++func TestSidebarFrameOption(t *testing.T) {
++	cfg := DefaultConfig()
++	if got, ok := GetOptionValue(cfg, "appearance.sidebar.frame"); !ok || got != "attached" {
++		t.Fatalf("default frame = %q, found %v; want attached", got, ok)
++	}
++	if !IsLookKey("appearance.sidebar.frame") {
++		t.Fatal("frame not allowed in looks")
++	}
++	for _, value := range []string{"detached", "attached"} {
++		if err := SetOptionValue(cfg, "appearance.sidebar.frame", value); err != nil {
++			t.Fatal(err)
++		}
++		if got, _ := GetOptionValue(cfg, "appearance.sidebar.frame"); got != value {
++			t.Fatalf("frame = %q, want %q", got, value)
++		}
++	}
++	if err := SetOptionValue(cfg, "appearance.sidebar.frame", "floating"); err == nil {
++		t.Fatal("invalid frame accepted")
++	}
++}
+--- a/internal/config/userconfig.go
++++ b/internal/config/userconfig.go
+@@ -441,6 +441,8 @@
+ 	// DimForeground is a pointer because it defaults to true.
+ 	DimForeground *bool `toml:"dim_foreground"` // Let dim_unfocused dim the pane's text too, not only its background (default: true)
+ 
++	CommandPaletteDensity string `toml:"palette_density"`
++
+ 	// MasterPosition, MasterCount and MasterGrid shape the master-stack layout
+ 	// for a workspace nobody has changed at run time. The actions that change
+ 	// them (cycle_master_position, add_master, remove_master and the rest) act
+@@ -801,6 +803,7 @@
+ // vertical session rail. Each toggle is a pointer so nil can mean "unset, use
+ // the default" and an explicit false survives a reload.
+ type SidebarConfig struct {
++	Frame       string `toml:"frame"`
+ 	Enabled     *bool  `toml:"enabled"`      // Show the rail (default: true)
+ 	Position    string `toml:"position"`     // Edge: left, right, hidden (default: right)
+ 	Width       int    `toml:"width"`        // Preferred width in columns for a wide screen (default: 24)
+@@ -1058,6 +1061,7 @@
+ 			ModalDim:                 new(ModalDimDefault),
+ 			PopupDim:                 new(PopupDimDefault),
+ 			PanelPadding:             overlay.DefaultPanelPadding,
++			CommandPaletteDensity:    "compact",
+ 			ClockFormat:              DefaultClockFormat,
+ 			TilingScheme:             TilingSchemeSpiral,
+ 			MasterRatio:              MasterRatioDefault,
+@@ -1089,6 +1093,7 @@
+ 				// cannot change the next DefaultConfig.
+ 				Enabled:       new(true),
+ 				Position:      DefaultSidebarPosition,
++				Frame:         "attached",
+ 				Width:         SidebarDefaultWidth,
+ 				Sections:      SidebarDefaultSections,
+ 				FolderClick:   SidebarFolderClickNavigate,
+@@ -2371,6 +2376,9 @@
+ 	} else if cfg.Appearance.PanelPadding > overlay.MaxPanelPadding {
+ 		cfg.Appearance.PanelPadding = overlay.MaxPanelPadding
+ 	}
++	if cfg.Appearance.CommandPaletteDensity != "roomy" {
++		cfg.Appearance.CommandPaletteDensity = "compact"
++	}
+ 	if cfg.Appearance.ClockFormat == "" {
+ 		cfg.Appearance.ClockFormat = defaultCfg.Appearance.ClockFormat
+ 	}
+@@ -2486,6 +2494,10 @@
+ 	// the toggles are pointer bools so turning one off in the settings page
+ 	// survives a reload just as turning it on does.
+ 	sb := cfg.Appearance.Sidebar
++	s.SidebarFrame = "attached"
++	if sb.Frame == "detached" {
++		s.SidebarFrame = sb.Frame
++	}
+ 	// The legacy rail keeps its runtime settings and controls. An explicit
+ 	// table for that same edge overrides only fields it names; the opposite
+ 	// edge has its own model and must not overwrite the legacy rail here.

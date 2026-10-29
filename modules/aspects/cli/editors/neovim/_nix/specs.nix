@@ -154,7 +154,9 @@
           todo-comments-nvim
           grug-far-nvim
           smart-splits-nvim
+          config.nvim-lib.neovimPlugins.smart-splits-backend-zellij-lua
           herdr-splits-nvim
+          config.nvim-lib.neovimPlugins.tuios-nvim-navigator
           yanky-nvim
           inc-rename-nvim
           snacks-nvim

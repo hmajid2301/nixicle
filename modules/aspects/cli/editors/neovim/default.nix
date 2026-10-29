@@ -71,6 +71,14 @@
       url = "github:lmilojevicc/herdr-splits.nvim";
       flake = false;
     };
+    plugins-tuios-nvim-navigator = {
+      url = "github:Tim4c/tuios-nvim-navigator";
+      flake = false;
+    };
+    plugins-smart-splits-backend-zellij-lua = {
+      url = "github:smart-splits-nvim/backend-zellij-lua";
+      flake = false;
+    };
 
     oxy2dev-nvim-scripts = {
       url = "github:OXY2DEV/nvim";

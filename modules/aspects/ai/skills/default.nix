@@ -95,6 +95,11 @@ _: {
               subdir = "skills";
             };
 
+            tuios = {
+              path = inputs.tuios;
+              subdir = "skills";
+            };
+
             pauldambra = {
               path = inputs.pauldambra-dotfiles;
               subdir = "ai/skills";
@@ -228,6 +233,11 @@ _: {
               herdr = {
                 from = "herdr";
                 path = "herdr";
+              };
+
+              tuios = {
+                from = "tuios";
+                path = "tuios";
               };
 
               "review-triage" = {
