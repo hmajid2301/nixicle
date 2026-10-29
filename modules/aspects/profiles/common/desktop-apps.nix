@@ -43,9 +43,75 @@
           enable = true;
           configPath = "${config.xdg.configHome}/mozilla/firefox";
           package = pkgs.firefox-bin;
+          policies.ExtensionSettings =
+            lib.genAttrs
+              [
+                "{446900e4-71c2-419f-a6a7-df9c091e268b}"
+                "jid1-xUfzOsOFlzSOXg@jetpack"
+                "@contain-facebook"
+                "claymont@mail.com_detach-tab"
+                "custom-new-tab-page@mint.as"
+                "uBlock0@raymondhill.net"
+                "{7a7a4a92-a2a0-41d1-9fd7-1e92480d612d}"
+                "{f0bda7ce-0cda-42dc-9ea8-126b20fed280}"
+              ]
+              (id: {
+                installation_mode = "normal_installed";
+                install_url = "https://addons.mozilla.org/firefox/downloads/latest/${lib.escapeURL id}/latest.xpi";
+              });
           profiles.default = {
             name = "Default";
             settings = {
+              "identity.fxaccounts.account.device.name" = "${config.home.username}@${config._module.args.host}";
+              "browser.contentblocking.category" = "strict";
+              "browser.startup.page" = 3;
+              "browser.toolbars.bookmarks.visibility" = "never";
+              "signon.rememberSignons" = false;
+              "privacy.trackingprotection.enabled" = true;
+              "privacy.trackingprotection.emailtracking.enabled" = true;
+              "privacy.trackingprotection.socialtracking.enabled" = true;
+              "privacy.trackingprotection.allow_list.convenience.enabled" = false;
+              "privacy.trackingprotection.consentmanager.skip.pbmode.enabled" = false;
+              "sidebar.verticalTabs" = true;
+              "sidebar.main.tools" =
+                "opentabs,{446900e4-71c2-419f-a6a7-df9c091e268b},{7a7a4a92-a2a0-41d1-9fd7-1e92480d612d}";
+              "browser.uiCustomization.state" = builtins.toJSON {
+                placements = {
+                  widget-overflow-fixed-list = [ ];
+                  unified-extensions-area = [
+                    "ublock0_raymondhill_net-browser-action"
+                    "_contain-facebook-browser-action"
+                    "_7a7a4a92-a2a0-41d1-9fd7-1e92480d612d_-browser-action"
+                    "_f0bda7ce-0cda-42dc-9ea8-126b20fed280_-browser-action"
+                  ];
+                  nav-bar = [
+                    "sidebar-button"
+                    "back-button"
+                    "forward-button"
+                    "stop-reload-button"
+                    "customizableui-special-spring1"
+                    "vertical-spacer"
+                    "urlbar-container"
+                    "customizableui-special-spring2"
+                    "downloads-button"
+                    "fxa-toolbar-menu-button"
+                    "reset-pbm-toolbar-button"
+                    "unified-extensions-button"
+                    "_446900e4-71c2-419f-a6a7-df9c091e268b_-browser-action"
+                    "smartwindow-group-tabs-button"
+                    "ai-window-toggle"
+                  ];
+                  toolbar-menubar = [ "menubar-items" ];
+                  TabsToolbar = [ ];
+                  vertical-tabs = [ "tabbrowser-tabs" ];
+                  PersonalToolbar = [
+                    "import-button"
+                    "personal-bookmarks"
+                  ];
+                };
+                currentVersion = 28;
+                newElementCount = 2;
+              };
               "browser.uidensity" = 0;
               "gnomeTheme.activeTabContrast" = true;
               "gnomeTheme.hideSingleTab" = false;
