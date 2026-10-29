@@ -106,7 +106,11 @@
         };
 
         services.zfs = {
-          autoScrub.enable = false;
+          autoScrub = {
+            enable = true;
+            pools = [ "main" ];
+            interval = "monthly";
+          };
           trim.enable = false;
         };
 
