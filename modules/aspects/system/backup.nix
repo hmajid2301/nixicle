@@ -59,6 +59,8 @@ _: {
       };
 
     aspects.backup-restic = {
+      persist.directories = [ "/var/lib/prometheus-node-exporter-text-files" ];
+
       nixos =
         {
           config,
@@ -68,6 +70,15 @@ _: {
         }:
         let
           backupObjects = config.system.backup.objects;
+          metricsDirectory = "/var/lib/prometheus-node-exporter-text-files";
+          monitored = config.services.prometheus.exporters.node.enable;
+          expectedBackups = lib.filterAttrs (_: backup: backup.timerConfig != null) backupObjects;
+          expectedMetrics = pkgs.writeText "restic-expected.prom" (
+            lib.concatMapStrings (name: ''
+              restic_backup_expected{backup="${name}"} 1
+            '') (lib.attrNames expectedBackups)
+          );
+          writeMetrics = pkgs.writeShellScript "restic-metrics" (builtins.readFile ./restic-metrics.sh);
           resticWrapped = pkgs.writeShellScriptBin "restic" ''
             exec ${pkgs.util-linux}/bin/flock /run/restic-backups-global.lock \
               ${pkgs.restic}/bin/restic "$@"
@@ -121,12 +132,44 @@ _: {
             repositoryFile = config.sops.secrets.restic_repository.path;
           }) backupObjects;
 
-          systemd.services = lib.mapAttrs' (
-            name: _backup:
-            lib.nameValuePair "restic-backups-${name}" {
-              path = [ pkgs.systemd ];
+          assertions = lib.mapAttrsToList (name: _: {
+            assertion = builtins.match "[a-zA-Z0-9_-]+" name != null;
+            message = "Backup names must be safe Prometheus label and file names: ${name}";
+          }) backupObjects;
+
+          services.prometheus.exporters.node.extraFlags = lib.mkIf monitored [
+            "--collector.textfile.directory=${metricsDirectory}"
+          ];
+
+          systemd.tmpfiles.rules = lib.optionals monitored [
+            "d ${metricsDirectory} 0755 root root -"
+            "L+ ${metricsDirectory}/restic-expected.prom - - - - ${expectedMetrics}"
+          ];
+
+          systemd.services =
+            lib.optionalAttrs monitored {
+              systemd-tmpfiles-resetup.unitConfig.RequiresMountsFor = [ metricsDirectory ];
             }
-          ) backupObjects;
+            // lib.mapAttrs' (
+              name: _backup:
+              lib.nameValuePair "restic-backups-${name}" {
+                path = [
+                  pkgs.systemd
+                  pkgs.coreutils
+                ];
+                preStart = lib.mkIf monitored (
+                  lib.mkBefore ''
+                    date +%s > /run/restic-backups-${name}/metrics-started
+                  ''
+                );
+                serviceConfig.ExecStartPost = lib.mkIf monitored [
+                  "+${pkgs.writeShellScript "restic-${name}-success" ''
+                    export PATH=${lib.makeBinPath [ pkgs.coreutils ]}
+                    ${writeMetrics} ${metricsDirectory} ${lib.escapeShellArg name} "$(cat /run/restic-backups-${name}/metrics-started)"
+                  ''}"
+                ];
+              }
+            ) backupObjects;
         };
     };
   };
