@@ -28,6 +28,7 @@
 
   den.aspects.development = {
     includes = [
+      den.aspects.shellPromptHistory
       den.aspects.neovim
       den.aspects.pi-coding-agent
       den.aspects.skills
@@ -95,22 +96,6 @@
               };
             };
 
-            programs.atuin = {
-              enable = true;
-              flags = [
-                "--disable-up-arrow"
-                "--disable-ctrl-r"
-              ];
-              settings = {
-                sync_address = "https://atuin.${lib.nixicle.domains.root}";
-                sync_frequency = "15m";
-                dialect = "uk";
-                enter_accept = false;
-                records = true;
-                search_mode = "skim";
-              };
-            };
-
             programs = {
               bat.enable = true;
               bottom.enable = true;
@@ -153,11 +138,6 @@
                 enableBashIntegration = true;
               };
               nix-index-database.comma.enable = true;
-              starship = {
-                enable = true;
-                enableFishIntegration = true;
-                settings = { };
-              };
               yazi = {
                 enable = true;
                 enableFishIntegration = true;
@@ -166,8 +146,15 @@
               superfile.enable = true;
               zoxide = {
                 enable = true;
-                enableFishIntegration = true;
+                enableFishIntegration = false;
               };
+              fish.interactiveShellInit = ''
+                source ${
+                  pkgs.runCommand "zoxide-init.fish" { } ''
+                    ${lib.getExe config.programs.zoxide.package} init fish > $out
+                  ''
+                }
+              '';
             };
 
             home.packages = [ open-in-terminal ];

@@ -12,7 +12,7 @@ _: {
 
   den.aspects.non-nixos = {
     homeManager =
-      { inputs, ... }:
+      { inputs, lib, ... }:
       {
         imports = [
           inputs.pam-shim.homeModules.default
@@ -24,6 +24,10 @@ _: {
         ];
 
         pamShim.enable = true;
+
+        programs.fish.interactiveShellInit = lib.mkAfter ''
+          fish_add_path --global --path --move /usr/local/bin /usr/bin
+        '';
       };
   };
 }
