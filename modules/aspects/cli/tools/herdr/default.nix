@@ -249,7 +249,7 @@
               tab_bar_right_separator = " · ";
               sidebar_collapsed_mode = "hidden";
               sidebar_start_collapsed = true;
-              accent = "#89b4fa";
+              accent = "#b4befe";
               sidebar.agents.rows = [
                 [
                   "state_icon"

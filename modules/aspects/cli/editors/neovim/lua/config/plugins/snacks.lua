@@ -258,7 +258,7 @@ return {
 			local black2 = (colors and colors.base01) or "#252434"
 			local white = (colors and colors.base05) or "#D9E0EE"
 			local green = (colors and colors.base0B) or "#ABE9B3"
-			local blue = (colors and colors.base0D) or "#89B4FA"
+			local accent = (colors and colors.base07) or "#B4BEFE"
 
 			vim.api.nvim_set_hl(0, "SnacksPickerTitle", { fg = black, bg = red, bold = true })
 			vim.api.nvim_set_hl(0, "FloatTitle", { fg = black, bg = red, bold = true })
@@ -267,8 +267,8 @@ return {
 			vim.api.nvim_set_hl(0, "SnacksPickerPromptBorder", { fg = black2, bg = black2 })
 			vim.api.nvim_set_hl(0, "SnacksPickerPreviewTitle", { fg = black, bg = green, bold = true })
 			vim.api.nvim_set_hl(0, "SnacksPickerSelection", { fg = white, bg = black2 })
-			vim.api.nvim_set_hl(0, "SnacksPickerMatch", { fg = blue, bold = true })
-			vim.api.nvim_set_hl(0, "SnacksPickerDir", { fg = blue })
+			vim.api.nvim_set_hl(0, "SnacksPickerMatch", { fg = accent, bold = true })
+			vim.api.nvim_set_hl(0, "SnacksPickerDir", { fg = accent })
 
 			vim.api.nvim_create_autocmd("User", {
 				pattern = "OilActionsPost",

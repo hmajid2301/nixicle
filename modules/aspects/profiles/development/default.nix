@@ -114,13 +114,13 @@
                     "bg+" = base02;
                     fg = base05;
                     "fg+" = base05;
-                    header = base0E;
+                    header = base07;
                     hl = base08;
                     "hl+" = base08;
                     info = base0A;
                     marker = base06;
                     pointer = base06;
-                    prompt = base0E;
+                    prompt = base07;
                     spinner = base06;
                   };
               };
@@ -142,8 +142,68 @@
                 enable = true;
                 enableFishIntegration = true;
                 shellWrapperName = "y";
+                theme =
+                  let
+                    accent = lib.mkForce config.lib.stylix.colors.withHashtag.base07;
+                  in
+                  {
+                    tabs.active.bg = accent;
+                    tabs.inactive.fg = accent;
+                    mode.normal_main.bg = accent;
+                    mode.normal_alt.fg = accent;
+                    pick.border.fg = accent;
+                    input.border.fg = accent;
+                    completion.border.fg = accent;
+                    tasks.border.fg = accent;
+                  };
               };
-              superfile.enable = true;
+              superfile = {
+                enable = true;
+                settings.theme = "stylix";
+                themes.stylix = with config.lib.stylix.colors.withHashtag; {
+                  code_syntax_highlight = "catppuccin-mocha";
+                  full_screen_fg = base04;
+                  full_screen_bg = base00;
+                  gradient_color = [
+                    base07
+                    base0F
+                  ];
+                  file_panel_fg = base04;
+                  file_panel_bg = base00;
+                  file_panel_border = base03;
+                  file_panel_border_active = base07;
+                  file_panel_top_directory_icon = base0B;
+                  file_panel_top_path = base07;
+                  file_panel_item_selected_fg = base07;
+                  file_panel_item_selected_bg = base00;
+                  footer_fg = base04;
+                  footer_bg = base00;
+                  footer_border = base03;
+                  footer_border_active = base07;
+                  sidebar_fg = base04;
+                  sidebar_bg = base00;
+                  sidebar_title = base07;
+                  sidebar_border = base00;
+                  sidebar_border_active = base07;
+                  sidebar_item_selected_fg = base07;
+                  sidebar_item_selected_bg = base00;
+                  sidebar_divider = base03;
+                  modal_fg = base04;
+                  modal_bg = base00;
+                  modal_border_active = base07;
+                  modal_cancel_fg = base01;
+                  modal_cancel_bg = "#eba0ac";
+                  modal_confirm_fg = base01;
+                  modal_confirm_bg = "#89dceb";
+                  help_menu_hotkey = "#89dceb";
+                  help_menu_title = "#eba0ac";
+                  cursor = base06;
+                  correct = base0B;
+                  error = base08;
+                  hint = "#74c7ec";
+                  cancel = "#eba0ac";
+                };
+              };
               zoxide = {
                 enable = true;
                 enableFishIntegration = false;

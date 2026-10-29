@@ -45,7 +45,7 @@
       package = pkgs.niri;
       xwaylandSatellitePackage = pkgs.xwayland-satellite;
       settings = lib.mkMerge [
-        (import ./_settings/core.nix { inherit lib; })
+        (import ./_settings/core.nix { inherit lib config; })
         (import ./_settings/binds.nix)
         (import ./_settings/startup.nix { inherit lib config; })
         (import ./_settings/rules.nix { inherit lib; })

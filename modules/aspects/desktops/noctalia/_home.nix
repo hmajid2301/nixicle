@@ -33,6 +33,7 @@ in
     programs.noctalia = {
       enable = true;
       package = pkgs.noctalia;
+      customPalettes.stylix.dark.mPrimary = lib.mkForce config.lib.stylix.colors.withHashtag.base07;
       settings = {
         shell = {
           font_family = config.stylix.fonts.sansSerif.name;

@@ -222,7 +222,7 @@ if [ -n "$ci_status" ]; then
 fi
 
 if [ -n "$session_name" ]; then
-    left="${left}${left:+ }$(segment mauve "$ICON_SESSION" "${session_name}")"
+    left="${left}${left:+ }$(segment lavender "$ICON_SESSION" "${session_name}")"
 fi
 
 if [ "$cache_warm" = "true" ]; then
@@ -269,7 +269,7 @@ if [ -n "$week_pct" ]; then
     right="${right}${SEP}$(plain "$wk_color" "${ICON_CALENDAR} ${wk}%")"
 fi
 
-right="${right}${SEP}$(plain mauve "${ICON_MODEL} ${model}${effort:+ ·${effort}}")"
+right="${right}${SEP}$(plain lavender "${ICON_MODEL} ${model}${effort:+ ·${effort}}")"
 
 cols="${COLUMNS:-120}"
 left_visible=$(printf '%b' "$left" | sed -E 's/\x1b\[[0-9;]*m//g')

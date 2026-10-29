@@ -23,6 +23,7 @@
         config,
         lib,
         host,
+        pkgs,
         ...
       }:
       {
@@ -41,9 +42,45 @@
           user = lib.mkDefault "greeter";
         };
 
+        fonts.packages = [ pkgs.noto-fonts ];
+
         services.displayManager.noctalia-greeter = {
           enable = config.nixicle.desktop.greeter.enable;
-          settings.session.default = "niri";
+          settings = {
+            session.default = "niri";
+            appearance = {
+              scheme = "Synced";
+              theme_mode = "dark";
+              font_family = "Noto Sans";
+              palette = with config.lib.stylix.colors.withHashtag; {
+                primary = base07;
+                on_primary = base00;
+                secondary = base07;
+                on_secondary = base00;
+                tertiary = base0C;
+                on_tertiary = base00;
+                error = base08;
+                on_error = base00;
+                surface = base00;
+                on_surface = base05;
+                surface_variant = base01;
+                on_surface_variant = base04;
+                outline = base03;
+                shadow = base00;
+                hover = base0C;
+                on_hover = base00;
+              };
+              wallpaper = {
+                path = toString pkgs.nixicle.wallpapers.nixppuccin;
+                fill_mode = "crop";
+              };
+            };
+            cursor = {
+              theme = "Bibata-Modern-Classic";
+              path = toString pkgs.bibata-cursors;
+              size = 24;
+            };
+          };
         };
       };
 

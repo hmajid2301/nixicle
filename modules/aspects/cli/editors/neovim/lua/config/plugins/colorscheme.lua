@@ -1,5 +1,6 @@
 -- Get stylix colors from nix if available
 local stylixColors = nixInfo(nil, "info", "colors") or {}
+local accent = stylixColors.base07 or "#B4BEFE"
 
 local colors = {
 	white = "#D9E0EE",
@@ -35,7 +36,7 @@ local colors = {
 	statusline_bg = "#232232",
 	lightbg = "#2f2e3e",
 	pmenu_bg = "#ABE9B3",
-	folder_bg = "#89B4FA",
+	folder_bg = accent,
 	lavender = "#c7d1ff",
 	text = "#cdd6f4",
 	surface2 = "#585b70",
@@ -115,7 +116,7 @@ hl(0, "Comment", { fg = colors.grey_fg })
 hl(0, "Folded", { fg = colors.base03, bg = colors.base01 })
 hl(0, "FoldColumn", { fg = colors.base0C, bg = colors.base01 })
 hl(0, "LineNr", { fg = colors.grey })
-hl(0, "FloatBorder", { fg = colors.blue })
+hl(0, "FloatBorder", { fg = accent })
 hl(0, "VertSplit", { fg = colors.line })
 hl(0, "CursorLine", { bg = colors.black2 })
 hl(0, "CursorColumn", { bg = colors.black2 })
@@ -137,15 +138,15 @@ hl(0, "MatchWord", { fg = colors.white, bg = colors.grey })
 hl(0, "MatchParen", { link = "MatchWord" })
 hl(0, "Cursor", { fg = colors.base00, bg = colors.base05 })
 hl(0, "Conceal", {})
-hl(0, "Directory", { fg = colors.base0D })
+hl(0, "Directory", { fg = accent })
 hl(0, "SpecialKey", { fg = colors.base03 })
-hl(0, "Title", { fg = colors.base0D })
+hl(0, "Title", { fg = accent })
 hl(0, "ErrorMsg", { fg = colors.base08, bg = colors.base00 })
 hl(0, "Search", { fg = colors.base01, bg = colors.base0A })
 hl(0, "IncSearch", { fg = colors.base01, bg = colors.base09 })
 hl(0, "Substitute", { fg = colors.base01, bg = colors.base0A })
 hl(0, "MoreMsg", { fg = colors.base0B })
-hl(0, "Question", { fg = colors.base0D })
+hl(0, "Question", { fg = accent })
 hl(0, "NonText", { fg = colors.base03 })
 
 -- Syntax
@@ -228,10 +229,10 @@ hl(0, "@scope", { bold = true })
 hl(0, "TreesitterContext", { link = "CursorLine" })
 
 -- Plugins
-hl(0, "DashboardHeader", { fg = colors.blue })
+hl(0, "DashboardHeader", { fg = accent })
 hl(0, "DashboardCenter", { fg = colors.purple })
 hl(0, "DashboardFooter", { fg = colors.cyan })
-hl(0, "AlphaHeader", { fg = colors.blue })
+hl(0, "AlphaHeader", { fg = accent })
 hl(0, "AlphaButtons", { fg = colors.purple })
 hl(0, "AlphaFooter", { fg = colors.cyan })
 
@@ -305,12 +306,12 @@ hl(0, "TelescopeResultsDiffChange", { fg = colors.blue })
 hl(0, "TelescopeResultsDiffDelete", { fg = colors.red })
 
 -- NvimTree
-hl(0, "NvimTreeFolderIcon", { fg = colors.blue })
+hl(0, "NvimTreeFolderIcon", { fg = accent })
 hl(0, "NvimTreeIndentMarker", { fg = colors.grey_fg })
 hl(0, "NvimTreeNormal", { bg = colors.darker_black })
 hl(0, "NvimTreeVertSplit", { fg = colors.darker_black, bg = colors.darker_black })
-hl(0, "NvimTreeFolderName", { fg = colors.blue })
-hl(0, "NvimTreeOpenedFolderName", { fg = colors.blue, bold = true, italic = true })
+hl(0, "NvimTreeFolderName", { fg = accent })
+hl(0, "NvimTreeOpenedFolderName", { fg = accent, bold = true, italic = true })
 hl(0, "NvimTreeEmptyFolderName", { fg = colors.grey, italic = true })
 hl(0, "NvimTreeGitIgnored", { fg = colors.grey, italic = true })
 hl(0, "NvimTreeImageFile", { fg = colors.light_grey })
@@ -352,10 +353,10 @@ hl(0, "StatusLineTerm", { fg = colors.line })
 hl(0, "StatusLineTermNC", { fg = colors.line })
 
 -- Dashboard
-hl(0, "DashboardHeader", { fg = colors.blue })
+hl(0, "DashboardHeader", { fg = accent })
 hl(0, "DashboardCenter", { fg = colors.purple })
 hl(0, "DashboardFooter", { fg = colors.cyan })
-hl(0, "AlphaHeader", { fg = colors.blue })
+hl(0, "AlphaHeader", { fg = accent })
 hl(0, "AlphaButtons", { fg = colors.purple })
 hl(0, "AlphaFooter", { fg = colors.cyan })
 
@@ -367,8 +368,8 @@ hl(0, "CmpDocBorder", { fg = colors.darker_black, bg = colors.darker_black })
 hl(0, "CmpPmenu", { bg = colors.black })
 hl(0, "CmpSel", { bg = colors.pmenu_bg, fg = colors.black, bold = true })
 hl(0, "CmpItemAbbrDeprecated", { fg = colors.grey, strikethrough = true })
-hl(0, "CmpItemAbbrMatch", { fg = colors.blue, bold = true })
-hl(0, "CmpItemAbbrMatchFuzzy", { fg = colors.blue })
+hl(0, "CmpItemAbbrMatch", { fg = accent, bold = true })
+hl(0, "CmpItemAbbrMatchFuzzy", { fg = accent })
 hl(0, "CmpItemKindFunction", { fg = colors.blue })
 hl(0, "CmpItemKindMethod", { fg = colors.blue })
 hl(0, "CmpItemKindConstructor", { fg = colors.cyan })
@@ -403,7 +404,7 @@ hl(0, "BlinkCmpScrollBarThumb", { bg = colors.grey })
 hl(0, "BlinkCmpScrollBarGutter", { bg = colors.black2 })
 hl(0, "BlinkCmpLabel", { fg = colors.white })
 hl(0, "BlinkCmpLabelDeprecated", { fg = colors.red, strikethrough = true })
-hl(0, "BlinkCmpLabelMatch", { fg = colors.blue, bold = true })
+hl(0, "BlinkCmpLabelMatch", { fg = accent, bold = true })
 hl(0, "BlinkCmpLabelDetail", { fg = colors.light_grey })
 hl(0, "BlinkCmpLabelDescription", { fg = colors.light_grey })
 hl(0, "BlinkCmpSource", { fg = colors.grey_fg })
@@ -428,7 +429,7 @@ hl(0, "SnacksNormalNC", { bg = colors.darker_black })
 hl(0, "SnacksWinBar", { fg = colors.white, bg = colors.darker_black })
 hl(0, "SnacksWinBarNC", { fg = colors.grey_fg, bg = colors.darker_black })
 hl(0, "SnacksBackdrop", { bg = colors.black })
-hl(0, "SnacksScratchKey", { fg = colors.blue })
+hl(0, "SnacksScratchKey", { fg = accent })
 hl(0, "SnacksScratchDesc", { fg = colors.grey_fg })
 hl(0, "SnacksScratchSource", { fg = colors.cyan })
 
@@ -456,8 +457,8 @@ hl(0, "SnacksPickerPreview", { bg = colors.darker_black })
 hl(0, "SnacksPickerPreviewBorder", { fg = colors.darker_black, bg = colors.darker_black })
 hl(0, "SnacksPickerPreviewTitle", { fg = colors.black, bg = colors.green, bold = true })
 hl(0, "SnacksPickerListCursorLine", { fg = colors.white, bg = colors.one_bg })
-hl(0, "SnacksPickerMatch", { fg = colors.blue, bold = true })
-hl(0, "SnacksPickerDir", { fg = colors.blue })
+hl(0, "SnacksPickerMatch", { fg = accent, bold = true })
+hl(0, "SnacksPickerDir", { fg = accent })
 hl(0, "SnacksPickerFile", { fg = colors.white })
 hl(0, "SnacksPickerCursor", { fg = colors.base00, bg = colors.base05 })
 hl(0, "SnacksNotifierInfo", { fg = colors.green, bg = colors.darker_black })

@@ -27,11 +27,12 @@
           cyan = s.base0C;
           blue = s.base0D;
           magenta = s.base0E;
+          lavender = s.base07;
         };
         colors = {
-          accent = "blue";
+          accent = "lavender";
           border = "comment";
-          borderAccent = "blue";
+          borderAccent = "lavender";
           borderMuted = "fgDark";
           success = "green";
           error = "red";
@@ -45,11 +46,11 @@
           userMessageText = "";
           customMessageBg = "bgLight";
           customMessageText = "";
-          customMessageLabel = "blue";
+          customMessageLabel = "lavender";
           toolPendingBg = "bgLight";
           toolSuccessBg = "bgLight";
           toolErrorBg = "bgLight";
-          toolTitle = "blue";
+          toolTitle = "lavender";
           toolOutput = "";
           mdHeading = "yellow";
           mdLink = "blue";
@@ -76,7 +77,7 @@
           thinkingOff = "comment";
           thinkingMinimal = "blue";
           thinkingLow = "cyan";
-          thinkingMedium = "green";
+          thinkingMedium = "lavender";
           thinkingHigh = "yellow";
           thinkingXhigh = "red";
           bashMode = "orange";
