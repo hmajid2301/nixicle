@@ -101,7 +101,10 @@
     ];
     "Mod+Q".close-window = { };
     "Mod+R".switch-preset-column-width = { };
-    "Mod+Return".spawn = [ "ghostty" ];
+    "Mod+Return".spawn = [
+      "ghostty"
+      "+new-window"
+    ];
     "Mod+S".spawn = [
       "noctalia"
       "msg"
