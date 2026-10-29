@@ -211,12 +211,20 @@
       url = "github:carderne/pi-nvim";
       flake = false;
     };
+    plugins-smart-splits-backend-zellij-lua = {
+      url = "github:smart-splits-nvim/backend-zellij-lua";
+      flake = false;
+    };
     plugins-templ-goto-definition = {
       url = "github:catgoose/templ-goto-definition";
       flake = false;
     };
     plugins-tiny-code-actions = {
       url = "github:rachartier/tiny-code-action.nvim";
+      flake = false;
+    };
+    plugins-tuios-nvim-navigator = {
+      url = "github:Tim4c/tuios-nvim-navigator";
       flake = false;
     };
     plugins-warp-nvim = {
@@ -263,6 +271,7 @@
       url = "github:numtide/treefmt-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    tuios.url = "github:Gaurav-Gosain/tuios/main";
     visual-explainer = {
       url = "github:nicobailon/visual-explainer";
       flake = false;

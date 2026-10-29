@@ -63,17 +63,19 @@ return {
 		event = "DeferredUIEnter",
 		load = function(name)
 			vim.cmd.packadd(name)
+			vim.cmd.packadd("smart-splits-backend-zellij-lua")
 		end,
 		after = function(plugin)
-			if vim.env.HERDR_ENV == "1" then
+			if vim.env.HERDR_ENV == "1" or vim.env.TUIOS_ENV == "1" then
 				return
 			end
 
+			require("smart-splits-backend-zellij-lua").setup({
+				move_cursor = { pane_or_tab = true },
+			})
+
 			require("smart-splits").setup({
-				-- Enable Zellij integration
-				multiplexer_integration = "zellij",
-				-- Enable move to tab when at edge for Zellij
-				zellij_move_focus_or_tab = true,
+				mux = { backend = "smart-splits-backend-zellij-lua" },
 				ignored_buftypes = {
 					"nofile",
 					"quickfix",
@@ -92,7 +94,6 @@ return {
 			vim.keymap.set("n", "<A-j>", require("smart-splits").move_cursor_down)
 			vim.keymap.set("n", "<A-k>", require("smart-splits").move_cursor_up)
 			vim.keymap.set("n", "<A-l>", require("smart-splits").move_cursor_right)
-			vim.keymap.set("n", "<A-\\>", require("smart-splits").move_cursor_previous)
 
 			-- Swap splits with leader+hjkl
 			vim.keymap.set("n", "<leader><leader>h", require("smart-splits").swap_buf_left, { desc = "Swap split left" })
@@ -105,6 +106,16 @@ return {
 		end,
 	},
 	{
+		"tuios-nvim-navigator",
+		for_cat = "editor",
+		event = "DeferredUIEnter",
+		after = function()
+			if vim.env.TUIOS_ENV == "1" then
+				require("tuios-nvim-navigator").setup()
+			end
+		end,
+	},
+	{
 		"herdr-splits.nvim",
 		for_cat = "editor",
 		event = "DeferredUIEnter",
@@ -112,7 +123,7 @@ return {
 			vim.cmd.packadd(name)
 		end,
 		after = function(plugin)
-			if vim.env.HERDR_ENV ~= "1" then
+			if vim.env.HERDR_ENV ~= "1" or vim.env.TUIOS_ENV == "1" then
 				return
 			end
 
