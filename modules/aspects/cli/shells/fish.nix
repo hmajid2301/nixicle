@@ -55,21 +55,74 @@ let
   ];
 in
 {
+  den.aspects.shellPromptHistory.homeManager =
+    {
+      config,
+      lib,
+      pkgs,
+      ...
+    }:
+    {
+      programs = {
+        atuin = {
+          enable = true;
+          flags = [
+            "--disable-up-arrow"
+            "--disable-ctrl-r"
+          ];
+          settings = {
+            sync_address = "https://atuin.${lib.nixicle.domains.root}";
+            sync_frequency = "15m";
+            dialect = "uk";
+            enter_accept = false;
+            records = true;
+            search_mode = "skim";
+          };
+        };
+        starship = {
+          enable = true;
+          enableFishIntegration = false;
+          settings = { };
+        };
+        fish.interactiveShellInit = ''
+          if test "$TERM" != dumb
+            source ${
+              pkgs.runCommand "starship-init.fish" { } ''
+                ${lib.getExe config.programs.starship.package} init fish > $out
+              ''
+            }
+          end
+        '';
+      };
+    };
+
   den.aspects.fish = {
     nixos = {
-      programs.fish.enable = true;
+      programs.fish = {
+        enable = true;
+        useBabelfish = true;
+      };
     };
 
     homeManager =
-      { pkgs, config, ... }:
+      {
+        pkgs,
+        lib,
+        config,
+        ...
+      }:
       {
         programs.fish = {
           enable = true;
           interactiveShellInit = ''
-            ${pkgs.nix-your-shell}/bin/nix-your-shell fish | source
+            source ${
+              pkgs.runCommand "nix-your-shell-init.fish" { } ''
+                ${lib.getExe pkgs.nix-your-shell} fish > $out
+              ''
+            }
             set -x GOPATH $XDG_DATA_HOME/go
             set -x GOPRIVATE "github.com/NalaMoney"
-            set -gx PATH /usr/local/bin /usr/bin ~/.local/bin $GOPATH/bin/ $PATH
+            fish_add_path --global --path ~/.local/bin $GOPATH/bin
 
             # fifc setup
             set -Ux fifc_editor nvim
