@@ -165,6 +165,11 @@ _: {
                 path = "session-summary";
               };
 
+              weekly-summary = {
+                from = "nixicle";
+                path = "weekly-summary";
+              };
+
               terraform-specialist = {
                 from = "nixicle";
                 path = "terraform-specialist";
