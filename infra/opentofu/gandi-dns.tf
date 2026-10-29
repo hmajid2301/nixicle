@@ -72,6 +72,22 @@ resource "gandi_livedns_record" "wildcard_homelab_aaaa" {
   values = ["fd7a:115c:a1e0::4632:4712"]
 }
 
+resource "gandi_livedns_record" "tuios_homelab_a" {
+  zone   = gandi_livedns_domain.haseebmajid_dev.id
+  name   = "tuios.homelab"
+  type   = "A"
+  ttl    = 3600
+  values = gandi_livedns_record.wildcard_homelab_a.values
+}
+
+resource "gandi_livedns_record" "tuios_homelab_aaaa" {
+  zone   = gandi_livedns_domain.haseebmajid_dev.id
+  name   = "tuios.homelab"
+  type   = "AAAA"
+  ttl    = 3600
+  values = gandi_livedns_record.wildcard_homelab_aaaa.values
+}
+
 resource "gandi_livedns_record" "talks_a" {
   zone   = gandi_livedns_domain.haseebmajid_dev.id
   name   = "talks"

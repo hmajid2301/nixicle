@@ -73,9 +73,11 @@ in
         provides.vps = {
           includes = [
             den.aspects.fish
+            den.aspects.shellPromptHistory
             den.aspects.git
             den.aspects.ssh
             den.aspects.herdr-cli
+            den.aspects.tuios
             den.aspects.ai
             den.aspects.worktrunk
             den.aspects.devTools
@@ -103,7 +105,12 @@ in
                 defaultSecretsMountPoint = "/run/user/1002/secrets.d";
               };
 
-              stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-mocha.yaml";
+              stylix = {
+                enable = true;
+                autoEnable = false;
+                base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-mocha.yaml";
+                targets.starship.enable = true;
+              };
 
               systemd.user.services.herdr-server = {
                 Unit = {
@@ -120,6 +127,22 @@ in
                   RestartSec = 5;
                   UMask = "0077";
                   WorkingDirectory = "/home/haseeb";
+                };
+                Install.WantedBy = [ "default.target" ];
+              };
+
+              systemd.user.services.tuios-web = {
+                Unit = {
+                  Description = "Tailscale-only TUIOS web terminal";
+                  After = [ "network-online.target" ];
+                  Wants = [ "network-online.target" ];
+                };
+                Service = {
+                  ExecStart = "${config.programs.tuios.package}/bin/tuios-web --host 127.0.0.1 --port 7681 --allow-host tuios.homelab.haseebmajid.dev --no-auth --default-session phone";
+                  Restart = "on-failure";
+                  RestartSec = 5;
+                  UMask = "0077";
+                  WorkingDirectory = config.home.homeDirectory;
                 };
                 Install.WantedBy = [ "default.target" ];
               };
