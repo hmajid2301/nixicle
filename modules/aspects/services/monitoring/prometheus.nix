@@ -67,6 +67,7 @@ _: {
             postgres = {
               enable = true;
               runAsLocalSuperUser = true;
+              extraFlags = [ "--collector.stat_checkpointer" ];
             };
             node = {
               port = 3021;
