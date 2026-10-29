@@ -23,6 +23,7 @@
       in
       {
         xdg = {
+          configFile."stylus/styles.json".source = ./_stylus.json;
           mimeApps.defaultApplications = {
             "text/html" = [ "firefox.desktop" ];
             "text/xml" = [ "firefox.desktop" ];
