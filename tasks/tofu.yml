@@ -6,10 +6,10 @@ vars:
 
 tasks:
   init:
-    desc: Init OpenTofu working dir for Pocket ID resources (requires backend env for remote state)
+    desc: Initialize OpenTofu with GitLab-managed state (requires glab authentication)
     dir: '{{.TF_DIR}}'
     cmds:
-      - tofu init
+      - glab opentofu init -R '{{.GITLAB_PROJECT | default "hmajid2301/nixicle"}}' '{{.STATE | default "default"}}' -- -reconfigure
 
   validate:
     desc: Validate OpenTofu config without backend access
@@ -23,19 +23,23 @@ tasks:
     desc: Plan Pocket ID OpenTofu resources (requires Pocket ID + backend env)
     dir: '{{.TF_DIR}}'
     cmds:
-      - tofu init
+      - task: init
       - tofu plan -var-file={{.VAR_FILE}}
 
   apply:
     desc: Apply Pocket ID OpenTofu resources (manual, requires Pocket ID + backend env)
     dir: '{{.TF_DIR}}'
     cmds:
-      - tofu init
+      - task: init
       - tofu apply -var-file={{.VAR_FILE}}
 
   import:
-    desc: "Import an existing Pocket ID resource into OpenTofu state. Usage: task tofu:import ADDRESS='pocketid_client.app["grafana"]' ID=grafana"
+    desc: >-
+      Import an existing Pocket ID resource into OpenTofu state. Usage: task tofu:import ADDRESS='pocketid_client.app["grafana"]' ID=grafana
     dir: '{{.TF_DIR}}'
+    env:
+      IMPORT_ADDRESS: '{{.ADDRESS}}'
+      IMPORT_ID: '{{.ID}}'
     cmds:
-      - tofu init
-      - tofu import -var-file={{.VAR_FILE}} "{{.ADDRESS}}" "{{.ID}}"
+      - task: init
+      - tofu import -var-file={{.VAR_FILE}} "$IMPORT_ADDRESS" "$IMPORT_ID"
