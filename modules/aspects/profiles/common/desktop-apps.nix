@@ -18,7 +18,7 @@
           base00 = "#eff1f5";
           base01 = "#e6e9ef";
           base05 = "#4c4f69";
-          base0D = "#7287fd";
+          base07 = "#7287fd";
         };
       in
       {
@@ -66,39 +66,43 @@
               "browser.urlbar.suggest.topsites" = false;
               "widget.disable-native-themes" = true;
             };
-            userChrome = lib.concatStringsSep "\n" [
-              "  :root {"
-              "    --gnome-menu-color: ${colors.base05} !important;"
-              "    --gnome-selected-color: color-mix(in srgb, ${colors.base0D} 40%, transparent) !important;"
-              "    --gnome-selected-hover-color: color-mix(in srgb, ${colors.base0D} 50%, transparent) !important;"
-              "  }"
-              ""
-              "  menupopup > menuitem[_moz-menuactive]:not([disabled=\"true\"]),"
-              "  menupopup > menu[_moz-menuactive]:not([disabled=\"true\"]) {"
-              "    color: ${colors.base00} !important;"
-              "    background-color: ${colors.base0D} !important;"
-              "  }"
-            ];
+            userChrome = lib.mkAfter (
+              lib.concatStringsSep "\n" [
+                "  :root {"
+                "    --gnome-menu-color: ${colors.base05} !important;"
+                "    --gnome-selected-color: color-mix(in srgb, ${colors.base07} 40%, transparent) !important;"
+                "    --gnome-selected-hover-color: color-mix(in srgb, ${colors.base07} 50%, transparent) !important;"
+                "  }"
+                ""
+                "  menupopup > menuitem[_moz-menuactive]:not([disabled=\"true\"]),"
+                "  menupopup > menu[_moz-menuactive]:not([disabled=\"true\"]) {"
+                "    color: ${colors.base00} !important;"
+                "    background-color: ${colors.base07} !important;"
+                "  }"
+              ]
+            );
             # No background on the closed select: unstyled selects keep the
             # page/OS box so we don't force a palette that clashes, and sites
             # styling their own selects win. Theme only the native dropdown
             # option list for readability.
-            userContent = lib.concatStringsSep "\n" [
-              "  select {"
-              "    color: light-dark(${latte.base05}, ${colors.base05});"
-              "  }"
-              ""
-              "  select option, select optgroup {"
-              "    color: light-dark(${latte.base05}, ${colors.base05});"
-              "    background-color: light-dark(${latte.base01}, ${colors.base01});"
-              "  }"
-              ""
-              "  select option:checked,"
-              "  select option:hover {"
-              "    color: light-dark(${latte.base00}, ${colors.base00});"
-              "    background-color: light-dark(${latte.base0D}, ${colors.base0D});"
-              "  }"
-            ];
+            userContent = lib.mkAfter (
+              lib.concatStringsSep "\n" [
+                "  select {"
+                "    color: light-dark(${latte.base05}, ${colors.base05});"
+                "  }"
+                ""
+                "  select option, select optgroup {"
+                "    color: light-dark(${latte.base05}, ${colors.base05});"
+                "    background-color: light-dark(${latte.base01}, ${colors.base01});"
+                "  }"
+                ""
+                "  select option:checked,"
+                "  select option:hover {"
+                "    color: light-dark(${latte.base00}, ${colors.base00});"
+                "    background-color: light-dark(${latte.base07}, ${colors.base07});"
+                "  }"
+              ]
+            );
             search = {
               force = true;
               default = "Kagi";

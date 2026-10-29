@@ -1,4 +1,4 @@
-{ lib, ... }:
+{ config, lib, ... }:
 {
   input = {
     keyboard = {
@@ -76,7 +76,10 @@
       top = 0;
       bottom = 0;
     };
-    focus-ring.width = 4;
+    focus-ring = {
+      width = 4;
+      active-color = config.lib.stylix.colors.withHashtag.base07;
+    };
     border.off = { };
     default-column-width.proportion = 0.5;
     preset-column-widths._children = [

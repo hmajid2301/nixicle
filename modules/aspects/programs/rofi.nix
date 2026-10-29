@@ -40,7 +40,7 @@ _: {
               bg-col-light = mkLiteral "#${colors.base00}";
               border-col = mkLiteral "#${colors.base00}";
               selected-col = mkLiteral "#${colors.base00}";
-              blue = mkLiteral "#${colors.base0D}";
+              blue = mkLiteral "#${colors.base07}";
               fg-col = mkLiteral "#${colors.base05}";
               fg-col2 = mkLiteral "#${colors.base08}";
               grey = "#737994";

@@ -165,7 +165,7 @@ return {
 							end,
 							color = {
 								fg = "#FFF",
-								bg = "#CBA6F7",
+								bg = "#B4BEFE",
 								gui = "bold",
 							},
 						},

@@ -41,7 +41,15 @@
       };
 
     homeManager =
-      { pkgs, ... }:
+      { config, pkgs, ... }:
+      let
+        uiColors = (config.stylix.base16.mkSchemeAttrs config.stylix.base16Scheme).override (
+          config.stylix.override
+          // {
+            base0D = config.lib.stylix.colors.base07;
+          }
+        );
+      in
       {
         imports = [
           inputs.stylix.homeModules.stylix
@@ -60,14 +68,22 @@
           autoEnable = false;
           cache.enable = true;
           flavor = "mocha";
-          fish.enable = true;
+          accent = "lavender";
         };
+
+        programs.fish.interactiveShellInit = ''
+          source ${
+            pkgs.runCommand "catppuccin-fish-colors.fish" { } ''
+              sed -n 's/^\(fish_[a-z_]*\) /set -g \1 /p' \
+                ${config.catppuccin.sources.fish}/static/catppuccin-${config.catppuccin.flavor}.theme > $out
+            ''
+          }
+        '';
 
         stylix = {
           enable = true;
           autoEnable = true;
           base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-mocha.yaml";
-          override.base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-mocha.yaml";
           polarity = "dark";
 
           icons = {
@@ -79,9 +95,15 @@
             dark = "Papirus-Dark";
           };
 
-          targets.firefox = {
-            firefoxGnomeTheme.enable = true;
-            profileNames = [ "default" ];
+          targets = {
+            gtk.colors.override = uiColors;
+            qt.colors.override = uiColors;
+            rofi.colors.override = uiColors;
+            firefox = {
+              colors.override = uiColors;
+              firefoxGnomeTheme.enable = true;
+              profileNames = [ "default" ];
+            };
           };
 
           image = pkgs.nixicle.wallpapers.nixppuccin;
