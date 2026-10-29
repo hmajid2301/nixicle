@@ -37,6 +37,7 @@ let
       src = ../.;
       package = pkgs.prek;
       hooks = {
+        gitleaks.enable = true;
         nixfmt.enable = true;
         deadnix = {
           enable = true;
