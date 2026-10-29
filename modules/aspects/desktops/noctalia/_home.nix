@@ -39,6 +39,34 @@ in
           font_family = config.stylix.fonts.sansSerif.name;
           clipboard_enabled = true;
           avatar_path = "/home/${config.home.username}/.face";
+          session.actions = [
+            {
+              action = "lock";
+              shortcut = "1";
+            }
+            {
+              action = "logout";
+              shortcut = "2";
+            }
+            {
+              action = "lock_and_suspend";
+              shortcut = "3";
+            }
+            {
+              action = "reboot";
+              shortcut = "4";
+            }
+            {
+              action = "shutdown";
+              shortcut = "5";
+              variant = "destructive";
+            }
+            {
+              action = "command";
+              label = "Hibernate";
+              command = "systemctl hibernate";
+            }
+          ];
         };
         nightlight = {
           enabled = true;
