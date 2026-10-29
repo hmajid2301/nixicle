@@ -29,7 +29,14 @@ _: {
               Defaults timestamp_timeout=5
             '';
           };
-          auditd.enable = true;
+          auditd = {
+            enable = true;
+            settings = {
+              max_log_file = 100;
+              num_logs = 10;
+              max_log_file_action = "ROTATE";
+            };
+          };
           audit.enable = true;
           audit.rules = [
             "-a exit,always -F arch=b64 -S execve"
@@ -77,6 +84,13 @@ _: {
         };
 
         systemd.services = lib.mkMerge [
+          {
+            auditd = {
+              reloadIfChanged = true;
+              restartTriggers = [ config.environment.etc."audit/auditd.conf".source ];
+              serviceConfig.ExecReload = "${lib.getExe' config.security.auditd.package "auditctl"} --signal reload";
+            };
+          }
           (lib.mkIf config.services.pocket-id.enable {
             pocket-id.serviceConfig = mkCoreServiceHardening;
           })
