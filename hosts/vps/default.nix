@@ -338,6 +338,15 @@
           tailscale.extraSetFlags = [ "--ssh" ];
           traefik.dynamicConfigOptions.http = lib.mkMerge [
             (lib.nixicle.mkTraefikService {
+              name = "tuios";
+              port = 7681;
+              host = "127.0.0.1";
+              middlewares = [
+                "tailnet-only"
+                "tinyauth"
+              ];
+            })
+            (lib.nixicle.mkTraefikService {
               name = "jellyfin";
               port = 8096;
               subdomain = "jellyfin";
