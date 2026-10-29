@@ -58,6 +58,14 @@ tasks:
           exit 1
         fi
 
+  build:
+    desc: "Build a local NixOS generation without activating it (HOST defaults to this machine)"
+    vars:
+      LOCAL_HOSTNAME:
+        sh: hostname
+    cmds:
+      - nix build '.#nixosConfigurations.{{.HOST | default .LOCAL_HOSTNAME}}.config.system.build.toplevel' --out-link 'result-{{.HOST | default .LOCAL_HOSTNAME}}'
+
   rebuild:
     desc: "Rebuild on host"
     cmds:
