@@ -28,7 +28,7 @@ include:
 .tofu_tailscale: &tofu_tailscale
   before_script:
     - test -n "$TS_AUTHKEY"
-    - nix profile add nixpkgs#tailscale nixpkgs#iptables >/dev/null
+    - nix --extra-experimental-features "nix-command flakes" profile add nixpkgs#tailscale nixpkgs#iptables >/dev/null
     - mkdir -p /dev/net
     - test -c /dev/net/tun || mknod /dev/net/tun c 10 200
     - tailscaled --state="mem:" &
