@@ -12,7 +12,7 @@ image: nixpkgs/nix-flakes:nixos-26.05-x86_64-linux
       - "infra/opentofu/**/*"
 
 include:
-  - component: gitlab.com/components/opentofu/validate-plan-apply@4.9.0
+  - component: gitlab.com/components/opentofu/validate-plan-apply@4.9.1
     inputs:
       opentofu_version: 1.12.6
       root_dir: infra/opentofu
