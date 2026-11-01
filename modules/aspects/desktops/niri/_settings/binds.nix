@@ -33,6 +33,22 @@
     "Mod+Ctrl+J".focus-workspace-down = { };
     "Mod+Ctrl+K".focus-workspace-up = { };
     "Mod+Ctrl+L".consume-or-expel-window-right = { };
+    "Mod+Ctrl+TouchpadScrollDown" = {
+      _props.cooldown-ms = 150;
+      focus-workspace-down = { };
+    };
+    "Mod+Ctrl+TouchpadScrollUp" = {
+      _props.cooldown-ms = 150;
+      focus-workspace-up = { };
+    };
+    "Mod+Ctrl+WheelScrollDown" = {
+      _props.cooldown-ms = 150;
+      focus-workspace-down = { };
+    };
+    "Mod+Ctrl+WheelScrollUp" = {
+      _props.cooldown-ms = 150;
+      focus-workspace-up = { };
+    };
     "Mod+Ctrl+Shift+0".move-column-to-workspace = {
       _props.focus = false;
       _args = [ 10 ];
@@ -77,6 +93,22 @@
     "Mod+Ctrl+Shift+J".focus-monitor-down = { };
     "Mod+Ctrl+Shift+K".focus-monitor-up = { };
     "Mod+Ctrl+Shift+L".focus-monitor-right = { };
+    "Mod+Ctrl+Shift+TouchpadScrollDown" = {
+      _props.cooldown-ms = 150;
+      move-column-to-workspace-down._props.focus = true;
+    };
+    "Mod+Ctrl+Shift+TouchpadScrollUp" = {
+      _props.cooldown-ms = 150;
+      move-column-to-workspace-up._props.focus = true;
+    };
+    "Mod+Ctrl+Shift+WheelScrollDown" = {
+      _props.cooldown-ms = 150;
+      move-column-to-workspace-down._props.focus = true;
+    };
+    "Mod+Ctrl+Shift+WheelScrollUp" = {
+      _props.cooldown-ms = 150;
+      move-column-to-workspace-up._props.focus = true;
+    };
     "Mod+E".spawn = [ "nautilus" ];
     "Mod+Equal".set-column-width = "+10%";
     "Mod+Escape".spawn = [
@@ -92,6 +124,7 @@
     "Mod+L".focus-column-or-monitor-right = { };
     "Mod+M".maximize-column = { };
     "Mod+Minus".set-column-width = "-10%";
+    "Mod+MouseMiddle".toggle-overview = { };
     "Mod+O".toggle-overview = { };
     "Mod+Print".spawn = [
       "niri"
@@ -166,6 +199,30 @@
     "Mod+Shift+L".move-column-to-monitor-right = { };
     "Mod+Shift+Minus".set-window-height = "-10%";
     "Mod+Shift+R".switch-preset-column-width-back = { };
+    "Mod+Shift+TouchpadScrollDown" = {
+      _props.cooldown-ms = 150;
+      move-column-right = { };
+    };
+    "Mod+Shift+TouchpadScrollLeft" = {
+      _props.cooldown-ms = 150;
+      move-column-left = { };
+    };
+    "Mod+Shift+TouchpadScrollRight" = {
+      _props.cooldown-ms = 150;
+      move-column-right = { };
+    };
+    "Mod+Shift+TouchpadScrollUp" = {
+      _props.cooldown-ms = 150;
+      move-column-left = { };
+    };
+    "Mod+Shift+WheelScrollDown" = {
+      _props.cooldown-ms = 150;
+      move-column-right = { };
+    };
+    "Mod+Shift+WheelScrollUp" = {
+      _props.cooldown-ms = 150;
+      move-column-left = { };
+    };
     "Mod+Space".spawn = [
       "noctalia"
       "msg"
@@ -173,6 +230,22 @@
       "launcher"
     ];
     "Mod+T".toggle-window-floating = { };
+    "Mod+TouchpadScrollDown" = {
+      _props.cooldown-ms = 150;
+      focus-column-right = { };
+    };
+    "Mod+TouchpadScrollLeft" = {
+      _props.cooldown-ms = 150;
+      focus-column-left = { };
+    };
+    "Mod+TouchpadScrollRight" = {
+      _props.cooldown-ms = 150;
+      focus-column-right = { };
+    };
+    "Mod+TouchpadScrollUp" = {
+      _props.cooldown-ms = 150;
+      focus-column-left = { };
+    };
     "Mod+V".spawn = [
       "noctalia"
       "msg"
@@ -180,6 +253,14 @@
       "clipboard"
     ];
     "Mod+W".toggle-column-tabbed-display = { };
+    "Mod+WheelScrollDown" = {
+      _props.cooldown-ms = 150;
+      focus-column-right = { };
+    };
+    "Mod+WheelScrollUp" = {
+      _props.cooldown-ms = 150;
+      focus-column-left = { };
+    };
     Print.spawn = [
       "niri"
       "msg"
