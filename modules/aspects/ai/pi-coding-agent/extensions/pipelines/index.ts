@@ -30,6 +30,8 @@ import { log } from "./log.ts";
 import { savePipeline } from "./store.ts";
 import type { CompletionResult, RunHandle } from "./types.ts";
 import { registerWidget, type WidgetModel } from "./widget.ts";
+import { registerTmlDashboard } from "./tml-dashboard.ts";
+import { applyDashboardAction } from "./dashboard-actions.ts";
 
 const EXT_DIR = dirname(fileURLToPath(import.meta.url));
 const CHILD_EXT = join(EXT_DIR, "child.ts");
@@ -239,7 +241,8 @@ export default function pipelinesExtension(pi: ExtensionAPI): void {
         }
         const split = stageLabel.indexOf(":");
         if (split > 0) engine.complete(stageLabel.slice(0, split), stageLabel.slice(split + 1), result);
-        runs.delete(handle.id);
+        if (result.reason === "ping") runs.set(handle.id, { handle, req, stageLabel, retained: true });
+        else runs.delete(handle.id);
       })
       .catch((error) => {
         if (runs.get(handle.id)?.handle !== handle) return;
@@ -326,7 +329,14 @@ export default function pipelinesExtension(pi: ExtensionAPI): void {
 
   function findStageRunMeta(pipelineId: string, stageId: string): [string, RunMeta] | undefined {
     const label = stageLabelOf(pipelineId, stageId);
-    return [...runs.entries()].find(([, meta]) => meta.stageLabel === label && !meta.retained);
+    return [...runs.entries()].find(([, meta]) => meta.stageLabel === label);
+  }
+
+  function stopStageRun(pipelineId: string, stageId: string): void {
+    const live = findStageRunMeta(pipelineId, stageId);
+    if (!live) return;
+    runs.delete(live[0]);
+    stopRun(live[0]);
   }
 
   function findRun(idOrName: string | undefined): [string, RunMeta] | undefined {
@@ -373,14 +383,7 @@ export default function pipelinesExtension(pi: ExtensionAPI): void {
     for (const [runId, meta] of runs.entries()) {
       if (!meta.stageLabel?.startsWith(prefix)) continue;
       runs.delete(runId);
-      void meta.handle.interrupt().catch(() => {});
-      if (meta.handle.backend === "pane" && meta.handle.paneId) {
-        try {
-          paneClose(meta.handle.paneId);
-        } catch {
-          // best effort
-        }
-      }
+      stopRun(runId);
     }
     engine.cancel(id);
     return true;
@@ -388,6 +391,7 @@ export default function pipelinesExtension(pi: ExtensionAPI): void {
 
   const hooks: PipelineHooks = {
     spawn(p: PipelineState, s: StageState): void {
+      if (findStageRunMeta(p.id, s.id)?.[1].retained) stopStageRun(p.id, s.id);
       launch(
         `${p.id}-${s.id}-${s.attempt}`,
         { name: s.id, agentName: s.agent, task: s.task, model: s.model, thinking: s.thinking, autoExit: true },
@@ -420,12 +424,18 @@ export default function pipelinesExtension(pi: ExtensionAPI): void {
     runs: [...runs.values()].filter((run) => !run.retained).map((run) => ({ handle: run.handle, stageLabel: run.stageLabel })),
   });
   registerWidget(pi, widgetModel, { collapsedDefault: cfg.widget?.collapsed ?? false });
+  registerTmlDashboard(pi, widgetModel, (action, pipelineId, stageId, snapshot) => {
+    applyDashboardAction(engine, {
+      cancelPipeline,
+      stopStage: stopStageRun,
+    }, action, pipelineId, stageId, snapshot);
+  });
 
   pi.registerTool({
     name: "subagent_spawn",
     label: "Subagent Spawn",
     description:
-      "Spawn a subagent to work on a task. In herdr it runs in a live pane; outside herdr it runs headless. Results steer back unless await_result is true.",
+      "Spawn a subagent to work on a task. In Herdr or TUIOS it runs in a live pane; otherwise it runs headless. Results steer back unless await_result is true.",
     parameters: Type.Object({
       name: Type.Optional(Type.String({ description: "Display name for the run (default: agent name)" })),
       agent: Type.Optional(Type.String({ description: "Agent definition name (see subagents_list)" })),
@@ -604,11 +614,7 @@ export default function pipelinesExtension(pi: ExtensionAPI): void {
       if (stage.status !== "running" && stage.status !== "queued" && stage.status !== "waiting-help") {
         return { content: [{ type: "text" as const, text: `Stage "${stage.id}" is ${stage.status} — not cancellable.` }], isError: true };
       }
-      const live = findStageRunMeta(params.pipelineId, params.stageId);
-      if (live) {
-        runs.delete(live[0]);
-        void live[1].handle.interrupt().catch(() => {});
-      }
+      stopStageRun(params.pipelineId, params.stageId);
       engine.failStage(params.pipelineId, params.stageId, params.reason ?? "cancelled by supervisor");
       return { content: [{ type: "text" as const, text: `Failed stage "${stage.id}"; dependents halted.` }] };
     },
@@ -631,6 +637,7 @@ export default function pipelinesExtension(pi: ExtensionAPI): void {
       if (stage.status !== "failed" && stage.status !== "halted" && stage.status !== "waiting-gate" && stage.status !== "waiting-help") {
         return { content: [{ type: "text" as const, text: `Stage "${stage.id}" is ${stage.status} — nothing to proceed past.` }], isError: true };
       }
+      if (stage.status === "waiting-help") stopStageRun(params.pipelineId, params.stageId);
       engine.proceedStage(params.pipelineId, params.stageId);
       return { content: [{ type: "text" as const, text: `Proceeded past stage "${stage.id}"; dependents unblocked.` }] };
     },
@@ -694,6 +701,7 @@ export default function pipelinesExtension(pi: ExtensionAPI): void {
           return { content: [{ type: "text" as const, text: `Gate "${stage.id}" passed; pipeline continues.` }] };
         }
         if (stage.status === "waiting-help") {
+          stopStageRun(params.pipelineId, params.stageId);
           engine.resumeHelped(params.pipelineId, params.stageId, params.message);
           return { content: [{ type: "text" as const, text: `Resuming stage "${stage.id}" with your guidance.` }] };
         }
