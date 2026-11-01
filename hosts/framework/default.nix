@@ -88,6 +88,7 @@
 
         boot = {
           initrd.systemd.enable = true;
+          kernelParams = [ "resume_offset=533760" ];
         };
 
         # Disable inbound SSH on this laptop
