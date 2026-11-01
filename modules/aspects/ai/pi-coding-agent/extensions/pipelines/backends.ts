@@ -1,5 +1,5 @@
 // extensions/pipelines/backends.ts
-// One spawn interface, two implementations: herdr pane (primary), headless child process.
+// One spawn interface: Herdr/TUIOS panes or headless child processes.
 import { spawn } from "node:child_process";
 import { chmodSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
@@ -174,7 +174,7 @@ export function spawnRun(req: ResolvedSpawn): RunHandle {
   const backend = currentBackend();
   if (backend === "headless" && !isHeadlessCapable(req.harness)) {
     throw new Error(
-      `harness "${req.harness}" cannot run headless — start pi inside herdr for pane mode`,
+      `harness "${req.harness}" cannot run headless — start pi inside Herdr or TUIOS for pane mode`,
     );
   }
   return backend === "pane" ? spawnPane(req, buildOpts(req, "pane")) : spawnHeadless(req, buildOpts(req, "headless"));

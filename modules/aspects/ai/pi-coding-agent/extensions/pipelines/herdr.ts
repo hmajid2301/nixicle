@@ -1,20 +1,26 @@
 // extensions/pipelines/herdr.ts
 // Thin herdr CLI seam: availability, exec, and pane/tab primitives.
 // Placement policy and ownership live in placement.ts.
-import { execFileSync, execSync } from "node:child_process";
+import { execFileSync } from "node:child_process";
 
 let availableCache: boolean | null = null;
 
 export function isHerdrAvailable(): boolean {
   if (availableCache === null) {
-    availableCache = process.env.HERDR_ENV === "1" && hasBinary("herdr");
+    const inHerdr = process.env.HERDR_ENV === "1";
+    const inTuios = process.env.TUIOS_ENV === "1" && !!process.env.HERDR_BIN_PATH;
+    availableCache = (inHerdr || inTuios) && hasBinary(herdrBinary());
   }
   return availableCache;
 }
 
+function herdrBinary(): string {
+  return process.env.HERDR_BIN_PATH || "herdr";
+}
+
 function hasBinary(cmd: string): boolean {
   try {
-    execSync(`command -v ${cmd}`, { stdio: "ignore" });
+    execFileSync("/bin/sh", ["-c", 'command -v "$1"', "sh", cmd], { stdio: "ignore" });
     return true;
   } catch {
     return false;
@@ -22,7 +28,7 @@ function hasBinary(cmd: string): boolean {
 }
 
 export function herdrExec(args: string[]): string {
-  return execFileSync("herdr", args, { encoding: "utf8" });
+  return execFileSync(herdrBinary(), args, { encoding: "utf8" });
 }
 
 export function parseJson(value: string): any {
@@ -104,7 +110,7 @@ export async function paneReadAsync(paneId: string, lines = 50): Promise<string>
   const { execFile } = await import("node:child_process");
   const { promisify } = await import("node:util");
   const { stdout } = await promisify(execFile)(
-    "herdr",
+    herdrBinary(),
     ["pane", "read", paneId, "--source", "visible", "--lines", String(lines)],
     { encoding: "utf8" },
   );
@@ -115,7 +121,7 @@ export async function paneGet(paneId: string): Promise<PaneState> {
   const { execFile } = await import("node:child_process");
   const { promisify } = await import("node:util");
   try {
-    const { stdout } = await promisify(execFile)("herdr", ["pane", "get", paneId], { encoding: "utf8" });
+    const { stdout } = await promisify(execFile)(herdrBinary(), ["pane", "get", paneId], { encoding: "utf8" });
     return parsePaneGet(stdout, paneId);
   } catch (e: any) {
     for (const raw of [e?.stderr, e?.stdout]) {
