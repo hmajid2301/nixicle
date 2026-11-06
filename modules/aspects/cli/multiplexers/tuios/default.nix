@@ -1,6 +1,6 @@
 { inputs, ... }:
 {
-  flake-file.inputs.tuios.url = "github:Gaurav-Gosain/tuios/main";
+  flake-file.inputs.tuios.url = "github:Gaurav-Gosain/tuios/v0.12.1";
   flake.homeModules.tuios = ./_home-manager.nix;
 
   den.aspects.tuios.homeManager =

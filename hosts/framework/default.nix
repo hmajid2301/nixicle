@@ -87,7 +87,6 @@
         };
 
         boot = {
-          initrd.systemd.enable = true;
           kernelParams = [ "resume_offset=533760" ];
         };
 

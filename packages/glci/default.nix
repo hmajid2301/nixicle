@@ -12,7 +12,8 @@ buildGoModule rec {
 
   subPackages = [ "cmd/glci" ];
 
-  vendorHash = "sha256-XOpUoZGQy6eZxHIfi52Bfpwg5GKj0DUSPDG+vx02Hs4=";
+  # TODO: add a CI build check for glci to catch stale vendorHash after input updates.
+  vendorHash = "sha256-2YjLZjJQcmXVR3Aj9ez9kSDTE4I85hc88TzxmsfFzfE=";
 
   ldflags = [
     "-s"

@@ -139,11 +139,7 @@ _: {
           sops.secrets.crowdsec_enroll_key = { };
           sops.secrets.crowdsec_bouncer_key = { };
 
-          # cscli defaults to this path.
           environment.etc = {
-            "crowdsec/config.yaml".source =
-              yaml.generate "crowdsec.yaml" config.services.crowdsec.settings.general;
-
             # Stable filenames prevent duplicate parsers after updates.
             "crowdsec/parsers/s02-enrich/nixicle-allowlist.yaml".source = allowlistYaml;
             "crowdsec/scenarios/nixicle-attic-probing.yaml".source = atticHttpProbing;
@@ -164,9 +160,7 @@ _: {
                   PrivateTmp = true;
                   PrivateDevices = true;
                   ProtectHome = true;
-                  ProtectKernelLogs = true;
                   ProtectKernelTunables = true;
-                  ProtectControlGroups = true;
                   ProtectKernelModules = true;
                   RestrictSUIDSGID = true;
                   LockPersonality = true;
@@ -265,28 +259,30 @@ _: {
               "crowdsecurity/traefik"
             ];
             settings = {
-              general.api = {
-                server = {
-                  enable = true;
-                  listen_uri = "127.0.0.1:8081";
+              config = {
+                config_paths.data_dir = "/var/lib/crowdsec/state";
+                api = {
+                  server = {
+                    enable = true;
+                    listen_uri = "127.0.0.1:8081";
+                  };
+                  client.credentials_path = "/var/lib/crowdsec/state/lapi-secrets.yaml";
                 };
-                client.credentials_path = "/var/lib/crowdsec/state/lapi-secrets.yaml";
               };
-              lapi.credentialsFile = "/var/lib/crowdsec/state/lapi-secrets.yaml";
-              console.tokenFile = config.sops.secrets.crowdsec_enroll_key.path;
+              console.enrollKeyFile = config.sops.secrets.crowdsec_enroll_key.path;
+              acquisitions = [
+                {
+                  source = "journalctl";
+                  journalctl_filter = [ "_SYSTEMD_UNIT=sshd.service" ];
+                  labels.type = "syslog";
+                }
+                {
+                  source = "journalctl";
+                  journalctl_filter = [ "_SYSTEMD_UNIT=traefik.service" ];
+                  labels.type = "traefik";
+                }
+              ];
             };
-            localConfig.acquisitions = [
-              {
-                source = "journalctl";
-                journalctl_filter = [ "_SYSTEMD_UNIT=sshd.service" ];
-                labels.type = "syslog";
-              }
-              {
-                source = "journalctl";
-                journalctl_filter = [ "_SYSTEMD_UNIT=traefik.service" ];
-                labels.type = "traefik";
-              }
-            ];
           };
         };
       };

@@ -103,7 +103,7 @@ in
               inputs.lanzaboote.nixosModules.lanzaboote
               inputs.impermanence.nixosModules.impermanence
               inputs.sops-nix.nixosModules.sops
-              inputs.tangled.nixosModules.knot
+              inputs.tangled.nixosModules.knot-rs
               inputs.tangled.nixosModules.spindle
               inputs.nixflix.nixosModules.nixflix
               inputs.niri.nixosModules.niri
@@ -127,6 +127,68 @@ in
               system = imageSystem;
               modules = [
                 inputs.tangled.nixosModules.spindle-nixos
+                (
+                  {
+                    config,
+                    options,
+                    pkgs,
+                    ...
+                  }:
+                  let
+                    microvm = inputs.tangled.inputs.microvm;
+                    removeInitrdEnable =
+                      path:
+                      lib.updateManyAttrsByPath [
+                        {
+                          inherit path;
+                          update = attrs: builtins.removeAttrs attrs [ "enable" ];
+                        }
+                      ];
+                    # TODO: drop once Tangled drops this root from its blacklist;
+                    # nss-cacert refuses to build with blocklist entries that the
+                    # cert store no longer carries.
+                    removeAbsentBlocklistRoot = lib.updateManyAttrsByPath [
+                      {
+                        path = [
+                          "security"
+                          "pki"
+                          "caCertificateBlacklist"
+                        ];
+                        update = lib.remove "emSign ECC Root CA - G3";
+                      }
+                    ];
+                  in
+                  {
+                    # TODO: drop once Tangled and MicroVM support systemd-only initrd.
+                    disabledModules = [
+                      "${inputs.tangled}/nix/microvm/base.nix"
+                      "${microvm}/nixos-modules/microvm/optimization.nix"
+                      "${microvm}/nixos-modules/microvm/mounts.nix"
+                    ];
+                    imports = [
+                      (removeAbsentBlocklistRoot (
+                        removeInitrdEnable [ "boot" "initrd" "systemd" ] (
+                          import "${inputs.tangled}/nix/microvm/base.nix" { inherit config pkgs lib; }
+                        )
+                      ))
+                      (removeInitrdEnable [ "content" "boot" "initrd" "systemd" ] (
+                        import "${microvm}/nixos-modules/microvm/optimization.nix" { inherit config options lib; }
+                      ))
+                      (import "${microvm}/nixos-modules/microvm/mounts.nix" {
+                        inherit lib;
+                        config = config // {
+                          boot = config.boot // {
+                            initrd = config.boot.initrd // {
+                              systemd = config.boot.initrd.systemd // {
+                                enable = true;
+                              };
+                            };
+                          };
+                        };
+                      })
+                    ];
+                  }
+                )
                 {
                   # TODO: Send upstream fix for spindle-nixos-image to fall back to
                   # `bzImage` when hostPlatform."linux-kernel".target is missing on
