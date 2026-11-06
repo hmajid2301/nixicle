@@ -85,7 +85,10 @@
 
         networking.firewall.allowedTCPPorts = [ 2222 ];
 
-        sops.secrets.knot_master_key = { };
+        sops.secrets = {
+          knot_master_key = { };
+          spindle_signing_key.mode = "0400";
+        };
         sops.templates."knot-env".content = ''
           KNOT_MASTER_KEY=${config.sops.placeholder.knot_master_key}
         '';
@@ -113,6 +116,7 @@
               package = inputs.tangled.packages.${system}.knot-rs;
               environmentFile = config.sops.templates."knot-env".path;
               settings = {
+                contact.email = "hello@haseebmajid.dev";
                 server = {
                   hostname = "knot.${config.nixicle.domains.root}";
                   admins = [ ownerDid ];
@@ -135,6 +139,8 @@
             spindle = {
               enable = true;
               package = inputs.tangled.packages.${system}.spindle;
+              keyPath = config.sops.secrets.spindle_signing_key.path;
+              contact.email = "hello@haseebmajid.dev";
               server = {
                 owner = ownerDid;
                 hostname = "spindle.${config.nixicle.domains.root}";

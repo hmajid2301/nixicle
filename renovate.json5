@@ -8,6 +8,23 @@
   "nix": {
     "enabled": true
   },
+  "customManagers": [
+    {
+      "customType": "regex",
+      "description": "Track stable TUIOS releases in the source and generated flake",
+      "managerFilePatterns": [
+        "/^flake\\.nix$/",
+        "/^modules/aspects/cli/multiplexers/tuios/default\\.nix$/"
+      ],
+      "matchStrings": [
+        "(?:flake-file\\.inputs\\.)?tuios\\.url = \"github:Gaurav-Gosain/tuios/(?<currentValue>v[0-9]+\\.[0-9]+\\.[0-9]+)\";"
+      ],
+      "depNameTemplate": "tuios",
+      "packageNameTemplate": "Gaurav-Gosain/tuios",
+      "datasourceTemplate": "github-releases",
+      "versioningTemplate": "semver"
+    }
+  ],
   "dependencyDashboard": true,
   "dependencyDashboardTitle": "🤖 Dependency Updates",
   "suppressNotifications": ["prIgnoreNotification"],
@@ -28,6 +45,23 @@
   "separateMultipleMajor": true,
   "separateMinorPatch": false,
   "packageRules": [
+    {
+      "description": "Update both TUIOS declarations and refresh their lock entry together",
+      "matchManagers": ["custom.regex"],
+      "matchDepNames": ["tuios"],
+      "groupName": "tuios releases",
+      "automerge": true,
+      "platformAutomerge": false,
+      "ignoreTests": false,
+      "postUpgradeTasks": {
+        "commands": [
+          "nix --extra-experimental-features 'nix-command flakes' flake update tuios"
+        ],
+        "installTools": { "nix": {} },
+        "fileFilters": ["flake.lock"],
+        "executionMode": "branch"
+      }
+    },
     {
       "description": "Group all non-major Nix flake dependencies",
       "matchManagers": ["nix"],

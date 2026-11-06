@@ -1,9 +1,12 @@
+diff --git a/docs/look-keys.json b/docs/look-keys.json
+index 0f8ffc6..c72a650 100644
 --- a/docs/look-keys.json
 +++ b/docs/look-keys.json
-@@ -264,6 +264,16 @@
-       ]
+@@ -306,6 +306,16 @@
+       "default": "",
+       "color": true
      },
-     {
++    {
 +      "path": "appearance.palette_density",
 +      "type": "string",
 +      "description": "Command palette row spacing: compact or roomy",
@@ -13,15 +16,13 @@
 +        "roomy"
 +      ]
 +    },
-+    {
+     {
        "path": "appearance.pane_background",
        "type": "string",
-       "description": "Background behind pane content: off, theme, or a colour (#rrggbb, 0-255, a slot name or a role name); empty follows appearance.background",
-@@ -500,6 +510,16 @@
-       "type": "bool",
+@@ -557,6 +567,16 @@
        "description": "Draw a nerd font icon per file type in the files section",
        "default": "true"
-+    },
+     },
 +    {
 +      "path": "appearance.sidebar.frame",
 +      "type": "string",
@@ -31,13 +32,15 @@
 +        "attached",
 +        "detached"
 +      ]
-     },
++    },
      {
        "path": "appearance.sidebar.header_case",
-@@ -842,6 +862,14 @@
+       "type": "string",
+@@ -897,6 +917,14 @@
+       "default": "",
        "max_bytes": 32
      },
-     {
++    {
 +      "path": "dock.tabs.cap_colors",
 +      "type": "list",
 +      "description": "Segmented icon-cap colours, cycling by workspace number. Empty uses the theme accent.",
@@ -45,11 +48,10 @@
 +      "max_items": 9,
 +      "max_bytes": 32
 +    },
-+    {
-       "path": "dock.tabs.inactive_bg",
-       "type": "string",
-       "description": "Background colour of the flat tabs of the other workspaces",
-@@ -892,12 +920,13 @@
+     {
+       "path": "dock.tabs.caps",
+       "type": "bool",
+@@ -954,12 +982,13 @@
      {
        "path": "dock.tabs.style",
        "type": "string",
@@ -65,9 +67,12 @@
        ],
        "max_bytes": 32
      },
+diff --git a/internal/app/command_palette_density_test.go b/internal/app/command_palette_density_test.go
+new file mode 100644
+index 0000000..dac20ed
 --- /dev/null
 +++ b/internal/app/command_palette_density_test.go
-@@ -0,0 +1,120 @@
+@@ -0,0 +1,124 @@
 +package app
 +
 +import (
@@ -104,7 +109,9 @@
 +			m.UserConfig.Appearance.CommandPaletteDensity = "roomy"
 +			m.PaletteItems = []CommandPaletteItem{}
 +			content, _, hits := m.renderCommandPalette()
-+			if lipgloss.Height(content) > m.panelRoomHeight() || len(hits) != 0 {
++			panelWidth, _, hints := m.paletteLayout()
++			limit := max(m.panelRoomHeight(), panelChrome(2, panelWidth, nil, hints)+minPanelRows)
++			if lipgloss.Height(content) > limit || len(hits) != 0 {
 +				t.Fatalf("empty %dx%d: height=%d hits=%d", width, height, lipgloss.Height(content), len(hits))
 +			}
 +			for i := range 24 {
@@ -154,8 +161,10 @@
 +					}
 +					for step := range 48 {
 +						content, geo, hits := m.renderCommandPalette()
-+						if lipgloss.Height(content) > m.panelRoomHeight() {
-+							t.Fatalf("panel height %d exceeds room %d", lipgloss.Height(content), m.panelRoomHeight())
++						panelWidth, _, hints := m.paletteLayout()
++						limit := max(m.panelRoomHeight(), panelChrome(2, panelWidth, nil, hints)+minPanelRows)
++						if lipgloss.Height(content) > limit {
++							t.Fatalf("panel height %d exceeds fitted limit %d", lipgloss.Height(content), limit)
 +						}
 +						rendered := strings.Split(ansi.Strip(content), "\n")
 +						selected := false
@@ -188,6 +197,9 @@
 +		}
 +	}
 +}
+diff --git a/internal/app/dock_multicolor_test.go b/internal/app/dock_multicolor_test.go
+new file mode 100644
+index 0000000..f1b0e7f
 --- /dev/null
 +++ b/internal/app/dock_multicolor_test.go
 @@ -0,0 +1,99 @@
@@ -290,6 +302,9 @@
 +	br, bg, bb, ba := b.RGBA()
 +	return ar == br && ag == bg && ab == bb && aa == ba
 +}
+diff --git a/internal/app/dock_segmented_test.go b/internal/app/dock_segmented_test.go
+new file mode 100644
+index 0000000..011aac7
 --- /dev/null
 +++ b/internal/app/dock_segmented_test.go
 @@ -0,0 +1,109 @@
@@ -361,17 +376,17 @@
 +	pal := m.groundUI()
 +	cfg := config.DockTabsConfig{Style: "segmented"}
 +	for _, label := range []string{"", "+", "code", " code", "1 "} {
-+		if got, want := m.dockTab(&cfg, label, true, false, false, pal, 1), workspacePill(label, true, false, pal, &m.Settings, nil); got != want {
++		if got, want := m.dockTab(&cfg, label, true, false, false, pal, 1), workspacePill(label, true, false, &cfg, pal, &m.Settings, nil); got != want {
 +			t.Errorf("%q did not fall back to an ordinary pill", label)
 +		}
 +	}
 +	m.Settings.UseASCIIOnly = true
-+	if got, want := m.dockTab(&cfg, "1 code", true, false, false, pal, 1), workspacePill("1 code", true, false, pal, &m.Settings, nil); got != want {
++	if got, want := m.dockTab(&cfg, "1 code", true, false, false, pal, 1), workspacePill("1 code", true, false, &cfg, pal, &m.Settings, nil); got != want {
 +		t.Error("ASCII output did not preserve the ordinary pill")
 +	}
 +	m.Settings.UseASCIIOnly = false
 +	pal.Panel, pal.Surface = overlay.NoColor, overlay.NoColor
-+	if got, want := m.dockTab(&cfg, "1 code", true, false, false, pal, 1), workspacePill("1 code", true, false, pal, &m.Settings, nil); got != want {
++	if got, want := m.dockTab(&cfg, "1 code", true, false, false, pal, 1), workspacePill("1 code", true, false, &cfg, pal, &m.Settings, nil); got != want {
 +		t.Error("no-color output did not preserve the ordinary pill")
 +	}
 +}
@@ -402,9 +417,11 @@
 +		}
 +	}
 +}
+diff --git a/internal/app/render_command_palette.go b/internal/app/render_command_palette.go
+index 6b4b68b..3a0a9c6 100644
 --- a/internal/app/render_command_palette.go
 +++ b/internal/app/render_command_palette.go
-@@ -63,8 +63,16 @@
+@@ -74,8 +74,16 @@ func (m *OS) paletteLayout() (width, rows int, hints []overlay.Hint) {
  	width = m.panelWidth(paletteInnerWidth)
  	// Body lines that are not command rows: the search input and its rule. The
  	// match count rides the search line.
@@ -423,7 +440,7 @@
  }
  
  // paletteLine is one row of the palette's list: a command, or the header of
-@@ -146,6 +154,7 @@
+@@ -157,6 +165,7 @@ func (m *OS) renderCommandPalette() (string, overlay.Geometry, []overlayRowHit)
  	bg := pal.Surface
  
  	width, visible, hints := m.paletteLayout()
@@ -431,7 +448,7 @@
  	list := paletteLines(filtered, grouped)
  	m.CommandPaletteScroll = paletteScroll(m.CommandPaletteScroll, list, m.CommandPaletteSelected, visible)
  	metaW := paletteMetaWidth(filtered, grouped, width)
-@@ -203,18 +212,21 @@
+@@ -214,18 +223,21 @@ func (m *OS) renderCommandPalette() (string, overlay.Geometry, []overlayRowHit)
  		}
  		// The empty state takes the rows the list would have, so the panel
  		// keeps its height.
@@ -446,20 +463,19 @@
 +			} else {
 +				st := overlay.RowState{Cursor: l.item == m.CommandPaletteSelected, Focused: true}
 +				lines = append(lines, pal.Row(paletteRow(filtered[l.item], st.Cursor, pal, width, metaW), width, st, bg))
++			}
++			if stride > 1 {
++				lines = append(lines, overlay.Style(bg).Render(" "))
  			}
 -			st := overlay.RowState{Cursor: l.item == m.CommandPaletteSelected, Focused: true}
 -			lines = append(lines, pal.Row(paletteRow(filtered[l.item], st.Cursor, pal, width, metaW), width, st, bg))
--		}
+ 		}
 -		for len(lines) < visible+2 {
-+			if stride > 1 {
-+				lines = append(lines, overlay.Style(bg).Render(" "))
-+			}
-+		}
 +		for len(lines) < visible*stride+2 {
  			lines = append(lines, overlay.Style(bg).Render(" "))
  		}
  	}
-@@ -241,9 +253,9 @@
+@@ -252,9 +264,9 @@ func (m *OS) renderCommandPalette() (string, overlay.Geometry, []overlayRowHit)
  			if l.item < 0 {
  				continue
  			}
@@ -471,13 +487,15 @@
  				Idx:  l.item,
  			})
  		}
+diff --git a/internal/app/render_dock.go b/internal/app/render_dock.go
+index bfefc09..780f44a 100644
 --- a/internal/app/render_dock.go
 +++ b/internal/app/render_dock.go
-@@ -90,6 +90,27 @@
- 	return caps.Render(lc) + pill + caps.Render(rc)
+@@ -114,6 +114,27 @@ func capTab(tab string, ground color.Color, s *config.Settings) string {
+ 	return caps.Render(lc) + tab + caps.Render(rc)
  }
  
-+func segmentedWorkspaceTab(label string, active, dragged bool, pal overlay.Palette, s *config.Settings, ink, accent color.Color) string {
++func segmentedWorkspaceTab(label string, active, dragged bool, t *config.DockTabsConfig, pal overlay.Palette, s *config.Settings, ink, accent color.Color) string {
 +	prefix, text, split := strings.Cut(label, " ")
 +	ground := pal.Panel
 +	if dragged {
@@ -485,7 +503,7 @@
 +	}
 +	lc, rc := s.GetDockWorkspaceCapLeft(), s.GetDockWorkspaceCapRight()
 +	if !split || prefix == "" || strings.TrimSpace(text) == "" || lc == "" || rc == "" || overlay.IsNoColor(ground) || overlay.IsNoColor(pal.Accent) {
-+		return workspacePill(label, active, dragged, pal, s, ink)
++		return workspacePill(label, active, dragged, t, pal, s, ink)
 +	}
 +	fg := pal.Fg
 +	if ink != nil {
@@ -501,7 +519,7 @@
  // tabColor is a configured [dock.tabs] colour on the dock's palette, or nil
  // when it is unset or not a colour. lipgloss turns a value it cannot parse
  // into no colour at all, which would paint the terminal's default in the
-@@ -170,7 +191,7 @@
+@@ -214,7 +235,7 @@ func dockTabGapText(t *config.DockTabsConfig, pal overlay.Palette) string {
  }
  
  // dockTab renders one tab in whichever style [dock.tabs] asks for.
@@ -510,11 +528,10 @@
  	// A workspace that wants a person takes [dock.tabs] attention_fg as its
  	// ink. Only a tab that is not current is marked: the current one is on
  	// screen already.
-@@ -180,6 +201,15 @@
- 	}
+@@ -225,6 +246,15 @@ func (m *OS) dockTab(t *config.DockTabsConfig, label string, active, dragged, at
  	if t.Flat() {
- 		return flatWorkspaceTab(label, active, dragged, t, pal, ink)
-+	}
+ 		return flatWorkspaceTab(label, active, dragged, t, pal, &m.Settings, ink)
+ 	}
 +	if strings.TrimSpace(t.Style) == config.DockTabStyleSegmented {
 +		accent := pal.Accent
 +		if workspace > 0 && len(t.CapColors) > 0 && !overlay.IsNoColor(pal.Accent) {
@@ -522,11 +539,12 @@
 +				accent = c
 +			}
 +		}
-+		return segmentedWorkspaceTab(label, active, dragged, pal, &m.Settings, ink, accent)
- 	}
- 	return workspacePill(label, active, dragged, pal, &m.Settings, ink)
++		return segmentedWorkspaceTab(label, active, dragged, t, pal, &m.Settings, ink, accent)
++	}
+ 	return workspacePill(label, active, dragged, t, pal, &m.Settings, ink)
  }
-@@ -233,7 +263,7 @@
+ 
+@@ -277,7 +307,7 @@ func (m *OS) renderDockWorkspaceStrip(s dockWorkspaceStrip, startX int) string {
  			b.WriteString(gapText)
  			x, drawn = x+t.Gap, drawn+t.Gap
  		}
@@ -535,7 +553,7 @@
  		m.dockWorkspaceHits = append(m.dockWorkspaceHits, dockWorkspaceHit{
  			X0: x, X1: x + t.Width, Y: y, Workspace: t.Workspace,
  		})
-@@ -253,7 +283,7 @@
+@@ -297,7 +327,7 @@ func (m *OS) renderDockWorkspaceStrip(s dockWorkspaceStrip, startX int) string {
  			b.WriteString(gapText)
  			x += s.Add.Gap
  		}
@@ -544,9 +562,11 @@
  		m.dockWorkspaceHits = append(m.dockWorkspaceHits, dockWorkspaceHit{
  			X0: x, X1: x + s.Add.Width, Y: y, Workspace: 0,
  		})
+diff --git a/internal/app/render_sidebar.go b/internal/app/render_sidebar.go
+index 68be551..95eb3f2 100644
 --- a/internal/app/render_sidebar.go
 +++ b/internal/app/render_sidebar.go
-@@ -1296,8 +1296,8 @@
+@@ -1354,8 +1354,8 @@ func (m *OS) renderSidebar() *lipgloss.Layer {
  	if panel == "" {
  		return nil
  	}
@@ -557,7 +577,7 @@
  }
  
  // renderSecondarySidebar draws the opt-in opposite edge with its own layout
-@@ -1348,7 +1348,8 @@
+@@ -1406,7 +1406,8 @@ func (m *OS) renderSecondarySidebar() *lipgloss.Layer {
  	if panel == "" {
  		return nil
  	}
@@ -567,7 +587,7 @@
  }
  
  // sidebarWindowSection windows one section's rows onto the lines it was given,
-@@ -1376,9 +1377,6 @@
+@@ -1434,9 +1435,6 @@ func sidebarWindowSection(scroll, rows, lines int) (start, shown, hidden int) {
  // on-screen hit geometry of every row into m.SidebarHits, returning the rows
  // and the reserved width. It returns nil rows when the sidebar reserves
  // nothing.
@@ -577,7 +597,7 @@
  func (m *OS) sidebarPanelLinesForTree(tree sessiontree.Tree) ([]string, int) {
  	m.SidebarHits = m.SidebarHits[:0]
  	m.motion.rail = m.motion.rail[:0]
-@@ -1407,29 +1405,30 @@
+@@ -1465,29 +1463,30 @@ func (m *OS) sidebarPanelLinesForTree(tree sessiontree.Tree) ([]string, int) {
  		return nil, 0
  	}
  
@@ -617,26 +637,26 @@
  	// While the rail owns the keyboard its edge rule burns accent instead of the
  	// dock's muted hairline, so the focus is legible at the frame, not only on a
  	// single highlighted row.
- 	if m.sidebarRailFocused() {
+ 	if m.sidebarRailFocused() || !m.sidebarDrawing && m.RailPaneFocused() {
 -		edge = lipgloss.NewStyle().Foreground(pal.Accent).Render(m.Settings.GetWindowBorderLeft())
 +		edge = lipgloss.NewStyle().Foreground(pal.Accent).Render(vertical)
  	}
  
  	// The rail as drawn so far. len(lines) is the line compose is building, in
-@@ -1444,6 +1443,12 @@
- 		rule := edge
+@@ -1503,6 +1502,12 @@ func (m *OS) sidebarPanelLinesForTree(tree sessiontree.Tree) ([]string, int) {
  		if y := len(lines); y < len(barCell) && barCell[y] != "" {
  			rule = barCell[y]
-+		}
+ 		}
 +		if g.Detached {
 +			if edgeLeft {
 +				return edge + content + rule
 +			}
 +			return rule + content + edge
- 		}
++		}
  		if edgeLeft {
  			return content + rule
-@@ -1876,7 +1881,7 @@
+ 		}
+@@ -1998,7 +2003,7 @@ func (m *OS) sidebarPanelLinesForTree(tree sessiontree.Tree) ([]string, int) {
  		}
  		if barCell == nil {
  			barCell = make([]string, height)
@@ -645,7 +665,7 @@
  			thumb = sidebarStyle(nil, pal.ScrollThumb).Render(glyph)
  		}
  		for i := top; i < top+size && place[s].top+i < height; i++ {
-@@ -1899,7 +1904,7 @@
+@@ -2021,7 +2026,7 @@ func (m *OS) sidebarPanelLinesForTree(tree sessiontree.Tree) ([]string, int) {
  	for s := range headerHoverX {
  		headerHoverX[s] = -1
  	}
@@ -654,7 +674,7 @@
  		delta := m.SidebarHoverY - topMargin
  		footerTop := height - footerH
  		onHeader := -1
-@@ -1940,10 +1945,14 @@
+@@ -2062,10 +2067,14 @@ func (m *OS) sidebarPanelLinesForTree(tree sessiontree.Tree) ([]string, int) {
  	// rows carry a second line when the budget allows. The rectangle grows and
  	// the nav entry does not, so one agent stays one target for the keyboard and
  	// the mouse both, and a click on either line resolves to the same row.
@@ -670,7 +690,7 @@
  			Y0: y, Y1: y + max(h, 1),
  			Kind:        kind,
  			SessionID:   sessionID,
-@@ -1958,7 +1967,7 @@
+@@ -2080,7 +2089,7 @@ func (m *OS) sidebarPanelLinesForTree(tree sessiontree.Tree) ([]string, int) {
  	recordClick := func(kind sidebarRowKind, sessionID, windowID string, windowIndex, h int) {
  		y := topMargin + len(lines)
  		m.SidebarHits = append(m.SidebarHits, sidebarRowHit{
@@ -679,7 +699,7 @@
  			Y0: y, Y1: y + max(h, 1),
  			Kind:        kind,
  			SessionID:   sessionID,
-@@ -2360,6 +2369,20 @@
+@@ -2527,6 +2536,20 @@ func (m *OS) sidebarPanelLinesForTree(tree sessiontree.Tree) ([]string, int) {
  	}
  
  	m.sidebarPublishNav(nav, cursorTarget, haveCursorTarget)
@@ -700,9 +720,11 @@
  	return lines, w
  }
  
+diff --git a/internal/app/settings.go b/internal/app/settings.go
+index 3071742..56c3596 100644
 --- a/internal/app/settings.go
 +++ b/internal/app/settings.go
-@@ -432,6 +432,7 @@
+@@ -438,6 +438,7 @@ func (m *OS) settingsCategories() []settingsCategory {
  			opt("appearance.modal_dim"),
  			opt("appearance.popup_dim"),
  			opt("appearance.panel_padding"),
@@ -710,7 +732,7 @@
  			opt("appearance.zen_mode"),
  			opt("appearance.links"),
  			opt("appearance.link_click"),
-@@ -469,6 +470,7 @@
+@@ -475,6 +476,7 @@ func (m *OS) settingsCategories() []settingsCategory {
  		Items: m.resolveRows([]settingsRow{
  			opt("appearance.sidebar.enabled"),
  			opt("appearance.sidebar.position"),
@@ -718,9 +740,11 @@
  			opt("appearance.sidebar.width"),
  			custom("appearance.sidebar.sections", m.sectionLayoutItem()),
  			opt("appearance.sidebar.header_case"),
+diff --git a/internal/app/settings_registry.go b/internal/app/settings_registry.go
+index b62f03c..749a367 100644
 --- a/internal/app/settings_registry.go
 +++ b/internal/app/settings_registry.go
-@@ -64,6 +64,7 @@
+@@ -69,6 +69,7 @@ var settingLabels = map[string]string{
  	"appearance.sidebar.enabled":          "Sidebar",
  	"spotlight.shake":                     "Shake to toggle",
  	"appearance.sidebar.position":         "Position",
@@ -728,9 +752,11 @@
  	"appearance.sidebar.width":            "Width",
  	"appearance.window_title_position":    "Window title",
  	"appearance.whichkey_enabled":         "Which-key",
+diff --git a/internal/app/sidebar_cache.go b/internal/app/sidebar_cache.go
+index 8b152f7..e474403 100644
 --- a/internal/app/sidebar_cache.go
 +++ b/internal/app/sidebar_cache.go
-@@ -128,6 +128,8 @@
+@@ -128,6 +128,8 @@ func (m *OS) sidebarSignature() uint64 {
  	mixI(m.viewReserve().Top)
  	mixI(m.GetRenderWidth())
  	mixS(m.Settings.SidebarPosition)
@@ -739,6 +765,9 @@
  	// The layout: which sections are stacked, in what order, with what share,
  	// and where the spacers are. It carries what show_windows used to say, and
  	// it was missing from this key for as long as it has existed: a rail redrawn
+diff --git a/internal/app/sidebar_detached_geometry_test.go b/internal/app/sidebar_detached_geometry_test.go
+new file mode 100644
+index 0000000..b6e45d4
 --- /dev/null
 +++ b/internal/app/sidebar_detached_geometry_test.go
 @@ -0,0 +1,113 @@
@@ -855,6 +884,9 @@
 +		t.Fatal("secondary margin hover activated")
 +	}
 +}
+diff --git a/internal/app/sidebar_detached_scroll_test.go b/internal/app/sidebar_detached_scroll_test.go
+new file mode 100644
+index 0000000..a403954
 --- /dev/null
 +++ b/internal/app/sidebar_detached_scroll_test.go
 @@ -0,0 +1,112 @@
@@ -970,6 +1002,9 @@
 +		}
 +	}
 +}
+diff --git a/internal/app/sidebar_detached_session_test.go b/internal/app/sidebar_detached_session_test.go
+new file mode 100644
+index 0000000..3bfe820
 --- /dev/null
 +++ b/internal/app/sidebar_detached_session_test.go
 @@ -0,0 +1,23 @@
@@ -996,6 +1031,9 @@
 +		t.Fatal("detached regular frame shifted full-band session rail")
 +	}
 +}
+diff --git a/internal/app/sidebar_detached_test.go b/internal/app/sidebar_detached_test.go
+new file mode 100644
+index 0000000..f32363a
 --- /dev/null
 +++ b/internal/app/sidebar_detached_test.go
 @@ -0,0 +1,93 @@
@@ -1092,14 +1130,14 @@
 +		}
 +	}
 +}
+diff --git a/internal/app/sidebar_edge.go b/internal/app/sidebar_edge.go
+index 5ede96d..92d73f9 100644
 --- a/internal/app/sidebar_edge.go
 +++ b/internal/app/sidebar_edge.go
-@@ -38,6 +38,38 @@
- 		return screenWidth - w
- 	}
+@@ -40,6 +40,38 @@ func sidebarEdgeX(edge sidebarEdge, w, screenWidth int) int {
  	return 0
-+}
-+
+ }
+ 
 +type sidebarRect struct {
 +	X, Y, W, H int
 +}
@@ -1130,12 +1168,16 @@
 +
 +func (m *OS) railGeometry() sidebarGeometry {
 +	return m.sidebarGeometryFor(m.railEdge(), m.GetSidebarWidth())
- }
- 
++}
++
  func (m *OS) secondarySidebarBandContains(x, y int) bool {
+ 	x, y = m.ScreenPoint(x, y)
+ 	w := m.secondarySidebarWidth()
+diff --git a/internal/app/sidebar_mouse.go b/internal/app/sidebar_mouse.go
+index 45d7144..79044d1 100644
 --- a/internal/app/sidebar_mouse.go
 +++ b/internal/app/sidebar_mouse.go
-@@ -376,6 +376,10 @@
+@@ -396,6 +396,10 @@ func (m *OS) sidebarClick(x, y int, right bool) bool {
  	// The edge rule is the rail's frame, so a left press on it arms the width
  	// resize before any row routing: the column belongs to the sidebar, not to
  	// the session row whose hit rectangle spans it.
@@ -1146,32 +1188,31 @@
  	if !right && m.sidebarOnEdge(x) {
  		m.SidebarEdge = sidebarEdgeState{Active: true, PressX: x}
  		if sidebarVariant(m.GetSidebarWidth()) == sidebarVariantGlyph {
-@@ -501,10 +505,11 @@
+@@ -536,10 +540,11 @@ func (m *OS) sidebarOnEdge(x int) bool {
  	if m.sidebarDrawing {
  		edge = m.sidebarDrawingEdge
  	}
 +	g := m.sidebarGeometryFor(edge, w)
  	if edge == sidebarRight {
 -		return x == m.GetRenderWidth()-w
--	}
--	return x == w-1
 +		return x == g.Frame.X
-+	}
+ 	}
+-	return x == w-1
 +	return x == g.Frame.X+g.Frame.W-1
  }
  
  // SidebarEdgeActive reports whether a width-resize gesture is in progress, so
-@@ -549,6 +554,9 @@
- 		w = m.GetRenderWidth() - x
+@@ -585,6 +590,9 @@ func (m *OS) sidebarEdgeMotion(x, y int) bool {
  	} else {
  		w = x + 1
-+	}
+ 	}
 +	if m.railGeometry().Detached {
 +		w++
- 	}
++	}
  	lo, hi := m.sidebarWidthBounds()
  	w = max(min(w, hi), lo)
-@@ -834,6 +842,13 @@
+ 	if m.sidebarDrawing {
+@@ -870,6 +878,13 @@ func (m *OS) sidebarMotion(x, y int) bool {
  		m.tooltipClear()
  		return false
  	}
@@ -1185,20 +1226,22 @@
  	m.SidebarHoverActive = true
  	m.SidebarHoverX, m.SidebarHoverY = x, y
  	m.sidebarPeekAt(x, y)
-@@ -855,6 +870,10 @@
- func (m *OS) sidebarWheel(x, y int, up bool) bool {
+@@ -892,6 +907,10 @@ func (m *OS) sidebarWheel(x, y int, up bool) bool {
  	if !m.SidebarBandContains(x, y) {
  		return false
-+	}
+ 	}
 +	g := m.railGeometry()
 +	if g.Detached && !g.Content.contains(x, y) {
 +		return true
- 	}
++	}
  	offsets := m.sidebarScrollOffsets()
  	for s, band := range m.sidebarSectionY {
+ 		if y < band[0] || y >= band[1] {
+diff --git a/internal/app/sidebar_split.go b/internal/app/sidebar_split.go
+index d3da563..4052b2f 100644
 --- a/internal/app/sidebar_split.go
 +++ b/internal/app/sidebar_split.go
-@@ -196,7 +196,7 @@
+@@ -196,7 +196,7 @@ func (m *OS) SidebarSplitMotion(x, y int) bool {
  	if !g.Valid || g.Avail <= 0 {
  		return true
  	}
@@ -1207,6 +1250,9 @@
  	if share != m.SidebarSectionSplit {
  		m.SidebarSectionSplit = share
  		m.MarkAllDirty()
+diff --git a/internal/config/command_palette_density_test.go b/internal/config/command_palette_density_test.go
+new file mode 100644
+index 0000000..c16aada
 --- /dev/null
 +++ b/internal/config/command_palette_density_test.go
 @@ -0,0 +1,25 @@
@@ -1235,9 +1281,11 @@
 +		t.Fatal("invalid value changed density")
 +	}
 +}
+diff --git a/internal/config/dock.go b/internal/config/dock.go
+index e4e84a2..49ee33a 100644
 --- a/internal/config/dock.go
 +++ b/internal/config/dock.go
-@@ -145,16 +145,19 @@
+@@ -152,8 +152,9 @@ type DockConfig struct {
  
  // Workspace tab styles accepted by [dock.tabs] style.
  const (
@@ -1249,11 +1297,9 @@
  )
  
  // DockTabsConfig is [dock.tabs]. With style left empty (or "pill") the strip
- // draws its rounded pills as it always has and the other fields are ignored;
- // "flat" draws each tab as a coloured run of text, the tabs joined by
--// Separator, the way a tmux status line draws its window list.
-+// Separator, the way a tmux status line draws its window list. "segmented"
-+// draws the label's first token on an accent cap and the rest on a quiet pill.
+@@ -163,7 +164,8 @@ const (
+ // Separator, ShowAdd and ActiveBold are for flat tabs only: a pill always has
+ // its caps and its "+", and its current tab is always bold.
  type DockTabsConfig struct {
 -	Style string `toml:"style,omitempty"`
 +	Style     string   `toml:"style,omitempty"`
@@ -1261,7 +1307,7 @@
  
  	// Separator is drawn between two flat tabs. Empty is one bare column.
  	Separator   string `toml:"separator,omitempty"`
-@@ -521,13 +524,16 @@
+@@ -549,13 +551,16 @@ func validateDock(cfg *UserConfig, result *ValidationResult) {
  		}
  	}
  
@@ -1277,9 +1323,12 @@
 +	for i, value := range t.CapColors {
 +		validateDockColors(result, "dock.tabs", map[string]string{fmt.Sprintf("cap_colors[%d]", i): value})
 +	}
- 	validateDockColors(result, "dock.tabs", map[string]string{
- 		"separator_fg": t.SeparatorFg, "active_fg": t.ActiveFg, "active_bg": t.ActiveBg,
- 		"inactive_fg": t.InactiveFg, "inactive_bg": t.InactiveBg,
+ 	if t.Caps && !t.Flat() {
+ 		result.Warnings = append(result.Warnings, ValidationError{
+ 			Field: "dock.tabs", Key: "caps",
+diff --git a/internal/config/dock_multicolor_test.go b/internal/config/dock_multicolor_test.go
+new file mode 100644
+index 0000000..5f12639
 --- /dev/null
 +++ b/internal/config/dock_multicolor_test.go
 @@ -0,0 +1,31 @@
@@ -1314,6 +1363,9 @@
 +		t.Error("invalid raw config colour not reported")
 +	}
 +}
+diff --git a/internal/config/dock_segmented_test.go b/internal/config/dock_segmented_test.go
+new file mode 100644
+index 0000000..639e646
 --- /dev/null
 +++ b/internal/config/dock_segmented_test.go
 @@ -0,0 +1,18 @@
@@ -1335,9 +1387,11 @@
 +		}
 +	}
 +}
+diff --git a/internal/config/look.go b/internal/config/look.go
+index 6dcba52..1ce26e2 100644
 --- a/internal/config/look.go
 +++ b/internal/config/look.go
-@@ -111,6 +111,7 @@
+@@ -118,6 +118,7 @@ var lookKeys = []string{
  	"appearance.shared_borders",
  	"appearance.gap",
  	"appearance.panel_padding",
@@ -1345,17 +1399,19 @@
  	"appearance.zen_mode",
  	"appearance.hide_window_buttons",
  	"appearance.window_button_position",
-@@ -155,6 +156,7 @@
+@@ -164,6 +165,7 @@ var lookKeys = []string{
  	// The rail.
  	"appearance.sidebar.enabled",
  	"appearance.sidebar.position",
 +	"appearance.sidebar.frame",
  	"appearance.sidebar.width",
  	"appearance.sidebar.background",
- 	"appearance.sidebar.density",
+ 	"appearance.sidebar.cursor_background",
+diff --git a/internal/config/look_items.go b/internal/config/look_items.go
+index f09f793..0b4f0fb 100644
 --- a/internal/config/look_items.go
 +++ b/internal/config/look_items.go
-@@ -73,8 +73,8 @@
+@@ -73,8 +73,8 @@ var lookFileKeys = map[string]lookFileKey{
  	"dock.right":  dockListKey("on the right end", defaultDockRight),
  
  	"dock.tabs.style": {
@@ -1366,10 +1422,10 @@
  	},
  	"dock.tabs.separator":    tabMarkKey("Text between two flat tabs. Empty is one blank column."),
  	"dock.tabs.separator_fg": tabColourKey("Colour of the text between two flat tabs"),
-@@ -86,6 +86,10 @@
- 	"dock.tabs.inactive_bold": {
- 		Type: OptionBool, Description: "Draw the flat tabs of the other workspaces in bold", Default: "false",
+@@ -90,6 +90,10 @@ var lookFileKeys = map[string]lookFileKey{
+ 		Type: OptionBool, Description: "Draw the tabs of the other workspaces in bold", Default: "false",
  	},
+ 	"dock.tabs.caps": {Type: OptionBool, Description: "Draw rounded ends on each flat tab, in the colour of the tab", Default: "false"},
 +	"dock.tabs.cap_colors": {
 +		Type: LookList, Description: "Segmented icon-cap colours, cycling by workspace number. Empty uses the theme accent.",
 +		Default: "[]", MaxBytes: lookMarkBytes, MaxItems: 9,
@@ -1377,7 +1433,7 @@
  	"dock.tabs.number_glyphs": {
  		Type:        LookList,
  		Description: "What {icon} in appearance.dock_workspace_tab_format shows for each workspace, the first item for workspace 1. A workspace past the end shows its number.",
-@@ -232,8 +236,16 @@
+@@ -237,9 +241,17 @@ func checkLookFileValue(path string, v any) error {
  			return fmt.Errorf("%s must be true or false", path)
  		}
  	case LookList:
@@ -1385,31 +1441,34 @@
 +		items, ok := v.([]string)
 +		if !ok {
  			return fmt.Errorf("%s must be a list of text, such as [\"a\", \"b\"]", path)
-+		}
+ 		}
 +		if path == "dock.tabs.cap_colors" {
 +			for _, value := range items {
 +				if !theme.IsColor(value) {
 +					return fmt.Errorf("%s: %s", path, ColourProblem(value))
 +				}
 +			}
- 		}
++		}
  	case OptionString:
  		s, ok := v.(string)
+ 		if !ok {
+diff --git a/internal/config/options.go b/internal/config/options.go
+index 25fae10..4c49c36 100644
 --- a/internal/config/options.go
 +++ b/internal/config/options.go
-@@ -549,6 +549,11 @@
+@@ -680,6 +680,11 @@ var optionSpecs = []Option{
+ 		Default:     strconv.Itoa(PrefixRepeatTimeDefault),
  		Min:         PrefixRepeatTimeMin, Max: PrefixRepeatTimeMax,
  	},
- 	{
++	{
 +		Path: "appearance.palette_density", Type: OptionString, Section: "appearance",
 +		Description: "Command palette row spacing: compact or roomy",
 +		Accepted:    []string{"compact", "roomy"}, Default: "compact",
 +	},
-+	{
+ 	{
  		Path: "appearance.panel_padding", Type: OptionInt, Section: "appearance",
  		Description: "Columns of padding each side of an overlay panel's content",
- 		Default:     strconv.Itoa(overlay.DefaultPanelPadding), Min: 1, Max: overlay.MaxPanelPadding,
-@@ -842,6 +847,11 @@
+@@ -979,6 +984,11 @@ var optionSpecs = []Option{
  	},
  
  	// [appearance.sidebar]
@@ -1421,9 +1480,11 @@
  	{
  		Path: "appearance.sidebar.enabled", Type: OptionBool, Section: "sidebar",
  		Description: "Show the session rail",
+diff --git a/internal/config/settings.go b/internal/config/settings.go
+index 10d8614..b29f684 100644
 --- a/internal/config/settings.go
 +++ b/internal/config/settings.go
-@@ -174,6 +174,7 @@
+@@ -216,6 +216,7 @@ type Settings struct {
  	// SidebarPosition is which edge the sidebar reserves: "left", "right", or
  	// "hidden" (reserves nothing even when enabled).
  	SidebarPosition string
@@ -1431,7 +1492,7 @@
  
  	// SidebarWidth is the preferred sidebar width in columns for a wide screen.
  	// GetSidebarWidth folds this together with the narrow-screen breakpoints.
-@@ -852,6 +853,7 @@
+@@ -1002,6 +1003,7 @@ func DefaultSettings() Settings {
  		DockbarPosition:             DefaultDockbarPosition,
  		SidebarEnabled:              true,
  		SidebarPosition:             DefaultSidebarPosition,
@@ -1439,6 +1500,9 @@
  		SidebarWidth:                SidebarDefaultWidth,
  		SidebarShowGlyphs:           true,
  		SidebarShowCounts:           true,
+diff --git a/internal/config/sidebar_frame_test.go b/internal/config/sidebar_frame_test.go
+new file mode 100644
+index 0000000..fa9ae38
 --- /dev/null
 +++ b/internal/config/sidebar_frame_test.go
 @@ -0,0 +1,24 @@
@@ -1466,9 +1530,11 @@
 +		t.Fatal("invalid frame accepted")
 +	}
 +}
+diff --git a/internal/config/userconfig.go b/internal/config/userconfig.go
+index 1b14670..a02e395 100644
 --- a/internal/config/userconfig.go
 +++ b/internal/config/userconfig.go
-@@ -441,6 +441,8 @@
+@@ -554,6 +554,8 @@ type AppearanceConfig struct {
  	// DimForeground is a pointer because it defaults to true.
  	DimForeground *bool `toml:"dim_foreground"` // Let dim_unfocused dim the pane's text too, not only its background (default: true)
  
@@ -1477,7 +1543,7 @@
  	// MasterPosition, MasterCount and MasterGrid shape the master-stack layout
  	// for a workspace nobody has changed at run time. The actions that change
  	// them (cycle_master_position, add_master, remove_master and the rest) act
-@@ -801,6 +803,7 @@
+@@ -914,6 +916,7 @@ type SelectionConfig struct {
  // vertical session rail. Each toggle is a pointer so nil can mean "unset, use
  // the default" and an explicit false survives a reload.
  type SidebarConfig struct {
@@ -1485,7 +1551,7 @@
  	Enabled     *bool  `toml:"enabled"`      // Show the rail (default: true)
  	Position    string `toml:"position"`     // Edge: left, right, hidden (default: right)
  	Width       int    `toml:"width"`        // Preferred width in columns for a wide screen (default: 24)
-@@ -1058,6 +1061,7 @@
+@@ -1223,6 +1226,7 @@ func DefaultConfig() *UserConfig {
  			ModalDim:                 new(ModalDimDefault),
  			PopupDim:                 new(PopupDimDefault),
  			PanelPadding:             overlay.DefaultPanelPadding,
@@ -1493,7 +1559,7 @@
  			ClockFormat:              DefaultClockFormat,
  			TilingScheme:             TilingSchemeSpiral,
  			MasterRatio:              MasterRatioDefault,
-@@ -1089,6 +1093,7 @@
+@@ -1255,6 +1259,7 @@ func DefaultConfig() *UserConfig {
  				// cannot change the next DefaultConfig.
  				Enabled:       new(true),
  				Position:      DefaultSidebarPosition,
@@ -1501,7 +1567,7 @@
  				Width:         SidebarDefaultWidth,
  				Sections:      SidebarDefaultSections,
  				FolderClick:   SidebarFolderClickNavigate,
-@@ -2371,6 +2376,9 @@
+@@ -2677,6 +2682,9 @@ func fillMissingAppearance(cfg, defaultCfg *UserConfig) {
  	} else if cfg.Appearance.PanelPadding > overlay.MaxPanelPadding {
  		cfg.Appearance.PanelPadding = overlay.MaxPanelPadding
  	}
@@ -1511,7 +1577,7 @@
  	if cfg.Appearance.ClockFormat == "" {
  		cfg.Appearance.ClockFormat = defaultCfg.Appearance.ClockFormat
  	}
-@@ -2486,6 +2494,10 @@
+@@ -2795,6 +2803,10 @@ func ApplyAppearanceConfig(cfg *UserConfig, s *Settings) {
  	// the toggles are pointer bools so turning one off in the settings page
  	// survives a reload just as turning it on does.
  	sb := cfg.Appearance.Sidebar
