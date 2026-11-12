@@ -24,6 +24,7 @@ _: {
           "node_modules"
           ".npm"
           ".cargo/registry"
+          ".local/share/cargo/registry"
         ];
         rsyncExcludeArgs = lib.concatStringsSep " " (map (p: "--exclude='${p}'") rsyncExcludes);
       in

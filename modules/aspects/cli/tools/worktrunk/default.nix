@@ -7,7 +7,7 @@ _: {
           enable = true;
           package = pkgs.worktrunk;
           enableFishIntegration = false;
-          settings.worktree-path = "~/worktrees/{{ repo }}/{{ branch | sanitize }}";
+          settings.worktree-path = "~/.local/share/worktrunk/worktrees/{{ repo }}/{{ branch | sanitize }}";
         };
 
         programs.fish.interactiveShellInit = ''

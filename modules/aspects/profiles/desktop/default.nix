@@ -178,6 +178,8 @@
             NPM_CONFIG_USERCONFIG = "${config.xdg.configHome}/npm/npmrc";
             NPM_CONFIG_CACHE = "${config.xdg.cacheHome}/npm";
             NPM_CONFIG_TMP = "\${XDG_RUNTIME_DIR}/npm";
+            CARGO_HOME = "${config.xdg.dataHome}/cargo";
+            MUTAGEN_DATA_DIRECTORY = "${config.xdg.dataHome}/mutagen";
             DOCKER_CONFIG = "${config.xdg.configHome}/docker";
             ANDROID_USER_HOME = "${config.xdg.dataHome}/android";
             PSQL_HISTORY = "${config.xdg.stateHome}/psql_history";
