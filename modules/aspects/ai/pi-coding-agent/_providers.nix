@@ -31,7 +31,6 @@ in
     models = [
       (mkVisionModel "qwen3.6:27b")
       (mkTextModel "deepseek-v4-pro:cloud")
-      (mkTextModel "deepseek-v4-flash:cloud")
       (mkVisionModel "kimi-k2.7-code:cloud")
       (mkVisionModel "kimi-k2.6:cloud")
       (mkTextModel "glm-5.3:cloud")
