@@ -192,8 +192,6 @@
         systemd.user.services = {
           attic-watch-store.Install.WantedBy = lib.mkForce [ ];
 
-          nirinit.Unit.After = [ "app-com.mitchellh.ghostty.service" ];
-
           # Ubuntu's unit Wants=graphical-session.target, starting it before niri
           # and stalling GTK apps on a portal with no display.
           twingate-desktop-notifier = {
