@@ -265,6 +265,7 @@ _: {
                   server = {
                     enable = true;
                     listen_uri = "127.0.0.1:8081";
+                    online_client.credentials_path = "/var/lib/crowdsec/state/online_api_credentials.yaml";
                   };
                   client.credentials_path = "/var/lib/crowdsec/state/lapi-secrets.yaml";
                 };
