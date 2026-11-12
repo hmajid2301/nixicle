@@ -44,7 +44,10 @@ _: {
           gdu
           procs
           gping
-          viddy
+          # TODO: drop on next nixpkgs bump (upstream added sqlite to buildInputs)
+          (viddy.overrideAttrs (old: {
+            buildInputs = (old.buildInputs or [ ]) ++ [ sqlite ];
+          }))
           hexyl
           delta
           chafa
