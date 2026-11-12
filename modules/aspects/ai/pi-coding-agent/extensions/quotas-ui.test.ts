@@ -2,9 +2,15 @@ import { describe, expect, test } from "bun:test";
 import { shouldRenderQuotaStatus } from "./quotas-ui";
 
 describe("shouldRenderQuotaStatus", () => {
-	test("suppresses automatic quota status renders in regular TUI mode", () => {
+	test("renders quota status in regular and fullscreen TUI modes", () => {
 		expect(shouldRenderQuotaStatus({
 			uiMode: "regular",
+			previousText: undefined,
+			nextText: "codex 5h:20%",
+		})).toBe(true);
+
+		expect(shouldRenderQuotaStatus({
+			uiMode: undefined,
 			previousText: undefined,
 			nextText: "codex 5h:20%",
 		})).toBe(false);

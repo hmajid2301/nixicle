@@ -1,7 +1,7 @@
 /**
  * Provider Usage & Quota Extension
  *
- * Shows remaining usage/quota in the footer for the provider actually in use:
+ * Shows used quota percentages in the footer for the provider actually in use:
  *
  * - openai-codex  -> ChatGPT Codex subscription rate limits (5h / weekly)
  * - opencode-go   -> OpenCode Zen plan usage (rolling / weekly / monthly)
@@ -11,7 +11,7 @@
  *   is nothing to fetch without extra credentials. Footer is simply cleared.
  *
  * Provides:
- * - Footer status showing remaining headroom per window (colour coded)
+ * - Compact footer status showing used percentages and the primary reset
  * - /quotas command showing the detailed report for the active provider
  * - Warnings when a window is running low (at most one notification per
  *   turn: re-armed by the next user message, once the old warning has
@@ -313,6 +313,27 @@ async function fetchZenUsage(
 	return parseZenUsage(result.data);
 }
 
+export function formatQuotaFooter(
+	theme: { fg(color: "dim" | "success" | "warning" | "error", text: string): string },
+	usage: ProviderUsage,
+	now = Date.now(),
+): string | undefined {
+	if (usage.windows.length === 0) return undefined;
+	return usage.windows.map(window => {
+		const primary = window.windowSeconds < 24 * 60 * 60;
+		const monthly = window.windowSeconds > 7 * 24 * 60 * 60;
+		const resetAt = window.resetsAt.getTime();
+		let reset = "";
+		if (primary && Number.isFinite(resetAt) && resetAt > 0) {
+			const minutes = Math.max(0, Math.floor((resetAt - now) / 60000));
+			const hours = Math.floor(minutes / 60);
+			reset = ` ⟳${hours ? `${hours}h` : ""}${minutes % 60}m`;
+		}
+		const text = `${primary ? "" : ""} ${monthly ? "m" : ""}${Math.round(clampPercent(window.usedPercent))}%${reset}${window.limited ? "!" : ""}`;
+		return theme.fg(severity(window.usedPercent), text);
+	}).join(theme.fg("dim", " │ "));
+}
+
 // --- Extension -------------------------------------------------------------
 
 export default function providerQuota(pi: ExtensionAPI) {
@@ -381,13 +402,7 @@ export default function providerQuota(pi: ExtensionAPI) {
 	}
 
 	function formatFooter(ctx: ExtensionContext, usage: ProviderUsage): string | undefined {
-		if (usage.windows.length === 0) return undefined;
-		const pieces = usage.windows.map((w) => {
-			const remaining = Math.max(0, Math.round(100 - w.usedPercent));
-			const marker = w.limited ? ctx.ui.theme.fg("error", "!") : "";
-			return `${ctx.ui.theme.fg("dim", `${w.label}:`)}${ctx.ui.theme.fg(severity(w.usedPercent), `${remaining}%`)}${marker}`;
-		});
-		return `${ctx.ui.theme.fg("dim", providerLabel(usage.provider))} ${pieces.join(" ")}`;
+		return formatQuotaFooter(ctx.ui.theme, usage);
 	}
 
 	function checkWarnings(ctx: ExtensionContext, usage: ProviderUsage): void {
