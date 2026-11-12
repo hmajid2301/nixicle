@@ -95,10 +95,6 @@
       url = "github:sodiboo/niri-flake";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    nirinit = {
-      url = "github:amaanq/nirinit";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     nix-index-database.url = "github:nix-community/nix-index-database";
     nix-topology = {
       url = "github:oddlama/nix-topology";
