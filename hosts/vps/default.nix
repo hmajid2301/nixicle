@@ -332,6 +332,7 @@
 
         services = {
           dbus.implementation = "dbus";
+          fwupd.enable = false;
           openssh = {
             enable = true;
             ports = [ 22 ];

@@ -37,7 +37,7 @@
         systemd.services.systemd-logind.environment.SYSTEMD_BYPASS_HIBERNATION_MEMORY_CHECK = "1";
         systemd.services.systemd-hibernate.environment.SYSTEMD_BYPASS_HIBERNATION_MEMORY_CHECK = "1";
 
-        services.fwupd.enable = true;
+        services.fwupd.enable = lib.mkDefault true;
       };
   };
 
