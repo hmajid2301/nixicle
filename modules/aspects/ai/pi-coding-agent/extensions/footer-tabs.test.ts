@@ -1,6 +1,6 @@
 import { expect, test } from "bun:test";
 import { visibleWidth } from "@mariozechner/pi-tui";
-import statusline, { renderFooterLine } from "./footer.ts";
+import statusline, { renderFooterLines } from "./footer.ts";
 
 const data = {
 	branch: "main",
@@ -9,123 +9,92 @@ const data = {
 	thinkingLevel: "medium",
 	used: 32000,
 	total: 128000,
-	input: 23000,
-	output: 8000,
-	cost: 0.12,
-	working: true,
-	turnCount: 7,
-	elapsed: "12m",
+	quotaStatus: " 28% ⟳2h14m │  16%",
 };
 const plain = (text: string) => text.replace(/\x1b\[[0-9;]*m/g, "");
 
-test("renders fused rounded tabs and preserves session stats", () => {
-	const line = renderFooterLine(data, 180);
-	const text = plain(line);
-	expect(text).toContain("");
-	expect(text).toContain("");
-	expect(text).toContain("main");
-	expect(text).toContain("Fix login bug");
-	expect(text).toContain("working #7 12m");
-	expect(text).toContain("32.0k/128.0k");
-	expect(text).toContain("25%");
-	expect(text).toContain("↑23.0k ↓8.0k $0.120");
-	expect(text).toContain("gpt-5.4 · medium");
-	expect(line).toContain("\x1b[48;2;49;50;68m");
-	expect(visibleWidth(line)).toBeLessThanOrEqual(180);
-	expect(text).not.toMatch(/ {3,}/);
+test("copies Claude's fused lavender tabs and compact usage layout", () => {
+	const lines = renderFooterLines(data, 150);
+	const text = plain(lines.join("\n"));
+	expect(lines).toHaveLength(1);
+	expect(text).toContain("   main ");
+	expect(text).toContain("   Fix login bug ");
+	expect(text).toContain(" ▓▓░░░░░░░░ 32k/128k");
+	expect(text).toContain(" 28% ⟳2h14m │  16%");
+	expect(text).toContain("󰚩 gpt-5.4 ·medium");
+	expect(text).not.toMatch(/working|idle|↑|↓|\$/);
+	expect(lines[0]).toContain("\x1b[48;2;180;190;254m");
+	expect(lines[0]).toContain("\x1b[48;2;49;50;68m");
 });
 
-test("uses distinct Catppuccin accents for tabs, model, and thinking", () => {
-	const line = renderFooterLine(data, 180);
-	expect(line).toContain("\x1b[48;2;203;166;247m");
-	expect(line).toContain("\x1b[48;2;137;220;235m");
-	expect(line).toContain("\x1b[38;2;180;190;254m󰚩 gpt-5.4");
-	expect(line).toContain("\x1b[38;2;250;179;135m · medium");
+test("right-aligns usage and model against the terminal edge", () => {
+	const line = renderFooterLines(data, 150)[0];
+	expect(visibleWidth(line)).toBe(150);
+	expect(plain(line)).toMatch(/gpt-5\.4 ·medium$/);
+	expect(plain(line)).toMatch(/^ /);
 });
 
-test("hides token stats before activity and shortens names before dropping tabs", () => {
-	const medium = plain(renderFooterLine(data, 120));
-	expect(medium).not.toContain("↑");
-	expect(medium).not.toContain("$");
-	expect(medium).toContain("working #7 12m");
-	expect(medium).toContain("main");
-	expect(medium).toContain("Fix login bug");
-
-	const compact = plain(renderFooterLine({
-		...data,
-		branch: "feat/a-very-long-branch-name",
-		sessionName: "A very long session title that needs shortening",
-	}, 120));
-	expect(compact).toContain("");
-	expect(compact).toContain("");
-	expect(compact).not.toContain("↑");
-	expect(compact).toContain("gpt-5.4");
-	expect(compact).toContain("25%");
+test("preserves names beyond the old fixed truncation limits", () => {
+	const name = "Improve footer names without shortening their useful context";
+	const branch = "feat/a-branch-name-longer-than-twenty-four-columns";
+	const text = plain(renderFooterLines({ ...data, sessionName: name, branch }, 240).join("\n"));
+	expect(text).toContain(name);
+	expect(text).toContain(branch);
+	expect(text).not.toMatch(/…|\.\.\./);
 });
 
-test("drops activity before shortening names when space is limited", () => {
-	for (const working of [false, true]) {
-		const text = plain(renderFooterLine({
-			...data,
-			working,
-			branch: "feat/compact-footer",
-			sessionName: "Improve small screen spacing",
-		}, 120));
-		expect(text).toContain("feat/compact-footer");
-		expect(text).toContain("Improve small screen spacing");
-		expect(text).not.toContain(working ? "working" : "idle");
-		expect(text).not.toContain("12m");
-		expect(text).toContain("gpt-5.4");
-		expect(text).toContain("25%");
-		expect(text).not.toMatch(/ {3,}/);
+test("puts the full session name above stats instead of dropping or ellipsizing it", () => {
+	const name = "Investigate a long session title without losing any of its words";
+	const lines = renderFooterLines({ ...data, sessionName: name }, 50);
+	const text = plain(lines.join("\n"));
+	expect(lines.length).toBeGreaterThan(1);
+	for (const word of name.split(" ")) expect(text).toContain(word);
+	expect(text).toContain("gpt-5.4");
+	expect(text).toContain("28%");
+	expect(text).not.toMatch(/…|\.\.\./);
+	for (const line of lines) expect(visibleWidth(line)).toBeLessThanOrEqual(50);
+});
+
+test("wraps Unicode and unbroken names within terminal columns", () => {
+	for (const sessionName of ["修复登录".repeat(30), "a".repeat(160), "👩‍💻".repeat(20)]) {
+		for (const width of [0, 1, 5, 10, 30, 80, 120]) {
+			const lines = renderFooterLines({ ...data, sessionName }, width);
+			for (const line of lines) expect(visibleWidth(line)).toBeLessThanOrEqual(width);
+			expect(plain(lines.join("\n"))).not.toContain("…");
+			if (width >= 30) {
+				const reconstructed = plain(lines.join(""))
+					.replace(/   | /g, "").replace(/\s/g, "");
+				expect(reconstructed).toContain(sessionName);
+			}
+		}
 	}
 });
 
-test("does not indent the stats when there are no tabs", () => {
-	const text = plain(renderFooterLine({ ...data, branch: undefined, sessionName: undefined }, 50));
+test("handles unset names, context, local models, and control characters", () => {
+	const text = plain(renderFooterLines({
+		...data, branch: undefined, sessionName: undefined, quotaStatus: undefined,
+		thinkingLevel: "off", used: null,
+	}, 50).join("\n"));
+	expect(text).toContain("--/128k");
+	expect(text).toContain("gpt-5.4");
+	expect(text).not.toMatch(/undefined|off||/);
 	expect(text.startsWith(" ")).toBe(false);
+	expect(plain(renderFooterLines({ ...data, used: 200000 }, 150).join(""))).toContain("200k/128k");
+	expect(plain(renderFooterLines({ ...data, used: 0 }, 150).join(""))).toContain("0k/128k");
+	expect(plain(renderFooterLines({ ...data, sessionName: "hello\x1b\nworld" }, 150).join(""))).toContain("hello world");
 });
 
-test("uses Claude's session icon and a supported Nerd Font robot", () => {
-	const text = plain(renderFooterLine(data, 180));
-	expect(text).toContain("");
-	expect(text).toContain("󰚩 gpt-5.4");
-	expect(text).not.toContain("");
-});
-
-test("fits narrow panes and retains model and context at 50 columns", () => {
-	const line = renderFooterLine(data, 50);
-	expect(visibleWidth(line)).toBeLessThanOrEqual(50);
-	expect(plain(line)).toContain("gpt-5.4");
-	expect(plain(line)).toContain("25%");
-	for (const width of [0, 1, 10, 30, 80, 120]) {
-		expect(visibleWidth(renderFooterLine(data, width))).toBeLessThanOrEqual(width);
-	}
-});
-
-test("fits wide Unicode names and omits unset session or thinking", () => {
-	const line = renderFooterLine({ ...data, sessionName: "修复登录".repeat(50), branch: "分支".repeat(40) }, 100);
-	expect(visibleWidth(line)).toBeLessThanOrEqual(100);
-	const minimal = plain(renderFooterLine({ ...data, sessionName: undefined, branch: undefined, thinkingLevel: "off" }, 160));
-	expect(minimal).not.toContain("undefined");
-	expect(minimal).not.toContain(" · off");
-});
-
-test("distinguishes unknown context from empty context and clamps progress", () => {
-	expect(plain(renderFooterLine({ ...data, used: null }, 160))).toContain("--/128.0k");
-	expect(plain(renderFooterLine({ ...data, used: 0 }, 160))).toContain("0/128.0k");
-	expect(plain(renderFooterLine({ ...data, used: 200000 }, 160))).toContain("100%");
-});
-
-test("reads current Pi context-window field and refreshes on session naming", async () => {
+test("reads quota statuses and fresh context without showing unrelated spend plugins", async () => {
 	const handlers = new Map<string, Function[]>();
+	const statuses = new Map([[
+		"provider-quota", data.quotaStatus,
+	], ["token-usage", "spend:$99"]]);
 	let factory: Function | undefined;
 	let renders = 0;
 	const ctx = {
 		hasUI: true,
 		getContextUsage: () => ({ tokens: 32000, contextWindow: 128000 }),
 		model: { id: "gpt-5.4", contextWindow: 1000000 },
-		sessionManager: { getBranch: () => [] },
 		ui: { setFooter: (value: Function) => { factory = value; } },
 	};
 	statusline({
@@ -140,11 +109,17 @@ test("reads current Pi context-window field and refreshes on session naming", as
 		getSessionName: () => "New session title",
 	} as any);
 	await handlers.get("session_start")![0]({}, ctx);
-	const footer = factory!({ requestRender: () => { renders++; } }, { fg: (_color: string, text: string) => text }, {
+	const footer = factory!({ requestRender: () => { renders++; } }, {}, {
 		getGitBranch: () => "main",
+		getExtensionStatuses: () => statuses,
 		onBranchChange: () => () => {},
 	});
-	expect(plain(footer.render(180)[0])).toContain("32.0k/128.0k");
+	const text = plain(footer.render(150).join("\n"));
+	expect(text).toContain("32k/128k");
+	expect(text).toContain("28%");
+	expect(text).not.toContain("spend");
+	statuses.set("provider-quota", " 29% ⟳2h13m");
+	expect(plain(footer.render(150).join(""))).toContain("29%");
 	for (const handler of handlers.get("session_info_changed") ?? []) await handler({}, ctx);
 	expect(renders).toBeGreaterThan(0);
 	footer.dispose();
