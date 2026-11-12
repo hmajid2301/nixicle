@@ -1,4 +1,12 @@
+{ lib, ... }:
 {
+  swapDevices = lib.mkForce [
+    {
+      device = "/swap/swapfile";
+      size = 65536;
+    }
+  ];
+
   disko.devices = {
     disk = {
       nvme0n1 = {
@@ -121,7 +129,7 @@
                         "noatime"
                         "compress=no"
                       ];
-                      swap.swapfile.size = "32G";
+                      swap.swapfile.size = "64G";
                     };
                   };
                 };
