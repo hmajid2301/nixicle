@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+# The Wave:3 card intermittently sticks with its input/output unavailable on
+# PipeWire; resetting both profiles un-sticks it. Card name embeds the device
+# serial, so it is the same on every host the mic is plugged into.
+set -euo pipefail
+
+card_name="alsa_card.usb-Elgato_Systems_Elgato_Wave_3_BS35M1A01828-00"
+
+pactl set-card-profile "$card_name" output:analog-stereo
+pactl set-card-profile "$card_name" input:mono-fallback

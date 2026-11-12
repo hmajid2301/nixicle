@@ -111,12 +111,6 @@
             '')
             gum
             android-tools
-            (pkgs.writeScriptBin "elgato-fix" ''
-              #!/usr/bin/env bash
-              card_name="alsa_card.usb-Elgato_Systems_Elgato_Wave_3_BS35M1A01828-00"
-              ${pkgs.pulseaudio}/bin/pactl set-card-profile $card_name output:analog-stereo
-              ${pkgs.pulseaudio}/bin/pactl set-card-profile $card_name input:mono-fallback
-            '')
             (pkgs.writeScriptBin "toggle-headphones" ''
               #!/usr/bin/env bash
               SOURCE1="alsa_card.usb-SteelSeries_Arctis_Nova_Pro_Wireless-00"
