@@ -327,8 +327,11 @@
           hostName = "vps";
           useDHCP = lib.mkDefault true;
           interfaces.ens3.useDHCP = lib.mkDefault true;
+          dhcpcd.extraConfig = "persistent";
           firewall.allowedTCPPorts = [ 22 ];
         };
+
+        systemd.services.dhcpcd.restartIfChanged = false;
 
         services = {
           dbus.implementation = "dbus";
