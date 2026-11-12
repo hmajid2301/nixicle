@@ -70,6 +70,13 @@
           ${pkgs.ghostty}/bin/ghostty -e ${pkgs.neovim}/bin/nvim "+call cursor($LINE,$COL)" "$FILE" &
           disown
         '';
+        # pactl is absent from PATH on the NixOS desktop hosts (the audio
+        # aspect shells out to ${pkgs.pulseaudio} directly); the store copy
+        # speaks the Pulse protocol to any Pulse/PipeWire server.
+        elgato-fix = pkgs.writeShellScriptBin "elgato-fix" ''
+          export PATH="${pkgs.pulseaudio}/bin:$PATH"
+          ${builtins.readFile ./scripts/elgato-fix}
+        '';
       in
       {
         imports = [ inputs.nix-index-database.homeModules.nix-index ];
@@ -217,7 +224,10 @@
               '';
             };
 
-            home.packages = [ open-in-terminal ];
+            home.packages = [
+              open-in-terminal
+              elgato-fix
+            ];
           }
           (lib.mkIf (hasSecret "ketch_context7_api_key") {
             nixicle.ketch.secrets.context7ApiKey = "ketch_context7_api_key";
