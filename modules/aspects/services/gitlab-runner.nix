@@ -62,6 +62,7 @@
                 mkdir -p -m 1777 /nix/var/nix/profiles/per-user
                 mkdir -p -m 0755 /nix/var/nix/profiles/per-user/root
                 mkdir -p -m 0700 "$HOME/.nix-defexpr"
+                mkdir -p -m 0755 /nix/var/nix/gcroots/ci
 
                 . ${pkgs.nix}/etc/profile.d/nix-daemon.sh
 
@@ -71,6 +72,8 @@
                     [
                       nix
                       cacert
+                      curl
+                      procps
                       git
                       openssh
                       attic-client
@@ -86,6 +89,7 @@
                 "/nix/store:/nix/store:ro"
                 "/nix/var/nix/db:/nix/var/nix/db:ro"
                 "/nix/var/nix/daemon-socket:/nix/var/nix/daemon-socket:ro"
+                "/nix/var/nix/gcroots/ci:/nix/var/nix/gcroots/ci:rw"
                 "/nix/var/nix/profiles/system/etc/ssl:/etc/nixicle-ssl:ro"
                 "${lib.getExe pkgs.pkgsStatic.gnugrep}:/usr/bin/grep:ro"
                 "${lib.getExe' pkgs.pkgsStatic.coreutils "mkdir"}:/usr/bin/mkdir:ro"
