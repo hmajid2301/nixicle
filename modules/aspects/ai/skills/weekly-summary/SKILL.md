@@ -14,7 +14,7 @@ Reads the week's agent sessions and fills in what was done. Works the same from 
 ```
 
 - Defaults: Monday of this week, and the last 600 characters of each session's final reply.
-- It covers Claude Code (`~/.claude/projects`) and pi (`~/.pi/agent/sessions`), and skips subagent transcripts and tiny sessions.
+- It covers Claude Code (`~/.claude/projects`) and pi (`$PI_CODING_AGENT_SESSION_DIR`, defaulting to `~/.local/state/pi/sessions`), and skips subagent transcripts and tiny sessions.
 - Each block has the time, the tool, the cwd, the file, the title, the opening prompt and the end of the last reply. The last reply is usually the session's own summary, so it's normally enough.
 - If a session is unclear, read more of that file only, with `jq`. Never read whole transcripts into context.
   - Claude Code: the text is in `.message.content[] | select(.type=="text")` on `user`/`assistant` lines.

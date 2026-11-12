@@ -35,10 +35,11 @@ let
   };
 in
 lib.runTests {
+  piExtension = "${disabled.xdg.configHome}/pi/agent/extensions/tuios-agent-state.ts";
   testDisabledHasNoEffects = {
     expr =
       !(disabled.xdg.configFile ? "tuios/config.d/10-nix.toml")
-      && !(disabled.home.file ? ".pi/agent/extensions/tuios-agent-state.ts")
+      && !(disabled.home.file ? piExtension)
       && !(disabled.programs.claude-code.settings ? hooks)
       && !(lib.hasInfix "ssh-agent-path" disabled.programs.fish.interactiveShellInit);
     expected = true;
@@ -51,7 +52,7 @@ lib.runTests {
     expr =
       !(defaults.xdg.configFile ? "tuios/config.d/10-nix.toml")
       && !(defaults.xdg.configFile ? "tuios/config.toml")
-      && !(defaults.home.file ? ".pi/agent/extensions/tuios-agent-state.ts")
+      && !(defaults.home.file ? "${defaults.xdg.configHome}/pi/agent/extensions/tuios-agent-state.ts")
       && !(defaults.programs.claude-code.settings ? hooks);
     expected = true;
   };
@@ -84,7 +85,8 @@ lib.runTests {
     ];
   };
   testPiIntegrationEnabled = {
-    expr = configured.home.file ? ".pi/agent/extensions/tuios-agent-state.ts";
+    expr =
+      configured.home.file ? "${configured.xdg.configHome}/pi/agent/extensions/tuios-agent-state.ts";
     expected = true;
   };
   testFishRequiresAgentFollowing = {

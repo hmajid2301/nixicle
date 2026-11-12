@@ -11,6 +11,7 @@ _: {
         ketchModule = import ./_ketch.nix { inherit config lib; };
         themeModule = import ./_theme.nix { inherit config pkgs; };
         aiCfg = config.nixicle.ai;
+        piAgentDir = "${config.xdg.configHome}/pi/agent";
         piExtensionFiles = import ./_extensions.nix { };
         baseProviders = import ./_providers.nix { inherit config; };
         piInputType = lib.types.enum [
@@ -97,18 +98,32 @@ _: {
           ketchModule.config
           themeModule.config
           {
-            home.file = {
-              ".pi/agent/agents" = {
-                source = ../agents;
-                recursive = true;
+            home = {
+              file = {
+                "${piAgentDir}/agents" = {
+                  source = ../agents;
+                  recursive = true;
+                };
+              }
+              // builtins.listToAttrs (
+                map (ext: {
+                  name = "${piAgentDir}/extensions/${ext.rel}";
+                  value.source = ext.src;
+                }) piExtensionFiles
+              );
+
+              sessionVariables = {
+                PI_CODING_AGENT_SESSION_DIR = "${config.xdg.stateHome}/pi/sessions";
               };
-            }
-            // builtins.listToAttrs (
-              map (ext: {
-                name = ".pi/agent/extensions/${ext.rel}";
-                value.source = ext.src;
-              }) piExtensionFiles
-            );
+
+              packages = with pkgs; [
+                gh
+                glab
+                ddgr
+                ketch
+                codegraph
+              ];
+            };
 
             sops.secrets.solheim_api_key = {
               sopsFile = lib.nixicle.secretsFile;
@@ -116,24 +131,18 @@ _: {
 
             programs.pi-coding-agent = {
               enable = true;
+              configDir = piAgentDir;
               settings = {
                 defaultProvider = "openai-codex";
                 defaultModel = "gpt-5.4";
                 defaultThinkingLevel = "medium";
                 theme = "stylix";
                 packages = [ ];
-                extensions = map (ext: "~/.pi/agent/extensions/${ext.rel}") piExtensionFiles;
+                skills = [ "${config.xdg.dataHome}/pi/skills" ];
+                extensions = map (ext: "${piAgentDir}/extensions/${ext.rel}") piExtensionFiles;
               };
               models.providers = mergedProviders // cloudOllamaProviders;
             };
-
-            home.packages = with pkgs; [
-              gh
-              glab
-              ddgr
-              ketch
-              codegraph
-            ];
           }
         ];
       };

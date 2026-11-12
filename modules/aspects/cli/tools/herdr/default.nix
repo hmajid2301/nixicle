@@ -20,6 +20,7 @@
       {
         pkgs,
         lib,
+        config,
         ...
       }:
       let
@@ -297,7 +298,7 @@
           '';
 
           file = {
-            ".pi/agent/extensions/herdr-agent-state.ts".source =
+            "${config.xdg.configHome}/pi/agent/extensions/herdr-agent-state.ts".source =
               "${integrationAsset "pi"}/herdr-agent-state.ts";
             ".claude/hooks/herdr-agent-state.sh" = {
               source = "${integrationAsset "claude"}/herdr-agent-state.sh";

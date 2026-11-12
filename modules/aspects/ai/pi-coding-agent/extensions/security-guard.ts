@@ -9,7 +9,7 @@
  *    with interactive TUI confirmation widget (scrollable command preview)
  * 2. File Policies — named rules with glob patterns and protection levels
  *
- * Config: ~/.pi/agent/security-guard.json (deployed via nix)
+ * Config: `security-guard.json` under `$PI_CODING_AGENT_DIR` (deployed via nix)
  */
 
 import { DynamicBorder, type ExtensionAPI } from "@mariozechner/pi-coding-agent";
@@ -178,8 +178,12 @@ const DEFAULT_CONFIG: SecurityConfig = {
 
 // ── Config Loading ────────────────────────────────────────────────────────────
 
+function agentDir(): string {
+	return process.env.PI_CODING_AGENT_DIR ?? path.join(homedir(), ".pi", "agent");
+}
+
 function getConfigPath(): string {
-	return path.join(homedir(), ".pi", "agent", "security-guard.json");
+	return path.join(agentDir(), "security-guard.json");
 }
 
 function loadConfig(): SecurityConfig {
