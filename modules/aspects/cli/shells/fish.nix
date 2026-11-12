@@ -69,6 +69,7 @@ in
           flags = [
             "--disable-up-arrow"
             "--disable-ctrl-r"
+            "--disable-ai"
           ];
           settings = {
             sync_address = "https://atuin.${lib.nixicle.domains.root}";
@@ -77,7 +78,12 @@ in
             enter_accept = false;
             records = true;
             search_mode = "skim";
+            ai.enabled = true;
+            threads = {
+              capture = true;
+            };
           };
+          daemon.enable = true;
         };
         starship = {
           enable = true;
@@ -94,6 +100,7 @@ in
           end
         '';
       };
+
     };
 
   den.aspects.fish = {
