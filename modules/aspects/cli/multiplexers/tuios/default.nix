@@ -28,10 +28,11 @@
 
       programs.tuios = {
         enable = true;
+        # TODO: upstream the segmented dock style to Gaurav-Gosain/tuios, then drop this patch
         package = inputs.tuios.packages.${pkgs.stdenv.hostPlatform.system}.tuios.overrideAttrs (old: {
           patches = (old.patches or [ ]) ++ [ ./_segmented-tabs.patch ];
           postCheck = (old.postCheck or "") + ''
-            go test ./internal/app ./internal/config -run 'TestSegmentedDock|TestSidebar|TestPalette|TestCommandPaletteDensity|TestLook'
+            go test ./internal/app ./internal/config -run 'TestSegmentedDock|TestPalette|TestLook'
           '';
         });
         enableFishIntegration = true;
@@ -63,7 +64,6 @@
             sidebar = {
               enabled = true;
               position = "left";
-              frame = "detached";
               background = "#181825";
               header_style = "plain";
               row_style = "pill";
@@ -90,7 +90,6 @@
             show_clock = true;
             clock_format = "15:04";
             panel_padding = 1;
-            palette_density = "roomy";
             modal_dim = 45;
             nvim_navigation = true;
           };
