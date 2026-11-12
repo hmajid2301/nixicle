@@ -168,8 +168,14 @@
         };
 
         boot = {
-          kernelParams = [ "resume_offset=533760" ];
+          resumeDevice = lib.mkForce "";
+          initrd.systemd.services.rollback.after = [ "systemd-hibernate-resume.service" ];
           kernel.sysctl."net.ipv4.ip_forward" = 1;
+        };
+
+        systemd.services = {
+          systemd-logind.environment.SYSTEMD_BYPASS_HIBERNATION_MEMORY_CHECK = lib.mkForce "0";
+          systemd-hibernate.environment.SYSTEMD_BYPASS_HIBERNATION_MEMORY_CHECK = lib.mkForce "0";
         };
 
         networking.hostName = "desktop";
