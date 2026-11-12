@@ -59,7 +59,7 @@ _: {
               };
               garbage-collection = {
                 interval = "1 day";
-                default-retention-period = "3 months";
+                default-retention-period = "14 days";
               };
               storage = {
                 type = "s3";
