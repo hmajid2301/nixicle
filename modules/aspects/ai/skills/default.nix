@@ -283,7 +283,11 @@ _: {
             };
           };
 
-          targets.agents.enable = true;
+          targets.agents = {
+            enable = true;
+            dest = "$HOME/.local/share/pi/skills";
+            structure = "symlink-tree";
+          };
           targets.claude.enable = config.programs.claude-code.enable;
         };
       };

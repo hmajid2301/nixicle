@@ -89,12 +89,13 @@ function shouldRenderQuotaStatus(
 	return previousText !== nextText;
 }
 
+function agentDir(): string {
+	return process.env.PI_CODING_AGENT_DIR ?? join(homedir(), ".pi", "agent");
+}
+
 function readStoredAuth(): Record<string, any> {
 	try {
-		return JSON.parse(readFileSync(join(homedir(), ".pi", "agent", "auth.json"), "utf8")) as Record<
-			string,
-			any
-		>;
+		return JSON.parse(readFileSync(join(agentDir(), "auth.json"), "utf8")) as Record<string, any>;
 	} catch {
 		return {};
 	}

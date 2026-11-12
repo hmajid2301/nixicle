@@ -4,7 +4,7 @@
   ...
 }:
 {
-  config.home.file.".pi/agent/themes/stylix.json".source =
+  config.home.file."${config.xdg.configHome}/pi/agent/themes/stylix.json".source =
     let
       s = config.lib.stylix.colors.withHashtag;
     in

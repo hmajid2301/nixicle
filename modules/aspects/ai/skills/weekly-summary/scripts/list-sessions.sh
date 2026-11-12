@@ -42,8 +42,9 @@ if [[ -d ~/.claude/projects ]]; then
     done
 fi
 
-if [[ -d ~/.pi/agent/sessions ]]; then
-  find ~/.pi/agent/sessions -name '*.jsonl' -newermt "$since" -size +5k -not -path '*/subagents/*' -print0 |
+sessions_dir=${PI_CODING_AGENT_SESSION_DIR:-$HOME/.local/state/pi/sessions}
+if [[ -d $sessions_dir ]]; then
+  find "$sessions_dir" -maxdepth 1 -name '*.jsonl' -newermt "$since" -size +5k -print0 |
     while IFS= read -r -d '' f; do
       cwd=$(jq -r 'select(.type=="session") | .cwd' "$f" 2>/dev/null | head -1)
       title=$(jq -r "$title_pi" "$f" 2>/dev/null | tail -1)

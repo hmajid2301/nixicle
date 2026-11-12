@@ -10,7 +10,7 @@ let
   tuios = lib.getExe' cfg.package "tuios";
   piIntegration = pkgs.runCommand "tuios-pi-integration" { } ''
     export HOME="$TMPDIR/home"
-    export PI_CODING_AGENT_DIR="$HOME/.pi/agent"
+    export PI_CODING_AGENT_DIR="$HOME/.config/pi/agent"
     mkdir -p "$PI_CODING_AGENT_DIR"
     ${tuios} integration install pi --command ${tuios}
     cp "$PI_CODING_AGENT_DIR/extensions/tuios-agent-state.ts" "$out"
@@ -48,9 +48,11 @@ in
           end
         '';
 
-    home.file.".pi/agent/extensions/tuios-agent-state.ts" = lib.mkIf cfg.enablePiIntegration {
-      source = piIntegration;
-    };
+    home.file."${config.xdg.configHome}/pi/agent/extensions/tuios-agent-state.ts" =
+      lib.mkIf cfg.enablePiIntegration
+        {
+          source = piIntegration;
+        };
 
     programs.claude-code.settings.hooks = lib.mkIf cfg.enableClaudeCodeIntegration (
       lib.genAttrs

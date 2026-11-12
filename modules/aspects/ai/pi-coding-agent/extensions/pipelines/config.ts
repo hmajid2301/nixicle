@@ -1,7 +1,7 @@
 // extensions/pipelines/config.ts
 import { existsSync, mkdirSync, readFileSync } from "node:fs";
-import { homedir } from "node:os";
 import { join } from "node:path";
+import { agentDir } from "./agents.ts";
 
 export type PaneMode = "grouped" | "tab" | "split";
 export type PaneDirection = "right" | "down";
@@ -42,7 +42,7 @@ export function resolvePaneConfig(cfg: PipelinesConfig): PaneConfig {
 }
 
 export function pipelinesDir(): string {
-  const dir = process.env.PIPELINES_DIR ?? join(homedir(), ".pi", "agent", "pipelines");
+  const dir = process.env.PIPELINES_DIR ?? join(agentDir(), "pipelines");
   mkdirSync(dir, { recursive: true });
   return dir;
 }

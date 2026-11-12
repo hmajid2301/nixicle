@@ -11,7 +11,10 @@ export type LogLevel = "debug" | "info" | "warn" | "error";
 let logPath: string | undefined;
 
 export function initLogging(path?: string): void {
-  logPath = path ?? join(homedir(), ".pi", "pipelines.log");
+  logPath =
+    path ??
+    process.env.PI_PIPELINES_LOG ??
+    join(homedir(), ".local", "state", "pi", "pipelines.log");
 }
 
 export function log(level: LogLevel, event: string, data?: Record<string, unknown>): void {
