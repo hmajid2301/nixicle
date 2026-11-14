@@ -1,32 +1,14 @@
 import { describe, expect, test } from "bun:test";
-import { shouldRenderQuotaStatus } from "./quotas-ui";
+import { shouldRenderQuotaStatus } from "./quotas.ts";
 
 describe("shouldRenderQuotaStatus", () => {
-	test("renders quota status in regular and fullscreen TUI modes", () => {
-		expect(shouldRenderQuotaStatus({
-			uiMode: "regular",
-			previousText: undefined,
-			nextText: "codex 5h:20%",
-		})).toBe(true);
-
-		expect(shouldRenderQuotaStatus({
-			uiMode: undefined,
-			previousText: undefined,
-			nextText: "codex 5h:20%",
-		})).toBe(false);
+	test("renders when the status text changes", () => {
+		expect(shouldRenderQuotaStatus({ previousText: undefined, nextText: "codex 5h:20%" })).toBe(true);
+		expect(shouldRenderQuotaStatus({ previousText: "codex 5h:20%", nextText: "codex 5h:21%" })).toBe(true);
 	});
 
-	test("renders in fullscreen only when text changed", () => {
-		expect(shouldRenderQuotaStatus({
-			uiMode: "fullscreen",
-			previousText: undefined,
-			nextText: "codex 5h:20%",
-		})).toBe(true);
-
-		expect(shouldRenderQuotaStatus({
-			uiMode: "fullscreen",
-			previousText: "codex 5h:20%",
-			nextText: "codex 5h:20%",
-		})).toBe(false);
+	test("skips unchanged status text", () => {
+		expect(shouldRenderQuotaStatus({ previousText: "codex 5h:20%", nextText: "codex 5h:20%" })).toBe(false);
+		expect(shouldRenderQuotaStatus({ previousText: undefined, nextText: undefined })).toBe(false);
 	});
 });

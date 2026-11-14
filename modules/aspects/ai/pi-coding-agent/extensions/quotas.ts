@@ -5,6 +5,8 @@
  *
  * - openai-codex  -> ChatGPT Codex subscription rate limits (5h / weekly)
  * - opencode-go   -> OpenCode Zen plan usage (rolling / weekly / monthly)
+ * - claude-code   -> Claude subscription usage (5h / weekly) via the Claude
+ *   CLI OAuth token in ~/.claude/.credentials.json
  * - ollama / llama-swap / other local providers -> deliberately not polled:
  *   the local ollama server exposes no usage endpoint and ollama.com/api/usage
  *   requires an API key (the signed-in local identity is rejected), so there
@@ -22,8 +24,8 @@
  * Zen error while a different provider is active.
  */
 
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
+import { mkdirSync, readFileSync, renameSync, writeFileSync } from "node:fs";
+import { dirname, join } from "node:path";
 import { homedir } from "node:os";
 import type { ExtensionAPI, ExtensionContext } from "@mariozechner/pi-coding-agent";
 
@@ -31,16 +33,18 @@ const STATUS_ID = "provider-quota";
 const REFRESH_MS = 60_000;
 const CACHE_TTL_MS = 60_000;
 const FETCH_TIMEOUT_MS = 15_000;
+const CLAUDE_SHARED_TTL_MS = 120_000;
+const CLAUDE_DEFAULT_BACKOFF_MS = 300_000;
 const WARN_PERCENT = 80;
 const ERROR_PERCENT = 90;
 const DEFAULT_ZEN_USAGE_URL = "https://opencode.ai/zen/go/v1/usage";
 
-type QuotaProvider = "openai-codex" | "opencode-go";
-type QuotaStatusUIMode = "regular" | "fullscreen" | undefined;
+type QuotaProvider = "openai-codex" | "opencode-go" | "claude-code";
 
 const PROVIDER_LABELS: Record<QuotaProvider, string> = {
 	"openai-codex": "codex",
 	"opencode-go": "zen",
+	"claude-code": "claude",
 };
 
 interface UsageWindow {
@@ -74,7 +78,7 @@ function safeModel(ctx: ExtensionContext): { provider?: string; baseUrl?: string
  */
 function quotaProviderOf(ctx: ExtensionContext): QuotaProvider | undefined {
 	const provider = safeModel(ctx)?.provider;
-	if (provider === "openai-codex" || provider === "opencode-go") return provider;
+	if (provider === "openai-codex" || provider === "opencode-go" || provider === "claude-code") return provider;
 	return undefined;
 }
 
@@ -82,10 +86,9 @@ function clampPercent(value: number): number {
 	return Math.max(0, Math.min(100, value));
 }
 
-function shouldRenderQuotaStatus(
-	{ uiMode, previousText, nextText }: { uiMode: QuotaStatusUIMode; previousText: string | undefined; nextText: string | undefined },
+export function shouldRenderQuotaStatus(
+	{ previousText, nextText }: { previousText: string | undefined; nextText: string | undefined },
 ): boolean {
-	if (uiMode !== "fullscreen") return false;
 	return previousText !== nextText;
 }
 
@@ -159,14 +162,26 @@ async function fetchJson(
 	url: string,
 	headers: Record<string, string>,
 	signal?: AbortSignal,
-): Promise<{ ok: true; data: any } | { ok: false; message: string }> {
+): Promise<{ ok: true; data: any } | { ok: false; message: string; retryAfterMs?: number }> {
 	const signals = [AbortSignal.timeout(FETCH_TIMEOUT_MS)];
 	if (signal) signals.push(signal);
 	const combined = AbortSignal.any(signals);
 
 	try {
 		const res = await fetch(url, { headers, signal: combined });
-		if (!res.ok) return { ok: false, message: `HTTP ${res.status}` };
+		if (!res.ok) {
+			const retryAfter = Number(res.headers.get("retry-after"));
+			return {
+				ok: false,
+				message: `HTTP ${res.status}`,
+				retryAfterMs:
+					res.status === 429
+						? Number.isFinite(retryAfter) && retryAfter > 0
+							? retryAfter * 1000
+							: CLAUDE_DEFAULT_BACKOFF_MS
+						: undefined,
+			};
+		}
 		const text = await res.text();
 		try {
 			return { ok: true, data: JSON.parse(text) };
@@ -313,6 +328,102 @@ async function fetchZenUsage(
 	return parseZenUsage(result.data);
 }
 
+// --- Claude (pi-claude-code) ------------------------------------------------
+
+function claudeAccessToken(): string | undefined {
+	const configDir = process.env.CLAUDE_CONFIG_DIR ?? join(homedir(), ".claude");
+	try {
+		const creds = JSON.parse(readFileSync(join(configDir, ".credentials.json"), "utf8"));
+		return creds?.claudeAiOauth?.accessToken;
+	} catch {
+		return undefined;
+	}
+}
+
+export function parseClaudeUsage(data: any): ProviderUsage | { error: string } {
+	const definitions: Array<[string, number]> = [
+		["five_hour", 5 * 60 * 60],
+		["seven_day", 7 * 24 * 60 * 60],
+	];
+
+	const windows: UsageWindow[] = [];
+	for (const [key, windowSeconds] of definitions) {
+		const raw = data?.[key];
+		if (!raw || typeof raw !== "object") continue;
+		const usedPercent = clampPercent(Number(raw.utilization));
+		if (!Number.isFinite(usedPercent)) continue;
+		windows.push({
+			label: windowLabel(windowSeconds),
+			usedPercent,
+			resetsAt: parseDateish(raw.resets_at),
+			windowSeconds,
+		});
+	}
+
+	if (windows.length === 0) return { error: "Claude usage endpoint returned no windows" };
+	return { provider: "claude-code", windows };
+}
+
+interface ClaudeUsageCache {
+	fetchedAt?: number;
+	data?: unknown;
+	blockedUntil?: number;
+}
+
+function claudeCachePath(): string {
+	const base = process.env.XDG_CACHE_HOME || join(homedir(), ".cache");
+	return join(base, "pi", "claude-usage.json");
+}
+
+function readClaudeCache(): ClaudeUsageCache {
+	try {
+		return JSON.parse(readFileSync(claudeCachePath(), "utf8")) ?? {};
+	} catch {
+		return {};
+	}
+}
+
+function writeClaudeCache(cache: ClaudeUsageCache): void {
+	const path = claudeCachePath();
+	try {
+		mkdirSync(dirname(path), { recursive: true });
+		const tmp = `${path}.${process.pid}.tmp`;
+		writeFileSync(tmp, JSON.stringify(cache), { mode: 0o600 });
+		renameSync(tmp, path);
+	} catch {
+		// best effort: the in-process cache still works
+	}
+}
+
+export async function fetchClaudeUsage(signal?: AbortSignal): Promise<ProviderUsage | { error: string }> {
+	const shared = readClaudeCache();
+	const now = Date.now();
+	const stale = shared.data !== undefined ? parseClaudeUsage(shared.data) : undefined;
+	if (stale && !("error" in stale) && now - (shared.fetchedAt ?? 0) < CLAUDE_SHARED_TTL_MS) return stale;
+	if ((shared.blockedUntil ?? 0) > now) return stale ?? { error: "Claude usage rate-limited" };
+
+	const token = claudeAccessToken();
+	if (!token) return { error: "No Claude OAuth token found (run `claude` to log in)" };
+
+	const result = await fetchJson(
+		"https://api.anthropic.com/api/oauth/usage",
+		{
+			Authorization: `Bearer ${token}`,
+			"anthropic-beta": "oauth-2025-04-20",
+			Accept: "application/json",
+			"User-Agent": "pi",
+		},
+		signal,
+	);
+	if (!result.ok) {
+		if (result.retryAfterMs) writeClaudeCache({ ...shared, blockedUntil: Date.now() + result.retryAfterMs });
+		return stale ?? { error: result.message };
+	}
+	const usage = parseClaudeUsage(result.data);
+	if (!("error" in usage)) writeClaudeCache({ fetchedAt: Date.now(), data: result.data });
+	return usage;
+}
+
 export function formatQuotaFooter(
 	theme: { fg(color: "dim" | "success" | "warning" | "error", text: string): string },
 	usage: ProviderUsage,
@@ -324,10 +435,13 @@ export function formatQuotaFooter(
 		const monthly = window.windowSeconds > 7 * 24 * 60 * 60;
 		const resetAt = window.resetsAt.getTime();
 		let reset = "";
-		if (primary && Number.isFinite(resetAt) && resetAt > 0) {
+		if (Number.isFinite(resetAt) && resetAt > 0) {
 			const minutes = Math.max(0, Math.floor((resetAt - now) / 60000));
-			const hours = Math.floor(minutes / 60);
-			reset = ` ⟳${hours ? `${hours}h` : ""}${minutes % 60}m`;
+			const days = Math.floor(minutes / 1440);
+			const hours = Math.floor((minutes % 1440) / 60);
+			reset = days >= 1
+				? ` ⟳${days}d${hours ? `${hours}h` : ""}`
+				: ` ⟳${hours ? `${hours}h` : ""}${minutes % 60}m`;
 		}
 		const text = `${primary ? "" : ""} ${monthly ? "m" : ""}${Math.round(clampPercent(window.usedPercent))}%${reset}${window.limited ? "!" : ""}`;
 		return theme.fg(severity(window.usedPercent), text);
@@ -364,12 +478,6 @@ export default function providerQuota(pi: ExtensionAPI) {
 		}
 	}
 
-	function getQuotaStatusUIMode(ctx: ExtensionContext | undefined): QuotaStatusUIMode {
-		if (!ctx || ctx.mode !== "tui") return undefined;
-		const ui = ctx.ui as typeof ctx.ui & { mode?: QuotaStatusUIMode };
-		return ui.mode;
-	}
-
 	function startTimer(): void {
 		if (refreshTimer) return;
 		refreshTimer = setInterval(() => {
@@ -389,11 +497,7 @@ export default function providerQuota(pi: ExtensionAPI) {
 		if (!ctx) return;
 		try {
 			if (!ctx.hasUI) return;
-			if (!shouldRenderQuotaStatus({
-				uiMode: getQuotaStatusUIMode(ctx),
-				previousText: lastRenderedStatus,
-				nextText: text,
-			})) return;
+			if (!shouldRenderQuotaStatus({ previousText: lastRenderedStatus, nextText: text })) return;
 			ctx.ui.setStatus(STATUS_ID, text);
 			lastRenderedStatus = text;
 		} catch {
@@ -440,7 +544,9 @@ export default function providerQuota(pi: ExtensionAPI) {
 				const result =
 					provider === "openai-codex"
 						? await fetchCodexUsage()
-						: await fetchZenUsage(safeModel(ctx)?.baseUrl, opencodeGoKey());
+						: provider === "claude-code"
+							? await fetchClaudeUsage()
+							: await fetchZenUsage(safeModel(ctx)?.baseUrl, opencodeGoKey());
 				if (!("error" in result)) cache.set(provider, { at: Date.now(), usage: result });
 				return result;
 			} finally {
