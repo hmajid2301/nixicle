@@ -147,6 +147,7 @@
       url = "github:pauldambra/dotfiles";
       flake = false;
     };
+    pig.url = "github:MichaelKinsy/PiG/v0.7.0";
     playwright-cli-skill = {
       url = "github:microsoft/playwright-cli";
       flake = false;

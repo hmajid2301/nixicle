@@ -31,6 +31,7 @@
       den.aspects.shellPromptHistory
       den.aspects.neovim
       den.aspects.pi-coding-agent
+      den.aspects.pig
       den.aspects.skills
       den.aspects.claude-code
       den.aspects.zellij

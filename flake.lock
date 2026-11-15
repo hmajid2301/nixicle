@@ -1800,6 +1800,22 @@
         "type": "github"
       }
     },
+    "nixpkgs-darwin-x64": {
+      "locked": {
+        "lastModified": 1792835784,
+        "narHash": "sha256-dVEmrm7vgKvc2PlgjU8G3btjlUbUr8MZs/hBv9DisZQ=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "d592aacecd3575d7e11de963d9b20dd2ef4db603",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "ref": "nixpkgs-26.05-darwin",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
     "nixpkgs-lib": {
       "locked": {
         "lastModified": 1777168982,
@@ -1955,11 +1971,11 @@
     },
     "nixpkgs_18": {
       "locked": {
-        "lastModified": 1785454630,
-        "narHash": "sha256-LQy14TZp77TwbQf40gg1V3jo8FwJG0jGDkAH+zRHqg8=",
+        "lastModified": 1792773339,
+        "narHash": "sha256-rZLrzrC6i+jnTAlvPZHogKDulY7WWDEv9hJeHieO7Zw=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "1559d3daa3ecc813a650b79375ea61b6741b8746",
+        "rev": "3ec636362e1816bc2f0888fa0fa2c69f1bc9e504",
         "type": "github"
       },
       "original": {
@@ -1971,16 +1987,16 @@
     },
     "nixpkgs_19": {
       "locked": {
-        "lastModified": 1792639626,
-        "narHash": "sha256-VpGxEz/7DxwNTMgZGsceZ73aUM1nH7C+84HqlTNP128=",
+        "lastModified": 1785454630,
+        "narHash": "sha256-LQy14TZp77TwbQf40gg1V3jo8FwJG0jGDkAH+zRHqg8=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "d9c20b603f4807ed37779c2aee920e8639fd5025",
+        "rev": "1559d3daa3ecc813a650b79375ea61b6741b8746",
         "type": "github"
       },
       "original": {
         "owner": "NixOS",
-        "ref": "nixpkgs-unstable",
+        "ref": "nixos-unstable",
         "repo": "nixpkgs",
         "type": "github"
       }
@@ -2002,6 +2018,22 @@
       }
     },
     "nixpkgs_20": {
+      "locked": {
+        "lastModified": 1792639626,
+        "narHash": "sha256-VpGxEz/7DxwNTMgZGsceZ73aUM1nH7C+84HqlTNP128=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "d9c20b603f4807ed37779c2aee920e8639fd5025",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "ref": "nixpkgs-unstable",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "nixpkgs_21": {
       "locked": {
         "lastModified": 1789073787,
         "narHash": "sha256-xfX/toC2QV707s06GbP4II/TxYF0fNQj7s5/LClNDKc=",
@@ -2286,6 +2318,26 @@
       "original": {
         "owner": "pauldambra",
         "repo": "dotfiles",
+        "type": "github"
+      }
+    },
+    "pig": {
+      "inputs": {
+        "nixpkgs": "nixpkgs_18",
+        "nixpkgs-darwin-x64": "nixpkgs-darwin-x64"
+      },
+      "locked": {
+        "lastModified": 1793891858,
+        "narHash": "sha256-hMHErCIZscyYx7pNhKXvS+DCA65SZzh9xB+B/dw1L0Q=",
+        "owner": "MichaelKinsy",
+        "repo": "PiG",
+        "rev": "beb56447c476da70d05d8e1e1ca9e993b367cb8b",
+        "type": "github"
+      },
+      "original": {
+        "owner": "MichaelKinsy",
+        "ref": "v0.7.0",
+        "repo": "PiG",
         "type": "github"
       }
     },
@@ -2808,6 +2860,7 @@
         "oxy2dev-nvim-scripts": "oxy2dev-nvim-scripts",
         "pam-shim": "pam-shim",
         "pauldambra-dotfiles": "pauldambra-dotfiles",
+        "pig": "pig",
         "playwright-cli-skill": "playwright-cli-skill",
         "plugins-cmp-dbee": "plugins-cmp-dbee",
         "plugins-cmp-go-deep": "plugins-cmp-go-deep",
@@ -2929,7 +2982,7 @@
         "firefox-gnome-theme": "firefox-gnome-theme",
         "flake-parts": "flake-parts_4",
         "gnome-shell": "gnome-shell",
-        "nixpkgs": "nixpkgs_18",
+        "nixpkgs": "nixpkgs_19",
         "nur": "nur_2",
         "systems": "systems_14",
         "tinted-kitty": "tinted-kitty",
@@ -3369,7 +3422,7 @@
         "flake-root": "flake-root",
         "git-hooks-nix": "git-hooks-nix_2",
         "nix-fast-build": "nix-fast-build",
-        "nixpkgs": "nixpkgs_19",
+        "nixpkgs": "nixpkgs_20",
         "treefmt-nix": "treefmt-nix_4"
       },
       "locked": {
@@ -3473,7 +3526,7 @@
       "inputs": {
         "crane": "crane_2",
         "flake-utils": "flake-utils_13",
-        "nixpkgs": "nixpkgs_20",
+        "nixpkgs": "nixpkgs_21",
         "rust-overlay": "rust-overlay_2"
       },
       "locked": {

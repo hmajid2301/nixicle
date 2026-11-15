@@ -1,0 +1,4 @@
+{"type":"system","subtype":"init"}
+{"type":"system","subtype":"status"}
+{"type":"assistant"}
+{"type":"result","subtype":"success","is_error":true,"result":"There's an issue with the selected model (claude-nonexistent-9). It may not exist or you may not have access to it. Run --model to pick a different model.","usage":{"input_tokens":0,"output_tokens":0,"cache_read_input_tokens":0,"cache_creation_input_tokens":0}}
