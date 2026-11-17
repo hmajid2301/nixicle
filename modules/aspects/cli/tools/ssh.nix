@@ -22,7 +22,8 @@ _: {
           "git.${lib.nixicle.domains.root}" = {
             HostName = "git.${lib.nixicle.domains.root}";
             User = "git";
-            Port = 22;
+            Port = 2222;
+            IdentityFile = "~/.ssh/id_ed25519";
           };
         };
         extraConfig = ''

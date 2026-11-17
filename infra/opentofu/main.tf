@@ -69,6 +69,15 @@ locals {
       is_public           = false
       allowed_user_groups = [data.pocketid_group.family.id]
     }
+    forgejo = {
+      client_id           = "forgejo"
+      name                = "Forgejo"
+      launch_url          = "https://forgejo.haseebmajid.dev"
+      callback_urls       = ["https://forgejo.haseebmajid.dev/user/oauth2/pocketid/callback"]
+      pkce_enabled        = false
+      is_public           = false
+      allowed_user_groups = [data.pocketid_group.family.id, pocketid_group.forgejo_admins.id]
+    }
     goroutinely = {
       client_id           = "goroutinely"
       name                = "Goroutinely"
@@ -232,6 +241,11 @@ resource "pocketid_group" "umami_admins" {
   friendly_name = "Umami Admins"
 }
 
+resource "pocketid_group" "forgejo_admins" {
+  name          = "forgejo_admins"
+  friendly_name = "Forgejo Admins"
+}
+
 resource "pocketid_group" "jellyfin_admins" {
   name          = "jellyfin_admins"
   friendly_name = "Jellyfin Admins"
@@ -250,6 +264,7 @@ resource "pocketid_user" "hmajid2301" {
     pocketid_group.grafana_admins.id,
     pocketid_group.jellyfin_admins.id,
     pocketid_group.umami_admins.id,
+    pocketid_group.forgejo_admins.id,
   ]
 }
 
@@ -406,6 +421,11 @@ output "tinyauth_client_id" {
 
 output "tinyauth_client_secret" {
   value     = pocketid_client.app["tinyauth"].client_secret
+  sensitive = true
+}
+
+output "forgejo_client_secret" {
+  value     = pocketid_client.app["forgejo"].client_secret
   sensitive = true
 }
 

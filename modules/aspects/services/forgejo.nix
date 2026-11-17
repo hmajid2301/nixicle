@@ -1,5 +1,8 @@
-_: {
+{ den, ... }:
+{
   den.aspects.forgejo = {
+    includes = [ den.aspects.docker ];
+
     persist.directories = [
       {
         directory = "/var/lib/forgejo";
@@ -8,12 +11,13 @@ _: {
         mode = "0750";
       }
       {
-        directory = "/var/lib/forgejo-dind";
+        directory = "/var/lib/private/forgejo-runner";
         user = "root";
         group = "root";
-        mode = "0755";
+        mode = "0700";
       }
     ];
+
     nixos =
       {
         config,
@@ -21,111 +25,311 @@ _: {
         lib,
         ...
       }:
-      {
-        # Usable without host wiring: fall back to the shared secrets file when
-        # the host does not set sops.defaultSopsFile itself.
-        sops = {
-          defaultSopsFile = lib.mkDefault lib.nixicle.secretsFile;
-          secrets = {
-            forgejo_smtp_password.owner = "forgejo";
-            forgejo_runner_token = { };
+      let
+        cfg = config.services.forgejo;
+        port = 5706;
+        sshPort = 2222;
+        domain = config.nixicle.domains.root;
+        host = "forgejo.${domain}";
+        oidcName = "pocketid";
+        forgejoExe = lib.getExe cfg.package;
+        forgejoEnv = {
+          USER = cfg.user;
+          HOME = cfg.stateDir;
+          FORGEJO_WORK_DIR = cfg.stateDir;
+          FORGEJO_CUSTOM = cfg.customDir;
+        };
+
+        toUuid =
+          id:
+          let
+            hex = lib.concatMapStrings (c: lib.toLower (lib.toHexString (lib.strings.charToInt c))) (
+              lib.stringToCharacters id
+            );
+          in
+          lib.concatStringsSep "-" [
+            (lib.substring 0 8 hex)
+            (lib.substring 8 4 hex)
+            (lib.substring 12 4 hex)
+            (lib.substring 16 4 hex)
+            (lib.substring 20 12 hex)
+          ];
+        runnerSecretFile = name: "${cfg.stateDir}/actions-runner-${name}-secret";
+        runners = {
+          nix = {
+            id = "6e697869636c6e78";
+            labels = [ "nix:docker://forgejo-nix:latest" ];
+            capacity = 2;
+            container = {
+              valid_volumes = [
+                "/nix/store"
+                "/nix/var/nix/daemon-socket"
+              ];
+              options = lib.concatStringsSep " " [
+                "--user ${jobUid}:${jobUid}"
+                "-v /nix/store:/nix/store:ro"
+                "-v /nix/var/nix/daemon-socket:/nix/var/nix/daemon-socket:ro"
+              ];
+            };
+          };
+          docker = {
+            id = "6e697869636c6463";
+            labels = [
+              "docker:docker://data.forgejo.org/oci/node:22-bookworm"
+              "ubuntu-latest:docker://data.forgejo.org/oci/node:22-bookworm"
+            ];
+            capacity = 1;
+            container = { };
           };
         };
 
-        systemd = {
-          services.forgejo.preStart =
+        jobUid = "30000";
+        jobTools = pkgs.buildEnv {
+          name = "forgejo-nix-job-tools";
+          paths = with pkgs; [
+            bashInteractive
+            coreutils
+            findutils
+            gnugrep
+            gnused
+            gawk
+            gnutar
+            gzip
+            xz
+            zstd
+            curl
+            jq
+            git
+            openssh
+            nix
+            nodejs
+            cacert
+          ];
+          pathsToLink = [
+            "/bin"
+            "/etc/ssl"
+          ];
+        };
+
+        nixJobImage = pkgs.dockerTools.buildImage {
+          name = "forgejo-nix";
+          tag = "latest";
+          extraCommands = ''
+            mkdir -p etc/nix usr/bin root
+            mkdir -m 1777 tmp workspace
+            ln -s ${jobTools}/bin bin
+            ln -s ${jobTools}/bin/env usr/bin/env
+            ln -s ${jobTools}/etc/ssl etc/ssl
+            echo "root:x:0:0::/root:/bin/sh" > etc/passwd
+            echo "ci:x:${jobUid}:${jobUid}::/tmp:/bin/sh" >> etc/passwd
+            echo "root:x:0:" > etc/group
+            echo "ci:x:${jobUid}:" >> etc/group
+            echo "hosts: files dns" > etc/nsswitch.conf
+            echo "experimental-features = nix-command flakes" > etc/nix/nix.conf
+          '';
+          config = {
+            User = "${jobUid}:${jobUid}";
+            WorkingDir = "/tmp";
+            Env = [
+              "PATH=/bin"
+              "HOME=/tmp"
+              "NIX_REMOTE=daemon"
+              "SSL_CERT_FILE=/etc/ssl/certs/ca-bundle.crt"
+              "NIX_SSL_CERT_FILE=/etc/ssl/certs/ca-bundle.crt"
+            ];
+          };
+        };
+      in
+      {
+        sops.secrets.forgejo_oidc_client_secret = {
+          owner = cfg.user;
+          restartUnits = [ "forgejo-oidc.service" ];
+        };
+
+        networking.firewall.allowedTCPPorts = [ sshPort ];
+
+        system.backup.objects.forgejo = {
+          paths = [ cfg.stateDir ];
+          exclude = [ "${cfg.stateDir}/data/tmp" ];
+          timerConfig = {
+            OnCalendar = "daily";
+            RandomizedDelaySec = "2h";
+            Persistent = true;
+          };
+        };
+
+        systemd.services = {
+          forgejo.preStart =
             let
-              inherit (config.services.forgejo) stateDir;
               theme = pkgs.fetchzip {
                 url = "https://github.com/catppuccin/gitea/releases/download/v1.0.2/catppuccin-gitea.tar.gz";
-                hash = "sha256-14XqO1ZhhPS7VDBSzqW55kh6n5cFZGZmvRCtMEh8JPI=";
+                hash = "sha256-rZHLORwLUfIFcB6K9yhrzr+UwdPNQVSadsw6rg8Q7gs=";
                 stripRoot = false;
               };
             in
             lib.mkAfter ''
-              rm -rf ${stateDir}/custom/public/assets
-              mkdir -p ${stateDir}/custom/public/assets
-              ln -sf ${theme} ${stateDir}/custom/public/assets/css
+              rm -rf ${cfg.customDir}/public/assets
+              mkdir -p ${cfg.customDir}/public/assets
+              ln -sf ${theme} ${cfg.customDir}/public/assets/css
             '';
 
-          tmpfiles.rules = [
-            "d /var/lib/forgejo 0750 forgejo forgejo -"
-            "d /var/lib/forgejo/custom 0750 forgejo forgejo -"
-            "d /var/lib/forgejo/custom/conf 0750 forgejo forgejo -"
-            "d /var/lib/forgejo/backups 0775 forgejo forgejo -"
-            "d /var/lib/forgejo-dind 0755 root root -"
-          ];
-
-        };
-
-        virtualisation.oci-containers = {
-          backend = "docker";
-          containers.forgejo-dind = {
-            image = "docker:dind";
-            autoStart = true;
-            privileged = true;
-            extraOptions = [
-              "--network"
-              "host"
+          forgejo-dirs = {
+            description = "Create Forgejo state directories";
+            unitConfig.RequiresMountsFor = [ cfg.stateDir ];
+            before = [
+              "forgejo-secrets.service"
+              "forgejo.service"
             ];
-            cmd = [
-              "dockerd"
-              "-H"
-              "tcp://0.0.0.0:2376"
-              "--bip=172.20.0.1/16"
-              "--tls=false"
+            requiredBy = [
+              "forgejo-secrets.service"
+              "forgejo.service"
             ];
-            volumes = [ "/var/lib/forgejo-dind:/var/lib/docker" ];
+            serviceConfig = {
+              Type = "oneshot";
+              RemainAfterExit = true;
+            };
+            script = ''
+              install -d -m 0750 -o ${cfg.user} -g ${cfg.group} ${cfg.stateDir} ${cfg.customDir} ${cfg.customDir}/conf
+            '';
           };
-        };
 
-        networking.firewall.extraCommands = ''
-          iptables -I nixos-fw 1 -p tcp --dport 2376 -s 172.20.0.0/16 -j ACCEPT 2>/dev/null || true
-        '';
-        networking.firewall.extraStopCommands = ''
-          iptables -D nixos-fw -p tcp --dport 2376 -s 172.20.0.0/16 -j ACCEPT 2>/dev/null || true
-        '';
+          forgejo-oidc = {
+            description = "Configure the Pocket ID login source for Forgejo";
+            after = [
+              "forgejo.service"
+              "pocket-id.service"
+            ];
+            requires = [ "forgejo.service" ];
+            wantedBy = [ "multi-user.target" ];
+            environment = forgejoEnv;
+            serviceConfig = {
+              Type = "oneshot";
+              RemainAfterExit = true;
+              User = cfg.user;
+              Group = cfg.group;
+              WorkingDirectory = cfg.stateDir;
+            };
+            script = ''
+              set -euo pipefail
+              secret="$(cat ${config.sops.secrets.forgejo_oidc_client_secret.path})"
+              args=(
+                --name ${oidcName}
+                --provider openidConnect
+                --key forgejo
+                --secret "$secret"
+                --auto-discover-url https://${config.nixicle.domains.sso}/.well-known/openid-configuration
+                --scopes profile
+                --scopes email
+                --scopes groups
+                --group-claim-name groups
+                --admin-group forgejo_admins
+                --skip-local-2fa
+              )
+              id="$(${forgejoExe} admin auth list | ${lib.getExe pkgs.gawk} -v n=${oidcName} '$2 == n { print $1 }')"
+              if [ -n "$id" ]; then
+                ${forgejoExe} admin auth update-oauth --id "$id" "''${args[@]}"
+              else
+                ${forgejoExe} admin auth add-oauth "''${args[@]}"
+              fi
+            '';
+          };
+
+          forgejo-runner-register = {
+            description = "Register the Forgejo Actions runner";
+            after = [ "forgejo.service" ];
+            requires = [ "forgejo.service" ];
+            environment = forgejoEnv;
+            serviceConfig = {
+              Type = "oneshot";
+              RemainAfterExit = true;
+              User = cfg.user;
+              Group = cfg.group;
+              WorkingDirectory = cfg.stateDir;
+              UMask = "0077";
+            };
+            script = lib.concatStrings (
+              lib.mapAttrsToList (name: runner: ''
+                if [ ! -s ${runnerSecretFile name} ]; then
+                  printf '%s%s' ${runner.id} "$(${lib.getExe pkgs.openssl} rand -hex 12)" > ${runnerSecretFile name}
+                fi
+                ${forgejoExe} forgejo-cli actions register \
+                  --name ${config.networking.hostName}-${name} \
+                  --labels ${lib.concatMapStringsSep "," (l: lib.head (lib.splitString ":" l)) runner.labels} \
+                  --secret-file ${runnerSecretFile name}
+              '') runners
+            );
+          };
+
+          forgejo-nix-image = {
+            description = "Load the Forgejo Actions nix job image";
+            after = [ "docker.service" ];
+            requires = [ "docker.service" ];
+            path = [ config.virtualisation.docker.package ];
+            serviceConfig = {
+              Type = "oneshot";
+              RemainAfterExit = true;
+            };
+            script = "docker load < ${nixJobImage}";
+          };
+        }
+        // lib.mapAttrs' (
+          name: _:
+          let
+            deps = [
+              "forgejo-runner-register.service"
+            ]
+            ++ lib.optional (name == "nix") "forgejo-nix-image.service";
+          in
+          lib.nameValuePair "forgejo-runner-${name}" {
+            after = deps;
+            requires = deps;
+          }
+        ) runners;
 
         services = {
           forgejo = {
             enable = true;
-            user = "forgejo";
-            group = "forgejo";
-            secrets.mailer.PASSWD = config.sops.secrets.forgejo_smtp_password.path;
             database = {
-              socket = "/run/postgresql";
               type = "postgres";
+              socket = "/run/postgresql";
             };
+            lfs.enable = true;
             settings = {
+              DEFAULT.APP_NAME = "Forgejo";
               server = {
-                HTTP_PORT = 5706;
-                DOMAIN = "forgejo.${config.nixicle.domains.root}";
-                ROOT_URL = "https://forgejo.${config.nixicle.domains.root}/";
-                SSH_DOMAIN = "git.${config.nixicle.domains.root}";
-                SSH_PORT = 2222;
+                HTTP_ADDR = "127.0.0.1";
+                HTTP_PORT = port;
+                DOMAIN = host;
+                ROOT_URL = "https://${host}/";
                 START_SSH_SERVER = true;
-                SSH_LISTEN_PORT = 2223;
+                BUILTIN_SSH_SERVER_USER = "git";
+                SSH_DOMAIN = "git.${domain}";
+                SSH_PORT = sshPort;
+                SSH_LISTEN_PORT = sshPort;
               };
-              mailer = {
-                ENABLED = true;
-                PROTOCOL = "smtps";
-                SMTP_PORT = 587;
-                SMTP_ADDRESS = "smtp.mailgun.org";
-                FROM = "do-not-reply@${config.nixicle.domains.root}";
-                USER = "postmaster@sandbox92beea2c073042199273861834e24d1f.mailgun.org";
-                SENDMAIL_PATH = "${pkgs.system-sendmail}/bin/sendmail";
+              session.COOKIE_SECURE = true;
+              service = {
+                DISABLE_REGISTRATION = false;
+                ALLOW_ONLY_EXTERNAL_REGISTRATION = true;
+                SHOW_REGISTRATION_BUTTON = false;
+                ENABLE_INTERNAL_SIGNIN = false;
+                ENABLE_BASIC_AUTHENTICATION = false;
               };
+              openid = {
+                ENABLE_OPENID_SIGNIN = false;
+                ENABLE_OPENID_SIGNUP = false;
+              };
+              oauth2_client = {
+                ENABLE_AUTO_REGISTRATION = true;
+                USERNAME = "preferred_username";
+                ACCOUNT_LINKING = "auto";
+                UPDATE_AVATAR = true;
+              };
+              actions.ENABLED = true;
               ui = {
                 DEFAULT_THEME = "catppuccin-mocha-lavender";
-                THEMES = "gitea,arc-green,forgejo-auto,forgejo-light,forgejo-dark,gitea-auto,gitea-light,gitea-dark,catppuccin-latte-lavender,catppuccin-frappe-lavender,catppuccin-macchiato-lavender,catppuccin-mocha-lavender";
+                THEMES = "forgejo-auto,forgejo-light,forgejo-dark,catppuccin-latte-lavender,catppuccin-frappe-lavender,catppuccin-macchiato-lavender,catppuccin-mocha-lavender";
               };
-            };
-            dump = {
-              backupDir = "/var/lib/forgejo/backups";
-              enable = false;
-              interval = "hourly";
-              file = "forgejo-dump";
-              type = "tar.zst";
             };
           };
 
@@ -141,37 +345,28 @@ _: {
 
           traefik.dynamicConfigOptions.http = lib.nixicle.mkTraefikService {
             name = "forgejo";
-            port = 5706;
-            subdomain = "forgejo";
+            inherit port domain;
           };
 
-          gitea-actions-runner = {
-            package = pkgs.forgejo-runner;
-            instances = {
-              forgejo-runner = {
-                enable = true;
-                url = "https://forgejo.${config.nixicle.domains.homelab}";
-                name = "homelab";
-                tokenFile = config.sops.secrets.forgejo_runner_token.path;
-                labels = [
-                  "docker:docker://ghcr.io/actions/actions-runner:latest"
-                  "ubuntu-latest:docker://ghcr.io/actions/actions-runner:latest"
-                  "ubuntu-22.04:docker://ghcr.io/actions/actions-runner:latest"
-                  "ubuntu-20.04:docker://ghcr.io/actions/actions-runner:v2.308.0-ubuntu20.04"
-                ];
-                settings = {
-                  runner.capacity = 4;
-
-                  runner.envs.DOCKER_HOST = "tcp://dind_container.docker.internal:2376";
-                  container = {
-                    docker_host = "tcp://127.0.0.1:2376";
-                    network = "bridge";
-                    options = "--add-host=dind_container.docker.internal:host-gateway";
-                  };
-                };
+          forgejo-runner.instances = lib.mapAttrs (name: runner: {
+            enable = true;
+            secrets.server.connections.default.token_url = runnerSecretFile name;
+            settings = {
+              server.connections.default = {
+                url = "http://127.0.0.1:${toString port}/";
+                uuid = toUuid runner.id;
               };
+              runner = {
+                inherit (runner) labels capacity;
+                timeout = "1h";
+              };
+              cache.enabled = true;
+              container = {
+                force_pull = false;
+              }
+              // runner.container;
             };
-          };
+          }) runners;
         };
       };
   };
