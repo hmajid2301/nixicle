@@ -1,14 +1,3 @@
-provider "gandi" {
-  personal_access_token = var.gandi_personal_access_token
-}
-
-variable "gandi_personal_access_token" {
-  description = "Gandi Personal Access Token. Prefer GANDI_PERSONAL_ACCESS_TOKEN env var or local terraform.tfvars."
-  type        = string
-  sensitive   = true
-  nullable    = false
-}
-
 # LiveDNS zone for haseebmajid.dev.
 # The domain must be registered with (or transferred to) Gandi before this
 # resource can be created.  Gandi creates a LiveDNS zone automatically on
@@ -108,6 +97,14 @@ resource "gandi_livedns_record" "www_cname" {
   values = ["hmajid2301.gitlab.io."]
 }
 
+resource "gandi_livedns_record" "slides_cname" {
+  zone   = gandi_livedns_domain.haseebmajid_dev.id
+  name   = "slides"
+  type   = "CNAME"
+  ttl    = 3600
+  values = ["hmajid2301.gitlab.io."]
+}
+
 resource "gandi_livedns_record" "startpage_cname" {
   zone   = gandi_livedns_domain.haseebmajid_dev.id
   name   = "startpage"
@@ -173,8 +170,8 @@ resource "gandi_livedns_record" "apex_txt" {
   type = "TXT"
   ttl  = 3600
   values = [
-    "v=spf1 include:_spf.protonmail.ch ~all",
-    "protonmail-verification=e5c36576cbb7c29adb533869365687b3673c88d4",
+    "\"v=spf1 include:_spf.protonmail.ch ~all\"",
+    "\"protonmail-verification=e5c36576cbb7c29adb533869365687b3673c88d4\"",
   ]
 }
 
@@ -183,7 +180,15 @@ resource "gandi_livedns_record" "dmarc_txt" {
   name   = "_dmarc"
   type   = "TXT"
   ttl    = 3600
-  values = ["v=DMARC1; p=quarantine; rua=mailto:a20971b42d314803bb4de90264510943@dmarc-reports.cloudflare.net;"]
+  values = ["\"v=DMARC1; p=quarantine; rua=mailto:a20971b42d314803bb4de90264510943@dmarc-reports.cloudflare.net;\""]
+}
+
+resource "gandi_livedns_record" "slides_gitlab_pages_verification_txt" {
+  zone   = gandi_livedns_domain.haseebmajid_dev.id
+  name   = "_gitlab-pages-verification-code.slides"
+  type   = "TXT"
+  ttl    = 3600
+  values = ["\"gitlab-pages-verification-code=2403355758c5f0b8b96a64e7e689a3c5\""]
 }
 
 resource "gandi_livedns_record" "gitlab_pages_verification_txt" {
@@ -191,7 +196,7 @@ resource "gandi_livedns_record" "gitlab_pages_verification_txt" {
   name   = "_gitlab-pages-verification-code"
   type   = "TXT"
   ttl    = 3600
-  values = ["gitlab-pages-verification-code=43458cdab5c97d1284f390edc5f60e3f"]
+  values = ["\"gitlab-pages-verification-code=43458cdab5c97d1284f390edc5f60e3f\""]
 }
 
 # ---------------------------------------------------------------------------

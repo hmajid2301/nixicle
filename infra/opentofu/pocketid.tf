@@ -1,63 +1,7 @@
-terraform {
-  backend "http" {}
-
-  required_providers {
-    pocketid = {
-      source  = "trozz/pocketid"
-      version = "~> 2.3"
-    }
-    vault = {
-      source  = "hashicorp/vault"
-      version = "~> 5.0"
-    }
-    gandi = {
-      source  = "go-gandi/gandi"
-      version = "~> 2.3"
-    }
-  }
-  required_version = ">= 1.0"
-}
-
-provider "pocketid" {
-  api_token = var.pocketid_api_token
-  base_url  = var.pocketid_base_url
-}
-
-provider "vault" {
-  address          = var.openbao_address
-  skip_child_token = true
-  token            = var.openbao_token
-}
-
-variable "openbao_address" {
-  description = "OpenBao/Vault API URL."
-  type        = string
-  default     = "https://openbao.homelab.haseebmajid.dev"
-}
-
-variable "openbao_token" {
-  description = "OpenBao/Vault token used by the Vault provider."
-  type        = string
-  sensitive   = true
-}
-
-variable "pocketid_api_token" {
-  description = "Pocket-ID admin API token"
-  type        = string
-  sensitive   = true
-}
-
-variable "pocketid_base_url" {
-  description = "Pocket-ID base URL, e.g. https://id.haseebmajid.dev"
-  type        = string
-}
-
 data "pocketid_group" "family" {
   name = "family"
 }
 
-# OIDC clients, one entry per app. Values here are the old per-resource
-# attributes, verbatim; `client_id` doubles as the map key for readability.
 locals {
   oidc_apps = {
     dynacat = {
@@ -83,7 +27,7 @@ locals {
       name                = "Goroutinely"
       launch_url          = "https://goroutinely.haseebmajid.dev"
       callback_urls       = ["https://goroutinely.haseebmajid.dev/callback"]
-      pkce_enabled        = true
+      pkce_enabled        = false
       is_public           = false
       allowed_user_groups = [data.pocketid_group.family.id]
     }
@@ -139,7 +83,7 @@ locals {
       callback_urls       = ["https://jellyfin.haseebmajid.dev/sso/OID/r/pocketid", "https://jellyfin.haseebmajid.dev/sso/OID/redirect/pocketid"]
       pkce_enabled        = true
       is_public           = false
-      allowed_user_groups = [data.pocketid_group.family.id]
+      allowed_user_groups = null
     }
     karakeep = {
       client_id           = "karakeep"
@@ -219,8 +163,6 @@ resource "pocketid_client" "app" {
   allowed_user_groups = each.value.allowed_user_groups
 }
 
-# Groups / user / vault mount keep their existing addresses (no state moves).
-
 resource "pocketid_group" "gotify_admins" {
   name          = "Gotify Admins"
   friendly_name = "Gotify Admins"
@@ -266,182 +208,4 @@ resource "pocketid_user" "hmajid2301" {
     pocketid_group.umami_admins.id,
     pocketid_group.forgejo_admins.id,
   ]
-}
-
-resource "vault_mount" "kv" {
-  path = "kv"
-  type = "kv"
-  options = {
-    version = "2"
-  }
-}
-
-# Stored OIDC credentials. Key = the old resource suffix minus `_oidc`.
-locals {
-  vault_oidc_apps = {
-    goroutinely = true
-    gothreads   = true
-    immich      = true
-    lettucego   = true
-  }
-}
-
-resource "vault_kv_secret_v2" "oidc" {
-  for_each = local.vault_oidc_apps
-
-  mount = vault_mount.kv.path
-  name  = "apps/${each.key}/oidc"
-  data_json = jsonencode({
-    client_id     = pocketid_client.app[each.key].id
-    client_secret = pocketid_client.app[each.key].client_secret
-  })
-}
-
-# Outputs keep their original names so any consumer keeps working.
-output "goroutinely_client_id" {
-  value = pocketid_client.app["goroutinely"].id
-}
-
-output "goroutinely_client_secret" {
-  value     = pocketid_client.app["goroutinely"].client_secret
-  sensitive = true
-}
-
-output "gotify_client_id" {
-  value = pocketid_client.app["gotify"].id
-}
-
-output "gotify_client_secret" {
-  value     = pocketid_client.app["gotify"].client_secret
-  sensitive = true
-}
-
-output "dynacat_client_id" {
-  value = pocketid_client.app["dynacat"].id
-}
-
-output "dynacat_client_secret" {
-  value     = pocketid_client.app["dynacat"].client_secret
-  sensitive = true
-}
-
-output "gothreads_client_id" {
-  value = pocketid_client.app["gothreads"].id
-}
-
-output "gothreads_client_secret" {
-  value     = pocketid_client.app["gothreads"].client_secret
-  sensitive = true
-}
-
-output "grafana_client_id" {
-  value = pocketid_client.app["grafana"].id
-}
-
-output "grafana_client_secret" {
-  value     = pocketid_client.app["grafana"].client_secret
-  sensitive = true
-}
-
-output "hister_client_id" {
-  value = pocketid_client.app["hister"].id
-}
-
-output "hister_client_secret" {
-  value     = pocketid_client.app["hister"].client_secret
-  sensitive = true
-}
-
-output "immich_client_id" {
-  value = pocketid_client.app["immich"].id
-}
-
-output "immich_client_secret" {
-  value     = pocketid_client.app["immich"].client_secret
-  sensitive = true
-}
-
-output "jellyfin_client_id" {
-  value = pocketid_client.app["jellyfin"].id
-}
-
-output "jellyfin_client_secret" {
-  value     = pocketid_client.app["jellyfin"].client_secret
-  sensitive = true
-}
-
-output "karakeep_client_id" {
-  value = pocketid_client.app["karakeep"].id
-}
-
-output "karakeep_client_secret" {
-  value     = pocketid_client.app["karakeep"].client_secret
-  sensitive = true
-}
-
-output "lettucego_client_id" {
-  value = pocketid_client.app["lettucego"].id
-}
-
-output "lettucego_client_secret" {
-  value     = pocketid_client.app["lettucego"].client_secret
-  sensitive = true
-}
-
-output "papra_client_id" {
-  value = pocketid_client.app["papra"].id
-}
-
-output "papra_client_secret" {
-  value     = pocketid_client.app["papra"].client_secret
-  sensitive = true
-}
-
-output "sure_client_id" {
-  value = pocketid_client.app["sure"].id
-}
-
-output "sure_client_secret" {
-  value     = pocketid_client.app["sure"].client_secret
-  sensitive = true
-}
-
-output "tandoor_client_id" {
-  value = pocketid_client.app["tandoor"].id
-}
-
-output "tandoor_client_secret" {
-  value     = pocketid_client.app["tandoor"].client_secret
-  sensitive = true
-}
-
-output "tinyauth_client_id" {
-  value = pocketid_client.app["tinyauth"].id
-}
-
-output "tinyauth_client_secret" {
-  value     = pocketid_client.app["tinyauth"].client_secret
-  sensitive = true
-}
-
-output "forgejo_client_secret" {
-  value     = pocketid_client.app["forgejo"].client_secret
-  sensitive = true
-}
-
-output "umami_client_secret" {
-  value     = pocketid_client.app["umami"].client_secret
-  sensitive = true
-}
-
-output "grafana_admins_group_id" {
-  value = pocketid_group.grafana_admins.id
-}
-
-output "grafana_editors_group_id" {
-  value = pocketid_group.grafana_editors.id
-}
-
-output "hmajid2301_id" {
-  value = pocketid_user.hmajid2301.id
 }
