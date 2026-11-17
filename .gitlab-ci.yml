@@ -57,6 +57,11 @@ workflow:
   - "modules/**/*"
   - "packages/**/*"
 
+# Private flake input (nixicle-assets): rewrite the ssh URL to HTTPS with the job token.
+# nixicle is on nixicle-assets' CI/CD job token allowlist.
+.private_inputs: &private_inputs
+  - git config --global url."https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.com/".insteadOf "ssh://git@gitlab.com/"
+
 stages:
   - lint
   - build
@@ -74,6 +79,7 @@ stages:
       cat >> /etc/nix/nix.conf << EOF
       experimental-features = nix-command flakes
       EOF
+    - *private_inputs
 
 lint:fmt:
   extends: .lint_setup
@@ -110,6 +116,7 @@ lint:
       else
         echo "No GITHUB_TOKEN/GH_TOKEN set; GitHub flake fetches may hit rate limits"
       fi
+    - *private_inputs
 
 .build:nixos:
   extends: .base_setup

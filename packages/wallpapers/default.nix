@@ -1,10 +1,12 @@
 {
   pkgs,
+  inputs,
   lib,
   ...
 }:
 let
-  images = builtins.attrNames (builtins.readDir ./wallpapers);
+  wallpaperDir = "${inputs.nixicle-assets}/wallpapers";
+  images = builtins.attrNames (builtins.readDir wallpaperDir);
 
   # Helper to get filename without extension (replaces lib.snowfall.path.get-file-name-without-extension)
   getNameWithoutExt =
@@ -37,13 +39,13 @@ let
     let
       name = getNameWithoutExt image;
     in
-    acc // { "${name}" = mkWallpaper name (./wallpapers + "/${image}"); }
+    acc // { "${name}" = mkWallpaper name (wallpaperDir + "/${image}"); }
   ) { } images;
   installTarget = "$out/share/wallpapers";
 in
 pkgs.stdenvNoCC.mkDerivation {
   name = "wallpapers";
-  src = ./wallpapers;
+  src = wallpaperDir;
 
   installPhase = ''
     mkdir -p ${installTarget}

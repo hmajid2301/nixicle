@@ -113,6 +113,10 @@
       url = "github:nix-community/nixGL";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    nixicle-assets = {
+      url = "git+ssh://git@gitlab.com/hmajid2301/nixicle-assets.git";
+      flake = false;
+    };
     nixos-anywhere = {
       url = "github:numtide/nixos-anywhere";
       inputs.nixpkgs.follows = "nixpkgs";

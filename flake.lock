@@ -1800,6 +1800,22 @@
         "type": "github"
       }
     },
+    "nixicle-assets": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1794936186,
+        "narHash": "sha256-ErEA9FJ8+CWU4OcG03qgtRgGmq1Dso33/a7jrJCwIfI=",
+        "ref": "refs/heads/main",
+        "rev": "430e1488ec768f01c9585c72bb5c99e951419313",
+        "revCount": 1,
+        "type": "git",
+        "url": "ssh://git@gitlab.com/hmajid2301/nixicle-assets.git"
+      },
+      "original": {
+        "type": "git",
+        "url": "ssh://git@gitlab.com/hmajid2301/nixicle-assets.git"
+      }
+    },
     "nixos-anywhere": {
       "inputs": {
         "disko": "disko_2",
@@ -2970,6 +2986,7 @@
         "nixery": "nixery",
         "nixflix": "nixflix",
         "nixgl": "nixgl",
+        "nixicle-assets": "nixicle-assets",
         "nixos-anywhere": "nixos-anywhere",
         "nixos-facter-modules": "nixos-facter-modules",
         "nixos-hardware": "nixos-hardware",

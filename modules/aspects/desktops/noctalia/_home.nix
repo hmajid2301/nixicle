@@ -113,7 +113,7 @@ in
           };
           volume.show_label = false;
         };
-        wallpaper.directory = "/home/${config.home.username}/nixicle/packages/wallpapers/wallpapers";
+        wallpaper.directory = "${pkgs.nixicle.wallpapers}/share/wallpapers";
         lockscreen.lock_before_suspend = true;
         control_center.shortcuts = [
           { type = "wifi"; }

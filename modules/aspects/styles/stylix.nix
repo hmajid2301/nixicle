@@ -1,7 +1,15 @@
 { inputs, ... }:
 {
-  flake-file.inputs.stylix.url = "github:danth/stylix";
-  flake-file.inputs.catppuccin.url = "github:catppuccin/nix";
+  flake-file.inputs = {
+    stylix.url = "github:danth/stylix";
+    catppuccin.url = "github:catppuccin/nix";
+    # Private: licensed MonoLisa TTFs (EULA forbids sharing) and wallpapers.
+    # CI reads it with CI_JOB_TOKEN via a git insteadOf rewrite (.gitlab-ci.yml).
+    nixicle-assets = {
+      url = "git+ssh://git@gitlab.com/hmajid2301/nixicle-assets.git";
+      flake = false;
+    };
+  };
 
   den.aspects.stylix = {
     nixos =
