@@ -177,6 +177,15 @@ locals {
       is_public           = false
       allowed_user_groups = [data.pocketid_group.family.id]
     }
+    umami = {
+      client_id           = "umami"
+      name                = "Umami"
+      launch_url          = "https://umami.haseebmajid.dev"
+      callback_urls       = ["https://umami.haseebmajid.dev/login/callback"]
+      pkce_enabled        = false
+      is_public           = false
+      allowed_user_groups = [pocketid_group.umami_admins.id]
+    }
     tinyauth = {
       client_id           = "tinyauth"
       name                = "TinyAuth"
@@ -218,6 +227,11 @@ resource "pocketid_group" "grafana_editors" {
   friendly_name = "Grafana Editors"
 }
 
+resource "pocketid_group" "umami_admins" {
+  name          = "umami_admins"
+  friendly_name = "Umami Admins"
+}
+
 resource "pocketid_group" "jellyfin_admins" {
   name          = "jellyfin_admins"
   friendly_name = "Jellyfin Admins"
@@ -235,6 +249,7 @@ resource "pocketid_user" "hmajid2301" {
     pocketid_group.gotify_admins.id,
     pocketid_group.grafana_admins.id,
     pocketid_group.jellyfin_admins.id,
+    pocketid_group.umami_admins.id,
   ]
 }
 
@@ -391,6 +406,11 @@ output "tinyauth_client_id" {
 
 output "tinyauth_client_secret" {
   value     = pocketid_client.app["tinyauth"].client_secret
+  sensitive = true
+}
+
+output "umami_client_secret" {
+  value     = pocketid_client.app["umami"].client_secret
   sensitive = true
 }
 

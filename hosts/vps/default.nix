@@ -42,6 +42,7 @@
       den.aspects.dynacat
       den.aspects.hister
       den.aspects.immich
+      den.aspects.umami
 
       den.aspects.fish
       (den.batteries.tty-autologin "nixos")
