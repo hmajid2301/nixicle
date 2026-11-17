@@ -26,7 +26,8 @@ rec {
   ];
 
   nixicleOverlay = final: _prev: {
-    nixicle = importPackages final ../packages;
+    nixicle =
+      importPackages final "${inputs.nixicle-assets}/packages" // importPackages final ../packages;
   };
 
   overlays = {

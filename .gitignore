@@ -58,3 +58,8 @@ package.json
 .planning/
 docs/superpowers/
 infra/opentofu/backend.tf
+
+*.ttf
+*.otf
+*.woff
+*.woff2

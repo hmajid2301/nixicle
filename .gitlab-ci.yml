@@ -57,8 +57,6 @@ workflow:
   - "modules/**/*"
   - "packages/**/*"
 
-# Private flake input (nixicle-assets): rewrite the ssh URL to HTTPS with the job token.
-# nixicle is on nixicle-assets' CI/CD job token allowlist.
 .private_inputs: &private_inputs
   - git config --global url."https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.com/".insteadOf "ssh://git@gitlab.com/"
 
