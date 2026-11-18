@@ -137,7 +137,7 @@ _: {
                 defaultModel = "gpt-5.4";
                 defaultThinkingLevel = "medium";
                 theme = "stylix";
-                packages = [ ];
+                packages = [ "git:github.com/earendil-works/pi-claude-code" ];
                 skills = [ "${config.xdg.dataHome}/pi/skills" ];
                 extensions = map (ext: "${piAgentDir}/extensions/${ext.rel}") piExtensionFiles;
               };
