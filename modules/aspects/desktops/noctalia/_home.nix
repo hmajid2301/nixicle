@@ -19,6 +19,8 @@ in
   config = {
     home.packages = with pkgs; [ bitwarden-cli ];
 
+    xdg.dataFile.wallpapers.source = "${pkgs.nixicle.wallpapers}/share/wallpapers";
+
     nixicle.desktop.shell = {
       enable = lib.mkDefault config.programs.noctalia.enable;
       startup.args = lib.mkDefault [ "${config.programs.noctalia.package}/bin/noctalia" ];
@@ -113,7 +115,7 @@ in
           };
           volume.show_label = false;
         };
-        wallpaper.directory = "${pkgs.nixicle.wallpapers}/share/wallpapers";
+        wallpaper.directory = "${config.xdg.dataHome}/wallpapers";
         lockscreen.lock_before_suspend = true;
         control_center.shortcuts = [
           { type = "wifi"; }

@@ -1739,11 +1739,11 @@
     "nixicle-assets": {
       "flake": false,
       "locked": {
-        "lastModified": 1794941357,
-        "narHash": "sha256-I+ImuKjplarSJqAFT2MNa/6YKqNddJeygpV8/5X0UHs=",
+        "lastModified": 1795028481,
+        "narHash": "sha256-B4YkQcKuWkIDg6UzCSg+KEHKiMMxbWQ0HjiHC71GS68=",
         "ref": "refs/heads/main",
-        "rev": "1b6be5e95d51d9a418f32cff16d90b6facc4e701",
-        "revCount": 2,
+        "rev": "7fae910f90060a5ea2da8825800bd2c54f892c99",
+        "revCount": 3,
         "type": "git",
         "url": "ssh://git@gitlab.com/hmajid2301/nixicle-assets.git"
       },
