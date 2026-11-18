@@ -24,7 +24,7 @@
     {
       output = {
         _args = [ "eDP-1" ];
-        scale = 1.0;
+        scale = config.nixicle.desktop.niri.internalDisplayScale;
         transform = "normal";
       };
     }

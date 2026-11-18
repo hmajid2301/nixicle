@@ -1,7 +1,6 @@
 { inputs, den, ... }:
 {
   flake-file.inputs.nixos-hardware.url = "github:nixos/nixos-hardware";
-  flake-file.inputs.nixos-facter-modules.url = "github:numtide/nixos-facter-modules";
 
   den.aspects.haseeb.provides.framework = {
     includes = [
@@ -18,10 +17,13 @@
         stateVersion = "24.05";
       };
 
+      nixicle.desktop.niri.internalDisplayScale = 1.5;
+
       programs.noctalia.settings = {
         osd = {
           monitors = [ "eDP-1" ];
         };
+        lockscreen.fingerprint = true;
         idle = {
           pre_action_fade_seconds = 5.0;
           behavior = {
@@ -55,19 +57,20 @@
       den.aspects.ollama
     ];
 
+    persist.directories = [ "/var/lib/fprint" ];
+
     nixos =
       {
         config,
         lib,
+        pkgs,
         ...
       }:
       {
         imports = [
           ./hardware-configuration.nix
           ./disks.nix
-          inputs.nixos-facter-modules.nixosModules.facter
-          { config.facter.reportPath = ./facter.json; }
-          inputs.nixos-hardware.nixosModules.framework-13-7040-amd
+          inputs.nixos-hardware.nixosModules.framework-intel-core-ultra-series3
         ];
 
         sops.defaultSopsFile = ./secrets.yaml;
@@ -87,11 +90,19 @@
         };
 
         boot = {
+          kernelPackages = pkgs.linuxPackages_latest;
           kernelParams = [ "resume_offset=533760" ];
+          lanzaboote.autoEnrollKeys.includeFirmwareBuiltinKeys = true;
         };
 
-        # Disable inbound SSH on this laptop
-        services.openssh.enable = lib.mkForce false;
+        hardware.intelgpu.driver = "xe";
+        environment.variables.RUSTICL_ENABLE = lib.mkForce "iris";
+
+        services = {
+          thermald.enable = true;
+          xserver.videoDrivers = lib.mkForce [ "modesetting" ];
+          openssh.openFirewall = false;
+        };
 
         networking.hostName = "framework";
         system.stateVersion = "23.11";

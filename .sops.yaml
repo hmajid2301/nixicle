@@ -17,7 +17,7 @@
 # sops updatekeys secrets/secrets.yaml
 keys:
   - &users:
-    - &haseeb_framework age1tw2kg7t7k96u85eyaaw96s4nnq7u07gsafgdx5nx2tca4nd8yvkqstgs7k
+    - &haseeb_framework age1lscp2sl5f5tppnmj735s44uveyyhr849qe7shvs37vvfrgrye5rs0gkad6
     - &haseebmajid_dell age1s6rx9whkkf35t7qaju9vvla8tl2nstt0drx722ca4qadqfx66g0slxyxd0
     - &haseeb_framebox age1zm36rngg07hrm8nj3r8wj5ucz85njxzfwsxftsx3gtdmzkgw3peqh8vf55
     - &haseeb_vm age1x4x5ujnd9em23jhs53lgwqcmw9t6hx64xtdt3x0u4n66fsuygf9s4njjla

@@ -7,6 +7,11 @@
   ...
 }:
 {
+  options.nixicle.desktop.niri.internalDisplayScale = lib.mkOption {
+    type = lib.types.float;
+    default = 1.0;
+  };
+
   options.nixicle.desktop.niri.startup = {
     xwaylandArgs = lib.mkOption {
       type = lib.types.listOf lib.types.str;

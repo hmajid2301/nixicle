@@ -201,8 +201,8 @@ in
         autologin = false;
         primaryDisplay = {
           name = "eDP-1";
-          width = 2256;
-          height = 1504;
+          width = 2880;
+          height = 1920;
           refresh = 120;
         };
         instantiate = mkInstantiate;
