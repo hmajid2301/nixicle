@@ -45,5 +45,8 @@
   programs = {
     firefox.package = lib.mkForce (config.lib.nixGL.wrap pkgs.firefox);
     ghostty.package = lib.mkForce (config.lib.nixGL.wrap pkgs.ghostty);
+    luciole.package = lib.mkForce (
+      config.lib.nixGL.wrap inputs.luciole.packages.${pkgs.stdenv.hostPlatform.system}.default
+    );
   };
 }

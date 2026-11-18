@@ -79,6 +79,10 @@
       url = "gitlab:hmajid2301/lettucego";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    luciole = {
+      url = "github:noctalia-dev/luciole";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     matt-skills = {
       url = "github:mattpocock/skills";
       flake = false;

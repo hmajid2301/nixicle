@@ -1437,6 +1437,26 @@
         "type": "gitlab"
       }
     },
+    "luciole": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1794939834,
+        "narHash": "sha256-LEugoxH74uzZPQH2I6mahk4QHdc2XwnEefDtwUdEDWQ=",
+        "owner": "noctalia-dev",
+        "repo": "luciole",
+        "rev": "fd9caadc4f2a2453c87a2d04648b5caf1747fd2f",
+        "type": "github"
+      },
+      "original": {
+        "owner": "noctalia-dev",
+        "repo": "luciole",
+        "type": "github"
+      }
+    },
     "matt-skills": {
       "flake": false,
       "locked": {
@@ -2965,6 +2985,7 @@
         "jellyfin-sso": "jellyfin-sso",
         "lanzaboote": "lanzaboote",
         "lettucego": "lettucego",
+        "luciole": "luciole",
         "matt-skills": "matt-skills",
         "nfsm": "nfsm",
         "niri": "niri",

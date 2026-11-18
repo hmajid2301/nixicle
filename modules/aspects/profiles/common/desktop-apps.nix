@@ -1,5 +1,15 @@
-{ den, lib, ... }:
 {
+  den,
+  lib,
+  inputs,
+  ...
+}:
+{
+  flake-file.inputs.luciole = {
+    url = "github:noctalia-dev/luciole";
+    inputs.nixpkgs.follows = "nixpkgs";
+  };
+
   den.aspects.commonDesktopApps = {
     includes = [
       (den.batteries.unfree [
@@ -22,6 +32,10 @@
         };
       in
       {
+        imports = [ inputs.luciole.homeModules.default ];
+
+        programs.luciole.enable = true;
+
         xdg = {
           configFile."stylus/styles.json".source = ./_stylus.json;
           mimeApps.defaultApplications = {
