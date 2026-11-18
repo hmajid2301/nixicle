@@ -23,6 +23,7 @@
       den.aspects.pocketid
       den.aspects.garage
       den.aspects.gitlab-runner
+      den.aspects.blog-previews
 
       den.aspects.atuin
       den.aspects.banterbus
