@@ -19,13 +19,6 @@ _: {
             IdentityFile = "~/.ssh/id_ed25519";
             AddressFamily = "inet";
           };
-          "knot.${lib.nixicle.domains.root}" = {
-            HostName = "knot.${lib.nixicle.domains.root}";
-            User = "git";
-            Port = 2222;
-            IdentityFile = "~/.ssh/id_ed25519";
-            AddressFamily = "inet";
-          };
           "git.${lib.nixicle.domains.root}" = {
             HostName = "git.${lib.nixicle.domains.root}";
             User = "git";

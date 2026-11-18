@@ -22,7 +22,6 @@
       den.aspects.openbao
       den.aspects.pocketid
       den.aspects.garage
-      den.aspects.tangled
       den.aspects.gitlab-runner
 
       den.aspects.atuin

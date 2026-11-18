@@ -23,10 +23,6 @@
       url = "github:nix-community/disko";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    fenix = {
-      url = "github:nix-community/fenix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     flake-file.url = "github:vic/flake-file";
     flake-parts = {
       url = "github:hercules-ci/flake-parts";
@@ -259,13 +255,6 @@
     sure-nix = {
       url = "github:nSimonFR/sure-nix";
       inputs.nixpkgs.follows = "nixpkgs";
-    };
-    tangled = {
-      url = "git+https://tangled.sh/@tangled.sh/core";
-      inputs = {
-        fenix.follows = "fenix";
-        nixpkgs.follows = "nixpkgs";
-      };
     };
     treefmt-nix = {
       url = "github:numtide/treefmt-nix";
