@@ -17,6 +17,7 @@ in
           (
             { host, user, ... }:
             {
+              nixos.users.users.${user.userName}.openssh.authorizedKeys.keys = user.authorizedKeys;
               nixos.home-manager = {
                 useUserPackages = true;
                 extraSpecialArgs = { inherit inputs; };
@@ -91,24 +92,23 @@ in
         };
       };
 
-      host =
-        { lib, ... }:
-        {
-          options = {
-            isLaptop = lib.mkOption {
-              type = lib.types.bool;
-              default = false;
-            };
-            autologin = lib.mkOption {
-              type = lib.types.bool;
-              default = true;
-            };
-            primaryDisplay = lib.mkOption {
-              type = lib.types.attrsOf lib.types.anything;
-              default = { };
-            };
+      host = {
+        includes = [ den.batteries.user-aspects ];
+        options = {
+          isLaptop = lib.mkOption {
+            type = lib.types.bool;
+            default = false;
+          };
+          autologin = lib.mkOption {
+            type = lib.types.bool;
+            default = true;
+          };
+          primaryDisplay = lib.mkOption {
+            type = lib.types.attrsOf lib.types.anything;
+            default = { };
           };
         };
+      };
     };
   };
 
