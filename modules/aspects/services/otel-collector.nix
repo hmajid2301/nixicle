@@ -17,7 +17,11 @@ _: {
       {
         services.opentelemetry-collector = {
           enable = true;
-          package = pkgs.opentelemetry-collector-contrib;
+          # vendored cockroachdb/swiss only supports go < 1.27, nixpkgs default is 1.27
+          package =
+            (pkgs.opentelemetry-collector-releases.override {
+              buildGoModule = pkgs.buildGo126Module;
+            }).otelcol-contrib;
           settings = {
             receivers = {
               otlp.protocols.http.endpoint = "127.0.0.1:3333";
@@ -130,7 +134,11 @@ _: {
 
         services.opentelemetry-collector = {
           enable = true;
-          package = pkgs.opentelemetry-collector-contrib;
+          # vendored cockroachdb/swiss only supports go < 1.27, nixpkgs default is 1.27
+          package =
+            (pkgs.opentelemetry-collector-releases.override {
+              buildGoModule = pkgs.buildGo126Module;
+            }).otelcol-contrib;
           settings = {
             receivers = {
               journald = {

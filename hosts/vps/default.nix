@@ -60,8 +60,6 @@
           ./disks.nix
         ];
 
-        nixpkgs.config.permittedInsecurePackages = [ "garage-1.3.1" ];
-
         sops.defaultSopsFile = ./secrets.yaml;
         sops.secrets = {
           gitlab_runner_env = { };

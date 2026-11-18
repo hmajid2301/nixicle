@@ -29,7 +29,7 @@ _: {
 
           services.garage = {
             enable = true;
-            package = pkgs.garage;
+            package = pkgs.garage_2;
             environmentFile = config.sops.secrets.garage_rpc_secret.path;
             settings = {
               metadata_dir = "/var/lib/garage/meta";
