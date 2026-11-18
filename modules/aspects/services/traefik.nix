@@ -65,10 +65,6 @@ _: {
                       main = config.nixicle.domains.root;
                       sans = [ "*.${config.nixicle.domains.root}" ];
                     }
-                    {
-                      main = "banterbus.games";
-                      sans = [ "*.dev.banterbus.games" ];
-                    }
                   ];
                 };
                 transport.respondingTimeouts = {
