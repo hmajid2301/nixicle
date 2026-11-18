@@ -29,6 +29,7 @@
       den.aspects.banterbus
       den.aspects.goroutinely
       den.aspects.lettucego
+      den.aspects.ssh-site
       den.aspects.karakeep
       den.aspects.papra
       den.aspects.tandoor

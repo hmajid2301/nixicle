@@ -248,6 +248,10 @@
       url = "github:mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    ssh-site = {
+      url = "git+https://gitlab.com/hmajid2301/ssh.haseebmajid.dev";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     stylix.url = "github:danth/stylix";
     superpowers = {
       url = "github:obra/superpowers";
