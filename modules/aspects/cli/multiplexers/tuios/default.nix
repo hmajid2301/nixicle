@@ -47,6 +47,21 @@
             start_in_terminal_mode = true;
           };
           workspaces.new_window_when_empty = true;
+          keybindings = {
+            leader_key = "ctrl+a";
+            prefix_mode =
+              let
+                digits = map toString (lib.range 0 9);
+              in
+              lib.genAttrs' digits (n: lib.nameValuePair "prefix_select_${n}" [ ])
+              // lib.genAttrs' (lib.tail digits) (n: lib.nameValuePair "switch_workspace_${n}" [ n ]);
+            terminal_mode = {
+              terminal_focus_left = [ "alt+h" ];
+              terminal_focus_down = [ "alt+j" ];
+              terminal_focus_up = [ "alt+k" ];
+              terminal_focus_right = [ "alt+l" ];
+            };
+          };
           agents.permissions = {
             mode = "strict";
             grants = [
@@ -64,6 +79,7 @@
             sidebar = {
               enabled = true;
               position = "left";
+              sections = "sessions:25,terminals,agents:34";
               background = "#181825";
               header_style = "plain";
               row_style = "pill";
