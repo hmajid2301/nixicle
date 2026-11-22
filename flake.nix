@@ -269,7 +269,7 @@
       url = "github:numtide/treefmt-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    tuios.url = "github:Gaurav-Gosain/tuios/v0.12.1";
+    tuios.url = "github:Gaurav-Gosain/tuios/v0.13.3";
     visual-explainer = {
       url = "github:nicobailon/visual-explainer";
       flake = false;
