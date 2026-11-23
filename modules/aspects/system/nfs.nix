@@ -15,7 +15,7 @@ _: {
       # (an unexported child dataset appears as an empty root-owned dir).
       fileSystems = {
         "/mnt/homelab/homelab" = {
-          device = "nas:/mnt/main/main-encrypted/homelab";
+          device = "nas.taila5caf.ts.net:/mnt/main/main-encrypted/homelab";
           fsType = "nfs";
           options = [
             "nfsvers=4"
@@ -25,13 +25,13 @@ _: {
             "x-systemd.mount-timeout=60s"
             "x-systemd.requires=mnt-homelab.mount"
             "x-systemd.after=mnt-homelab.mount"
-            "x-systemd.requires=tailscaled.service"
-            "x-systemd.after=tailscaled.service"
+            "x-systemd.requires=tailscale-wait-online.service"
+            "x-systemd.after=tailscale-wait-online.service"
           ];
         };
 
         "/mnt/homelab" = {
-          device = "nas:/mnt/main/main-encrypted";
+          device = "nas.taila5caf.ts.net:/mnt/main/main-encrypted";
           fsType = "nfs";
           options = [
             "nfsvers=4"
@@ -39,13 +39,13 @@ _: {
             "nofail"
             "x-systemd.device-timeout=60s"
             "x-systemd.mount-timeout=60s"
-            "x-systemd.requires=tailscaled.service"
-            "x-systemd.after=tailscaled.service"
+            "x-systemd.requires=tailscale-wait-online.service"
+            "x-systemd.after=tailscale-wait-online.service"
           ];
         };
 
         "/mnt/nas" = {
-          device = "nas:/mnt/main/main";
+          device = "nas.taila5caf.ts.net:/mnt/main/main";
           fsType = "nfs";
           options = [
             "nfsvers=4"
@@ -55,8 +55,8 @@ _: {
             "x-systemd.idle-timeout=60"
             "x-systemd.device-timeout=5s"
             "x-systemd.mount-timeout=5s"
-            "x-systemd.requires=tailscaled.service"
-            "x-systemd.after=tailscaled.service"
+            "x-systemd.requires=tailscale-wait-online.service"
+            "x-systemd.after=tailscale-wait-online.service"
           ];
         };
       };

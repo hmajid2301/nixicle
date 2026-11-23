@@ -201,18 +201,20 @@
           "x-systemd.idle-timeout=60"
           "x-systemd.device-timeout=5s"
           "x-systemd.mount-timeout=5s"
+          "x-systemd.requires=tailscale-wait-online.service"
+          "x-systemd.after=tailscale-wait-online.service"
         ];
 
         fileSystems."/mnt/homelab/homelab".options = lib.mkForce [
           "nfsvers=4"
           "noatime"
           "nofail"
-          "x-systemd.automount"
-          "x-systemd.idle-timeout=60"
           "x-systemd.device-timeout=5s"
           "x-systemd.mount-timeout=5s"
           "x-systemd.requires=mnt-homelab.mount"
           "x-systemd.after=mnt-homelab.mount"
+          "x-systemd.requires=tailscale-wait-online.service"
+          "x-systemd.after=tailscale-wait-online.service"
         ];
 
         system.stateVersion = "24.05";
