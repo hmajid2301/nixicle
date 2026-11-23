@@ -87,3 +87,42 @@ if (args[1] === 'show') {
   });
 }
 }
+
+test("session teardown closes every live subagent pane", () => {
+  const dir = mkdtempSync(join(tmpdir(), "pipeline-teardown-"));
+  writeFileSync(join(dir, "herdr"), `#!/bin/sh
+case "$1 $2" in
+  'pane current') printf '%s\\n' '{"result":{"pane":{"pane_id":"parent","tab_id":"tab","workspace_id":"workspace"}}}' ;;
+  'worktree list') printf '%s\\n' '{"result":{"type":"worktree_list","worktrees":[]}}' ;;
+  'pane list') printf '%s\\n' '{"result":{"type":"pane_list","panes":[]}}' ;;
+  'tab create') printf '%s\\n' '{"result":{"root_pane":{"pane_id":"child"},"tab":{"tab_id":"agents"}}}' ;;
+  'pane get') printf '%s\\n' '{"result":{"pane":{"pane_id":"child"}}}' ;;
+  'pane close') printf '%s\\n' "$3" >> "$FIXTURE_CLOSE_LOG" ;;
+esac
+`, { mode: 0o755 });
+  try {
+    const output = execFileSync(process.execPath, ["--eval", `
+      import assert from "node:assert/strict";
+      import { readFileSync } from "node:fs";
+      import extension from ${JSON.stringify(join(import.meta.dir, "index.ts"))};
+      import { listRuns } from ${JSON.stringify(join(import.meta.dir, "backends.ts"))};
+      const tools = new Map();
+      const handlers = [];
+      extension({ on(name, fn) { handlers.push({name,fn}); }, registerCommand() {}, registerTool(tool) { tools.set(tool.name, tool); }, sendMessage() {}, sendUserMessage() {} });
+      await tools.get("pipeline").execute("", { name: "Busy", stages: [{ id: "work", agent: "scout", task: "Work" }] });
+      await tools.get("subagent_spawn").execute("", { agent: "scout", task: "Solo" });
+      assert.equal(listRuns().length, 2);
+      for (const handler of handlers.filter((h) => h.name === "session_" + "shutdown")) await handler.fn({ reason: "quit" });
+      assert.equal(listRuns().length, 0);
+      assert.deepEqual(readFileSync(process.env.FIXTURE_CLOSE_LOG, "utf8").trim().split("\\n"), ["child", "child"]);
+      console.log("closed");
+      process.exit(0);
+    `], {
+      encoding: "utf8", timeout: 10000,
+      env: { ...process.env, PATH: `${dir}:${process.env.PATH}`, PIPELINES_DIR: join(dir, "state"), HERDR_ENV: "1", HERDR_BIN_PATH: join(dir, "herdr"), TUIOS_ENV: "", FIXTURE_CLOSE_LOG: join(dir, "closed") },
+    });
+    expect(output.trim()).toBe("closed");
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});

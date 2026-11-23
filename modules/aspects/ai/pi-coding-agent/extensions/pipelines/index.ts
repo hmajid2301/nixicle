@@ -120,6 +120,12 @@ export default function pipelinesExtension(pi: ExtensionAPI): void {
   pi.on("model_select", (event, ctx) => sessionModel.observe(event?.model ?? safeModelFrom(ctx)));
   const byName = new Map(agents.map((agent) => [agent.name, agent]));
   const runs = new Map<string, RunMeta>();
+  pi.on("session_shutdown", () => {
+    closeBtw();
+    const ids = new Set([...runs.keys(), ...listRuns().map((run) => run.handle.id)]);
+    runs.clear();
+    for (const id of ids) stopRun(id);
+  });
 
   function steer(kind: string, text: string, details?: Record<string, unknown>): void {
     try {
