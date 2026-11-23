@@ -3135,11 +3135,11 @@
         "reveal-hugo": "reveal-hugo"
       },
       "locked": {
-        "lastModified": 1794995970,
-        "narHash": "sha256-5C8a463xwnTzwybXcOhmjBI7AdXGvPqIMVq+SfQ/MgQ=",
+        "lastModified": 1795428706,
+        "narHash": "sha256-LMvWJy90sc1kBxfS82YDiuY1+DKWAPnY7KCF/FnBjkk=",
         "ref": "refs/heads/main",
-        "rev": "bc52b35120ffcdd825a939ebbe35ecefdb4e63e2",
-        "revCount": 26,
+        "rev": "fffc6f327756cd9ee2fed8c4d691e4c5e0647df2",
+        "revCount": 27,
         "type": "git",
         "url": "https://gitlab.com/hmajid2301/ssh.haseebmajid.dev"
       },
