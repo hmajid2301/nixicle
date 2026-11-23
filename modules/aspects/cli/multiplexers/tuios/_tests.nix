@@ -133,6 +133,54 @@ lib.runTests {
       ];
     };
   };
+  testQuietAppearance = {
+    expr = {
+      inherit (aspect.programs.tuios.settings.appearance)
+        show_clock
+        gap
+        desktop_background
+        window_title_style
+        window_title_align
+        ;
+      inherit (aspect.programs.tuios.settings.dock) right session tabs;
+      canvas =
+        (builtins.fromJSON aspect.xdg.configFile."tuios/themes/catppuccin_mocha_chrome.json".text)
+        .chrome.canvas;
+    };
+    expected = {
+      show_clock = false;
+      gap = 0;
+      desktop_background = "#1e1e2e";
+      window_title_style = "plain";
+      window_title_align = "left";
+      right = [ "session" ];
+      session = {
+        format = "{session}";
+        fg = "#1e1e2e";
+        bg = "#94e2d5";
+        bold = true;
+        cap_left = "";
+        cap_right = "";
+      };
+      tabs = {
+        style = "segmented";
+        cap_colors = [
+          "#b4befe"
+          "#cba6f7"
+          "#a6e3a1"
+          "#fab387"
+          "#89b4fa"
+          "#f5c2e7"
+        ];
+        number_glyphs = [
+          "󰚩"
+          ""
+          ""
+        ];
+      };
+      canvas = "#1e1e2e";
+    };
+  };
   testRestoreKeybindings = {
     expr = map (binding: binding.command) aspect.programs.tuios.settings.keybindings.command;
     expected = map (action: "ntindle.herdr-resurrect.${action}") [

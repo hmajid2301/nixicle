@@ -26,7 +26,7 @@
           chrome = {
             accent = "#b4befe";
             accent_bright = "#b4befe";
-            canvas = "#11111b";
+            canvas = "#1e1e2e";
             surface = "#181825";
             panel = "#313244";
             card = "#1e1e2e";
@@ -117,7 +117,7 @@
             preferred_shell = lib.getExe pkgs.fish;
             theme = "catppuccin_mocha_chrome";
             background = "theme";
-            desktop_background = "#11111b";
+            desktop_background = "#1e1e2e";
             dock_background = "#181825";
             sidebar = {
               enabled = true;
@@ -132,22 +132,21 @@
             border_focused_gradient = "#b4befe #cba6f7";
             border_gradient_angle = 30;
             border_unfocused_color = "#45475a";
-            gap = 1;
+            gap = 0;
             dim_unfocused = 8;
             dim_foreground = false;
             hide_window_buttons = true;
             hide_scrollbar = true;
             window_title_format = "{index}: {title}";
-            window_title_style = "pill";
-            window_title_align = "center";
+            window_title_style = "plain";
+            window_title_align = "left";
             dockbar_position = "top";
             dock_compact = true;
             dock_pill_caps = true;
             dock_workspace_tabs = true;
             dock_workspace_tab_format = "{icon}  {name}";
             dock_workspace_label_max = 32;
-            show_clock = true;
-            clock_format = "15:04";
+            show_clock = false;
             panel_padding = 1;
             modal_dim = 45;
             nvim_navigation = true;
@@ -158,7 +157,15 @@
               "workspaces"
             ];
             center = [ ];
-            right = [ "clock" ];
+            right = [ "session" ];
+            session = {
+              format = "{session}";
+              fg = "#1e1e2e";
+              bg = "#94e2d5";
+              bold = true;
+              cap_left = "";
+              cap_right = "";
+            };
             tabs = {
               style = "segmented";
               cap_colors = [
