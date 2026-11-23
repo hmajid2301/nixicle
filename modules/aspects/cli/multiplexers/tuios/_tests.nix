@@ -25,6 +25,20 @@ let
     settings.daemon.ssh_agent = "follow";
   };
   defaults = evaluate { enable = true; };
+  aspect =
+    (inputs.home-manager.lib.homeManagerConfiguration {
+      inherit pkgs;
+      modules = [
+        (import ./default.nix { inherit inputs; }).den.aspects.tuios.homeManager
+        {
+          home = {
+            username = "test";
+            homeDirectory = "/home/test";
+            stateVersion = "26.05";
+          };
+        }
+      ];
+    }).config;
   configured = evaluate {
     enable = true;
     package = pkgs.hello;
@@ -88,6 +102,44 @@ lib.runTests {
     expr =
       configured.home.file ? "${configured.xdg.configHome}/pi/agent/extensions/tuios-agent-state.ts";
     expected = true;
+  };
+  testCommandRestoreConfigured = {
+    expr = {
+      inherit (aspect.programs.tuios.settings.plugins) enabled;
+      inherit (aspect.programs.tuios.settings.daemon) resume_agents;
+      settings =
+        builtins.fromJSON
+          aspect.xdg.configFile."tuios/plugin-config/ntindle.herdr-resurrect/settings.json".text;
+      allowlist = aspect.xdg.configFile."tuios/plugin-config/ntindle.herdr-resurrect/allowlist.txt".text;
+    };
+    expected = {
+      enabled = [ "ntindle.herdr-resurrect" ];
+      resume_agents = "auto";
+      settings = {
+        autoRestore = true;
+        agentResume = false;
+      };
+      allowlist = "*\n";
+    };
+  };
+  testRestoreKeepsAgentPanesRestricted = {
+    expr = aspect.programs.tuios.settings.agents.permissions;
+    expected = {
+      mode = "strict";
+      grants = [
+        "read"
+        "write"
+        "fan"
+      ];
+    };
+  };
+  testRestoreKeybindings = {
+    expr = map (binding: binding.command) aspect.programs.tuios.settings.keybindings.command;
+    expected = map (action: "ntindle.herdr-resurrect.${action}") [
+      "save"
+      "restore"
+      "restore-preview"
+    ];
   };
   testFishRequiresAgentFollowing = {
     expr =

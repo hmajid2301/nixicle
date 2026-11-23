@@ -10,20 +10,34 @@
       pkgs,
       ...
     }:
+    let
+      resurrect = import ./_resurrect.nix {
+        inherit lib pkgs;
+        src = inputs.plugins-herdr-resurrect;
+      };
+    in
     {
       imports = [ ./_home-manager.nix ];
 
-      xdg.configFile."tuios/themes/catppuccin_mocha_chrome.json".text = builtins.toJSON {
-        display_name = "Catppuccin Mocha Chrome";
-        base = "catppuccin_mocha";
-        chrome = {
-          accent = "#b4befe";
-          accent_bright = "#b4befe";
-          canvas = "#11111b";
-          surface = "#181825";
-          panel = "#313244";
-          card = "#1e1e2e";
+      xdg.configFile = {
+        "tuios/themes/catppuccin_mocha_chrome.json".text = builtins.toJSON {
+          display_name = "Catppuccin Mocha Chrome";
+          base = "catppuccin_mocha";
+          chrome = {
+            accent = "#b4befe";
+            accent_bright = "#b4befe";
+            canvas = "#11111b";
+            surface = "#181825";
+            panel = "#313244";
+            card = "#1e1e2e";
+          };
         };
+
+        "tuios/plugin-config/ntindle.herdr-resurrect/settings.json".text = builtins.toJSON {
+          autoRestore = true;
+          agentResume = false;
+        };
+        "tuios/plugin-config/ntindle.herdr-resurrect/allowlist.txt".text = "*\n";
       };
 
       programs.tuios = {
@@ -39,7 +53,14 @@
         enablePiIntegration = true;
         enableClaudeCodeIntegration = config.programs.claude-code.enable;
         settings = {
-          daemon.ssh_agent = "follow";
+          daemon = {
+            ssh_agent = "follow";
+            resume_agents = "auto";
+          };
+          plugins = {
+            dirs = [ "${resurrect}" ];
+            enabled = [ "ntindle.herdr-resurrect" ];
+          };
           startup = {
             daemon = true;
             tiled = true;
@@ -49,6 +70,28 @@
           workspaces.new_window_when_empty = true;
           keybindings = {
             leader_key = "ctrl+a";
+            command =
+              map
+                (action: {
+                  key = "prefix+ctrl+${action.key}";
+                  type = "plugin_action";
+                  command = "ntindle.herdr-resurrect.${action.name}";
+                  description = "Resurrect: ${action.name}";
+                })
+                [
+                  {
+                    key = "s";
+                    name = "save";
+                  }
+                  {
+                    key = "r";
+                    name = "restore";
+                  }
+                  {
+                    key = "p";
+                    name = "restore-preview";
+                  }
+                ];
             prefix_mode =
               let
                 digits = map toString (lib.range 0 9);

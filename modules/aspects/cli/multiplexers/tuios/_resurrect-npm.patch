@@ -1,0 +1,16 @@
+--- a/lib/snapshot.js
++++ b/lib/snapshot.js
+@@ -119,10 +119,12 @@ function buildPane(snap, paneId, index, layout, ctx) {
+     };
+   } else if (fg && !allowlist.isShell(fg)) {
+     // Ordinary program. Record it either way, but flag whether we'll relaunch it.
++    const npmRun = fg.argv?.length === 1 && /^npm run ([A-Za-z0-9_:.@/-]+)$/.exec(fg.argv[0]);
+     out.command = {
+       name: fg.name || null,
+-      argv: fg.argv || null,
++      // npm replaces its argv with a process title; only recover a simple script invocation.
++      argv: npmRun ? ['npm', 'run', npmRun[1]] : fg.argv || null,
+       cmdline: fg.cmdline || null,
+       cwd: fg.cwd || p.cwd || null,
+       restorable: allowlist.restorable(fg),
+       captured_via: via,
