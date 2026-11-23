@@ -35,10 +35,10 @@ index 3bdfb7a1c..6c67bb7a2 100644
      },
 diff --git a/internal/app/dock_multicolor_test.go b/internal/app/dock_multicolor_test.go
 new file mode 100644
-index 000000000..f1b0e7f84
+index 000000000..9e48d72c0
 --- /dev/null
 +++ b/internal/app/dock_multicolor_test.go
-@@ -0,0 +1,99 @@
+@@ -0,0 +1,103 @@
 +package app
 +
 +import (
@@ -80,8 +80,12 @@ index 000000000..f1b0e7f84
 +					t.Errorf("workspace %d cap = %v want %v", hit.Workspace, got, want)
 +				}
 +				label := term.CellAt(hit.X1-3, 0).Style.Bg
-+				if !sameDockColor(label, m.groundUI().Panel) {
-+					t.Errorf("workspace %d lost dark label", hit.Workspace)
++				wantLabel := m.groundUI().Panel
++				if hit.Workspace == active {
++					wantLabel = want
++				}
++				if !sameDockColor(label, wantLabel) {
++					t.Errorf("workspace %d label = %v want %v", hit.Workspace, label, wantLabel)
 +				}
 +			}
 +		}
@@ -140,10 +144,10 @@ index 000000000..f1b0e7f84
 +}
 diff --git a/internal/app/dock_segmented_test.go b/internal/app/dock_segmented_test.go
 new file mode 100644
-index 000000000..c56a17ebf
+index 000000000..eba02a16b
 --- /dev/null
 +++ b/internal/app/dock_segmented_test.go
-@@ -0,0 +1,109 @@
+@@ -0,0 +1,111 @@
 +package app
 +
 +import (
@@ -186,12 +190,14 @@ index 000000000..c56a17ebf
 +				wantGround := pal.Panel
 +				if dragged {
 +					wantGround = pal.Surface
++				} else if active {
++					wantGround = pal.Accent
 +				}
 +				if !same(term.CellAt(2, 0).Style.Bg, pal.Accent) {
 +					t.Error("icon does not have accent background")
 +				}
 +				if !same(term.CellAt(4, 0).Style.Bg, wantGround) {
-+					t.Error("label does not have its own background")
++					t.Error("label does not have the expected background")
 +				}
 +				if !same(term.CellAt(0, 0).Style.Fg, pal.Accent) || !same(term.CellAt(9, 0).Style.Fg, wantGround) {
 +					t.Error("outer caps do not match their segments")
@@ -254,10 +260,10 @@ index 000000000..c56a17ebf
 +	}
 +}
 diff --git a/internal/app/render_dock.go b/internal/app/render_dock.go
-index 9dbc41ca9..639f810e8 100644
+index 9dbc41ca9..95f648558 100644
 --- a/internal/app/render_dock.go
 +++ b/internal/app/render_dock.go
-@@ -115,6 +115,27 @@ func capTab(tab string, ground color.Color, caps dockCaps) string {
+@@ -115,6 +115,33 @@ func capTab(tab string, ground color.Color, caps dockCaps) string {
  	return ink.Render(lc) + tab + ink.Render(rc)
  }
  
@@ -275,6 +281,12 @@ index 9dbc41ca9..639f810e8 100644
 +	if ink != nil {
 +		fg = ink
 +	}
++	if active && !dragged {
++		ground = accent
++		fg = pal.PillFg
++	} else if !active && ink == nil && pal.FgDim != nil {
++		fg = pal.FgDim
++	}
 +	icon := sidebarStyle(accent, theme.Readable(pal.PillFg, accent)).Bold(true)
 +	body := sidebarStyle(ground, theme.Readable(fg, ground)).Bold(active)
 +	left := lipgloss.NewStyle().Foreground(accent).Render(lc)
@@ -285,7 +297,7 @@ index 9dbc41ca9..639f810e8 100644
  // tabColor is a configured [dock.tabs] colour on the dock's palette, or nil
  // when it is unset or not a colour. lipgloss turns a value it cannot parse
  // into no colour at all, which would paint the terminal's default in the
-@@ -215,7 +236,7 @@ func dockTabGapText(t *config.DockTabsConfig, pal overlay.Palette) string {
+@@ -215,7 +242,7 @@ func dockTabGapText(t *config.DockTabsConfig, pal overlay.Palette) string {
  }
  
  // dockTab renders one tab in whichever style [dock.tabs] asks for.
@@ -294,7 +306,7 @@ index 9dbc41ca9..639f810e8 100644
  	// A workspace that wants a person takes [dock.tabs] attention_fg as its
  	// ink. Only a tab that is not current is marked: the current one is on
  	// screen already.
-@@ -226,6 +247,15 @@ func dockTab(t *config.DockTabsConfig, label string, active, dragged, attention
+@@ -226,6 +253,15 @@ func dockTab(t *config.DockTabsConfig, label string, active, dragged, attention
  	if t.Flat() {
  		return flatWorkspaceTab(label, active, dragged, t, pal, caps, ink)
  	}
@@ -310,7 +322,7 @@ index 9dbc41ca9..639f810e8 100644
  	return workspacePill(label, active, dragged, t, pal, caps, ink)
  }
  
-@@ -383,7 +413,7 @@ func drawDockWorkspaceStrip(k *dockStripKey) dockStripDrawn {
+@@ -383,7 +419,7 @@ func drawDockWorkspaceStrip(k *dockStripKey) dockStripDrawn {
  			b.WriteString(gapText)
  			x, drawn = x+t.Gap, drawn+t.Gap
  		}
@@ -319,7 +331,7 @@ index 9dbc41ca9..639f810e8 100644
  		d.hits = append(d.hits, dockWorkspaceHit{X0: x, X1: x + t.Width, Workspace: t.Workspace})
  		x, drawn = x+t.Width, drawn+t.Width
  	}
-@@ -401,7 +431,7 @@ func drawDockWorkspaceStrip(k *dockStripKey) dockStripDrawn {
+@@ -401,7 +437,7 @@ func drawDockWorkspaceStrip(k *dockStripKey) dockStripDrawn {
  			b.WriteString(gapText)
  			x += l.add.Gap
  		}
