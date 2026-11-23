@@ -174,7 +174,7 @@ check:nixos-evaluations:
         nix eval --fallback --option eval-cache false ".#nixosConfigurations.${host}.config.system.build.toplevel.drvPath"
       done
     - |
-      nix eval --raw .#homeConfigurations --apply 'c: builtins.concatStringsSep "\n" (builtins.attrNames c)' | while read -r hm; do
+      nix eval --raw .#homeConfigurations --apply 'c: builtins.concatStringsSep "\n" (builtins.attrNames c) + "\n"' | while read -r hm; do
         nix eval --fallback --option eval-cache false ".#homeConfigurations.\"${hm}\".activationPackage.drvPath"
       done
     # flake check --no-build uses a read-only store, so IFD outputs must be realised by the evals above.
