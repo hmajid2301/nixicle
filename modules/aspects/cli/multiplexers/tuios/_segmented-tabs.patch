@@ -1,5 +1,5 @@
 diff --git a/docs/look-keys.json b/docs/look-keys.json
-index c2d080a00..3a90a4f52 100644
+index 3bdfb7a1c..6c67bb7a2 100644
 --- a/docs/look-keys.json
 +++ b/docs/look-keys.json
 @@ -897,6 +897,14 @@
@@ -140,7 +140,7 @@ index 000000000..f1b0e7f84
 +}
 diff --git a/internal/app/dock_segmented_test.go b/internal/app/dock_segmented_test.go
 new file mode 100644
-index 000000000..011aac73a
+index 000000000..c56a17ebf
 --- /dev/null
 +++ b/internal/app/dock_segmented_test.go
 @@ -0,0 +1,109 @@
@@ -177,7 +177,7 @@ index 000000000..011aac73a
 +		for _, dragged := range []bool{false, true} {
 +			for _, attention := range []bool{false, true} {
 +				cfg := config.DockTabsConfig{Style: "segmented", AttentionFg: "#f9e2af"}
-+				drawn := m.dockTab(&cfg, "1 code", active, dragged, attention, pal, 1)
++				drawn := dockTab(&cfg, "1 code", active, dragged, attention, pal, dockCapsOf(&m.Settings), 1)
 +				if got := lipgloss.Width(drawn); got != 10 {
 +					t.Fatalf("width = %d, want 10", got)
 +				}
@@ -212,17 +212,17 @@ index 000000000..011aac73a
 +	pal := m.groundUI()
 +	cfg := config.DockTabsConfig{Style: "segmented"}
 +	for _, label := range []string{"", "+", "code", " code", "1 "} {
-+		if got, want := m.dockTab(&cfg, label, true, false, false, pal, 1), workspacePill(label, true, false, &cfg, pal, &m.Settings, nil); got != want {
++		if got, want := dockTab(&cfg, label, true, false, false, pal, dockCapsOf(&m.Settings), 1), workspacePill(label, true, false, &cfg, pal, dockCapsOf(&m.Settings), nil); got != want {
 +			t.Errorf("%q did not fall back to an ordinary pill", label)
 +		}
 +	}
 +	m.Settings.UseASCIIOnly = true
-+	if got, want := m.dockTab(&cfg, "1 code", true, false, false, pal, 1), workspacePill("1 code", true, false, &cfg, pal, &m.Settings, nil); got != want {
++	if got, want := dockTab(&cfg, "1 code", true, false, false, pal, dockCapsOf(&m.Settings), 1), workspacePill("1 code", true, false, &cfg, pal, dockCapsOf(&m.Settings), nil); got != want {
 +		t.Error("ASCII output did not preserve the ordinary pill")
 +	}
 +	m.Settings.UseASCIIOnly = false
 +	pal.Panel, pal.Surface = overlay.NoColor, overlay.NoColor
-+	if got, want := m.dockTab(&cfg, "1 code", true, false, false, pal, 1), workspacePill("1 code", true, false, &cfg, pal, &m.Settings, nil); got != want {
++	if got, want := dockTab(&cfg, "1 code", true, false, false, pal, dockCapsOf(&m.Settings), 1), workspacePill("1 code", true, false, &cfg, pal, dockCapsOf(&m.Settings), nil); got != want {
 +		t.Error("no-color output did not preserve the ordinary pill")
 +	}
 +}
@@ -254,22 +254,22 @@ index 000000000..011aac73a
 +	}
 +}
 diff --git a/internal/app/render_dock.go b/internal/app/render_dock.go
-index b5aceab7d..662921475 100644
+index 9dbc41ca9..639f810e8 100644
 --- a/internal/app/render_dock.go
 +++ b/internal/app/render_dock.go
-@@ -114,6 +114,27 @@ func capTab(tab string, ground color.Color, s *config.Settings) string {
- 	return caps.Render(lc) + tab + caps.Render(rc)
+@@ -115,6 +115,27 @@ func capTab(tab string, ground color.Color, caps dockCaps) string {
+ 	return ink.Render(lc) + tab + ink.Render(rc)
  }
  
-+func segmentedWorkspaceTab(label string, active, dragged bool, t *config.DockTabsConfig, pal overlay.Palette, s *config.Settings, ink, accent color.Color) string {
++func segmentedWorkspaceTab(label string, active, dragged bool, t *config.DockTabsConfig, pal overlay.Palette, caps dockCaps, ink, accent color.Color) string {
 +	prefix, text, split := strings.Cut(label, " ")
 +	ground := pal.Panel
 +	if dragged {
 +		ground = pal.Surface
 +	}
-+	lc, rc := s.GetDockWorkspaceCapLeft(), s.GetDockWorkspaceCapRight()
++	lc, rc := caps.Left, caps.Right
 +	if !split || prefix == "" || strings.TrimSpace(text) == "" || lc == "" || rc == "" || overlay.IsNoColor(ground) || overlay.IsNoColor(pal.Accent) {
-+		return workspacePill(label, active, dragged, t, pal, s, ink)
++		return workspacePill(label, active, dragged, t, pal, caps, ink)
 +	}
 +	fg := pal.Fg
 +	if ink != nil {
@@ -285,18 +285,18 @@ index b5aceab7d..662921475 100644
  // tabColor is a configured [dock.tabs] colour on the dock's palette, or nil
  // when it is unset or not a colour. lipgloss turns a value it cannot parse
  // into no colour at all, which would paint the terminal's default in the
-@@ -214,7 +235,7 @@ func dockTabGapText(t *config.DockTabsConfig, pal overlay.Palette) string {
+@@ -215,7 +236,7 @@ func dockTabGapText(t *config.DockTabsConfig, pal overlay.Palette) string {
  }
  
  // dockTab renders one tab in whichever style [dock.tabs] asks for.
--func (m *OS) dockTab(t *config.DockTabsConfig, label string, active, dragged, attention bool, pal overlay.Palette) string {
-+func (m *OS) dockTab(t *config.DockTabsConfig, label string, active, dragged, attention bool, pal overlay.Palette, workspace int) string {
+-func dockTab(t *config.DockTabsConfig, label string, active, dragged, attention bool, pal overlay.Palette, caps dockCaps) string {
++func dockTab(t *config.DockTabsConfig, label string, active, dragged, attention bool, pal overlay.Palette, caps dockCaps, workspace int) string {
  	// A workspace that wants a person takes [dock.tabs] attention_fg as its
  	// ink. Only a tab that is not current is marked: the current one is on
  	// screen already.
-@@ -225,6 +246,15 @@ func (m *OS) dockTab(t *config.DockTabsConfig, label string, active, dragged, at
+@@ -226,6 +247,15 @@ func dockTab(t *config.DockTabsConfig, label string, active, dragged, attention
  	if t.Flat() {
- 		return flatWorkspaceTab(label, active, dragged, t, pal, &m.Settings, ink)
+ 		return flatWorkspaceTab(label, active, dragged, t, pal, caps, ink)
  	}
 +	if strings.TrimSpace(t.Style) == config.DockTabStyleSegmented {
 +		accent := pal.Accent
@@ -305,34 +305,34 @@ index b5aceab7d..662921475 100644
 +				accent = c
 +			}
 +		}
-+		return segmentedWorkspaceTab(label, active, dragged, t, pal, &m.Settings, ink, accent)
++		return segmentedWorkspaceTab(label, active, dragged, t, pal, caps, ink, accent)
 +	}
- 	return workspacePill(label, active, dragged, t, pal, &m.Settings, ink)
+ 	return workspacePill(label, active, dragged, t, pal, caps, ink)
  }
  
-@@ -277,7 +307,7 @@ func (m *OS) renderDockWorkspaceStrip(s dockWorkspaceStrip, startX int) string {
+@@ -383,7 +413,7 @@ func drawDockWorkspaceStrip(k *dockStripKey) dockStripDrawn {
  			b.WriteString(gapText)
  			x, drawn = x+t.Gap, drawn+t.Gap
  		}
--		b.WriteString(m.dockTab(&style, t.Label, t.Active, t.Dragged, t.Attention, pal))
-+		b.WriteString(m.dockTab(&style, t.Label, t.Active, t.Dragged, t.Attention, pal, t.Workspace))
- 		m.dockWorkspaceHits = append(m.dockWorkspaceHits, dockWorkspaceHit{
- 			X0: x, X1: x + t.Width, Y: y, Workspace: t.Workspace,
- 		})
-@@ -297,7 +327,7 @@ func (m *OS) renderDockWorkspaceStrip(s dockWorkspaceStrip, startX int) string {
+-		b.WriteString(dockTab(style, t.Label, t.Active, t.Dragged, t.Attention, pal, l.caps))
++		b.WriteString(dockTab(style, t.Label, t.Active, t.Dragged, t.Attention, pal, l.caps, t.Workspace))
+ 		d.hits = append(d.hits, dockWorkspaceHit{X0: x, X1: x + t.Width, Workspace: t.Workspace})
+ 		x, drawn = x+t.Width, drawn+t.Width
+ 	}
+@@ -401,7 +431,7 @@ func drawDockWorkspaceStrip(k *dockStripKey) dockStripDrawn {
  			b.WriteString(gapText)
- 			x += s.Add.Gap
+ 			x += l.add.Gap
  		}
--		b.WriteString(m.dockTab(&style, s.Add.Label, false, false, false, pal))
-+		b.WriteString(m.dockTab(&style, s.Add.Label, false, false, false, pal, 0))
- 		m.dockWorkspaceHits = append(m.dockWorkspaceHits, dockWorkspaceHit{
- 			X0: x, X1: x + s.Add.Width, Y: y, Workspace: 0,
- 		})
+-		b.WriteString(dockTab(style, l.add.Label, false, false, false, pal, l.caps))
++		b.WriteString(dockTab(style, l.add.Label, false, false, false, pal, l.caps, 0))
+ 		d.hits = append(d.hits, dockWorkspaceHit{X0: x, X1: x + l.add.Width, Workspace: 0})
+ 	}
+ 	d.text = b.String()
 diff --git a/internal/config/dock.go b/internal/config/dock.go
-index a8518c5b6..17e1eb5e6 100644
+index f0c9b20ca..1935900ef 100644
 --- a/internal/config/dock.go
 +++ b/internal/config/dock.go
-@@ -145,8 +145,9 @@ type DockConfig struct {
+@@ -156,8 +156,9 @@ type DockConfig struct {
  
  // Workspace tab styles accepted by [dock.tabs] style.
  const (
@@ -344,7 +344,7 @@ index a8518c5b6..17e1eb5e6 100644
  )
  
  // DockTabsConfig is [dock.tabs]. With style left empty (or "pill") the strip
-@@ -156,7 +157,8 @@ const (
+@@ -167,7 +168,8 @@ const (
  // Separator, ShowAdd and ActiveBold are for flat tabs only: a pill always has
  // its caps and its "+", and its current tab is always bold.
  type DockTabsConfig struct {
@@ -354,7 +354,7 @@ index a8518c5b6..17e1eb5e6 100644
  
  	// Separator is drawn between two flat tabs. Empty is one bare column.
  	Separator   string `toml:"separator,omitempty"`
-@@ -539,13 +541,16 @@ func validateDock(cfg *UserConfig, result *ValidationResult) {
+@@ -553,13 +555,16 @@ func validateDock(cfg *UserConfig, result *ValidationResult) {
  		}
  	}
  
@@ -435,7 +435,7 @@ index 000000000..639e64648
 +	}
 +}
 diff --git a/internal/config/look_items.go b/internal/config/look_items.go
-index b8de759b2..a5e2637ae 100644
+index f09f7935d..0b4f0fb6e 100644
 --- a/internal/config/look_items.go
 +++ b/internal/config/look_items.go
 @@ -73,8 +73,8 @@ var lookFileKeys = map[string]lookFileKey{
@@ -461,18 +461,18 @@ index b8de759b2..a5e2637ae 100644
  		Type:        LookList,
  		Description: "What {icon} in appearance.dock_workspace_tab_format shows for each workspace, the first item for workspace 1. A workspace past the end shows its number.",
 @@ -237,9 +241,17 @@ func checkLookFileValue(path string, v any) error {
- 			return fmt.Errorf("%s must be true or false", path)
+ 			return errfmt.Errorf("%s must be true or false", path)
  		}
  	case LookList:
 -		if _, ok := v.([]string); !ok {
 +		items, ok := v.([]string)
 +		if !ok {
- 			return fmt.Errorf("%s must be a list of text, such as [\"a\", \"b\"]", path)
+ 			return errfmt.Errorf("%s must be a list of text, such as [\"a\", \"b\"]", path)
  		}
 +		if path == "dock.tabs.cap_colors" {
 +			for _, value := range items {
 +				if !theme.IsColor(value) {
-+					return fmt.Errorf("%s: %s", path, ColourProblem(value))
++					return errfmt.Errorf("%s: %s", path, ColourProblem(value))
 +				}
 +			}
 +		}
