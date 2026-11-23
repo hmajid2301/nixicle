@@ -37,6 +37,10 @@ in
       package = pkgs.noctalia;
       customPalettes.stylix.dark.mPrimary = lib.mkForce config.lib.stylix.colors.withHashtag.base07;
       settings = {
+        theme.templates.user.luciole = {
+          input_path = "${config.programs.luciole.package}/share/luciole/templates/colors.toml";
+          output_path = "$XDG_CONFIG_HOME/luciole/colors.toml";
+        };
         shell = {
           font_family = config.stylix.fonts.sansSerif.name;
           clipboard_enabled = true;
