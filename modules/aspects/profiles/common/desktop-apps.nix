@@ -160,6 +160,16 @@
                 "    color: ${colors.base00} !important;"
                 "    background-color: ${colors.base07} !important;"
                 "  }"
+                ""
+                "  #ContentSelectDropdown > #ContentSelectDropdownPopup > :is(menuitem, menucaption) {"
+                "    color: ${colors.base05} !important;"
+                "    background-color: ${colors.base01} !important;"
+                "  }"
+                ""
+                "  #ContentSelectDropdown > #ContentSelectDropdownPopup > menuitem[_moz-menuactive=\"true\"]:not([disabled=\"true\"]) {"
+                "    color: ${colors.base00} !important;"
+                "    background-color: ${colors.base07} !important;"
+                "  }"
               ]
             );
             # No background on the closed select: unstyled selects keep the
