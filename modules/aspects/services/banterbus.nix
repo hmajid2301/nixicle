@@ -10,7 +10,9 @@ let
       domain = "banterbus.haseebmajid.dev";
     };
   };
-  jwksUrl = "https://id.haseebmajid.dev/.well-known/openid-configuration";
+  jwksUrl = "https://id.haseebmajid.dev/.well-known/jwks.json";
+  jwtIssuer = "https://id.haseebmajid.dev";
+  quizAudience = "banter-quiz";
   adminGroup = "Admin";
   redisAddress = "127.0.0.1:6380";
 in
@@ -64,7 +66,14 @@ in
         systemd.services = lib.mapAttrs' (
           name: instanceCfg:
           let
-            banterbus = inputs.banterbus.packages.${pkgs.stdenv.hostPlatform.system}.default;
+            banterbus =
+              inputs.banterbus.packages.${pkgs.stdenv.hostPlatform.system}.default.overrideAttrs
+                (old: {
+                  postInstall = (old.postInstall or "") + ''
+                    mkdir -p "$out/migrations"
+                    cp ${inputs.banterbus}/internal/store/db/sqlc/migrations/*.sql "$out/migrations/"
+                  '';
+                });
           in
           lib.nameValuePair "banterbus_${name}" {
             description = "BanterBus ${name} trivia game service";
@@ -78,6 +87,11 @@ in
               "postgresql.service"
               "redis-main.service"
             ];
+            preStart = ''
+              ${pkgs.goose}/bin/goose -dir "${banterbus}/migrations" postgres \
+                "host=$BANTERBUS_DB_HOST port=$BANTERBUS_DB_PORT user=$BANTERBUS_DB_USERNAME dbname=$BANTERBUS_DB_NAME sslmode=disable" \
+                up
+            '';
             serviceConfig = {
               Type = "simple";
               User = "banterbus_${name}";
@@ -93,6 +107,9 @@ in
                 "BANTERBUS_REDIS_ADDRESS=${redisAddress}"
                 "BANTERBUS_JWKS_URL=${jwksUrl}"
                 "BANTERBUS_JWT_ADMIN_GROUP=${adminGroup}"
+                "BANTERBUS_JWT_ISSUER=${jwtIssuer}"
+                "BANTERBUS_PUBLIC_URL=https://${instanceCfg.domain}"
+                "BANTERBUS_QUIZ_AUDIENCE=${quizAudience}"
                 "BANTERBUS_WEBSERVER_PORT=${toString instanceCfg.port}"
               ];
               PrivateTmp = true;

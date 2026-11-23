@@ -45,11 +45,11 @@
         "playwright": "playwright"
       },
       "locked": {
-        "lastModified": 1790879638,
-        "narHash": "sha256-J3OpopS+8UNBU5XjN27Aa3cc5FFTHDfCn6fTpM874CY=",
+        "lastModified": 1795302229,
+        "narHash": "sha256-by1jGyznCg2XbR5JSYZ6+93/D8rXX+PdH68L4zzALgc=",
         "owner": "hmajid2301",
         "repo": "banterbus",
-        "rev": "56aa3ba6469ae9eeed9fab1195aae4158c935388",
+        "rev": "7c4e21a6dd8dcb342487d37905e5ecc986b97963",
         "type": "gitlab"
       },
       "original": {

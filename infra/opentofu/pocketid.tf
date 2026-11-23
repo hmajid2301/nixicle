@@ -139,6 +139,15 @@ locals {
       is_public           = false
       allowed_user_groups = [pocketid_group.umami_admins.id]
     }
+    banter_quiz = {
+      client_id           = "banter-quiz"
+      name                = "Banter Quiz"
+      launch_url          = "https://banterbus.haseebmajid.dev"
+      callback_urls       = []
+      pkce_enabled        = true
+      is_public           = true
+      allowed_user_groups = [pocketid_group.banterbus_admins.id]
+    }
     tinyauth = {
       client_id           = "tinyauth"
       name                = "TinyAuth"
@@ -193,6 +202,11 @@ resource "pocketid_group" "jellyfin_admins" {
   friendly_name = "Jellyfin Admins"
 }
 
+resource "pocketid_group" "banterbus_admins" {
+  name          = "banterbus_admins"
+  friendly_name = "BanterBus Admins"
+}
+
 resource "pocketid_user" "hmajid2301" {
   username   = "hmajid2301"
   email      = "hello@haseebmajid.dev"
@@ -207,5 +221,6 @@ resource "pocketid_user" "hmajid2301" {
     pocketid_group.jellyfin_admins.id,
     pocketid_group.umami_admins.id,
     pocketid_group.forgejo_admins.id,
+    pocketid_group.banterbus_admins.id,
   ]
 }
