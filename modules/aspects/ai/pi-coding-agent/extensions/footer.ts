@@ -2,7 +2,7 @@ import type { ExtensionAPI, ExtensionContext } from "@earendil-works/pi-coding-a
 import { truncateToWidth, visibleWidth, wrapTextWithAnsi } from "@mariozechner/pi-tui";
 
 const mocha = {
-	lavender: "180;190;254",
+	blue: "137;180;250",
 	green: "166;227;161",
 	yellow: "249;226;175",
 	peach: "250;179;135",
@@ -32,9 +32,9 @@ function clean(text: string): string {
 	return text.replace(/[\x00-\x1f\x7f-\x9f]/g, " ").replace(/\s+/g, " ").trim();
 }
 
-function tab(icon: string, text: string): string {
-	return fg("lavender", "")
-		+ `\x1b[48;2;${mocha.lavender}m\x1b[38;2;${mocha.crust}m\x1b[1m ${icon} \x1b[0m`
+function tab(icon: string, text: string, accent: "peach" | "blue"): string {
+	return fg(accent, "")
+		+ `\x1b[48;2;${mocha[accent]}m\x1b[38;2;${mocha.crust}m\x1b[1m ${icon} \x1b[0m`
 		+ `\x1b[48;2;${mocha.surface}m\x1b[38;2;${mocha.text}m ${text} \x1b[0m`
 		+ fg("surface", "");
 }
@@ -58,14 +58,14 @@ export function renderFooterLines(data: FooterStats, width: number): string[] {
 	const usedLabel = data.used === null ? "--" : fmtK(data.used);
 	const context = `${fg(color, "")} ${bar} ${fg(color, `${usedLabel}/${fmtK(data.total)}`)}`;
 	const thinking = data.thinkingLevel && data.thinkingLevel !== "off" ? ` ·${clean(data.thinkingLevel)}` : "";
-	const model = fg("lavender", `󰚩 ${clean(data.modelId)}${thinking}`);
+	const model = fg("sky", `󰚩 ${clean(data.modelId)}${thinking}`);
 	const stats = [context, data.quotaStatus, model].filter((part): part is string => Boolean(part));
 	const right = stats.join(separator);
 	const names = [
-		{ icon: "", text: clean(data.branch ?? "") },
-		{ icon: "", text: clean(data.sessionName ?? "") },
+		{ icon: "", text: clean(data.branch ?? ""), accent: "peach" as const },
+		{ icon: "", text: clean(data.sessionName ?? ""), accent: "blue" as const },
 	].filter(name => name.text);
-	const left = names.map(name => tab(name.icon, name.text)).join(" ");
+	const left = names.map(name => tab(name.icon, name.text, name.accent)).join(" ");
 	const gap = width - visibleWidth(left) - visibleWidth(right);
 	if (gap >= 1) return [left ? `${left}${" ".repeat(gap)}${right}` : right];
 
@@ -75,9 +75,9 @@ export function renderFooterLines(data: FooterStats, width: number): string[] {
 	} else {
 		const name = names.find(name => name.icon === "") ?? names[0];
 		if (name) {
-			const bodyWidth = width - visibleWidth(tab(name.icon, ""));
+			const bodyWidth = width - visibleWidth(tab(name.icon, "", name.accent));
 			lines.push(...(bodyWidth > 0
-				? wrap(name.text, bodyWidth).map(part => tab(name.icon, part))
+				? wrap(name.text, bodyWidth).map(part => tab(name.icon, part, name.accent))
 				: wrap(name.text, width)));
 		}
 	}

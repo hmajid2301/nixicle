@@ -13,7 +13,7 @@ const data = {
 };
 const plain = (text: string) => text.replace(/\x1b\[[0-9;]*m/g, "");
 
-test("copies Claude's fused lavender tabs and compact usage layout", () => {
+test("uses distinct peach and blue segmented accents with compact usage layout", () => {
 	const lines = renderFooterLines(data, 150);
 	const text = plain(lines.join("\n"));
 	expect(lines).toHaveLength(1);
@@ -23,7 +23,8 @@ test("copies Claude's fused lavender tabs and compact usage layout", () => {
 	expect(text).toContain(" 28% ⟳2h14m │  16%");
 	expect(text).toContain("󰚩 gpt-5.4 ·medium");
 	expect(text).not.toMatch(/working|idle|↑|↓|\$/);
-	expect(lines[0]).toContain("\x1b[48;2;180;190;254m");
+	expect(lines[0]).toContain("\x1b[48;2;250;179;135m");
+	expect(lines[0]).toContain("\x1b[48;2;137;180;250m");
 	expect(lines[0]).toContain("\x1b[48;2;49;50;68m");
 });
 
